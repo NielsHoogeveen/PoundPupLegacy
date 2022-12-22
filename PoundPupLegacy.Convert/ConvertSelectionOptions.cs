@@ -1,4 +1,5 @@
 ﻿using MySqlConnector;
+using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
@@ -24,7 +25,7 @@ namespace PoundPupLegacy.Convert
                 IsTerm = isTerm
             };
         }
-        private static void MigrateSelectionOptions(MySqlConnection mysqlconnection, TargetConnection targetConnection, int categoryId, int nodeTypeId, string tableName)
+        private static void MigrateSelectionOptions(MySqlConnection mysqlconnection, NpgsqlConnection connection, int categoryId, int nodeTypeId, string tableName)
         {
             var sql = $"""
                     SELECT 
@@ -39,12 +40,12 @@ namespace PoundPupLegacy.Convert
                     JOIN node n2 ON n2.nid = c.cid
                     WHERE n1.nid  = {categoryId}
                     """;
-            MigrateSelectionOptions(mysqlconnection, targetConnection, nodeTypeId, tableName, false, sql);
+            MigrateSelectionOptions(mysqlconnection, connection, nodeTypeId, tableName, false, sql);
         }
 
-        private static void MigrateSelectionOptions(MySqlConnection mysqlconnection, TargetConnection targetConnection, int nodeTypeId, string tableName, bool isTerm, string sql)
+        private static void MigrateSelectionOptions(MySqlConnection mysqlconnection, NpgsqlConnection connection, int nodeTypeId, string tableName, bool isTerm, string sql)
         {
-            targetConnection.Create(ReadSelectionOptions(mysqlconnection, nodeTypeId, isTerm, sql), tableName);
+            SingleIdEnitityCreator.Create(ReadSelectionOptions(mysqlconnection, nodeTypeId, isTerm, sql), tableName, connection);
         }
         private static IEnumerable<BasicNode> ReadSelectionOptions(MySqlConnection mysqlconnection, int nodeTypeId, bool isTerm, string sql)
         {

@@ -1,4 +1,5 @@
 ﻿using MySqlConnector;
+using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
@@ -64,7 +65,7 @@ internal partial class Program
         }
     };
 
-    private static void MigrateBasicCountries(MySqlConnection mysqlconnection, TargetConnection targetConnection)
+    private static void MigrateBasicCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
         var countries = basicCountries.Select(x =>
         {
@@ -75,8 +76,8 @@ internal partial class Program
             }
             return x;
         });
-        targetConnection.Create(countries);
-        targetConnection.Create(ReadBasicCountries(mysqlconnection));
+        BasicCountryCreator.Create(countries, connection);
+        BasicCountryCreator.Create(ReadBasicCountries(mysqlconnection), connection);
     }
     private static IEnumerable<BasicCountry> ReadBasicCountries(MySqlConnection mysqlconnection)
     {

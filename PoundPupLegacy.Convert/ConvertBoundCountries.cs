@@ -1,4 +1,5 @@
 ﻿using MySqlConnector;
+using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
@@ -7,9 +8,9 @@ namespace PoundPupLegacy.Convert
 {
     internal partial class Program
     {
-        private static void MigrateBoundCountries(MySqlConnection mysqlconnection, TargetConnection targetConnection)
+        private static void MigrateBoundCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            targetConnection.Create(ReadBoundCountries(mysqlconnection));
+            BoundCountryCreator.Create(ReadBoundCountries(mysqlconnection), connection);
         }
 
         private static IEnumerable<BoundCountry> ReadBoundCountries(MySqlConnection mysqlconnection)

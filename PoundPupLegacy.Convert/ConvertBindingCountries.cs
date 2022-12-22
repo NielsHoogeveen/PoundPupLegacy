@@ -1,4 +1,5 @@
 ﻿using MySqlConnector;
+using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
@@ -9,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateBindingCountries(MySqlConnection mysqlconnection, TargetConnection targetConnection)
+    private static void MigrateBindingCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        targetConnection.Create(ReadBindingCountries(mysqlconnection));
+        BindingCountryCreator.Create(ReadBindingCountries(mysqlconnection), connection);
     }
     private static IEnumerable<BindingCountry> ReadBindingCountries(MySqlConnection mysqlconnection)
     {

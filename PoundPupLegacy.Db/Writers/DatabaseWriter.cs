@@ -1,6 +1,11 @@
 ﻿using Npgsql;
 
-namespace PoundPupLegacy.Db;
+namespace PoundPupLegacy.Db.Writers;
+
+public interface IDatabaseWriter<T>
+{
+    public abstract static DatabaseWriter<T> Create(NpgsqlConnection connection);
+}
 
 public abstract class DatabaseWriter<T> : IDisposable
 {
@@ -16,5 +21,5 @@ public abstract class DatabaseWriter<T> : IDisposable
         _command.Dispose();
     }
 
-    public abstract void Write(T item);
+    internal abstract void Write(T item);
 }

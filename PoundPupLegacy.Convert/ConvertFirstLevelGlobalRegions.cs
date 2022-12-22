@@ -1,4 +1,5 @@
 ﻿using MySqlConnector;
+using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
@@ -7,9 +8,9 @@ namespace PoundPupLegacy.Convert
 {
     internal partial class Program
     {
-        private static void MigrateFirstLevelGlobalRegions(MySqlConnection mysqlconnection, TargetConnection targetConnection)
+        private static void MigrateFirstLevelGlobalRegions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            targetConnection.Create(ReadFirstLevelGlobalRegions(mysqlconnection));
+            FirstLevelGlobalRegionCreator.Create(ReadFirstLevelGlobalRegions(mysqlconnection), connection);
         }
 
         private static IEnumerable<FirstLevelGlobalRegion> ReadFirstLevelGlobalRegions(MySqlConnection mysqlconnection)

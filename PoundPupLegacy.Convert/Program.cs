@@ -1,6 +1,5 @@
 ﻿using MySqlConnector;
 using Npgsql;
-using PoundPupLegacy.Db;
 
 namespace PoundPupLegacy.Convert
 {
@@ -68,24 +67,23 @@ namespace PoundPupLegacy.Convert
                 mysqlconnection.Open();
                 postgresqlconnection.Open();
                 AddNodeTypes(postgresqlconnection);
-                var targetConnection = new TargetConnection(postgresqlconnection);
                 //MigrateUsers(mysqlconnection, postgresqlconnection);
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 12622, 1, "organization_type");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 12637, 2, "affiliation_type");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 12652, 3, "political_entity_relation_type");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 12663, 4, "position_type");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 16900, 5, "personal_relationship_type");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 27213, 6, "profession");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 39428, 7, "denomination");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 41212, 8, "hague_status");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 42416, 9, "document_type");
-                MigrateSelectionOptions(mysqlconnection, targetConnection, 42422, 10, "document_inclusion_type");
-                MigrateFirstLevelGlobalRegions(mysqlconnection, targetConnection);
-                MigrateSecondLevelGlobalRegions(mysqlconnection, targetConnection);
-                MigrateBasicCountries(mysqlconnection, targetConnection);
-                MigrateBindingCountries(mysqlconnection, targetConnection);
-                MigrateBoundCountries(mysqlconnection, targetConnection);
-                MigrateBasicCountryAndFirstLevelSubdivisions(mysqlconnection, targetConnection);
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12622, 1, "organization_type");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12637, 2, "affiliation_type");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12652, 3, "political_entity_relation_type");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12663, 4, "position_type");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 16900, 5, "personal_relationship_type");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 27213, 6, "profession");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 39428, 7, "denomination");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 41212, 8, "hague_status");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 42416, 9, "document_type");
+                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 42422, 10, "document_inclusion_type");
+                MigrateFirstLevelGlobalRegions(mysqlconnection, postgresqlconnection);
+                MigrateSecondLevelGlobalRegions(mysqlconnection, postgresqlconnection);
+                MigrateBasicCountries(mysqlconnection, postgresqlconnection);
+                MigrateBindingCountries(mysqlconnection, postgresqlconnection);
+                MigrateBoundCountries(mysqlconnection, postgresqlconnection);
+                MigrateBasicCountryAndFirstLevelSubdivisions(mysqlconnection, postgresqlconnection);
                 //MigrateRegionSubdivisionCountries(mysqlconnection, postgresqlconnection);
                 //MigrateSubdivisions(mysqlconnection, postgresqlconnection);
                 //MigrateCountryRegions(mysqlconnection, postgresqlconnection);

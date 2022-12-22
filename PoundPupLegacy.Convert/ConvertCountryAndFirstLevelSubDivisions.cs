@@ -1,4 +1,5 @@
 ﻿using MySqlConnector;
+using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
@@ -8,10 +9,10 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
-        private static void MigrateBasicCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection, TargetConnection targetConnection)
+        private static void MigrateBasicCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            targetConnection.Create(BasicCountryAndSubdivisions);
-            targetConnection.Create(ReadBasicCountryAndFirstLevelSubdivisions(mysqlconnection));
+            BasicCountryAndFirstLevelSubdivisionCreator.Create(BasicCountryAndFirstLevelSubdivisions, connection);
+            BasicCountryAndFirstLevelSubdivisionCreator.Create(ReadBasicCountryAndFirstLevelSubdivisions(mysqlconnection), connection);
         }
         private static string GetISO3166Code2ForCountry(int id)
         {
@@ -66,7 +67,7 @@ namespace PoundPupLegacy.Convert
             };
         }
 
-        private static IEnumerable<BasicCountryAndFirstLevelSubdivision> BasicCountryAndSubdivisions = new List<BasicCountryAndFirstLevelSubdivision>
+        private static IEnumerable<BasicCountryAndFirstLevelSubdivision> BasicCountryAndFirstLevelSubdivisions = new List<BasicCountryAndFirstLevelSubdivision>
         {
             new BasicCountryAndFirstLevelSubdivision
             {
