@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33209.295
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Server", "PoundPupLegacy\Server\PoundPupLegacy.Server.csproj", "{08E72850-78F5-42FE-A1D4-39565E790272}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Client", "PoundPupLegacy\Client\PoundPupLegacy.Client.csproj", "{B2A50BE9-1F77-42C2-91B1-18AE6E68DBBA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Shared", "PoundPupLegacy\Shared\PoundPupLegacy.Shared.csproj", "{7FA82BA6-95A7-49D7-97F7-2BA6C48488AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Convert", "PoundPupLegacy.Convert\PoundPupLegacy.Convert.csproj", "{58E3BDD4-8834-4FB3-9567-A79C94E65595}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.Db", "PoundPupLegacy.Db\PoundPupLegacy.Db.csproj", "{22AD5E47-6C17-40E6-98DE-052C0C286DED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.Model", "PoundPupLegacy.Model\PoundPupLegacy.Model.csproj", "{8BF99659-4957-47AA-A09B-618595B22362}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08E72850-78F5-42FE-A1D4-39565E790272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08E72850-78F5-42FE-A1D4-39565E790272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08E72850-78F5-42FE-A1D4-39565E790272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08E72850-78F5-42FE-A1D4-39565E790272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2A50BE9-1F77-42C2-91B1-18AE6E68DBBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2A50BE9-1F77-42C2-91B1-18AE6E68DBBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2A50BE9-1F77-42C2-91B1-18AE6E68DBBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2A50BE9-1F77-42C2-91B1-18AE6E68DBBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FA82BA6-95A7-49D7-97F7-2BA6C48488AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FA82BA6-95A7-49D7-97F7-2BA6C48488AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FA82BA6-95A7-49D7-97F7-2BA6C48488AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FA82BA6-95A7-49D7-97F7-2BA6C48488AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22AD5E47-6C17-40E6-98DE-052C0C286DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22AD5E47-6C17-40E6-98DE-052C0C286DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22AD5E47-6C17-40E6-98DE-052C0C286DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22AD5E47-6C17-40E6-98DE-052C0C286DED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BF99659-4957-47AA-A09B-618595B22362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BF99659-4957-47AA-A09B-618595B22362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BF99659-4957-47AA-A09B-618595B22362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BF99659-4957-47AA-A09B-618595B22362}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D69414B5-8290-4DE4-9767-611CF1987777}
+	EndGlobalSection
+EndGlobal
