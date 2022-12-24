@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface SecondLevelSubdivision : ISOCodedSubdivision
+public interface SecondLevelSubdivision : ISOCodedSubdivision, BottomLevelSubdivision
 {
 }

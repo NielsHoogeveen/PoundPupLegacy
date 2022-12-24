@@ -4,9 +4,9 @@ using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
-public class BasicCountryAndFirstLevelSubdivisionCreator : IEntityCreator<BasicCountryAndFirstLevelSubdivision>
+public class CountryAndIntermediateLevelSubdivisionCreator : IEntityCreator<CountryAndIntermediateLevelSubdivision>
 {
-    public static void Create(IEnumerable<BasicCountryAndFirstLevelSubdivision> countries, NpgsqlConnection connection)
+    public static void Create(IEnumerable<CountryAndIntermediateLevelSubdivision> countries, NpgsqlConnection connection)
     {
 
         using var nodeWriter = NodeWriter.Create(connection);
@@ -19,7 +19,8 @@ public class BasicCountryAndFirstLevelSubdivisionCreator : IEntityCreator<BasicC
         using var firstLevelSubdivisionWriter = FirstLevelSubdivisionWriter.Create(connection);
         using var isoCodedFirstLevelSubdivisionWriter = ISOCodedFirstLevelSubdivisionWriter.Create(connection);
         using var countryAndFirstLevelSubdivisionWriter = CountryAndFirstLevelSubdivisionWriter.Create(connection);
-        using var basicCountryAndFirstLevelSubdivisionWriter = BasicCountryAndFirstLevelSubdivisionWriter.Create(connection);
+        using var intermediateLevelSubdivisionWriter = IntermediateLevelSubdivisionWriter.Create(connection);
+        using var countryAndIntermediateLevelSubdivisionWriter = CountryAndIntermediateLevelSubdivisionWriter.Create(connection);
         using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
 
         foreach (var country in countries)
@@ -34,7 +35,8 @@ public class BasicCountryAndFirstLevelSubdivisionCreator : IEntityCreator<BasicC
             firstLevelSubdivisionWriter.Write(country);
             isoCodedFirstLevelSubdivisionWriter.Write(country);
             countryAndFirstLevelSubdivisionWriter.Write(country);
-            basicCountryAndFirstLevelSubdivisionWriter.Write(country);
+            intermediateLevelSubdivisionWriter.Write(country);
+            countryAndIntermediateLevelSubdivisionWriter.Write(country);
             termHierarchyWriter.Write(new TermHierarchy
             {
                 ParentId = country.GlobalRegionId,

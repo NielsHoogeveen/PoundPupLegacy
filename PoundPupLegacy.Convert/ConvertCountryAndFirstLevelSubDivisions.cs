@@ -11,8 +11,8 @@ namespace PoundPupLegacy.Convert
 
         private static void MigrateBasicCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            BasicCountryAndFirstLevelSubdivisionCreator.Create(BasicCountryAndFirstLevelSubdivisions, connection);
-            BasicCountryAndFirstLevelSubdivisionCreator.Create(ReadBasicCountryAndFirstLevelSubdivisions(mysqlconnection), connection);
+            CountryAndFirstAndBottomLevelSubdivisionCreator.Create(CountryAndFirstAndBottomLevelSubdivisions, connection);
+            CountryAndFirstAndBottomLevelSubdivisionCreator.Create(ReadCountryAndFirstAndIntermediateLevelSubdivisions(mysqlconnection), connection);
         }
         private static string GetISO3166Code2ForCountry(int id)
         {
@@ -67,9 +67,9 @@ namespace PoundPupLegacy.Convert
             };
         }
 
-        private static IEnumerable<BasicCountryAndFirstLevelSubdivision> BasicCountryAndFirstLevelSubdivisions = new List<BasicCountryAndFirstLevelSubdivision>
+        private static IEnumerable<CountryAndFirstAndBottomLevelSubdivision> CountryAndFirstAndBottomLevelSubdivisions = new List<CountryAndFirstAndBottomLevelSubdivision>
         {
-            new BasicCountryAndFirstLevelSubdivision
+            new CountryAndFirstAndBottomLevelSubdivision
             {
                 Id = 4097,
                 Title = "Åland",
@@ -85,7 +85,7 @@ namespace PoundPupLegacy.Convert
                 ISO3166_1_Code = "AX",
                 ISO3166_2_Code = "FI-01"
             },
-            new BasicCountryAndFirstLevelSubdivision
+            new CountryAndFirstAndBottomLevelSubdivision
             {
                 Id = 4102,
                 Title = "Curaçao",
@@ -101,7 +101,7 @@ namespace PoundPupLegacy.Convert
                 ISO3166_1_Code = "CW",
                 ISO3166_2_Code = "NL-CW"
             },
-            new BasicCountryAndFirstLevelSubdivision
+            new CountryAndFirstAndBottomLevelSubdivision
             {
                 Id = 4106,
                 Title = "Sint Maarten",
@@ -117,7 +117,7 @@ namespace PoundPupLegacy.Convert
                 ISO3166_1_Code = "SX",
                 ISO3166_2_Code = "NL-SX"
             },
-            new BasicCountryAndFirstLevelSubdivision
+            new CountryAndFirstAndBottomLevelSubdivision
             {
                 Id = 4119,
                 Title = "United States Minor Outlying Islands",
@@ -136,7 +136,7 @@ namespace PoundPupLegacy.Convert
 
         };
 
-        private static IEnumerable<BasicCountryAndFirstLevelSubdivision> ReadBasicCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection)
+        private static IEnumerable<CountryAndFirstAndBottomLevelSubdivision> ReadCountryAndFirstAndIntermediateLevelSubdivisions(MySqlConnection mysqlconnection)
         {
 
 
@@ -177,7 +177,7 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
-                yield return new BasicCountryAndFirstLevelSubdivision
+                yield return new CountryAndFirstAndBottomLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
                     UserId = reader.GetInt32("user_id"),

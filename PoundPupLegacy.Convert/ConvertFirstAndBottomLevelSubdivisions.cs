@@ -1,29 +1,20 @@
 ﻿using MySqlConnector;
 using Npgsql;
-using NpgsqlTypes;
+using PoundPupLegacy.Db;
+using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert
 {
     internal partial class Program
     {
-        private record Subdivision : PoundPupLegacy.Model.BasicNode
-        {
-            public required int CountryId { get; init; }
-            public required string ISO3166_2Code { get; init; }
-
-            public required string Name { get; init; }
-        }
-
-        private static IEnumerable<Subdivision> Subdivisions => ReadDirectSubDivisionCsv();
-
-        private static IEnumerable<Subdivision> ReadDirectSubDivisionCsv()
+        private static IEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv()
         {
             foreach (string line in System.IO.File.ReadLines(@"..\..\..\direct_subdivisions.csv").Skip(1))
             {
 
                 var parts = line.Split(new char[] { ';' });
-                yield return new Subdivision
+                yield return new FirstAndBottomLevelSubdivision
                 {
                     Id = int.Parse(parts[0]),
                     Created = DateTime.Parse(parts[1]),
@@ -35,7 +26,7 @@ namespace PoundPupLegacy.Convert
                     CountryId = int.Parse(parts[7]),
                     Title = parts[8],
                     Name = parts[9],
-                    ISO3166_2Code = parts[10]
+                    ISO3166_2_Code = parts[10]
                 };
             }
         }
@@ -317,7 +308,21 @@ namespace PoundPupLegacy.Convert
             };
         }
 
-        private static void MigrateSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection postgresqlconnection)
+        private static void MigrateFirstAndBottomLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        {
+            var subdivisions = ReadDirectSubDivisionCsv().ToList();
+            foreach (var subdivision in subdivisions)
+            {
+                if (subdivision.Id == 0)
+                {
+                    NodeId++;
+                    subdivision.Id = NodeId;
+                }
+            }
+            FirstAndBottomLevelSubdivisionCreator.Create(subdivisions, connection);
+            FirstAndBottomLevelSubdivisionCreator.Create(ReadFormalFirstLevelSubdivisions(mysqlconnection), connection);
+        }
+        private static IEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(MySqlConnection mysqlconnection)
         {
             var continentIds = new List<int> { 3806, 3810, 3811, 3816, 3822, 3823 };
 
@@ -344,72 +349,15 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = sql;
 
-            using var writeCommand = postgresqlconnection.CreateCommand();
-            writeCommand.CommandType = CommandType.Text;
-            writeCommand.CommandTimeout = 300;
-            writeCommand.CommandText = """INSERT INTO public."node" (id, user_id, created, changed, title, status, node_type_id, is_term) VALUES(@id, @user_id, @created, @changed, @title, @status, @node_type_id, @is_term)""";
-            writeCommand.Parameters.Add("id", NpgsqlDbType.Integer);
-            writeCommand.Parameters.Add("user_id", NpgsqlDbType.Integer);
-            writeCommand.Parameters.Add("created", NpgsqlDbType.Timestamp);
-            writeCommand.Parameters.Add("changed", NpgsqlDbType.Timestamp);
-            writeCommand.Parameters.Add("title", NpgsqlDbType.Varchar);
-            writeCommand.Parameters.Add("status", NpgsqlDbType.Integer);
-            writeCommand.Parameters.Add("node_type_id", NpgsqlDbType.Integer);
-            writeCommand.Parameters.Add("is_term", NpgsqlDbType.Boolean);
-            writeCommand.Prepare();
-
-            using var writeCommand2 = postgresqlconnection.CreateCommand();
-            writeCommand2.CommandType = CommandType.Text;
-            writeCommand2.CommandTimeout = 300;
-            writeCommand2.CommandText = $"""INSERT INTO public."country_direct_subdivision" (id, country_id) VALUES(@id, @country_id)""";
-            writeCommand2.Parameters.Add("id", NpgsqlDbType.Integer);
-            writeCommand2.Parameters.Add("country_id", NpgsqlDbType.Integer);
-
-            using var writeCommand3 = postgresqlconnection.CreateCommand();
-            writeCommand3.CommandType = CommandType.Text;
-            writeCommand3.CommandTimeout = 300;
-            writeCommand3.CommandText = $"""INSERT INTO public."term_hierarchy" (term_id_child, term_id_parent) VALUES(@term_id_child, @term_id_parent)""";
-            writeCommand3.Parameters.Add("term_id_child", NpgsqlDbType.Integer);
-            writeCommand3.Parameters.Add("term_id_parent", NpgsqlDbType.Integer);
-
-            using var writeCommand4 = postgresqlconnection.CreateCommand();
-            writeCommand4.CommandType = CommandType.Text;
-            writeCommand4.CommandTimeout = 300;
-            writeCommand4.CommandText = $"""INSERT INTO public."political_entity" (id) VALUES(@id)""";
-            writeCommand4.Parameters.Add("id", NpgsqlDbType.Integer);
-
-            using var writeCommand5 = postgresqlconnection.CreateCommand();
-            writeCommand5.CommandType = CommandType.Text;
-            writeCommand5.CommandTimeout = 300;
-            writeCommand5.CommandText = $"""INSERT INTO public."country_subdivision" (id, iso_3166_2_code) VALUES(@id,@iso_3166_2_code)""";
-            writeCommand5.Parameters.Add("id", NpgsqlDbType.Integer);
-            writeCommand5.Parameters.Add("iso_3166_2_code", NpgsqlDbType.Varchar);
-
-            using var writeCommand6 = postgresqlconnection.CreateCommand();
-            writeCommand6.CommandType = CommandType.Text;
-            writeCommand6.CommandTimeout = 300;
-            writeCommand6.CommandText = $"""INSERT INTO public."country_part_name" (id, name, country_id) VALUES(@id,@name,@country_id)""";
-            writeCommand6.Parameters.Add("id", NpgsqlDbType.Integer);
-            writeCommand6.Parameters.Add("country_id", NpgsqlDbType.Integer);
-            writeCommand6.Parameters.Add("name", NpgsqlDbType.Varchar);
 
             var reader = readCommand.ExecuteReader();
 
-            foreach (var subdivision in Subdivisions)
-            {
-                if (subdivision.Id == 0)
-                {
-                    NodeId++;
-                    subdivision.Id = NodeId;
-                }
-                CreateSubdivision(subdivision, writeCommand, writeCommand2, writeCommand3, writeCommand4, writeCommand5, writeCommand6);
-            }
 
             while (reader.Read())
             {
                 var isoCode = reader.IsDBNull("iso_3166_2_code") ? GetISO3166Code2(reader.GetInt32("id"), "") :
                                     GetISO3166Code2(reader.GetInt32("id"), reader.GetString("iso_3166_2_code"));
-                var subdivision = new Subdivision
+                yield return new FirstAndBottomLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
                     UserId = reader.GetInt32("user_id"),
@@ -423,55 +371,11 @@ namespace PoundPupLegacy.Convert
                     CountryId = reader.GetInt32("id") == 11827 ? 11571 :
                                 reader.GetInt32("id") == 11789 ? 11571 :
                                 reader.GetInt32("country_id"),
-                    ISO3166_2Code = isoCode
+                    ISO3166_2_Code = isoCode
                 };
-                CreateSubdivision(subdivision, writeCommand, writeCommand2, writeCommand3, writeCommand4, writeCommand5, writeCommand6);
 
             }
             reader.Close();
         }
-
-        private static void CreateSubdivision(
-            Subdivision subdivision,
-            NpgsqlCommand writeCommand,
-            NpgsqlCommand writeCommand2,
-            NpgsqlCommand writeCommand3,
-            NpgsqlCommand writeCommand4,
-            NpgsqlCommand writeCommand5,
-            NpgsqlCommand writeCommand6
-            )
-        {
-            writeCommand.Parameters["id"].Value = subdivision.Id;
-            writeCommand.Parameters["user_id"].Value = subdivision.UserId;
-            writeCommand.Parameters["created"].Value = subdivision.Created;
-            writeCommand.Parameters["changed"].Value = subdivision.Changed;
-            writeCommand.Parameters["title"].Value = subdivision.Title;
-            writeCommand.Parameters["status"].Value = subdivision.Status;
-            writeCommand.Parameters["node_type_id"].Value = subdivision.NodeTypeId;
-            writeCommand.Parameters["is_term"].Value = subdivision.IsTerm;
-            writeCommand.ExecuteNonQuery();
-
-            writeCommand4.Parameters["id"].Value = subdivision.Id;
-            writeCommand4.ExecuteNonQuery();
-
-            writeCommand6.Parameters["id"].Value = subdivision.Id;
-            writeCommand6.Parameters["name"].Value = subdivision.Name;
-            writeCommand6.Parameters["country_id"].Value = subdivision.CountryId;
-            writeCommand6.ExecuteNonQuery();
-
-            writeCommand5.Parameters["id"].Value = subdivision.Id;
-            writeCommand5.Parameters["iso_3166_2_code"].Value = subdivision.ISO3166_2Code;
-            writeCommand5.ExecuteNonQuery();
-
-            writeCommand2.Parameters["id"].Value = subdivision.Id;
-            writeCommand2.Parameters["country_id"].Value = subdivision.CountryId;
-            writeCommand2.ExecuteNonQuery();
-
-            writeCommand3.Parameters["term_id_child"].Value = subdivision.Id;
-            writeCommand3.Parameters["term_id_parent"].Value = subdivision.CountryId;
-            writeCommand3.ExecuteNonQuery();
-
-        }
-
     }
 }

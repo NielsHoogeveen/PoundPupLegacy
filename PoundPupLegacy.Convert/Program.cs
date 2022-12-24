@@ -29,15 +29,17 @@ namespace PoundPupLegacy.Convert
                 new NodeType(9, "document type", "Defines the type of a document"),
                 new NodeType(10, "document inclusion type", "Rules with respect to attachments"),
                 new NodeType(11, "first level global region", "First level subdivision of the world"),
-                new NodeType(12, "region", "regions of the continents"),
-                new NodeType(13, "top level country", "countries"),
-                new NodeType(14, "bound country", "countries that are part of another country"),
-                new NodeType(15, "subdivision country", "countries that are both top level countries and sub divisions of another country"),
-                new NodeType(16, "subdivision region country", "countries that are both top level countries and sub divisions of another country and regions within that country"),
-                new NodeType(17, "direct subdivision", "Subdivision of a country"),
-                new NodeType(18, "country region", "Region of a country"),
-                new NodeType(19, "regional subdivision", "Subdivision of a region of a country"),
+                new NodeType(12, "secomnd level global region", "Second level subdivision of the world"),
+                new NodeType(13, "basic country", "Countries that don't contain other countries and that are not part of another country"),
+                new NodeType(14, "bound country", "Countries that are part of another country"),
+                new NodeType(15, "country and first and bottom level subdivision", "Countries that are also first level subdivisions of another country and that allows no further subdivision"),
+                new NodeType(16, "country and first and second level subdivision", "Countries that are also first and second level subdivisions of another country"),
+                new NodeType(17, "first and bottom level subdivision", "Subdivision of a country that contains no further subdivisions"),
+                new NodeType(18, "informal intermediate level subdivision", "Informal subdivision of a country that contains second level subdivisions"),
+                new NodeType(19, "basic second level subdivision", "Second level subdivision of a country"),
                 new NodeType(20, "binding country", "Country that contains other countries"),
+                new NodeType(21, "country and intermediate level subdivision", "Countries that are also first level subdivisions of another country and that do allow further subdivision"),
+                new NodeType(22, "formal intermediate level subdivision", "Formal subdivision of a country that contains second level subdivisions"),
 
             };
 
@@ -84,10 +86,11 @@ namespace PoundPupLegacy.Convert
                 MigrateBindingCountries(mysqlconnection, postgresqlconnection);
                 MigrateBoundCountries(mysqlconnection, postgresqlconnection);
                 MigrateBasicCountryAndFirstLevelSubdivisions(mysqlconnection, postgresqlconnection);
-                //MigrateRegionSubdivisionCountries(mysqlconnection, postgresqlconnection);
-                //MigrateSubdivisions(mysqlconnection, postgresqlconnection);
-                //MigrateCountryRegions(mysqlconnection, postgresqlconnection);
-                //MigrateRegionSubdivisions(mysqlconnection, postgresqlconnection);
+                MigrateCountryAndFirstAndSecondLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                MigrateFirstAndBottomLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                MigrateInformalIntermediateLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                MigrateFormalIntermediateLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                MigrateBasicSecondLevelSubdivisions(mysqlconnection, postgresqlconnection);
                 mysqlconnection.Close();
                 postgresqlconnection.Close();
             }

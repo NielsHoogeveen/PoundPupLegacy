@@ -422,21 +422,6 @@
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3925;Valle del Cauca (Colombian department);Valle del Cauca;CO-VAC
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3925;Vaupés (Colombian department);Vaupés;CO-VAU
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3925;Vichada (Colombian department);Vichada;CO-VID
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Harju (Estonian county);Harju;EE-37
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Hiiu (Estonian county);Hiiu;EE-39
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Ida-Viru (Estonian county);Ida-Viru;EE-45
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Jõgeva (Estonian county);Jõgeva;EE-50
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Järva (Estonian county);Järva;EE-52
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Lääne (Estonian county);Lääne;EE-56
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Lääne-Viru (Estonian county);Lääne-Viru;EE-60
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Põlva (Estonian county);Põlva;EE-64
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Pärnu (Estonian county);Pärnu;EE-68
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Rapla (Estonian county);Rapla;EE-71
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Saare (Estonian county);Saare;EE-74
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Tartu (Estonian county);Tartu;EE-79
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Valga (Estonian county);Valga;EE-81
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Viljandi (Estonian county);Viljandi;EE-84
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3984;Võru (Estonian county);Võru;EE-87
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3866;Addis Ababa (Ethiopian administration);Addis Ababa;ET-AA
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3866;Dire Dawa (Ethiopian administration);Dire Dawa;ET-DD
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3866;Afar (Ethiopian regional state);Afar;ET-AF
@@ -478,14 +463,6 @@
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3940;Haifa (Israeli district);Haifa;IL-HA
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3940;Tel Aviv (Israeli district);Tel Aviv;IL-TA
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3940;Jerusalem (Israeli district);Jerusalem;IL-JM
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3986;Höfuðborgarsvæði (Icelandic region);Höfuðborgarsvæði;IS-1
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3986;Suðurnes (Icelandic region);Suðurnes;IS-2
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3986;Vesturland (Icelandic region);Vesturland;IS-3
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3986;Vestfirðir (Icelandic region);Vestfirðir;IS-4
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3986;Norðurland vestra (Icelandic region);Norðurland vestra;IS-5
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3986;Norðurland eystra (Icelandic region);Norðurland eystra;IS-6
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3986;Austurland (Icelandic region);Austurland;IS-7
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3986;Suðurland (Icelandic region);Suðurland;IS-8
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3907;Clarendon (Jamaican parish);Clarendon;JM-13
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3907;Hanover (Jamaican parish);Hanover;JM-09
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3907;Kingston (Jamaican parish);Kingston;JM-01
@@ -818,84 +795,6 @@
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4035; Trenčiansky kraj (Slovakian region); Trenčiansky kraj;SK-TC
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4035; Trnavský kraj (Slovakian region); Trnavský kraj;SK-TA
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4035; Žilinský kraj (Slovakian region); Žilinský kraj;SK-ZI
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Amnat Charoen (Thai province);Amnat Charoen;TH-37
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Ang Thong (Thai province);Ang Thong;TH-15
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Bueng Kan (Thai province);Bueng Kan;TH-38
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Buri Ram (Thai province);Buri Ram;TH-31
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Chachoengsao (Thai province);Chachoengsao;TH-24
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Chai Nat (Thai province);Chai Nat;TH-18
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Chaiyaphum (Thai province);Chaiyaphum;TH-36
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Chanthaburi (Thai province);Chanthaburi;TH-22
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Chiang Mai (Thai province);Chiang Mai;TH-50
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Chiang Rai (Thai province);Chiang Rai;TH-57
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Chon Buri (Thai province);Chon Buri;TH-20
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Chumphon (Thai province);Chumphon;TH-86
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Kalasin (Thai province);Kalasin;TH-46
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Kamphaeng Phet (Thai province);Kamphaeng Phet;TH-62
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Kanchanaburi (Thai province);Kanchanaburi;TH-71
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Khon Kaen (Thai province);Khon Kaen;TH-40
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Krabi (Thai province);Krabi;TH-81
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Krung Thep Maha Nakhon (Thai metropolitan administration);Krung Thep Maha Nakhon;TH-10
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Lampang (Thai province);Lampang;TH-52
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Lamphun (Thai province);Lamphun;TH-51
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Loei (Thai province);Loei;TH-42
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Lop Buri (Thai province);Lop Buri;TH-16
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Mae Hong Son (Thai province);Mae Hong Son;TH-58
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Maha Sarakham (Thai province);Maha Sarakham;TH-44
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Mukdahan (Thai province);Mukdahan;TH-49
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nakhon Nayok (Thai province);Nakhon Nayok;TH-26
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nakhon Pathom (Thai province);Nakhon Pathom;TH-73
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nakhon Phanom (Thai province);Nakhon Phanom;TH-48
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nakhon Ratchasima (Thai province);Nakhon Ratchasima;TH-30
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nakhon Sawan (Thai province);Nakhon Sawan;TH-60
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nakhon Si Thammarat (Thai province);Nakhon Si Thammarat;TH-80
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nan (Thai province);Nan;TH-55
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Narathiwat (Thai province);Narathiwat;TH-96
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nong Bua Lam Phu (Thai province);Nong Bua Lam Phu;TH-39
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nong Khai (Thai province);Nong Khai;TH-43
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Nonthaburi (Thai province);Nonthaburi;TH-12
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Pathum Thani (Thai province);Pathum Thani;TH-13
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Pattani (Thai province);Pattani;TH-94
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phangnga (Thai province);Phangnga;TH-82
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phatthalung (Thai province);Phatthalung;TH-93
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phatthaya (Thai special administrative city);Phatthaya;TH-S
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phayao (Thai province);Phayao;TH-56
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phetchabun (Thai province);Phetchabun;TH-67
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phetchaburi (Thai province);Phetchaburi;TH-76
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phichit (Thai province);Phichit;TH-66
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phitsanulok (Thai province);Phitsanulok;TH-65
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phra Nakhon Si Ayutthaya (Thai province);Phra Nakhon Si Ayutthaya;TH-14
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phrae (Thai province);Phrae;TH-54
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phuket (Thai province);Phuket;TH-83
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Prachin Buri (Thai province);Prachin Buri;TH-25
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Prachuap Khiri Khan (Thai province);Prachuap Khiri Khan;TH-77
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Ranong (Thai province);Ranong;TH-85
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Ratchaburi (Thai province);Ratchaburi;TH-70
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Rayong (Thai province);Rayong;TH-21
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Roi Et (Thai province);Roi Et;TH-45
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Sa Kaeo (Thai province);Sa Kaeo;TH-27
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Sakon Nakhon (Thai province);Sakon Nakhon;TH-47
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Samut Prakan (Thai province);Samut Prakan;TH-11
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Samut Sakhon (Thai province);Samut Sakhon;TH-74
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Samut Songkhram (Thai province);Samut Songkhram;TH-75
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Saraburi (Thai province);Saraburi;TH-19
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Satun (Thai province);Satun;TH-91
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Si Sa Ket (Thai province);Si Sa Ket;TH-33
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Sing Buri (Thai province);Sing Buri;TH-17
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Songkhla (Thai province);Songkhla;TH-90
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Sukhothai (Thai province);Sukhothai;TH-64
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Suphan Buri (Thai province);Suphan Buri;TH-72
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Surat Thani (Thai province);Surat Thani;TH-84
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Surin (Thai province);Surin;TH-32
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Tak (Thai province);Tak;TH-63
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Trang (Thai province);Trang;TH-92
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Trat (Thai province);Trat;TH-23
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Ubon Ratchathani (Thai province);Ubon Ratchathani;TH-34
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Udon Thani (Thai province);Udon Thani;TH-41
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Uthai Thani (Thai province);Uthai Thani;TH-61
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Uttaradit (Thai province);Uttaradit;TH-53
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Yala (Thai province);Yala;TH-95
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Yasothon (Thai province);Yasothon;TH-35
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3979;Chiayi  City(Taiwanese city);Chiayi City;TW-CYI
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3979;Chiayi (Taiwanese county);Chiayi;TW-CYQ
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3979;Hsinchu City (Taiwanese city);Hsinchu City;TW-HSZ
@@ -2699,3 +2598,118 @@
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3877;Matabeleland North (Zimbabwean province);Matabeleland North;ZW-MN
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3877;Matabeleland South (Zimbabwean province);Matabeleland South;ZW-MS
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3877;Midlands (Zimbabwean province);Midlands;ZW-MI
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4018;Clipperton (French dependency);Clipperton;FR-CP
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Bakı (Azerbajiani municipality);Bakı;AZ-BA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Gəncə (Azerbajiani municipality);Gəncə;AZ-GA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Lənkəran (Azerbajiani municipality);Lənkəran municipality;AZ-LA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Mingəçevir (Azerbajiani municipality);Mingəçevir;AZ-MI
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Naftalan (Azerbajiani municipality);Naftalan;AZ-NA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Şəki (Azerbajiani municipality);Şəki municipality;AZ-SA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Şirvan (Azerbajiani municipality);Şirvan;AZ-SR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Sumqayıt (Azerbajiani municipality);Sumqayıt;AZ-SM
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Xankəndi (Azerbajiani municipality);Xankəndi;AZ-XA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Yevlax (Azerbajiani municipality);Yevlax municipality;AZ-YE
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Abşeron (Azerbajiani rayon);Abşeron;AZ-ABS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Ağcabədi (Azerbajiani rayon);Ağcabədi;AZ-AGC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Ağdam (Azerbajiani rayon);Ağdam;AZ-AGM
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Ağdaş (Azerbajiani rayon);Ağdaş;AZ-AGS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Ağstafa (Azerbajiani rayon);Ağstafa;AZ-AGA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Ağsu (Azerbajiani rayon);Ağsu;AZ-AGU
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Astara (Azerbajiani rayon);Astara;AZ-AST
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Balakən (Azerbajiani rayon);Balakən;AZ-BAL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Bərdə (Azerbajiani rayon);Bərdə;AZ-BAR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Beyləqan (Azerbajiani rayon);Beyləqan;AZ-BEY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Biləsuvar (Azerbajiani rayon);Biləsuvar;AZ-BIL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Cəbrayıl (Azerbajiani rayon);Cəbrayıl;AZ-CAB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Cəlilabad (Azerbajiani rayon);Cəlilabad;AZ-CAL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Daşkəsən (Azerbajiani rayon);Daşkəsən;AZ-DAS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Füzuli (Azerbajiani rayon);Füzuli;AZ-FUZ
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Gədəbəy (Azerbajiani rayon);Gədəbəy;AZ-GAD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Goranboy (Azerbajiani rayon);Goranboy;AZ-GOR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Göyçay (Azerbajiani rayon);Göyçay;AZ-GOY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Göygöl (Azerbajiani rayon);Göygöl;AZ-GYG
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Hacıqabul (Azerbajiani rayon);Hacıqabul;AZ-HAC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;İmişli (Azerbajiani rayon);İmişli;AZ-IMI
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;İsmayıllı (Azerbajiani rayon);İsmayıllı;AZ-ISM
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Kəlbəcər (Azerbajiani rayon);Kəlbəcər;AZ-KAL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Kürdəmir (Azerbajiani rayon);Kürdəmir;AZ-KUR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Laçın (Azerbajiani rayon);Laçın;AZ-LAC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Lənkəran (Azerbajiani rayon);Lənkəran rayon;AZ-LAN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Lerik (Azerbajiani rayon);Lerik;AZ-LER
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Masallı (Azerbajiani rayon);Masallı;AZ-MAS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Neftçala (Azerbajiani rayon);Neftçala;AZ-NEF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Oğuz (Azerbajiani rayon);Oğuz;AZ-OGU
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Qax (Azerbajiani rayon);Qax;AZ-QAX
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Qazax (Azerbajiani rayon);Qazax;AZ-QAZ
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Qəbələ (Azerbajiani rayon);Qəbələ;AZ-QAB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Qobustan (Azerbajiani rayon);Qobustan;AZ-QOB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Quba (Azerbajiani rayon);Quba;AZ-QBA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Qubadlı (Azerbajiani rayon);Qubadlı;AZ-QBI
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Qusar (Azerbajiani rayon);Qusar;AZ-QUS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Saatlı (Azerbajiani rayon);Saatlı;AZ-SAT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Sabirabad (Azerbajiani rayon);Sabirabad;AZ-SAB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Şabran (Azerbajiani rayon);Şabran;AZ-SBN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Salyan (Azerbajiani rayon);Salyan;AZ-SAL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Şamaxı (Azerbajiani rayon);Şamaxı;AZ-SMI
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Samux (Azerbajiani rayon);Samux;AZ-SMX
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Şəki (Azerbajiani rayon);Şəki rayon;AZ-SAK
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Şəmkir (Azerbajiani rayon);Şəmkir;AZ-SKR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Siyəzən (Azerbajiani rayon);Siyəzən;AZ-SIY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Şuşa (Azerbajiani rayon);Şuşa;AZ-SUS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Tərtər (Azerbajiani rayon);Tərtər;AZ-TAR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Tovuz (Azerbajiani rayon);Tovuz;AZ-TOV
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Ucar (Azerbajiani rayon);Ucar;AZ-UCA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Xaçmaz (Azerbajiani rayon);Xaçmaz;AZ-XAC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Xızı (Azerbajiani rayon);Xızı;AZ-XIZ
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Xocalı (Azerbajiani rayon);Xocalı;AZ-XCI
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Xocavənd (Azerbajiani rayon);Xocavənd;AZ-XVD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Yardımlı (Azerbajiani rayon);Yardımlı;AZ-YAR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Yevlax (Azerbajiani rayon);Yevlax rayon;AZ-YEV
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Zaqatala (Azerbajiani rayon);Zaqatala;AZ-ZAQ
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Zəngilan (Azerbajiani rayon);Zəngilan;AZ-ZAN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4025;Zərdab (Azerbajiani rayon);Zərdab;AZ-ZAR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3983;Midtjylland (Danish region);Midtjylland;DK-81
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3983;Nordjylland (Danish region);Nordjylland;DK-85
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3983;Sjælland (Danish region);Sjælland;DK-83
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3983;Syddanmark (Danish region);Syddanmark;DK-015
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3843;Bissau (Guinea Bissauan autonomous sector);Bissau;GW-BS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Addu City (Maldivian city);Addu City;MV-01
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Male (Maldivian city);Male;MV-MLE
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;North Ari Atoll (Maldivian atol);North Ari Atoll;MV-02
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;South Ari Atoll (Maldivian atol);South Ari Atoll;MV-00
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;South Maalhosmadulu (Maldivian atol);South Maalhosmadulu;MV-20
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;South Nilandhe Atoll (Maldivian atol);South Nilandhe Atoll;MV-17
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;North Nilandhe Atoll (Maldivian atol);North Nilandhe Atoll;MV-14
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;North Huvadhu Atoll (Maldivian atol);North Huvadhu Atoll;MV-27
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;South Huvadhu Atoll (Maldivian atol);South Huvadhu Atoll;MV-28
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Fuvammulah (Maldivian atol);Fuvammulah;MV-29
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;North Thiladhunmathi (Maldivian atol);North Thiladhunmathi;MV-07
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;South Thiladhunmathi (Maldivian atol);South Thiladhunmathi;MV-23
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Male Atoll (Maldivian atol);Male Atoll;MV-26
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Hahdhunmathi (Maldivian atol);Hahdhunmathi;MV-05
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Faadhippolhu (Maldivian atol);Faadhippolhu;MV-03
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Mulaku Atoll (Maldivian atol);Mulaku Atoll;MV-12
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;South Miladhunmadulu (Maldivian atol);South Miladhunmadulu;MV-25
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;North Maalhosmadulu (Maldivian atol);North Maalhosmadulu;MV-13
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;North Miladhunmadulu (Maldivian atol);North Miladhunmadulu;MV-24
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Kolhumadulu (Maldivian atol);Kolhumadulu;MV-08
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3960;Felidhu Atoll (Maldivian atol);Felidhu Atoll;MV-04
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Beograd (Serbian );Beograd;RS-00
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Borski okrug (Serbian );Borski okrug;RS-14
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Braničevski okrug (Serbian city);Braničevski okrug;RS-11
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Jablanički okrug (Serbian district);Jablanički okrug;RS-23
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Kolubarski okrug (Serbian district);Kolubarski okrug;RS-09
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Mačvanski okrug (Serbian district);Mačvanski okrug;RS-08
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Moravički okrug (Serbian district);Moravički okrug;RS-17
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Nišavski okrug (Serbian district);Nišavski okrug;RS-20
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Pčinjski okrug (Serbian district);Pčinjski okrug;RS-24
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Pirotski okrug (Serbian district);Pirotski okrug;RS-22
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Podunavski okrug (Serbian district);Podunavski okrug;RS-10
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Pomoravski okrug (Serbian district);Pomoravski okrug;RS-13
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Rasinski okrug (Serbian district);Rasinski okrug;RS-19
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Raški okrug (Serbian district);Raški okrug;RS-18
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Šumadijski okrug (Serbian district);Šumadijski okrug;RS-12
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Toplički okrug (Serbian district);Toplički okrug;RS-21
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Zaječarski okrug (Serbian district);Zaječarski okrug;RS-15
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Zlatiborski okrug (Serbian district);Zlatiborski okrug;RS-16
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phatthaya (Thai special administrative city);Phatthaya;TH-S
