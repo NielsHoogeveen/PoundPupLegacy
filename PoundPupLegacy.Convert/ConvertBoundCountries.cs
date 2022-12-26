@@ -55,6 +55,7 @@ namespace PoundPupLegacy.Convert
                     Name = reader.GetString("title"),
                     ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
                     CountryId = reader.GetInt32("binding_country_id"),
+                    FileIdFlag = null,
                 };
 
             }

@@ -13,4 +13,5 @@ public record BasicFirstAndSecondLevelSubdivision : FirstAndSecondLevelSubdivisi
     public required string ISO3166_2_Code { get; init; }
     public required string Name { get; init; }
     public required int CountryId { get; init; }
+    public required int? FileIdFlag { get; init; }
 }

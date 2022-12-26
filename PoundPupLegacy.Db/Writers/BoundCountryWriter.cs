@@ -1,19 +1,28 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
 using PoundPupLegacy.Model;
-using System.Data;
 namespace PoundPupLegacy.Db.Writers;
 
 internal class BoundCountryWriter : DatabaseWriter<BoundCountry>, IDatabaseWriter<BoundCountry>
 {
+    private const string ID = "id";
+    private const string BINDING_COUNTRY_ID = "binding_country_id";
     public static DatabaseWriter<BoundCountry> Create(NpgsqlConnection connection)
     {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = $"""INSERT INTO public."bound_country" (id, binding_country_id) VALUES(@id,@binding_country_id)""";
-        command.Parameters.Add("id", NpgsqlDbType.Integer);
-        command.Parameters.Add("binding_country_id", NpgsqlDbType.Integer);
+        var command = CreateInsertStatement(
+            connection,
+            "bound_country",
+            new ColumnDefinition[] {
+                new ColumnDefinition{
+                    Name = ID,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
+                new ColumnDefinition{
+                    Name = BINDING_COUNTRY_ID,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
+            }
+        );
         return new BoundCountryWriter(command);
     }
     private BoundCountryWriter(NpgsqlCommand command) : base(command)
@@ -22,8 +31,8 @@ internal class BoundCountryWriter : DatabaseWriter<BoundCountry>, IDatabaseWrite
 
     internal override void Write(BoundCountry country)
     {
-        _command.Parameters["id"].Value = country.Id;
-        _command.Parameters["binding_country_id"].Value = country.BindingCountryId;
+        WriteValue(country.Id, ID);
+        WriteValue(country.BindingCountryId, BINDING_COUNTRY_ID);
         _command.ExecuteNonQuery();
     }
 }

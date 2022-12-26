@@ -15,4 +15,5 @@ public record CountryAndIntermediateLevelSubdivision : ISOCodedFirstLevelSubdivi
     public required int CountryId { get; init; }
     public required int GlobalRegionId { get; init; }
     public required string Name { get; init; }
+    public required int? FileIdFlag { get; init; }
 }

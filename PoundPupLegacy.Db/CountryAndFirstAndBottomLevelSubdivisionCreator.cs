@@ -10,8 +10,9 @@ public class CountryAndFirstAndBottomLevelSubdivisionCreator : IEntityCreator<Co
     {
 
         using var nodeWriter = NodeWriter.Create(connection);
+        using var documentableWriter = DocumentableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
-        using var politicalEntityWriter = PoliticalEnityWriter.Create(connection);
+        using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
         using var countryWriter = CountryWriter.Create(connection);
         using var topLevelCountryWriter = TopLevelCountryWriter.Create(connection);
         using var subdivisionWriter = SubdivisionWriter.Create(connection);
@@ -26,6 +27,7 @@ public class CountryAndFirstAndBottomLevelSubdivisionCreator : IEntityCreator<Co
         foreach (var country in countries)
         {
             nodeWriter.Write(country);
+            documentableWriter.Write(country);
             geographicalEntityWriter.Write(country);
             politicalEntityWriter.Write(country);
             countryWriter.Write(country);

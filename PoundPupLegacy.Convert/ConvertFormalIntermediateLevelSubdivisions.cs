@@ -26,6 +26,7 @@ namespace PoundPupLegacy.Convert
                     Title = parts[8],
                     Name = parts[9],
                     ISO3166_2_Code = parts[10],
+                    FileIdFlag = null,
                 };
             }
         }

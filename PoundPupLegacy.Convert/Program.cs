@@ -27,7 +27,7 @@ namespace PoundPupLegacy.Convert
                 new NodeType(7, "denomination", "The denomination of an organization"),
                 new NodeType(8, "Hague status", "The hague status of an adoption agency"),
                 new NodeType(9, "document type", "Defines the type of a document"),
-                new NodeType(10, "document inclusion type", "Rules with respect to attachments"),
+                new NodeType(10, "document", "A text based document"),
                 new NodeType(11, "first level global region", "First level subdivision of the world"),
                 new NodeType(12, "secomnd level global region", "Second level subdivision of the world"),
                 new NodeType(13, "basic country", "Countries that don't contain other countries and that are not part of another country"),
@@ -40,8 +40,14 @@ namespace PoundPupLegacy.Convert
                 new NodeType(20, "binding country", "Country that contains other countries"),
                 new NodeType(21, "country and intermediate level subdivision", "Countries that are also first level subdivisions of another country and that do allow further subdivision"),
                 new NodeType(22, "formal intermediate level subdivision", "Formal subdivision of a country that contains second level subdivisions"),
-
+                new NodeType(23, "organization", "A collection of people working together. Therefore a bill or a trip is also regarderd an organization, even though it does not have a formal position as such."),
+                new NodeType(24, "person", "Person"),
+                new NodeType(25, "attachment therapist", "Person who practices attachment therapy"),
+                new NodeType(26, "abuse case", "Abuse case of a child that has been placed by court"),
+                new NodeType(27, "child placement type", "Defined the type of a child placement"),
+                new NodeType(28, "family size", "Defined the type family size"),
             };
+
 
             using var command = postgresqlConnection.CreateCommand();
             command.CommandType = System.Data.CommandType.Text;
@@ -68,8 +74,9 @@ namespace PoundPupLegacy.Convert
                 using var postgresqlconnection = new NpgsqlConnection(ConnectStringPostgresql);
                 mysqlconnection.Open();
                 postgresqlconnection.Open();
-                AddNodeTypes(postgresqlconnection);
                 //MigrateUsers(mysqlconnection, postgresqlconnection);
+                MigrateFiles(mysqlconnection, postgresqlconnection);
+                AddNodeTypes(postgresqlconnection);
                 MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12622, 1, "organization_type");
                 MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12637, 2, "affiliation_type");
                 MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12652, 3, "political_entity_relation_type");
@@ -79,7 +86,6 @@ namespace PoundPupLegacy.Convert
                 MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 39428, 7, "denomination");
                 MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 41212, 8, "hague_status");
                 MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 42416, 9, "document_type");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 42422, 10, "document_inclusion_type");
                 MigrateFirstLevelGlobalRegions(mysqlconnection, postgresqlconnection);
                 MigrateSecondLevelGlobalRegions(mysqlconnection, postgresqlconnection);
                 MigrateBasicCountries(mysqlconnection, postgresqlconnection);
@@ -91,6 +97,14 @@ namespace PoundPupLegacy.Convert
                 MigrateInformalIntermediateLevelSubdivisions(mysqlconnection, postgresqlconnection);
                 MigrateFormalIntermediateLevelSubdivisions(mysqlconnection, postgresqlconnection);
                 MigrateBasicSecondLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                MigrateOrganizations(mysqlconnection, postgresqlconnection);
+                MigratePersons(mysqlconnection, postgresqlconnection);
+                MigrateAttachmentTherapists(mysqlconnection, postgresqlconnection);
+                MigrateLocations(mysqlconnection, postgresqlconnection);
+                MigrateDocuments(mysqlconnection, postgresqlconnection);
+                MigrateChildPlacementTypes(postgresqlconnection);
+                MigrateFamilySizes(postgresqlconnection);
+                MigrateAbuseCases(mysqlconnection, postgresqlconnection);
                 mysqlconnection.Close();
                 postgresqlconnection.Close();
             }

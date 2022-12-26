@@ -58,7 +58,8 @@ internal partial class Program
                 NodeTypeId = 20,
                 IsTerm = true,
                 GlobalRegionId = reader.GetInt32("global_region_id"),
-                ISO3166_1_Code = reader.GetString("iso_3166_1_code")
+                ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
+                FileIdFlag = null,
             };
             yield return country;
 

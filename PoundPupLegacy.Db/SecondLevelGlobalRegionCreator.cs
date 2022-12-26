@@ -9,6 +9,7 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
     public static void Create(IEnumerable<SecondLevelGlobalRegion> nodes, NpgsqlConnection connection)
     {
         using var nodeWriter = NodeWriter.Create(connection);
+        using var documentableWriter = DocumentableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var globalRegionWriter = GlobalRegionWriter.Create(connection);
         using var secondLevelGlobalRegionWriter = SecondLevelGlobalRegionWriter.Create(connection);
@@ -18,6 +19,7 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
         foreach (var node in nodes)
         {
             nodeWriter.Write(node);
+            documentableWriter.Write(node);
             geographicalEntityWriter.Write(node);
             globalRegionWriter.Write(node);
             secondLevelGlobalRegionWriter.Write(node);

@@ -22,7 +22,8 @@ internal partial class Program
             NodeTypeId = 13,
             IsTerm = true,
             GlobalRegionId = 3822,
-            ISO3166_1_Code = "AG"
+            ISO3166_1_Code = "AG",
+            FileIdFlag = null,
         },
         new BasicCountry
         {
@@ -35,7 +36,8 @@ internal partial class Program
             NodeTypeId = 13,
             IsTerm = true,
             GlobalRegionId = 3817,
-            ISO3166_1_Code = "PS"
+            ISO3166_1_Code = "PS",
+            FileIdFlag = null,
         },
         new BasicCountry
         {
@@ -48,7 +50,8 @@ internal partial class Program
             NodeTypeId = 13,
             IsTerm = true,
             GlobalRegionId = 3825,
-            ISO3166_1_Code = "SH"
+            ISO3166_1_Code = "SH",
+            FileIdFlag = null,
         },
         new BasicCountry
         {
@@ -61,7 +64,8 @@ internal partial class Program
             NodeTypeId = 13,
             IsTerm = true,
             GlobalRegionId = 3827,
-            ISO3166_1_Code = "SS"
+            ISO3166_1_Code = "SS",
+            FileIdFlag = null,
         }
     };
 
@@ -149,7 +153,8 @@ internal partial class Program
                 ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                               reader.GetInt32("id") == 4010 ? "RS" :
                               reader.GetInt32("id") == 4014 ? "XK" :
-                              reader.GetString("iso_3166_code")
+                              reader.GetString("iso_3166_code"),
+                FileIdFlag = null,
             };
             yield return country;
 

@@ -9,6 +9,117 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
+        private static IEnumerable<BasicNode> GetChildPlacementTypes()
+        {
+            return new List<BasicNode>
+            {
+                new BasicNode
+                {
+                    Id = 106,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "Adoption",
+                    Status = 1,
+                    NodeTypeId = 27,
+                    IsTerm = true
+                },
+                new BasicNode
+                {
+                    Id = 107,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "Foster care",
+                    Status = 1,
+                    NodeTypeId = 27,
+                    IsTerm = true
+                },
+                new BasicNode
+                {
+                    Id = 108,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "To be adopted",
+                    Status = 1,
+                    NodeTypeId = 27,
+                    IsTerm = true
+                },
+                new BasicNode
+                {
+                    Id = 109,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "Legal Guardianship",
+                    Status = 1,
+                    NodeTypeId = 27,
+                    IsTerm = true
+                },
+                 new BasicNode
+                {
+                    Id = 110,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "Institution",
+                    Status = 1,
+                    NodeTypeId = 27,
+                    IsTerm = true
+                },
+            };
+        }
+        private static IEnumerable<BasicNode> GetFamilySizes()
+        {
+            return new List<BasicNode>
+            {
+                new BasicNode
+                {
+                    Id = 111,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "1 to 4",
+                    Status = 1,
+                    NodeTypeId = 28,
+                    IsTerm = true
+                },
+                new BasicNode
+                {
+                    Id = 112,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "4 to 8",
+                    Status = 1,
+                    NodeTypeId = 28,
+                    IsTerm = true
+                },
+                new BasicNode
+                {
+                    Id = 113,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "8 to 12",
+                    Status = 1,
+                    NodeTypeId = 28,
+                    IsTerm = true
+                },
+                new BasicNode
+                {
+                    Id = 114,
+                    UserId = 1,
+                    Created = DateTime.Now,
+                    Changed = DateTime.Now,
+                    Title = "more than 12",
+                    Status = 1,
+                    NodeTypeId = 28,
+                    IsTerm = true
+                },
+            };
+        }
 
 
         private static BasicNode GetNodeFromReader(MySqlDataReader reader, int nodeTypeId, bool isTerm)
@@ -41,6 +152,15 @@ namespace PoundPupLegacy.Convert
                     WHERE n1.nid  = {categoryId}
                     """;
             MigrateSelectionOptions(mysqlconnection, connection, nodeTypeId, tableName, false, sql);
+        }
+
+        private static void MigrateChildPlacementTypes(NpgsqlConnection connection)
+        {
+            SingleIdEnitityCreator.Create(GetChildPlacementTypes(), "child_placement_type", connection);
+        }
+        private static void MigrateFamilySizes(NpgsqlConnection connection)
+        {
+            SingleIdEnitityCreator.Create(GetFamilySizes(), "family_size", connection);
         }
 
         private static void MigrateSelectionOptions(MySqlConnection mysqlconnection, NpgsqlConnection connection, int nodeTypeId, string tableName, bool isTerm, string sql)

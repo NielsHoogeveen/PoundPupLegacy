@@ -14,4 +14,5 @@ public record BasicSecondLevelSubdivision : SecondLevelSubdivision
     public required string Name { get; init; }
     public required int CountryId { get; init; }
     public required int IntermediateLevelSubdivisionId { get; init; }
+    public required int? FileIdFlag { get; init; }
 }

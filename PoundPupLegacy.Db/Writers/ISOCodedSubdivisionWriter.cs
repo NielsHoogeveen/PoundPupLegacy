@@ -1,21 +1,29 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
 using PoundPupLegacy.Model;
-using System.Data;
 namespace PoundPupLegacy.Db.Writers;
 
 internal class ISOCodedSubdivisionWriter : DatabaseWriter<ISOCodedSubdivision>, IDatabaseWriter<ISOCodedSubdivision>
 {
+    private const string ID = "id";
+    private const string ISO_3166_2_CODE = "iso_3166_2_code";
     public static DatabaseWriter<ISOCodedSubdivision> Create(NpgsqlConnection connection)
     {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = $"""INSERT INTO public."iso_coded_subdivision" (id, iso_3166_2_code) VALUES(@id,@iso_3166_2_code)""";
-        command.Parameters.Add("id", NpgsqlDbType.Integer);
-        command.Parameters.Add("iso_3166_2_code", NpgsqlDbType.Char);
+        var command = CreateInsertStatement(
+            connection,
+            "iso_coded_subdivision",
+            new ColumnDefinition[] {
+                new ColumnDefinition{
+                    Name = ID,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
+                new ColumnDefinition{
+                    Name = ISO_3166_2_CODE,
+                    NpgsqlDbType = NpgsqlDbType.Char
+                },
+            }
+        );
         return new ISOCodedSubdivisionWriter(command);
-
     }
     private ISOCodedSubdivisionWriter(NpgsqlCommand command) : base(command)
     {
@@ -23,8 +31,8 @@ internal class ISOCodedSubdivisionWriter : DatabaseWriter<ISOCodedSubdivision>, 
 
     internal override void Write(ISOCodedSubdivision country)
     {
-        _command.Parameters["id"].Value = country.Id;
-        _command.Parameters["iso_3166_2_code"].Value = country.ISO3166_2_Code;
+        WriteValue(country.Id, ID);
+        WriteValue(country.ISO3166_2_Code, ISO_3166_2_CODE);
         _command.ExecuteNonQuery();
     }
 }

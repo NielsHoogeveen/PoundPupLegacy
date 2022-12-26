@@ -10,6 +10,7 @@ public class InformalIntermediateLevelSubdivisionCreator : IEntityCreator<Inform
     {
 
         using var nodeWriter = NodeWriter.Create(connection);
+        using var documentableWriter = DocumentableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var subdivisionWriter = SubdivisionWriter.Create(connection);
         using var firstLevelSubdivisionWriter = FirstLevelSubdivisionWriter.Create(connection);
@@ -20,6 +21,7 @@ public class InformalIntermediateLevelSubdivisionCreator : IEntityCreator<Inform
         foreach (var subdivision in subdivisions)
         {
             nodeWriter.Write(subdivision);
+            documentableWriter.Write(subdivision);
             geographicalEntityWriter.Write(subdivision);
             subdivisionWriter.Write(subdivision);
             firstLevelSubdivisionWriter.Write(subdivision);

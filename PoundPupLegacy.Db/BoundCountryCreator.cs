@@ -10,8 +10,9 @@ public class BoundCountryCreator : IEntityCreator<BoundCountry>
     {
 
         using var nodeWriter = NodeWriter.Create(connection);
+        using var documentableWriter = DocumentableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
-        using var politicalEntityWriter = PoliticalEnityWriter.Create(connection);
+        using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
         using var countryWriter = CountryWriter.Create(connection);
         using var subdivisionWriter = SubdivisionWriter.Create(connection);
         using var isoCodedSubdivisionWriter = ISOCodedSubdivisionWriter.Create(connection);
@@ -21,6 +22,7 @@ public class BoundCountryCreator : IEntityCreator<BoundCountry>
         foreach (var country in countries)
         {
             nodeWriter.Write(country);
+            documentableWriter.Write(country);
             geographicalEntityWriter.Write(country);
             politicalEntityWriter.Write(country);
             countryWriter.Write(country);

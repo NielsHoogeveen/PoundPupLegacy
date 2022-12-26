@@ -10,6 +10,7 @@ public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegi
     {
 
         using var nodeWriter = NodeWriter.Create(connection);
+        using var documentableWriter = DocumentableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var globalRegionWriter = GlobalRegionWriter.Create(connection);
         using var firstLevelGlobalRegionWriter = FirstLevelGlobalRegionWriter.Create(connection);
@@ -17,6 +18,7 @@ public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegi
         foreach (var node in nodes)
         {
             nodeWriter.Write(node);
+            documentableWriter.Write(node);
             geographicalEntityWriter.Write(node);
             globalRegionWriter.Write(node);
             firstLevelGlobalRegionWriter.Write(node);

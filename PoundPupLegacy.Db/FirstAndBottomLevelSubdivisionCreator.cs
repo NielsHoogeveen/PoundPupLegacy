@@ -10,8 +10,9 @@ public class FirstAndBottomLevelSubdivisionCreator : IEntityCreator<FirstAndBott
     {
 
         using var nodeWriter = NodeWriter.Create(connection);
+        using var documentableWriter = DocumentableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
-        using var politicalEntityWriter = PoliticalEnityWriter.Create(connection);
+        using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
         using var subdivisionWriter = SubdivisionWriter.Create(connection);
         using var isoCodedSubdivisionWriter = ISOCodedSubdivisionWriter.Create(connection);
         using var firstLevelSubdivisionWriter = FirstLevelSubdivisionWriter.Create(connection);
@@ -23,6 +24,7 @@ public class FirstAndBottomLevelSubdivisionCreator : IEntityCreator<FirstAndBott
         foreach (var subdivision in subdivisions)
         {
             nodeWriter.Write(subdivision);
+            documentableWriter.Write(subdivision);
             geographicalEntityWriter.Write(subdivision);
             politicalEntityWriter.Write(subdivision);
             subdivisionWriter.Write(subdivision);

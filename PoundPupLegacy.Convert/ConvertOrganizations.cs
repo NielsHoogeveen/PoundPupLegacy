@@ -1,0 +1,102 @@
+﻿using MySqlConnector;
+using Npgsql;
+using PoundPupLegacy.Db;
+using PoundPupLegacy.Model;
+using System.Data;
+
+namespace PoundPupLegacy.Convert;
+
+internal partial class Program
+{
+    private static List<Organization> GetOrganizations()
+    {
+        return new List<Organization>
+        {
+            new Organization
+            {
+                Id = 105,
+                UserId = 1,
+                Created = DateTime.Now,
+                Changed = DateTime.Now,
+                Title = "Colorado Adoption Center",
+                Status = 1,
+                NodeTypeId = 23,
+                IsTerm = false,
+                WebsiteURL = null,
+                EmailAddress = null,
+                Established = null,
+                Terminated = null,
+                Description = null,
+            }
+        };
+    }
+
+    private static void MigrateOrganizations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    {
+        var organizations = GetOrganizations();
+        foreach (var org in organizations)
+        {
+            if (org.Id == 0)
+            {
+                NodeId++;
+                org.Id = NodeId;
+            }
+        }
+        OrganizationCreator.Create(organizations, connection);
+        OrganizationCreator.Create(ReadOrganizations(mysqlconnection), connection);
+    }
+    private static IEnumerable<Organization> ReadOrganizations(MySqlConnection mysqlconnection)
+    {
+
+        var sql = $"""
+                SELECT
+                    n.nid id,
+                    n.uid user_id,
+                    n.title,
+                    n.`status`,
+                    FROM_UNIXTIME(n.created) created, 
+                    FROM_UNIXTIME(n.changed) `changed`,
+                    23 node_type_id,
+                    CASE WHEN field_related_topic_nid IS NULL THEN FALSE ELSE TRUE END is_topic,
+                    o.field_website_2_url website_url,
+                    FROM_UNIXTIME(o.field_start_date_0_value) established, 
+                    FROM_UNIXTIME(UNIX_TIMESTAMP(o.field_end_date_value)) `terminated`,
+                    o.field_email_address_email email_address,
+                    o.field_description_3_value description
+                FROM node n 
+                JOIN content_type_adopt_orgs o ON o.nid = n.nid AND o.vid = n.vid
+                WHERE n.`type` = 'adopt_orgs'
+                """;
+        using var readCommand = mysqlconnection.CreateCommand();
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = sql;
+
+
+        var reader = readCommand.ExecuteReader();
+
+        while (reader.Read())
+        {
+            yield return new Organization
+            {
+                Id = reader.GetInt32("id"),
+                UserId = reader.GetInt32("user_id"),
+                Created = reader.GetDateTime("created"),
+                Changed = reader.GetDateTime("changed"),
+                Title = reader.GetString("title"),
+                Status = reader.GetInt32("status"),
+                NodeTypeId = reader.GetInt16("node_type_id"),
+                IsTerm = reader.GetBoolean("is_topic"),
+                WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
+                EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
+                Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
+                Established = reader.IsDBNull("established") ? null : reader.GetDateTime("established"),
+                Terminated = reader.IsDBNull("terminated") ? null : reader.GetDateTime("terminated"),
+            };
+
+        }
+        reader.Close();
+    }
+
+
+}

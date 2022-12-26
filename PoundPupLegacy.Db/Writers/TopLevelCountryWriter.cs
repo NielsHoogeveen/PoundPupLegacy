@@ -1,21 +1,35 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
 using PoundPupLegacy.Model;
-using System.Data;
 
 namespace PoundPupLegacy.Db.Writers;
 
 internal class TopLevelCountryWriter : DatabaseWriter<TopLevelCountry>, IDatabaseWriter<TopLevelCountry>
 {
+    private const string ID = "id";
+    private const string ISO_3166_1_CODE = "iso_3166_1_code";
+    private const string GLOBAL_REGION_ID = "global_region_id";
     public static DatabaseWriter<TopLevelCountry> Create(NpgsqlConnection connection)
     {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = $"""INSERT INTO public."top_level_country" (id, iso_3166_1_code, global_region_id) VALUES(@id,@iso_3166_1_code,@global_region_id)""";
-        command.Parameters.Add("id", NpgsqlDbType.Integer);
-        command.Parameters.Add("iso_3166_1_code", NpgsqlDbType.Char);
-        command.Parameters.Add("global_region_id", NpgsqlDbType.Integer);
+        var command = CreateInsertStatement(
+            connection,
+            "top_level_country",
+            new ColumnDefinition[] {
+                new ColumnDefinition{
+                    Name = ID,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
+                new ColumnDefinition{
+                    Name = ISO_3166_1_CODE,
+                    NpgsqlDbType = NpgsqlDbType.Char
+                },
+                new ColumnDefinition{
+                    Name = GLOBAL_REGION_ID,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
+            }
+        );
+
         return new TopLevelCountryWriter(command);
     }
 
@@ -25,9 +39,9 @@ internal class TopLevelCountryWriter : DatabaseWriter<TopLevelCountry>, IDatabas
 
     internal override void Write(TopLevelCountry country)
     {
-        _command.Parameters["id"].Value = country.Id;
-        _command.Parameters["iso_3166_1_code"].Value = country.ISO3166_1_Code;
-        _command.Parameters["global_region_id"].Value = country.GlobalRegionId;
+        WriteValue(country.Id, ID);
+        WriteValue(country.ISO3166_1_Code, ISO_3166_1_CODE);
+        WriteValue(country.GlobalRegionId, GLOBAL_REGION_ID);
         _command.ExecuteNonQuery();
     }
 }

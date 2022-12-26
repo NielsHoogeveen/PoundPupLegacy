@@ -83,7 +83,8 @@ namespace PoundPupLegacy.Convert
                 GlobalRegionId = 3813,
                 CountryId = 3985,
                 ISO3166_1_Code = "AX",
-                ISO3166_2_Code = "FI-01"
+                ISO3166_2_Code = "FI-01",
+                FileIdFlag = null,
             },
             new CountryAndFirstAndBottomLevelSubdivision
             {
@@ -99,7 +100,8 @@ namespace PoundPupLegacy.Convert
                 GlobalRegionId = 3809,
                 CountryId = 4023,
                 ISO3166_1_Code = "CW",
-                ISO3166_2_Code = "NL-CW"
+                ISO3166_2_Code = "NL-CW",
+                FileIdFlag = null,
             },
             new CountryAndFirstAndBottomLevelSubdivision
             {
@@ -115,7 +117,8 @@ namespace PoundPupLegacy.Convert
                 GlobalRegionId = 3809,
                 CountryId = 4023,
                 ISO3166_1_Code = "SX",
-                ISO3166_2_Code = "NL-SX"
+                ISO3166_2_Code = "NL-SX",
+                FileIdFlag = null,
             },
             new CountryAndFirstAndBottomLevelSubdivision
             {
@@ -131,7 +134,8 @@ namespace PoundPupLegacy.Convert
                 GlobalRegionId = 3822,
                 CountryId = 3805,
                 ISO3166_1_Code = "UM",
-                ISO3166_2_Code = "US-UM"
+                ISO3166_2_Code = "US-UM",
+                FileIdFlag = null,
             },
 
         };
@@ -197,7 +201,7 @@ namespace PoundPupLegacy.Convert
                                   reader.GetString("iso_3166_code"),
                     ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
                     CountryId = GetSupervisingCountryId(reader.GetInt32("id")),
-
+                    FileIdFlag = null,
                 };
             }
             reader.Close();

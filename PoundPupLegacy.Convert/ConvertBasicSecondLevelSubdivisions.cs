@@ -8,7 +8,7 @@ namespace PoundPupLegacy.Convert
 {
     internal partial class Program
     {
-        private static int GetIntermediateLevelSubdivisionId(string code, NpgsqlConnection connection)
+        private static int GetSubdivisionId(string code, NpgsqlConnection connection)
         {
             try
             {
@@ -85,7 +85,8 @@ namespace PoundPupLegacy.Convert
                     Title = parts[8],
                     Name = parts[9],
                     ISO3166_2_Code = parts[10],
-                    IntermediateLevelSubdivisionId = GetIntermediateLevelSubdivisionId(int.Parse(parts[7]), parts[11], connection)
+                    IntermediateLevelSubdivisionId = GetIntermediateLevelSubdivisionId(int.Parse(parts[7]), parts[11], connection),
+                    FileIdFlag = null,
                 };
             }
         }
@@ -109,7 +110,8 @@ namespace PoundPupLegacy.Convert
                     Title = parts[8],
                     Name = parts[9],
                     ISO3166_2_Code = parts[10],
-                    IntermediateLevelSubdivisionId = GetIntermediateLevelSubdivisionId(parts[11], connection)
+                    IntermediateLevelSubdivisionId = GetSubdivisionId(parts[11], connection),
+                    FileIdFlag = null,
                 };
             }
         }
@@ -152,7 +154,8 @@ namespace PoundPupLegacy.Convert
                     n2.nid intermediate_level_subdivision_id,
                     3805 country_id,
                     CONCAT('US-', s.field_statecode_value) 
-                    iso_3166_2_code
+                    iso_3166_2_code,
+                    s.field_state_flag_fid file_id_flag
                 FROM node n 
                 JOIN content_type_statefact s ON s.nid = n.nid
                 JOIN category_hierarchy ch ON ch.cid = n.nid
@@ -184,7 +187,8 @@ namespace PoundPupLegacy.Convert
                     IsTerm = true,
                     IntermediateLevelSubdivisionId = reader.GetInt32("intermediate_level_subdivision_id"),
                     CountryId = reader.GetInt32("country_id"),
-                    ISO3166_2_Code = reader.GetString("iso_3166_2_code")
+                    ISO3166_2_Code = reader.GetString("iso_3166_2_code"),
+                    FileIdFlag = reader.IsDBNull("file_id_flag") ? null : reader.GetInt32("file_id_flag"),
                 };
             }
             reader.Close();

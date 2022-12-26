@@ -26,7 +26,8 @@ namespace PoundPupLegacy.Convert
                     CountryId = int.Parse(parts[7]),
                     Title = parts[8],
                     Name = parts[9],
-                    ISO3166_2_Code = parts[10]
+                    ISO3166_2_Code = parts[10],
+                    FileIdFlag = null,
                 };
             }
         }
@@ -371,7 +372,8 @@ namespace PoundPupLegacy.Convert
                     CountryId = reader.GetInt32("id") == 11827 ? 11571 :
                                 reader.GetInt32("id") == 11789 ? 11571 :
                                 reader.GetInt32("country_id"),
-                    ISO3166_2_Code = isoCode
+                    ISO3166_2_Code = isoCode,
+                    FileIdFlag = null,
                 };
 
             }

@@ -388,6 +388,7 @@
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3959;Delhi (Indian union territory);Delhi;IN-DL
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3959;Ladākh (Indian union territory);Ladākh;IN-LA
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3959;Lakshadweep (Indian union territory);Lakshadweep;IN-LD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3959;Telangāna (Indian state);Telangāna;IN-TG
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3959;Puducherry (Indian union territory);Puducherry;IN-PY
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3925;Distrito Capital de Bogotá;Distrito Capital de Bogotá;CO-DC
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3925;Amazonas (Colombian department);Amazonas;CO-AMA
@@ -2713,3 +2714,205 @@
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Zaječarski okrug (Serbian district);Zaječarski okrug;RS-15
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;4010;Zlatiborski okrug (Serbian district);Zlatiborski okrug;RS-16
 0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;3972;Phatthaya (Thai special administrative city);Phatthaya;TH-S
+11616;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bedford (English unitary authority);Bedford;GB-BDF
+11618;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Birmingham (English metropolitan district);Birmingham;GB-BIR
+11614;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Buckinghamshire (English unitary authority);Buckinghamshire;GB-BKM
+11601;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bristol (English unitary authority);Bristol;GB-BST
+11821;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Cambridgeshire (English two-tier county);Cambridgeshire;GB-CAM
+11831;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Cheshire West and Chester (English unitary authority);Cheshire West and Chester;GB-CHW
+11814;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Cumbria (English two-tier county);Cumbria;GB-CMA
+11789;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Cardiff (English unitary authority);Cardiff;GB-CRF
+11811;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Derbyshire (English two-tier county);Derbyshire;GB-DBY
+11790;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Devon (English two-tier county);Devon;GB-DEV
+11820;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Doncaster (English metropolitan district);Doncaster;GB-DNC
+11794;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Dorset (English two-tier county);Dorset;GB-DOR
+11792;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Durham (English unitary authority);Durham;GB-DUR
+11808;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;East Riding of Yorkshire (English unitary authority);East Riding of Yorkshire;GB-ERY
+11788;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Essex (English two-tier county);Essex;GB-ESS
+11818;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;East Sussex (English two-tier county);East Sussex;GB-ESX
+11806;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Gloucestershire (English two-tier county);Gloucestershire;GB-GLS
+11829;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Gwynedd (English unitary authority);Gwynedd;GB-GWN
+11813;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Hampshire (English two-tier county);Hampshire;GB-HAM
+11823;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Hertforshire (English two-tier county);Hertforshire;GB-HRT
+11577;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Isle of Wight (English unitary authority);Isle of Wight;GB-IOW
+11623;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Kent (English two-tier county);Kent;GB-KEN
+11816;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Kingston upon Hull (English unitary authority);Kingston upon Hull;GB-KHL
+11639;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Lancashire (English two-tier county);Lancashire;GB-LAN
+11812;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Leicester (English two-tier county);Leicester;GB-LCE
+11817;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Leeds (English metropolitan district);Leeds;GB-LDS
+11819;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Lincolnshire (English two-tier county);Lincolnshire;GB-LIN
+11598;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Liverpool (English metropolitan district);Liverpool;GB-LIV
+11617;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;London, City of (English city corporation);London, City of;GB-LND
+11810;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Manchester (English metropolitan district);Manchester;GB-MAN
+11568;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Northumberland (English unitary authority);Northumberland;GB-NBL
+11825;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Norfolk (English two-tier county);Norfolk;GB-NFK
+11822;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Nottinghamshire (English two-tier county);Nottinghamshire;GB-NTT
+11824;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;North Yorkshire (English two-tier county);North Yorkshire;GB-NYK
+11787;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Oxfordshire (English two-tier county);Oxfordshire;GB-OXF
+11828;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Peterborough (English unitary authority);Peterborough;GB-PTE
+11836;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Rutland (English unitary authority);Rutland;GB-RUT
+11628;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Suffolk (English two-tier county);Suffolk;GB-SFK
+11793;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Sheffield (English metropolitan district);Sheffield;GB-SHF
+11834;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Shropshire (English unitary authority);Shropshire;GB-SHR
+11832;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Somerset (English two-tier county);Somerset;GB-SOM
+11791;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Surrey (English two-tier county);Surrey;GB-SRY
+11795;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Staffordshire (English two-tier county);Staffordshire;GB-STS
+11827;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Vale of Glamorgan (English unitary authority);Vale of Glamorgan;GB-VGL
+11826;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Warwickshire (English two-tier county);Warwickshire;GB-WAR
+11830;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;West Berkshire (English unitary authority);West Berkshire;GB-WBK
+11807;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Wiltshire (English unitary authority);Wiltshire;GB-WIL
+11635;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Wolverhampton (English metropolitan district);Wolverhampton;GB-WLV
+11620;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Worcestershire (English two-tier county);Worcestershire;GB-WOR
+11809;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;West Sussex (English two-tier county);West Sussex;GB-WSX
+11610;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;York (English unitary authority);York;GB-YOR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bath and North East Somerset (English unitary authority);Bath and North East Somerset;GB-ABC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Blackburn with Darwen (English unitary authority);Blackburn with Darwen;GB-ABD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bournemouth, Christchurch and Poole (English unitary authority);Bournemouth, Christchurch and Poole;GB-ABE
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Barking and Dagenham (English London borough);Barking and Dagenham;GB-AGB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Brent (English London borough);Brent;GB-AGY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bexley (English London borough);Bexley;GB-AND
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Barnet (English London borough);Barnet;GB-ANN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Brighton and Hove (English unitary authority);Brighton and Hove;GB-ANS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Barnsley (English metropolitan district);Barnsley;GB-BAS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bolton (English metropolitan district);Bolton;GB-BBD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Blackpool (English unitary authority);Blackpool;GB-BCP
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bracknell Forest (English unitary authority);Bracknell Forest;GB-BDG
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bradford (English metropolitan district);Bradford;GB-BEN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bromley (English London borough);Bromley;GB-BEX
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Bury (English metropolitan district);Bury;GB-BFS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Central Bedfordshire (English unitary authority);Central Bedfordshire;GB-BGE
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Cheshire East (English unitary authority);Cheshire East;GB-BGW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Calderdale (English metropolitan district);Calderdale;GB-BNE
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Camden (English London borough);Camden;GB-BNH
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Cornwall (English unitary authority);Cornwall;GB-BNS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Coventry (English metropolitan district);Coventry;GB-BOL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Croydon (English London borough);Croydon;GB-BPL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Darlington (English unitary authority);Darlington;GB-BRC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Derby (English unitary authority);Derby;GB-BRD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Dudley (English metropolitan district);Dudley;GB-BRY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Ealing (English London borough);Ealing;GB-BUR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Enfield (English London borough);Enfield;GB-CAY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Gateshead (English metropolitan district);Gateshead;GB-CBF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Greenwich (English London borough);Greenwich;GB-CCG
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Halton (English unitary authority);Halton;GB-CGN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Havering (English London borough);Havering;GB-CHE
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Hackney (English London borough);Hackney;GB-CLD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Herefordshire (English unitary authority);Herefordshire;GB-CLK
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Hillingdon (English London borough);Hillingdon;GB-CMD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Hammersmith and Fulham (English London borough);Hammersmith and Fulham;GB-CMN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Hounslow (English London borough);Hounslow;GB-CON
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Hartlepool (English unitary authority);Hartlepool;GB-COV
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Harrow (English London borough);Harrow;GB-CRY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Haringey (English London borough);Haringey;GB-CWY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Isles of Scilly (English unitary authority);Isles of Scilly;GB-DAL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Islington (English London borough);Islington;GB-DEN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Kensington and Chelsea (English London borough);Kensington and Chelsea;GB-DER
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Kirklees (English metropolitan district);Kirklees;GB-DGY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Kingston upon Thames (English London borough);Kingston upon Thames;GB-DND
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Knowsley (English metropolitan district);Knowsley;GB-DRS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Lambeth (English London borough);Lambeth;GB-DUD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Leicestershire (English two-tier county);Leicestershire;GB-EAL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Lewisham (English London borough);Lewisham;GB-EAY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Luton (English unitary authority);Luton;GB-EDH
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Middlesbrough (English unitary authority);Middlesbrough;GB-EDU
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Medway (English unitary authority);Medway;GB-ELN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Milton Keynes (English unitary authority);Milton Keynes;GB-ELS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Merton (English London borough);Merton;GB-ENF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;North East Lincolnshire (English unitary authority);North East Lincolnshire;GB-ERW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Newcastle upon Tyne (English metropolitan district);Newcastle upon Tyne;B-FAL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Nottingham (English unitary authority);Nottingham;GB-FIF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;North Lincolnshire (English unitary authority);North Lincolnshire;GB-FLN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;North Northamptonshire (English unitary authority);North Northamptonshire;GB-FMO
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;North Somerset (English unitary authority);North Somerset;GB-GAT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;North Tyneside (English metropolitan district);North Tyneside;GB-GLG
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Newham (English London borough);Newham;GB-GRE
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Oldham (English metropolitan district);Oldham;GB-HAL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Plymouth (English unitary authority);Plymouth;GB-HAV
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Portsmouth (English unitary authority);Portsmouth;GB-HCK
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Redcar and Cleveland (English unitary authority);Redcar and Cleveland;GB-HEF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Rochdale (English metropolitan district);Rochdale;GB-HIL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Redbridge (English London borough);Redbridge;GB-HLD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Reading (English unitary authority);Reading;GB-HMF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Richmond upon Thames (English London borough);Richmond upon Thames;GB-HNS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Rotherham (English metropolitan district);Rotherham;GB-HPL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Sandwell (English metropolitan district);Sandwell;GB-HRW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Sefton (English metropolitan district);Sefton;GB-HRY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;South Gloucestershire (English unitary authority);South Gloucestershire;GB-IOS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;St. Helens (English metropolitan district);St. Helens;GB-ISL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Stockport (English metropolitan district);Stockport;GB-IVC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Salford (English metropolitan district);Salford;GB-KEC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Slough (English unitary authority);Slough;GB-KIR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Sunderland (English metropolitan district);Sunderland;GB-KTT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Solihull (English metropolitan district);Solihull;GB-KWL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Southend-on-Sea (English unitary authority);Southend-on-Sea;GB-LBC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Stoke-on-Trent (English unitary authority);Stoke-on-Trent;GB-LBH
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Southampton (English unitary authority);Southampton;GB-LEC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Sutton (English London borough);Sutton;GB-LEW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Stockton-on-Tees (English unitary authority);Stockton-on-Tees;GB-LUT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;South Tyneside (English metropolitan district);South Tyneside;GB-MDB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Swindon (English unitary authority);Swindon;GB-MDW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Southwark (English London borough);Southwark;GB-MEA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Tameside (English metropolitan district);Tameside;GB-MIK
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Telford and Wrekin (English unitary authority);Telford and Wrekin;GB-MLN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Thurrock (English unitary authority);Thurrock;GB-MON
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Torbay (English unitary authority);Torbay;GB-MRT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Trafford (English metropolitan district);Trafford;GB-MRY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Tower Hamlets (English London borough);Tower Hamlets;GB-MTY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Waltham Forest (English London borough);Waltham Forest;GB-MUL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Wigan (English metropolitan district);Wigan;GB-NAY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Wakefield (English metropolitan district);Wakefield;GB-NEL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Walsall (English metropolitan district);Walsall;GB-NET
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Wirral (English metropolitan district);Wirral;GB-NGM
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Warrington (English unitary authority);Warrington;GB-NLK
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11570;Westminster (English London borough);Westminster;GB-NLN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Aberdeenshire (Scottish council area);Aberdeenshire;GB-NMD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Aberdeen City (Scottish council area);Aberdeen City;GB-NNH
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Argyll and Bute (Scottish council area);Argyll and Bute;GB-NSM
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Angus (Scottish council area);Angus;GB-NTL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Clackmannanshire (Scottish council area);Clackmannanshire;GB-NTY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Dumfries and Galloway (Scottish council area);Dumfries and Galloway;GB-NWM
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Dundee City (Scottish council area);Dundee City;GB-NWP
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;East Ayrshire (Scottish council area);East Ayrshire;GB-OLD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Edinburgh, City of (Scottish council area);Edinburgh, City of;GB-ORK
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;East Dunbartonshire (Scottish council area);East Dunbartonshire;GB-PEM
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;East Lothian (Scottish council area);East Lothian;GB-PKN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Eilean Siar (Scottish council area);Eilean Siar;GB-PLY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;East Renfrewshire (Scottish council area);East Renfrewshire;GB-POR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Falkirk (Scottish council area);Falkirk;GB-POW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Fife (Scottish council area);Fife;GB-RCC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Glasgow City (Scottish council area);Glasgow City;GB-RCH
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Highland (Scottish council area);Highland;GB-RCT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Inverclyde (Scottish council area);Inverclyde;GB-RDB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Midlothian (Scottish council area);Midlothian;GB-RDG
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Moray (Scottish council area);Moray;GB-RFW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;North Ayrshire (Scottish council area);North Ayrshire;GB-RIC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;North Lanarkshire (Scottish council area);North Lanarkshire;GB-ROT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Orkney Islands (Scottish council area);Orkney Islands;GB-SAW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Perth and Kinross (Scottish council area);Perth and Kinross;GB-SAY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Renfrewshire (Scottish council area);Renfrewshire;GB-SCB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;South Ayrshire (Scottish council area);South Ayrshire;GB-SFT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Scottish Borders (Scottish council area);Scottish Borders;GB-SGC
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;South Lanarkshire (Scottish council area);South Lanarkshire;GB-SHN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Stirling (Scottish council area);Stirling;GB-SKP
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;West Dunbartonshire (Scottish council area);West Dunbartonshire;GB-SLF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;West Lothian (Scottish council area);West Lothian;GB-SLG
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11569;Shetland Islands (Scottish council area);Shetland Islands;GB-SLK
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Isle of Anglesey (Welsh unitary authority);Isle of Anglesey;GB-SND
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Bridgend (Welsh unitary authority);Bridgend;GB-SOL
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Blaenau Gwent (Welsh unitary authority);Blaenau Gwent;GB-SOS
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Caerphilly (Welsh unitary authority);Caerphilly;GB-STE
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Ceredigion [Sir Ceredigion] (Welsh unitary authority);Ceredigion [Sir Ceredigion];GB-STG
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Carmarthenshire (Welsh unitary authority);Carmarthenshire;GB-STH
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Conwy (Welsh unitary authority);Conwy;GB-STN
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Denbighshire (Welsh unitary authority);Denbighshire;GB-STT
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Flintshire (Welsh unitary authority);Flintshire;GB-STY
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Monmouthshire (Welsh unitary authority);Monmouthshire;GB-SWA
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Merthyr Tydfil (Welsh unitary authority);Merthyr Tydfil;GB-SWD
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Neath Port Talbot (Welsh unitary authority);Neath Port Talbot;GB-SWK
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Newport (Welsh unitary authority);Newport;GB-TAM
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Pembrokeshire (Welsh unitary authority);Pembrokeshire;GB-TFW
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Powys (Welsh unitary authority);Powys;GB-THR
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Rhondda Cynon Taff (Welsh unitary authority);Rhondda Cynon Taff;GB-TOB
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Swansea (Welsh unitary authority);Swansea;GB-TOF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Torfaen [Tor-faen] (Welsh unitary authority);Torfaen [Tor-faen];GB-TRF
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;17;1;1;11571;Wrexham (Welsh unitary authority);Wrexham;GB-TWH

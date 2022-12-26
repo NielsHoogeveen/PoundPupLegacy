@@ -1,18 +1,26 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
 using PoundPupLegacy.Model;
-using System.Data;
+
 namespace PoundPupLegacy.Db.Writers;
 
 internal class SingleIdWriter : DatabaseWriter<int>
 {
+
+    internal const string ID = "id";
+
     internal static NpgsqlCommand CreateSingleIdCommand(string tableName, NpgsqlConnection connection)
     {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = $"""INSERT INTO public."{tableName}" (id) VALUES(@id)""";
-        command.Parameters.Add("id", NpgsqlDbType.Integer);
+        var command = CreateInsertStatement(
+            connection,
+            tableName,
+            new ColumnDefinition[] {
+                new ColumnDefinition{
+                    Name = ID,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
+            }
+        );
         return command;
     }
 
@@ -28,20 +36,19 @@ internal class SingleIdWriter : DatabaseWriter<int>
 
     internal override void Write(int id)
     {
-        _command.Parameters["id"].Value = id;
+        WriteValue(id, ID);
         _command.ExecuteNonQuery();
     }
 }
 internal class SingleIdWriter<T> : DatabaseWriter<T> where T : Node
 {
-
     internal SingleIdWriter(NpgsqlCommand command) : base(command)
     {
     }
 
     internal override void Write(T node)
     {
-        _command.Parameters["id"].Value = node.Id;
+        WriteValue(node.Id, SingleIdWriter.ID);
         _command.ExecuteNonQuery();
     }
 }

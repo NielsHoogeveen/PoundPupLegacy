@@ -1,20 +1,30 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
 using PoundPupLegacy.Model;
-using System.Data;
 
 namespace PoundPupLegacy.Db.Writers;
 
 internal class TermHierarchyWriter : DatabaseWriter<TermHierarchy>, IDatabaseWriter<TermHierarchy>
 {
+    private const string TERM_ID_PARENT = "term_id_parent";
+    private const string TERM_ID_CHILD = "term_id_child";
     public static DatabaseWriter<TermHierarchy> Create(NpgsqlConnection connection)
     {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = $"""INSERT INTO public."term_hierarchy" (term_id_parent, term_id_child) VALUES(@term_id_parent,@term_id_child)""";
-        command.Parameters.Add("term_id_parent", NpgsqlDbType.Integer);
-        command.Parameters.Add("term_id_child", NpgsqlDbType.Integer);
+        var command = CreateInsertStatement(
+            connection,
+            "term_hierarchy",
+            new ColumnDefinition[] {
+                new ColumnDefinition{
+                    Name = TERM_ID_PARENT,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
+                new ColumnDefinition{
+                    Name = TERM_ID_CHILD,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
+            }
+        );
+
         return new TermHierarchyWriter(command);
 
     }
@@ -24,8 +34,8 @@ internal class TermHierarchyWriter : DatabaseWriter<TermHierarchy>, IDatabaseWri
 
     internal override void Write(TermHierarchy termHierarchy)
     {
-        _command.Parameters["term_id_parent"].Value = termHierarchy.ParentId;
-        _command.Parameters["term_id_child"].Value = termHierarchy.ChildId;
+        WriteValue(termHierarchy.ParentId, TERM_ID_PARENT);
+        WriteValue(termHierarchy.ChildId, TERM_ID_CHILD);
         _command.ExecuteNonQuery();
     }
 }
