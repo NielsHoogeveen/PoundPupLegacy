@@ -11,6 +11,7 @@ public class CountryAndFirstAndBottomLevelSubdivisionCreator : IEntityCreator<Co
 
         using var nodeWriter = NodeWriter.Create(connection);
         using var documentableWriter = DocumentableWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
         using var countryWriter = CountryWriter.Create(connection);
@@ -28,6 +29,7 @@ public class CountryAndFirstAndBottomLevelSubdivisionCreator : IEntityCreator<Co
         {
             nodeWriter.Write(country);
             documentableWriter.Write(country);
+            termWriter.Write(country);
             geographicalEntityWriter.Write(country);
             politicalEntityWriter.Write(country);
             countryWriter.Write(country);

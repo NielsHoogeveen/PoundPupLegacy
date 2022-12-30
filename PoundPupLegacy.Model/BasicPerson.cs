@@ -9,9 +9,9 @@ public record BasicPerson : Person
     public required string Title { get; init; }
     public required int Status { get; init; }
     public required int NodeTypeId { get; init; }
-    public required bool IsTerm { get; init; }
     public required DateTime? DateOfBirth { get; init; }
     public required DateTime? DateOfDeath { get; init; }
     public required int? FileIdPortrait { get; init; }
+    public required bool IsTopic { get; init; }
 
 }

@@ -46,6 +46,15 @@ namespace PoundPupLegacy.Convert
                 new NodeType(26, "abuse case", "Abuse case of a child that has been placed by court"),
                 new NodeType(27, "child placement type", "Defined the type of a child placement"),
                 new NodeType(28, "family size", "Defined the type family size"),
+                new NodeType(29, "child trafficking case", "Trafficking case of children to be adopted"),
+                new NodeType(30, "coerced adoption case", "Adoption that involved coercion"),
+                new NodeType(31, "deportation case", "Adoptees deported to country of origin"),
+                new NodeType(32, "father's rights violation case", "Adoptions where the rights of the biological father were violated"),
+                new NodeType(33, "wrongful medication case", "Child placement situation where wrongful medication is present"),
+                new NodeType(34, "wrongful removal case", "Children wrongfully removed from their family"),
+                new NodeType(35, "blog post", "Blog post"),
+                new NodeType(36, "article", "Article"),
+                new NodeType(37, "discussion", "Discussion"),
             };
 
 
@@ -75,7 +84,7 @@ namespace PoundPupLegacy.Convert
                 mysqlconnection.Open();
                 postgresqlconnection.Open();
                 //MigrateUsers(mysqlconnection, postgresqlconnection);
-                MigrateFiles(mysqlconnection, postgresqlconnection);
+                //MigrateFiles(mysqlconnection, postgresqlconnection);
                 AddNodeTypes(postgresqlconnection);
                 MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12622, 1, "organization_type");
                 MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12637, 2, "affiliation_type");
@@ -105,6 +114,14 @@ namespace PoundPupLegacy.Convert
                 MigrateChildPlacementTypes(postgresqlconnection);
                 MigrateFamilySizes(postgresqlconnection);
                 MigrateAbuseCases(mysqlconnection, postgresqlconnection);
+                MigrateChildTraffickingCases(mysqlconnection, postgresqlconnection);
+                MigrateAdoptionExports(mysqlconnection, postgresqlconnection);
+                MigrateCoercedAdoptionCases(mysqlconnection, postgresqlconnection);
+                MigrateDeportationCases(mysqlconnection, postgresqlconnection);
+                MigrateFathersRightsViolationCases(mysqlconnection, postgresqlconnection);
+                MigrateWrongfulMedicationCases(mysqlconnection, postgresqlconnection);
+                MigrateWrongfulRemovalCases(mysqlconnection, postgresqlconnection);
+                MigrateSimpleTextPosts(mysqlconnection, postgresqlconnection);
                 mysqlconnection.Close();
                 postgresqlconnection.Close();
             }

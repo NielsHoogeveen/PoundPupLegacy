@@ -9,7 +9,6 @@ namespace PoundPupLegacy.Convert;
 internal partial class Program
 {
 
-
     private static void MigratePersons(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
         PersonCreator.Create(ReadPersons(mysqlconnection), connection);
@@ -64,7 +63,7 @@ internal partial class Program
                 Title = reader.GetString("title"),
                 Status = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt16("node_type_id"),
-                IsTerm = reader.GetBoolean("is_topic"),
+                IsTopic = reader.GetBoolean("is_topic"),
                 DateOfBirth = reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth"),
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
                 FileIdPortrait = reader.IsDBNull("file_id_portrait") ? null : reader.GetInt32("file_id_portrait"),
@@ -73,6 +72,4 @@ internal partial class Program
         }
         reader.Close();
     }
-
-
 }

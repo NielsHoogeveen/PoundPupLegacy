@@ -19,7 +19,7 @@ namespace PoundPupLegacy.Convert
                     Id = int.Parse(parts[0]),
                     Created = DateTime.Parse(parts[1]),
                     Changed = DateTime.Parse(parts[2]),
-                    IsTerm = parts[3] == "True",
+                    VocabularyId = 4126,
                     NodeTypeId = int.Parse(parts[4]),
                     Status = int.Parse(parts[5]),
                     UserId = int.Parse(parts[6]),
@@ -368,7 +368,7 @@ namespace PoundPupLegacy.Convert
                     Name = GetSubdivisionName(reader.GetInt32("id"), reader.GetString("title"), isoCode),
                     Status = reader.GetInt32("status"),
                     NodeTypeId = 17,
-                    IsTerm = true,
+                    VocabularyId = 4126,
                     CountryId = reader.GetInt32("id") == 11827 ? 11571 :
                                 reader.GetInt32("id") == 11789 ? 11571 :
                                 reader.GetInt32("country_id"),

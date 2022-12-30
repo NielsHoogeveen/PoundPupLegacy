@@ -18,7 +18,7 @@ namespace PoundPupLegacy.Convert
                     Id = int.Parse(parts[0]),
                     Created = DateTime.Parse(parts[1]),
                     Changed = DateTime.Parse(parts[2]),
-                    IsTerm = parts[3] == "True",
+                    VocabularyId = 4126,
                     NodeTypeId = int.Parse(parts[4]),
                     Status = int.Parse(parts[5]),
                     UserId = int.Parse(parts[6]),

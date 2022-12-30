@@ -9,7 +9,6 @@ public record AbuseCase : Case
     public required string Title { get; init; }
     public required int Status { get; init; }
     public required int NodeTypeId { get; init; }
-    public required bool IsTerm { get; init; }
     public required string Description { get; init; }
     public required DateTimeRange? Date { get; init; }
     public required int ChildPlacementTypeId { get; init; }
@@ -17,4 +16,5 @@ public record AbuseCase : Case
     public required bool? HomeschoolingInvolved { get; init; }
     public required bool? FundamentalFaithInvolved { get; init; }
     public required bool? DisabilitiesInvolved { get; init; }
+    public required bool IsTopic { get; init; }
 }

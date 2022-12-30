@@ -19,7 +19,7 @@ namespace PoundPupLegacy.Convert
                     Id = int.Parse(parts[0]),
                     Created = DateTime.Parse(parts[1]),
                     Changed = DateTime.Parse(parts[2]),
-                    IsTerm = parts[3] == "True",
+                    VocabularyId = 4126,
                     NodeTypeId = int.Parse(parts[4]),
                     Status = int.Parse(parts[5]),
                     UserId = int.Parse(parts[6]),
@@ -80,9 +80,9 @@ namespace PoundPupLegacy.Convert
                     Title = $"{reader.GetString("title")} (region of the USA)",
                     Status = reader.GetInt32("status"),
                     NodeTypeId = 18,
-                    IsTerm = true,
                     CountryId = reader.GetInt32("country_id"),
                     Name = reader.GetString("title"),
+                    VocabularyId = 4126,
                 };
             }
             reader.Close();

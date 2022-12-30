@@ -56,10 +56,18 @@ internal partial class Program
                 Title = reader.GetString("title"),
                 Status = reader.GetInt32("status"),
                 NodeTypeId = 20,
-                IsTerm = true,
+                VocabularyId = 4126,
+                Name = reader.GetString("title"),
                 GlobalRegionId = reader.GetInt32("global_region_id"),
                 ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
                 FileIdFlag = null,
+                HagueStatusId = 41215,
+                ResidencyRequirements = null,
+                AgeRequirements = null,
+                HealthRequirements = null,
+                IncomeRequirements = null,
+                MarriageRequirements = null,
+                OtherRequirements = null,
             };
             yield return country;
 

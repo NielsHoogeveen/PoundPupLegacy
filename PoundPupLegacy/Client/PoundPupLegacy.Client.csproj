@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj" />
     <ProjectReference Include="..\Shared\PoundPupLegacy.Shared.csproj" />
   </ItemGroup>
 

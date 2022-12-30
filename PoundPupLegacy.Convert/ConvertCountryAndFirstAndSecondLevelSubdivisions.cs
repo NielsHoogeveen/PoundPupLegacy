@@ -13,7 +13,7 @@ namespace PoundPupLegacy.Convert
         {
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = 0,
+                Id = 4097,
                 Title = "Saint Barthélemy",
                 Name = "Saint Barthélemy",
                 Status = 1,
@@ -21,16 +21,24 @@ namespace PoundPupLegacy.Convert
                 Created = DateTime.Now,
                 Changed = DateTime.Now,
                 UserId = 1,
-                IsTerm = true,
+                VocabularyId = 4126,
                 GlobalRegionId = 3809,
                 CountryId = 4018,
                 ISO3166_1_Code = "BL",
                 ISO3166_2_Code = "FR-BL",
                 FileIdFlag = null,
+                HagueStatusId = 41213,
+                ResidencyRequirements = null,
+                AgeRequirements = null,
+                HealthRequirements = null,
+                IncomeRequirements = null,
+                MarriageRequirements = null,
+                OtherRequirements = null,
+
             },
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = 0,
+                Id = 4102,
                 Title = "Saint Martin",
                 Name = "Saint Martin",
                 Status = 1,
@@ -38,16 +46,23 @@ namespace PoundPupLegacy.Convert
                 Created = DateTime.Now,
                 Changed = DateTime.Now,
                 UserId = 1,
-                IsTerm = true,
+                VocabularyId = 4126,
                 GlobalRegionId = 3809,
                 CountryId = 4018,
                 ISO3166_1_Code = "MF",
                 ISO3166_2_Code = "FR-MF",
                 FileIdFlag = null,
+                HagueStatusId = 41213,
+                ResidencyRequirements = null,
+                AgeRequirements = null,
+                HealthRequirements = null,
+                IncomeRequirements = null,
+                MarriageRequirements = null,
+                OtherRequirements = null,
             },
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = 0,
+                Id = 4106,
                 Title = "French Southern Territories",
                 Name = "French Southern Territories",
                 Status = 1,
@@ -55,12 +70,19 @@ namespace PoundPupLegacy.Convert
                 Created = DateTime.Now,
                 Changed = DateTime.Now,
                 UserId = 1,
-                IsTerm = true,
+                VocabularyId = 4126,
                 GlobalRegionId = 3828,
                 CountryId = 4018,
                 ISO3166_1_Code = "TF",
                 ISO3166_2_Code = "FR-TF",
                 FileIdFlag = null,
+                HagueStatusId = 41213,
+                ResidencyRequirements = null,
+                AgeRequirements = null,
+                HealthRequirements = null,
+                IncomeRequirements = null,
+                MarriageRequirements = null,
+                OtherRequirements = null,
             },
 
         };
@@ -129,7 +151,7 @@ namespace PoundPupLegacy.Convert
                             reader.GetString("title"),
                     Status = reader.GetInt32("status"),
                     NodeTypeId = 16,
-                    IsTerm = true,
+                    VocabularyId = 4126,
                     GlobalRegionId = reader.GetInt32("continental_region_id"),
                     ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                                   reader.GetInt32("id") == 4010 ? "RS" :
@@ -138,6 +160,13 @@ namespace PoundPupLegacy.Convert
                     ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
                     CountryId = GetSupervisingCountryId(reader.GetInt32("id")),
                     FileIdFlag = null,
+                    HagueStatusId = 41213,
+                    ResidencyRequirements = null,
+                    AgeRequirements = null,
+                    HealthRequirements = null,
+                    IncomeRequirements = null,
+                    MarriageRequirements = null,
+                    OtherRequirements = null,
                 };
             }
             reader.Close();

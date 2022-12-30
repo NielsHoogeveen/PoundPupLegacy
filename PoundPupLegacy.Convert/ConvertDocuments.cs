@@ -132,7 +132,6 @@ internal partial class Program
                 Title = reader.GetString("title"),
                 Status = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt16("node_type_id"),
-                IsTerm = reader.GetBoolean("is_topic"),
                 PublicationDate = publicationDate,
                 SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
                 Text = reader.GetString("text"),

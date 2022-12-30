@@ -50,12 +50,19 @@ namespace PoundPupLegacy.Convert
                     Title = reader.GetString("title"),
                     Status = reader.GetInt32("status"),
                     NodeTypeId = 14,
-                    IsTerm = true,
+                    VocabularyId = 4126,
                     BindingCountryId = reader.GetInt32("binding_country_id"),
                     Name = reader.GetString("title"),
                     ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
                     CountryId = reader.GetInt32("binding_country_id"),
                     FileIdFlag = null,
+                    HagueStatusId = 41215,
+                    ResidencyRequirements = null,
+                    AgeRequirements = null,
+                    HealthRequirements = null,
+                    IncomeRequirements = null,
+                    MarriageRequirements = null,
+                    OtherRequirements = null,
                 };
 
             }

@@ -22,7 +22,6 @@ namespace PoundPupLegacy.Convert
                     Title = "Adoption",
                     Status = 1,
                     NodeTypeId = 27,
-                    IsTerm = true
                 },
                 new BasicNode
                 {
@@ -33,7 +32,6 @@ namespace PoundPupLegacy.Convert
                     Title = "Foster care",
                     Status = 1,
                     NodeTypeId = 27,
-                    IsTerm = true
                 },
                 new BasicNode
                 {
@@ -44,7 +42,6 @@ namespace PoundPupLegacy.Convert
                     Title = "To be adopted",
                     Status = 1,
                     NodeTypeId = 27,
-                    IsTerm = true
                 },
                 new BasicNode
                 {
@@ -55,7 +52,6 @@ namespace PoundPupLegacy.Convert
                     Title = "Legal Guardianship",
                     Status = 1,
                     NodeTypeId = 27,
-                    IsTerm = true
                 },
                  new BasicNode
                 {
@@ -66,7 +62,6 @@ namespace PoundPupLegacy.Convert
                     Title = "Institution",
                     Status = 1,
                     NodeTypeId = 27,
-                    IsTerm = true
                 },
             };
         }
@@ -83,7 +78,6 @@ namespace PoundPupLegacy.Convert
                     Title = "1 to 4",
                     Status = 1,
                     NodeTypeId = 28,
-                    IsTerm = true
                 },
                 new BasicNode
                 {
@@ -94,7 +88,6 @@ namespace PoundPupLegacy.Convert
                     Title = "4 to 8",
                     Status = 1,
                     NodeTypeId = 28,
-                    IsTerm = true
                 },
                 new BasicNode
                 {
@@ -105,7 +98,6 @@ namespace PoundPupLegacy.Convert
                     Title = "8 to 12",
                     Status = 1,
                     NodeTypeId = 28,
-                    IsTerm = true
                 },
                 new BasicNode
                 {
@@ -116,13 +108,12 @@ namespace PoundPupLegacy.Convert
                     Title = "more than 12",
                     Status = 1,
                     NodeTypeId = 28,
-                    IsTerm = true
                 },
             };
         }
 
 
-        private static BasicNode GetNodeFromReader(MySqlDataReader reader, int nodeTypeId, bool isTerm)
+        private static BasicNode GetNodeFromReader(MySqlDataReader reader, int nodeTypeId)
         {
             return new BasicNode
             {
@@ -133,7 +124,6 @@ namespace PoundPupLegacy.Convert
                 Title = reader.GetString("title"),
                 Status = reader.GetInt32("status"),
                 NodeTypeId = nodeTypeId,
-                IsTerm = isTerm
             };
         }
         private static void MigrateSelectionOptions(MySqlConnection mysqlconnection, NpgsqlConnection connection, int categoryId, int nodeTypeId, string tableName)
@@ -179,7 +169,7 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
-                yield return GetNodeFromReader(reader, nodeTypeId, isTerm);
+                yield return GetNodeFromReader(reader, nodeTypeId);
 
             }
             reader.Close();

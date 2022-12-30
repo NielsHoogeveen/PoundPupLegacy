@@ -1,9 +1,30 @@
 ﻿@page "/"
+@using PoundPupLegacy.ViewModel
+@inject HttpClient Http
 
 <PageTitle>Index</PageTitle>
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if(user is not null)
+    {
+        <h1>Hello, @user.Name</h1>
 
-<h1>Hello, world!</h1>
+        @((MarkupString)@user.AnimalWithin)
 
-Welcome to your new app.
+        
+    }
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private User? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await Http.GetFromJsonAsync<User>("Home");
+    }
+}
+

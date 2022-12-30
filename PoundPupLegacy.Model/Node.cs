@@ -9,5 +9,5 @@ public interface Node
     public string Title { get; }
     public int Status { get; }
     public int NodeTypeId { get; }
-    public bool IsTerm { get; }
+
 }

@@ -11,6 +11,7 @@ public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIn
 
         using var nodeWriter = NodeWriter.Create(connection);
         using var documentableWriter = DocumentableWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
         using var subdivisionWriter = SubdivisionWriter.Create(connection);
@@ -25,6 +26,7 @@ public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIn
         {
             nodeWriter.Write(subdivision);
             documentableWriter.Write(subdivision);
+            termWriter.Write(subdivision);
             geographicalEntityWriter.Write(subdivision);
             politicalEntityWriter.Write(subdivision);
             subdivisionWriter.Write(subdivision);

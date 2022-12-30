@@ -9,5 +9,5 @@ public record BasicNode : Node
     public required string Title { get; init; }
     public required int Status { get; init; }
     public required int NodeTypeId { get; init; }
-    public required bool IsTerm { get; init; }
+
 }

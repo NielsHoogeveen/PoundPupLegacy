@@ -42,11 +42,11 @@ internal class CaseWriter : DatabaseWriter<Case>, IDatabaseWriter<Case>
     {
     }
 
-    internal override void Write(Case therapist)
+    internal override void Write(Case @case)
     {
-        WriteValue(therapist.Id, ID);
-        WriteValue(therapist.Description, DESCRIPTION);
-        WriteDateTimeRange(therapist.Date, DATE, DATERANGE);
+        WriteValue(@case.Id, ID);
+        WriteValue(@case.Description, DESCRIPTION);
+        WriteDateTimeRange(@case.Date, DATE, DATERANGE);
         _command.ExecuteNonQuery();
     }
 }

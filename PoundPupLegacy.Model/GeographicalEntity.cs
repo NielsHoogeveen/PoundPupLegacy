@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface GeographicalEntity : Documentable
+public interface GeographicalEntity : Documentable, Term
 {
 }

@@ -12,7 +12,6 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
     private const string TITLE = "title";
     private const string STATUS = "status";
     private const string NODE_TYPE_ID = "node_type_id";
-    private const string IS_TERM = "is_term";
 
     public static DatabaseWriter<Node> Create(NpgsqlConnection connection)
     {
@@ -48,10 +47,6 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
                     Name = NODE_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
-                new ColumnDefinition{
-                    Name = IS_TERM,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
             }
         );
         return new NodeWriter(command);
@@ -71,7 +66,6 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
         WriteValue(node.Title, TITLE);
         WriteValue(node.Status, STATUS);
         WriteValue(node.NodeTypeId, NODE_TYPE_ID);
-        WriteValue(node.IsTerm, IS_TERM);
         _command.ExecuteNonQuery();
     }
 }

@@ -51,7 +51,8 @@ namespace PoundPupLegacy.Convert
                     Title = reader.GetString("title"),
                     Status = reader.GetInt32("status"),
                     NodeTypeId = 12,
-                    IsTerm = true,
+                    VocabularyId = 4126,
+                    Name = reader.GetString("title"),
                     FirstLevelGlobalRegionId = reader.GetInt32("continent_id")
                 };
 

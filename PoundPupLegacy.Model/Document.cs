@@ -9,7 +9,6 @@ public record Document : Node
     public required string Title { get; init; }
     public required int Status { get; init; }
     public required int NodeTypeId { get; init; }
-    public required bool IsTerm { get; init; }
     public required DateTimeRange? PublicationDate { get; init; }
     public required string? SourceUrl { get; init; }
     public required string Text { get; init; }

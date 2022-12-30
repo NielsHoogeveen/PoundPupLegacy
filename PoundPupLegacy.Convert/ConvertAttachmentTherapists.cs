@@ -20,20 +20,29 @@ internal partial class Program
 
         var sql = $"""
                 SELECT
-                n.nid id,
-                n.uid user_id,
-                n.title,
-                n.`status`,
-                FROM_UNIXTIME(n.created) created, 
-                FROM_UNIXTIME(n.changed) `changed`,
-                25 node_type_id,
-                TRUE is_topic,
-                NULL file_id_portrait,
-                NULL date_of_birth,
-                NULL date_of_death,
-                case when field_long_description_4_value = '' then NULL ELSE field_long_description_4_value end description
+                    n.nid id,
+                    n.uid user_id,
+                    n.title,
+                    n.`status`,
+                    FROM_UNIXTIME(n.created) created, 
+                    FROM_UNIXTIME(n.changed) `changed`,
+                    25 node_type_id,
+                    NULL file_id_portrait,
+                    NULL date_of_birth,
+                    NULL date_of_death,
+                    CASE 
+                        WHEN field_long_description_4_value = '' THEN NULL 
+                        ELSE field_long_description_4_value 
+                    END description,
+                    CASE 
+                        WHEN n2.nid IS NULL THEN FALSE 
+                        ELSE TRUE 
+                    END is_topic
                 FROM node n 
                 JOIN content_type_attachment_therapist t ON t.nid = n.nid
+                LEFT JOIN content_type_adopt_orgs o ON o.nid = n.nid AND o.vid = n.vid
+                LEFT JOIN node n2 ON n2.title = n.title AND n2.nid <> n.nid
+                
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -52,9 +61,9 @@ internal partial class Program
                 Created = reader.GetDateTime("created"),
                 Changed = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
+                IsTopic = reader.GetBoolean("is_topic"),
                 Status = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt16("node_type_id"),
-                IsTerm = reader.GetBoolean("is_topic"),
                 DateOfBirth = reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth"),
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
                 FileIdPortrait = reader.IsDBNull("file_id_portrait") ? null : reader.GetInt32("file_id_portrait"),
