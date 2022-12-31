@@ -75,11 +75,11 @@ namespace PoundPupLegacy.Convert
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = int.Parse(parts[0]),
-                    Created = DateTime.Parse(parts[1]),
-                    Changed = DateTime.Parse(parts[2]),
+                    CreatedDateTime = DateTime.Parse(parts[1]),
+                    ChangedDateTime = DateTime.Parse(parts[2]),
                     NodeTypeId = int.Parse(parts[4]),
-                    Status = int.Parse(parts[5]),
-                    UserId = int.Parse(parts[6]),
+                    NodeStatusId = int.Parse(parts[5]),
+                    AccessRoleId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
                     Title = parts[8],
                     Name = parts[9],
@@ -100,11 +100,11 @@ namespace PoundPupLegacy.Convert
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = int.Parse(parts[0]),
-                    Created = DateTime.Parse(parts[1]),
-                    Changed = DateTime.Parse(parts[2]),
+                    CreatedDateTime = DateTime.Parse(parts[1]),
+                    ChangedDateTime = DateTime.Parse(parts[2]),
                     NodeTypeId = int.Parse(parts[4]),
-                    Status = int.Parse(parts[5]),
-                    UserId = int.Parse(parts[6]),
+                    NodeStatusId = int.Parse(parts[5]),
+                    AccessRoleId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
                     Title = parts[8],
                     Name = parts[9],
@@ -177,12 +177,12 @@ namespace PoundPupLegacy.Convert
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
-                    UserId = reader.GetInt32("user_id"),
-                    Created = reader.GetDateTime("created"),
-                    Changed = reader.GetDateTime("changed"),
+                    AccessRoleId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
                     Title = $"{reader.GetString("title")} (state of the USA)",
                     Name = reader.GetString("title"),
-                    Status = reader.GetInt32("status"),
+                    NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 19,
                     VocabularyId = 4126,
                     IntermediateLevelSubdivisionId = reader.GetInt32("intermediate_level_subdivision_id"),

@@ -1,9 +1,4 @@
-﻿using Npgsql;
-using NpgsqlTypes;
-using PoundPupLegacy.Model;
-
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 
 internal class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter<Document>
 {

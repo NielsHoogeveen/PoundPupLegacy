@@ -1,8 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.Db.Writers;
-using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Db;
+﻿namespace PoundPupLegacy.Db;
 
 public class AbuseCaseCreator : IEntityCreator<AbuseCase>
 {

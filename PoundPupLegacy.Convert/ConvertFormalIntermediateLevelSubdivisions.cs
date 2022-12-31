@@ -16,12 +16,12 @@ namespace PoundPupLegacy.Convert
                 yield return new FormalIntermediateLevelSubdivision
                 {
                     Id = int.Parse(parts[0]),
-                    Created = DateTime.Parse(parts[1]),
-                    Changed = DateTime.Parse(parts[2]),
+                    CreatedDateTime = DateTime.Parse(parts[1]),
+                    ChangedDateTime = DateTime.Parse(parts[2]),
                     VocabularyId = 4126,
                     NodeTypeId = int.Parse(parts[4]),
-                    Status = int.Parse(parts[5]),
-                    UserId = int.Parse(parts[6]),
+                    NodeStatusId = int.Parse(parts[5]),
+                    AccessRoleId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
                     Title = parts[8],
                     Name = parts[9],

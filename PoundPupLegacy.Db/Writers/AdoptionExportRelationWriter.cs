@@ -1,7 +1,6 @@
-﻿using Npgsql;
-using NpgsqlTypes;
-using PoundPupLegacy.Model;
+﻿using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("PoundPupLegacy.Db.Test")]
 namespace PoundPupLegacy.Db.Writers;
 
 internal class AdoptionExportRelationWriter : DatabaseWriter<AdoptionExportRelation>, IDatabaseWriter<AdoptionExportRelation>

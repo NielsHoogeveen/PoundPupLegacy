@@ -1,7 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 
 internal class InformalIntermediateLevelSubdivisionWriter : IDatabaseWriter<InformalIntermediateLevelSubdivision>
 {

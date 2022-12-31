@@ -43,11 +43,11 @@ internal partial class Program
             var discussion = new BlogPost
             {
                 Id = reader.GetInt32("id"),
-                UserId = reader.GetInt32("user_id"),
-                Created = reader.GetDateTime("created"),
-                Changed = reader.GetDateTime("changed"),
+                AccessRoleId = reader.GetInt32("user_id"),
+                CreatedDateTime = reader.GetDateTime("created"),
+                ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                Status = reader.GetInt32("status"),
+                NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = 35,
                 Text = reader.GetString("text"),
 
@@ -86,11 +86,11 @@ internal partial class Program
             var discussion = new Article
             {
                 Id = reader.GetInt32("id"),
-                UserId = reader.GetInt32("user_id"),
-                Created = reader.GetDateTime("created"),
-                Changed = reader.GetDateTime("changed"),
+                AccessRoleId = reader.GetInt32("user_id"),
+                CreatedDateTime = reader.GetDateTime("created"),
+                ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                Status = reader.GetInt32("status"),
+                NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = 36,
                 Text = reader.GetString("text"),
 
@@ -129,11 +129,11 @@ internal partial class Program
             var discussion = new Discussion
             {
                 Id = reader.GetInt32("id"),
-                UserId = reader.GetInt32("user_id"),
-                Created = reader.GetDateTime("created"),
-                Changed = reader.GetDateTime("changed"),
+                AccessRoleId = reader.GetInt32("user_id"),
+                CreatedDateTime = reader.GetDateTime("created"),
+                ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                Status = reader.GetInt32("status"),
+                NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = 37,
                 Text = reader.GetString("text"),
 

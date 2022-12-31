@@ -47,11 +47,11 @@ internal partial class Program
             var country = new CoercedAdoptionCase
             {
                 Id = reader.GetInt32("id"),
-                UserId = reader.GetInt32("user_id"),
-                Created = reader.GetDateTime("created"),
-                Changed = reader.GetDateTime("changed"),
+                AccessRoleId = reader.GetInt32("user_id"),
+                CreatedDateTime = reader.GetDateTime("created"),
+                ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                Status = reader.GetInt32("status"),
+                NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 IsTopic = reader.GetBoolean("is_topic"),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),

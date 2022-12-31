@@ -1,6 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.Model;
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 
 internal class LocatableWriter : IDatabaseWriter<Locatable>
 {

@@ -1,8 +1,4 @@
-﻿using Npgsql;
-using NpgsqlTypes;
-using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 
 internal class SingleIdWriter : DatabaseWriter<int>
 {
@@ -40,7 +36,7 @@ internal class SingleIdWriter : DatabaseWriter<int>
         _command.ExecuteNonQuery();
     }
 }
-internal class SingleIdWriter<T> : DatabaseWriter<T> where T : Node
+internal class SingleIdWriter<T> : DatabaseWriter<T> where T : Identifiable
 {
     internal SingleIdWriter(NpgsqlCommand command) : base(command)
     {

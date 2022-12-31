@@ -1,16 +1,12 @@
-﻿using Npgsql;
-using NpgsqlTypes;
-using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
 {
     private const string ID = "id";
-    private const string USER_ID = "user_id";
-    private const string CREATED = "created";
-    private const string CHANGED = "changed";
+    private const string ACCESS_ROLE_ID = "access_role_id";
+    private const string CREATED_DATE_TIME = "created_date_time";
+    private const string CHANGED_DATE_TIME = "changed_date_time";
     private const string TITLE = "title";
-    private const string STATUS = "status";
+    private const string NODE_STATUS_ID = "node_status_id";
     private const string NODE_TYPE_ID = "node_type_id";
 
     public static DatabaseWriter<Node> Create(NpgsqlConnection connection)
@@ -24,15 +20,15 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = USER_ID,
+                    Name = ACCESS_ROLE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = CREATED,
+                    Name = CREATED_DATE_TIME,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
                 new ColumnDefinition{
-                    Name = CHANGED,
+                    Name = CHANGED_DATE_TIME,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
                 new ColumnDefinition{
@@ -40,7 +36,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = STATUS,
+                    Name = NODE_STATUS_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
@@ -60,11 +56,11 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
     internal override void Write(Node node)
     {
         WriteValue(node.Id, ID);
-        WriteValue(node.UserId, USER_ID);
-        WriteValue(node.Created, CREATED);
-        WriteValue(node.Changed, CHANGED);
+        WriteValue(node.AccessRoleId, ACCESS_ROLE_ID);
+        WriteValue(node.CreatedDateTime, CREATED_DATE_TIME);
+        WriteValue(node.ChangedDateTime, CHANGED_DATE_TIME);
         WriteValue(node.Title, TITLE);
-        WriteValue(node.Status, STATUS);
+        WriteValue(node.NodeStatusId, NODE_STATUS_ID);
         WriteValue(node.NodeTypeId, NODE_TYPE_ID);
         _command.ExecuteNonQuery();
     }

@@ -1,6 +1,4 @@
-﻿using Npgsql;
-
-namespace PoundPupLegacy.Db;
+﻿namespace PoundPupLegacy.Db;
 
 internal interface IEntityCreator<T>
 {

@@ -1,7 +1,4 @@
-﻿using Npgsql;
-using NpgsqlTypes;
-using PoundPupLegacy.Model;
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 
 public class SecondLevelGlobalRegionWriter : DatabaseWriter<SecondLevelGlobalRegion>, IDatabaseWriter<SecondLevelGlobalRegion>
 {

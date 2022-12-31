@@ -1,6 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.Db.Writers;
-namespace PoundPupLegacy.Db;
+﻿namespace PoundPupLegacy.Db;
 
 public class FileCreator : IEntityCreator<Model.File>
 {

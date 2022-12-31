@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
-using NpgsqlTypes;
+using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Writers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -8,10 +9,64 @@ namespace PoundPupLegacy.Convert
 {
     internal partial class Program
     {
-
-        private static void MigrateUsers(MySqlConnection mysqlconnection, NpgsqlConnection postgresqlconnection)
+        private static IEnumerable<UserGroup> GetUserGroups()
         {
-            WriteUser(ReadUsers(mysqlconnection), postgresqlconnection);
+            return new List<UserGroup>
+            {
+                new UserGroup
+                {
+                    Id = 4,
+                    Name = "Member"
+                },
+                new UserGroup
+                {
+                    Id = 6,
+                    Name = "Administrators"
+                },
+                new UserGroup
+                {
+                    Id = 72,
+                    Name = "Staff"
+                },
+            };
+        }
+        private static IEnumerable<UserGroupUser> GetUserGroupUsers()
+        {
+            return new List<UserGroupUser>
+            {
+                new UserGroupUser
+                {
+                    UserGroupId = 6,
+                    UserId = 1
+                },
+                new UserGroupUser
+                {
+                    UserGroupId = 6,
+                    UserId = 3
+                },
+                new UserGroupUser
+                {
+                    UserGroupId = 72,
+                    UserId = 2
+                },
+                new UserGroupUser
+                {
+                    UserGroupId = 72,
+                    UserId = 3
+                },
+            };
+        }
+
+
+        private static void MigrateUsers(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        {
+            var users = ReadUsers(mysqlconnection).ToList();
+            var memberList = users.Select(x => new UserGroupUser { UserGroupId = 4, UserId = x.Id });
+            AnonimousUserCreator.Create(connection);
+            UserCreator.Create(users, connection);
+            UserGroupCreator.Create(GetUserGroups(), connection);
+            UserGroupUserCreator.Create(GetUserGroupUsers(), connection);
+            UserGroupUserCreator.Create(memberList, connection);
         }
         private static IEnumerable<User> ReadUsers(MySqlConnection mysqlconnection)
         {
@@ -54,6 +109,7 @@ namespace PoundPupLegacy.Convert
                     JOIN node n ON n.uid = u.uid
                     WHERE n.`type` NOT IN ('uprofile', 'usernode') AND u.uid <> 0
                 )
+                AND u.uid <> 72
                 AND (b.nid is NULL OR b.nid IN (
                     SELECT 
                         MAX(b.nid)
@@ -74,7 +130,7 @@ namespace PoundPupLegacy.Convert
                 {
                     Id = reader.GetInt32("id"),
                     Name = reader.GetString("name"),
-                    Created = reader.GetDateTime("created"),
+                    CreatedDateTime = reader.GetDateTime("created"),
                     AboutMe = aboutMe == "(NULL)" ? null : aboutMe,
                     AnimalWithin = animalWithing == "(NULL)" ? "" : animalWithing,
                     RelationToChildPlacement = relationToChildPlacement == "(NULL)" ? "Other" : relationToChildPlacement,
@@ -84,59 +140,6 @@ namespace PoundPupLegacy.Convert
                 };
             }
             reader.Close();
-        }
-
-        private static void WriteUser(IEnumerable<User> users, NpgsqlConnection postgresqlconnection)
-        {
-            using var command = postgresqlconnection.CreateCommand();
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = """INSERT INTO public."user" (id, name, created, about_me, animal_within, relation_to_child_placement, email, password, avatar) VALUES(@id, @name, @created, @about_me, @animal_within, @relation_to_child_placement, @email, @password, @avatar)""";
-            command.Parameters.Add("id", NpgsqlDbType.Integer);
-            command.Parameters.Add("name", NpgsqlDbType.Varchar);
-            command.Parameters.Add("created", NpgsqlDbType.Timestamp);
-            command.Parameters.Add("about_me", NpgsqlDbType.Varchar);
-            command.Parameters.Add("animal_within", NpgsqlDbType.Varchar);
-            command.Parameters.Add("relation_to_child_placement", NpgsqlDbType.Varchar);
-            command.Parameters.Add("email", NpgsqlDbType.Varchar);
-            command.Parameters.Add("password", NpgsqlDbType.Varchar);
-            command.Parameters.Add("avatar", NpgsqlDbType.Varchar);
-            command.Prepare();
-
-            foreach (var user in users)
-            {
-                command.Parameters["id"].Value = user.Id;
-                command.Parameters["name"].Value = user.Name;
-                command.Parameters["created"].Value = user.Created;
-                if (user.AboutMe != null)
-                {
-                    command.Parameters["about_me"].Value = user.AboutMe;
-                }
-                else
-                {
-                    command.Parameters["about_me"].Value = DBNull.Value;
-                }
-                if (user.AnimalWithin != null)
-                {
-                    command.Parameters["animal_within"].Value = user.AnimalWithin;
-                }
-                else
-                {
-                    command.Parameters["animal_within"].Value = DBNull.Value;
-                }
-                command.Parameters["relation_to_child_placement"].Value = user.RelationToChildPlacement;
-                command.Parameters["email"].Value = user.Email;
-                command.Parameters["password"].Value = user.Password;
-                if (user.Avatar != null)
-                {
-                    command.Parameters["avatar"].Value = user.Avatar;
-                }
-                else
-                {
-                    command.Parameters["avatar"].Value = DBNull.Value;
-                }
-                command.ExecuteNonQuery();
-            }
         }
     }
 }

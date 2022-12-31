@@ -126,11 +126,11 @@ internal partial class Program
             yield return new Document
             {
                 Id = reader.GetInt32("id"),
-                UserId = reader.GetInt32("user_id"),
-                Created = reader.GetDateTime("created"),
-                Changed = reader.GetDateTime("changed"),
+                AccessRoleId = reader.GetInt32("user_id"),
+                CreatedDateTime = reader.GetDateTime("created"),
+                ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                Status = reader.GetInt32("status"),
+                NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 PublicationDate = publicationDate,
                 SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),

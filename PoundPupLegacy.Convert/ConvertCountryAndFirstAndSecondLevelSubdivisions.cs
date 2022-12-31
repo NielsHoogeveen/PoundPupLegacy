@@ -13,14 +13,14 @@ namespace PoundPupLegacy.Convert
         {
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = 4097,
+                Id = SAINT_BARTH,
                 Title = "Saint Barthélemy",
                 Name = "Saint Barthélemy",
-                Status = 1,
+                NodeStatusId = 1,
                 NodeTypeId = 16,
-                Created = DateTime.Now,
-                Changed = DateTime.Now,
-                UserId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                AccessRoleId = 1,
                 VocabularyId = 4126,
                 GlobalRegionId = 3809,
                 CountryId = 4018,
@@ -38,14 +38,14 @@ namespace PoundPupLegacy.Convert
             },
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = 4102,
+                Id = SAINT_MARTIN,
                 Title = "Saint Martin",
                 Name = "Saint Martin",
-                Status = 1,
+                NodeStatusId = 1,
                 NodeTypeId = 16,
-                Created = DateTime.Now,
-                Changed = DateTime.Now,
-                UserId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                AccessRoleId = 1,
                 VocabularyId = 4126,
                 GlobalRegionId = 3809,
                 CountryId = 4018,
@@ -62,14 +62,14 @@ namespace PoundPupLegacy.Convert
             },
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = 4106,
+                Id = FRENCH_SOUTHERN_TERRITORIES,
                 Title = "French Southern Territories",
                 Name = "French Southern Territories",
-                Status = 1,
+                NodeStatusId = 1,
                 NodeTypeId = 15,
-                Created = DateTime.Now,
-                Changed = DateTime.Now,
-                UserId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                AccessRoleId = 1,
                 VocabularyId = 4126,
                 GlobalRegionId = 3828,
                 CountryId = 4018,
@@ -142,14 +142,14 @@ namespace PoundPupLegacy.Convert
                 yield return new CountryAndFirstAndSecondLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
-                    UserId = reader.GetInt32("user_id"),
-                    Created = reader.GetDateTime("created"),
-                    Changed = reader.GetDateTime("changed"),
+                    AccessRoleId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
                     Title = reader.GetInt32("id") == 3879 ? "Réunion" :
                             reader.GetString("title"),
                     Name = reader.GetInt32("id") == 3879 ? "Réunion" :
                             reader.GetString("title"),
-                    Status = reader.GetInt32("status"),
+                    NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 16,
                     VocabularyId = 4126,
                     GlobalRegionId = reader.GetInt32("continental_region_id"),

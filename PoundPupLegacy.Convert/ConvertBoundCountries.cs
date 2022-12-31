@@ -44,11 +44,11 @@ namespace PoundPupLegacy.Convert
                 yield return new BoundCountry
                 {
                     Id = reader.GetInt32("id"),
-                    UserId = reader.GetInt32("user_id"),
-                    Created = reader.GetDateTime("created"),
-                    Changed = reader.GetDateTime("changed"),
+                    AccessRoleId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
                     Title = reader.GetString("title"),
-                    Status = reader.GetInt32("status"),
+                    NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 14,
                     VocabularyId = 4126,
                     BindingCountryId = reader.GetInt32("binding_country_id"),

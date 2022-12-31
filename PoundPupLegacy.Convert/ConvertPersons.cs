@@ -57,11 +57,11 @@ internal partial class Program
             yield return new BasicPerson
             {
                 Id = reader.GetInt32("id"),
-                UserId = reader.GetInt32("user_id"),
-                Created = reader.GetDateTime("created"),
-                Changed = reader.GetDateTime("changed"),
+                AccessRoleId = reader.GetInt32("user_id"),
+                CreatedDateTime = reader.GetDateTime("created"),
+                ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                Status = reader.GetInt32("status"),
+                NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 IsTopic = reader.GetBoolean("is_topic"),
                 DateOfBirth = reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth"),

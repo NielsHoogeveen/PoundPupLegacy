@@ -1,11 +1,12 @@
-﻿using Npgsql;
-using NpgsqlTypes;
-using PoundPupLegacy.Model;
-using System.Data;
+﻿using System.Data;
 
 namespace PoundPupLegacy.Db.Writers;
 
-public interface IDatabaseWriter<T>
+public interface IDatabaseWriter
+{
+
+}
+public interface IDatabaseWriter<T> : IDatabaseWriter
 {
     public abstract static DatabaseWriter<T> Create(NpgsqlConnection connection);
 }
@@ -103,6 +104,7 @@ public abstract class DatabaseWriter<T> : IDisposable
         {
             command.Parameters.Add(column.Name, column.NpgsqlDbType);
         }
+        command.Prepare();
         return command;
     }
 

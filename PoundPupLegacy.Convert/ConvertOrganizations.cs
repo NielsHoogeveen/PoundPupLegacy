@@ -14,12 +14,12 @@ internal partial class Program
         {
             new Organization
             {
-                Id = 105,
-                UserId = 1,
-                Created = DateTime.Now,
-                Changed = DateTime.Now,
+                Id = COLORADO_ADOPTION_CENTER,
+                AccessRoleId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
                 Title = "Colorado Adoption Center",
-                Status = 1,
+                NodeStatusId = 1,
                 NodeTypeId = 23,
                 IsTopic = false,
                 WebsiteURL = null,
@@ -80,11 +80,11 @@ internal partial class Program
             yield return new Organization
             {
                 Id = reader.GetInt32("id"),
-                UserId = reader.GetInt32("user_id"),
-                Created = reader.GetDateTime("created"),
-                Changed = reader.GetDateTime("changed"),
+                AccessRoleId = reader.GetInt32("user_id"),
+                CreatedDateTime = reader.GetDateTime("created"),
+                ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                Status = reader.GetInt32("status"),
+                NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 IsTopic = reader.GetBoolean("is_topic"),
                 WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),

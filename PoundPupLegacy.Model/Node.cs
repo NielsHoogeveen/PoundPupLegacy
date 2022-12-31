@@ -1,13 +1,12 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface Node
+public interface Node : Identifiable
 {
-    public int Id { get; }
-    public int UserId { get; }
-    public DateTime Created { get; }
-    public DateTime Changed { get; }
+    public int AccessRoleId { get; }
+    public DateTime CreatedDateTime { get; }
+    public DateTime ChangedDateTime { get; }
     public string Title { get; }
-    public int Status { get; }
+    public int NodeStatusId { get; }
     public int NodeTypeId { get; }
 
 }

@@ -19,10 +19,10 @@ namespace PoundPupLegacy.Convert
             var nodeTypes = new NodeType[]
             {
                 new NodeType(1, "organization type", "Organizations are loosely defined as something a collection of people work together. Therefore a bill or a trip is also regarderd an organization, even though it does not have a formal position as such"),
-                new NodeType(2, "affiliation type", "Defines the type of relation between two organizations"),
+                new NodeType(2, "inter-organizational relation type", "Defines the type of relation between two organizations"),
                 new NodeType(3, "political entity relation type", "Defines the type of relation between a person or organization and a political entity"),
-                new NodeType(4, "position type", "Defines the type of relation between a person and an organization"),
-                new NodeType(5, "personal relationship type", "Defines the type of relation between a person and another person"),
+                new NodeType(4, "person organization relation type", "Defines the type of relation between a person and an organization"),
+                new NodeType(5, "inter-personal relationship type", "Defines the type of relation between a person and another person"),
                 new NodeType(6, "profession", "The type of professions a person can have"),
                 new NodeType(7, "denomination", "The denomination of an organization"),
                 new NodeType(8, "Hague status", "The hague status of an adoption agency"),
@@ -55,6 +55,9 @@ namespace PoundPupLegacy.Convert
                 new NodeType(35, "blog post", "Blog post"),
                 new NodeType(36, "article", "Article"),
                 new NodeType(37, "discussion", "Discussion"),
+                new NodeType(38, "vocabulary", "A set of terms"),
+                new NodeType(39, "type of abuse", "Defines the types of abuse a child has endured"),
+                new NodeType(40, "type of abuser", "Defines the relationship the abuser has with respect to the abused"),
             };
 
 
@@ -74,6 +77,62 @@ namespace PoundPupLegacy.Convert
             }
 
         }
+        const int COLORADO_ADOPTION_CENTER = 105;
+        const int ADOPTION = 106;
+        const int FOSTER_CARE = 107;
+        const int TO_BE_ADOPTED = 108;
+        const int LEGAL_GUARDIANSHIP = 109;
+        const int INSTITUTION = 110;
+        const int ONE_TO_FOUR = 111;
+        const int FOUR_TO_EIGHT = 112;
+        const int EIGHT_TO_TWELVE = 113;
+        const int MORE_THAN_TWELVE = 114;
+        const int CHILD_PLACEMENT_TYPE = 115;
+        const int TYPE_OF_ABUSER = 116;
+        const int FAMILY_SIZE = 117;
+        const int NON_LETHAL_PHYSICAL_ABUSE = 118;
+        const int LETHAL_PHYSICAL_ABUSE = 119;
+        const int PHYSICAL_EXPLOITATION = 120;
+        const int SEXUAL_ABUSE = 121;
+        const int SEXUAL_EXPLOITATION = 122;
+        const int NON_LETHAL_NEGLECT = 123;
+        const int LETHAL_NEGLECT = 124;
+        const int NON_LETHAL_DEPRIVATION = 125;
+        const int LETHAL_DEPRIVATION = 126;
+        const int ECONOMIC_EXPLOITATION = 127;
+        const int VERBAL_ABUSE = 128;
+        const int MEDICAL_ABUSE = 129;
+        const int DEATH_BY_UNKNOWN_CAUSE = 130;
+        const int ADOPTIVE_FATHER = 131;
+        const int FOSTER_FATHER = 132;
+        const int ADOPTIVE_MOTHER = 133;
+        const int FOSTER_MOTHER = 134;
+        const int LEGAL_GUARDIAN = 135;
+        const int ADOPTED_SIBLING = 136;
+        const int FOSTER_SIBLING = 137;
+        const int NON_ADOPTED_SIBLING = 138;
+        const int NON_FOSTERED_SIBLING = 139;
+        const int OTHER_FAMILY_MEMBER = 140;
+        const int OTHER_NON_FAMILY_MEMBER = 141;
+        const int UNDETERMINED = 142;
+        const int TYPE_OF_ABUSE = 143;
+
+        const int ANTIGUA_AND_BARBUDA = 4073;
+        const int PALESTINE = 4082;
+        const int SAINT_HELENA_ETC = 4087;
+        const int SOUTH_SUDAN = 4093;
+        const int SAINT_BARTH = 4097;
+        const int SAINT_MARTIN = 4102;
+        const int FRENCH_SOUTHERN_TERRITORIES = 4106;
+        const int ALAND = 4128;
+        const int CURACAO = 4129;
+        const int SINT_MAARTEN = 4130;
+        const int UNITED_STATES_MINOR_OUTLYING_ISLANDS = 4131;
+
+
+        const int TOPICS = 4126;
+        const int DOCUMENT_TYPES = 42416;
+        const int ORGANIZATION_TYPE = 12622;
 
         private static void Migrate()
         {
@@ -83,45 +142,47 @@ namespace PoundPupLegacy.Convert
                 using var postgresqlconnection = new NpgsqlConnection(ConnectStringPostgresql);
                 mysqlconnection.Open();
                 postgresqlconnection.Open();
+                //MigrateNodeStatuses(postgresqlconnection);
                 //MigrateUsers(mysqlconnection, postgresqlconnection);
                 //MigrateFiles(mysqlconnection, postgresqlconnection);
                 AddNodeTypes(postgresqlconnection);
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12622, 1, "organization_type");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12637, 2, "affiliation_type");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12652, 3, "political_entity_relation_type");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12663, 4, "position_type");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 16900, 5, "personal_relationship_type");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 27213, 6, "profession");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 39428, 7, "denomination");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 41212, 8, "hague_status");
-                MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 42416, 9, "document_type");
-                MigrateFirstLevelGlobalRegions(mysqlconnection, postgresqlconnection);
-                MigrateSecondLevelGlobalRegions(mysqlconnection, postgresqlconnection);
-                MigrateBasicCountries(mysqlconnection, postgresqlconnection);
-                MigrateBindingCountries(mysqlconnection, postgresqlconnection);
-                MigrateBoundCountries(mysqlconnection, postgresqlconnection);
-                MigrateBasicCountryAndFirstLevelSubdivisions(mysqlconnection, postgresqlconnection);
-                MigrateCountryAndFirstAndSecondLevelSubdivisions(mysqlconnection, postgresqlconnection);
-                MigrateFirstAndBottomLevelSubdivisions(mysqlconnection, postgresqlconnection);
-                MigrateInformalIntermediateLevelSubdivisions(mysqlconnection, postgresqlconnection);
-                MigrateFormalIntermediateLevelSubdivisions(mysqlconnection, postgresqlconnection);
-                MigrateBasicSecondLevelSubdivisions(mysqlconnection, postgresqlconnection);
-                MigrateOrganizations(mysqlconnection, postgresqlconnection);
-                MigratePersons(mysqlconnection, postgresqlconnection);
-                MigrateAttachmentTherapists(mysqlconnection, postgresqlconnection);
-                MigrateLocations(mysqlconnection, postgresqlconnection);
-                MigrateDocuments(mysqlconnection, postgresqlconnection);
-                MigrateChildPlacementTypes(postgresqlconnection);
-                MigrateFamilySizes(postgresqlconnection);
-                MigrateAbuseCases(mysqlconnection, postgresqlconnection);
-                MigrateChildTraffickingCases(mysqlconnection, postgresqlconnection);
-                MigrateAdoptionExports(mysqlconnection, postgresqlconnection);
-                MigrateCoercedAdoptionCases(mysqlconnection, postgresqlconnection);
-                MigrateDeportationCases(mysqlconnection, postgresqlconnection);
-                MigrateFathersRightsViolationCases(mysqlconnection, postgresqlconnection);
-                MigrateWrongfulMedicationCases(mysqlconnection, postgresqlconnection);
-                MigrateWrongfulRemovalCases(mysqlconnection, postgresqlconnection);
-                MigrateSimpleTextPosts(mysqlconnection, postgresqlconnection);
+                MigrateVocabularies(mysqlconnection, postgresqlconnection);
+                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12622, 1, "organization_type");
+                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12637, 2, "affiliation_type");
+                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12652, 3, "political_entity_relation_type");
+                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12663, 4, "position_type");
+                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 16900, 5, "personal_relationship_type");
+                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 27213, 6, "profession");
+                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 39428, 7, "denomination");
+                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 41212, 8, "hague_status");
+                MigrateDocumentTypes(mysqlconnection, postgresqlconnection);
+                //MigrateFirstLevelGlobalRegions(mysqlconnection, postgresqlconnection);
+                //MigrateSecondLevelGlobalRegions(mysqlconnection, postgresqlconnection);
+                //MigrateBasicCountries(mysqlconnection, postgresqlconnection);
+                //MigrateBindingCountries(mysqlconnection, postgresqlconnection);
+                //MigrateBoundCountries(mysqlconnection, postgresqlconnection);
+                //MigrateBasicCountryAndFirstLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                //MigrateCountryAndFirstAndSecondLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                //MigrateFirstAndBottomLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                //MigrateInformalIntermediateLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                //MigrateFormalIntermediateLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                //MigrateBasicSecondLevelSubdivisions(mysqlconnection, postgresqlconnection);
+                //MigrateOrganizations(mysqlconnection, postgresqlconnection);
+                //MigratePersons(mysqlconnection, postgresqlconnection);
+                //MigrateAttachmentTherapists(mysqlconnection, postgresqlconnection);
+                //MigrateLocations(mysqlconnection, postgresqlconnection);
+                //MigrateDocuments(mysqlconnection, postgresqlconnection);
+                //MigrateChildPlacementTypes(postgresqlconnection);
+                //MigrateFamilySizes(postgresqlconnection);
+                //MigrateAbuseCases(mysqlconnection, postgresqlconnection);
+                //MigrateChildTraffickingCases(mysqlconnection, postgresqlconnection);
+                //MigrateAdoptionExports(mysqlconnection, postgresqlconnection);
+                //MigrateCoercedAdoptionCases(mysqlconnection, postgresqlconnection);
+                //MigrateDeportationCases(mysqlconnection, postgresqlconnection);
+                //MigrateFathersRightsViolationCases(mysqlconnection, postgresqlconnection);
+                //MigrateWrongfulMedicationCases(mysqlconnection, postgresqlconnection);
+                //MigrateWrongfulRemovalCases(mysqlconnection, postgresqlconnection);
+                //MigrateSimpleTextPosts(mysqlconnection, postgresqlconnection);
                 mysqlconnection.Close();
                 postgresqlconnection.Close();
             }
