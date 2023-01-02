@@ -35,16 +35,12 @@ internal class DeportationCaseWriter : DatabaseWriter<DeportationCase>, IDatabas
 
     internal override void Write(DeportationCase deportationCase)
     {
-        try
-        {
-            WriteValue(deportationCase.Id, ID);
-            WriteNullableValue(deportationCase.SubdivisionIdFrom, SUBDIVISION_ID_FROM);
-            WriteNullableValue(deportationCase.CountryIdTo, COUNTRY_ID_TO);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (deportationCase.Id is null)
+            throw new NullReferenceException();
+
+        WriteValue(deportationCase.Id, ID);
+        WriteNullableValue(deportationCase.SubdivisionIdFrom, SUBDIVISION_ID_FROM);
+        WriteNullableValue(deportationCase.CountryIdTo, COUNTRY_ID_TO);
+        _command.ExecuteNonQuery();
     }
 }

@@ -24,8 +24,8 @@ namespace PoundPupLegacy.Server.Controllers
             var sql = $"""
                 SELECT json_build_object(
                     'Id', u.id, 
-                    'Name', u.name, 
-                    'Created', u.created, 
+                    'Name', a.name, 
+                    'Created', u.created_date_time, 
                     'AboutMe', u.about_me, 
                     'AnimalWithin', u.animal_within, 
                     'RelationToChildPlacement', u.relation_to_child_placement, 
@@ -34,6 +34,7 @@ namespace PoundPupLegacy.Server.Controllers
                     'Password', u.password
                 )
                 FROM public."user" u
+                JOIN access_role a on a.id = u.id
                 WHERE u.id = 2
                 """;
 

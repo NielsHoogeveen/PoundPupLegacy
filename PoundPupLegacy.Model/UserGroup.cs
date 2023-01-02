@@ -1,7 +1,7 @@
-﻿namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Model;
 
 public record UserGroup : AccessRole
 {
-    public required int Id { get; init; }
+    public required int? Id { get; set; }
     public required string Name { get; init; }
 }

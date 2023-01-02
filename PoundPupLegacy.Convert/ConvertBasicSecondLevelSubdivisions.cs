@@ -10,30 +10,22 @@ namespace PoundPupLegacy.Convert
     {
         private static int GetSubdivisionId(string code, NpgsqlConnection connection)
         {
-            try
-            {
-                var sql = $"""
-                SELECT id
-                FROM public.iso_coded_subdivision 
-                WHERE iso_3166_2_code = '{code}' 
-                """;
+            var sql = $"""
+            SELECT id
+            FROM public.iso_coded_subdivision 
+            WHERE iso_3166_2_code = '{code}' 
+            """;
 
-                using var readCommand = connection.CreateCommand();
-                readCommand.CommandType = CommandType.Text;
-                readCommand.CommandTimeout = 300;
-                readCommand.CommandText = sql;
+            using var readCommand = connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
 
-                var reader = readCommand.ExecuteReader();
-                reader.Read();
-                var id = reader.GetInt32(0);
-                reader.Close();
-                return id;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Cannot find subdivision with code {code}");
-                throw;
-            }
+            var reader = readCommand.ExecuteReader();
+            reader.Read();
+            var id = reader.GetInt32(0);
+            reader.Close();
+            return id;
 
         }
 
@@ -59,7 +51,7 @@ namespace PoundPupLegacy.Convert
                 reader.Close();
                 return id;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine($"Cannot find subdivision with name {name} and counrtyId {countryId}");
                 throw;
@@ -70,20 +62,22 @@ namespace PoundPupLegacy.Convert
         {
             foreach (string line in System.IO.File.ReadLines(@"..\..\..\BasicSecondLevelSubdivisionsInInformalPrimarySubdivision.csv").Skip(1))
             {
-
                 var parts = line.Split(new char[] { ';' });
+                var id = int.Parse(parts[0]);
+                var title = parts[8];
                 yield return new BasicSecondLevelSubdivision
                 {
-                    Id = int.Parse(parts[0]),
+                    Id = id,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
                     NodeTypeId = int.Parse(parts[4]),
                     NodeStatusId = int.Parse(parts[5]),
                     AccessRoleId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
-                    Title = parts[8],
+                    Title = title,
                     Name = parts[9],
-                    VocabularyId = 4126,
+                    Description = "",
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                     ISO3166_2_Code = parts[10],
                     IntermediateLevelSubdivisionId = GetIntermediateLevelSubdivisionId(int.Parse(parts[7]), parts[11], connection),
                     FileIdFlag = null,
@@ -97,18 +91,21 @@ namespace PoundPupLegacy.Convert
             {
 
                 var parts = line.Split(new char[] { ';' });
+                var id = int.Parse(parts[0]);
+                var title = parts[8];
                 yield return new BasicSecondLevelSubdivision
                 {
-                    Id = int.Parse(parts[0]),
+                    Id = id,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
                     NodeTypeId = int.Parse(parts[4]),
                     NodeStatusId = int.Parse(parts[5]),
                     AccessRoleId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
-                    Title = parts[8],
+                    Title = title,
                     Name = parts[9],
-                    VocabularyId = 4126,
+                    Description = "",
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                     ISO3166_2_Code = parts[10],
                     IntermediateLevelSubdivisionId = GetSubdivisionId(parts[11], connection),
                     FileIdFlag = null,
@@ -174,17 +171,20 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
+                var id = reader.GetInt32("id");
+                var title = $"{reader.GetString("name")} (state of the USA)";
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
                     AccessRoleId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
-                    Title = $"{reader.GetString("title")} (state of the USA)",
-                    Name = reader.GetString("title"),
+                    Title = title,
+                    Name = reader.GetString("name"),
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 19,
-                    VocabularyId = 4126,
+                    Description = "",
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                     IntermediateLevelSubdivisionId = reader.GetInt32("intermediate_level_subdivision_id"),
                     CountryId = reader.GetInt32("country_id"),
                     ISO3166_2_Code = reader.GetString("iso_3166_2_code"),

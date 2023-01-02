@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Model;
 
 public record UserGroupUser
 {

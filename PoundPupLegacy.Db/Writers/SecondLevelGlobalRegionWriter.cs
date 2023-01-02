@@ -27,10 +27,13 @@ public class SecondLevelGlobalRegionWriter : DatabaseWriter<SecondLevelGlobalReg
     {
     }
 
-    internal override void Write(SecondLevelGlobalRegion node)
+    internal override void Write(SecondLevelGlobalRegion region)
     {
-        WriteValue(node.Id, ID);
-        WriteValue(node.FirstLevelGlobalRegionId, FIRST_LEVEL_GLOBAL_REGION_ID);
+        if (region.Id is null)
+            throw new NullReferenceException();
+
+        WriteValue(region.Id, ID);
+        WriteValue(region.FirstLevelGlobalRegionId, FIRST_LEVEL_GLOBAL_REGION_ID);
         _command.ExecuteNonQuery();
     }
 }

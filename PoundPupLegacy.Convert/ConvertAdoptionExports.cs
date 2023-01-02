@@ -13,50 +13,43 @@ internal partial class Program
 
     private static int GetAdoptionExportRelationId(int countryIdTo, int? countryIdFrom, string? countryNameFrom, NpgsqlConnection connection)
     {
-        try
+        const string sql1 = """
+        SELECT id FROM adoption_export_relation WHERE country_id_to = @country_id_to AND country_id_from = @country_id_from AND country_name_from IS NULL
+        """;
+        const string sql2 = """
+        SELECT id FROM adoption_export_relation WHERE country_id_to = @country_id_to AND country_id_from IS NULL AND country_name_from = @country_name_from
+        """;
+        using var command = connection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = countryIdFrom is null ? sql2 : sql1;
+
+        command.Parameters.Add("country_id_to", NpgsqlDbType.Integer);
+        if (countryIdFrom is null)
         {
-            const string sql1 = """
-            SELECT id FROM adoption_export_relation WHERE country_id_to = @country_id_to AND country_id_from = @country_id_from AND country_name_from IS NULL
-            """;
-            const string sql2 = """
-            SELECT id FROM adoption_export_relation WHERE country_id_to = @country_id_to AND country_id_from IS NULL AND country_name_from = @country_name_from
-            """;
-            using var command = connection.CreateCommand();
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = countryIdFrom is null ? sql2 : sql1;
-
-            command.Parameters.Add("country_id_to", NpgsqlDbType.Integer);
-            if (countryIdFrom is null)
-            {
-                command.Parameters.Add("country_name_from", NpgsqlDbType.Varchar);
-            }
-            else
-            {
-                command.Parameters.Add("country_id_from", NpgsqlDbType.Integer);
-            }
-
-            command.Prepare();
-            command.Parameters["country_id_to"].Value = countryIdTo;
-            if (countryIdFrom is not null)
-            {
-                command.Parameters["country_id_from"].Value = countryIdFrom;
-            }
-            else
-            {
-                command.Parameters["country_name_from"].Value = countryNameFrom;
-            }
-            var reader = command.ExecuteReader();
-
-            reader.Read();
-            var id = reader.GetInt32(0);
-            reader.Close();
-            return id;
+            command.Parameters.Add("country_name_from", NpgsqlDbType.Varchar);
         }
-        catch (Exception e)
+        else
         {
-            throw;
+            command.Parameters.Add("country_id_from", NpgsqlDbType.Integer);
         }
+
+        command.Prepare();
+        command.Parameters["country_id_to"].Value = countryIdTo;
+        if (countryIdFrom is not null)
+        {
+            command.Parameters["country_id_from"].Value = countryIdFrom;
+        }
+        else
+        {
+            command.Parameters["country_name_from"].Value = countryNameFrom;
+        }
+        var reader = command.ExecuteReader();
+
+        reader.Read();
+        var id = reader.GetInt32(0);
+        reader.Close();
+        return id;
     }
 
     private static void MigrateAdoptionExports(MySqlConnection mysqlconnection, NpgsqlConnection connection)

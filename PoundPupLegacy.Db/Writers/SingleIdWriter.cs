@@ -44,6 +44,8 @@ internal class SingleIdWriter<T> : DatabaseWriter<T> where T : Identifiable
 
     internal override void Write(T node)
     {
+        if (node.Id is null)
+            throw new NullReferenceException();
         WriteValue(node.Id, SingleIdWriter.ID);
         _command.ExecuteNonQuery();
     }

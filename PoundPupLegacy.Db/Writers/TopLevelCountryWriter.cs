@@ -35,6 +35,8 @@ internal class TopLevelCountryWriter : DatabaseWriter<TopLevelCountry>, IDatabas
 
     internal override void Write(TopLevelCountry country)
     {
+        if (country.Id is null)
+            throw new NullReferenceException();
         WriteValue(country.Id, ID);
         WriteValue(country.ISO3166_1_Code, ISO_3166_1_CODE);
         WriteValue(country.GlobalRegionId, GLOBAL_REGION_ID);

@@ -62,16 +62,17 @@ internal partial class Program
 
         while (reader.Read())
         {
+            var id = reader.GetInt32("id");
+            var name = reader.GetString("title");
             var country = new AbuseCase
             {
-                Id = reader.GetInt32("id"),
+                Id = id,
                 AccessRoleId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
+                Title = name,
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                IsTopic = reader.GetBoolean("is_topic"),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 ChildPlacementTypeId = reader.GetInt32("child_placement_type_id"),
@@ -79,6 +80,7 @@ internal partial class Program
                 HomeschoolingInvolved = reader.IsDBNull("home_schooling_involved") ? null : reader.GetBoolean("home_schooling_involved"),
                 FundamentalFaithInvolved = reader.IsDBNull("fundamental_faith_involved") ? null : reader.GetBoolean("fundamental_faith_involved"),
                 DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),
+                VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
             };
             yield return country;
 

@@ -2,7 +2,7 @@
 
 public record User : AccessRole
 {
-    public required int Id { get; init; }
+    public required int? Id { get; set; }
     public required string Name { get; init; }
     public required DateTime CreatedDateTime { get; init; }
     public required string? AboutMe { get; init; }

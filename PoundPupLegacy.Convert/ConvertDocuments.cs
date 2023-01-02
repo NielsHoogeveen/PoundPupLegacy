@@ -30,6 +30,7 @@ internal partial class Program
             "10" => "31",
             "11" => "30",
             "12" => "31",
+            _ => throw new Exception($"{month} is an unknown month")
         };
     }
 

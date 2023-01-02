@@ -46,16 +46,18 @@ internal partial class Program
 
         while (reader.Read())
         {
+            var id = reader.GetInt32("id");
+            var name = reader.GetString("title");
             var country = new ChildTraffickingCase
             {
-                Id = reader.GetInt32("id"),
+                Id = id,
                 AccessRoleId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
+                Title = name,
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                IsTopic = reader.GetBoolean("is_topic"),
+                VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),

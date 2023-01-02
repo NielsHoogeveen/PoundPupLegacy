@@ -28,6 +28,9 @@ internal class ISOCodedSubdivisionWriter : DatabaseWriter<ISOCodedSubdivision>, 
 
     internal override void Write(ISOCodedSubdivision country)
     {
+        if (country.Id is null)
+            throw new NullReferenceException();
+
         WriteValue(country.Id, ID);
         WriteValue(country.ISO3166_2_Code, ISO_3166_2_CODE);
         _command.ExecuteNonQuery();

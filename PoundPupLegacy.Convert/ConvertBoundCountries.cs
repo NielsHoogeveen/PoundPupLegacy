@@ -41,18 +41,21 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
+                var id = reader.GetInt32("id");
+                var name = reader.GetString("title");
                 yield return new BoundCountry
                 {
-                    Id = reader.GetInt32("id"),
+                    Id = id,
                     AccessRoleId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
-                    Title = reader.GetString("title"),
+                    Title = name,
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 14,
-                    VocabularyId = 4126,
+                    Description = "",
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
                     BindingCountryId = reader.GetInt32("binding_country_id"),
-                    Name = reader.GetString("title"),
+                    Name = name,
                     ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
                     CountryId = reader.GetInt32("binding_country_id"),
                     FileIdFlag = null,

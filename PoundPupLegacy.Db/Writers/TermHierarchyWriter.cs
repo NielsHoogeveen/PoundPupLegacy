@@ -30,8 +30,8 @@ internal class TermHierarchyWriter : DatabaseWriter<TermHierarchy>, IDatabaseWri
 
     internal override void Write(TermHierarchy termHierarchy)
     {
-        WriteValue(termHierarchy.ParentId, TERM_ID_PARENT);
-        WriteValue(termHierarchy.ChildId, TERM_ID_CHILD);
+        WriteValue(termHierarchy.TermIdPartent, TERM_ID_PARENT);
+        WriteValue(termHierarchy.TermIdChild, TERM_ID_CHILD);
         _command.ExecuteNonQuery();
     }
 }

@@ -30,15 +30,11 @@ internal class BlogPostWriter : DatabaseWriter<BlogPost>, IDatabaseWriter<BlogPo
 
     internal override void Write(BlogPost blogPost)
     {
-        try
-        {
-            WriteValue(blogPost.Id, ID);
-            WriteValue(blogPost.Text, TEXT);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (blogPost.Id is null)
+            throw new NullReferenceException();
+
+        WriteValue(blogPost.Id, ID);
+        WriteValue(blogPost.Text, TEXT);
+        _command.ExecuteNonQuery();
     }
 }

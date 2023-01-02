@@ -6,7 +6,7 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
     {
         using var nodeWriter = NodeWriter.Create(connection);
         using var documentableWriter = DocumentableWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
+        using var nameableWriter = NameableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var globalRegionWriter = GlobalRegionWriter.Create(connection);
         using var secondLevelGlobalRegionWriter = SecondLevelGlobalRegionWriter.Create(connection);
@@ -17,15 +17,15 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
         {
             nodeWriter.Write(node);
             documentableWriter.Write(node);
-            termWriter.Write(node);
+            nameableWriter.Write(node);
             geographicalEntityWriter.Write(node);
             globalRegionWriter.Write(node);
             secondLevelGlobalRegionWriter.Write(node);
 
             termHierarchyWriter.Write(new TermHierarchy
             {
-                ParentId = node.FirstLevelGlobalRegionId,
-                ChildId = node.Id
+                TermIdPartent = node.FirstLevelGlobalRegionId,
+                TermIdChild = (int)node.Id!
             });
         }
     }

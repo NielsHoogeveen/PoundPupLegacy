@@ -51,6 +51,9 @@ internal class OrganizationWriter : DatabaseWriter<Organization>, IDatabaseWrite
 
     internal override void Write(Organization organization)
     {
+        if (organization.Id is null)
+            throw new NullReferenceException();
+
         WriteValue(organization.Id, ID);
         WriteNullableValue(organization.WebsiteURL, WEBSITE_URL);
         WriteNullableValue(organization.EmailAddress, EMAIL_ADDRESS);

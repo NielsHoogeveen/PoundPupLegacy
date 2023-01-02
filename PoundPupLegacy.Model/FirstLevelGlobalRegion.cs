@@ -2,7 +2,7 @@
 
 public record FirstLevelGlobalRegion : GlobalRegion
 {
-    public required int Id { get; set; }
+    public required int? Id { get; set; }
     public required int AccessRoleId { get; init; }
     public required DateTime CreatedDateTime { get; init; }
     public required DateTime ChangedDateTime { get; init; }
@@ -10,5 +10,6 @@ public record FirstLevelGlobalRegion : GlobalRegion
     public required int NodeStatusId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Name { get; init; }
-    public required int VocabularyId { get; init; }
+    public required string Description { get; init; }
+    public required List<VocabularyName> VocabularyNames { get; init; }
 }

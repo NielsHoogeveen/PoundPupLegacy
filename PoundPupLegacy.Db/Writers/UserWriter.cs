@@ -60,21 +60,16 @@ internal class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
 
     internal override void Write(User user)
     {
-        try
-        {
-            WriteValue(user.Id, ID);
-            WriteValue(user.CreatedDateTime, CREATED_DATE_TIME);
-            WriteValue(user.Email, EMAIL);
-            WriteValue(user.Password, PASSWORD);
-            WriteNullableValue(user.AboutMe, ABOUT_ME);
-            WriteNullableValue(user.AnimalWithin, ANIMAL_WITHIN);
-            WriteNullableValue(user.RelationToChildPlacement, RELATION_TO_CHILD_PLACEMENT);
-            WriteNullableValue(user.Avatar, AVATAR);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (user.Id is null)
+            throw new NullReferenceException();
+        WriteValue(user.Id, ID);
+        WriteValue(user.CreatedDateTime, CREATED_DATE_TIME);
+        WriteValue(user.Email, EMAIL);
+        WriteValue(user.Password, PASSWORD);
+        WriteNullableValue(user.AboutMe, ABOUT_ME);
+        WriteNullableValue(user.AnimalWithin, ANIMAL_WITHIN);
+        WriteNullableValue(user.RelationToChildPlacement, RELATION_TO_CHILD_PLACEMENT);
+        WriteNullableValue(user.Avatar, AVATAR);
+        _command.ExecuteNonQuery();
     }
 }

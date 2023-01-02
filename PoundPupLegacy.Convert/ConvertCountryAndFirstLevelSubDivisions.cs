@@ -40,6 +40,7 @@ namespace PoundPupLegacy.Convert
                 11570 => "GB-ENG",
                 11569 => "GB-SCT",
                 11571 => "GB-WLS",
+                _ => throw new Exception($"No ISO3166-2 code is defined for {id}")
             };
         }
         private static int GetSupervisingCountryId(int id)
@@ -63,7 +64,8 @@ namespace PoundPupLegacy.Convert
                 3935 => 4018,
                 4044 => 4018,
                 4057 => 4018,
-                4063 => 4018
+                4063 => 4018,
+                _ => throw new Exception($"No supervising country is defined for {id}")
             };
         }
 
@@ -79,7 +81,8 @@ namespace PoundPupLegacy.Convert
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
-                VocabularyId = 4126,
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS,ALAND, "Åland", new Dictionary<int, List<VocabularyName>>()),
                 GlobalRegionId = 3813,
                 CountryId = 3985,
                 ISO3166_1_Code = "AX",
@@ -103,7 +106,8 @@ namespace PoundPupLegacy.Convert
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
-                VocabularyId = 4126,
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS,CURACAO, "Curaçao", new Dictionary<int, List<VocabularyName>>()),
                 GlobalRegionId = 3809,
                 CountryId = 4023,
                 ISO3166_1_Code = "CW",
@@ -126,7 +130,8 @@ namespace PoundPupLegacy.Convert
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
-                VocabularyId = 4126,
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS,SINT_MAARTEN, "Sint Maarten", new Dictionary<int, List<VocabularyName>>()),
                 GlobalRegionId = 3809,
                 CountryId = 4023,
                 ISO3166_1_Code = "SX",
@@ -144,13 +149,14 @@ namespace PoundPupLegacy.Convert
             {
                 Id = UNITED_STATES_MINOR_OUTLYING_ISLANDS,
                 Title = "United States Minor Outlying Islands",
-                Name = "Minor Outlying Islands",
+                Name = "United States Minor Outlying Islands",
                 NodeStatusId = 1,
                 NodeTypeId = 15,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
-                VocabularyId = 4126,
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS,UNITED_STATES_MINOR_OUTLYING_ISLANDS, "United States Minor Outlying Islands", new Dictionary<int, List<VocabularyName>>()),
                 GlobalRegionId = 3822,
                 CountryId = 3805,
                 ISO3166_1_Code = "UM",
@@ -207,19 +213,22 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
+                var id = reader.GetInt32("id");
+                var name = reader.GetInt32("id") == 3879 ? "Réunion" :
+                           reader.GetString("title");
+
                 yield return new CountryAndFirstAndBottomLevelSubdivision
                 {
-                    Id = reader.GetInt32("id"),
+                    Id = id,
                     AccessRoleId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
-                    Title = reader.GetInt32("id") == 3879 ? "Réunion" :
-                            reader.GetString("title"),
-                    Name = reader.GetInt32("id") == 3879 ? "Réunion" :
-                            reader.GetString("title"),
+                    Title = name,
+                    Name = name,
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 15,
-                    VocabularyId = 4126,
+                    Description = "",
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
                     GlobalRegionId = reader.GetInt32("continental_region_id"),
                     ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                                   reader.GetInt32("id") == 4010 ? "RS" :

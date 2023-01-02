@@ -30,15 +30,10 @@ internal class ArticleWriter : DatabaseWriter<Article>, IDatabaseWriter<Article>
 
     internal override void Write(Article article)
     {
-        try
-        {
-            WriteValue(article.Id, ID);
-            WriteValue(article.Text, TEXT);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (article.Id is null)
+            throw new NullReferenceException();
+        WriteValue(article.Id, ID);
+        WriteValue(article.Text, TEXT);
+        _command.ExecuteNonQuery();
     }
 }

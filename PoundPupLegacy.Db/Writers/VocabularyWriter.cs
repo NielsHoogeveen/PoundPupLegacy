@@ -35,16 +35,11 @@ internal class VocabularyWriter : DatabaseWriter<Vocabulary>, IDatabaseWriter<Vo
 
     internal override void Write(Vocabulary vocabulary)
     {
-        try
-        {
-            WriteValue(vocabulary.Id, ID);
-            WriteValue(vocabulary.Name, NAME);
-            WriteValue(vocabulary.Description, DESCRIPTION);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (vocabulary.Id is null)
+            throw new NullReferenceException();
+        WriteValue(vocabulary.Id, ID);
+        WriteValue(vocabulary.Name, NAME);
+        WriteValue(vocabulary.Description, DESCRIPTION);
+        _command.ExecuteNonQuery();
     }
 }

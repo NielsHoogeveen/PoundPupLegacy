@@ -13,17 +13,20 @@ namespace PoundPupLegacy.Convert
             {
 
                 var parts = line.Split(new char[] { ';' });
+                var id = int.Parse(parts[0]);
+                var title = parts[8];
                 yield return new FormalIntermediateLevelSubdivision
                 {
-                    Id = int.Parse(parts[0]),
+                    Id = id,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
-                    VocabularyId = 4126,
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
+                    Description = "",
                     NodeTypeId = int.Parse(parts[4]),
                     NodeStatusId = int.Parse(parts[5]),
                     AccessRoleId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
-                    Title = parts[8],
+                    Title = title,
                     Name = parts[9],
                     ISO3166_2_Code = parts[10],
                     FileIdFlag = null,

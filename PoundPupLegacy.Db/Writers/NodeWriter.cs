@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db.Writers;
+﻿using System.Collections.Immutable;
+
+namespace PoundPupLegacy.Db.Writers;
 public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
 {
     private const string ID = "id";
@@ -11,57 +13,89 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
 
     public static DatabaseWriter<Node> Create(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var columnDefinitions = new ColumnDefinition[] {
+            new ColumnDefinition{
+                Name = ACCESS_ROLE_ID,
+                NpgsqlDbType = NpgsqlDbType.Integer
+            },
+            new ColumnDefinition{
+                Name = CREATED_DATE_TIME,
+                NpgsqlDbType = NpgsqlDbType.Timestamp
+            },
+            new ColumnDefinition{
+                Name = CHANGED_DATE_TIME,
+                NpgsqlDbType = NpgsqlDbType.Timestamp
+            },
+            new ColumnDefinition{
+                Name = TITLE,
+                NpgsqlDbType = NpgsqlDbType.Varchar
+            },
+            new ColumnDefinition{
+                Name = NODE_STATUS_ID,
+                NpgsqlDbType = NpgsqlDbType.Integer
+            },
+            new ColumnDefinition{
+                Name = NODE_TYPE_ID,
+                NpgsqlDbType = NpgsqlDbType.Integer
+            },
+        };
+
+        var commandWithId = CreateInsertStatement(
             connection,
             "node",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
+            columnDefinitions.ToImmutableList().Prepend(
+                new ColumnDefinition
+                {
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ACCESS_ROLE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CREATED_DATE_TIME,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
-                },
-                new ColumnDefinition{
-                    Name = CHANGED_DATE_TIME,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
-                },
-                new ColumnDefinition{
-                    Name = TITLE,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = NODE_STATUS_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = NODE_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-            }
+                })
         );
-        return new NodeWriter(command);
+        var commandWithoutId = CreateIdentityInsertStatement(
+            connection,
+            "node",
+            columnDefinitions
+        );
+        return new NodeWriter(commandWithId, commandWithoutId);
     }
 
 
-    private NodeWriter(NpgsqlCommand command) : base(command)
+    private NpgsqlCommand _identityCommand { get; }
+    private NodeWriter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)
     {
+        _identityCommand = identityCommand;
     }
 
     internal override void Write(Node node)
     {
-        WriteValue(node.Id, ID);
-        WriteValue(node.AccessRoleId, ACCESS_ROLE_ID);
-        WriteValue(node.CreatedDateTime, CREATED_DATE_TIME);
-        WriteValue(node.ChangedDateTime, CHANGED_DATE_TIME);
-        WriteValue(node.Title, TITLE);
-        WriteValue(node.NodeStatusId, NODE_STATUS_ID);
-        WriteValue(node.NodeTypeId, NODE_TYPE_ID);
-        _command.ExecuteNonQuery();
+        if (node.Id is null)
+        {
+            WriteValue(node.AccessRoleId, ACCESS_ROLE_ID, _identityCommand);
+            WriteValue(node.CreatedDateTime, CREATED_DATE_TIME, _identityCommand);
+            WriteValue(node.ChangedDateTime, CHANGED_DATE_TIME, _identityCommand);
+            WriteValue(node.Title, TITLE, _identityCommand);
+            WriteValue(node.NodeStatusId, NODE_STATUS_ID, _identityCommand);
+            WriteValue(node.NodeTypeId, NODE_TYPE_ID, _identityCommand);
+            node.Id = _identityCommand.ExecuteScalar() switch
+            {
+                int i => i,
+                _ => throw new Exception("Insert of node does not return an id.")
+            };
+        }
+        else
+        {
+            WriteValue(node.Id, ID);
+            WriteValue(node.AccessRoleId, ACCESS_ROLE_ID);
+            WriteValue(node.CreatedDateTime, CREATED_DATE_TIME);
+            WriteValue(node.ChangedDateTime, CHANGED_DATE_TIME);
+            WriteValue(node.Title, TITLE);
+            WriteValue(node.NodeStatusId, NODE_STATUS_ID);
+            WriteValue(node.NodeTypeId, NODE_TYPE_ID);
+            _command.ExecuteNonQuery();
+        }
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        _identityCommand.Dispose();
     }
 }

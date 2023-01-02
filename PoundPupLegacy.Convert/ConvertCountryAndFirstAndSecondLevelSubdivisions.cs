@@ -21,7 +21,8 @@ namespace PoundPupLegacy.Convert
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
-                VocabularyId = 4126,
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS,SAINT_BARTH, "Saint Barthélemy", new Dictionary<int, List<VocabularyName>>()),
                 GlobalRegionId = 3809,
                 CountryId = 4018,
                 ISO3166_1_Code = "BL",
@@ -46,7 +47,8 @@ namespace PoundPupLegacy.Convert
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
-                VocabularyId = 4126,
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS,SAINT_MARTIN, "Saint Martin", new Dictionary<int, List<VocabularyName>>()),
                 GlobalRegionId = 3809,
                 CountryId = 4018,
                 ISO3166_1_Code = "MF",
@@ -70,7 +72,8 @@ namespace PoundPupLegacy.Convert
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
-                VocabularyId = 4126,
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS,FRENCH_SOUTHERN_TERRITORIES, "French Southern Territories", new Dictionary<int, List<VocabularyName>>()),
                 GlobalRegionId = 3828,
                 CountryId = 4018,
                 ISO3166_1_Code = "TF",
@@ -139,19 +142,21 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
+                var id = reader.GetInt32("id");
+                var name = reader.GetInt32("id") == 3879 ? "Réunion" :
+                            reader.GetString("title");
                 yield return new CountryAndFirstAndSecondLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
                     AccessRoleId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
-                    Title = reader.GetInt32("id") == 3879 ? "Réunion" :
-                            reader.GetString("title"),
-                    Name = reader.GetInt32("id") == 3879 ? "Réunion" :
-                            reader.GetString("title"),
+                    Title = name,
+                    Name = name,
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 16,
-                    VocabularyId = 4126,
+                    Description = "",
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
                     GlobalRegionId = reader.GetInt32("continental_region_id"),
                     ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                                   reader.GetInt32("id") == 4010 ? "RS" :

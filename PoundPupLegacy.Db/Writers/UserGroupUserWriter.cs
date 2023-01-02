@@ -30,15 +30,8 @@ internal class UserGroupUserWriter : DatabaseWriter<UserGroupUser>, IDatabaseWri
 
     internal override void Write(UserGroupUser article)
     {
-        try
-        {
-            WriteValue(article.UserGroupId, USER_GROUP_ID);
-            WriteValue(article.UserId, USER_ID);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        WriteValue(article.UserGroupId, USER_GROUP_ID);
+        WriteValue(article.UserId, USER_ID);
+        _command.ExecuteNonQuery();
     }
 }

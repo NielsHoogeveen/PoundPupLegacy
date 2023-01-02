@@ -30,15 +30,11 @@ internal class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameab
 
     internal override void Write(Nameable nameable)
     {
-        try
-        {
-            WriteValue(nameable.Id, ID);
-            WriteValue(nameable.Description, DESCRIPTION);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (nameable.Id is null)
+            throw new NullReferenceException();
+
+        WriteValue(nameable.Id, ID);
+        WriteValue(nameable.Description, DESCRIPTION);
+        _command.ExecuteNonQuery();
     }
 }

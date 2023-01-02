@@ -36,16 +36,12 @@ internal class ChildTraffickingCaseWriter : DatabaseWriter<ChildTraffickingCase>
 
     internal override void Write(ChildTraffickingCase abuseCase)
     {
-        try
-        {
-            WriteValue(abuseCase.Id, ID);
-            WriteNullableValue(abuseCase.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
-            WriteValue(abuseCase.CountryIdFrom, COUNTRY_ID_FROM);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (abuseCase.Id is null)
+            throw new NullReferenceException();
+
+        WriteValue(abuseCase.Id, ID);
+        WriteNullableValue(abuseCase.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
+        WriteValue(abuseCase.CountryIdFrom, COUNTRY_ID_FROM);
+        _command.ExecuteNonQuery();
     }
 }

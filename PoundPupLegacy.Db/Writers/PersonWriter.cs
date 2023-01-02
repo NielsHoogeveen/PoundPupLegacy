@@ -41,6 +41,8 @@ internal class PersonWriter : DatabaseWriter<Person>, IDatabaseWriter<Person>
 
     internal override void Write(Person person)
     {
+        if (person.Id is null)
+            throw new NullReferenceException();
         WriteValue(person.Id, ID);
         WriteNullableValue(person.DateOfBirth, DATE_OF_BIRTH);
         WriteNullableValue(person.DateOfDeath, DATE_OF_DEATH);

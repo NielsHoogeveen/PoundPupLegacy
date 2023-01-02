@@ -30,15 +30,11 @@ internal class DiscussionWriter : DatabaseWriter<Discussion>, IDatabaseWriter<Di
 
     internal override void Write(Discussion discussion)
     {
-        try
-        {
-            WriteValue(discussion.Id, ID);
-            WriteValue(discussion.Text, TEXT);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (discussion.Id is null)
+            throw new NullReferenceException();
+
+        WriteValue(discussion.Id, ID);
+        WriteValue(discussion.Text, TEXT);
+        _command.ExecuteNonQuery();
     }
 }

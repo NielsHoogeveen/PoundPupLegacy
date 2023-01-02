@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db.Writers;
+﻿using System.Collections.Immutable;
+
+namespace PoundPupLegacy.Db.Writers;
 
 internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Location>
 {
@@ -13,14 +15,7 @@ internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Locati
     private const string LONGITUDE = "longitude";
     public static DatabaseWriter<Location> Create(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
-            connection,
-            "location",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+        var columnDefitions = new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = STREET,
                     NpgsqlDbType = NpgsqlDbType.Varchar
@@ -55,28 +50,70 @@ internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Locati
                     NpgsqlDbType = NpgsqlDbType.Numeric
                 },
 
-            }
+            };
+
+        var commandWithId = CreateInsertStatement(
+            connection,
+            "location",
+            columnDefitions.ToImmutableList().Prepend(new ColumnDefinition
+            {
+                Name = ID,
+                NpgsqlDbType = NpgsqlDbType.Integer
+            })
+        );
+        var commandWithoutId = CreateIdentityInsertStatement(
+            connection,
+            "location",
+            columnDefitions
         );
 
-        return new LocationWriter(command);
+        return new LocationWriter(commandWithId, commandWithoutId);
 
     }
 
-    internal LocationWriter(NpgsqlCommand command) : base(command)
+    private NpgsqlCommand _identityCommand;
+    internal LocationWriter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)
     {
+        _identityCommand = identityCommand;
+
     }
 
     internal override void Write(Location location)
     {
-        WriteValue(location.Id, ID);
-        WriteNullableValue(location.Street, STREET);
-        WriteNullableValue(location.Additional, ADDITIONAL);
-        WriteNullableValue(location.City, CITY);
-        WriteNullableValue(location.PostalCode, POSTAL_CODE);
-        WriteNullableValue(location.SubdivisionId, SUBDIVIONS_ID);
-        WriteValue(location.CountryId, COUNTRY_ID);
-        WriteNullableValue(location.Latitude, LATITUDE);
-        WriteNullableValue(location.Longitude, LONGITUDE);
-        _command.ExecuteNonQuery();
+        if (location.Id is null)
+        {
+            WriteNullableValue(location.Street, STREET, _identityCommand);
+            WriteNullableValue(location.Additional, ADDITIONAL, _identityCommand);
+            WriteNullableValue(location.City, CITY, _identityCommand);
+            WriteNullableValue(location.PostalCode, POSTAL_CODE, _identityCommand);
+            WriteNullableValue(location.SubdivisionId, SUBDIVIONS_ID, _identityCommand);
+            WriteValue(location.CountryId, COUNTRY_ID, _identityCommand);
+            WriteNullableValue(location.Latitude, LATITUDE, _identityCommand);
+            WriteNullableValue(location.Longitude, LONGITUDE, _identityCommand);
+            location.Id = _command.ExecuteScalar() switch
+            {
+                int i => i,
+                _ => throw new Exception("Id could not be assigned for location."),
+            };
+        }
+        else
+        {
+            WriteValue(location.Id, ID);
+            WriteNullableValue(location.Street, STREET);
+            WriteNullableValue(location.Additional, ADDITIONAL);
+            WriteNullableValue(location.City, CITY);
+            WriteNullableValue(location.PostalCode, POSTAL_CODE);
+            WriteNullableValue(location.SubdivisionId, SUBDIVIONS_ID);
+            WriteValue(location.CountryId, COUNTRY_ID);
+            WriteNullableValue(location.Latitude, LATITUDE);
+            WriteNullableValue(location.Longitude, LONGITUDE);
+            _command.ExecuteNonQuery();
+        }
     }
+    public override void Dispose()
+    {
+        base.Dispose();
+        _identityCommand.Dispose();
+    }
+
 }

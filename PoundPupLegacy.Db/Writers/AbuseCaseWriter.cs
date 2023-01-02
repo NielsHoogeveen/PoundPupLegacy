@@ -53,19 +53,14 @@ internal class AbuseCaseWriter : DatabaseWriter<AbuseCase>, IDatabaseWriter<Abus
 
     internal override void Write(AbuseCase abuseCase)
     {
-        try
-        {
-            WriteValue(abuseCase.Id, ID);
-            WriteValue(abuseCase.ChildPlacementTypeId, CHILD_PLACEMENT_TYPE_ID);
-            WriteNullableValue(abuseCase.FamilySizeId, FAMILY_SIZE_ID);
-            WriteNullableValue(abuseCase.HomeschoolingInvolved, HOME_SCHOOLING_INVOLVED);
-            WriteNullableValue(abuseCase.FundamentalFaithInvolved, FUNDAMENTAL_FAITH_INVOLVED);
-            WriteNullableValue(abuseCase.DisabilitiesInvolved, DISABILITIES_INVOLVED);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (abuseCase.Id is null)
+            throw new NullReferenceException();
+        WriteValue(abuseCase.Id, ID);
+        WriteValue(abuseCase.ChildPlacementTypeId, CHILD_PLACEMENT_TYPE_ID);
+        WriteNullableValue(abuseCase.FamilySizeId, FAMILY_SIZE_ID);
+        WriteNullableValue(abuseCase.HomeschoolingInvolved, HOME_SCHOOLING_INVOLVED);
+        WriteNullableValue(abuseCase.FundamentalFaithInvolved, FUNDAMENTAL_FAITH_INVOLVED);
+        WriteNullableValue(abuseCase.DisabilitiesInvolved, DISABILITIES_INVOLVED);
+        _command.ExecuteNonQuery();
     }
 }

@@ -39,17 +39,20 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
+                var id = reader.GetInt32("id");
+                var name = reader.GetString("title");
                 yield return new FirstLevelGlobalRegion
                 {
-                    Id = reader.GetInt32("id"),
+                    Id = id,
                     AccessRoleId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
-                    Title = reader.GetString("title"),
+                    Title = name,
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 11,
-                    VocabularyId = 4126,
-                    Name = reader.GetString("title"),
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
+                    Description = "",
+                    Name = name,
                 };
             }
             reader.Close();

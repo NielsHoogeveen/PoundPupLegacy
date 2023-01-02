@@ -50,6 +50,8 @@ internal class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter<Docume
 
     internal override void Write(Document document)
     {
+        if (document.Id is null)
+            throw new NullReferenceException();
         WriteValue(document.Id, ID);
         WriteValue(document.Text, TEXT);
         WriteDateTimeRange(document.PublicationDate, PUBLICATION_DATE, PUBLICATION_DATE_RANGE);

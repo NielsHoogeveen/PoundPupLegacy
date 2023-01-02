@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db.Writers;
+﻿using System.Collections.Immutable;
+
+namespace PoundPupLegacy.Db.Writers;
 
 internal class AccessRoleWriter : DatabaseWriter<AccessRole>, IDatabaseWriter<AccessRole>
 {
@@ -6,39 +8,57 @@ internal class AccessRoleWriter : DatabaseWriter<AccessRole>, IDatabaseWriter<Ac
     private const string NAME = "name";
     public static DatabaseWriter<AccessRole> Create(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var columnDefinitions = new ColumnDefinition[] {
+            new ColumnDefinition{
+                Name = NAME,
+                NpgsqlDbType = NpgsqlDbType.Varchar
+            },
+        };
+        var commandWithId = CreateInsertStatement(
             connection,
             "access_role",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-            }
+            columnDefinitions.ToImmutableList().Prepend(new ColumnDefinition
+            {
+                Name = ID,
+                NpgsqlDbType = NpgsqlDbType.Integer
+            })
         );
-        return new AccessRoleWriter(command);
+        var commandWithoutId = CreateInsertStatement(
+            connection,
+            "access_role",
+            columnDefinitions
+        );
+        return new AccessRoleWriter(commandWithId, commandWithoutId);
 
     }
 
-    internal AccessRoleWriter(NpgsqlCommand command) : base(command)
+    private NpgsqlCommand _idenityCommand;
+    internal AccessRoleWriter(NpgsqlCommand command, NpgsqlCommand idenityCommand) : base(command)
     {
+        _idenityCommand = idenityCommand;
     }
 
     internal override void Write(AccessRole accessRole)
     {
-        try
+        if (accessRole.Id is null)
+        {
+            WriteValue(accessRole.Name, NAME, _idenityCommand);
+            accessRole.Id = _idenityCommand.ExecuteScalar() switch
+            {
+                int i => i,
+                _ => throw new Exception("Id could not be set for access role")
+            };
+        }
+        else
         {
             WriteValue(accessRole.Id, ID);
             WriteValue(accessRole.Name, NAME);
             _command.ExecuteNonQuery();
         }
-        catch (Exception ex)
-        {
-            throw;
-        }
+    }
+    public override void Dispose()
+    {
+        base.Dispose();
+        _idenityCommand.Dispose();
     }
 }

@@ -1,8 +1,9 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface Term : Node
+public record Term : Identifiable
 {
-    public string Name { get; }
-
-    public int VocabularyId { get; }
+    public required int? Id { get; set; }
+    public required int VocabularyId { get; init; }
+    public required string Name { get; init; }
+    public required int NameableId { get; init; }
 }

@@ -2,7 +2,7 @@
 
 public record AttachmentTherapist : Person
 {
-    public required int Id { get; set; }
+    public required int? Id { get; set; }
     public required int AccessRoleId { get; init; }
     public required DateTime CreatedDateTime { get; init; }
     public required DateTime ChangedDateTime { get; init; }

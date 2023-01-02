@@ -35,6 +35,9 @@ internal class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabaseWriter<
 
     internal override void Write(Subdivision subdivision)
     {
+        if (subdivision.Id is null)
+            throw new NullReferenceException();
+
         WriteValue(subdivision.Id, ID);
         WriteValue(subdivision.Name, NAME);
         WriteValue(subdivision.CountryId, COUNTRY_ID);

@@ -9,6 +9,92 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
+        private static Dictionary<int, List<VocabularyName>> OrganizationTypeVocubularyNames = new Dictionary<int, List<VocabularyName>>
+        {
+            [12625] = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    Name = "adoption agencies",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+            [35715] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "church",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+            [31716] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "boot camp",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+            [12632] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "media",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+             },
+            [48309] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "blog",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+            [12635] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "orphanages",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+            [12624] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "adoption advocates",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+            [31586] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "boarding school",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+            [14670] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "adoption facilitators",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+            [17310] = new List<VocabularyName> {
+                new VocabularyName
+                {
+                    Name = "maternity homes",
+                    VocabularyId = 4126,
+                    ParentNames = new List<string>()
+                }
+            },
+        };
+
+
         private static void MigrateOrganizationTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
             OrganizationTypeCreator.Create(ReadOrganizationTypes(mysqlconnection), connection);
@@ -39,10 +125,11 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
+                var id = reader.GetInt32("id");
                 var name = reader.GetString("title");
                 yield return new OrganizationType
                 {
-                    Id = reader.GetInt32("id"),
+                    Id = id,
                     AccessRoleId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -50,22 +137,11 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = reader.GetInt32("node_status_id"),
                     NodeTypeId = 1,
                     Description = reader.GetString("description"),
-                    VocabularyNames = new List<VocabularyName>
-                    {
-                        new VocabularyName
-                        {
-                            VocabularyId = ORGANIZATION_TYPE,
-                            Name = name,
-                            ParentNames = new List<string>(),
-                        },
-                    },
-
+                    VocabularyNames = GetVocabularyNames(ORGANIZATION_TYPE, id, name, OrganizationTypeVocubularyNames),
                 };
 
             }
             reader.Close();
         }
-
-
     }
 }

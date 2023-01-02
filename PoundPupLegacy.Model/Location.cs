@@ -2,7 +2,7 @@
 
 public record Location : Identifiable
 {
-    public required int Id { get; set; }
+    public required int? Id { get; set; }
     public required string? Street { get; init; }
     public required string? Additional { get; init; }
     public required string? City { get; init; }

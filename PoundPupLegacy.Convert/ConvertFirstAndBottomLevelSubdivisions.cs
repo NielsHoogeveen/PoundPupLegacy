@@ -14,17 +14,20 @@ namespace PoundPupLegacy.Convert
             {
 
                 var parts = line.Split(new char[] { ';' });
+                var title = parts[8];
+                var id = int.Parse(parts[0]);
                 yield return new FirstAndBottomLevelSubdivision
                 {
                     Id = int.Parse(parts[0]),
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
-                    VocabularyId = 4126,
+                    Description = "",
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                     NodeTypeId = int.Parse(parts[4]),
                     NodeStatusId = int.Parse(parts[5]),
                     AccessRoleId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
-                    Title = parts[8],
+                    Title = title,
                     Name = parts[9],
                     ISO3166_2_Code = parts[10],
                     FileIdFlag = null,
@@ -358,17 +361,20 @@ namespace PoundPupLegacy.Convert
             {
                 var isoCode = reader.IsDBNull("iso_3166_2_code") ? GetISO3166Code2(reader.GetInt32("id"), "") :
                                     GetISO3166Code2(reader.GetInt32("id"), reader.GetString("iso_3166_2_code"));
+                var id = reader.GetInt32("id");
+                var name = GetSubdivisionName(reader.GetInt32("id"), reader.GetString("title"), isoCode);
                 yield return new FirstAndBottomLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
                     AccessRoleId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
-                    Title = GetSubdivisionTitle(reader.GetInt32("id"), reader.GetString("title"), isoCode),
-                    Name = GetSubdivisionName(reader.GetInt32("id"), reader.GetString("title"), isoCode),
+                    Title = name,
+                    Name = name,
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 17,
-                    VocabularyId = 4126,
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
+                    Description = "",
                     CountryId = reader.GetInt32("id") == 11827 ? 11571 :
                                 reader.GetInt32("id") == 11789 ? 11571 :
                                 reader.GetInt32("country_id"),

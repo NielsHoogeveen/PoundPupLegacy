@@ -29,6 +29,8 @@ internal class BasicSecondLevelSubdivisionWriter : DatabaseWriter<BasicSecondLev
 
     internal override void Write(BasicSecondLevelSubdivision country)
     {
+        if (country.Id is null)
+            throw new NullReferenceException();
         WriteValue(country.Id, ID);
         WriteValue(country.IntermediateLevelSubdivisionId, INTERMEDIATE_LEVEL_SUBDIVISION_ID);
         _command.ExecuteNonQuery();

@@ -14,17 +14,20 @@ namespace PoundPupLegacy.Convert
             {
 
                 var parts = line.Split(new char[] { ';' });
+                var id = int.Parse(parts[0]);
+                var title = parts[8];
                 yield return new InformalIntermediateLevelSubdivision
                 {
-                    Id = int.Parse(parts[0]),
+                    Id = id,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
-                    VocabularyId = 4126,
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
+                    Description = "",
                     NodeTypeId = int.Parse(parts[4]),
                     NodeStatusId = int.Parse(parts[5]),
                     AccessRoleId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
-                    Title = parts[8],
+                    Title = title,
                     Name = parts[9],
                 };
             }
@@ -71,18 +74,21 @@ namespace PoundPupLegacy.Convert
             while (reader.Read())
             {
 
+                var id = reader.GetInt32("id");
+                var title = $"{reader.GetString("title")} (region of the USA)";
                 yield return new InformalIntermediateLevelSubdivision
                 {
-                    Id = reader.GetInt32("id"),
+                    Id = id,
                     AccessRoleId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
-                    Title = $"{reader.GetString("title")} (region of the USA)",
+                    Title = title,
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 18,
                     CountryId = reader.GetInt32("country_id"),
                     Name = reader.GetString("title"),
-                    VocabularyId = 4126,
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
+                    Description = "",
                 };
             }
             reader.Close();

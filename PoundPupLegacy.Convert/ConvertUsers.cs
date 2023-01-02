@@ -1,7 +1,6 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Writers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -61,7 +60,7 @@ namespace PoundPupLegacy.Convert
         private static void MigrateUsers(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
             var users = ReadUsers(mysqlconnection).ToList();
-            var memberList = users.Select(x => new UserGroupUser { UserGroupId = 4, UserId = x.Id });
+            var memberList = users.Select(x => new UserGroupUser { UserGroupId = 4, UserId = (int)x.Id! });
             AnonimousUserCreator.Create(connection);
             UserCreator.Create(users, connection);
             UserGroupCreator.Create(GetUserGroups(), connection);

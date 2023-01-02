@@ -28,6 +28,8 @@ internal class BoundCountryWriter : DatabaseWriter<BoundCountry>, IDatabaseWrite
 
     internal override void Write(BoundCountry country)
     {
+        if (country.Id is null)
+            throw new NullReferenceException();
         WriteValue(country.Id, ID);
         WriteValue(country.BindingCountryId, BINDING_COUNTRY_ID);
         _command.ExecuteNonQuery();

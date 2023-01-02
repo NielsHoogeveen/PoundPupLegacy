@@ -44,6 +44,8 @@ internal partial class Program
 
         while (reader.Read())
         {
+            var id = reader.GetInt32("id");
+            var title = reader.GetString("title");
             var country = new WrongfulMedicationCase
             {
                 Id = reader.GetInt32("id"),
@@ -53,7 +55,7 @@ internal partial class Program
                 Title = reader.GetString("title"),
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                IsTopic = reader.GetBoolean("is_topic"),
+                VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
             };

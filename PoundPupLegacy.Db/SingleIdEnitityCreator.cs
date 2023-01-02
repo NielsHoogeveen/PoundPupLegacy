@@ -10,7 +10,7 @@ public class SingleIdEnitityCreator
         foreach (var node in nodes)
         {
             nodeWriter.Write(node);
-            idTableWriter.Write(node.Id);
+            idTableWriter.Write((int)node.Id!);
         }
     }
 }

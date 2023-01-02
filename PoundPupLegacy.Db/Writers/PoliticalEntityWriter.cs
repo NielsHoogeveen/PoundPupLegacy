@@ -29,6 +29,9 @@ internal class PoliticalEntityWriter : DatabaseWriter<PoliticalEntity>, IDatabas
 
     internal override void Write(PoliticalEntity entity)
     {
+        if (entity.Id is null)
+            throw new NullReferenceException();
+
         WriteValue(entity.Id, ID);
         WriteNullableValue(entity.FileIdFlag, FILE_ID_FLAG);
         _command.ExecuteNonQuery();

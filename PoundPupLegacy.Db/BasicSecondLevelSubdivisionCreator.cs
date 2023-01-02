@@ -7,7 +7,7 @@ public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLeve
 
         using var nodeWriter = NodeWriter.Create(connection);
         using var documentableWriter = DocumentableWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
+        using var nameableWriter = NameableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
         using var subdivisionWriter = SubdivisionWriter.Create(connection);
@@ -21,7 +21,7 @@ public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLeve
         {
             nodeWriter.Write(subdivision);
             documentableWriter.Write(subdivision);
-            termWriter.Write(subdivision);
+            nameableWriter.Write(subdivision);
             geographicalEntityWriter.Write(subdivision);
             politicalEntityWriter.Write(subdivision);
             subdivisionWriter.Write(subdivision);
@@ -31,8 +31,8 @@ public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLeve
             basicSecondLevelSubdivisionWriter.Write(subdivision);
             termHierarchyWriter.Write(new TermHierarchy
             {
-                ParentId = subdivision.CountryId,
-                ChildId = subdivision.Id
+                TermIdPartent = subdivision.CountryId,
+                TermIdChild = (int)subdivision.Id!
             });
         }
     }

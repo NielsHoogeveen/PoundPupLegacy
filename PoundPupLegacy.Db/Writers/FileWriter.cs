@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db.Writers;
+﻿using System.Collections.Immutable;
+
+namespace PoundPupLegacy.Db.Writers;
 
 internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.File>
 {
@@ -10,48 +12,79 @@ internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.Fi
 
     public static DatabaseWriter<Model.File> Create(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var collumnDefinitions = new ColumnDefinition[]
+        {
+            new ColumnDefinition{
+                Name = PATH,
+                NpgsqlDbType = NpgsqlDbType.Varchar
+            },
+            new ColumnDefinition{
+                Name = NAME,
+                NpgsqlDbType = NpgsqlDbType.Varchar
+            },
+            new ColumnDefinition{
+                Name = MIME_TYPE,
+                NpgsqlDbType = NpgsqlDbType.Varchar
+            },
+            new ColumnDefinition{
+                Name = SIZE,
+                NpgsqlDbType = NpgsqlDbType.Integer
+            },
+        };
+
+        var commandWithId = CreateInsertStatement(
             connection,
             "file",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
+            collumnDefinitions.ToImmutableList().Prepend(
+                new ColumnDefinition
+                {
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PATH,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = MIME_TYPE,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = SIZE,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-
-            }
+                })
         );
-        return new FileWriter(command);
+        var commandWithoutId = CreateIdentityInsertStatement(
+            connection,
+            "file",
+            collumnDefinitions
+        );
+        return new FileWriter(commandWithId, commandWithoutId);
 
     }
+    private NpgsqlCommand _identityCommand;
 
-    internal FileWriter(NpgsqlCommand command) : base(command)
+    internal FileWriter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)
     {
+        _identityCommand = identityCommand;
     }
 
-    internal override void Write(Model.File subdivision)
+    internal override void Write(Model.File file)
     {
-        WriteValue(subdivision.Id, ID);
-        WriteValue(subdivision.Path, PATH);
-        WriteValue(subdivision.Name, NAME);
-        WriteValue(subdivision.MimeType, MIME_TYPE);
-        WriteValue(subdivision.Size, SIZE);
-        _command.ExecuteNonQuery();
+        if (file.Id is null)
+        {
+            WriteValue(file.Path, PATH, _identityCommand);
+            WriteValue(file.Name, NAME, _identityCommand);
+            WriteValue(file.MimeType, MIME_TYPE, _identityCommand);
+            WriteValue(file.Size, SIZE, _identityCommand);
+            file.Id = _identityCommand.ExecuteScalar() switch
+            {
+                int i => i,
+                _ => throw new Exception("No id has been assigned when adding a file"),
+            };
+        }
+        else
+        {
+            WriteValue(file.Id, ID);
+            WriteValue(file.Path, PATH);
+            WriteValue(file.Name, NAME);
+            WriteValue(file.MimeType, MIME_TYPE);
+            WriteValue(file.Size, SIZE);
+            _command.ExecuteNonQuery();
+        }
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        _identityCommand.Dispose();
     }
 }

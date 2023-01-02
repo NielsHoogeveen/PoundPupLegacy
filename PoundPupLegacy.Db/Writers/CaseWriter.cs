@@ -40,6 +40,8 @@ internal class CaseWriter : DatabaseWriter<Case>, IDatabaseWriter<Case>
 
     internal override void Write(Case @case)
     {
+        if (@case.Id is null)
+            throw new NullReferenceException();
         WriteValue(@case.Id, ID);
         WriteValue(@case.Description, DESCRIPTION);
         WriteDateTimeRange(@case.Date, DATE, DATERANGE);

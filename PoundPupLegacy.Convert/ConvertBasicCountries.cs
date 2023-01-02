@@ -138,7 +138,8 @@ internal partial class Program
             NodeStatusId = 1,
             NodeTypeId = 13,
             Name = "Antigua and Barbuda",
-            VocabularyId = 4126,
+            Description = "",
+            VocabularyNames = new List<VocabularyName>(),
             GlobalRegionId = 3822,
             ISO3166_1_Code = "AG",
             FileIdFlag = null,
@@ -160,7 +161,8 @@ internal partial class Program
             NodeStatusId = 1,
             NodeTypeId = 13,
             Name = "Palestine",
-            VocabularyId = 4126,
+            Description = "",
+            VocabularyNames = new List<VocabularyName>(),
             GlobalRegionId = 3817,
             ISO3166_1_Code = "PS",
             FileIdFlag = null,
@@ -182,7 +184,8 @@ internal partial class Program
             NodeStatusId = 1,
             NodeTypeId = 13,
             Name = "Saint Helena, Ascension and Tristan da Cunha",
-            VocabularyId = 4126,
+            Description = "",
+            VocabularyNames = new List<VocabularyName>(),
             GlobalRegionId = 3825,
             ISO3166_1_Code = "SH",
             FileIdFlag = null,
@@ -205,7 +208,8 @@ internal partial class Program
             NodeStatusId = 1,
             NodeTypeId = 13,
             Name = "South Sudan",
-            VocabularyId = 4126,
+            Description = "",
+            VocabularyNames = new List<VocabularyName>(),
             GlobalRegionId = 3827,
             ISO3166_1_Code = "SS",
             FileIdFlag = null,
@@ -309,6 +313,7 @@ internal partial class Program
 
         while (reader.Read())
         {
+            var id = reader.GetInt32("id");
             var name = reader.GetInt32("id") == 3839 ? "Côte d'Ivoire" :
                         reader.GetInt32("id") == 3999 ? "Bosnia and Herzegovina" :
                         reader.GetInt32("id") == 4005 ? "North Macedonia" :
@@ -318,7 +323,7 @@ internal partial class Program
 
             var country = new BasicCountry
             {
-                Id = reader.GetInt32("id"),
+                Id = id,
                 AccessRoleId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
@@ -326,7 +331,8 @@ internal partial class Program
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = 13,
                 Name = name,
-                VocabularyId = 4126,
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
                 GlobalRegionId = reader.GetInt32("continental_region_id"),
                 ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                               reader.GetInt32("id") == 4010 ? "RS" :

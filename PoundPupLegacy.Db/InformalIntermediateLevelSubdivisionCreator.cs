@@ -25,8 +25,8 @@ public class InformalIntermediateLevelSubdivisionCreator : IEntityCreator<Inform
             formalIntermediateLevelSubdivisionWriter.Write(subdivision);
             termHierarchyWriter.Write(new TermHierarchy
             {
-                ParentId = subdivision.CountryId,
-                ChildId = subdivision.Id
+                TermIdPartent = subdivision.CountryId,
+                TermIdChild = (int)subdivision.Id!
             });
         }
     }

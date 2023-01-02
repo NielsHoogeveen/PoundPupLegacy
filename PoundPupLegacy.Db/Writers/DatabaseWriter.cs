@@ -20,7 +20,7 @@ public abstract class DatabaseWriter<T> : IDisposable
         _command = command;
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         _command.Dispose();
     }
@@ -73,18 +73,27 @@ public abstract class DatabaseWriter<T> : IDisposable
     }
     protected void WriteNullableValue<T2>(T2? value, string parameter)
     {
+        WriteNullableValue(value, parameter, _command);
+    }
+    protected void WriteNullableValue<T2>(T2? value, string parameter, NpgsqlCommand command)
+    {
         if (value is not null)
         {
-            _command.Parameters[parameter].Value = value;
+            command.Parameters[parameter].Value = value;
         }
         else
         {
-            _command.Parameters[parameter].Value = DBNull.Value;
+            command.Parameters[parameter].Value = DBNull.Value;
         }
     }
     protected void WriteValue<T2>(T2 value, string parameter)
     {
-        _command.Parameters[parameter].Value = value;
+        WriteValue(value, parameter, _command);
+    }
+
+    protected void WriteValue<T2>(T2 value, string parameter, NpgsqlCommand command)
+    {
+        command.Parameters[parameter].Value = value;
     }
 
     protected struct ColumnDefinition
@@ -93,13 +102,39 @@ public abstract class DatabaseWriter<T> : IDisposable
         public required NpgsqlDbType NpgsqlDbType { get; init; }
     }
 
+    protected static NpgsqlCommand CreateIdentityInsertStatement(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
+    {
+        var sql = $"""
+            INSERT INTO public.\"{tableName}\"(
+                {string.Join(',', columnDefinitions.Select(x => x.Name))}
+            ) 
+            VALUES(
+                {string.Join(',', columnDefinitions.Select(x => $"@{x.Name}"))}
+            );
+            SELECT lastval();
+            """;
+        return CreatePreparedStatement(connection, columnDefinitions, sql);
+    }
+
     protected static NpgsqlCommand CreateInsertStatement(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
+    {
+        var sql = $"""
+            INSERT INTO public.\"{tableName}\"(
+                {string.Join(',', columnDefinitions.Select(x => x.Name))}
+            ) 
+            VALUES(
+                {string.Join(',', columnDefinitions.Select(x => $"@{x.Name}"))}
+            )
+            """;
+        return CreatePreparedStatement(connection, columnDefinitions, sql);
+    }
+    protected static NpgsqlCommand CreatePreparedStatement(NpgsqlConnection connection, IEnumerable<ColumnDefinition> columnDefinitions, string sql)
     {
 
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
-        command.CommandText = $"INSERT INTO public.\"{tableName}\"({string.Join(',', columnDefinitions.Select(x => x.Name))}) VALUES({string.Join(',', columnDefinitions.Select(x => $"@{x.Name}"))})";
+        command.CommandText = sql;
         foreach (var column in columnDefinitions)
         {
             command.Parameters.Add(column.Name, column.NpgsqlDbType);

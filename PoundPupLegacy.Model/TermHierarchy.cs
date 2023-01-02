@@ -2,7 +2,7 @@
 
 public record TermHierarchy
 {
-    public required int ParentId { get; init; }
+    public required int TermIdPartent { get; init; }
 
-    public required int ChildId { get; init; }
+    public required int TermIdChild { get; init; }
 }

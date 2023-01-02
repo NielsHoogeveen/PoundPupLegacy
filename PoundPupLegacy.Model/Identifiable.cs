@@ -2,5 +2,5 @@
 
 public interface Identifiable
 {
-    public int Id { get; }
+    public int? Id { get; set; }
 }

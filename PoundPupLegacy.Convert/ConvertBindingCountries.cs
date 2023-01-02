@@ -47,17 +47,20 @@ internal partial class Program
 
         while (reader.Read())
         {
+            var id = reader.GetInt32("id");
+            var name = reader.GetString("title");
             var country = new BindingCountry
             {
-                Id = reader.GetInt32("id"),
+                Id = id,
                 AccessRoleId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
+                Title = name,
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = 20,
-                VocabularyId = 4126,
-                Name = reader.GetString("title"),
+                Description = "",
+                VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
+                Name = name,
                 GlobalRegionId = reader.GetInt32("global_region_id"),
                 ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
                 FileIdFlag = null,

@@ -60,21 +60,17 @@ internal class CountryWriter : DatabaseWriter<Country>, IDatabaseWriter<Country>
 
     internal override void Write(Country country)
     {
-        try
-        {
-            WriteValue(country.Id, ID);
-            WriteValue(country.HagueStatusId, HAGUE_STATUS_ID);
-            WriteNullableValue(country.ResidencyRequirements, RESIDENCY_REQUIREMENTS);
-            WriteNullableValue(country.AgeRequirements, AGE_REQUIREMENTS);
-            WriteNullableValue(country.MarriageRequirements, MARRIAGE_REQUIREMENTS);
-            WriteNullableValue(country.IncomeRequirements, INCOME_REQUIREMENTS);
-            WriteNullableValue(country.HealthRequirements, HEALTH_REQUIREMENTS);
-            WriteNullableValue(country.OtherRequirements, OTHER_REQUIREMENTS);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (country.Id is null)
+            throw new NullReferenceException();
+
+        WriteValue(country.Id, ID);
+        WriteValue(country.HagueStatusId, HAGUE_STATUS_ID);
+        WriteNullableValue(country.ResidencyRequirements, RESIDENCY_REQUIREMENTS);
+        WriteNullableValue(country.AgeRequirements, AGE_REQUIREMENTS);
+        WriteNullableValue(country.MarriageRequirements, MARRIAGE_REQUIREMENTS);
+        WriteNullableValue(country.IncomeRequirements, INCOME_REQUIREMENTS);
+        WriteNullableValue(country.HealthRequirements, HEALTH_REQUIREMENTS);
+        WriteNullableValue(country.OtherRequirements, OTHER_REQUIREMENTS);
+        _command.ExecuteNonQuery();
     }
 }

@@ -42,6 +42,8 @@ namespace PoundPupLegacy.Convert
 
             while (reader.Read())
             {
+                var id = reader.GetInt32("id");
+                var title = reader.GetString("title");
                 yield return new SecondLevelGlobalRegion
                 {
                     Id = reader.GetInt32("id"),
@@ -51,7 +53,8 @@ namespace PoundPupLegacy.Convert
                     Title = reader.GetString("title"),
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 12,
-                    VocabularyId = 4126,
+                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
+                    Description = "",
                     Name = reader.GetString("title"),
                     FirstLevelGlobalRegionId = reader.GetInt32("continent_id")
                 };

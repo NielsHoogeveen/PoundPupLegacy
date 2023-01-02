@@ -7,7 +7,7 @@ public class BoundCountryCreator : IEntityCreator<BoundCountry>
 
         using var nodeWriter = NodeWriter.Create(connection);
         using var documentableWriter = DocumentableWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
+        using var nameableWriter = NameableWriter.Create(connection);
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
         using var countryWriter = CountryWriter.Create(connection);
@@ -20,7 +20,7 @@ public class BoundCountryCreator : IEntityCreator<BoundCountry>
         {
             nodeWriter.Write(country);
             documentableWriter.Write(country);
-            termWriter.Write(country);
+            nameableWriter.Write(country);
             geographicalEntityWriter.Write(country);
             politicalEntityWriter.Write(country);
             countryWriter.Write(country);
@@ -29,8 +29,8 @@ public class BoundCountryCreator : IEntityCreator<BoundCountry>
             boundCountryWriter.Write(country);
             termHierarchyWriter.Write(new TermHierarchy
             {
-                ParentId = country.BindingCountryId,
-                ChildId = country.Id
+                TermIdPartent = country.BindingCountryId,
+                TermIdChild = (int)country.Id!
             });
         }
     }

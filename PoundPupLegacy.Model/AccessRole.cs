@@ -2,5 +2,5 @@
 
 public interface AccessRole : Identifiable
 {
-    string Name { get; }
+    public string Name { get; }
 }

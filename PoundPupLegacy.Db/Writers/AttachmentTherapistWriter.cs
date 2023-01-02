@@ -30,6 +30,9 @@ internal class AttachmentTherapistWriter : DatabaseWriter<AttachmentTherapist>, 
 
     internal override void Write(AttachmentTherapist therapist)
     {
+        if (therapist.Id is null)
+            throw new NullReferenceException();
+
         WriteValue(therapist.Id, ID);
         WriteNullableValue(therapist.Description, DESCRIPTION);
         _command.ExecuteNonQuery();

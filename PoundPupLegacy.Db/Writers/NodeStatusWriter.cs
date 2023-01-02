@@ -30,15 +30,11 @@ internal class NodeStatusWriter : DatabaseWriter<NodeStatus>, IDatabaseWriter<No
 
     internal override void Write(NodeStatus nodeStatus)
     {
-        try
-        {
-            WriteValue(nodeStatus.Id, ID);
-            WriteValue(nodeStatus.Name, NAME);
-            _command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        if (nodeStatus.Id is null)
+            throw new NullReferenceException();
+
+        WriteValue(nodeStatus.Id, ID);
+        WriteValue(nodeStatus.Name, NAME);
+        _command.ExecuteNonQuery();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using Npgsql;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert
 {
@@ -13,6 +14,26 @@ namespace PoundPupLegacy.Convert
         const string ConnectStringPostgresql = "Host=localhost;Username=postgres;Password=niels;Database=ppl;Include Error Detail=True";
 
         private record NodeType(int Id, string Name, string Description);
+        private static List<VocabularyName> GetVocabularyNames(int vocabularyId, int id, string name, Dictionary<int, List<VocabularyName>> dictionary)
+        {
+            var list = new List<VocabularyName>
+                    {
+                        new VocabularyName
+                        {
+                            VocabularyId = vocabularyId,
+                            Name = name,
+                            ParentNames = new List<string>(),
+                        },
+                    };
+            if (dictionary.TryGetValue(id, out var vocabularyNames))
+            {
+                foreach (var vocabularyName in vocabularyNames)
+                {
+                    list.Add(vocabularyName);
+                }
+            }
+            return list;
+        }
 
         private static void AddNodeTypes(NpgsqlConnection postgresqlConnection)
         {
