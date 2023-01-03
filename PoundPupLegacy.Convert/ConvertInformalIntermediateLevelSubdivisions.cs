@@ -23,6 +23,7 @@ namespace PoundPupLegacy.Convert
                     ChangedDateTime = DateTime.Parse(parts[2]),
                     VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                     Description = "",
+                    FileIdTileImage = null,
                     NodeTypeId = int.Parse(parts[4]),
                     NodeStatusId = int.Parse(parts[5]),
                     AccessRoleId = int.Parse(parts[6]),
@@ -89,6 +90,7 @@ namespace PoundPupLegacy.Convert
                     Name = reader.GetString("title"),
                     VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                     Description = "",
+                    FileIdTileImage = null,
                 };
             }
             reader.Close();

@@ -61,13 +61,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                IsTopic = reader.GetBoolean("is_topic"),
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 DateOfBirth = reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth"),
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
                 FileIdPortrait = reader.IsDBNull("file_id_portrait") ? null : reader.GetInt32("file_id_portrait"),
-                Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
+                Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
+                FileIdTileImage = null,
+                VocabularyNames = new List<VocabularyName>(),
             };
 
         }

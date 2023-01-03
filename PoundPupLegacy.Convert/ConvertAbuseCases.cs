@@ -75,6 +75,7 @@ internal partial class Program
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
+                FileIdTileImage = null,
                 ChildPlacementTypeId = reader.GetInt32("child_placement_type_id"),
                 FamilySizeId = reader.IsDBNull("family_size_id") ? null : reader.GetInt32("family_size_id"),
                 HomeschoolingInvolved = reader.IsDBNull("home_schooling_involved") ? null : reader.GetBoolean("home_schooling_involved"),

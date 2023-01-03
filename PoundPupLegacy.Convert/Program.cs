@@ -79,6 +79,7 @@ namespace PoundPupLegacy.Convert
                 new NodeType(38, "vocabulary", "A set of terms"),
                 new NodeType(39, "type of abuse", "Defines the types of abuse a child has endured"),
                 new NodeType(40, "type of abuser", "Defines the relationship the abuser has with respect to the abused"),
+                new NodeType(41, "basic nameable", "Can be used as a term without having additional data"),
             };
 
 
@@ -168,6 +169,9 @@ namespace PoundPupLegacy.Convert
                 //MigrateFiles(mysqlconnection, postgresqlconnection);
                 AddNodeTypes(postgresqlconnection);
                 MigrateVocabularies(mysqlconnection, postgresqlconnection);
+                MigrateBasicNameables(mysqlconnection, postgresqlconnection);
+                MigrateChildPlacementTypes(mysqlconnection, postgresqlconnection);
+                MigrateOrganizationTypes(mysqlconnection, postgresqlconnection);
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12622, 1, "organization_type");
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12637, 2, "affiliation_type");
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12652, 3, "political_entity_relation_type");
@@ -176,7 +180,7 @@ namespace PoundPupLegacy.Convert
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 27213, 6, "profession");
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 39428, 7, "denomination");
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 41212, 8, "hague_status");
-                MigrateDocumentTypes(mysqlconnection, postgresqlconnection);
+                //MigrateDocumentTypes(mysqlconnection, postgresqlconnection);
                 //MigrateFirstLevelGlobalRegions(mysqlconnection, postgresqlconnection);
                 //MigrateSecondLevelGlobalRegions(mysqlconnection, postgresqlconnection);
                 //MigrateBasicCountries(mysqlconnection, postgresqlconnection);
@@ -230,11 +234,6 @@ namespace PoundPupLegacy.Convert
 
         static void Main(string[] args)
         {
-
-            //foreach (var s in ReadDirectSubDivisionCsv())
-            //{
-            //    System.Console.WriteLine($"{s.Id},{s.CountryId},{s.ISO3166_2Code}");
-            //}
             Migrate();
         }
     }

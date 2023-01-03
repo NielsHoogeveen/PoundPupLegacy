@@ -50,6 +50,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = reader.GetInt32("status"),
                     NodeTypeId = 9,
                     Description = reader.GetString("description"),
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName

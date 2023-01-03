@@ -4,6 +4,7 @@ internal class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameab
 {
     private const string ID = "id";
     private const string DESCRIPTION = "description";
+    private const string FILE_ID_TILE_IMAGE = "file_id_tile_image";
     public static DatabaseWriter<Nameable> Create(NpgsqlConnection connection)
     {
         var command = CreateInsertStatement(
@@ -17,6 +18,10 @@ internal class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameab
                 new ColumnDefinition{
                     Name = DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
+                },
+                new ColumnDefinition{
+                    Name = FILE_ID_TILE_IMAGE,
+                    NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
@@ -35,6 +40,7 @@ internal class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameab
 
         WriteValue(nameable.Id, ID);
         WriteValue(nameable.Description, DESCRIPTION);
+        WriteNullableValue(nameable.FileIdTileImage, FILE_ID_TILE_IMAGE);
         _command.ExecuteNonQuery();
     }
 }

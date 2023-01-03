@@ -10,6 +10,7 @@ public record AbuseCase : Case
     public required int NodeStatusId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Description { get; init; }
+    public required int? FileIdTileImage { get; init; }
     public required List<VocabularyName> VocabularyNames { get; init; }
     public required DateTimeRange? Date { get; init; }
     public required int ChildPlacementTypeId { get; init; }

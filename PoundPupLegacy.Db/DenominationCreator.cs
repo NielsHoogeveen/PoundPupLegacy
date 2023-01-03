@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db.Readers;
+
+namespace PoundPupLegacy.Db;
 
 public class DenominationCreator : IEntityCreator<Denomination>
 {
@@ -8,12 +10,16 @@ public class DenominationCreator : IEntityCreator<Denomination>
         using var nodeWriter = NodeWriter.Create(connection);
         using var nameableWriter = NameableWriter.Create(connection);
         using var denominationWriter = DenominationWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
+        using var termReader = TermReader.Create(connection);
+        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
 
         foreach (var denomination in denominations)
         {
             nodeWriter.Write(denomination);
             nameableWriter.Write(denomination);
             denominationWriter.Write(denomination);
+            EntityCreator.WriteTerms(denomination, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

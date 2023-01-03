@@ -64,6 +64,7 @@ internal partial class Program
                 GlobalRegionId = reader.GetInt32("global_region_id"),
                 ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
                 FileIdFlag = null,
+                FileIdTileImage = null,
                 HagueStatusId = 41215,
                 ResidencyRequirements = null,
                 AgeRequirements = null,

@@ -105,7 +105,7 @@ public abstract class DatabaseWriter<T> : IDisposable
     protected static NpgsqlCommand CreateIdentityInsertStatement(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
     {
         var sql = $"""
-            INSERT INTO public.\"{tableName}\"(
+            INSERT INTO public."{tableName}"(
                 {string.Join(',', columnDefinitions.Select(x => x.Name))}
             ) 
             VALUES(
@@ -119,7 +119,7 @@ public abstract class DatabaseWriter<T> : IDisposable
     protected static NpgsqlCommand CreateInsertStatement(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
     {
         var sql = $"""
-            INSERT INTO public.\"{tableName}\"(
+            INSERT INTO public."{tableName}"(
                 {string.Join(',', columnDefinitions.Select(x => x.Name))}
             ) 
             VALUES(

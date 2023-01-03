@@ -80,6 +80,7 @@ internal partial class Program
                 Description = reader.GetString("description"),
                 SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from") ? null : reader.GetInt32("subdivision_id_from"),
                 CountryIdTo = reader.IsDBNull("country_id_to") ? null : reader.GetInt32("country_id_to"),
+                FileIdTileImage = null,
             };
             yield return country;
 

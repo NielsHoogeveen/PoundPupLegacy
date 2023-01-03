@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db.Readers;
+
+namespace PoundPupLegacy.Db;
 
 public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
 {
@@ -10,6 +12,10 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
         using var locatableWriter = LocatableWriter.Create(connection);
         using var caseWriter = CaseWriter.Create(connection);
         using var childTraffickingCaseWriter = ChildTraffickingCaseWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
+        using var termReader = TermReader.Create(connection);
+        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+
 
         foreach (var childTraffickingCase in childTraffickingCases)
         {
@@ -18,6 +24,7 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
             locatableWriter.Write(childTraffickingCase);
             caseWriter.Write(childTraffickingCase);
             childTraffickingCaseWriter.Write(childTraffickingCase);
+            EntityCreator.WriteTerms(childTraffickingCase, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

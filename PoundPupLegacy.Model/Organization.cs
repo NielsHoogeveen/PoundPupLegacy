@@ -11,9 +11,10 @@ public record Organization : Party
     public required int NodeTypeId { get; init; }
     public required string? WebsiteURL { get; init; }
     public required string? EmailAddress { get; init; }
-    public required string? Description { get; init; }
+    public required string Description { get; init; }
     public required DateTime? Established { get; init; }
     public required DateTime? Terminated { get; init; }
-    public required bool IsTopic { get; init; }
+    public required List<VocabularyName> VocabularyNames { get; init; }
+    public required int? FileIdTileImage { get; init; }
 
 }

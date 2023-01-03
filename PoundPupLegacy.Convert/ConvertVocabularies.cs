@@ -84,6 +84,7 @@ internal partial class Program
 
     private static void MigrateVocabularies(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        VocabularyCreator.Create(GetVocabularies(), connection);
         VocabularyCreator.Create(ReadVocabularies(mysqlconnection), connection);
     }
     private static IEnumerable<Vocabulary> ReadVocabularies(MySqlConnection mysqlconnection)

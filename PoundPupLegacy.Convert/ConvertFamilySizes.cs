@@ -21,6 +21,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 28,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -41,6 +42,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 28,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -61,6 +63,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 28,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -81,6 +84,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 28,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName

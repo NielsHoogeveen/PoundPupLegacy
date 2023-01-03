@@ -81,6 +81,7 @@ namespace PoundPupLegacy.Convert
                     ISO3166_2_Code = parts[10],
                     IntermediateLevelSubdivisionId = GetIntermediateLevelSubdivisionId(int.Parse(parts[7]), parts[11], connection),
                     FileIdFlag = null,
+                    FileIdTileImage = null,
                 };
             }
         }
@@ -109,6 +110,7 @@ namespace PoundPupLegacy.Convert
                     ISO3166_2_Code = parts[10],
                     IntermediateLevelSubdivisionId = GetSubdivisionId(parts[11], connection),
                     FileIdFlag = null,
+                    FileIdTileImage = null,
                 };
             }
         }
@@ -189,6 +191,7 @@ namespace PoundPupLegacy.Convert
                     CountryId = reader.GetInt32("country_id"),
                     ISO3166_2_Code = reader.GetString("iso_3166_2_code"),
                     FileIdFlag = reader.IsDBNull("file_id_flag") ? null : reader.GetInt32("file_id_flag"),
+                    FileIdTileImage = null,
                 };
             }
             reader.Close();

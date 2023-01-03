@@ -31,6 +31,7 @@ namespace PoundPupLegacy.Convert
                     Name = parts[9],
                     ISO3166_2_Code = parts[10],
                     FileIdFlag = null,
+                    FileIdTileImage = null,
                 };
             }
         }
@@ -380,6 +381,7 @@ namespace PoundPupLegacy.Convert
                                 reader.GetInt32("country_id"),
                     ISO3166_2_Code = isoCode,
                     FileIdFlag = null,
+                    FileIdTileImage = null,
                 };
 
             }

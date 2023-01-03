@@ -11,8 +11,8 @@ public record BoundCountry : Country, ISOCodedSubdivision
     public required int NodeTypeId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
+    public required int? FileIdTileImage { get; init; }
     public required List<VocabularyName> VocabularyNames { get; init; }
-
     public required int BindingCountryId { get; init; }
     public required string ISO3166_2_Code { get; init; }
     public required int CountryId { get; init; }

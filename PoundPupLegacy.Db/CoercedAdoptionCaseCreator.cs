@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db.Readers;
+
+namespace PoundPupLegacy.Db;
 
 public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
 {
@@ -10,6 +12,9 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
         using var locatableWriter = LocatableWriter.Create(connection);
         using var caseWriter = CaseWriter.Create(connection);
         using var coercedAdoptionCaseWriter = CoercedAdoptionCaseWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
+        using var termReader = TermReader.Create(connection);
+        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
 
         foreach (var coercedAdoptionCase in coercedAdoptionCases)
         {
@@ -18,6 +23,7 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
             locatableWriter.Write(coercedAdoptionCase);
             caseWriter.Write(coercedAdoptionCase);
             coercedAdoptionCaseWriter.Write(coercedAdoptionCase);
+            EntityCreator.WriteTerms(coercedAdoptionCase, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

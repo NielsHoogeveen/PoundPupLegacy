@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db.Readers;
+
+namespace PoundPupLegacy.Db;
 
 public class BasicCountryCreator : IEntityCreator<BasicCountry>
 {
@@ -13,7 +15,10 @@ public class BasicCountryCreator : IEntityCreator<BasicCountry>
         using var countryWriter = CountryWriter.Create(connection);
         using var topLevelCountryWriter = TopLevelCountryWriter.Create(connection);
         using var basicCountryWriter = BasicCountryWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
+        using var termReader = TermReader.Create(connection);
         using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+
 
         foreach (var country in countries)
         {
@@ -25,7 +30,7 @@ public class BasicCountryCreator : IEntityCreator<BasicCountry>
             countryWriter.Write(country);
             topLevelCountryWriter.Write(country);
             basicCountryWriter.Write(country);
-            termHierarchyWriter.Write(new TermHierarchy { TermIdPartent = country.GlobalRegionId, TermIdChild = (int)country.Id! });
+            EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

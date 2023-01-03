@@ -12,7 +12,8 @@ public record AttachmentTherapist : Person
     public required DateTime? DateOfBirth { get; init; }
     public required DateTime? DateOfDeath { get; init; }
     public required int? FileIdPortrait { get; init; }
-    public required string? Description { get; init; }
-    public required bool IsTopic { get; init; }
+    public required string Description { get; init; }
+    public required List<VocabularyName> VocabularyNames { get; init; }
+    public required int? FileIdTileImage { get; init; }
 
 }

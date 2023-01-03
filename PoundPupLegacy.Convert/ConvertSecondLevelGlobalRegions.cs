@@ -55,6 +55,7 @@ namespace PoundPupLegacy.Convert
                     NodeTypeId = 12,
                     VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                     Description = "",
+                    FileIdTileImage = null,
                     Name = reader.GetString("title"),
                     FirstLevelGlobalRegionId = reader.GetInt32("continent_id")
                 };

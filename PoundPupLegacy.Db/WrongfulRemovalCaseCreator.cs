@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db.Readers;
+
+namespace PoundPupLegacy.Db;
 
 public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
 {
@@ -10,6 +12,9 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
         using var locatableWriter = LocatableWriter.Create(connection);
         using var caseWriter = CaseWriter.Create(connection);
         using var wrongfulRemovalCaseWriter = WrongfulRemovalCaseWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
+        using var termReader = TermReader.Create(connection);
+        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
 
         foreach (var wrongfulRemovalCase in wrongfulRemovalCases)
         {
@@ -18,6 +23,7 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
             locatableWriter.Write(wrongfulRemovalCase);
             caseWriter.Write(wrongfulRemovalCase);
             wrongfulRemovalCaseWriter.Write(wrongfulRemovalCase);
+            EntityCreator.WriteTerms(wrongfulRemovalCase, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

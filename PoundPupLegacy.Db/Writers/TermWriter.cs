@@ -9,7 +9,7 @@ internal class TermWriter : DatabaseWriter<Term>, IDatabaseWriter<Term>
     {
         var command = CreateIdentityInsertStatement(
             connection,
-            "vocabulary",
+            "term",
             new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = NAME,
@@ -38,9 +38,11 @@ internal class TermWriter : DatabaseWriter<Term>, IDatabaseWriter<Term>
         WriteValue(term.VocabularyId, VOCABULARY_ID);
         WriteValue(term.Name, NAME);
         WriteValue(term.NameableId, NAMEABLE_ID);
-        term.Id = _command.ExecuteScalar() switch
+        var retval = _command.ExecuteScalar();
+        term.Id = retval switch
         {
             int i => i,
+            long i => (int)i,
             _ => throw new Exception("Id could not be set for term")
         };
     }

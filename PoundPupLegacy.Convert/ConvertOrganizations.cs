@@ -21,12 +21,13 @@ internal partial class Program
                 Title = "Colorado Adoption Center",
                 NodeStatusId = 1,
                 NodeTypeId = 23,
-                IsTopic = false,
                 WebsiteURL = null,
                 EmailAddress = null,
                 Established = null,
                 Terminated = null,
-                Description = null,
+                Description = "",
+                FileIdTileImage = null,
+                VocabularyNames = new List<VocabularyName>(),
             }
         };
     }
@@ -86,12 +87,13 @@ internal partial class Program
                 Title = reader.GetString("title"),
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt16("node_type_id"),
-                IsTopic = reader.GetBoolean("is_topic"),
                 WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                 EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
-                Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
+                Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
                 Established = reader.IsDBNull("established") ? null : reader.GetDateTime("established"),
                 Terminated = reader.IsDBNull("terminated") ? null : reader.GetDateTime("terminated"),
+                FileIdTileImage = null,
+                VocabularyNames = new List<VocabularyName>(),
             };
 
         }

@@ -1,6 +1,5 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface Party : Documentable, Locatable
+public interface Party : Documentable, Locatable, Nameable
 {
-    public bool IsTopic { get; }
 }

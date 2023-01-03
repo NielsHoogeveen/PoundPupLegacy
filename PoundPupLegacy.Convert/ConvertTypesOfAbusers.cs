@@ -21,6 +21,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -47,6 +48,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -67,6 +69,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -93,6 +96,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -113,6 +117,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -139,6 +144,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -159,6 +165,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -179,6 +186,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -199,6 +207,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -219,6 +228,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
@@ -239,7 +249,8 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
-                                        VocabularyNames = new List<VocabularyName>
+                    FileIdTileImage = null,
+                    VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName
                         {
@@ -259,6 +270,7 @@ namespace PoundPupLegacy.Convert
                     NodeStatusId = 1,
                     NodeTypeId = 40,
                     Description = "",
+                    FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
                         new VocabularyName

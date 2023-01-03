@@ -58,6 +58,7 @@ internal partial class Program
                 VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
+                FileIdTileImage = null,
             };
             yield return country;
 

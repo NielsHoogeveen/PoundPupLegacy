@@ -11,6 +11,7 @@ public record InformalIntermediateLevelSubdivision : IntermediateLevelSubdivisio
     public required int NodeTypeId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
+    public required int? FileIdTileImage { get; init; }
     public required List<VocabularyName> VocabularyNames { get; init; }
     public required int CountryId { get; init; }
 }

@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db.Readers;
+
+namespace PoundPupLegacy.Db;
 
 public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLevelSubdivision>
 {
@@ -15,7 +17,10 @@ public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLeve
         using var bottomLevelSubdivisionWriter = BottomLevelSubdivisionWriter.Create(connection);
         using var secondLevelSubdivisionWriter = SecondLevelSubdivisionWriter.Create(connection);
         using var basicSecondLevelSubdivisionWriter = BasicSecondLevelSubdivisionWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
+        using var termReader = TermReader.Create(connection);
         using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+
 
         foreach (var subdivision in subdivisions)
         {
@@ -29,11 +34,7 @@ public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLeve
             bottomLevelSubdivisionWriter.Write(subdivision);
             secondLevelSubdivisionWriter.Write(subdivision);
             basicSecondLevelSubdivisionWriter.Write(subdivision);
-            termHierarchyWriter.Write(new TermHierarchy
-            {
-                TermIdPartent = subdivision.CountryId,
-                TermIdChild = (int)subdivision.Id!
-            });
+            EntityCreator.WriteTerms(subdivision, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db.Readers;
+
+namespace PoundPupLegacy.Db;
 
 public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRegion>
 {
@@ -10,8 +12,9 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
         using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
         using var globalRegionWriter = GlobalRegionWriter.Create(connection);
         using var secondLevelGlobalRegionWriter = SecondLevelGlobalRegionWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
+        using var termReader = TermReader.Create(connection);
         using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
-
 
         foreach (var node in nodes)
         {
@@ -21,12 +24,7 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
             geographicalEntityWriter.Write(node);
             globalRegionWriter.Write(node);
             secondLevelGlobalRegionWriter.Write(node);
-
-            termHierarchyWriter.Write(new TermHierarchy
-            {
-                TermIdPartent = node.FirstLevelGlobalRegionId,
-                TermIdChild = (int)node.Id!
-            });
+            EntityCreator.WriteTerms(node, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

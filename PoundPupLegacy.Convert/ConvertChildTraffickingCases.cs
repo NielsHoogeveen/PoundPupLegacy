@@ -62,6 +62,7 @@ internal partial class Program
                 Description = reader.GetString("description"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
                 CountryIdFrom = reader.GetInt32("country_id_from"),
+                FileIdTileImage = null,
             };
             yield return country;
 

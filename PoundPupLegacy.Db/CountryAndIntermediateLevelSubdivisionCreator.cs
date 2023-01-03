@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db.Readers;
+
+namespace PoundPupLegacy.Db;
 
 public class CountryAndIntermediateLevelSubdivisionCreator : IEntityCreator<CountryAndIntermediateLevelSubdivision>
 {
@@ -19,6 +21,8 @@ public class CountryAndIntermediateLevelSubdivisionCreator : IEntityCreator<Coun
         using var countryAndFirstLevelSubdivisionWriter = CountryAndFirstLevelSubdivisionWriter.Create(connection);
         using var intermediateLevelSubdivisionWriter = IntermediateLevelSubdivisionWriter.Create(connection);
         using var countryAndIntermediateLevelSubdivisionWriter = CountryAndIntermediateLevelSubdivisionWriter.Create(connection);
+        using var termWriter = TermWriter.Create(connection);
+        using var termReader = TermReader.Create(connection);
         using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
 
         foreach (var country in countries)
@@ -37,11 +41,7 @@ public class CountryAndIntermediateLevelSubdivisionCreator : IEntityCreator<Coun
             countryAndFirstLevelSubdivisionWriter.Write(country);
             intermediateLevelSubdivisionWriter.Write(country);
             countryAndIntermediateLevelSubdivisionWriter.Write(country);
-            termHierarchyWriter.Write(new TermHierarchy
-            {
-                TermIdPartent = country.GlobalRegionId,
-                TermIdChild = (int)country.Id!
-            });
+            EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter);
         }
     }
 }
