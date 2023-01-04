@@ -161,11 +161,11 @@ namespace PoundPupLegacy.Convert
             {
                 using var mysqlconnection = new MySqlConnection(ConnectionStringMariaDb);
                 using var postgresqlconnection = new NpgsqlConnection(ConnectStringPostgresql);
-                mysqlconnection.Open();
+                await mysqlconnection.OpenAsync();
                 await postgresqlconnection.OpenAsync();
-                //MigrateNodeStatuses(postgresqlconnection);
-                //MigrateUsers(mysqlconnection, postgresqlconnection);
-                //MigrateFiles(mysqlconnection, postgresqlconnection);
+                //await MigrateNodeStatuses(postgresqlconnection);
+                //await MigrateUsers(mysqlconnection, postgresqlconnection);
+                //await MigrateFiles(mysqlconnection, postgresqlconnection);
                 await AddNodeTypes(postgresqlconnection);
                 await MigrateVocabularies(mysqlconnection, postgresqlconnection);
                 await MigrateBasicNameables(mysqlconnection, postgresqlconnection);
@@ -177,10 +177,10 @@ namespace PoundPupLegacy.Convert
                 await MigratePersonOrganizationRelationTypes(mysqlconnection, postgresqlconnection);
                 await MigrateTypesOfAbuse(mysqlconnection, postgresqlconnection);
                 await MigrateTypesOfAbusers(mysqlconnection, postgresqlconnection);
-                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 27213, 6, "profession");
-                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 39428, 7, "denomination");
-                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 41212, 8, "hague_status");
-                //MigrateDocumentTypes(mysqlconnection, postgresqlconnection);
+                await MigrateProfessions(mysqlconnection, postgresqlconnection);
+                await MigrateDenominations(mysqlconnection, postgresqlconnection);
+                await MigrateHagueStatuses(mysqlconnection, postgresqlconnection);
+                await MigrateDocumentTypes(mysqlconnection, postgresqlconnection);
                 //MigrateFirstLevelGlobalRegions(mysqlconnection, postgresqlconnection);
                 //MigrateSecondLevelGlobalRegions(mysqlconnection, postgresqlconnection);
                 //MigrateBasicCountries(mysqlconnection, postgresqlconnection);
@@ -208,7 +208,7 @@ namespace PoundPupLegacy.Convert
                 //MigrateWrongfulMedicationCases(mysqlconnection, postgresqlconnection);
                 //MigrateWrongfulRemovalCases(mysqlconnection, postgresqlconnection);
                 //MigrateSimpleTextPosts(mysqlconnection, postgresqlconnection);
-                mysqlconnection.Close();
+                await mysqlconnection.CloseAsync();
                 await postgresqlconnection.CloseAsync();
             }
             catch (MySqlException ex)

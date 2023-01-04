@@ -61,8 +61,10 @@ internal partial class Program
                    'lethal deprivation',
                    'economic exploitation',
                    'verbal abuse',
-                   'medical abuse'
-                   
+                   'medical abuse',
+                   'lawyers',
+                   'therapists',
+                   'Christianity'
                 )
                 AND n.nid NOT IN (
                 	22589

@@ -21,9 +21,9 @@ namespace PoundPupLegacy.Convert
                     n2.nid id,
                     n2.uid access_role_id,
                     n2.title,
-                    n2.`status`,
+                    n2.`status` node_status_id,
                     FROM_UNIXTIME(n2.created) created_date_time, 
-                    FROM_UNIXTIME(n2.changed) `changed`
+                    FROM_UNIXTIME(n2.changed) changed_date_time
                     FROM node n1 
                     JOIN category c ON c.cnid = n1.nid
                     JOIN node n2 ON n2.nid = c.cid
@@ -47,9 +47,9 @@ namespace PoundPupLegacy.Convert
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
-                    NodeStatusId = reader.GetInt32("status"),
+                    NodeStatusId = reader.GetInt32("node_status_id"),
                     NodeTypeId = 9,
-                    Description = reader.GetString("description"),
+                    Description = "",
                     FileIdTileImage = null,
                     VocabularyNames = new List<VocabularyName>
                     {
