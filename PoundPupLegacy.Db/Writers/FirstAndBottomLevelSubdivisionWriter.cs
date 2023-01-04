@@ -2,8 +2,8 @@
 
 internal class FirstAndBottomLevelSubdivisionWriter : IDatabaseWriter<FirstAndBottomLevelSubdivision>
 {
-    public static DatabaseWriter<FirstAndBottomLevelSubdivision> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<FirstAndBottomLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<FirstAndBottomLevelSubdivision>(SingleIdWriter.CreateSingleIdCommand("first_and_bottom_level_subdivision", connection));
+        return new SingleIdWriter<FirstAndBottomLevelSubdivision>(await SingleIdWriter.CreateSingleIdCommandAsync("first_and_bottom_level_subdivision", connection));
     }
 }

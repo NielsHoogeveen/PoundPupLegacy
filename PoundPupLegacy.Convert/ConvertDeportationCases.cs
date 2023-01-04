@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateDeportationCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateDeportationCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        DeportationCaseCreator.Create(ReadDeportationCases(mysqlconnection), connection);
+        await DeportationCaseCreator.CreateAsync(ReadDeportationCases(mysqlconnection), connection);
     }
     private static IEnumerable<DeportationCase> ReadDeportationCases(MySqlConnection mysqlconnection)
     {

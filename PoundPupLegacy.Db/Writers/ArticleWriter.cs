@@ -4,9 +4,9 @@ internal class ArticleWriter : DatabaseWriter<Article>, IDatabaseWriter<Article>
 {
     private const string ID = "id";
     private const string TEXT = "text";
-    public static DatabaseWriter<Article> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Article>>    CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "article",
             new ColumnDefinition[] {
@@ -28,12 +28,12 @@ internal class ArticleWriter : DatabaseWriter<Article>, IDatabaseWriter<Article>
     {
     }
 
-    internal override void Write(Article article)
+    internal override async Task WriteAsync(Article article)
     {
         if (article.Id is null)
             throw new NullReferenceException();
         WriteValue(article.Id, ID);
         WriteValue(article.Text, TEXT);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

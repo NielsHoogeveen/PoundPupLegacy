@@ -9,9 +9,9 @@ namespace PoundPupLegacy.Convert;
 internal partial class Program
 {
 
-    private static void MigratePersons(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigratePersons(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        PersonCreator.Create(ReadPersons(mysqlconnection), connection);
+        await PersonCreator.CreateAsync(ReadPersons(mysqlconnection), connection);
     }
     private static DateTime? GetDateOfDeath(int id, DateTime? dateTime)
     {

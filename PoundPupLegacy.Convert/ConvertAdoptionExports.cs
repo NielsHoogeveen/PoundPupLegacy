@@ -52,10 +52,10 @@ internal partial class Program
         return id;
     }
 
-    private static void MigrateAdoptionExports(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateAdoptionExports(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        AdoptionExportRelationCreator.Create(ReadAdoptionExportRelations(mysqlconnection), connection);
-        AdoptionExportYearCreator.Create(ReadAdoptionExportYears(mysqlconnection, connection), connection);
+        await AdoptionExportRelationCreator.CreateAsync(ReadAdoptionExportRelations(mysqlconnection), connection);
+        await AdoptionExportYearCreator.CreateAsync(ReadAdoptionExportYears(mysqlconnection, connection), connection);
     }
     private static IEnumerable<AdoptionExportRelation> ReadAdoptionExportRelations(MySqlConnection mysqlconnection)
     {

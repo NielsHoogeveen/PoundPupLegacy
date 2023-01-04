@@ -2,16 +2,16 @@
 
 public class VocabularyCreator : IEntityCreator<Vocabulary>
 {
-    public static void Create(IEnumerable<Vocabulary> vocabularies, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<Vocabulary> vocabularies, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var vocabularyWriter = VocabularyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var vocabularyWriter = await VocabularyWriter.CreateAsync(connection);
 
         foreach (var vocabulary in vocabularies)
         {
-            nodeWriter.Write(vocabulary);
-            vocabularyWriter.Write(vocabulary);
+            await nodeWriter.WriteAsync(vocabulary);
+            await vocabularyWriter.WriteAsync(vocabulary);
         }
     }
 }

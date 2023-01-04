@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateFathersRightsViolationCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateFathersRightsViolationCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        FathersRightsViolationCaseCreator.Create(ReadFathersRightsViolationCases(mysqlconnection), connection);
+        await FathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases(mysqlconnection), connection);
     }
     private static IEnumerable<FathersRightsViolationCase> ReadFathersRightsViolationCases(MySqlConnection mysqlconnection)
     {

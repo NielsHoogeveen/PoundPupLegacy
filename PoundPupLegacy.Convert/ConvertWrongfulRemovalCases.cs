@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateWrongfulRemovalCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateWrongfulRemovalCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        WrongfulRemovalCaseCreator.Create(ReadWrongfulRemovalCases(mysqlconnection), connection);
+        await WrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases(mysqlconnection), connection);
     }
     private static IEnumerable<WrongfulRemovalCase> ReadWrongfulRemovalCases(MySqlConnection mysqlconnection)
     {

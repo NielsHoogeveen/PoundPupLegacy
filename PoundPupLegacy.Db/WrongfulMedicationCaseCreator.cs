@@ -4,26 +4,26 @@ namespace PoundPupLegacy.Db;
 
 public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCase>
 {
-    public static void Create(IEnumerable<WrongfulMedicationCase> wrongfulMedicationCases, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<WrongfulMedicationCase> wrongfulMedicationCases, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var documentableWriter = DocumentableWriter.Create(connection);
-        using var locatableWriter = LocatableWriter.Create(connection);
-        using var caseWriter = CaseWriter.Create(connection);
-        using var wrongfulMedicationCaseWriter = WrongfulMedicationCaseWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
+        await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
+        await using var caseWriter = await CaseWriter.CreateAsync(connection);
+        await using var wrongfulMedicationCaseWriter = await WrongfulMedicationCaseWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var wrongfulMedicationCase in wrongfulMedicationCases)
         {
-            nodeWriter.Write(wrongfulMedicationCase);
-            documentableWriter.Write(wrongfulMedicationCase);
-            locatableWriter.Write(wrongfulMedicationCase);
-            caseWriter.Write(wrongfulMedicationCase);
-            wrongfulMedicationCaseWriter.Write(wrongfulMedicationCase);
-            EntityCreator.WriteTerms(wrongfulMedicationCase, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(wrongfulMedicationCase);
+            await documentableWriter.WriteAsync(wrongfulMedicationCase);
+            await locatableWriter.WriteAsync(wrongfulMedicationCase);
+            await caseWriter.WriteAsync(wrongfulMedicationCase);
+            await wrongfulMedicationCaseWriter.WriteAsync(wrongfulMedicationCase);
+            await EntityCreator.WriteTerms(wrongfulMedicationCase, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

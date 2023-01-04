@@ -4,9 +4,9 @@ internal class AttachmentTherapistWriter : DatabaseWriter<AttachmentTherapist>, 
 {
     private const string ID = "id";
     private const string DESCRIPTION = "description";
-    public static DatabaseWriter<AttachmentTherapist> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<AttachmentTherapist>>  CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "attachment_therapist",
             new ColumnDefinition[] {
@@ -28,13 +28,13 @@ internal class AttachmentTherapistWriter : DatabaseWriter<AttachmentTherapist>, 
     {
     }
 
-    internal override void Write(AttachmentTherapist therapist)
+    internal override async Task WriteAsync(AttachmentTherapist therapist)
     {
         if (therapist.Id is null)
             throw new NullReferenceException();
 
         WriteValue(therapist.Id, ID);
         WriteNullableValue(therapist.Description, DESCRIPTION);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

@@ -5,9 +5,9 @@ internal class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabaseWriter<
     private const string ID = "id";
     private const string NAME = "name";
     private const string COUNTRY_ID = "country_id";
-    public static DatabaseWriter<Subdivision> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Subdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "subdivision",
             new ColumnDefinition[] {
@@ -33,7 +33,7 @@ internal class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabaseWriter<
     {
     }
 
-    internal override void Write(Subdivision subdivision)
+    internal override async Task WriteAsync(Subdivision subdivision)
     {
         if (subdivision.Id is null)
             throw new NullReferenceException();
@@ -41,6 +41,6 @@ internal class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabaseWriter<
         WriteValue(subdivision.Id, ID);
         WriteValue(subdivision.Name, NAME);
         WriteValue(subdivision.CountryId, COUNTRY_ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

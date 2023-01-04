@@ -2,14 +2,14 @@
 
 public class UserGroupUserCreator : IEntityCreator<UserGroupUser>
 {
-    public static void Create(IEnumerable<UserGroupUser> userGroupUsers, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<UserGroupUser> userGroupUsers, NpgsqlConnection connection)
     {
 
-        using var userGroupUserWriter = UserGroupUserWriter.Create(connection);
+        await using var userGroupUserWriter = await UserGroupUserWriter.CreateAsync(connection);
 
         foreach (var userGroupUser in userGroupUsers)
         {
-            userGroupUserWriter.Write(userGroupUser);
+            await userGroupUserWriter.WriteAsync(userGroupUser);
         }
     }
 }

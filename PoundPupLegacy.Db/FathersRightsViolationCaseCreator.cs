@@ -4,26 +4,26 @@ namespace PoundPupLegacy.Db;
 
 public class FathersRightsViolationCaseCreator : IEntityCreator<FathersRightsViolationCase>
 {
-    public static void Create(IEnumerable<FathersRightsViolationCase> fathersRightsViolationCases, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<FathersRightsViolationCase> fathersRightsViolationCases, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var documentableWriter = DocumentableWriter.Create(connection);
-        using var locatableWriter = LocatableWriter.Create(connection);
-        using var caseWriter = CaseWriter.Create(connection);
-        using var fathersRightsViolationCaseWriter = FathersRightsViolationCaseWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
+        await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
+        await using var caseWriter = await CaseWriter.CreateAsync(connection);
+        await using var fathersRightsViolationCaseWriter = await FathersRightsViolationCaseWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var fathersRightsViolationCase in fathersRightsViolationCases)
         {
-            nodeWriter.Write(fathersRightsViolationCase);
-            documentableWriter.Write(fathersRightsViolationCase);
-            locatableWriter.Write(fathersRightsViolationCase);
-            caseWriter.Write(fathersRightsViolationCase);
-            fathersRightsViolationCaseWriter.Write(fathersRightsViolationCase);
-            EntityCreator.WriteTerms(fathersRightsViolationCase, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(fathersRightsViolationCase);
+            await documentableWriter.WriteAsync(fathersRightsViolationCase);
+            await locatableWriter.WriteAsync(fathersRightsViolationCase);
+            await caseWriter.WriteAsync(fathersRightsViolationCase);
+            await fathersRightsViolationCaseWriter.WriteAsync(fathersRightsViolationCase);
+            await EntityCreator.WriteTerms(fathersRightsViolationCase, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

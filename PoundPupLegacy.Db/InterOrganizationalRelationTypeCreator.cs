@@ -4,22 +4,22 @@ namespace PoundPupLegacy.Db;
 
 public class InterOrganizationalRelationTypeCreator : IEntityCreator<InterOrganizationalRelationType>
 {
-    public static void Create(IEnumerable<InterOrganizationalRelationType> interOrganizationalRelationTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<InterOrganizationalRelationType> interOrganizationalRelationTypes, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var interOrganizationalRelationTypeWriter = InterOrganizationalRelationTypeWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var interOrganizationalRelationTypeWriter = await InterOrganizationalRelationTypeWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var interOrganizationalRelationType in interOrganizationalRelationTypes)
         {
-            nodeWriter.Write(interOrganizationalRelationType);
-            nameableWriter.Write(interOrganizationalRelationType);
-            interOrganizationalRelationTypeWriter.Write(interOrganizationalRelationType);
-            EntityCreator.WriteTerms(interOrganizationalRelationType, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(interOrganizationalRelationType);
+            await nameableWriter.WriteAsync(interOrganizationalRelationType);
+            await interOrganizationalRelationTypeWriter.WriteAsync(interOrganizationalRelationType);
+            await EntityCreator.WriteTerms(interOrganizationalRelationType, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

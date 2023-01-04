@@ -2,8 +2,8 @@
 
 internal class DocumentableWriter : IDatabaseWriter<Documentable>
 {
-    public static DatabaseWriter<Documentable> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Documentable>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<Documentable>(SingleIdWriter.CreateSingleIdCommand("documentable", connection));
+        return new SingleIdWriter<Documentable>(await SingleIdWriter.CreateSingleIdCommandAsync("documentable", connection));
     }
 }

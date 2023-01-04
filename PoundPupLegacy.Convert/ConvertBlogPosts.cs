@@ -8,11 +8,11 @@ namespace PoundPupLegacy.Convert;
 
 internal partial class Program
 {
-    private static void MigrateSimpleTextPosts(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateSimpleTextPosts(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        BlogPostCreator.Create(ReadBlogPosts(mysqlconnection), connection);
-        ArticleCreator.Create(ReadArticles(mysqlconnection), connection);
-        DiscussionCreator.Create(ReadDiscussions(mysqlconnection), connection);
+        await BlogPostCreator.CreateAsync(ReadBlogPosts(mysqlconnection), connection);
+        await ArticleCreator.CreateAsync(ReadArticles(mysqlconnection), connection);
+        await DiscussionCreator.CreateAsync(ReadDiscussions(mysqlconnection), connection);
     }
     private static IEnumerable<BlogPost> ReadBlogPosts(MySqlConnection mysqlconnection)
     {

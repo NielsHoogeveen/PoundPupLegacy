@@ -6,7 +6,7 @@ internal class AccessRoleWriter : DatabaseWriter<AccessRole>, IDatabaseWriter<Ac
 {
     private const string ID = "id";
     private const string NAME = "name";
-    public static DatabaseWriter<AccessRole> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<AccessRole>> CreateAsync(NpgsqlConnection connection)
     {
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition{
@@ -14,7 +14,7 @@ internal class AccessRoleWriter : DatabaseWriter<AccessRole>, IDatabaseWriter<Ac
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
         };
-        var commandWithId = CreateInsertStatement(
+        var commandWithId = await CreateInsertStatementAsync(
             connection,
             "access_role",
             columnDefinitions.ToImmutableList().Prepend(new ColumnDefinition
@@ -23,7 +23,7 @@ internal class AccessRoleWriter : DatabaseWriter<AccessRole>, IDatabaseWriter<Ac
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
         );
-        var commandWithoutId = CreateInsertStatement(
+        var commandWithoutId = await CreateInsertStatementAsync(
             connection,
             "access_role",
             columnDefinitions
@@ -32,18 +32,18 @@ internal class AccessRoleWriter : DatabaseWriter<AccessRole>, IDatabaseWriter<Ac
 
     }
 
-    private NpgsqlCommand _idenityCommand;
+    private NpgsqlCommand _identityCommand;
     internal AccessRoleWriter(NpgsqlCommand command, NpgsqlCommand idenityCommand) : base(command)
     {
-        _idenityCommand = idenityCommand;
+        _identityCommand = idenityCommand;
     }
 
-    internal override void Write(AccessRole accessRole)
+    internal override async Task WriteAsync(AccessRole accessRole)
     {
         if (accessRole.Id is null)
         {
-            WriteValue(accessRole.Name, NAME, _idenityCommand);
-            accessRole.Id = _idenityCommand.ExecuteScalar() switch
+            WriteValue(accessRole.Name, NAME, _identityCommand);
+            accessRole.Id = await _identityCommand.ExecuteScalarAsync() switch
             {
                 int i => i,
                 _ => throw new Exception("Id could not be set for access role")
@@ -56,9 +56,10 @@ internal class AccessRoleWriter : DatabaseWriter<AccessRole>, IDatabaseWriter<Ac
             _command.ExecuteNonQuery();
         }
     }
-    public override void Dispose()
+    public override async ValueTask DisposeAsync()
     {
-        base.Dispose();
-        _idenityCommand.Dispose();
+        await base.DisposeAsync();
+        await _identityCommand.DisposeAsync();
+
     }
 }

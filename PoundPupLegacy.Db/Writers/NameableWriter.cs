@@ -5,9 +5,9 @@ internal class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameab
     private const string ID = "id";
     private const string DESCRIPTION = "description";
     private const string FILE_ID_TILE_IMAGE = "file_id_tile_image";
-    public static DatabaseWriter<Nameable> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Nameable>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "nameable",
             new ColumnDefinition[] {
@@ -33,7 +33,7 @@ internal class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameab
     {
     }
 
-    internal override void Write(Nameable nameable)
+    internal override async Task WriteAsync(Nameable nameable)
     {
         if (nameable.Id is null)
             throw new NullReferenceException();
@@ -41,6 +41,6 @@ internal class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameab
         WriteValue(nameable.Id, ID);
         WriteValue(nameable.Description, DESCRIPTION);
         WriteNullableValue(nameable.FileIdTileImage, FILE_ID_TILE_IMAGE);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

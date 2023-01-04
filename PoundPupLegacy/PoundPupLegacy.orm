@@ -361,6 +361,7 @@
 				<orm:PlayedRoles>
 					<orm:SubtypeMetaRole ref="_FCC14A61-8CCF-4B97-B624-7AB73F90543C" />
 					<orm:Role ref="_8881F627-E69C-49B7-A9CF-4F744FB09064" />
+					<orm:Role ref="_552F10D9-4F40-43BF-9C5E-F73D6770B14D" />
 				</orm:PlayedRoles>
 			</orm:EntityType>
 			<orm:EntityType id="_1CDB992C-F206-487F-A6A8-9BA414617FFE" Name="Profession" _ReferenceMode="">
@@ -601,6 +602,7 @@
 					<orm:Role ref="_883C0CB2-7A06-4AC8-990D-C03CCE74D934" />
 					<orm:Role ref="_49B695A9-D043-4977-9BAB-F2BA50B0A270" />
 					<orm:Role ref="_F21AAF6E-3A16-4D67-BF84-4131888B14DF" />
+					<orm:SupertypeMetaRole ref="_AE4EA0B9-A838-4790-A51A-1D46D712E52E" />
 				</orm:PlayedRoles>
 				<orm:PreferredIdentifier ref="_CBE4186E-72E9-4CD6-8913-8CE9528A6A76" />
 			</orm:EntityType>
@@ -629,7 +631,6 @@
 					<orm:Role ref="_38AD29FE-BEBD-4BBD-B0EF-E6ACE4E832B0" />
 					<orm:Role ref="_B890AF44-FB98-4056-8725-3A12A2D25235" />
 					<orm:Role ref="_C118DA65-A1AE-4102-944F-562DA8CDBEF3" />
-					<orm:SupertypeMetaRole ref="_39E4C935-F82A-4DEF-A35A-E1C7C9A573DB" />
 				</orm:PlayedRoles>
 				<orm:PreferredIdentifier ref="_C790D880-F7AB-4C35-91F7-26632CEBF3C9" />
 			</orm:EntityType>
@@ -980,10 +981,10 @@
 			</orm:EntityType>
 			<orm:EntityType id="_993CBC46-69EE-4859-B668-5ED41CC26560" Name="MemberOfCongress" _ReferenceMode="">
 				<orm:PlayedRoles>
-					<orm:SubtypeMetaRole ref="_539EAD19-973B-4D98-838A-70A5948E3B97" />
 					<orm:SupertypeMetaRole ref="_1069C781-75F0-47FD-A0DC-87C7311CBFC1" />
 					<orm:SupertypeMetaRole ref="_EE24368E-70F8-4F6E-B542-4ABF9E4C2690" />
 					<orm:Role ref="_D435FA02-D785-4894-B993-2BAF95F7AF55" />
+					<orm:SubtypeMetaRole ref="_9B1430BC-085F-43AA-8D5F-141843052BAD" />
 				</orm:PlayedRoles>
 			</orm:EntityType>
 			<orm:ValueType id="_7353F88C-15A9-4927-B600-4A8316BB2AA2" Name="OrganizationType has concrete subtype" IsImplicitBooleanValue="true">
@@ -1418,6 +1419,19 @@
 				<orm:PreferredIdentifier ref="_92124847-884D-44CE-AAC7-1458B5B579D5" />
 				<orm:NestedPredicate id="_298B9C16-DA91-47A5-8EFF-41358B7BB627" ref="_B0D234CA-7EBC-40CF-89F9-7D793C13F7AE" IsImplied="true" />
 			</orm:ObjectifiedType>
+			<orm:ValueType id="_DEF047F3-0FF1-4814-8D6F-35B6A6F4B75A" Name="PoliticalEntityRelationType has concrete subtypes" IsImplicitBooleanValue="true">
+				<orm:PlayedRoles>
+					<orm:Role ref="_61172953-AC91-432F-A064-B6CDE4FB9B27" />
+				</orm:PlayedRoles>
+				<orm:ConceptualDataType id="_A903D820-A841-40B5-9CEA-83C4BEE0B418" ref="_5D448A72-0E02-406F-840B-3F3A3F442753" Scale="0" Length="0" />
+				<orm:ValueRestriction>
+					<orm:ValueConstraint id="_B5A101DA-9B41-4AB5-828E-F3F7AA88A306" Name="ValueTypeValueConstraint6">
+						<orm:ValueRanges>
+							<orm:ValueRange id="_C6170C26-7463-470C-8813-83E3757AC315" MinValue="True" MaxValue="True" MinInclusion="NotSet" MaxInclusion="NotSet" />
+						</orm:ValueRanges>
+					</orm:ValueConstraint>
+				</orm:ValueRestriction>
+			</orm:ValueType>
 		</orm:Objects>
 		<orm:Facts>
 			<orm:Fact id="_E29EB5FD-1FAA-4CEF-ACAA-6D8EA3F75528" _Name="NodeHasNodeId">
@@ -6020,21 +6034,6 @@
 					<orm:UniquenessConstraint ref="_B1E66B32-ABCE-4388-9A52-139C94090AA9" />
 				</orm:InternalConstraints>
 			</orm:Fact>
-			<orm:SubtypeFact id="_E222E8BA-A59E-4BFC-8270-16CA748F37DF" _Name="MemberOfCongressIsASubtypeOfPersonOrganizationRelation" PreferredIdentificationPath="true">
-				<orm:FactRoles>
-					<orm:SubtypeMetaRole id="_539EAD19-973B-4D98-838A-70A5948E3B97" _IsMandatory="true" _Multiplicity="ZeroToOne" Name="">
-						<orm:RolePlayer ref="_993CBC46-69EE-4859-B668-5ED41CC26560" />
-					</orm:SubtypeMetaRole>
-					<orm:SupertypeMetaRole id="_39E4C935-F82A-4DEF-A35A-E1C7C9A573DB" _IsMandatory="false" _Multiplicity="ExactlyOne" Name="">
-						<orm:RolePlayer ref="_E2B429D7-B315-40B3-89D2-C66868EF2A62" />
-					</orm:SupertypeMetaRole>
-				</orm:FactRoles>
-				<orm:InternalConstraints>
-					<orm:MandatoryConstraint ref="_71DADF66-DF57-4BA4-96A7-B6C1E48012CF" />
-					<orm:UniquenessConstraint ref="_A12D251F-A377-42C2-9F36-1647E11079A1" />
-					<orm:UniquenessConstraint ref="_DED232AE-1379-439F-9D76-01E05E36A9E1" />
-				</orm:InternalConstraints>
-			</orm:SubtypeFact>
 			<orm:Fact id="_E4591938-88CF-44D4-85C5-95F0DD29DAF3" _Name="OrganizationTypeHasConcreteSubtype">
 				<orm:FactRoles>
 					<orm:Role id="_AE30B4ED-5257-4408-8FB9-0FC30C08817C" _IsMandatory="false" _Multiplicity="Unspecified" Name="">
@@ -10462,6 +10461,49 @@
 				</orm:InternalConstraints>
 				<orm:ImpliedByObjectification ref="_298B9C16-DA91-47A5-8EFF-41358B7BB627" />
 			</orm:ImpliedFact>
+			<orm:SubtypeFact id="_BDF74C26-0AEB-4A91-BDB2-E239DCBCEFA9" _Name="MemberOfCongressIsASubtypeOfPoliticalEntityRelation" PreferredIdentificationPath="true">
+				<orm:FactRoles>
+					<orm:SubtypeMetaRole id="_9B1430BC-085F-43AA-8D5F-141843052BAD" _IsMandatory="true" _Multiplicity="ZeroToOne" Name="">
+						<orm:RolePlayer ref="_993CBC46-69EE-4859-B668-5ED41CC26560" />
+					</orm:SubtypeMetaRole>
+					<orm:SupertypeMetaRole id="_AE4EA0B9-A838-4790-A51A-1D46D712E52E" _IsMandatory="false" _Multiplicity="ExactlyOne" Name="">
+						<orm:RolePlayer ref="_AD01C6E8-0522-4106-AADA-DA9EBC793F3B" />
+					</orm:SupertypeMetaRole>
+				</orm:FactRoles>
+				<orm:InternalConstraints>
+					<orm:MandatoryConstraint ref="_17B0072C-08EB-480A-AC03-42166B7F9179" />
+					<orm:UniquenessConstraint ref="_D2A1615B-766E-4546-8B59-E85A5EA266C1" />
+					<orm:UniquenessConstraint ref="_AD9D3E67-114F-45AA-890D-E35C5150AF95" />
+				</orm:InternalConstraints>
+			</orm:SubtypeFact>
+			<orm:Fact id="_524C2C7C-EEE3-41CB-ADE5-56C71EF4EF8B" _Name="PoliticalEntityRelationTypeHasConcreteSubtypes">
+				<orm:FactRoles>
+					<orm:Role id="_552F10D9-4F40-43BF-9C5E-F73D6770B14D" _IsMandatory="false" _Multiplicity="Unspecified" Name="">
+						<orm:RolePlayer ref="_58616CE9-3E4A-4F2A-8374-E97CBA58C332" />
+					</orm:Role>
+					<orm:Role id="_61172953-AC91-432F-A064-B6CDE4FB9B27" _IsMandatory="false" _Multiplicity="Unspecified" Name="">
+						<orm:RolePlayer ref="_DEF047F3-0FF1-4814-8D6F-35B6A6F4B75A" />
+					</orm:Role>
+				</orm:FactRoles>
+				<orm:ReadingOrders>
+					<orm:ReadingOrder id="_4839EB18-891D-4C45-BB88-F7E30F3793D5">
+						<orm:Readings>
+							<orm:Reading id="_E7F6AC2D-87D2-4461-A1AC-20648C53C6BE">
+								<orm:Data>{0} has concrete subtypes</orm:Data>
+								<orm:ExpandedData>
+									<orm:RoleText RoleIndex="0" FollowingText=" has concrete subtypes" />
+								</orm:ExpandedData>
+							</orm:Reading>
+						</orm:Readings>
+						<orm:RoleSequence>
+							<orm:Role ref="_552F10D9-4F40-43BF-9C5E-F73D6770B14D" />
+						</orm:RoleSequence>
+					</orm:ReadingOrder>
+				</orm:ReadingOrders>
+				<orm:InternalConstraints>
+					<orm:UniquenessConstraint ref="_A2E158CB-C866-4FF4-BE11-55A35A1E9C0E" />
+				</orm:InternalConstraints>
+			</orm:Fact>
 		</orm:Facts>
 		<orm:Constraints>
 			<orm:UniquenessConstraint id="_40491EAB-9849-43DB-AA72-C9EF2EE7B1C5" Name="InternalUniquenessConstraint1" IsInternal="true">
@@ -12361,6 +12403,7 @@
 				<orm:RoleSequence>
 					<orm:Role id="_23FD80CE-965B-49A2-A97D-ABE2B2AD018E" ref="_F6CAF65F-5EF4-4FFA-B625-AB7FC2695B1F" />
 				</orm:RoleSequence>
+				<orm:InherentForObjectType ref="_210BD6FC-6F8C-4024-B107-2555F86500DC" />
 			</orm:MandatoryConstraint>
 			<orm:UniquenessConstraint id="_42A40A57-ABF0-41FD-AAE0-65AC2C767138" Name="InternalUniquenessConstraint227" IsInternal="true">
 				<orm:RoleSequence>
@@ -12989,21 +13032,6 @@
 			<orm:UniquenessConstraint id="_2D919BB5-3B11-4075-8488-ECEA78074665" Name="InternalUniquenessConstraint287" IsInternal="true">
 				<orm:RoleSequence>
 					<orm:Role id="_6385ADC8-5798-47A5-B55A-862D2CA557C8" ref="_8E3BE213-F23E-4815-AD9A-40DDAE6E07C9" />
-				</orm:RoleSequence>
-			</orm:UniquenessConstraint>
-			<orm:MandatoryConstraint id="_71DADF66-DF57-4BA4-96A7-B6C1E48012CF" Name="SimpleMandatoryConstraint155" IsSimple="true">
-				<orm:RoleSequence>
-					<orm:Role id="_C8581EB2-3313-4BB5-9413-910898F69841" ref="_539EAD19-973B-4D98-838A-70A5948E3B97" />
-				</orm:RoleSequence>
-			</orm:MandatoryConstraint>
-			<orm:UniquenessConstraint id="_A12D251F-A377-42C2-9F36-1647E11079A1" Name="InternalUniquenessConstraint288" IsInternal="true">
-				<orm:RoleSequence>
-					<orm:Role id="_633869B7-E18C-4A89-B049-D968C408660C" ref="_539EAD19-973B-4D98-838A-70A5948E3B97" />
-				</orm:RoleSequence>
-			</orm:UniquenessConstraint>
-			<orm:UniquenessConstraint id="_DED232AE-1379-439F-9D76-01E05E36A9E1" Name="InternalUniquenessConstraint289" IsInternal="true">
-				<orm:RoleSequence>
-					<orm:Role id="_DD7F2348-C4DB-4D97-A853-138AE33CF776" ref="_39E4C935-F82A-4DEF-A35A-E1C7C9A573DB" />
 				</orm:RoleSequence>
 			</orm:UniquenessConstraint>
 			<orm:UniquenessConstraint id="_FF2BAEB9-6845-4079-8B5F-3BF98EF01387" Name="InternalUniquenessConstraint290" IsInternal="true">
@@ -14454,6 +14482,32 @@
 					<orm:Role id="_F803CD5C-B672-4186-92DD-E207153AA54D" ref="_E1786AF9-F5C0-4946-A666-A1EA1FE1B0A2" />
 				</orm:RoleSequence>
 			</orm:UniquenessConstraint>
+			<orm:MandatoryConstraint id="_17B0072C-08EB-480A-AC03-42166B7F9179" Name="SimpleMandatoryConstraint245" IsSimple="true">
+				<orm:RoleSequence>
+					<orm:Role id="_EF76835A-3984-4E25-B6DB-7934E62A3DA5" ref="_9B1430BC-085F-43AA-8D5F-141843052BAD" />
+				</orm:RoleSequence>
+			</orm:MandatoryConstraint>
+			<orm:UniquenessConstraint id="_D2A1615B-766E-4546-8B59-E85A5EA266C1" Name="InternalUniquenessConstraint421" IsInternal="true">
+				<orm:RoleSequence>
+					<orm:Role id="_662BFB50-93C9-4DB4-B8E7-210E8C40DB57" ref="_9B1430BC-085F-43AA-8D5F-141843052BAD" />
+				</orm:RoleSequence>
+			</orm:UniquenessConstraint>
+			<orm:UniquenessConstraint id="_AD9D3E67-114F-45AA-890D-E35C5150AF95" Name="InternalUniquenessConstraint422" IsInternal="true">
+				<orm:RoleSequence>
+					<orm:Role id="_D75D84F5-F106-459B-A995-BF626406B0A9" ref="_AE4EA0B9-A838-4790-A51A-1D46D712E52E" />
+				</orm:RoleSequence>
+			</orm:UniquenessConstraint>
+			<orm:UniquenessConstraint id="_A2E158CB-C866-4FF4-BE11-55A35A1E9C0E" Name="InternalUniquenessConstraint288" IsInternal="true">
+				<orm:RoleSequence>
+					<orm:Role id="_735402A4-28B5-41F5-A3D1-6E21A6C4155F" ref="_552F10D9-4F40-43BF-9C5E-F73D6770B14D" />
+				</orm:RoleSequence>
+			</orm:UniquenessConstraint>
+			<orm:MandatoryConstraint id="_BCBF4D9E-0265-4436-895A-BE7EEF71CE6D" Name="ImpliedMandatoryConstraint53" IsImplied="true">
+				<orm:RoleSequence>
+					<orm:Role id="_EF8B43F2-E303-4709-9EF6-FA676A1B45D5" ref="_61172953-AC91-432F-A064-B6CDE4FB9B27" />
+				</orm:RoleSequence>
+				<orm:ImpliedByObjectType ref="_DEF047F3-0FF1-4814-8D6F-35B6A6F4B75A" />
+			</orm:MandatoryConstraint>
 			<orm:ExclusionConstraint id="_6A112236-3ECC-4ADA-8CDB-04C72059DB50" Name="ExclusiveOrConstraint1">
 				<orm:RoleSequences>
 					<orm:RoleSequence id="_4CBFB80A-57FB-461C-898C-D412D46B4F9A">
@@ -15595,15 +15649,6 @@ There can be PersonOrganizationRelationTypes for which no concrete subtypes exis
 			<ormDiagram:ModelNoteShape id="_486C96FA-E98F-48A8-96F7-5CDF964D094D" IsExpanded="true" AbsoluteBounds="0.936774356290698, 4.4305555946193635, 4.099890625, 0.493553852558136">
 				<ormDiagram:Subject ref="_94858069-4069-4DD7-9160-DB79FA6BB50C" />
 			</ormDiagram:ModelNoteShape>
-			<ormDiagram:ObjectTypeShape id="_663DF3C8-66AB-488B-9FE9-FFE022DC82F4" IsExpanded="true" AbsoluteBounds="5.5780267240479589, 4.7847220543771982, 1.1400577974319459, 0.22950302660465241">
-				<ormDiagram:Subject ref="_993CBC46-69EE-4859-B668-5ED41CC26560" />
-			</ormDiagram:ObjectTypeShape>
-			<ormDiagram:ObjectTypeShape id="_991659C5-C9A1-4407-9ABE-FA238CDF5D85" IsExpanded="true" AbsoluteBounds="4.8912354959174991, 5.3472221079282463, 0.91641836881637573, 0.22950302660465241">
-				<ormDiagram:Subject ref="_A692862B-80C2-4EC3-8EC8-43D9879B5745" />
-			</ormDiagram:ObjectTypeShape>
-			<ormDiagram:ObjectTypeShape id="_63C15274-A14B-47C9-880A-CA3CFAA662DD" IsExpanded="true" AbsoluteBounds="6.5138515308499336, 5.3611109438352287, 0.54618587613105785, 0.22950302660465241">
-				<ormDiagram:Subject ref="_124353A9-4BDA-4968-AED4-6CA21C87CC10" />
-			</ormDiagram:ObjectTypeShape>
 			<ormDiagram:ModelNoteShape id="_4D7EF6D2-EEA3-48D5-8205-63812DEA4B53" IsExpanded="true" AbsoluteBounds="8.8819443280808628, 2.0972221386618912, 4.4285854454040523, 0.2588533217906952">
 				<ormDiagram:Subject ref="_E8F0FC40-7D2D-40F5-8A49-B8B83D1B7C26" />
 			</ormDiagram:ModelNoteShape>
@@ -15615,9 +15660,6 @@ There can be PersonOrganizationRelationTypes for which no concrete subtypes exis
 				</ormDiagram:RelativeShapes>
 				<ormDiagram:Subject ref="_E231BFAA-7B42-411A-AB6C-3B8CEDCAE82D" />
 			</ormDiagram:FactTypeShape>
-			<ormDiagram:ExternalConstraintShape id="_B283E9BC-D1CD-49A3-B2CA-D0B907095E52" IsExpanded="true" AbsoluteBounds="6.3541665077209473, 6.0902776718139648, 0.16, 0.16">
-				<ormDiagram:Subject ref="_C783EF12-344F-4378-9DE7-EE1710516259" />
-			</ormDiagram:ExternalConstraintShape>
 		</ormDiagram:Shapes>
 		<ormDiagram:Subject ref="_9C742D19-7E3B-44BB-9530-4EB563F25697" />
 	</ormDiagram:ORMDiagram>
@@ -15648,13 +15690,17 @@ There can be PersonOrganizationRelationTypes for which no concrete subtypes exis
 				</ormDiagram:RelativeShapes>
 				<ormDiagram:Subject ref="_4650E365-25AA-46A0-B7D1-4E31053685E3" />
 			</ormDiagram:FactTypeShape>
-			<ormDiagram:FactTypeShape id="_7330E35D-BCEF-4F5D-84D7-2393AA777BC9" IsExpanded="true" AbsoluteBounds="3.5836109340563418, 2.5963889574445784, 0.24388888899236916, 0.38388888899236917" DisplayOrientation="VerticalRotatedLeft">
+			<ormDiagram:FactTypeShape id="_7330E35D-BCEF-4F5D-84D7-2393AA777BC9" IsExpanded="true" AbsoluteBounds="5.0486109452322125, 3.061944516208023, 0.38388888899236917, 0.24388888899236916">
 				<ormDiagram:RelativeShapes>
-					<ormDiagram:ReadingShape id="_B4DE39F3-D726-4D1C-842C-B2A3BDFB3DEC" IsExpanded="true" AbsoluteBounds="3.5836109340563418, 3.0450293597392735, 0.18545643985271454, 0.1295030266046524">
+					<ormDiagram:ReadingShape id="_B4DE39F3-D726-4D1C-842C-B2A3BDFB3DEC" IsExpanded="true" AbsoluteBounds="5.0486109452322125, 3.3705849185027179, 0.18545643985271454, 0.1295030266046524">
 						<ormDiagram:Subject ref="_305CA100-4725-4972-8EE8-64DC5342C800" />
 					</ormDiagram:ReadingShape>
 				</ormDiagram:RelativeShapes>
 				<ormDiagram:Subject ref="_DA016461-0B4B-431D-A7FE-6E2287DE3E8E" />
+				<ormDiagram:RoleDisplayOrder>
+					<ormDiagram:Role ref="_81528528-7D5D-45DB-94A4-43EA4A82E02F" />
+					<ormDiagram:Role ref="_8881F627-E69C-49B7-A9CF-4F744FB09064" />
+				</ormDiagram:RoleDisplayOrder>
 			</ormDiagram:FactTypeShape>
 			<ormDiagram:FactTypeShape id="_DBB47AF0-3725-4439-B0FF-CDF7AB29C6E5" IsExpanded="true" AbsoluteBounds="5.0347224683500826, 2.5619444868713619, 0.38388888899236917, 0.24388888899236916">
 				<ormDiagram:RelativeShapes>
@@ -15700,9 +15746,29 @@ There can be PersonOrganizationRelationTypes for which no concrete subtypes exis
 			<ormDiagram:ModelNoteShape id="_7EADC7DC-0B35-443A-8EF8-C31302A3AEDD" IsExpanded="true" AbsoluteBounds="4.6527776326984167, 0.50694444449618459, 4.1513976211547847, 0.493553852558136">
 				<ormDiagram:Subject ref="_29C4ACD0-74E4-4846-8153-160EBC10546B" />
 			</ormDiagram:ModelNoteShape>
-			<ormDiagram:ObjectTypeShape id="_9217F1F5-698A-4DF4-803D-D7CA4ABCAFD8" IsExpanded="true" AbsoluteBounds="2.9791666851378977, 3.2083333535119891, 1.5137556743621827, 0.22950302660465241">
+			<ormDiagram:ObjectTypeShape id="_9217F1F5-698A-4DF4-803D-D7CA4ABCAFD8" IsExpanded="true" AbsoluteBounds="5.7152778166346252, 3.1250000195577741, 1.5137556743621827, 0.22950302660465241">
 				<ormDiagram:Subject ref="_58616CE9-3E4A-4F2A-8374-E97CBA58C332" />
 			</ormDiagram:ObjectTypeShape>
+			<ormDiagram:ObjectTypeShape id="_8A631856-EF55-47E7-9C23-E2ABD5FB4938" IsExpanded="true" AbsoluteBounds="3.1388889122754335, 3.5625000265426934, 1.1400577974319459, 0.22950302660465241">
+				<ormDiagram:Subject ref="_993CBC46-69EE-4859-B668-5ED41CC26560" />
+			</ormDiagram:ObjectTypeShape>
+			<ormDiagram:ObjectTypeShape id="_DE85DF27-6931-4515-A4A5-314413C66A82" IsExpanded="true" AbsoluteBounds="4.2361111426725984, 4.5555555894970894, 0.91641836881637573, 0.22950302660465241">
+				<ormDiagram:Subject ref="_A692862B-80C2-4EC3-8EC8-43D9879B5745" />
+			</ormDiagram:ObjectTypeShape>
+			<ormDiagram:ObjectTypeShape id="_BE9B96EE-F79F-45B8-A06F-A0FB720DB639" IsExpanded="true" AbsoluteBounds="2.4513889071531594, 4.5972222564741969, 0.54618587613105773, 0.22950302660465241">
+				<ormDiagram:Subject ref="_124353A9-4BDA-4968-AED4-6CA21C87CC10" />
+			</ormDiagram:ObjectTypeShape>
+			<ormDiagram:ExternalConstraintShape id="_A62F3566-1A95-47AB-86C5-58AA9088BF70" IsExpanded="true" AbsoluteBounds="3.3611111361533403, 4.54166670050472, 0.16, 0.16">
+				<ormDiagram:Subject ref="_C783EF12-344F-4378-9DE7-EE1710516259" />
+			</ormDiagram:ExternalConstraintShape>
+			<ormDiagram:FactTypeShape id="_34D1AE81-3392-41BC-BFA9-B55FD38FB4EE" IsExpanded="true" AbsoluteBounds="7.5347222145646811, 3.1527777509763837, 0.22388888899236919, 0.17388888899236918">
+				<ormDiagram:RelativeShapes>
+					<ormDiagram:ReadingShape id="_0EA63061-0FFC-493E-B5C4-79C9615E6D4A" IsExpanded="true" AbsoluteBounds="7.5347222145646811, 3.3914181532710792, 1.0175418853759766, 0.1295030266046524">
+						<ormDiagram:Subject ref="_4839EB18-891D-4C45-BB88-F7E30F3793D5" />
+					</ormDiagram:ReadingShape>
+				</ormDiagram:RelativeShapes>
+				<ormDiagram:Subject ref="_524C2C7C-EEE3-41CB-ADE5-56C71EF4EF8B" />
+			</ormDiagram:FactTypeShape>
 		</ormDiagram:Shapes>
 		<ormDiagram:Subject ref="_9C742D19-7E3B-44BB-9530-4EB563F25697" />
 	</ormDiagram:ORMDiagram>
@@ -15788,7 +15854,7 @@ There can be PersonOrganizationRelationTypes for which no concrete subtypes exis
 		</ormDiagram:Shapes>
 		<ormDiagram:Subject ref="_9C742D19-7E3B-44BB-9530-4EB563F25697" />
 	</ormDiagram:ORMDiagram>
-	<ormDiagram:ORMDiagram id="_89E9468B-7E57-49AB-B998-4B8B5455C7EA" IsCompleteView="true" Name="InterCollectiveRelation" BaseFontName="Tahoma" BaseFontSize="0.0972222238779068">
+	<ormDiagram:ORMDiagram id="_89E9468B-7E57-49AB-B998-4B8B5455C7EA" IsCompleteView="true" Name="InterOrganizationalRelation" BaseFontName="Tahoma" BaseFontSize="0.0972222238779068">
 		<ormDiagram:Shapes>
 			<ormDiagram:ObjectTypeShape id="_C8F9C679-17FF-412B-8CDB-988365D9B37D" IsExpanded="true" AbsoluteBounds="3.1122097643092275, 2.7430555722676218, 1.8094099712371827, 0.22950302660465241">
 				<ormDiagram:Subject ref="_83F8D70F-919B-4518-90B4-38FF9B4D8404" />

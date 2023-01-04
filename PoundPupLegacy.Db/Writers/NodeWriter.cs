@@ -11,7 +11,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
     private const string NODE_STATUS_ID = "node_status_id";
     private const string NODE_TYPE_ID = "node_type_id";
 
-    public static DatabaseWriter<Node> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Node>> CreateAsync(NpgsqlConnection connection)
     {
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition{
@@ -40,7 +40,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
             },
         };
 
-        var commandWithId = CreateInsertStatement(
+        var commandWithId = await CreateInsertStatementAsync(
             connection,
             "node",
             columnDefinitions.ToImmutableList().Prepend(
@@ -50,7 +50,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
         );
-        var commandWithoutId = CreateIdentityInsertStatement(
+        var commandWithoutId = await CreateIdentityInsertStatementAsync(
             connection,
             "node",
             columnDefinitions
@@ -65,7 +65,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
         _identityCommand = identityCommand;
     }
 
-    internal override void Write(Node node)
+    internal override async Task WriteAsync(Node node)
     {
         if (node.Id is null)
         {
@@ -75,7 +75,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
             WriteValue(node.Title, TITLE, _identityCommand);
             WriteValue(node.NodeStatusId, NODE_STATUS_ID, _identityCommand);
             WriteValue(node.NodeTypeId, NODE_TYPE_ID, _identityCommand);
-            node.Id = _identityCommand.ExecuteScalar() switch
+            node.Id = await _identityCommand.ExecuteScalarAsync() switch
             {
                 int i => i,
                 _ => throw new Exception("Insert of node does not return an id.")
@@ -90,12 +90,12 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
             WriteValue(node.Title, TITLE);
             WriteValue(node.NodeStatusId, NODE_STATUS_ID);
             WriteValue(node.NodeTypeId, NODE_TYPE_ID);
-            _command.ExecuteNonQuery();
+            await _command.ExecuteNonQueryAsync();
         }
     }
-    public override void Dispose()
+    public override async ValueTask DisposeAsync()
     {
-        base.Dispose();
-        _identityCommand.Dispose();
+        await base.DisposeAsync();
+        await _identityCommand.DisposeAsync();
     }
 }

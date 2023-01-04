@@ -4,9 +4,9 @@ internal class ISOCodedSubdivisionWriter : DatabaseWriter<ISOCodedSubdivision>, 
 {
     private const string ID = "id";
     private const string ISO_3166_2_CODE = "iso_3166_2_code";
-    public static DatabaseWriter<ISOCodedSubdivision> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<ISOCodedSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "iso_coded_subdivision",
             new ColumnDefinition[] {
@@ -26,13 +26,13 @@ internal class ISOCodedSubdivisionWriter : DatabaseWriter<ISOCodedSubdivision>, 
     {
     }
 
-    internal override void Write(ISOCodedSubdivision country)
+    internal override async Task WriteAsync(ISOCodedSubdivision country)
     {
         if (country.Id is null)
             throw new NullReferenceException();
 
         WriteValue(country.Id, ID);
         WriteValue(country.ISO3166_2_Code, ISO_3166_2_CODE);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteScalarAsync();
     }
 }

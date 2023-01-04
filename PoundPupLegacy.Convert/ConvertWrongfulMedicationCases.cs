@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateWrongfulMedicationCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateWrongfulMedicationCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        WrongfulMedicationCaseCreator.Create(ReadWrongfulMedicationCases(mysqlconnection), connection);
+        await WrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases(mysqlconnection), connection);
     }
     private static IEnumerable<WrongfulMedicationCase> ReadWrongfulMedicationCases(MySqlConnection mysqlconnection)
     {

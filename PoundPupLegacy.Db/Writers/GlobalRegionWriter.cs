@@ -2,8 +2,8 @@
 
 internal class GlobalRegionWriter : IDatabaseWriter<GlobalRegion>
 {
-    public static DatabaseWriter<GlobalRegion> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<GlobalRegion>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<GlobalRegion>(SingleIdWriter.CreateSingleIdCommand("global_region", connection));
+        return new SingleIdWriter<GlobalRegion>(await SingleIdWriter.CreateSingleIdCommandAsync("global_region", connection));
     }
 }

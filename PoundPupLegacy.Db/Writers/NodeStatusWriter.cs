@@ -4,9 +4,9 @@ internal class NodeStatusWriter : DatabaseWriter<NodeStatus>, IDatabaseWriter<No
 {
     private const string ID = "id";
     private const string NAME = "name";
-    public static DatabaseWriter<NodeStatus> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<NodeStatus>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "node_status",
             new ColumnDefinition[] {
@@ -28,13 +28,13 @@ internal class NodeStatusWriter : DatabaseWriter<NodeStatus>, IDatabaseWriter<No
     {
     }
 
-    internal override void Write(NodeStatus nodeStatus)
+    internal override async Task WriteAsync(NodeStatus nodeStatus)
     {
         if (nodeStatus.Id is null)
             throw new NullReferenceException();
 
         WriteValue(nodeStatus.Id, ID);
         WriteValue(nodeStatus.Name, NAME);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

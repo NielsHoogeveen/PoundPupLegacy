@@ -6,9 +6,9 @@ internal class CaseWriter : DatabaseWriter<Case>, IDatabaseWriter<Case>
     private const string DESCRIPTION = "description";
     private const string DATE = "date";
     private const string DATERANGE = "date_range";
-    public static DatabaseWriter<Case> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Case>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "case",
             new ColumnDefinition[] {
@@ -38,13 +38,13 @@ internal class CaseWriter : DatabaseWriter<Case>, IDatabaseWriter<Case>
     {
     }
 
-    internal override void Write(Case @case)
+    internal override async Task WriteAsync(Case @case)
     {
         if (@case.Id is null)
             throw new NullReferenceException();
         WriteValue(@case.Id, ID);
         WriteValue(@case.Description, DESCRIPTION);
         WriteDateTimeRange(@case.Date, DATE, DATERANGE);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

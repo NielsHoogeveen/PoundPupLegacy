@@ -6,9 +6,9 @@ internal class PersonWriter : DatabaseWriter<Person>, IDatabaseWriter<Person>
     private const string DATE_OF_BIRTH = "date_of_birth";
     private const string DATE_OF_DEATH = "date_of_death";
     private const string FILE_ID_PORTRAIT = "file_id_portrait";
-    public static DatabaseWriter<Person> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Person>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "person",
             new ColumnDefinition[] {
@@ -39,7 +39,7 @@ internal class PersonWriter : DatabaseWriter<Person>, IDatabaseWriter<Person>
     {
     }
 
-    internal override void Write(Person person)
+    internal override async Task WriteAsync(Person person)
     {
         if (person.Id is null)
             throw new NullReferenceException();
@@ -47,6 +47,6 @@ internal class PersonWriter : DatabaseWriter<Person>, IDatabaseWriter<Person>
         WriteNullableValue(person.DateOfBirth, DATE_OF_BIRTH);
         WriteNullableValue(person.DateOfDeath, DATE_OF_DEATH);
         WriteNullableValue(person.FileIdPortrait, FILE_ID_PORTRAIT);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

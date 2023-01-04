@@ -2,8 +2,8 @@
 
 internal class DocumentTypeWriter : IDatabaseWriter<DocumentType>
 {
-    public static DatabaseWriter<DocumentType> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<DocumentType>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<DocumentType>(SingleIdWriter.CreateSingleIdCommand("document_type", connection));
+        return new SingleIdWriter<DocumentType>(await SingleIdWriter.CreateSingleIdCommandAsync("document_type", connection));
     }
 }

@@ -911,11 +911,11 @@ internal partial class Program
         };
     }
 
-    private static void MigrateLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        LocationCreator.Create(GetLocations(), connection);
-        LocationCreator.Create(ReadUSLocations(mysqlconnection, connection), connection);
-        LocationLocatableCreator.Create(GetLocationLocatables(), connection);
+        await LocationCreator.CreateAsync(GetLocations(), connection);
+        await LocationCreator.CreateAsync(ReadUSLocations(mysqlconnection, connection), connection);
+        await LocationLocatableCreator.CreateAsync(GetLocationLocatables(), connection);
     }
     private static IEnumerable<Location> ReadUSLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {

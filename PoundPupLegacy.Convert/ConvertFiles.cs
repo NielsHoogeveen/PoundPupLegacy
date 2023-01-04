@@ -9,9 +9,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateFiles(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateFiles(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        FileCreator.Create(ReadFiles(mysqlconnection), connection);
+        await FileCreator.CreateAsync(ReadFiles(mysqlconnection), connection);
     }
     private static IEnumerable<Model.File> ReadFiles(MySqlConnection mysqlconnection)
     {

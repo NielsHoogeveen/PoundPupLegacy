@@ -2,16 +2,16 @@
 
 public class BlogPostCreator : IEntityCreator<BlogPost>
 {
-    public static void Create(IEnumerable<BlogPost> blogPosts, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<BlogPost> blogPosts, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var blogPostWriter = BlogPostWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var blogPostWriter = await BlogPostWriter.CreateAsync(connection);
 
         foreach (var blogPost in blogPosts)
         {
-            nodeWriter.Write(blogPost);
-            blogPostWriter.Write(blogPost);
+            await nodeWriter.WriteAsync(blogPost);
+            await blogPostWriter.WriteAsync(blogPost);
         }
     }
 }

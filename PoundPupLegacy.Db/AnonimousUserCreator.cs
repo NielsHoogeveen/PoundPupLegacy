@@ -2,11 +2,11 @@
 
 public class AnonimousUserCreator
 {
-    public static void Create(NpgsqlConnection connection)
+    public static async Task CreateAsync(NpgsqlConnection connection)
     {
 
-        using var accessRoleWriter = AccessRoleWriter.Create(connection);
+        await using var accessRoleWriter = await AccessRoleWriter.CreateAsync(connection);
 
-        accessRoleWriter.Write(new AnonymousUser());
+        await accessRoleWriter.WriteAsync(new AnonymousUser());
     }
 }

@@ -35,7 +35,7 @@ namespace PoundPupLegacy.Convert
             return list;
         }
 
-        private static void AddNodeTypes(NpgsqlConnection postgresqlConnection)
+        private static async Task AddNodeTypes(NpgsqlConnection postgresqlConnection)
         {
             var nodeTypes = new NodeType[]
             {
@@ -95,9 +95,8 @@ namespace PoundPupLegacy.Convert
                 command.Parameters["id"].Value = nodeType.Id;
                 command.Parameters["name"].Value = nodeType.Name;
                 command.Parameters["description"].Value = nodeType.Description;
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
-
         }
         const int COLORADO_ADOPTION_CENTER = 105;
         const int ADOPTION = 106;
@@ -156,27 +155,28 @@ namespace PoundPupLegacy.Convert
         const int DOCUMENT_TYPES = 42416;
         const int ORGANIZATION_TYPE = 12622;
 
-        private static void Migrate()
+        private static async Task Migrate()
         {
             try
             {
                 using var mysqlconnection = new MySqlConnection(ConnectionStringMariaDb);
                 using var postgresqlconnection = new NpgsqlConnection(ConnectStringPostgresql);
                 mysqlconnection.Open();
-                postgresqlconnection.Open();
+                await postgresqlconnection.OpenAsync();
                 //MigrateNodeStatuses(postgresqlconnection);
                 //MigrateUsers(mysqlconnection, postgresqlconnection);
                 //MigrateFiles(mysqlconnection, postgresqlconnection);
-                AddNodeTypes(postgresqlconnection);
-                MigrateVocabularies(mysqlconnection, postgresqlconnection);
-                MigrateBasicNameables(mysqlconnection, postgresqlconnection);
-                MigrateChildPlacementTypes(mysqlconnection, postgresqlconnection);
-                MigrateOrganizationTypes(mysqlconnection, postgresqlconnection);
-                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12622, 1, "organization_type");
-                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12637, 2, "affiliation_type");
-                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12652, 3, "political_entity_relation_type");
-                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 12663, 4, "position_type");
-                //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 16900, 5, "personal_relationship_type");
+                await AddNodeTypes(postgresqlconnection);
+                await MigrateVocabularies(mysqlconnection, postgresqlconnection);
+                await MigrateBasicNameables(mysqlconnection, postgresqlconnection);
+                await MigrateChildPlacementTypes(mysqlconnection, postgresqlconnection);
+                await MigrateOrganizationTypes(mysqlconnection, postgresqlconnection);
+                await MigrateInterOrganizationalRelationTypes(mysqlconnection, postgresqlconnection);
+                await MigrateInterPersonalRelationTypes(mysqlconnection, postgresqlconnection);
+                await MigratePoliticalEntityRelationTypes(mysqlconnection, postgresqlconnection);
+                await MigratePersonOrganizationRelationTypes(mysqlconnection, postgresqlconnection);
+                await MigrateTypesOfAbuse(mysqlconnection, postgresqlconnection);
+                await MigrateTypesOfAbusers(mysqlconnection, postgresqlconnection);
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 27213, 6, "profession");
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 39428, 7, "denomination");
                 //MigrateSelectionOptions(mysqlconnection, postgresqlconnection, 41212, 8, "hague_status");
@@ -209,7 +209,7 @@ namespace PoundPupLegacy.Convert
                 //MigrateWrongfulRemovalCases(mysqlconnection, postgresqlconnection);
                 //MigrateSimpleTextPosts(mysqlconnection, postgresqlconnection);
                 mysqlconnection.Close();
-                postgresqlconnection.Close();
+                await postgresqlconnection.CloseAsync();
             }
             catch (MySqlException ex)
             {
@@ -232,9 +232,9 @@ namespace PoundPupLegacy.Convert
             }
         }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Migrate();
+            await Migrate();
         }
     }
 }

@@ -8,9 +8,9 @@ internal class OrganizationWriter : DatabaseWriter<Organization>, IDatabaseWrite
     private const string DESCRIPTION = "description";
     private const string ESTABLISHED = "established";
     private const string TERMINATED = "terminated";
-    public static DatabaseWriter<Organization> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Organization>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "organization",
             new ColumnDefinition[] {
@@ -49,7 +49,7 @@ internal class OrganizationWriter : DatabaseWriter<Organization>, IDatabaseWrite
     {
     }
 
-    internal override void Write(Organization organization)
+    internal override async Task WriteAsync(Organization organization)
     {
         if (organization.Id is null)
             throw new NullReferenceException();
@@ -60,6 +60,6 @@ internal class OrganizationWriter : DatabaseWriter<Organization>, IDatabaseWrite
         WriteNullableValue(organization.Description, DESCRIPTION);
         WriteNullableValue(organization.Established, ESTABLISHED);
         WriteNullableValue(organization.Terminated, TERMINATED);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

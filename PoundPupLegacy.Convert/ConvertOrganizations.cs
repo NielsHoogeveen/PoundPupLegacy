@@ -32,7 +32,7 @@ internal partial class Program
         };
     }
 
-    private static void MigrateOrganizations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateOrganizations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
         var organizations = GetOrganizations();
         foreach (var org in organizations)
@@ -43,8 +43,8 @@ internal partial class Program
                 org.Id = NodeId;
             }
         }
-        OrganizationCreator.Create(organizations, connection);
-        OrganizationCreator.Create(ReadOrganizations(mysqlconnection), connection);
+        await OrganizationCreator.CreateAsync(organizations, connection);
+        await OrganizationCreator.CreateAsync(ReadOrganizations(mysqlconnection), connection);
     }
     private static IEnumerable<Organization> ReadOrganizations(MySqlConnection mysqlconnection)
     {

@@ -9,9 +9,9 @@ internal class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter<Docume
     private const string SOURCE_URL = "source_url";
     private const string TEXT = "text";
     private const string DOCUMENT_TYPE_ID = "document_type_id";
-    public static DatabaseWriter<Document> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Document>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "document",
             new ColumnDefinition[] {
@@ -48,7 +48,7 @@ internal class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter<Docume
     {
     }
 
-    internal override void Write(Document document)
+    internal override async Task WriteAsync(Document document)
     {
         if (document.Id is null)
             throw new NullReferenceException();
@@ -57,7 +57,7 @@ internal class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter<Docume
         WriteDateTimeRange(document.PublicationDate, PUBLICATION_DATE, PUBLICATION_DATE_RANGE);
         WriteNullableValue(document.SourceUrl, SOURCE_URL);
         WriteNullableValue(document.DocumentTypeId, DOCUMENT_TYPE_ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 
 }

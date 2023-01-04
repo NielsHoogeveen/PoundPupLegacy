@@ -5,9 +5,9 @@ internal class BasicSecondLevelSubdivisionWriter : DatabaseWriter<BasicSecondLev
     private const string ID = "id";
     private const string INTERMEDIATE_LEVEL_SUBDIVISION_ID = "intermediate_level_subdivision_id";
 
-    public static DatabaseWriter<BasicSecondLevelSubdivision> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<BasicSecondLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "basic_second_level_subdivision",
             new ColumnDefinition[] {
@@ -27,12 +27,12 @@ internal class BasicSecondLevelSubdivisionWriter : DatabaseWriter<BasicSecondLev
     {
     }
 
-    internal override void Write(BasicSecondLevelSubdivision country)
+    internal override async Task WriteAsync(BasicSecondLevelSubdivision country)
     {
         if (country.Id is null)
             throw new NullReferenceException();
         WriteValue(country.Id, ID);
         WriteValue(country.IntermediateLevelSubdivisionId, INTERMEDIATE_LEVEL_SUBDIVISION_ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

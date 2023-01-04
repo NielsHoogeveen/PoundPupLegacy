@@ -2,14 +2,14 @@
 
 public class FileCreator : IEntityCreator<Model.File>
 {
-    public static void Create(IEnumerable<Model.File> files, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<Model.File> files, NpgsqlConnection connection)
     {
 
-        using var fileWriter = FileWriter.Create(connection);
+        await using var fileWriter = await FileWriter.CreateAsync(connection);
 
         foreach (var file in files)
         {
-            fileWriter.Write(file);
+            await fileWriter.WriteAsync(file);
         }
     }
 }

@@ -4,9 +4,9 @@ public class SecondLevelGlobalRegionWriter : DatabaseWriter<SecondLevelGlobalReg
 {
     private const string ID = "id";
     private const string FIRST_LEVEL_GLOBAL_REGION_ID = "first_level_global_region_id";
-    public static DatabaseWriter<SecondLevelGlobalRegion> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<SecondLevelGlobalRegion>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "second_level_global_region",
             new ColumnDefinition[] {
@@ -27,13 +27,13 @@ public class SecondLevelGlobalRegionWriter : DatabaseWriter<SecondLevelGlobalReg
     {
     }
 
-    internal override void Write(SecondLevelGlobalRegion region)
+    internal override async Task WriteAsync(SecondLevelGlobalRegion region)
     {
         if (region.Id is null)
             throw new NullReferenceException();
 
         WriteValue(region.Id, ID);
         WriteValue(region.FirstLevelGlobalRegionId, FIRST_LEVEL_GLOBAL_REGION_ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

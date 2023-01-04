@@ -25,9 +25,9 @@ internal partial class Program
         };
     }
 
-    private static void MigrateNodeStatuses(NpgsqlConnection connection)
+    private static async Task MigrateNodeStatuses(NpgsqlConnection connection)
     {
-        NodeStatusCreator.Create(GetNodeStatuses(), connection);
+        await NodeStatusCreator.CreateAsync(GetNodeStatuses(), connection);
     }
 
 }

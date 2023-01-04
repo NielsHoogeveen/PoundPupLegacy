@@ -4,22 +4,22 @@ namespace PoundPupLegacy.Db;
 
 public class ProfessionCreator : IEntityCreator<Profession>
 {
-    public static void Create(IEnumerable<Profession> professions, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<Profession> professions, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var professionWriter = ProfessionWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var professionWriter = await ProfessionWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var profession in professions)
         {
-            nodeWriter.Write(profession);
-            nameableWriter.Write(profession);
-            professionWriter.Write(profession);
-            EntityCreator.WriteTerms(profession, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(profession);
+            await nameableWriter.WriteAsync(profession);
+            await professionWriter.WriteAsync(profession);
+            await EntityCreator.WriteTerms(profession, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

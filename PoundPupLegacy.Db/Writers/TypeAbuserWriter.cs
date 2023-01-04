@@ -2,8 +2,8 @@
 
 internal class TypeOfAbuserWriter : IDatabaseWriter<TypeOfAbuser>
 {
-    public static DatabaseWriter<TypeOfAbuser> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<TypeOfAbuser>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<TypeOfAbuser>(SingleIdWriter.CreateSingleIdCommand("type_of_abuser", connection));
+        return new SingleIdWriter<TypeOfAbuser>(await SingleIdWriter.CreateSingleIdCommandAsync("type_of_abuser", connection));
     }
 }

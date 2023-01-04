@@ -4,9 +4,9 @@ internal class UserGroupUserWriter : DatabaseWriter<UserGroupUser>, IDatabaseWri
 {
     private const string USER_GROUP_ID = "user_group_id";
     private const string USER_ID = "user_id";
-    public static DatabaseWriter<UserGroupUser> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<UserGroupUser>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "user_group_user",
             new ColumnDefinition[] {
@@ -28,10 +28,10 @@ internal class UserGroupUserWriter : DatabaseWriter<UserGroupUser>, IDatabaseWri
     {
     }
 
-    internal override void Write(UserGroupUser article)
+    internal override async Task WriteAsync(UserGroupUser article)
     {
         WriteValue(article.UserGroupId, USER_GROUP_ID);
         WriteValue(article.UserId, USER_ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

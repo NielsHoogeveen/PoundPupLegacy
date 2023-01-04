@@ -12,5 +12,6 @@ public record PersonOrganizationRelationType : Nameable
     public required string Description { get; init; }
     public required int? FileIdTileImage { get; init; }
     public required List<VocabularyName> VocabularyNames { get; init; }
+    public required bool HasConcreteSubtype { get; init; }
 
 }

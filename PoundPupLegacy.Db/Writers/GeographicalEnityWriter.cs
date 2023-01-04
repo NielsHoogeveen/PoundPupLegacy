@@ -2,8 +2,8 @@
 
 internal class GeographicalEnityWriter : IDatabaseWriter<GeographicalEntity>
 {
-    public static DatabaseWriter<GeographicalEntity> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<GeographicalEntity>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<GeographicalEntity>(SingleIdWriter.CreateSingleIdCommand("geographical_entity", connection));
+        return new SingleIdWriter<GeographicalEntity>(await SingleIdWriter.CreateSingleIdCommandAsync("geographical_entity", connection));
     }
 }

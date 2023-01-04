@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.Data;
+using System.Text.Json;
+using PoundPupLegacy.ViewModel;
 
 namespace PoundPupLegacy.Server.Controllers
 {
@@ -18,24 +20,43 @@ namespace PoundPupLegacy.Server.Controllers
         }
 
         [HttpGet]
-        public string Get()
+        public async Task<List<User>> Get()
         {
-            _connection.Open();
+            await _connection.OpenAsync();
             var sql = $"""
-                SELECT json_agg(
-                    json_build_object(
-                        'Id', u.id, 
-                        'Name', u.name, 
-                        'Created', u.created, 
-                        'AboutMe', u.about_me, 
-                        'AnimalWithin', u.animal_within, 
-                        'RelationToChildPlacement', u.relation_to_child_placement, 
-                        'Avatar', u.avatar, 
-                        'Email', u.email, 
-                        'Password', u.password
-                    )
-                ) as agg
-                FROM public."user" u;
+                WITH 
+                users AS(
+                	SELECT
+                		u.id, 
+                		ar.name, 
+                		u.created_date_time, 
+                		u.about_me, 
+                		u.animal_within, 
+                		u.relation_to_child_placement, 
+                		u.avatar, 
+                		u.email, 
+                		u.password
+                	FROM public."user" u
+                	JOIN public."access_role" ar on ar.id = u.id
+                	ORDER BY ar.name
+                ),
+                doc as (
+                	SELECT json_agg(
+                		json_build_object(
+                			'Id', u.id, 
+                			'Name', u.name, 
+                			'Created', u.created_date_time, 
+                			'AboutMe', u.about_me, 
+                			'AnimalWithin', u.animal_within, 
+                			'RelationToChildPlacement', u.relation_to_child_placement, 
+                			'Avatar', u.avatar, 
+                			'Email', u.email, 
+                			'Password', u.password
+                		) :: jsonb
+                	) ::jsonb as agg
+                	FROM users u
+                ) 
+                SELECT agg from doc
                 """;
 
             using var readCommand = _connection.CreateCommand();
@@ -43,12 +64,12 @@ namespace PoundPupLegacy.Server.Controllers
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = sql;
 
-            var reader = readCommand.ExecuteReader();
-            reader.Read();
-            var res = reader.GetString(0);
-            reader.Close();
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            var someValue = reader.GetFieldValue<List<User>>(0);
             _connection.Close();
-            return res;
+            return someValue;
+
         }
 
     }

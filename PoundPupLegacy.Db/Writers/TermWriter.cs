@@ -5,9 +5,9 @@ internal class TermWriter : DatabaseWriter<Term>, IDatabaseWriter<Term>
     private const string VOCABULARY_ID = "vocabulary_id";
     private const string NAME = "name";
     private const string NAMEABLE_ID = "nameable_id";
-    public static DatabaseWriter<Term> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Term>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateIdentityInsertStatement(
+        var command = await CreateIdentityInsertStatementAsync(
             connection,
             "term",
             new ColumnDefinition[] {
@@ -33,17 +33,17 @@ internal class TermWriter : DatabaseWriter<Term>, IDatabaseWriter<Term>
     {
     }
 
-    internal override void Write(Term term)
+    internal override async Task WriteAsync(Term term)
     {
         WriteValue(term.VocabularyId, VOCABULARY_ID);
         WriteValue(term.Name, NAME);
         WriteValue(term.NameableId, NAMEABLE_ID);
-        var retval = _command.ExecuteScalar();
+        var retval = await _command.ExecuteScalarAsync();
         term.Id = retval switch
         {
             int i => i,
             long i => (int)i,
-            _ => throw new Exception("Id could not be set for term")
+            _ => throw new Exception($"Id could not be set for term {term.Name} in vocabulary {term.VocabularyId}")
         };
     }
 }

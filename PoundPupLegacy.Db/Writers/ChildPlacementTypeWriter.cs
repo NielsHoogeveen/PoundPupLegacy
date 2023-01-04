@@ -2,8 +2,8 @@
 
 internal class ChildPlacementTypeWriter : IDatabaseWriter<ChildPlacementType>
 {
-    public static DatabaseWriter<ChildPlacementType> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<ChildPlacementType>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<ChildPlacementType>(SingleIdWriter.CreateSingleIdCommand("child_placement_type", connection));
+        return new SingleIdWriter<ChildPlacementType>(await SingleIdWriter.CreateSingleIdCommandAsync("child_placement_type", connection));
     }
 }

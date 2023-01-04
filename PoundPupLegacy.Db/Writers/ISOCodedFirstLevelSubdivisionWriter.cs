@@ -2,8 +2,8 @@
 
 internal class ISOCodedFirstLevelSubdivisionWriter : IDatabaseWriter<ISOCodedFirstLevelSubdivision>
 {
-    public static DatabaseWriter<ISOCodedFirstLevelSubdivision> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<ISOCodedFirstLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<ISOCodedFirstLevelSubdivision>(SingleIdWriter.CreateSingleIdCommand("iso_coded_first_level_subdivision", connection));
+        return new SingleIdWriter<ISOCodedFirstLevelSubdivision>(await SingleIdWriter.CreateSingleIdCommandAsync("iso_coded_first_level_subdivision", connection));
     }
 }

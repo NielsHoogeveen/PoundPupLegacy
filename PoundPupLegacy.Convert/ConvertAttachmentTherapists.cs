@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateAttachmentTherapists(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateAttachmentTherapists(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        AttachmentTherapistCreator.Create(ReadAttachmentTherapists(mysqlconnection), connection);
+        await AttachmentTherapistCreator.CreateAsync(ReadAttachmentTherapists(mysqlconnection), connection);
     }
 
     private static IEnumerable<AttachmentTherapist> ReadAttachmentTherapists(MySqlConnection mysqlconnection)

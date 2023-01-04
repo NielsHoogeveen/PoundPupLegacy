@@ -2,8 +2,8 @@
 
 internal class CountryAndIntermediateLevelSubdivisionWriter : IDatabaseWriter<CountryAndIntermediateLevelSubdivision>
 {
-    public static DatabaseWriter<CountryAndIntermediateLevelSubdivision> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<CountryAndIntermediateLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<CountryAndIntermediateLevelSubdivision>(SingleIdWriter.CreateSingleIdCommand("country_and_intermediate_level_subdivision", connection));
+        return new SingleIdWriter<CountryAndIntermediateLevelSubdivision>(await SingleIdWriter.CreateSingleIdCommandAsync("country_and_intermediate_level_subdivision", connection));
     }
 }

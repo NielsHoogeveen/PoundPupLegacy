@@ -9,9 +9,9 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
-        private static void MigrateSecondLevelGlobalRegions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateSecondLevelGlobalRegions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            SecondLevelGlobalRegionCreator.Create(ReadSecondLevelGlobalRegion(mysqlconnection), connection);
+            await SecondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(mysqlconnection), connection);
         }
 
         private static IEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(MySqlConnection mysqlconnection)

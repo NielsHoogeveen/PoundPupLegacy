@@ -4,23 +4,23 @@ namespace PoundPupLegacy.Db;
 
 public class InterPersonalRelationTypeCreator : IEntityCreator<InterPersonalRelationType>
 {
-    public static void Create(IEnumerable<InterPersonalRelationType> interPersonalRelationTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<InterPersonalRelationType> interPersonalRelationTypes, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var interPersonalRelationTypeWriter = InterPersonalRelationTypeWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var interPersonalRelationTypeWriter = await InterPersonalRelationTypeWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
 
         foreach (var interPersonalRelationType in interPersonalRelationTypes)
         {
-            nodeWriter.Write(interPersonalRelationType);
-            nameableWriter.Write(interPersonalRelationType);
-            interPersonalRelationTypeWriter.Write(interPersonalRelationType);
-            EntityCreator.WriteTerms(interPersonalRelationType, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(interPersonalRelationType);
+            await nameableWriter.WriteAsync(interPersonalRelationType);
+            await interPersonalRelationTypeWriter.WriteAsync(interPersonalRelationType);
+            await EntityCreator.WriteTerms(interPersonalRelationType, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateCoercedAdoptionCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateCoercedAdoptionCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        CoercedAdoptionCaseCreator.Create(ReadCoercedAdoptionCases(mysqlconnection), connection);
+        await CoercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(mysqlconnection), connection);
     }
     private static IEnumerable<CoercedAdoptionCase> ReadCoercedAdoptionCases(MySqlConnection mysqlconnection)
     {

@@ -9,9 +9,9 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
-        private static void MigrateOrganizationTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateOrganizationTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            OrganizationTypeCreator.Create(ReadOrganizationTypes(mysqlconnection), connection);
+            await OrganizationTypeCreator.CreateAsync(ReadOrganizationTypes(mysqlconnection), connection);
         }
         private static IEnumerable<OrganizationType> ReadOrganizationTypes(MySqlConnection mysqlconnection)
         {
@@ -32,7 +32,11 @@ namespace PoundPupLegacy.Convert
                     		when n2.field_tile_image_fid = 0 then null
                     		ELSE n2.field_tile_image_fid
                     	END file_id_tile_image,
-                       n2.title topic_name
+                       n2.title topic_name,
+                       case
+                       when n.nid IN (14670,28962) then true
+                       ELSE false
+                       END has_concrete_subtype
                     FROM node n
                     JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                     JOIN category c ON c.cid = n.nid AND c.cnid = 12622
@@ -115,8 +119,8 @@ namespace PoundPupLegacy.Convert
                     Description = reader.GetString("description"),
                     FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
                     VocabularyNames = vocabularyNames,
+                    HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
                 };
-
             }
             reader.Close();
         }

@@ -93,15 +93,15 @@ namespace PoundPupLegacy.Convert
 
         };
 
-        private static void MigrateCountryAndFirstAndSecondLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateCountryAndFirstAndSecondLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
             foreach (var country in RegionSubdivisionCountries)
             {
                 NodeId++;
                 country.Id = NodeId;
             }
-            CountryAndFirstAndSecondLevelSubdivisionCreator.Create(RegionSubdivisionCountries, connection);
-            CountryAndFirstAndSecondLevelSubdivisionCreator.Create(ReadCountryAndFirstAndSecondLevelSubdivision(mysqlconnection), connection);
+            await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(RegionSubdivisionCountries, connection);
+            await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(mysqlconnection), connection);
         }
         private static IEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(MySqlConnection mysqlconnection)
         {

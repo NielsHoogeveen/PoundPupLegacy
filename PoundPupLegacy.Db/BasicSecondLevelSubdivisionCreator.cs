@@ -4,37 +4,37 @@ namespace PoundPupLegacy.Db;
 
 public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLevelSubdivision>
 {
-    public static void Create(IEnumerable<BasicSecondLevelSubdivision> subdivisions, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<BasicSecondLevelSubdivision> subdivisions, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var documentableWriter = DocumentableWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
-        using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
-        using var subdivisionWriter = SubdivisionWriter.Create(connection);
-        using var isoCodedSubdivisionWriter = ISOCodedSubdivisionWriter.Create(connection);
-        using var bottomLevelSubdivisionWriter = BottomLevelSubdivisionWriter.Create(connection);
-        using var secondLevelSubdivisionWriter = SecondLevelSubdivisionWriter.Create(connection);
-        using var basicSecondLevelSubdivisionWriter = BasicSecondLevelSubdivisionWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var geographicalEntityWriter = await GeographicalEnityWriter.CreateAsync(connection);
+        await using var politicalEntityWriter = await PoliticalEntityWriter.CreateAsync(connection);
+        await using var subdivisionWriter = await SubdivisionWriter.CreateAsync(connection);
+        await using var isoCodedSubdivisionWriter = await ISOCodedSubdivisionWriter.CreateAsync(connection);
+        await using var bottomLevelSubdivisionWriter = await BottomLevelSubdivisionWriter.CreateAsync(connection);
+        await using var secondLevelSubdivisionWriter = await SecondLevelSubdivisionWriter.CreateAsync(connection);
+        await using var basicSecondLevelSubdivisionWriter = await BasicSecondLevelSubdivisionWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
 
         foreach (var subdivision in subdivisions)
         {
-            nodeWriter.Write(subdivision);
-            documentableWriter.Write(subdivision);
-            nameableWriter.Write(subdivision);
-            geographicalEntityWriter.Write(subdivision);
-            politicalEntityWriter.Write(subdivision);
-            subdivisionWriter.Write(subdivision);
-            isoCodedSubdivisionWriter.Write(subdivision);
-            bottomLevelSubdivisionWriter.Write(subdivision);
-            secondLevelSubdivisionWriter.Write(subdivision);
-            basicSecondLevelSubdivisionWriter.Write(subdivision);
-            EntityCreator.WriteTerms(subdivision, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(subdivision);
+            await documentableWriter.WriteAsync(subdivision);
+            await nameableWriter.WriteAsync(subdivision);
+            await geographicalEntityWriter.WriteAsync(subdivision);
+            await politicalEntityWriter.WriteAsync(subdivision);
+            await subdivisionWriter.WriteAsync(subdivision);
+            await isoCodedSubdivisionWriter.WriteAsync(subdivision);
+            await bottomLevelSubdivisionWriter.WriteAsync(subdivision);
+            await secondLevelSubdivisionWriter.WriteAsync(subdivision);
+            await basicSecondLevelSubdivisionWriter.WriteAsync(subdivision);
+            await EntityCreator.WriteTerms(subdivision, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

@@ -9,9 +9,9 @@ internal class AdoptionExportRelationWriter : DatabaseWriter<AdoptionExportRelat
     private const string COUNTRY_ID_TO = "country_id_to";
     private const string COUNTRY_ID_FROM = "country_id_from";
     private const string COUNTRY_NAME_FROM = "country_name_from";
-    public static DatabaseWriter<AdoptionExportRelation> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<AdoptionExportRelation>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "adoption_export_relation",
             new ColumnDefinition[] {
@@ -37,11 +37,11 @@ internal class AdoptionExportRelationWriter : DatabaseWriter<AdoptionExportRelat
     {
     }
 
-    internal override void Write(AdoptionExportRelation adoptionExportRelation)
+    internal override async Task WriteAsync(AdoptionExportRelation adoptionExportRelation)
     {
         WriteValue(adoptionExportRelation.CountryIdTo, COUNTRY_ID_TO);
         WriteNullableValue(adoptionExportRelation.CountryIdFrom, COUNTRY_ID_FROM);
         WriteNullableValue(adoptionExportRelation.CountryNameFrom, COUNTRY_NAME_FROM);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

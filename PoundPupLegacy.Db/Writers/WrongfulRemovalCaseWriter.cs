@@ -2,8 +2,8 @@
 
 internal class WrongfulRemovalCaseWriter : IDatabaseWriter<WrongfulRemovalCase>
 {
-    public static DatabaseWriter<WrongfulRemovalCase> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<WrongfulRemovalCase>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<WrongfulRemovalCase>(SingleIdWriter.CreateSingleIdCommand("wrongful_removal_case", connection));
+        return new SingleIdWriter<WrongfulRemovalCase>(await SingleIdWriter.CreateSingleIdCommandAsync("wrongful_removal_case", connection));
     }
 }

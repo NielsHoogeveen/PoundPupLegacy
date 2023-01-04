@@ -4,9 +4,9 @@ internal class LocationLocatableWriter : DatabaseWriter<LocationLocatable>, IDat
 {
     private const string LOCATION_ID = "location_id";
     private const string LOCATABLE_ID = "locatable_id";
-    public static DatabaseWriter<LocationLocatable> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<LocationLocatable>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "location_locatable",
             new ColumnDefinition[] {
@@ -29,10 +29,10 @@ internal class LocationLocatableWriter : DatabaseWriter<LocationLocatable>, IDat
     {
     }
 
-    internal override void Write(LocationLocatable locationLocatable)
+    internal override async Task WriteAsync(LocationLocatable locationLocatable)
     {
         WriteValue(locationLocatable.LocationId, LOCATION_ID);
         WriteValue(locationLocatable.LocatableId, LOCATABLE_ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

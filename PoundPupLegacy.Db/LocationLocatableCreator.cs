@@ -2,14 +2,14 @@
 
 public class LocationLocatableCreator : IEntityCreator<LocationLocatable>
 {
-    public static void Create(IEnumerable<LocationLocatable> locationLocatables, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<LocationLocatable> locationLocatables, NpgsqlConnection connection)
     {
 
-        using var locationLocatableWriter = LocationLocatableWriter.Create(connection);
+        await using var locationLocatableWriter = await LocationLocatableWriter.CreateAsync(connection);
 
         foreach (var locationLocatable in locationLocatables)
         {
-            locationLocatableWriter.Write(locationLocatable);
+            await locationLocatableWriter.WriteAsync(locationLocatable);
         }
     }
 }

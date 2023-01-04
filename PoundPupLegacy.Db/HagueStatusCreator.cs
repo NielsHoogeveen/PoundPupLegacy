@@ -4,22 +4,22 @@ namespace PoundPupLegacy.Db;
 
 public class HagueStatusCreator : IEntityCreator<HagueStatus>
 {
-    public static void Create(IEnumerable<HagueStatus> hagueStatuss, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<HagueStatus> hagueStatuss, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var hagueStatusWriter = HagueStatusWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var hagueStatusWriter = await HagueStatusWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var hagueStatus in hagueStatuss)
         {
-            nodeWriter.Write(hagueStatus);
-            nameableWriter.Write(hagueStatus);
-            hagueStatusWriter.Write(hagueStatus);
-            EntityCreator.WriteTerms(hagueStatus, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(hagueStatus);
+            await nameableWriter.WriteAsync(hagueStatus);
+            await hagueStatusWriter.WriteAsync(hagueStatus);
+            await EntityCreator.WriteTerms(hagueStatus, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

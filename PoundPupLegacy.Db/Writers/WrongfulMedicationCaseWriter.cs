@@ -2,8 +2,8 @@
 
 internal class WrongfulMedicationCaseWriter : IDatabaseWriter<WrongfulMedicationCase>
 {
-    public static DatabaseWriter<WrongfulMedicationCase> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<WrongfulMedicationCase>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<WrongfulMedicationCase>(SingleIdWriter.CreateSingleIdCommand("wrongful_medication_case", connection));
+        return new SingleIdWriter<WrongfulMedicationCase>(await SingleIdWriter.CreateSingleIdCommandAsync("wrongful_medication_case", connection));
     }
 }

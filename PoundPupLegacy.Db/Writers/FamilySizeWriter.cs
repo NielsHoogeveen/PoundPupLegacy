@@ -2,8 +2,8 @@
 
 internal class FamilySizeWriter : IDatabaseWriter<FamilySize>
 {
-    public static DatabaseWriter<FamilySize> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<FamilySize>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<FamilySize>(SingleIdWriter.CreateSingleIdCommand("family_size", connection));
+        return new SingleIdWriter<FamilySize>(await SingleIdWriter.CreateSingleIdCommandAsync("family_size", connection));
     }
 }

@@ -35,7 +35,7 @@ namespace PoundPupLegacy.Convert
             }
         }
 
-        private static void MigrateFormalIntermediateLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateFormalIntermediateLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
             var subdivisions = ReadFormalIntermediateLevelSubdivisionCsv().ToList();
             foreach (var subdivision in subdivisions)
@@ -46,7 +46,7 @@ namespace PoundPupLegacy.Convert
                     subdivision.Id = NodeId;
                 }
             }
-            FormalIntermediateLevelSubdivisionCreator.Create(subdivisions, connection);
+            await FormalIntermediateLevelSubdivisionCreator.CreateAsync(subdivisions, connection);
         }
 
     }

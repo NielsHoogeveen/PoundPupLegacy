@@ -9,9 +9,9 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
-        private static void MigrateChildPlacementTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateChildPlacementTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            ChildPlacementTypeCreator.Create(ReadChildPlacementTypes(mysqlconnection), connection);
+            await ChildPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(mysqlconnection), connection);
         }
 
         private static IEnumerable<ChildPlacementType> ReadChildPlacementTypes(MySqlConnection mysqlconnection)

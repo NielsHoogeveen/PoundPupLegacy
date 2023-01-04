@@ -8,9 +8,9 @@ namespace PoundPupLegacy.Convert
 {
     internal partial class Program
     {
-        private static void MigrateBoundCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateBoundCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            BoundCountryCreator.Create(ReadBoundCountries(mysqlconnection), connection);
+            await BoundCountryCreator.CreateAsync(ReadBoundCountries(mysqlconnection), connection);
         }
 
         private static IEnumerable<BoundCountry> ReadBoundCountries(MySqlConnection mysqlconnection)

@@ -4,22 +4,22 @@ namespace PoundPupLegacy.Db;
 
 public class DocumentTypeCreator : IEntityCreator<DocumentType>
 {
-    public static void Create(IEnumerable<DocumentType> documentTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<DocumentType> documentTypes, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var documentTypeWriter = DocumentTypeWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var documentTypeWriter = await DocumentTypeWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var documentType in documentTypes)
         {
-            nodeWriter.Write(documentType);
-            nameableWriter.Write(documentType);
-            documentTypeWriter.Write(documentType);
-            EntityCreator.WriteTerms(documentType, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(documentType);
+            await nameableWriter.WriteAsync(documentType);
+            await documentTypeWriter.WriteAsync(documentType);
+            await EntityCreator.WriteTerms(documentType, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

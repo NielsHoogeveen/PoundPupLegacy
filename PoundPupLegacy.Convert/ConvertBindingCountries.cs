@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateBindingCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateBindingCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        BindingCountryCreator.Create(ReadBindingCountries(mysqlconnection), connection);
+        await BindingCountryCreator.CreateAsync(ReadBindingCountries(mysqlconnection), connection);
     }
     private static IEnumerable<BindingCountry> ReadBindingCountries(MySqlConnection mysqlconnection)
     {

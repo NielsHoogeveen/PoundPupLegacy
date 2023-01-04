@@ -5,12 +5,12 @@ namespace PoundPupLegacy.Db
 
     internal interface IEntityCreator<T>
     {
-        public abstract static void Create(IEnumerable<T> elements, NpgsqlConnection connection);
+        public abstract static Task CreateAsync(IEnumerable<T> elements, NpgsqlConnection connection);
     }
 
     internal static class EntityCreator
     {
-        internal static void WriteTerms(Nameable nameable, DatabaseWriter<Term> termWriter, TermReader termReader, DatabaseWriter<TermHierarchy> termHierarchyWriter)
+        internal static async Task WriteTerms(Nameable nameable, DatabaseWriter<Term> termWriter, TermReader termReader, DatabaseWriter<TermHierarchy> termHierarchyWriter)
         {
             foreach (var vocabularyName in nameable.VocabularyNames)
             {
@@ -21,11 +21,11 @@ namespace PoundPupLegacy.Db
                     VocabularyId = vocabularyName.VocabularyId,
                     NameableId = (int)nameable.Id!
                 };
-                termWriter.Write(term);
+                await termWriter.WriteAsync(term);
                 foreach (var parent in vocabularyName.ParentNames)
                 {
-                    var parentTerm = termReader.Read(vocabularyName.VocabularyId, parent);
-                    termHierarchyWriter.Write(new TermHierarchy { TermIdPartent = (int)parentTerm.Id!, TermIdChild = (int)term.Id! });
+                    var parentTerm = await termReader.ReadAsync(vocabularyName.VocabularyId, parent);
+                    await termHierarchyWriter.WriteAsync(new TermHierarchy { TermIdPartent = (int)parentTerm.Id!, TermIdChild = (int)term.Id! });
                 }
             }
         }

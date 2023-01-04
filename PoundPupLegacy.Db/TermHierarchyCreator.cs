@@ -2,14 +2,14 @@
 
 public class TermHierarchyCreator : IEntityCreator<TermHierarchy>
 {
-    public static void Create(IEnumerable<TermHierarchy> termHierarchies, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<TermHierarchy> termHierarchies, NpgsqlConnection connection)
     {
 
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var termHierarchy in termHierarchies)
         {
-            termHierarchyWriter.Write(termHierarchy);
+            await termHierarchyWriter.WriteAsync(termHierarchy);
         }
     }
 }

@@ -5,9 +5,9 @@ internal class ChildTraffickingCaseWriter : DatabaseWriter<ChildTraffickingCase>
     private const string ID = "id";
     private const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
     private const string COUNTRY_ID_FROM = "country_id_from";
-    public static DatabaseWriter<ChildTraffickingCase> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<ChildTraffickingCase>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "child_trafficking_case",
             new ColumnDefinition[] {
@@ -34,7 +34,7 @@ internal class ChildTraffickingCaseWriter : DatabaseWriter<ChildTraffickingCase>
     {
     }
 
-    internal override void Write(ChildTraffickingCase abuseCase)
+    internal override async Task WriteAsync(ChildTraffickingCase abuseCase)
     {
         if (abuseCase.Id is null)
             throw new NullReferenceException();
@@ -42,6 +42,6 @@ internal class ChildTraffickingCaseWriter : DatabaseWriter<ChildTraffickingCase>
         WriteValue(abuseCase.Id, ID);
         WriteNullableValue(abuseCase.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
         WriteValue(abuseCase.CountryIdFrom, COUNTRY_ID_FROM);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

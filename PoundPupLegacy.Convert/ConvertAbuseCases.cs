@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateAbuseCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateAbuseCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        AbuseCaseCreator.Create(ReadAbuseCases(mysqlconnection), connection);
+        await AbuseCaseCreator.CreateAsync(ReadAbuseCases(mysqlconnection), connection);
     }
     private static IEnumerable<AbuseCase> ReadAbuseCases(MySqlConnection mysqlconnection)
     {

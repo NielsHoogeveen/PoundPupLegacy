@@ -13,7 +13,7 @@ internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Locati
     private const string COUNTRY_ID = "country_id";
     private const string LATITUDE = "latitude";
     private const string LONGITUDE = "longitude";
-    public static DatabaseWriter<Location> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Location>> CreateAsync(NpgsqlConnection connection)
     {
         var columnDefitions = new ColumnDefinition[] {
                 new ColumnDefinition{
@@ -52,7 +52,7 @@ internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Locati
 
             };
 
-        var commandWithId = CreateInsertStatement(
+        var commandWithId = await CreateInsertStatementAsync(
             connection,
             "location",
             columnDefitions.ToImmutableList().Prepend(new ColumnDefinition
@@ -61,7 +61,7 @@ internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Locati
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
         );
-        var commandWithoutId = CreateIdentityInsertStatement(
+        var commandWithoutId = await CreateIdentityInsertStatementAsync(
             connection,
             "location",
             columnDefitions
@@ -78,7 +78,7 @@ internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Locati
 
     }
 
-    internal override void Write(Location location)
+    internal override async Task WriteAsync(Location location)
     {
         if (location.Id is null)
         {
@@ -90,11 +90,7 @@ internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Locati
             WriteValue(location.CountryId, COUNTRY_ID, _identityCommand);
             WriteNullableValue(location.Latitude, LATITUDE, _identityCommand);
             WriteNullableValue(location.Longitude, LONGITUDE, _identityCommand);
-            location.Id = _command.ExecuteScalar() switch
-            {
-                int i => i,
-                _ => throw new Exception("Id could not be assigned for location."),
-            };
+            location.Id = await _command.ExecuteNonQueryAsync();
         }
         else
         {
@@ -107,13 +103,13 @@ internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Locati
             WriteValue(location.CountryId, COUNTRY_ID);
             WriteNullableValue(location.Latitude, LATITUDE);
             WriteNullableValue(location.Longitude, LONGITUDE);
-            _command.ExecuteNonQuery();
+            await _command.ExecuteNonQueryAsync();
         }
     }
-    public override void Dispose()
+    public override async ValueTask DisposeAsync()
     {
-        base.Dispose();
-        _identityCommand.Dispose();
+        await base.DisposeAsync();
+        await _identityCommand.DisposeAsync();
     }
 
 }

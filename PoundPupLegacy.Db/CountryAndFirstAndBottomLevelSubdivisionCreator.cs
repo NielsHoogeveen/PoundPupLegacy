@@ -4,44 +4,44 @@ namespace PoundPupLegacy.Db;
 
 public class CountryAndFirstAndBottomLevelSubdivisionCreator : IEntityCreator<CountryAndFirstAndBottomLevelSubdivision>
 {
-    public static void Create(IEnumerable<CountryAndFirstAndBottomLevelSubdivision> countries, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<CountryAndFirstAndBottomLevelSubdivision> countries, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var documentableWriter = DocumentableWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var geographicalEntityWriter = GeographicalEnityWriter.Create(connection);
-        using var politicalEntityWriter = PoliticalEntityWriter.Create(connection);
-        using var countryWriter = CountryWriter.Create(connection);
-        using var topLevelCountryWriter = TopLevelCountryWriter.Create(connection);
-        using var subdivisionWriter = SubdivisionWriter.Create(connection);
-        using var isoCodedSubdivisionWriter = ISOCodedSubdivisionWriter.Create(connection);
-        using var firstLevelSubdivisionWriter = FirstLevelSubdivisionWriter.Create(connection);
-        using var isoCodedFirstLevelSubdivisionWriter = ISOCodedFirstLevelSubdivisionWriter.Create(connection);
-        using var countryAndFirstLevelSubdivisionWriter = CountryAndFirstLevelSubdivisionWriter.Create(connection);
-        using var bottomLevelSubdivisionWriter = BottomLevelSubdivisionWriter.Create(connection);
-        using var countryAndFirstAndBottomLevelSubdivisionWriter = CountryAndFirstAndBottomLevelSubdivisionWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var geographicalEntityWriter = await GeographicalEnityWriter.CreateAsync(connection);
+        await using var politicalEntityWriter = await PoliticalEntityWriter.CreateAsync(connection);
+        await using var countryWriter = await CountryWriter.CreateAsync(connection);
+        await using var topLevelCountryWriter = await TopLevelCountryWriter.CreateAsync(connection);
+        await using var subdivisionWriter = await SubdivisionWriter.CreateAsync(connection);
+        await using var isoCodedSubdivisionWriter = await ISOCodedSubdivisionWriter.CreateAsync(connection);
+        await using var firstLevelSubdivisionWriter = await FirstLevelSubdivisionWriter.CreateAsync(connection);
+        await using var isoCodedFirstLevelSubdivisionWriter = await ISOCodedFirstLevelSubdivisionWriter.CreateAsync(connection);
+        await using var countryAndFirstLevelSubdivisionWriter = await CountryAndFirstLevelSubdivisionWriter.CreateAsync(connection);
+        await using var bottomLevelSubdivisionWriter = await BottomLevelSubdivisionWriter.CreateAsync(connection);
+        await using var countryAndFirstAndBottomLevelSubdivisionWriter = await CountryAndFirstAndBottomLevelSubdivisionWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var country in countries)
         {
-            nodeWriter.Write(country);
-            documentableWriter.Write(country);
-            nameableWriter.Write(country);
-            geographicalEntityWriter.Write(country);
-            politicalEntityWriter.Write(country);
-            countryWriter.Write(country);
-            topLevelCountryWriter.Write(country);
-            subdivisionWriter.Write(country);
-            isoCodedSubdivisionWriter.Write(country);
-            firstLevelSubdivisionWriter.Write(country);
-            isoCodedFirstLevelSubdivisionWriter.Write(country);
-            countryAndFirstLevelSubdivisionWriter.Write(country);
-            bottomLevelSubdivisionWriter.Write(country);
-            countryAndFirstAndBottomLevelSubdivisionWriter.Write(country);
-            EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(country);
+            await documentableWriter.WriteAsync(country);
+            await nameableWriter.WriteAsync(country);
+            await geographicalEntityWriter.WriteAsync(country);
+            await politicalEntityWriter.WriteAsync(country);
+            await countryWriter.WriteAsync(country);
+            await topLevelCountryWriter.WriteAsync(country);
+            await subdivisionWriter.WriteAsync(country);
+            await isoCodedSubdivisionWriter.WriteAsync(country);
+            await firstLevelSubdivisionWriter.WriteAsync(country);
+            await isoCodedFirstLevelSubdivisionWriter.WriteAsync(country);
+            await countryAndFirstLevelSubdivisionWriter.WriteAsync(country);
+            await bottomLevelSubdivisionWriter.WriteAsync(country);
+            await countryAndFirstAndBottomLevelSubdivisionWriter.WriteAsync(country);
+            await EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

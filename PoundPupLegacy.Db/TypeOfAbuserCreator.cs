@@ -4,22 +4,22 @@ namespace PoundPupLegacy.Db;
 
 public class TypeOfAbuserCreator : IEntityCreator<TypeOfAbuser>
 {
-    public static void Create(IEnumerable<TypeOfAbuser> typesOfAbuser, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<TypeOfAbuser> typesOfAbuser, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var typeOfAbuserWriter = TypeOfAbuserWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var typeOfAbuserWriter = await TypeOfAbuserWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var typeOfAbuser in typesOfAbuser)
         {
-            nodeWriter.Write(typeOfAbuser);
-            nameableWriter.Write(typeOfAbuser);
-            typeOfAbuserWriter.Write(typeOfAbuser);
-            EntityCreator.WriteTerms(typeOfAbuser, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(typeOfAbuser);
+            await nameableWriter.WriteAsync(typeOfAbuser);
+            await typeOfAbuserWriter.WriteAsync(typeOfAbuser);
+            await EntityCreator.WriteTerms(typeOfAbuser, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

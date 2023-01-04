@@ -2,8 +2,8 @@
 
 internal class BindingCountryWriter : IDatabaseWriter<BindingCountry>
 {
-    public static DatabaseWriter<BindingCountry> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<BindingCountry>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<BindingCountry>(SingleIdWriter.CreateSingleIdCommand("binding_country", connection));
+        return new SingleIdWriter<BindingCountry>(await SingleIdWriter.CreateSingleIdCommandAsync("binding_country", connection));
     }
 }

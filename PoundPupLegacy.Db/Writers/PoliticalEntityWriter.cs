@@ -4,9 +4,9 @@ internal class PoliticalEntityWriter : DatabaseWriter<PoliticalEntity>, IDatabas
 {
     private const string ID = "id";
     private const string FILE_ID_FLAG = "file_id_flag";
-    public static DatabaseWriter<PoliticalEntity> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<PoliticalEntity>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "political_entity",
             new ColumnDefinition[] {
@@ -27,13 +27,13 @@ internal class PoliticalEntityWriter : DatabaseWriter<PoliticalEntity>, IDatabas
     {
     }
 
-    internal override void Write(PoliticalEntity entity)
+    internal override async Task WriteAsync(PoliticalEntity entity)
     {
         if (entity.Id is null)
             throw new NullReferenceException();
 
         WriteValue(entity.Id, ID);
         WriteNullableValue(entity.FileIdFlag, FILE_ID_FLAG);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

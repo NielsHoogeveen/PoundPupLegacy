@@ -4,27 +4,26 @@ namespace PoundPupLegacy.Db;
 
 public class AbuseCaseCreator : IEntityCreator<AbuseCase>
 {
-    public static void Create(IEnumerable<AbuseCase> abuseCases, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<AbuseCase> abuseCases, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var documentableWriter = DocumentableWriter.Create(connection);
-        using var locatableWriter = LocatableWriter.Create(connection);
-        using var caseWriter = CaseWriter.Create(connection);
-        using var abuseCaseWriter = AbuseCaseWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
-
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
+        await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
+        await using var caseWriter = await CaseWriter.CreateAsync(connection);
+        await using var abuseCaseWriter = await AbuseCaseWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var abuseCase in abuseCases)
         {
-            nodeWriter.Write(abuseCase);
-            documentableWriter.Write(abuseCase);
-            locatableWriter.Write(abuseCase);
-            caseWriter.Write(abuseCase);
-            abuseCaseWriter.Write(abuseCase);
-            EntityCreator.WriteTerms(abuseCase, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(abuseCase);
+            await documentableWriter.WriteAsync(abuseCase);
+            await locatableWriter.WriteAsync(abuseCase);
+            await caseWriter.WriteAsync(abuseCase);
+            await abuseCaseWriter.WriteAsync(abuseCase);
+            await EntityCreator.WriteTerms(abuseCase, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

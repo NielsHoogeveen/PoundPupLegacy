@@ -2,8 +2,8 @@
 
 internal class HagueStatusWriter : IDatabaseWriter<HagueStatus>
 {
-    public static DatabaseWriter<HagueStatus> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<HagueStatus>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<HagueStatus>(SingleIdWriter.CreateSingleIdCommand("hague_status", connection));
+        return new SingleIdWriter<HagueStatus>(await SingleIdWriter.CreateSingleIdCommandAsync("hague_status", connection));
     }
 }

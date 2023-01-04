@@ -11,9 +11,9 @@ internal class AbuseCaseWriter : DatabaseWriter<AbuseCase>, IDatabaseWriter<Abus
     private const string HOME_SCHOOLING_INVOLVED = "home_schooling_involved";
     private const string FUNDAMENTAL_FAITH_INVOLVED = "fundamental_faith_involved";
     private const string DISABILITIES_INVOLVED = "disabilities_involved";
-    public static DatabaseWriter<AbuseCase> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<AbuseCase>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "abuse_case",
             new ColumnDefinition[] {
@@ -51,7 +51,7 @@ internal class AbuseCaseWriter : DatabaseWriter<AbuseCase>, IDatabaseWriter<Abus
     {
     }
 
-    internal override void Write(AbuseCase abuseCase)
+    internal override async Task WriteAsync(AbuseCase abuseCase)
     {
         if (abuseCase.Id is null)
             throw new NullReferenceException();
@@ -61,6 +61,6 @@ internal class AbuseCaseWriter : DatabaseWriter<AbuseCase>, IDatabaseWriter<Abus
         WriteNullableValue(abuseCase.HomeschoolingInvolved, HOME_SCHOOLING_INVOLVED);
         WriteNullableValue(abuseCase.FundamentalFaithInvolved, FUNDAMENTAL_FAITH_INVOLVED);
         WriteNullableValue(abuseCase.DisabilitiesInvolved, DISABILITIES_INVOLVED);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

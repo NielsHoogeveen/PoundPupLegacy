@@ -10,9 +10,9 @@ internal partial class Program
 {
 
 
-    private static void MigrateBasicNameables(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateBasicNameables(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        BasicNameableCreator.Create(ReadBasicNameables(mysqlconnection), connection);
+        await BasicNameableCreator.CreateAsync(ReadBasicNameables(mysqlconnection), connection);
     }
     private static IEnumerable<BasicNameable> ReadBasicNameables(MySqlConnection mysqlconnection)
     {
@@ -41,6 +41,7 @@ internal partial class Program
                 AND n.title NOT IN 
                 (
                    'adoption',
+                   'adoptive mother',
                    'foster care',
                    'guardianship',
                    'residential care',
@@ -53,7 +54,15 @@ internal partial class Program
                    'adoption advocates',
                    'boarding school',
                    'adoption facilitators',
-                   'maternity homes'
+                   'maternity homes',
+                   'sexual abuse',
+                   'sexual exploitation',
+                   'lethal neglect',
+                   'lethal deprivation',
+                   'economic exploitation',
+                   'verbal abuse',
+                   'medical abuse'
+                   
                 )
                 AND n.nid NOT IN (
                 	22589

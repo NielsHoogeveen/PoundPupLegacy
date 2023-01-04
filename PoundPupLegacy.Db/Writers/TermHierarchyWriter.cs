@@ -4,9 +4,9 @@ internal class TermHierarchyWriter : DatabaseWriter<TermHierarchy>, IDatabaseWri
 {
     private const string TERM_ID_PARENT = "term_id_parent";
     private const string TERM_ID_CHILD = "term_id_child";
-    public static DatabaseWriter<TermHierarchy> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<TermHierarchy>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "term_hierarchy",
             new ColumnDefinition[] {
@@ -28,10 +28,10 @@ internal class TermHierarchyWriter : DatabaseWriter<TermHierarchy>, IDatabaseWri
     {
     }
 
-    internal override void Write(TermHierarchy termHierarchy)
+    internal override async Task WriteAsync(TermHierarchy termHierarchy)
     {
         WriteValue(termHierarchy.TermIdPartent, TERM_ID_PARENT);
         WriteValue(termHierarchy.TermIdChild, TERM_ID_CHILD);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

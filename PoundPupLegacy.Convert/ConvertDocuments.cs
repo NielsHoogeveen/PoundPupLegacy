@@ -9,9 +9,9 @@ namespace PoundPupLegacy.Convert;
 internal partial class Program
 {
 
-    private static void MigrateDocuments(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateDocuments(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        DocumentCreator.Create(ReadDocuments(mysqlconnection), connection);
+        await DocumentCreator.CreateAsync(ReadDocuments(mysqlconnection), connection);
     }
 
     private static string LastDayOfMonth(string month, int year)

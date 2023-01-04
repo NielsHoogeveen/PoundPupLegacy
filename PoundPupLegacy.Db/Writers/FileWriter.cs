@@ -10,7 +10,7 @@ internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.Fi
     private const string MIME_TYPE = "mime_type";
     private const string SIZE = "size";
 
-    public static DatabaseWriter<Model.File> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Model.File>> CreateAsync(NpgsqlConnection connection)
     {
         var collumnDefinitions = new ColumnDefinition[]
         {
@@ -32,7 +32,7 @@ internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.Fi
             },
         };
 
-        var commandWithId = CreateInsertStatement(
+        var commandWithId = await CreateInsertStatementAsync(
             connection,
             "file",
             collumnDefinitions.ToImmutableList().Prepend(
@@ -42,7 +42,7 @@ internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.Fi
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
         );
-        var commandWithoutId = CreateIdentityInsertStatement(
+        var commandWithoutId = await CreateIdentityInsertStatementAsync(
             connection,
             "file",
             collumnDefinitions
@@ -57,7 +57,7 @@ internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.Fi
         _identityCommand = identityCommand;
     }
 
-    internal override void Write(Model.File file)
+    internal override async Task WriteAsync(Model.File file)
     {
         if (file.Id is null)
         {
@@ -65,7 +65,7 @@ internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.Fi
             WriteValue(file.Name, NAME, _identityCommand);
             WriteValue(file.MimeType, MIME_TYPE, _identityCommand);
             WriteValue(file.Size, SIZE, _identityCommand);
-            file.Id = _identityCommand.ExecuteScalar() switch
+            file.Id = await _identityCommand.ExecuteScalarAsync() switch
             {
                 int i => i,
                 _ => throw new Exception("No id has been assigned when adding a file"),
@@ -78,13 +78,13 @@ internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.Fi
             WriteValue(file.Name, NAME);
             WriteValue(file.MimeType, MIME_TYPE);
             WriteValue(file.Size, SIZE);
-            _command.ExecuteNonQuery();
+            await _command.ExecuteNonQueryAsync();
         }
     }
 
-    public override void Dispose()
+    public override async ValueTask DisposeAsync()
     {
-        base.Dispose();
-        _identityCommand.Dispose();
+        await base.DisposeAsync();
+        await _identityCommand.DisposeAsync();
     }
 }

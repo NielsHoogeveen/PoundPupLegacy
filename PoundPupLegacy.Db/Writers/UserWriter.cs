@@ -10,9 +10,9 @@ internal class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
     private const string EMAIL = "email";
     private const string PASSWORD = "password";
     private const string AVATAR = "avatar";
-    public static DatabaseWriter<User> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<User>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "user",
             new ColumnDefinition[] {
@@ -58,7 +58,7 @@ internal class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
     {
     }
 
-    internal override void Write(User user)
+    internal override async Task WriteAsync(User user)
     {
         if (user.Id is null)
             throw new NullReferenceException();
@@ -70,6 +70,6 @@ internal class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
         WriteNullableValue(user.AnimalWithin, ANIMAL_WITHIN);
         WriteNullableValue(user.RelationToChildPlacement, RELATION_TO_CHILD_PLACEMENT);
         WriteNullableValue(user.Avatar, AVATAR);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

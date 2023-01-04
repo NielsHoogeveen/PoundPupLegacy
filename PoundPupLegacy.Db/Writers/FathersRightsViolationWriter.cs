@@ -2,8 +2,8 @@
 
 internal class FathersRightsViolationCaseWriter : IDatabaseWriter<FathersRightsViolationCase>
 {
-    public static DatabaseWriter<FathersRightsViolationCase> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<FathersRightsViolationCase>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<FathersRightsViolationCase>(SingleIdWriter.CreateSingleIdCommand("fathers_rights_violation_case", connection));
+        return new SingleIdWriter<FathersRightsViolationCase>(await SingleIdWriter.CreateSingleIdCommandAsync("fathers_rights_violation_case", connection));
     }
 }

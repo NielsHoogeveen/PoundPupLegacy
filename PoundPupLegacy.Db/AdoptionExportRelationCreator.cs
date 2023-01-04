@@ -2,14 +2,14 @@
 
 public class AdoptionExportRelationCreator : IEntityCreator<AdoptionExportRelation>
 {
-    public static void Create(IEnumerable<AdoptionExportRelation> adoptionExportRelations, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<AdoptionExportRelation> adoptionExportRelations, NpgsqlConnection connection)
     {
 
-        using var adoptionExportRelationWriter = AdoptionExportRelationWriter.Create(connection);
+        await using var adoptionExportRelationWriter = await AdoptionExportRelationWriter.CreateAsync(connection);
 
         foreach (var adoptionExportRelation in adoptionExportRelations)
         {
-            adoptionExportRelationWriter.Write(adoptionExportRelation);
+            await adoptionExportRelationWriter.WriteAsync(adoptionExportRelation);
         }
     }
 }

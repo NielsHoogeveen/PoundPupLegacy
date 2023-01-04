@@ -4,26 +4,26 @@ namespace PoundPupLegacy.Db;
 
 public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
 {
-    public static void Create(IEnumerable<WrongfulRemovalCase> wrongfulRemovalCases, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<WrongfulRemovalCase> wrongfulRemovalCases, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var documentableWriter = DocumentableWriter.Create(connection);
-        using var locatableWriter = LocatableWriter.Create(connection);
-        using var caseWriter = CaseWriter.Create(connection);
-        using var wrongfulRemovalCaseWriter = WrongfulRemovalCaseWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
+        await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
+        await using var caseWriter = await CaseWriter.CreateAsync(connection);
+        await using var wrongfulRemovalCaseWriter = await WrongfulRemovalCaseWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var wrongfulRemovalCase in wrongfulRemovalCases)
         {
-            nodeWriter.Write(wrongfulRemovalCase);
-            documentableWriter.Write(wrongfulRemovalCase);
-            locatableWriter.Write(wrongfulRemovalCase);
-            caseWriter.Write(wrongfulRemovalCase);
-            wrongfulRemovalCaseWriter.Write(wrongfulRemovalCase);
-            EntityCreator.WriteTerms(wrongfulRemovalCase, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(wrongfulRemovalCase);
+            await documentableWriter.WriteAsync(wrongfulRemovalCase);
+            await locatableWriter.WriteAsync(wrongfulRemovalCase);
+            await caseWriter.WriteAsync(wrongfulRemovalCase);
+            await wrongfulRemovalCaseWriter.WriteAsync(wrongfulRemovalCase);
+            await EntityCreator.WriteTerms(wrongfulRemovalCase, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

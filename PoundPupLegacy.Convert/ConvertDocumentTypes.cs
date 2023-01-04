@@ -9,9 +9,9 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
-        private static void MigrateDocumentTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateDocumentTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            DocumentTypeCreator.Create(ReadSelectionOptions(mysqlconnection), connection);
+            await DocumentTypeCreator.CreateAsync(ReadSelectionOptions(mysqlconnection), connection);
         }
         private static IEnumerable<DocumentType> ReadSelectionOptions(MySqlConnection mysqlconnection)
         {

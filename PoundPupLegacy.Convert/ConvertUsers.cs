@@ -57,15 +57,15 @@ namespace PoundPupLegacy.Convert
         }
 
 
-        private static void MigrateUsers(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateUsers(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
             var users = ReadUsers(mysqlconnection).ToList();
             var memberList = users.Select(x => new UserGroupUser { UserGroupId = 4, UserId = (int)x.Id! });
-            AnonimousUserCreator.Create(connection);
-            UserCreator.Create(users, connection);
-            UserGroupCreator.Create(GetUserGroups(), connection);
-            UserGroupUserCreator.Create(GetUserGroupUsers(), connection);
-            UserGroupUserCreator.Create(memberList, connection);
+            await AnonimousUserCreator.CreateAsync(connection);
+            await UserCreator.CreateAsync(users, connection);
+            await UserGroupCreator.CreateAsync(GetUserGroups(), connection);
+            await UserGroupUserCreator.CreateAsync(GetUserGroupUsers(), connection);
+            await UserGroupUserCreator.CreateAsync(memberList, connection);
         }
         private static IEnumerable<User> ReadUsers(MySqlConnection mysqlconnection)
         {

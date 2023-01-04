@@ -5,9 +5,9 @@ internal class SingleIdWriter : DatabaseWriter<int>
 
     internal const string ID = "id";
 
-    internal static NpgsqlCommand CreateSingleIdCommand(string tableName, NpgsqlConnection connection)
+    internal static async Task<NpgsqlCommand> CreateSingleIdCommandAsync(string tableName, NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             tableName,
             new ColumnDefinition[] {
@@ -20,9 +20,10 @@ internal class SingleIdWriter : DatabaseWriter<int>
         return command;
     }
 
-    internal static DatabaseWriter<int> CreateSingleIdWriter(string tableName, NpgsqlConnection connection)
+    internal static async Task<DatabaseWriter<int>> CreateSingleIdWriterAsync(string tableName, NpgsqlConnection connection)
     {
-        return new SingleIdWriter(CreateSingleIdCommand(tableName, connection));
+        var command = await CreateSingleIdCommandAsync(tableName, connection);
+        return new SingleIdWriter(command);
 
     }
 
@@ -30,10 +31,10 @@ internal class SingleIdWriter : DatabaseWriter<int>
     {
     }
 
-    internal override void Write(int id)
+    internal override async Task WriteAsync(int id)
     {
         WriteValue(id, ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }
 internal class SingleIdWriter<T> : DatabaseWriter<T> where T : Identifiable
@@ -42,11 +43,11 @@ internal class SingleIdWriter<T> : DatabaseWriter<T> where T : Identifiable
     {
     }
 
-    internal override void Write(T node)
+    internal override async Task WriteAsync(T node)
     {
         if (node.Id is null)
             throw new NullReferenceException();
         WriteValue(node.Id, SingleIdWriter.ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

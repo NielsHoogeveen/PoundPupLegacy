@@ -4,9 +4,9 @@ internal class BoundCountryWriter : DatabaseWriter<BoundCountry>, IDatabaseWrite
 {
     private const string ID = "id";
     private const string BINDING_COUNTRY_ID = "binding_country_id";
-    public static DatabaseWriter<BoundCountry> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<BoundCountry>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "bound_country",
             new ColumnDefinition[] {
@@ -26,12 +26,12 @@ internal class BoundCountryWriter : DatabaseWriter<BoundCountry>, IDatabaseWrite
     {
     }
 
-    internal override void Write(BoundCountry country)
+    internal override async Task WriteAsync(BoundCountry country)
     {
         if (country.Id is null)
             throw new NullReferenceException();
         WriteValue(country.Id, ID);
         WriteValue(country.BindingCountryId, BINDING_COUNTRY_ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

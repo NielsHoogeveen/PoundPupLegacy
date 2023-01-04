@@ -4,21 +4,21 @@ namespace PoundPupLegacy.Db;
 
 public class BasicNameableCreator : IEntityCreator<BasicNameable>
 {
-    public static void Create(IEnumerable<BasicNameable> basicNameables, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<BasicNameable> basicNameables, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var basicNameableWriter = BasicNameableWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var basicNameableWriter = await BasicNameableWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
         foreach (var basicNameable in basicNameables)
         {
-            nodeWriter.Write(basicNameable);
-            nameableWriter.Write(basicNameable);
-            basicNameableWriter.Write(basicNameable);
-            EntityCreator.WriteTerms(basicNameable, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(basicNameable);
+            await nameableWriter.WriteAsync(basicNameable);
+            await basicNameableWriter.WriteAsync(basicNameable);
+            await EntityCreator.WriteTerms(basicNameable, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

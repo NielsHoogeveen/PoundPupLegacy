@@ -8,10 +8,10 @@ public interface IDatabaseWriter
 }
 public interface IDatabaseWriter<T> : IDatabaseWriter
 {
-    public abstract static DatabaseWriter<T> Create(NpgsqlConnection connection);
+    public abstract static Task<DatabaseWriter<T>> CreateAsync(NpgsqlConnection connection);
 }
 
-public abstract class DatabaseWriter<T> : IDisposable
+public abstract class DatabaseWriter<T> : IAsyncDisposable
 {
     protected readonly NpgsqlCommand _command;
 
@@ -20,12 +20,7 @@ public abstract class DatabaseWriter<T> : IDisposable
         _command = command;
     }
 
-    public virtual void Dispose()
-    {
-        _command.Dispose();
-    }
-
-    internal abstract void Write(T item);
+    internal abstract Task WriteAsync(T item);
 
     protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange)
     {
@@ -102,7 +97,7 @@ public abstract class DatabaseWriter<T> : IDisposable
         public required NpgsqlDbType NpgsqlDbType { get; init; }
     }
 
-    protected static NpgsqlCommand CreateIdentityInsertStatement(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
+    protected static async Task<NpgsqlCommand> CreateIdentityInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
     {
         var sql = $"""
             INSERT INTO public."{tableName}"(
@@ -113,10 +108,10 @@ public abstract class DatabaseWriter<T> : IDisposable
             );
             SELECT lastval();
             """;
-        return CreatePreparedStatement(connection, columnDefinitions, sql);
+        return await CreatePreparedStatementAsync(connection, columnDefinitions, sql);
     }
 
-    protected static NpgsqlCommand CreateInsertStatement(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
+    protected static async Task<NpgsqlCommand> CreateInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
     {
         var sql = $"""
             INSERT INTO public."{tableName}"(
@@ -126,9 +121,9 @@ public abstract class DatabaseWriter<T> : IDisposable
                 {string.Join(',', columnDefinitions.Select(x => $"@{x.Name}"))}
             )
             """;
-        return CreatePreparedStatement(connection, columnDefinitions, sql);
+        return await CreatePreparedStatementAsync(connection, columnDefinitions, sql);
     }
-    protected static NpgsqlCommand CreatePreparedStatement(NpgsqlConnection connection, IEnumerable<ColumnDefinition> columnDefinitions, string sql)
+    protected static async Task<NpgsqlCommand> CreatePreparedStatementAsync(NpgsqlConnection connection, IEnumerable<ColumnDefinition> columnDefinitions, string sql)
     {
 
         var command = connection.CreateCommand();
@@ -139,8 +134,12 @@ public abstract class DatabaseWriter<T> : IDisposable
         {
             command.Parameters.Add(column.Name, column.NpgsqlDbType);
         }
-        command.Prepare();
+        await command.PrepareAsync();
         return command;
     }
 
+    public async virtual ValueTask DisposeAsync()
+    {
+        await _command.DisposeAsync();
+    }
 }

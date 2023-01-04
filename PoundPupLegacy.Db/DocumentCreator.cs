@@ -2,16 +2,16 @@
 
 public class DocumentCreator : IEntityCreator<Document>
 {
-    public static void Create(IEnumerable<Document> documents, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<Document> documents, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var documentWriter = DocumentWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var documentWriter = await DocumentWriter.CreateAsync(connection);
 
         foreach (var document in documents)
         {
-            nodeWriter.Write(document);
-            documentWriter.Write(document);
+            await nodeWriter.WriteAsync(document);
+            await documentWriter.WriteAsync(document);
         }
     }
 }

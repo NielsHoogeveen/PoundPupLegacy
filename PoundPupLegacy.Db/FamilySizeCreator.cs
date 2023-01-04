@@ -4,22 +4,22 @@ namespace PoundPupLegacy.Db;
 
 public class FamilySizeCreator : IEntityCreator<FamilySize>
 {
-    public static void Create(IEnumerable<FamilySize> familySizes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<FamilySize> familySizes, NpgsqlConnection connection)
     {
 
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var nameableWriter = NameableWriter.Create(connection);
-        using var familySizeWriter = FamilySizeWriter.Create(connection);
-        using var termWriter = TermWriter.Create(connection);
-        using var termReader = TermReader.Create(connection);
-        using var termHierarchyWriter = TermHierarchyWriter.Create(connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
+        await using var familySizeWriter = await FamilySizeWriter.CreateAsync(connection);
+        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         foreach (var familySize in familySizes)
         {
-            nodeWriter.Write(familySize);
-            nameableWriter.Write(familySize);
-            familySizeWriter.Write(familySize);
-            EntityCreator.WriteTerms(familySize, termWriter, termReader, termHierarchyWriter);
+            await nodeWriter.WriteAsync(familySize);
+            await nameableWriter.WriteAsync(familySize);
+            await familySizeWriter.WriteAsync(familySize);
+            await EntityCreator.WriteTerms(familySize, termWriter, termReader, termHierarchyWriter);
         }
     }
 }

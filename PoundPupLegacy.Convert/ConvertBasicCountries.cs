@@ -228,7 +228,7 @@ internal partial class Program
         }
     };
 
-    private static void MigrateBasicCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateBasicCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
         var countries = basicCountries.Select(x =>
         {
@@ -239,8 +239,8 @@ internal partial class Program
             }
             return x;
         });
-        BasicCountryCreator.Create(countries, connection);
-        BasicCountryCreator.Create(ReadBasicCountries(mysqlconnection), connection);
+        await BasicCountryCreator.CreateAsync(countries, connection);
+        await BasicCountryCreator.CreateAsync(ReadBasicCountries(mysqlconnection), connection);
     }
     private static IEnumerable<BasicCountry> ReadBasicCountries(MySqlConnection mysqlconnection)
     {

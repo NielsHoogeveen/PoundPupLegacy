@@ -114,7 +114,7 @@ namespace PoundPupLegacy.Convert
                 };
             }
         }
-        private static void MigrateBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
             var subdivisions1 = ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(connection).ToList();
             foreach (var subdivision in subdivisions1)
@@ -134,9 +134,9 @@ namespace PoundPupLegacy.Convert
                     subdivision.Id = NodeId;
                 }
             }
-            BasicSecondLevelSubdivisionCreator.Create(subdivisions1, connection);
-            BasicSecondLevelSubdivisionCreator.Create(subdivisions2, connection);
-            BasicSecondLevelSubdivisionCreator.Create(ReadBasicSecondLevelSubdivisions(mysqlconnection), connection);
+            await BasicSecondLevelSubdivisionCreator.CreateAsync(subdivisions1, connection);
+            await BasicSecondLevelSubdivisionCreator.CreateAsync(subdivisions2, connection);
+            await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(mysqlconnection), connection);
         }
         private static IEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection)
         {

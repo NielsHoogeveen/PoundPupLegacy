@@ -2,15 +2,15 @@
 
 public class SingleIdEnitityCreator
 {
-    public static void Create(IEnumerable<BasicNode> nodes, string tableName, NpgsqlConnection connection)
+    public static async Task Create(IEnumerable<BasicNode> nodes, string tableName, NpgsqlConnection connection)
     {
-        using var nodeWriter = NodeWriter.Create(connection);
-        using var idTableWriter = SingleIdWriter.CreateSingleIdWriter(tableName, connection);
+        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var idTableWriter = await SingleIdWriter.CreateSingleIdWriterAsync(tableName, connection);
 
         foreach (var node in nodes)
         {
-            nodeWriter.Write(node);
-            idTableWriter.Write((int)node.Id!);
+            await nodeWriter.WriteAsync(node);
+            await idTableWriter.WriteAsync((int)node.Id!);
         }
     }
 }

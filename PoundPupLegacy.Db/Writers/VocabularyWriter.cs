@@ -5,9 +5,9 @@ internal class VocabularyWriter : DatabaseWriter<Vocabulary>, IDatabaseWriter<Vo
     private const string ID = "id";
     private const string NAME = "name";
     private const string DESCRIPTION = "description";
-    public static DatabaseWriter<Vocabulary> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Vocabulary>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "vocabulary",
             new ColumnDefinition[] {
@@ -33,13 +33,13 @@ internal class VocabularyWriter : DatabaseWriter<Vocabulary>, IDatabaseWriter<Vo
     {
     }
 
-    internal override void Write(Vocabulary vocabulary)
+    internal override async Task WriteAsync(Vocabulary vocabulary)
     {
         if (vocabulary.Id is null)
             throw new NullReferenceException();
         WriteValue(vocabulary.Id, ID);
         WriteValue(vocabulary.Name, NAME);
         WriteValue(vocabulary.Description, DESCRIPTION);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

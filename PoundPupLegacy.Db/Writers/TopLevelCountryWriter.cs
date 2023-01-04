@@ -5,9 +5,9 @@ internal class TopLevelCountryWriter : DatabaseWriter<TopLevelCountry>, IDatabas
     private const string ID = "id";
     private const string ISO_3166_1_CODE = "iso_3166_1_code";
     private const string GLOBAL_REGION_ID = "global_region_id";
-    public static DatabaseWriter<TopLevelCountry> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<TopLevelCountry>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "top_level_country",
             new ColumnDefinition[] {
@@ -33,13 +33,13 @@ internal class TopLevelCountryWriter : DatabaseWriter<TopLevelCountry>, IDatabas
     {
     }
 
-    internal override void Write(TopLevelCountry country)
+    internal override async Task WriteAsync(TopLevelCountry country)
     {
         if (country.Id is null)
             throw new NullReferenceException();
         WriteValue(country.Id, ID);
         WriteValue(country.ISO3166_1_Code, ISO_3166_1_CODE);
         WriteValue(country.GlobalRegionId, GLOBAL_REGION_ID);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

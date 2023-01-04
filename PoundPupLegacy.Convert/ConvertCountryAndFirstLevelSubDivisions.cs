@@ -9,10 +9,10 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
-        private static void MigrateBasicCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateBasicCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            CountryAndFirstAndBottomLevelSubdivisionCreator.Create(CountryAndFirstAndBottomLevelSubdivisions, connection);
-            CountryAndFirstAndBottomLevelSubdivisionCreator.Create(ReadCountryAndFirstAndIntermediateLevelSubdivisions(mysqlconnection), connection);
+            await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(CountryAndFirstAndBottomLevelSubdivisions, connection);
+            await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndIntermediateLevelSubdivisions(mysqlconnection), connection);
         }
         private static string GetISO3166Code2ForCountry(int id)
         {

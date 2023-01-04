@@ -2,16 +2,16 @@
 
 public class UserGroupCreator : IEntityCreator<UserGroup>
 {
-    public static void Create(IEnumerable<UserGroup> userGroups, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<UserGroup> userGroups, NpgsqlConnection connection)
     {
 
-        using var accessRoleWriter = AccessRoleWriter.Create(connection);
-        using var userGroupWriter = UserGroupWriter.Create(connection);
+        await using var accessRoleWriter = await AccessRoleWriter.CreateAsync(connection);
+        await using var userGroupWriter = await UserGroupWriter.CreateAsync(connection);
 
         foreach (var userGroup in userGroups)
         {
-            accessRoleWriter.Write(userGroup);
-            userGroupWriter.Write(userGroup);
+            await accessRoleWriter.WriteAsync(userGroup);
+            await userGroupWriter.WriteAsync(userGroup);
         }
     }
 }

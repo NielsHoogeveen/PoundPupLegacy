@@ -5,9 +5,9 @@ internal class DeportationCaseWriter : DatabaseWriter<DeportationCase>, IDatabas
     private const string ID = "id";
     private const string SUBDIVISION_ID_FROM = "subdivision_id_from";
     private const string COUNTRY_ID_TO = "country_id_to";
-    public static DatabaseWriter<DeportationCase> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<DeportationCase>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "deportation_case",
             new ColumnDefinition[] {
@@ -33,7 +33,7 @@ internal class DeportationCaseWriter : DatabaseWriter<DeportationCase>, IDatabas
     {
     }
 
-    internal override void Write(DeportationCase deportationCase)
+    internal override async Task WriteAsync(DeportationCase deportationCase)
     {
         if (deportationCase.Id is null)
             throw new NullReferenceException();
@@ -41,6 +41,6 @@ internal class DeportationCaseWriter : DatabaseWriter<DeportationCase>, IDatabas
         WriteValue(deportationCase.Id, ID);
         WriteNullableValue(deportationCase.SubdivisionIdFrom, SUBDIVISION_ID_FROM);
         WriteNullableValue(deportationCase.CountryIdTo, COUNTRY_ID_TO);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }

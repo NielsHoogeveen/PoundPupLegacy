@@ -2,8 +2,8 @@
 
 internal class BasicNameableWriter : IDatabaseWriter<BasicNameable>
 {
-    public static DatabaseWriter<BasicNameable> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<BasicNameable>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<BasicNameable>(SingleIdWriter.CreateSingleIdCommand("basic_nameable", connection));
+        return new SingleIdWriter<BasicNameable>(await SingleIdWriter.CreateSingleIdCommandAsync("basic_nameable", connection));
     }
 }

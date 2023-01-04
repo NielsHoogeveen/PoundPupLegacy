@@ -2,8 +2,8 @@
 
 internal class FormalIntermediateLevelSubdivisionWriter : IDatabaseWriter<FormalIntermediateLevelSubdivision>
 {
-    public static DatabaseWriter<FormalIntermediateLevelSubdivision> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<FormalIntermediateLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<FormalIntermediateLevelSubdivision>(SingleIdWriter.CreateSingleIdCommand("formal_intermediate_level_subdivision", connection));
+        return new SingleIdWriter<FormalIntermediateLevelSubdivision>(await SingleIdWriter.CreateSingleIdCommandAsync("formal_intermediate_level_subdivision", connection));
     }
 }

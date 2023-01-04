@@ -2,14 +2,14 @@
 
 public class LocationCreator : IEntityCreator<Location>
 {
-    public static void Create(IEnumerable<Location> locations, NpgsqlConnection connection)
+    public static async Task CreateAsync(IEnumerable<Location> locations, NpgsqlConnection connection)
     {
 
-        using var locationWriter = LocationWriter.Create(connection);
+        await using var locationWriter = await LocationWriter.CreateAsync(connection);
 
         foreach (var location in locations)
         {
-            locationWriter.Write(location);
+            await locationWriter.WriteAsync(location);
         }
     }
 }

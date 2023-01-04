@@ -103,9 +103,9 @@ namespace PoundPupLegacy.Convert
                 },
             };
         }
-        private static void MigrateFamilySizes(NpgsqlConnection connection)
+        private static async Task MigrateFamilySizes(NpgsqlConnection connection)
         {
-            FamilySizeCreator.Create(GetFamilySizes(), connection);
+            await FamilySizeCreator.CreateAsync(GetFamilySizes(), connection);
         }
 
 

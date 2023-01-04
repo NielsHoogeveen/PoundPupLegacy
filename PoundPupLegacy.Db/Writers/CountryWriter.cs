@@ -10,9 +10,9 @@ internal class CountryWriter : DatabaseWriter<Country>, IDatabaseWriter<Country>
     private const string INCOME_REQUIREMENTS = "income_requirements";
     private const string HEALTH_REQUIREMENTS = "health_requirements";
     private const string OTHER_REQUIREMENTS = "other_requirements";
-    public static DatabaseWriter<Country> Create(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<Country>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = CreateInsertStatement(
+        var command = await CreateInsertStatementAsync(
             connection,
             "country",
             new ColumnDefinition[] {
@@ -58,7 +58,7 @@ internal class CountryWriter : DatabaseWriter<Country>, IDatabaseWriter<Country>
     {
     }
 
-    internal override void Write(Country country)
+    internal override async Task WriteAsync(Country country)
     {
         if (country.Id is null)
             throw new NullReferenceException();
@@ -71,6 +71,6 @@ internal class CountryWriter : DatabaseWriter<Country>, IDatabaseWriter<Country>
         WriteNullableValue(country.IncomeRequirements, INCOME_REQUIREMENTS);
         WriteNullableValue(country.HealthRequirements, HEALTH_REQUIREMENTS);
         WriteNullableValue(country.OtherRequirements, OTHER_REQUIREMENTS);
-        _command.ExecuteNonQuery();
+        await _command.ExecuteNonQueryAsync();
     }
 }
