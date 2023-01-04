@@ -57,7 +57,7 @@ internal partial class Program
         await AdoptionExportRelationCreator.CreateAsync(ReadAdoptionExportRelations(mysqlconnection), connection);
         await AdoptionExportYearCreator.CreateAsync(ReadAdoptionExportYears(mysqlconnection, connection), connection);
     }
-    private static IEnumerable<AdoptionExportRelation> ReadAdoptionExportRelations(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<AdoptionExportRelation> ReadAdoptionExportRelations(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -146,9 +146,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var country = new AdoptionExportRelation
             {
@@ -159,10 +159,10 @@ internal partial class Program
             yield return country;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 
-    private static IEnumerable<AdoptionExportYear> ReadAdoptionExportYears(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async IAsyncEnumerable<AdoptionExportYear> ReadAdoptionExportYears(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
 
         var sql = $"""
@@ -264,9 +264,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var country = new AdoptionExportYear
             {
@@ -282,6 +282,6 @@ internal partial class Program
             yield return country;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }

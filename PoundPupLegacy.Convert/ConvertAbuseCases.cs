@@ -14,7 +14,7 @@ internal partial class Program
     {
         await AbuseCaseCreator.CreateAsync(ReadAbuseCases(mysqlconnection), connection);
     }
-    private static IEnumerable<AbuseCase> ReadAbuseCases(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<AbuseCase> ReadAbuseCases(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -58,9 +58,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
@@ -86,6 +86,6 @@ internal partial class Program
             yield return country;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }

@@ -1,10 +1,11 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using System.Collections.Generic;
 
 namespace PoundPupLegacy.Db;
 
 public class AttachmentTherapistCreator : IEntityCreator<AttachmentTherapist>
 {
-    public static async Task CreateAsync(IEnumerable<AttachmentTherapist> persons, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<AttachmentTherapist> persons, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -18,7 +19,7 @@ public class AttachmentTherapistCreator : IEntityCreator<AttachmentTherapist>
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
 
-        foreach (var person in persons)
+        await foreach (var person in persons)
         {
             await nodeWriter.WriteAsync(person);
             await documentableWriter.WriteAsync(person);

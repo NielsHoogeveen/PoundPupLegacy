@@ -13,7 +13,7 @@ internal partial class Program
     {
         await FileCreator.CreateAsync(ReadFiles(mysqlconnection), connection);
     }
-    private static IEnumerable<Model.File> ReadFiles(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Model.File> ReadFiles(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -32,9 +32,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             yield return new Model.File
             {
@@ -46,6 +46,6 @@ internal partial class Program
             };
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }

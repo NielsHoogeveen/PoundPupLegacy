@@ -15,7 +15,7 @@ internal partial class Program
         await AttachmentTherapistCreator.CreateAsync(ReadAttachmentTherapists(mysqlconnection), connection);
     }
 
-    private static IEnumerable<AttachmentTherapist> ReadAttachmentTherapists(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<AttachmentTherapist> ReadAttachmentTherapists(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -50,9 +50,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             yield return new AttachmentTherapist
             {
@@ -72,7 +72,7 @@ internal partial class Program
             };
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 
 

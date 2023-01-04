@@ -13,7 +13,7 @@ namespace PoundPupLegacy.Convert
         {
             await OrganizationTypeCreator.CreateAsync(ReadOrganizationTypes(mysqlconnection), connection);
         }
-        private static IEnumerable<OrganizationType> ReadOrganizationTypes(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<OrganizationType> ReadOrganizationTypes(MySqlConnection mysqlconnection)
         {
 
             var sql = $"""
@@ -80,9 +80,9 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = sql;
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var id = reader.GetInt32("id");
                 var name = reader.GetString("title");

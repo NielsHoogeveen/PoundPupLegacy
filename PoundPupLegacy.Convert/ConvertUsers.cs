@@ -62,10 +62,10 @@ namespace PoundPupLegacy.Convert
             var users = ReadUsers(mysqlconnection).ToList();
             var memberList = users.Select(x => new UserGroupUser { UserGroupId = 4, UserId = (int)x.Id! });
             await AnonimousUserCreator.CreateAsync(connection);
-            await UserCreator.CreateAsync(users, connection);
-            await UserGroupCreator.CreateAsync(GetUserGroups(), connection);
-            await UserGroupUserCreator.CreateAsync(GetUserGroupUsers(), connection);
-            await UserGroupUserCreator.CreateAsync(memberList, connection);
+            await UserCreator.CreateAsync(users.ToAsyncEnumerable(), connection);
+            await UserGroupCreator.CreateAsync(GetUserGroups().ToAsyncEnumerable(), connection);
+            await UserGroupUserCreator.CreateAsync(GetUserGroupUsers().ToAsyncEnumerable(), connection);
+            await UserGroupUserCreator.CreateAsync(memberList.ToAsyncEnumerable(), connection);
         }
         private static IEnumerable<User> ReadUsers(MySqlConnection mysqlconnection)
         {

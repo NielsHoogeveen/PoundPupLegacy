@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Db
 
     internal interface IEntityCreator<T>
     {
-        public abstract static Task CreateAsync(IEnumerable<T> elements, NpgsqlConnection connection);
+        public abstract static Task CreateAsync(IAsyncEnumerable<T> elements, NpgsqlConnection connection);
     }
 
     internal static class EntityCreator

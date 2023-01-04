@@ -13,7 +13,7 @@ namespace PoundPupLegacy.Convert
         {
             await TypeOfAbuseCreator.CreateAsync(ReadTypesOfAbuse(mysqlconnection), connection);
         }
-        private static IEnumerable<TypeOfAbuse> ReadTypesOfAbuse(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<TypeOfAbuse> ReadTypesOfAbuse(MySqlConnection mysqlconnection)
         {
 
             var sql = $"""
@@ -74,9 +74,9 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandText = sql;
 
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var id = reader.GetInt32("id");
                 var name = reader.GetString("title");
@@ -128,7 +128,7 @@ namespace PoundPupLegacy.Convert
                 };
 
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
 
     }

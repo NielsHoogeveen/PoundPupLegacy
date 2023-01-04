@@ -14,7 +14,7 @@ internal partial class Program
     {
         await DeportationCaseCreator.CreateAsync(ReadDeportationCases(mysqlconnection), connection);
     }
-    private static IEnumerable<DeportationCase> ReadDeportationCases(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<DeportationCase> ReadDeportationCases(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -60,9 +60,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
@@ -85,6 +85,6 @@ internal partial class Program
             yield return country;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }

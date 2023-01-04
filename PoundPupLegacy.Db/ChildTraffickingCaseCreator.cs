@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
 {
-    public static async Task CreateAsync(IEnumerable<ChildTraffickingCase> childTraffickingCases, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<ChildTraffickingCase> childTraffickingCases, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -17,7 +17,7 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
 
-        foreach (var childTraffickingCase in childTraffickingCases)
+        await foreach (var childTraffickingCase in childTraffickingCases)
         {
             await nodeWriter.WriteAsync(childTraffickingCase);
             await documentableWriter.WriteAsync(childTraffickingCase);

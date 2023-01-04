@@ -13,7 +13,7 @@ namespace PoundPupLegacy.Convert
             await BoundCountryCreator.CreateAsync(ReadBoundCountries(mysqlconnection), connection);
         }
 
-        private static IEnumerable<BoundCountry> ReadBoundCountries(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<BoundCountry> ReadBoundCountries(MySqlConnection mysqlconnection)
         {
             var sql = $"""
                 SELECT
@@ -37,9 +37,9 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = sql;
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var id = reader.GetInt32("id");
                 var name = reader.GetString("title");
@@ -70,7 +70,7 @@ namespace PoundPupLegacy.Convert
                 };
 
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
     }
 }

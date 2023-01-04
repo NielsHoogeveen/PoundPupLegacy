@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIntermediateLevelSubdivision>
 {
-    public static async Task CreateAsync(IEnumerable<FormalIntermediateLevelSubdivision> subdivisions, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<FormalIntermediateLevelSubdivision> subdivisions, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -22,7 +22,7 @@ public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIn
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await  TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var subdivision in subdivisions)
+        await foreach (var subdivision in subdivisions)
         {
             await nodeWriter.WriteAsync(subdivision);
             await documentableWriter.WriteAsync(subdivision);

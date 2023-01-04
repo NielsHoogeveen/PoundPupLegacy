@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class BindingCountryCreator : IEntityCreator<BindingCountry>
 {
-    public static async Task CreateAsync(IEnumerable<BindingCountry> countries, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<BindingCountry> countries, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -19,7 +19,7 @@ public class BindingCountryCreator : IEntityCreator<BindingCountry>
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var country in countries)
+        await foreach (var country in countries)
         {
             await nodeWriter.WriteAsync(country);
             await documentableWriter.WriteAsync(country);

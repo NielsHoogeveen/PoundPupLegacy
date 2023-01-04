@@ -13,7 +13,7 @@ namespace PoundPupLegacy.Convert
         {
             await DocumentTypeCreator.CreateAsync(ReadSelectionOptions(mysqlconnection), connection);
         }
-        private static IEnumerable<DocumentType> ReadSelectionOptions(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<DocumentType> ReadSelectionOptions(MySqlConnection mysqlconnection)
         {
 
             var sql = $"""
@@ -35,9 +35,9 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = sql;
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var name = reader.GetString("title");
                 yield return new DocumentType
@@ -62,9 +62,7 @@ namespace PoundPupLegacy.Convert
                     },
                 };
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
-
-
     }
 }

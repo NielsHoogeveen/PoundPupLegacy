@@ -84,10 +84,10 @@ internal partial class Program
 
     private static async Task MigrateVocabularies(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await VocabularyCreator.CreateAsync(GetVocabularies(), connection);
+        await VocabularyCreator.CreateAsync(GetVocabularies().ToAsyncEnumerable(), connection);
         await VocabularyCreator.CreateAsync(ReadVocabularies(mysqlconnection), connection);
     }
-    private static IEnumerable<Vocabulary> ReadVocabularies(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Vocabulary> ReadVocabularies(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -110,9 +110,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var id = reader.GetInt32("id");
             var name = reader.GetString("name");
@@ -130,6 +130,6 @@ internal partial class Program
             };
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }

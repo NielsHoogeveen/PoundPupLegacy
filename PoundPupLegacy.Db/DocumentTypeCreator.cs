@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class DocumentTypeCreator : IEntityCreator<DocumentType>
 {
-    public static async Task CreateAsync(IEnumerable<DocumentType> documentTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<DocumentType> documentTypes, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -14,7 +14,7 @@ public class DocumentTypeCreator : IEntityCreator<DocumentType>
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var documentType in documentTypes)
+        await foreach (var documentType in documentTypes)
         {
             await nodeWriter.WriteAsync(documentType);
             await nameableWriter.WriteAsync(documentType);

@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class CountryAndFirstAndBottomLevelSubdivisionCreator : IEntityCreator<CountryAndFirstAndBottomLevelSubdivision>
 {
-    public static async Task CreateAsync(IEnumerable<CountryAndFirstAndBottomLevelSubdivision> countries, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision> countries, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -25,7 +25,7 @@ public class CountryAndFirstAndBottomLevelSubdivisionCreator : IEntityCreator<Co
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var country in countries)
+        await foreach (var country in countries)
         {
             await nodeWriter.WriteAsync(country);
             await documentableWriter.WriteAsync(country);

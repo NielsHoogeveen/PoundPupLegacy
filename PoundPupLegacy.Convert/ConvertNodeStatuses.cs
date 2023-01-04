@@ -27,7 +27,7 @@ internal partial class Program
 
     private static async Task MigrateNodeStatuses(NpgsqlConnection connection)
     {
-        await NodeStatusCreator.CreateAsync(GetNodeStatuses(), connection);
+        await NodeStatusCreator.CreateAsync(GetNodeStatuses().ToAsyncEnumerable(), connection);
     }
 
 }

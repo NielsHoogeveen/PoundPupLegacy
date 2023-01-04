@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegion>
 {
-    public static async Task CreateAsync(IEnumerable<FirstLevelGlobalRegion> nodes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<FirstLevelGlobalRegion> nodes, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -17,7 +17,7 @@ public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegi
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var node in nodes)
+        await foreach (var node in nodes)
         {
             await nodeWriter.WriteAsync(node);
             await documentableWriter.WriteAsync(node);

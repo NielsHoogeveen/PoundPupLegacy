@@ -23,7 +23,7 @@ internal partial class Program
         };
     }
 
-    private static IEnumerable<BasicPerson> ReadPersons(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<BasicPerson> ReadPersons(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -50,9 +50,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             yield return new BasicPerson
             {
@@ -72,6 +72,6 @@ internal partial class Program
             };
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }

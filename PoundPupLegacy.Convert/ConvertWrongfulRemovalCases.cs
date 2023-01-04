@@ -14,7 +14,7 @@ internal partial class Program
     {
         await WrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases(mysqlconnection), connection);
     }
-    private static IEnumerable<WrongfulRemovalCase> ReadWrongfulRemovalCases(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<WrongfulRemovalCase> ReadWrongfulRemovalCases(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -40,9 +40,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -63,6 +63,6 @@ internal partial class Program
             yield return country;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }

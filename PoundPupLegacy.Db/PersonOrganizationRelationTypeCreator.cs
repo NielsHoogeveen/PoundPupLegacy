@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class PersonOrganizationRelationTypeCreator : IEntityCreator<PersonOrganizationRelationType>
 {
-    public static async Task CreateAsync(IEnumerable<PersonOrganizationRelationType> personOrganizationRelationTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<PersonOrganizationRelationType> personOrganizationRelationTypes, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -14,7 +14,7 @@ public class PersonOrganizationRelationTypeCreator : IEntityCreator<PersonOrgani
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var personOrganizationRelationType in personOrganizationRelationTypes)
+        await foreach (var personOrganizationRelationType in personOrganizationRelationTypes)
         {
             await nodeWriter.WriteAsync(personOrganizationRelationType);
             await nameableWriter.WriteAsync(personOrganizationRelationType);

@@ -324,10 +324,10 @@ namespace PoundPupLegacy.Convert
                     subdivision.Id = NodeId;
                 }
             }
-            await FirstAndBottomLevelSubdivisionCreator.CreateAsync(subdivisions, connection);
+            await FirstAndBottomLevelSubdivisionCreator.CreateAsync(subdivisions.ToAsyncEnumerable(), connection);
             await FirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadFormalFirstLevelSubdivisions(mysqlconnection), connection);
         }
-        private static IEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(MySqlConnection mysqlconnection)
         {
             var continentIds = new List<int> { 3806, 3810, 3811, 3816, 3822, 3823 };
 
@@ -355,10 +355,10 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandText = sql;
 
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var isoCode = reader.IsDBNull("iso_3166_2_code") ? GetISO3166Code2(reader.GetInt32("id"), "") :
                                     GetISO3166Code2(reader.GetInt32("id"), reader.GetString("iso_3166_2_code"));
@@ -385,7 +385,7 @@ namespace PoundPupLegacy.Convert
                 };
 
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
     }
 }

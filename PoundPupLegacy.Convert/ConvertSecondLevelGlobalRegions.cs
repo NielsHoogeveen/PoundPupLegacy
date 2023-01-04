@@ -14,7 +14,7 @@ namespace PoundPupLegacy.Convert
             await SecondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(mysqlconnection), connection);
         }
 
-        private static IEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(MySqlConnection mysqlconnection)
         {
             var sql = $"""
                 SELECT
@@ -38,9 +38,9 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = sql;
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var id = reader.GetInt32("id");
                 var title = reader.GetString("title");
@@ -61,7 +61,7 @@ namespace PoundPupLegacy.Convert
                 };
 
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
 
     }

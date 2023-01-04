@@ -239,10 +239,10 @@ internal partial class Program
             }
             return x;
         });
-        await BasicCountryCreator.CreateAsync(countries, connection);
+        await BasicCountryCreator.CreateAsync(countries.ToAsyncEnumerable(), connection);
         await BasicCountryCreator.CreateAsync(ReadBasicCountries(mysqlconnection), connection);
     }
-    private static IEnumerable<BasicCountry> ReadBasicCountries(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<BasicCountry> ReadBasicCountries(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -313,9 +313,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var id = reader.GetInt32("id");
             var name = reader.GetInt32("id") == 3839 ? "Côte d'Ivoire" :
@@ -355,7 +355,7 @@ internal partial class Program
             yield return country;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 
 

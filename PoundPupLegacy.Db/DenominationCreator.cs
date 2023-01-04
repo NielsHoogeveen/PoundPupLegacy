@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class DenominationCreator : IEntityCreator<Denomination>
 {
-    public static async Task CreateAsync(IEnumerable<Denomination> denominations, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<Denomination> denominations, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -14,7 +14,7 @@ public class DenominationCreator : IEntityCreator<Denomination>
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var denomination in denominations)
+        await foreach (var denomination in denominations)
         {
             await nodeWriter.WriteAsync(denomination);
             await nameableWriter.WriteAsync(denomination);

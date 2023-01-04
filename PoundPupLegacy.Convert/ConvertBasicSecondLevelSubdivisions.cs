@@ -134,11 +134,11 @@ namespace PoundPupLegacy.Convert
                     subdivision.Id = NodeId;
                 }
             }
-            await BasicSecondLevelSubdivisionCreator.CreateAsync(subdivisions1, connection);
-            await BasicSecondLevelSubdivisionCreator.CreateAsync(subdivisions2, connection);
+            await BasicSecondLevelSubdivisionCreator.CreateAsync(subdivisions1.ToAsyncEnumerable(), connection);
+            await BasicSecondLevelSubdivisionCreator.CreateAsync(subdivisions2.ToAsyncEnumerable(), connection);
             await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(mysqlconnection), connection);
         }
-        private static IEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection)
         {
             var continentIds = new List<int> { 3806, 3810, 3811, 3816, 3822, 3823 };
 
@@ -169,9 +169,9 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = sql;
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var id = reader.GetInt32("id");
                 var title = $"{reader.GetString("name")} (state of the USA)";
@@ -194,7 +194,7 @@ namespace PoundPupLegacy.Convert
                     FileIdTileImage = null,
                 };
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
 
     }

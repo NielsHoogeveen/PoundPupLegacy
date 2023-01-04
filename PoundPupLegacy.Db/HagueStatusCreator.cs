@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class HagueStatusCreator : IEntityCreator<HagueStatus>
 {
-    public static async Task CreateAsync(IEnumerable<HagueStatus> hagueStatuss, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<HagueStatus> hagueStatuss, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -14,7 +14,7 @@ public class HagueStatusCreator : IEntityCreator<HagueStatus>
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var hagueStatus in hagueStatuss)
+        await foreach (var hagueStatus in hagueStatuss)
         {
             await nodeWriter.WriteAsync(hagueStatus);
             await nameableWriter.WriteAsync(hagueStatus);

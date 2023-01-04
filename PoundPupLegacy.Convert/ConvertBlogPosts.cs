@@ -14,7 +14,7 @@ internal partial class Program
         await ArticleCreator.CreateAsync(ReadArticles(mysqlconnection), connection);
         await DiscussionCreator.CreateAsync(ReadDiscussions(mysqlconnection), connection);
     }
-    private static IEnumerable<BlogPost> ReadBlogPosts(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<BlogPost> ReadBlogPosts(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -36,9 +36,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var discussion = new BlogPost
             {
@@ -55,9 +55,9 @@ internal partial class Program
             yield return discussion;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
-    private static IEnumerable<Article> ReadArticles(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Article> ReadArticles(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -79,9 +79,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var discussion = new Article
             {
@@ -98,9 +98,9 @@ internal partial class Program
             yield return discussion;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
-    private static IEnumerable<Discussion> ReadDiscussions(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Discussion> ReadDiscussions(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -122,9 +122,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var discussion = new Discussion
             {
@@ -141,7 +141,7 @@ internal partial class Program
             yield return discussion;
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 
 }

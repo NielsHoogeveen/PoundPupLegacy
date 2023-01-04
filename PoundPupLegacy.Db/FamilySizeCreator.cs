@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class FamilySizeCreator : IEntityCreator<FamilySize>
 {
-    public static async Task CreateAsync(IEnumerable<FamilySize> familySizes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<FamilySize> familySizes, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -14,7 +14,7 @@ public class FamilySizeCreator : IEntityCreator<FamilySize>
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var familySize in familySizes)
+        await foreach (var familySize in familySizes)
         {
             await nodeWriter.WriteAsync(familySize);
             await nameableWriter.WriteAsync(familySize);

@@ -105,7 +105,7 @@ namespace PoundPupLegacy.Convert
         }
         private static async Task MigrateFamilySizes(NpgsqlConnection connection)
         {
-            await FamilySizeCreator.CreateAsync(GetFamilySizes(), connection);
+            await FamilySizeCreator.CreateAsync(GetFamilySizes().ToAsyncEnumerable(), connection);
         }
 
 

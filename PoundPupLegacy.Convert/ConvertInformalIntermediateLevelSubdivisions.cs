@@ -45,10 +45,10 @@ namespace PoundPupLegacy.Convert
                     subdivision.Id = NodeId;
                 }
             }
-            await InformalIntermediateLevelSubdivisionCreator.CreateAsync(subdivisions, connection);
+            await InformalIntermediateLevelSubdivisionCreator.CreateAsync(subdivisions.ToAsyncEnumerable(), connection);
             await InformalIntermediateLevelSubdivisionCreator.CreateAsync(ReadInformalIntermediateLevelSubdivisions(mysqlconnection), connection);
         }
-        private static IEnumerable<InformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisions(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<InformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisions(MySqlConnection mysqlconnection)
         {
             var sql = $"""
             SELECT
@@ -70,9 +70,9 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandText = sql;
 
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
 
                 var id = reader.GetInt32("id");
@@ -93,7 +93,7 @@ namespace PoundPupLegacy.Convert
                     FileIdTileImage = null,
                 };
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
     }
 }

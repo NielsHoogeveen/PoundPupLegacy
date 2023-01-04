@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
 {
-    public static async Task CreateAsync(IEnumerable<ChildPlacementType> childPlacementTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<ChildPlacementType> childPlacementTypes, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -15,7 +15,7 @@ public class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
 
-        foreach (var childPlacementType in childPlacementTypes)
+        await foreach(var childPlacementType in childPlacementTypes)
         {
             await nodeWriter.WriteAsync(childPlacementType);
             await nameableWriter.WriteAsync(childPlacementType);

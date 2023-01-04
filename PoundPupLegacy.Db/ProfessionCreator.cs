@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class ProfessionCreator : IEntityCreator<Profession>
 {
-    public static async Task CreateAsync(IEnumerable<Profession> professions, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<Profession> professions, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -14,7 +14,7 @@ public class ProfessionCreator : IEntityCreator<Profession>
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var profession in professions)
+        await foreach (var profession in professions)
         {
             await nodeWriter.WriteAsync(profession);
             await nameableWriter.WriteAsync(profession);

@@ -913,11 +913,11 @@ internal partial class Program
 
     private static async Task MigrateLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await LocationCreator.CreateAsync(GetLocations(), connection);
+        await LocationCreator.CreateAsync(GetLocations().ToAsyncEnumerable(), connection);
         await LocationCreator.CreateAsync(ReadUSLocations(mysqlconnection, connection), connection);
-        await LocationLocatableCreator.CreateAsync(GetLocationLocatables(), connection);
+        await LocationLocatableCreator.CreateAsync(GetLocationLocatables().ToAsyncEnumerable(), connection);
     }
-    private static IEnumerable<Location> ReadUSLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async IAsyncEnumerable<Location> ReadUSLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
 
         var sql = $"""
@@ -944,9 +944,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             yield return new Location
             {
@@ -962,6 +962,6 @@ internal partial class Program
             };
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }

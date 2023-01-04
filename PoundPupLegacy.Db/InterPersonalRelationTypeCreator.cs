@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class InterPersonalRelationTypeCreator : IEntityCreator<InterPersonalRelationType>
 {
-    public static async Task CreateAsync(IEnumerable<InterPersonalRelationType> interPersonalRelationTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<InterPersonalRelationType> interPersonalRelationTypes, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -15,7 +15,7 @@ public class InterPersonalRelationTypeCreator : IEntityCreator<InterPersonalRela
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
 
-        foreach (var interPersonalRelationType in interPersonalRelationTypes)
+        await foreach (var interPersonalRelationType in interPersonalRelationTypes)
         {
             await nodeWriter.WriteAsync(interPersonalRelationType);
             await nameableWriter.WriteAsync(interPersonalRelationType);

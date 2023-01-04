@@ -100,10 +100,10 @@ namespace PoundPupLegacy.Convert
                 NodeId++;
                 country.Id = NodeId;
             }
-            await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(RegionSubdivisionCountries, connection);
+            await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(RegionSubdivisionCountries.ToAsyncEnumerable(), connection);
             await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(mysqlconnection), connection);
         }
-        private static IEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(MySqlConnection mysqlconnection)
         {
 
 
@@ -140,10 +140,10 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandText = sql;
 
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var id = reader.GetInt32("id");
                 var name = reader.GetInt32("id") == 3879 ? "Réunion" :
@@ -178,9 +178,7 @@ namespace PoundPupLegacy.Convert
                     OtherRequirements = null,
                 };
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
-
-
     }
 }

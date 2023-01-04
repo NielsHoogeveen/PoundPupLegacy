@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
 {
-    public static async Task CreateAsync(IEnumerable<CoercedAdoptionCase> coercedAdoptionCases, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<CoercedAdoptionCase> coercedAdoptionCases, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -16,7 +16,7 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var coercedAdoptionCase in coercedAdoptionCases)
+        await foreach (var coercedAdoptionCase in coercedAdoptionCases)
         {
             await nodeWriter.WriteAsync(coercedAdoptionCase);
             await documentableWriter.WriteAsync(coercedAdoptionCase);

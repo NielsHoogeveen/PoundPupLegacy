@@ -46,7 +46,7 @@ namespace PoundPupLegacy.Convert
                     subdivision.Id = NodeId;
                 }
             }
-            await FormalIntermediateLevelSubdivisionCreator.CreateAsync(subdivisions, connection);
+            await FormalIntermediateLevelSubdivisionCreator.CreateAsync(subdivisions.ToAsyncEnumerable(), connection);
         }
 
     }

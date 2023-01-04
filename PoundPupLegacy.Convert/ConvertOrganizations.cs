@@ -43,10 +43,10 @@ internal partial class Program
                 org.Id = NodeId;
             }
         }
-        await OrganizationCreator.CreateAsync(organizations, connection);
+        await OrganizationCreator.CreateAsync(organizations.ToAsyncEnumerable(), connection);
         await OrganizationCreator.CreateAsync(ReadOrganizations(mysqlconnection), connection);
     }
-    private static IEnumerable<Organization> ReadOrganizations(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Organization> ReadOrganizations(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -74,9 +74,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             yield return new Organization
             {
@@ -97,7 +97,7 @@ internal partial class Program
             };
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 
 

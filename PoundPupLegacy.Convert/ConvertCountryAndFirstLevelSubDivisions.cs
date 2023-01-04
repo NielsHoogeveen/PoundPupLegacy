@@ -11,7 +11,7 @@ namespace PoundPupLegacy.Convert
 
         private static async Task MigrateBasicCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(CountryAndFirstAndBottomLevelSubdivisions, connection);
+            await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(CountryAndFirstAndBottomLevelSubdivisions.ToAsyncEnumerable(), connection);
             await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndIntermediateLevelSubdivisions(mysqlconnection), connection);
         }
         private static string GetISO3166Code2ForCountry(int id)
@@ -176,7 +176,7 @@ namespace PoundPupLegacy.Convert
             },
         };
 
-        private static IEnumerable<CountryAndFirstAndBottomLevelSubdivision> ReadCountryAndFirstAndIntermediateLevelSubdivisions(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision> ReadCountryAndFirstAndIntermediateLevelSubdivisions(MySqlConnection mysqlconnection)
         {
 
 
@@ -213,9 +213,9 @@ namespace PoundPupLegacy.Convert
             readCommand.CommandText = sql;
 
 
-            var reader = readCommand.ExecuteReader();
+            var reader = await readCommand.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var id = reader.GetInt32("id");
                 var name = reader.GetInt32("id") == 3879 ? "Réunion" :
@@ -251,7 +251,7 @@ namespace PoundPupLegacy.Convert
                     OtherRequirements = null,
                 };
             }
-            reader.Close();
+            await reader.CloseAsync();
         }
     }
 }

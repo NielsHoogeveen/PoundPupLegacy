@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Db;
 
 public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCase>
 {
-    public static async Task CreateAsync(IEnumerable<WrongfulMedicationCase> wrongfulMedicationCases, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<WrongfulMedicationCase> wrongfulMedicationCases, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
@@ -16,7 +16,7 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
         await using var termReader = await TermReader.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
-        foreach (var wrongfulMedicationCase in wrongfulMedicationCases)
+        await foreach (var wrongfulMedicationCase in wrongfulMedicationCases)
         {
             await nodeWriter.WriteAsync(wrongfulMedicationCase);
             await documentableWriter.WriteAsync(wrongfulMedicationCase);

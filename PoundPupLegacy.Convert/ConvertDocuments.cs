@@ -65,7 +65,7 @@ internal partial class Program
 
         }
     }
-    private static IEnumerable<Document> ReadDocuments(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Document> ReadDocuments(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -119,9 +119,9 @@ internal partial class Program
         readCommand.CommandText = sql;
 
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
             var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") ? null : reader.GetString("publication_date"));
             yield return new Document
@@ -140,6 +140,6 @@ internal partial class Program
             };
 
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }
