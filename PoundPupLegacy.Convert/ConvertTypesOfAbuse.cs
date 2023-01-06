@@ -4,19 +4,29 @@ using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
-namespace PoundPupLegacy.Convert
-{
-    internal partial class Program
-    {
+namespace PoundPupLegacy.Convert;
 
-        private static async Task MigrateTypesOfAbuse(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+internal partial class Program
+{
+
+    private static async Task MigrateTypesOfAbuse(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    {
+        await using var tx = await connection.BeginTransactionAsync();
+        try
         {
             await TypeOfAbuseCreator.CreateAsync(ReadTypesOfAbuse(mysqlconnection), connection);
+            await tx.CommitAsync();
         }
-        private static async IAsyncEnumerable<TypeOfAbuse> ReadTypesOfAbuse(MySqlConnection mysqlconnection)
+        catch (Exception)
         {
+            await tx.RollbackAsync();
+            throw;
+        }
+    }
+    private static async IAsyncEnumerable<TypeOfAbuse> ReadTypesOfAbuse(MySqlConnection mysqlconnection)
+    {
 
-            var sql = $"""
+        var sql = $"""
                 SELECT
                 t.id,
                 1 access_role_id,
@@ -68,68 +78,67 @@ namespace PoundPupLegacy.Convert
                 LEFT JOIN content_type_category_cat cc on cc.nid = n.nid AND cc.vid = n.vid
                 LEFT JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 """;
-            using var readCommand = mysqlconnection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
+        using var readCommand = mysqlconnection.CreateCommand();
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = sql;
 
 
-            var reader = await readCommand.ExecuteReaderAsync();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-            while (await reader.ReadAsync())
+        while (await reader.ReadAsync())
+        {
+            var id = reader.GetInt32("id");
+            var name = reader.GetString("title");
+            var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
+            var firstParentTopicName = reader.IsDBNull("first_parent_topic_name") ? null : reader.GetString("first_parent_topic_name");
+            var secondParentTopicName = reader.IsDBNull("second_parent_topic_name") ? null : reader.GetString("second_parent_topic_name");
+
+            var vocabularyNames = new List<VocabularyName>
             {
-                var id = reader.GetInt32("id");
-                var name = reader.GetString("title");
-                var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
-                var firstParentTopicName = reader.IsDBNull("first_parent_topic_name") ? null : reader.GetString("first_parent_topic_name");
-                var secondParentTopicName = reader.IsDBNull("second_parent_topic_name") ? null : reader.GetString("second_parent_topic_name");
-
-                var vocabularyNames = new List<VocabularyName>
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        VocabularyId = TYPE_OF_ABUSE,
-                        Name = name,
-                        ParentNames = new List<string>(),
-                    }
-                };
-                if (topicName != null)
+                    VocabularyId = TYPE_OF_ABUSE,
+                    Name = name,
+                    ParentNames = new List<string>(),
+                }
+            };
+            if (topicName != null)
+            {
+                var lst = new List<string>();
+                if (firstParentTopicName != null)
                 {
-                    var lst = new List<string>();
-                    if (firstParentTopicName != null)
-                    {
-                        lst.Add(firstParentTopicName);
-                    }
-                    if (secondParentTopicName != null)
-                    {
-                        lst.Add(secondParentTopicName);
-                    }
-
-                    vocabularyNames.Add(new VocabularyName
-                    {
-                        VocabularyId = TOPICS,
-                        Name = topicName,
-                        ParentNames = lst
-                    });
+                    lst.Add(firstParentTopicName);
+                }
+                if (secondParentTopicName != null)
+                {
+                    lst.Add(secondParentTopicName);
                 }
 
-                yield return new TypeOfAbuse
+                vocabularyNames.Add(new VocabularyName
                 {
-                    Id = id,
-                    AccessRoleId = reader.GetInt32("access_role_id"),
-                    CreatedDateTime = reader.GetDateTime("created_date_time"),
-                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                    Title = name,
-                    NodeStatusId = reader.GetInt32("node_status_id"),
-                    NodeTypeId = reader.GetInt32("node_type_id"),
-                    Description = reader.GetString("description"),
-                    FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
-                    VocabularyNames = vocabularyNames,
-                };
-
+                    VocabularyId = TOPICS,
+                    Name = topicName,
+                    ParentNames = lst
+                });
             }
-            await reader.CloseAsync();
-        }
 
+            yield return new TypeOfAbuse
+            {
+                Id = id,
+                AccessRoleId = reader.GetInt32("access_role_id"),
+                CreatedDateTime = reader.GetDateTime("created_date_time"),
+                ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                Title = name,
+                NodeStatusId = reader.GetInt32("node_status_id"),
+                NodeTypeId = reader.GetInt32("node_type_id"),
+                Description = reader.GetString("description"),
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
+                VocabularyNames = vocabularyNames,
+            };
+
+        }
+        await reader.CloseAsync();
     }
+
 }

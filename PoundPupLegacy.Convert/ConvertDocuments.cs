@@ -11,7 +11,17 @@ internal partial class Program
 
     private static async Task MigrateDocuments(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await DocumentCreator.CreateAsync(ReadDocuments(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await DocumentCreator.CreateAsync(ReadDocuments(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
     }
 
     private static string LastDayOfMonth(string month, int year)

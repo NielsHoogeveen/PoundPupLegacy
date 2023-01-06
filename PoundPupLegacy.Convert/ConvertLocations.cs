@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -8,6 +9,7 @@ namespace PoundPupLegacy.Convert;
 
 internal partial class Program
 {
+
     private static List<Location> GetLocations()
     {
         return new List<Location>
@@ -243,7 +245,7 @@ internal partial class Program
         };
     }
 
-    private static int? GetSubdivisionId(int id, int? stateId, NpgsqlConnection connection)
+    private static async Task<int?> GetSubdivisionId(int id, int? stateId, SubdivisionIdReaderByIso3166Code reader)
     {
         if (stateId == null)
         {
@@ -879,7 +881,7 @@ internal partial class Program
             {
                 return null;
             }
-            return GetSubdivisionId(stateCode, connection);
+            return await reader.ReadAsync(stateCode);
         }
         else
         {
@@ -913,13 +915,25 @@ internal partial class Program
 
     private static async Task MigrateLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await LocationCreator.CreateAsync(GetLocations().ToAsyncEnumerable(), connection);
-        await LocationCreator.CreateAsync(ReadUSLocations(mysqlconnection, connection), connection);
-        await LocationLocatableCreator.CreateAsync(GetLocationLocatables().ToAsyncEnumerable(), connection);
+
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await LocationCreator.CreateAsync(GetLocations().ToAsyncEnumerable(), connection);
+            await LocationCreator.CreateAsync(ReadUSLocations(mysqlconnection, connection), connection);
+            await LocationLocatableCreator.CreateAsync(GetLocationLocatables().ToAsyncEnumerable(), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
+
     }
     private static async IAsyncEnumerable<Location> ReadUSLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-
+        await using var subdivisionReader = await SubdivisionIdReaderByIso3166Code.CreateAsync(connection);
         var sql = $"""
                 SELECT 
                 l.lid id,
@@ -955,7 +969,7 @@ internal partial class Program
                 Additional = GetAdditional(reader.GetInt32("id"), reader.IsDBNull("additional") ? null : reader.GetString("additional")),
                 City = GetCity(reader.GetInt32("id"), reader.IsDBNull("city") ? null : reader.GetString("city")),
                 PostalCode = GetPostalCode(reader.GetInt32("id"), reader.IsDBNull("postal_code") ? null : reader.GetString("postal_code")),
-                SubdivisionId = GetSubdivisionId(reader.GetInt32("id"), reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id"), connection),
+                SubdivisionId = await GetSubdivisionId(reader.GetInt32("id"), reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id"), subdivisionReader),
                 CountryId = GetCountryId(reader.GetInt32("id"), reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id")),
                 Latitude = GetLatitude(reader.GetInt32("id"), reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
                 Longitude = GetLongitude(reader.GetInt32("id"), reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),

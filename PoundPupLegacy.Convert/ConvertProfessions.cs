@@ -4,19 +4,29 @@ using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
-namespace PoundPupLegacy.Convert
-{
-    internal partial class Program
-    {
+namespace PoundPupLegacy.Convert;
 
-        private static async Task MigrateProfessions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+internal partial class Program
+{
+
+    private static async Task MigrateProfessions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    {
+        await using var tx = await connection.BeginTransactionAsync();
+        try
         {
             await ProfessionCreator.CreateAsync(ReadProfessions(mysqlconnection), connection);
+            await tx.CommitAsync();
         }
-        private static async IAsyncEnumerable<Profession> ReadProfessions(MySqlConnection mysqlconnection)
+        catch (Exception)
         {
+            await tx.RollbackAsync();
+            throw;
+        }
+    }
+    private static async IAsyncEnumerable<Profession> ReadProfessions(MySqlConnection mysqlconnection)
+    {
 
-            var sql = $"""
+        var sql = $"""
                     SELECT
                        n.nid id,
                        n.uid access_role_id,
@@ -59,54 +69,53 @@ namespace PoundPupLegacy.Convert
                     ) n2 ON n2.title = v.topic_name
                     """;
 
-            using var readCommand = mysqlconnection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
+        using var readCommand = mysqlconnection.CreateCommand();
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = sql;
 
-            var reader = await readCommand.ExecuteReaderAsync();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-            while (await reader.ReadAsync())
+        while (await reader.ReadAsync())
+        {
+            var id = reader.GetInt32("id");
+            var name = reader.GetString("title");
+            var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
+
+            var vocabularyNames = new List<VocabularyName>
             {
-                var id = reader.GetInt32("id");
-                var name = reader.GetString("title");
-                var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
-
-                var vocabularyNames = new List<VocabularyName>
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        VocabularyId = 27213,
-                        Name = name,
-                        ParentNames = new List<string>(),
-                    }
-                };
-                if (topicName != null)
-                {
-                    vocabularyNames.Add(new VocabularyName
-                    {
-                        VocabularyId = TOPICS,
-                        Name = topicName,
-                        ParentNames = new List<string>()
-                    });
+                    VocabularyId = 27213,
+                    Name = name,
+                    ParentNames = new List<string>(),
                 }
-
-                yield return new Profession
+            };
+            if (topicName != null)
+            {
+                vocabularyNames.Add(new VocabularyName
                 {
-                    Id = id,
-                    AccessRoleId = reader.GetInt32("access_role_id"),
-                    CreatedDateTime = reader.GetDateTime("created_date_time"),
-                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                    Title = name,
-                    NodeStatusId = reader.GetInt32("node_status_id"),
-                    NodeTypeId = 6,
-                    Description = reader.GetString("description"),
-                    FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
-                    VocabularyNames = vocabularyNames,
-                    HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
-                };
+                    VocabularyId = TOPICS,
+                    Name = topicName,
+                    ParentNames = new List<string>()
+                });
             }
-            reader.Close();
+
+            yield return new Profession
+            {
+                Id = id,
+                AccessRoleId = reader.GetInt32("access_role_id"),
+                CreatedDateTime = reader.GetDateTime("created_date_time"),
+                ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                Title = name,
+                NodeStatusId = reader.GetInt32("node_status_id"),
+                NodeTypeId = 6,
+                Description = reader.GetString("description"),
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
+                VocabularyNames = vocabularyNames,
+                HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
+            };
         }
+        reader.Close();
     }
 }

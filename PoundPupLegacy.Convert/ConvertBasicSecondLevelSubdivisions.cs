@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -8,63 +9,24 @@ namespace PoundPupLegacy.Convert
 {
     internal partial class Program
     {
-        private static int GetSubdivisionId(string code, NpgsqlConnection connection)
+
+        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(NpgsqlConnection connection)
         {
-            var sql = $"""
-            SELECT id
-            FROM public.iso_coded_subdivision 
-            WHERE iso_3166_2_code = '{code}' 
-            """;
-
-            using var readCommand = connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-
-            var reader = readCommand.ExecuteReader();
-            reader.Read();
-            var id = reader.GetInt32(0);
-            reader.Close();
-            return id;
-
-        }
-
-        private static int GetIntermediateLevelSubdivisionId(int countryId, string name, NpgsqlConnection connection)
-        {
-            try
-            {
-                var sql = $"""
-                SELECT id
-                FROM public.subdivision 
-                WHERE name = '{name}' 
-                AND country_id = {countryId}
-                """;
-
-                using var readCommand = connection.CreateCommand();
-                readCommand.CommandType = CommandType.Text;
-                readCommand.CommandTimeout = 300;
-                readCommand.CommandText = sql;
-
-                var reader = readCommand.ExecuteReader();
-                reader.Read();
-                var id = reader.GetInt32(0);
-                reader.Close();
-                return id;
-            }
-            catch (Exception)
-            {
-                Console.WriteLine($"Cannot find subdivision with name {name} and counrtyId {countryId}");
-                throw;
-            }
-
-        }
-        private static IEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(NpgsqlConnection connection)
-        {
-            foreach (string line in System.IO.File.ReadLines(@"..\..\..\BasicSecondLevelSubdivisionsInInformalPrimarySubdivision.csv").Skip(1))
+            await using var termReader = await TermReaderByNameableId.CreateAsync(connection);
+            await using var subdivisionReader = await SubdivisionIdReaderByName.CreateAsync(connection);
+            await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\BasicSecondLevelSubdivisionsInInformalPrimarySubdivision.csv").Skip(1))
             {
                 var parts = line.Split(new char[] { ';' });
                 var id = int.Parse(parts[0]);
+                if (id == 0)
+                {
+                    NodeId++;
+                    id = NodeId;
+                }
                 var title = parts[8];
+                var countryId = int.Parse(parts[7]);
+                var subdivisionId = await subdivisionReader.ReadAsync(countryId, parts[11]);
+                var topicName = (await termReader.ReadAsync(TOPICS, subdivisionId)).Name;
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = id,
@@ -73,27 +35,44 @@ namespace PoundPupLegacy.Convert
                     NodeTypeId = int.Parse(parts[4]),
                     NodeStatusId = int.Parse(parts[5]),
                     AccessRoleId = int.Parse(parts[6]),
-                    CountryId = int.Parse(parts[7]),
+                    CountryId = countryId,
                     Title = title,
                     Name = parts[9],
                     Description = "",
-                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
+                    VocabularyNames = new List<VocabularyName>
+                    {
+                        new VocabularyName
+                        {
+                            VocabularyId = TOPICS,
+                            Name = title,
+                            ParentNames = new List<string> { topicName },
+                        }
+                    },
                     ISO3166_2_Code = parts[10],
-                    IntermediateLevelSubdivisionId = GetIntermediateLevelSubdivisionId(int.Parse(parts[7]), parts[11], connection),
+                    IntermediateLevelSubdivisionId = subdivisionId,
                     FileIdFlag = null,
                     FileIdTileImage = null,
                 };
             }
         }
 
-        private static IEnumerable<BasicSecondLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(NpgsqlConnection connection)
+        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionCsv(NpgsqlConnection connection)
         {
-            foreach (string line in System.IO.File.ReadLines(@"..\..\..\BasicSecondLevelSubdivisions.csv").Skip(1))
+            await using var termReader = await TermReaderByNameableId.CreateAsync(connection);
+            await using var subdivisionReader = await SubdivisionIdReaderByIso3166Code.CreateAsync(connection);
+            await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\BasicSecondLevelSubdivisions.csv").Skip(1))
             {
 
                 var parts = line.Split(new char[] { ';' });
                 var id = int.Parse(parts[0]);
+                if (id == 0)
+                {
+                    NodeId++;
+                    id = NodeId;
+                }
                 var title = parts[8];
+                var subdivisionId = await subdivisionReader.ReadAsync(parts[11]);
+                var topicName = (await termReader.ReadAsync(TOPICS, subdivisionId)).Name;
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = id,
@@ -106,9 +85,17 @@ namespace PoundPupLegacy.Convert
                     Title = title,
                     Name = parts[9],
                     Description = "",
-                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
+                    VocabularyNames = new List<VocabularyName>
+                    {
+                        new VocabularyName
+                        {
+                            VocabularyId = TOPICS,
+                            Name = title,
+                            ParentNames = new List<string> { topicName },
+                        }
+                    },
                     ISO3166_2_Code = parts[10],
-                    IntermediateLevelSubdivisionId = GetSubdivisionId(parts[11], connection),
+                    IntermediateLevelSubdivisionId = subdivisionId,
                     FileIdFlag = null,
                     FileIdTileImage = null,
                 };
@@ -116,41 +103,33 @@ namespace PoundPupLegacy.Convert
         }
         private static async Task MigrateBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            var subdivisions1 = ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(connection).ToList();
-            foreach (var subdivision in subdivisions1)
+            await using var tx = await connection.BeginTransactionAsync();
+            try
             {
-                if (subdivision.Id == 0)
-                {
-                    NodeId++;
-                    subdivision.Id = NodeId;
-                }
+                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(connection), connection);
+                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionCsv(connection), connection);
+                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(mysqlconnection), connection);
+                await tx.CommitAsync();
             }
-            var subdivisions2 = ReadFormalIntermediateLevelSubdivisionCsv(connection).ToList();
-            foreach (var subdivision in subdivisions2)
+            catch (Exception)
             {
-                if (subdivision.Id == 0)
-                {
-                    NodeId++;
-                    subdivision.Id = NodeId;
-                }
+                await tx.RollbackAsync();
+                throw;
             }
-            await BasicSecondLevelSubdivisionCreator.CreateAsync(subdivisions1.ToAsyncEnumerable(), connection);
-            await BasicSecondLevelSubdivisionCreator.CreateAsync(subdivisions2.ToAsyncEnumerable(), connection);
-            await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(mysqlconnection), connection);
+
         }
         private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection)
         {
-            var continentIds = new List<int> { 3806, 3810, 3811, 3816, 3822, 3823 };
-
             var sql = $"""
                 SELECT
                     n.nid id,
-                    n.uid user_id,
+                    n.uid access_role_id,
                     n.title,
-                    n.`status`,
-                    FROM_UNIXTIME(n.created) created, 
-                    FROM_UNIXTIME(n.changed) `changed`,
+                    n.`status` node_status_id,
+                    FROM_UNIXTIME(n.created) created_date_time, 
+                    FROM_UNIXTIME(n.changed) changed_date_time,
                     n2.nid intermediate_level_subdivision_id,
+                    n2.title subdivision_name,
                     3805 country_id,
                     CONCAT('US-', s.field_statecode_value) 
                     iso_3166_2_code,
@@ -174,16 +153,26 @@ namespace PoundPupLegacy.Convert
             while (await reader.ReadAsync())
             {
                 var id = reader.GetInt32("id");
-                var title = $"{reader.GetString("name")} (state of the USA)";
+                var title = $"{reader.GetString("title").Replace(" (state)", "")} (state of the USA)";
+                var subdivisioName = $"{reader.GetString("subdivision_name")} (region of the USA)";
+                var vocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = title,
+                        ParentNames = new List<string>{ subdivisioName },
+                    }
+                };
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
-                    AccessRoleId = reader.GetInt32("user_id"),
-                    CreatedDateTime = reader.GetDateTime("created"),
-                    ChangedDateTime = reader.GetDateTime("changed"),
+                    AccessRoleId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = title,
-                    Name = reader.GetString("name"),
-                    NodeStatusId = reader.GetInt32("status"),
+                    Name = reader.GetString("title"),
+                    NodeStatusId = reader.GetInt32("node_status_id"),
                     NodeTypeId = 19,
                     Description = "",
                     VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),

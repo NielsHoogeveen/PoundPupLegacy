@@ -10,7 +10,17 @@ namespace PoundPupLegacy.Convert
     {
         private static async Task MigrateBoundCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            await BoundCountryCreator.CreateAsync(ReadBoundCountries(mysqlconnection), connection);
+            await using var tx = await connection.BeginTransactionAsync();
+            try
+            {
+                await BoundCountryCreator.CreateAsync(ReadBoundCountries(mysqlconnection), connection);
+                await tx.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
         }
 
         private static async IAsyncEnumerable<BoundCountry> ReadBoundCountries(MySqlConnection mysqlconnection)
@@ -18,12 +28,13 @@ namespace PoundPupLegacy.Convert
             var sql = $"""
                 SELECT
                     n.nid id,
-                    n.uid user_id,
+                    n.uid access_role_id,
                     n.title,
-                    n.`status`,
-                    FROM_UNIXTIME(n.created) created, 
-                    FROM_UNIXTIME(n.changed) `changed`,
-                    n2.nid binding_country_id
+                    n.`status` node_status_id,
+                    FROM_UNIXTIME(n.created) created_date_time, 
+                    FROM_UNIXTIME(n.changed) changed_date_time,
+                    n2.nid binding_country_id,
+                    n2.title binding_country_name
                 FROM node n 
                 JOIN content_type_country_type cou ON cou.nid = n.nid
                 JOIN category_hierarchy ch ON ch.cid = n.nid
@@ -43,17 +54,28 @@ namespace PoundPupLegacy.Convert
             {
                 var id = reader.GetInt32("id");
                 var name = reader.GetString("title");
+                var bindingCountryName = reader.GetString("binding_country_name");
+                var vocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = name,
+                        ParentNames = new List<string>{ bindingCountryName },
+                    }
+                };
+
                 yield return new BoundCountry
                 {
                     Id = id,
-                    AccessRoleId = reader.GetInt32("user_id"),
-                    CreatedDateTime = reader.GetDateTime("created"),
-                    ChangedDateTime = reader.GetDateTime("changed"),
+                    AccessRoleId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
-                    NodeStatusId = reader.GetInt32("status"),
+                    NodeStatusId = reader.GetInt32("node_status_id"),
                     NodeTypeId = 14,
                     Description = "",
-                    VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
+                    VocabularyNames = vocabularyNames,
                     BindingCountryId = reader.GetInt32("binding_country_id"),
                     Name = name,
                     ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),

@@ -10,10 +10,11 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var caseWriter = await CaseWriter.CreateAsync(connection);
         await using var coercedAdoptionCaseWriter = await CoercedAdoptionCaseWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         await foreach (var coercedAdoptionCase in coercedAdoptionCases)
@@ -21,6 +22,7 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
             await nodeWriter.WriteAsync(coercedAdoptionCase);
             await documentableWriter.WriteAsync(coercedAdoptionCase);
             await locatableWriter.WriteAsync(coercedAdoptionCase);
+            await nameableWriter.WriteAsync(coercedAdoptionCase);
             await caseWriter.WriteAsync(coercedAdoptionCase);
             await coercedAdoptionCaseWriter.WriteAsync(coercedAdoptionCase);
             await EntityCreator.WriteTerms(coercedAdoptionCase, termWriter, termReader, termHierarchyWriter);

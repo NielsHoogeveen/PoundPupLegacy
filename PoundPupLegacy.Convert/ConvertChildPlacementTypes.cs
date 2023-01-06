@@ -11,7 +11,17 @@ namespace PoundPupLegacy.Convert
 
         private static async Task MigrateChildPlacementTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            await ChildPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(mysqlconnection), connection);
+            await using var tx = await connection.BeginTransactionAsync();
+            try
+            {
+                await ChildPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(mysqlconnection), connection);
+                await tx.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
         }
 
         private static async IAsyncEnumerable<ChildPlacementType> ReadChildPlacementTypes(MySqlConnection mysqlconnection)

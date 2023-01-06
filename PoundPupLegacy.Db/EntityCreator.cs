@@ -10,7 +10,7 @@ namespace PoundPupLegacy.Db
 
     internal static class EntityCreator
     {
-        internal static async Task WriteTerms(Nameable nameable, DatabaseWriter<Term> termWriter, TermReader termReader, DatabaseWriter<TermHierarchy> termHierarchyWriter)
+        internal static async Task WriteTerms(Nameable nameable, DatabaseWriter<Term> termWriter, TermReaderByName termReader, DatabaseWriter<TermHierarchy> termHierarchyWriter)
         {
             foreach (var vocabularyName in nameable.VocabularyNames)
             {

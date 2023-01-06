@@ -6,11 +6,13 @@ public class DiscussionCreator : IEntityCreator<Discussion>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var simpleTextNodeWriter = await SimpleTextNodeWriter.CreateAsync(connection);
         await using var blogPostWriter = await DiscussionWriter.CreateAsync(connection);
 
         await foreach (var blogPost in blogPosts)
         {
             await nodeWriter.WriteAsync(blogPost);
+            await simpleTextNodeWriter.WriteAsync(blogPost);
             await blogPostWriter.WriteAsync(blogPost);
         }
     }

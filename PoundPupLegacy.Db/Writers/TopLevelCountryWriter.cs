@@ -39,7 +39,7 @@ internal class TopLevelCountryWriter : DatabaseWriter<TopLevelCountry>, IDatabas
             throw new NullReferenceException();
         WriteValue(country.Id, ID);
         WriteValue(country.ISO3166_1_Code, ISO_3166_1_CODE);
-        WriteValue(country.GlobalRegionId, GLOBAL_REGION_ID);
+        WriteValue(country.SecondLevelRegionId, GLOBAL_REGION_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -11,7 +11,17 @@ internal partial class Program
 
     private static async Task MigrateFiles(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await FileCreator.CreateAsync(ReadFiles(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await FileCreator.CreateAsync(ReadFiles(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
     }
     private static async IAsyncEnumerable<Model.File> ReadFiles(MySqlConnection mysqlconnection)
     {

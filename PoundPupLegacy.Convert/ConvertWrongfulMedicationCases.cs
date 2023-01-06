@@ -12,7 +12,18 @@ internal partial class Program
 
     private static async Task MigrateWrongfulMedicationCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await WrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await WrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
+        
     }
     private static async IAsyncEnumerable<WrongfulMedicationCase> ReadWrongfulMedicationCases(MySqlConnection mysqlconnection)
     {
@@ -26,13 +37,10 @@ internal partial class Program
                      FROM_UNIXTIME(n.created) created, 
                      FROM_UNIXTIME(n.changed) `changed`,
                      33 node_type_id,
-                     cc.nid IS NOT null is_topic,
                      field_long_description_1_value description,
                      field_report_date_0_value `date`
                 FROM node n
                 JOIN content_type_wrongful_medication_case c ON c.nid = n.nid AND c.vid = n.vid
-                LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid 
-                LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -55,7 +63,7 @@ internal partial class Program
                 Title = reader.GetString("title"),
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
+                VocabularyNames = new List<VocabularyName>(),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,

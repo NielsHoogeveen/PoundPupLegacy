@@ -11,7 +11,17 @@ namespace PoundPupLegacy.Convert
 
         private static async Task MigrateDenominations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            await DenominationCreator.CreateAsync(ReadDenominations(mysqlconnection), connection);
+            await using var tx = await connection.BeginTransactionAsync();
+            try
+            {
+                await DenominationCreator.CreateAsync(ReadDenominations(mysqlconnection), connection);
+                await tx.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
         }
         private static async IAsyncEnumerable<Denomination> ReadDenominations(MySqlConnection mysqlconnection)
         {

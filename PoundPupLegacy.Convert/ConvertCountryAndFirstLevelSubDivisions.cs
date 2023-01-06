@@ -3,16 +3,29 @@ using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Numerics;
+using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert
 {
     internal partial class Program
     {
 
-        private static async Task MigrateBasicCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+        private static async Task MigrateCountryAndFirstLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(CountryAndFirstAndBottomLevelSubdivisions.ToAsyncEnumerable(), connection);
-            await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndIntermediateLevelSubdivisions(mysqlconnection), connection);
+            await using var tx = await connection.BeginTransactionAsync();
+            try
+            {
+                await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(CountryAndFirstAndBottomLevelSubdivisions.ToAsyncEnumerable(), connection);
+                await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndIntermediateLevelSubdivisions(mysqlconnection), connection);
+                await tx.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
+
         }
         private static string GetISO3166Code2ForCountry(int id)
         {
@@ -82,8 +95,16 @@ namespace PoundPupLegacy.Convert
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
                 Description = "",
-                VocabularyNames = GetVocabularyNames(TOPICS,ALAND, "Åland", new Dictionary<int, List<VocabularyName>>()),
-                GlobalRegionId = 3813,
+                VocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "Åland",
+                        ParentNames = new List<string>{ "Northern Europe" },
+                    }
+                },
+                SecondLevelRegionId = 3813,
                 CountryId = 3985,
                 ISO3166_1_Code = "AX",
                 ISO3166_2_Code = "FI-01",
@@ -108,8 +129,16 @@ namespace PoundPupLegacy.Convert
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
                 Description = "",
-                VocabularyNames = GetVocabularyNames(TOPICS,CURACAO, "Curaçao", new Dictionary<int, List<VocabularyName>>()),
-                GlobalRegionId = 3809,
+                VocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "Curaçao",
+                        ParentNames = new List<string>{ "Caribbean" },
+                    }
+                },
+                SecondLevelRegionId = 3809,
                 CountryId = 4023,
                 ISO3166_1_Code = "CW",
                 ISO3166_2_Code = "NL-CW",
@@ -133,8 +162,16 @@ namespace PoundPupLegacy.Convert
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
                 Description = "",
-                VocabularyNames = GetVocabularyNames(TOPICS,SINT_MAARTEN, "Sint Maarten", new Dictionary<int, List<VocabularyName>>()),
-                GlobalRegionId = 3809,
+                VocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "Sint Maarten",
+                        ParentNames = new List<string>{ "Caribbean" },
+                    }
+                },
+                SecondLevelRegionId = 3809,
                 CountryId = 4023,
                 ISO3166_1_Code = "SX",
                 ISO3166_2_Code = "NL-SX",
@@ -159,8 +196,16 @@ namespace PoundPupLegacy.Convert
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
                 Description = "",
-                VocabularyNames = GetVocabularyNames(TOPICS,UNITED_STATES_MINOR_OUTLYING_ISLANDS, "United States Minor Outlying Islands", new Dictionary<int, List<VocabularyName>>()),
-                GlobalRegionId = 3822,
+                VocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "United States Minor Outlying Islands",
+                        ParentNames = new List<string>{ "Oceania" },
+                    }
+                },
+                SecondLevelRegionId = 3822,
                 CountryId = 3805,
                 ISO3166_1_Code = "UM",
                 ISO3166_2_Code = "US-UM",
@@ -183,12 +228,13 @@ namespace PoundPupLegacy.Convert
             var sql = $"""
             SELECT
                 n.nid id,
-                n.uid user_id,
+                n.uid access_role_id,
                 n.title,
-                n.`status`,
-                FROM_UNIXTIME(n.created) created, 
-                FROM_UNIXTIME(n.changed) `changed`,
-                n2.nid continental_region_id,
+                n.`status` node_status_id,
+                FROM_UNIXTIME(n.created) created_date_time, 
+                FROM_UNIXTIME(n.changed) changed_date_time,
+                n2.nid second_level_region_id,
+                n2.title second_level_region_name,
                 upper(cou.field_country_code_value) iso_3166_code
                 FROM node n 
                 JOIN content_type_country_type cou ON cou.nid = n.nid
@@ -221,19 +267,31 @@ namespace PoundPupLegacy.Convert
                 var name = reader.GetInt32("id") == 3879 ? "Réunion" :
                            reader.GetString("title");
 
+                var regionName = reader.GetString("second_level_region_name");
+                var vocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = name,
+                        ParentNames = new List<string>{ regionName },
+                    }
+                };
+
+
                 yield return new CountryAndFirstAndBottomLevelSubdivision
                 {
                     Id = id,
-                    AccessRoleId = reader.GetInt32("user_id"),
-                    CreatedDateTime = reader.GetDateTime("created"),
-                    ChangedDateTime = reader.GetDateTime("changed"),
+                    AccessRoleId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
                     Name = name,
-                    NodeStatusId = reader.GetInt32("status"),
+                    NodeStatusId = reader.GetInt32("node_status_id"),
                     NodeTypeId = 15,
                     Description = "",
-                    VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
-                    GlobalRegionId = reader.GetInt32("continental_region_id"),
+                    VocabularyNames = vocabularyNames,
+                    SecondLevelRegionId = reader.GetInt32("second_level_region_id"),
                     ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                                   reader.GetInt32("id") == 4010 ? "RS" :
                                   reader.GetInt32("id") == 4014 ? "XK" :

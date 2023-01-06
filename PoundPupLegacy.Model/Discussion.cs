@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Discussion : Node
+public record Discussion : SimpleTextNode
 {
     public required int? Id { get; set; }
     public required int AccessRoleId { get; init; }

@@ -11,7 +11,17 @@ namespace PoundPupLegacy.Convert
 
         private static async Task MigrateInterOrganizationalRelationTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            await InterOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(mysqlconnection), connection);
+            await using var tx = await connection.BeginTransactionAsync();
+            try
+            {
+                await InterOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(mysqlconnection), connection);
+                await tx.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
         }
         private static async IAsyncEnumerable<InterOrganizationalRelationType> ReadInterOrganizationalRelationTypes(MySqlConnection mysqlconnection)
         {

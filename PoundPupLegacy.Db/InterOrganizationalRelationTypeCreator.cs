@@ -11,7 +11,7 @@ public class InterOrganizationalRelationTypeCreator : IEntityCreator<InterOrgani
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var interOrganizationalRelationTypeWriter = await InterOrganizationalRelationTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         await foreach (var interOrganizationalRelationType in interOrganizationalRelationTypes)

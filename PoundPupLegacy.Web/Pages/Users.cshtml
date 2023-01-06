@@ -1,0 +1,18 @@
+﻿@page
+@model PoundPupLegacy.Web.Pages.UsersModel
+@if(Model.Users is not null)
+{
+    <div>
+        @foreach(var user in Model.Users)
+        {
+            <div>
+                @user.Name
+            </div>
+            
+        }
+    </div>
+}
+
+@{
+    Layout = "_MainLayout";
+}

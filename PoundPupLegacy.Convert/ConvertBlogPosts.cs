@@ -10,9 +10,20 @@ internal partial class Program
 {
     private static async Task MigrateSimpleTextPosts(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await BlogPostCreator.CreateAsync(ReadBlogPosts(mysqlconnection), connection);
-        await ArticleCreator.CreateAsync(ReadArticles(mysqlconnection), connection);
-        await DiscussionCreator.CreateAsync(ReadDiscussions(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await BlogPostCreator.CreateAsync(ReadBlogPosts(mysqlconnection), connection);
+            await ArticleCreator.CreateAsync(ReadArticles(mysqlconnection), connection);
+            await DiscussionCreator.CreateAsync(ReadDiscussions(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
+
     }
     private static async IAsyncEnumerable<BlogPost> ReadBlogPosts(MySqlConnection mysqlconnection)
     {

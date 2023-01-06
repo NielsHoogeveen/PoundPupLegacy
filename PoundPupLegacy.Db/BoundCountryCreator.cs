@@ -17,7 +17,7 @@ public class BoundCountryCreator : IEntityCreator<BoundCountry>
         await using var isoCodedSubdivisionWriter = await ISOCodedSubdivisionWriter.CreateAsync(connection);
         await using var boundCountryWriter = await BoundCountryWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
 

@@ -54,8 +54,19 @@ internal partial class Program
 
     private static async Task MigrateAdoptionExports(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await AdoptionExportRelationCreator.CreateAsync(ReadAdoptionExportRelations(mysqlconnection), connection);
-        await AdoptionExportYearCreator.CreateAsync(ReadAdoptionExportYears(mysqlconnection, connection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await AdoptionExportRelationCreator.CreateAsync(ReadAdoptionExportRelations(mysqlconnection), connection);
+            await AdoptionExportYearCreator.CreateAsync(ReadAdoptionExportYears(mysqlconnection, connection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
+
     }
     private static async IAsyncEnumerable<AdoptionExportRelation> ReadAdoptionExportRelations(MySqlConnection mysqlconnection)
     {

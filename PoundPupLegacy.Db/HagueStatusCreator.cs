@@ -11,7 +11,7 @@ public class HagueStatusCreator : IEntityCreator<HagueStatus>
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var hagueStatusWriter = await HagueStatusWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         await foreach (var hagueStatus in hagueStatuss)

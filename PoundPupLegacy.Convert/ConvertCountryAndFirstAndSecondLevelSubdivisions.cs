@@ -22,8 +22,16 @@ namespace PoundPupLegacy.Convert
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
                 Description = "",
-                VocabularyNames = GetVocabularyNames(TOPICS,SAINT_BARTH, "Saint Barthélemy", new Dictionary<int, List<VocabularyName>>()),
-                GlobalRegionId = 3809,
+                VocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "Saint Barthélemy",
+                        ParentNames = new List<string>{ "Caribbean" },
+                    }
+                },
+                SecondLevelRegionId = 3809,
                 CountryId = 4018,
                 ISO3166_1_Code = "BL",
                 ISO3166_2_Code = "FR-BL",
@@ -49,8 +57,16 @@ namespace PoundPupLegacy.Convert
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
                 Description = "",
-                VocabularyNames = GetVocabularyNames(TOPICS,SAINT_MARTIN, "Saint Martin", new Dictionary<int, List<VocabularyName>>()),
-                GlobalRegionId = 3809,
+                VocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "Saint Martin",
+                        ParentNames = new List<string>{ "Caribbean" },
+                    }
+                },
+                SecondLevelRegionId = 3809,
                 CountryId = 4018,
                 ISO3166_1_Code = "MF",
                 ISO3166_2_Code = "FR-MF",
@@ -75,8 +91,16 @@ namespace PoundPupLegacy.Convert
                 ChangedDateTime = DateTime.Now,
                 AccessRoleId = 1,
                 Description = "",
-                VocabularyNames = GetVocabularyNames(TOPICS,FRENCH_SOUTHERN_TERRITORIES, "French Southern Territories", new Dictionary<int, List<VocabularyName>>()),
-                GlobalRegionId = 3828,
+                VocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "French Southern Territories",
+                        ParentNames = new List<string>{ "Southern Africa" },
+                    }
+                },
+                SecondLevelRegionId = 3828,
                 CountryId = 4018,
                 ISO3166_1_Code = "TF",
                 ISO3166_2_Code = "FR-TF",
@@ -95,13 +119,24 @@ namespace PoundPupLegacy.Convert
 
         private static async Task MigrateCountryAndFirstAndSecondLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            foreach (var country in RegionSubdivisionCountries)
+
+            await using var tx = await connection.BeginTransactionAsync();
+            try
             {
-                NodeId++;
-                country.Id = NodeId;
+                foreach (var country in RegionSubdivisionCountries)
+                {
+                    NodeId++;
+                    country.Id = NodeId;
+                }
+                await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(RegionSubdivisionCountries.ToAsyncEnumerable(), connection);
+                await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(mysqlconnection), connection);
+                await tx.CommitAsync();
             }
-            await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(RegionSubdivisionCountries.ToAsyncEnumerable(), connection);
-            await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(mysqlconnection), connection);
+            catch (Exception)
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
         }
         private static async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(MySqlConnection mysqlconnection)
         {
@@ -110,12 +145,13 @@ namespace PoundPupLegacy.Convert
             var sql = $"""
                 SELECT
                     n.nid id,
-                    n.uid user_id,
+                    n.uid access_role_id,
                     n.title,
-                    n.`status`,
-                    FROM_UNIXTIME(n.created) created, 
-                    FROM_UNIXTIME(n.changed) `changed`,
-                    n2.nid continental_region_id,
+                    n.`status` node_status_id,
+                    FROM_UNIXTIME(n.created) created_date_time, 
+                    FROM_UNIXTIME(n.changed) changed_date_time,
+                    n2.nid second_level_region_id,
+                    n2.title second_level_region_name,
                     upper(cou.field_country_code_value) iso_3166_code
                     FROM node n 
                 JOIN content_type_country_type cou ON cou.nid = n.nid
@@ -148,19 +184,31 @@ namespace PoundPupLegacy.Convert
                 var id = reader.GetInt32("id");
                 var name = reader.GetInt32("id") == 3879 ? "Réunion" :
                             reader.GetString("title");
+                var regionName = reader.GetString("second_level_region_name");
+                var vocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = name,
+                        ParentNames = new List<string>{ regionName },
+                    }
+                };
+
+
                 yield return new CountryAndFirstAndSecondLevelSubdivision
                 {
                     Id = reader.GetInt32("id"),
-                    AccessRoleId = reader.GetInt32("user_id"),
-                    CreatedDateTime = reader.GetDateTime("created"),
-                    ChangedDateTime = reader.GetDateTime("changed"),
+                    AccessRoleId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
                     Name = name,
-                    NodeStatusId = reader.GetInt32("status"),
+                    NodeStatusId = reader.GetInt32("node_status_id"),
                     NodeTypeId = 16,
                     Description = "",
-                    VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
-                    GlobalRegionId = reader.GetInt32("continental_region_id"),
+                    VocabularyNames = vocabularyNames,
+                    SecondLevelRegionId = reader.GetInt32("second_level_region_id"),
                     ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                                   reader.GetInt32("id") == 4010 ? "RS" :
                                   reader.GetInt32("id") == 4014 ? "XK" :

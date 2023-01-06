@@ -11,7 +11,17 @@ internal partial class Program
 
     private static async Task MigrateHagueStatuses(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await HagueStatusCreator.CreateAsync(ReadHagueStatuses(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await HagueStatusCreator.CreateAsync(ReadHagueStatuses(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
     }
 
     private static async IAsyncEnumerable<HagueStatus> ReadHagueStatuses(MySqlConnection mysqlconnection)

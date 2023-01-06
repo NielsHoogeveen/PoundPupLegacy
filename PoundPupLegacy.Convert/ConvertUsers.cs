@@ -4,60 +4,63 @@ using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
-namespace PoundPupLegacy.Convert
+namespace PoundPupLegacy.Convert;
+
+internal partial class Program
 {
-    internal partial class Program
+    private static IEnumerable<UserGroup> GetUserGroups()
     {
-        private static IEnumerable<UserGroup> GetUserGroups()
+        return new List<UserGroup>
         {
-            return new List<UserGroup>
+            new UserGroup
             {
-                new UserGroup
-                {
-                    Id = 4,
-                    Name = "Member"
-                },
-                new UserGroup
-                {
-                    Id = 6,
-                    Name = "Administrators"
-                },
-                new UserGroup
-                {
-                    Id = 72,
-                    Name = "Staff"
-                },
-            };
-        }
-        private static IEnumerable<UserGroupUser> GetUserGroupUsers()
+                Id = 4,
+                Name = "Member"
+            },
+            new UserGroup
+            {
+                Id = 6,
+                Name = "Administrators"
+            },
+            new UserGroup
+            {
+                Id = 72,
+                Name = "Staff"
+            },
+        };
+    }
+    private static IEnumerable<UserGroupUser> GetUserGroupUsers()
+    {
+        return new List<UserGroupUser>
         {
-            return new List<UserGroupUser>
+            new UserGroupUser
             {
-                new UserGroupUser
-                {
-                    UserGroupId = 6,
-                    UserId = 1
-                },
-                new UserGroupUser
-                {
-                    UserGroupId = 6,
-                    UserId = 3
-                },
-                new UserGroupUser
-                {
-                    UserGroupId = 72,
-                    UserId = 2
-                },
-                new UserGroupUser
-                {
-                    UserGroupId = 72,
-                    UserId = 3
-                },
-            };
-        }
+                UserGroupId = 6,
+                UserId = 1
+            },
+            new UserGroupUser
+            {
+                UserGroupId = 6,
+                UserId = 3
+            },
+            new UserGroupUser
+            {
+                UserGroupId = 72,
+                UserId = 2
+            },
+            new UserGroupUser
+            {
+                UserGroupId = 72,
+                UserId = 3
+            },
+        };
+    }
 
 
-        private static async Task MigrateUsers(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateUsers(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    {
+        await using var tx = await connection.BeginTransactionAsync();
+        try
         {
             var users = ReadUsers(mysqlconnection).ToList();
             var memberList = users.Select(x => new UserGroupUser { UserGroupId = 4, UserId = (int)x.Id! });
@@ -66,14 +69,22 @@ namespace PoundPupLegacy.Convert
             await UserGroupCreator.CreateAsync(GetUserGroups().ToAsyncEnumerable(), connection);
             await UserGroupUserCreator.CreateAsync(GetUserGroupUsers().ToAsyncEnumerable(), connection);
             await UserGroupUserCreator.CreateAsync(memberList.ToAsyncEnumerable(), connection);
+            await tx.CommitAsync();
         }
-        private static IEnumerable<User> ReadUsers(MySqlConnection mysqlconnection)
+        catch (Exception)
         {
+            await tx.RollbackAsync();
+            throw;
+        }
 
-            using var readCommand = mysqlconnection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = """
+    }
+    private static IEnumerable<User> ReadUsers(MySqlConnection mysqlconnection)
+    {
+
+        using var readCommand = mysqlconnection.CreateCommand();
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = """
                 SELECT 
                     DISTINCT u.uid id, 
                     u.name ,  
@@ -117,28 +128,27 @@ namespace PoundPupLegacy.Convert
                 ) )
                 """;
 
-            var reader = readCommand.ExecuteReader();
+        var reader = readCommand.ExecuteReader();
 
-            while (reader.Read())
+        while (reader.Read())
+        {
+            var aboutMe = reader.IsDBNull("about_me") ? null : reader.GetString("about_me") == "" ? null : reader.GetString("about_me");
+            var animalWithing = reader.IsDBNull("animal_within") ? null : reader.GetString("animal_within") == "" ? null : reader.GetString("animal_within");
+            var relationToChildPlacement = reader.IsDBNull("relation_to_child_placement") ? "Other" : reader.GetString("relation_to_child_placement");
+            var avatar = reader.IsDBNull("avatar") ? null : reader.GetString("avatar") == "" ? null : reader.GetString("avatar");
+            yield return new User
             {
-                var aboutMe = reader.IsDBNull("about_me") ? null : reader.GetString("about_me") == "" ? null : reader.GetString("about_me");
-                var animalWithing = reader.IsDBNull("animal_within") ? null : reader.GetString("animal_within") == "" ? null : reader.GetString("animal_within");
-                var relationToChildPlacement = reader.IsDBNull("relation_to_child_placement") ? "Other" : reader.GetString("relation_to_child_placement");
-                var avatar = reader.IsDBNull("avatar") ? null : reader.GetString("avatar") == "" ? null : reader.GetString("avatar");
-                yield return new User
-                {
-                    Id = reader.GetInt32("id"),
-                    Name = reader.GetString("name"),
-                    CreatedDateTime = reader.GetDateTime("created"),
-                    AboutMe = aboutMe == "(NULL)" ? null : aboutMe,
-                    AnimalWithin = animalWithing == "(NULL)" ? "" : animalWithing,
-                    RelationToChildPlacement = relationToChildPlacement == "(NULL)" ? "Other" : relationToChildPlacement,
-                    Email = reader.GetString("email"),
-                    Password = reader.GetString("password"),
-                    Avatar = avatar
-                };
-            }
-            reader.Close();
+                Id = reader.GetInt32("id"),
+                Name = reader.GetString("name"),
+                CreatedDateTime = reader.GetDateTime("created"),
+                AboutMe = aboutMe == "(NULL)" ? null : aboutMe,
+                AnimalWithin = animalWithing == "(NULL)" ? "" : animalWithing,
+                RelationToChildPlacement = relationToChildPlacement == "(NULL)" ? "Other" : relationToChildPlacement,
+                Email = reader.GetString("email"),
+                Password = reader.GetString("password"),
+                Avatar = avatar
+            };
         }
+        reader.Close();
     }
 }

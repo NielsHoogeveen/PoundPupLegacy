@@ -1,15 +1,15 @@
 ﻿namespace PoundPupLegacy.Db.Readers
 {
-    internal interface IDatabaseReader : IAsyncDisposable
+    public interface IDatabaseReader : IAsyncDisposable
     {
 
     }
-    internal interface IDatabaseReader<T> : IDatabaseReader
+    public interface IDatabaseReader<T> : IDatabaseReader
         where T : IDatabaseReader<T>
     {
         public abstract static Task<T> CreateAsync(NpgsqlConnection connection);
     }
-    internal class DatabaseReader<T> : IDatabaseReader
+    public class DatabaseReader<T> : IDatabaseReader
     {
         protected NpgsqlCommand _command;
         internal DatabaseReader(NpgsqlCommand command)

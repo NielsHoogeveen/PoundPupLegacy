@@ -13,7 +13,7 @@ public record BindingCountry : Node, TopLevelCountry
     public required string Description { get; init; }
     public required int? FileIdTileImage { get; init; }
     public required List<VocabularyName> VocabularyNames { get; init; }
-    public required int GlobalRegionId { get; init; }
+    public required int SecondLevelRegionId { get; init; }
     public required string ISO3166_1_Code { get; init; }
     public required int? FileIdFlag { get; init; }
     public required int HagueStatusId { get; init; }

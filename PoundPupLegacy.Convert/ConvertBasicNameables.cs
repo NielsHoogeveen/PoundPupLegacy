@@ -12,7 +12,17 @@ internal partial class Program
 
     private static async Task MigrateBasicNameables(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await BasicNameableCreator.CreateAsync(ReadBasicNameables(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await BasicNameableCreator.CreateAsync(ReadBasicNameables(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
     }
     private static async IAsyncEnumerable<BasicNameable> ReadBasicNameables(MySqlConnection mysqlconnection)
     {
@@ -36,8 +46,9 @@ internal partial class Program
                 JOIN category c ON c.cid = n.nid AND c.cnid = 4126
                 JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                LEFT JOIN node n2 ON n2.title = n.title AND n2.nid <> n.nid AND n2.`type` IN ('adopt_person','country_type', 'adopt_orgs', 'case')
-                WHERE cc.field_related_page_nid = 0
+                LEFT JOIN node n2 ON n2.title = n.title AND n2.nid <> n.nid AND n2.`type` IN ('adopt_person','country_type', 'adopt_orgs', 'case', 'region_facts')
+                LEFT JOIN node n3 ON n3.nid = cc.field_related_page_nid
+                WHERE  (n3.nid IS NULL OR n3.`type` = 'group')
                 AND n.title NOT IN 
                 (
                    'adoption',
@@ -64,7 +75,13 @@ internal partial class Program
                    'medical abuse',
                    'lawyers',
                    'therapists',
-                   'Christianity'
+                   'Christianity',
+                   'Northern Ireland',
+                   'mega families',
+                   'Mary Landrieu',
+                   'Hilary Clinton',
+                   'Michele Bachmann',
+                   'Kevin and Kody Pribbernow'
                 )
                 AND n.nid NOT IN (
                 	22589

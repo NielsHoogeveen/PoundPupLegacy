@@ -11,7 +11,17 @@ namespace PoundPupLegacy.Convert
 
         private static async Task MigrateInterPersonalRelationTypes(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-            await InterPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(mysqlconnection), connection);
+            await using var tx = await connection.BeginTransactionAsync();
+            try
+            {
+                await InterPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(mysqlconnection), connection);
+                await tx.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await tx.RollbackAsync();
+                throw;
+            }
         }
         private static async IAsyncEnumerable<InterPersonalRelationType> ReadInterPersonalRelationTypes(MySqlConnection mysqlconnection)
         {

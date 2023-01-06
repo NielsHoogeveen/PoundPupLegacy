@@ -22,7 +22,7 @@ public class CountryAndIntermediateLevelSubdivisionCreator : IEntityCreator<Coun
         await using var intermediateLevelSubdivisionWriter = await IntermediateLevelSubdivisionWriter.CreateAsync(connection);
         await using var countryAndIntermediateLevelSubdivisionWriter = await CountryAndIntermediateLevelSubdivisionWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         await foreach (var country in countries)

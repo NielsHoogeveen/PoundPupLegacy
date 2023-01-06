@@ -12,7 +12,18 @@ internal partial class Program
 
     private static async Task MigrateChildTraffickingCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await ChildTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await ChildTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
+       
     }
     private static async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases(MySqlConnection mysqlconnection)
     {
@@ -57,7 +68,7 @@ internal partial class Program
                 Title = name,
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
+                VocabularyNames = new List<VocabularyName>(),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),

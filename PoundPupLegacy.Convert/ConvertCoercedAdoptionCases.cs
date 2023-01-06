@@ -12,7 +12,17 @@ internal partial class Program
 
     private static async Task MigrateCoercedAdoptionCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await CoercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await CoercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
     }
     private static async IAsyncEnumerable<CoercedAdoptionCase> ReadCoercedAdoptionCases(MySqlConnection mysqlconnection)
     {
@@ -55,7 +65,7 @@ internal partial class Program
                 Title = name,
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
+                VocabularyNames = new List<VocabularyName>(),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,

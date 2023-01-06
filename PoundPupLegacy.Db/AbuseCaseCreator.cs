@@ -10,10 +10,11 @@ public class AbuseCaseCreator : IEntityCreator<AbuseCase>
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var caseWriter = await CaseWriter.CreateAsync(connection);
         await using var abuseCaseWriter = await AbuseCaseWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         await foreach (var abuseCase in abuseCases)
@@ -21,6 +22,7 @@ public class AbuseCaseCreator : IEntityCreator<AbuseCase>
             await nodeWriter.WriteAsync(abuseCase);
             await documentableWriter.WriteAsync(abuseCase);
             await locatableWriter.WriteAsync(abuseCase);
+            await nameableWriter.WriteAsync(abuseCase);
             await caseWriter.WriteAsync(abuseCase);
             await abuseCaseWriter.WriteAsync(abuseCase);
             await EntityCreator.WriteTerms(abuseCase, termWriter, termReader, termHierarchyWriter);

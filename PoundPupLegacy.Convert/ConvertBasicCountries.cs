@@ -139,8 +139,16 @@ internal partial class Program
             NodeTypeId = 13,
             Name = "Antigua and Barbuda",
             Description = "",
-            VocabularyNames = new List<VocabularyName>(),
-            GlobalRegionId = 3822,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "Antigua and Barbuda",
+                        ParentNames = new List<string>{ "Caribbean" },
+                    }
+            },
+            SecondLevelRegionId = 3822,
             ISO3166_1_Code = "AG",
             FileIdFlag = null,
             FileIdTileImage = null,
@@ -163,8 +171,16 @@ internal partial class Program
             NodeTypeId = 13,
             Name = "Palestine",
             Description = "",
-            VocabularyNames = new List<VocabularyName>(),
-            GlobalRegionId = 3817,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "Palestine",
+                        ParentNames = new List<string>{ "Western Asia" },
+                    }
+            },
+            SecondLevelRegionId = 3817,
             ISO3166_1_Code = "PS",
             FileIdFlag = null,
             FileIdTileImage = null,
@@ -187,8 +203,16 @@ internal partial class Program
             NodeTypeId = 13,
             Name = "Saint Helena, Ascension and Tristan da Cunha",
             Description = "",
-            VocabularyNames = new List<VocabularyName>(),
-            GlobalRegionId = 3825,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "Saint Helena, Ascension and Tristan da Cunha",
+                        ParentNames = new List<string>{ "Western Africa" },
+                    }
+            },
+            SecondLevelRegionId = 3825,
             ISO3166_1_Code = "SH",
             FileIdFlag = null,
             FileIdTileImage = null,
@@ -212,8 +236,16 @@ internal partial class Program
             NodeTypeId = 13,
             Name = "South Sudan",
             Description = "",
-            VocabularyNames = new List<VocabularyName>(),
-            GlobalRegionId = 3827,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                    {
+                        VocabularyId = TOPICS,
+                        Name = "South Sudan",
+                        ParentNames = new List<string>{ "Eastern Africa" },
+                    }
+            },
+            SecondLevelRegionId = 3827,
             ISO3166_1_Code = "SS",
             FileIdFlag = null,
             FileIdTileImage = null,
@@ -230,82 +262,118 @@ internal partial class Program
 
     private static async Task MigrateBasicCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        var countries = basicCountries.Select(x =>
+        await using var tx = await connection.BeginTransactionAsync();
+        try
         {
-            if (x.Id == 0)
+            var countries = basicCountries.Select(x =>
             {
-                NodeId++;
-                x.Id = NodeId;
-            }
-            return x;
-        });
-        await BasicCountryCreator.CreateAsync(countries.ToAsyncEnumerable(), connection);
-        await BasicCountryCreator.CreateAsync(ReadBasicCountries(mysqlconnection), connection);
+                if (x.Id == 0)
+                {
+                    NodeId++;
+                    x.Id = NodeId;
+                }
+                return x;
+            });
+            await BasicCountryCreator.CreateAsync(countries.ToAsyncEnumerable(), connection);
+            await BasicCountryCreator.CreateAsync(ReadBasicCountries(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
+
     }
     private static async IAsyncEnumerable<BasicCountry> ReadBasicCountries(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
-                SELECT
-                    n.nid id,
-                    n.uid user_id,
-                    n.title,
-                    n.`status`,
-                    FROM_UNIXTIME(n.created) created, 
-                    FROM_UNIXTIME(n.changed) `changed`, 
-                    n2.nid continental_region_id,
-                    upper(cou.field_country_code_value) iso_3166_code,
-                    CASE 
-                		WHEN field_residency_requirement_value = '' THEN NULL
-                		ELSE field_residency_requirement_value
-                    END residency_requirements,
-                    CASE
-                		WHEN field_age_requirements_value = '' THEN NULL
-                		ELSE field_age_requirements_value
-                	END age_requirements,
-                    CASE
-                		WHEN field_marriage_requirements_value = '' THEN NULL
-                		ELSE field_marriage_requirements_value
-                	END marriage_requirements,
-                    CASE
-                		WHEN field_income_requirements_value = '' THEN NULL
-                		ELSE field_income_requirements_value
-                	END income_requirements,
-                    CASE
-                		WHEN field_health_requirements_value = '' THEN NULL
-                		ELSE field_health_requirements_value
-                	END health_requirements,
-                    CASE
-                		WHEN field_other_requirements_value = '' THEN NULL
-                		ELSE field_other_requirements_value
-                	END other_requirements
-                FROM node n 
-                JOIN content_type_country_type cou ON cou.nid = n.nid 
-                JOIN category_hierarchy ch ON ch.cid = n.nid 
-                JOIN node n2 ON n2.nid = ch.parent 
-                WHERE n.`type` = 'country_type' 
-                AND n2.`type` = 'region_facts' 
-                AND n.nid not IN (
-                    3980,
-                    3981,
-                    3935,
-                    3903,
-                    3908,
-                    4044,
-                    4057,
-                    3887,
-                    3879,
-                    4063,
-                    3878,
-                    3891,
-                    4055,
-                    4048,
-                    4053,
-                    3914,
-                    3920,
-                    4000,
-                    3992
-                )
+                    SELECT
+                        n.nid id,
+                        n.uid access_role_id,
+                        n.title,
+                        n.`status` node_status_id,
+                        FROM_UNIXTIME(n.created) created_date_time, 
+                        FROM_UNIXTIME(n.`changed`) changed_date_time, 
+                        n2.nid second_level_region_id,
+                        n2.title second_level_region_name,
+                        case 
+                				when n3.nid IS null then n.title
+                				ELSE n3.topic_name
+                        END topic_name,
+                        case when n3.description IS NULL then ''
+                        ELSE n3.description
+                        END description,
+                        n3.file_id_tile_image,
+                        upper(cou.field_country_code_value) iso_3166_code,
+                        CASE 
+                            WHEN field_residency_requirement_value = '' THEN NULL
+                            ELSE field_residency_requirement_value
+                        END residency_requirements,
+                        CASE
+                            WHEN field_age_requirements_value = '' THEN NULL
+                            ELSE field_age_requirements_value
+                        END age_requirements,
+                        CASE
+                            WHEN field_marriage_requirements_value = '' THEN NULL
+                            ELSE field_marriage_requirements_value
+                        END marriage_requirements,
+                        CASE
+                            WHEN field_income_requirements_value = '' THEN NULL
+                            ELSE field_income_requirements_value
+                        END income_requirements,
+                        CASE
+                            WHEN field_health_requirements_value = '' THEN NULL
+                            ELSE field_health_requirements_value
+                        END health_requirements,
+                        CASE
+                            WHEN field_other_requirements_value = '' THEN NULL
+                            ELSE field_other_requirements_value
+                        END other_requirements
+                    FROM node n 
+                    JOIN content_type_country_type cou ON cou.nid = n.nid 
+                    JOIN category_hierarchy ch ON ch.cid = n.nid 
+                    JOIN node n2 ON n2.nid = ch.parent 
+                    LEFT JOIN (
+                        SELECT
+                        n.nid,
+                        n.title topic_name,
+                        cc.field_related_page_nid,
+                				case 
+                				when cc.field_tile_image_fid = 0 then null
+                				ELSE cc.field_tile_image_fid
+                				END file_id_tile_image,
+                				nr.body description
+                        FROM node n
+                        JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
+                        JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
+                    ) n3 ON n3.field_related_page_nid = n.nid
+                    WHERE n.`type` = 'country_type' 
+                    AND n2.`type` = 'region_facts' 
+                    AND n.nid NOT IN (
+                        3980,
+                        3981,
+                        3935,
+                        3903,
+                        3908,
+                        4044,
+                        4057,
+                        3887,
+                        3879,
+                        4063,
+                        3878,
+                        3891,
+                        4055,
+                        4048,
+                        4053,
+                        3914,
+                        3920,
+                        4000,
+                        3992,
+                        3911
+                    )
+                
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -324,20 +392,31 @@ internal partial class Program
                         reader.GetInt32("id") == 4046 ? "Solomon Islands" :
                         reader.GetInt32("id") == 3884 ? "Eswatini" :
                         reader.GetString("title");
+            var regionName = reader.GetString("second_level_region_name");
+            var topicName = reader.GetString("topic_name");
 
+            var vocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    VocabularyId = TOPICS,
+                    Name = topicName,
+                    ParentNames = new List<string>{ regionName },
+                }
+            };
             var country = new BasicCountry
             {
                 Id = id,
-                AccessRoleId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
+                AccessRoleId = reader.GetInt32("access_role_id"),
+                CreatedDateTime = reader.GetDateTime("created_date_time"),
+                ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                NodeStatusId = reader.GetInt32("status"),
+                NodeStatusId = reader.GetInt32("node_status_id"),
                 NodeTypeId = 13,
                 Name = name,
                 Description = "",
-                VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
-                GlobalRegionId = reader.GetInt32("continental_region_id"),
+                VocabularyNames = vocabularyNames,
+                SecondLevelRegionId = reader.GetInt32("second_level_region_id"),
                 ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                               reader.GetInt32("id") == 4010 ? "RS" :
                               reader.GetInt32("id") == 4014 ? "XK" :

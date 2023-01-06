@@ -8,7 +8,6 @@ namespace PoundPupLegacy.Convert;
 
 internal partial class Program
 {
-
     private static IEnumerable<Vocabulary> GetVocabularies()
     {
         return new List<Vocabulary>
@@ -84,8 +83,18 @@ internal partial class Program
 
     private static async Task MigrateVocabularies(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-        await VocabularyCreator.CreateAsync(GetVocabularies().ToAsyncEnumerable(), connection);
-        await VocabularyCreator.CreateAsync(ReadVocabularies(mysqlconnection), connection);
+        await using var tx = await connection.BeginTransactionAsync();
+        try
+        {
+            await VocabularyCreator.CreateAsync(GetVocabularies().ToAsyncEnumerable(), connection);
+            await VocabularyCreator.CreateAsync(ReadVocabularies(mysqlconnection), connection);
+            await tx.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
     }
     private static async IAsyncEnumerable<Vocabulary> ReadVocabularies(MySqlConnection mysqlconnection)
     {

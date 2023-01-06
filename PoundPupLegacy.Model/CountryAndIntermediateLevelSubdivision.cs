@@ -16,7 +16,7 @@ public record CountryAndIntermediateLevelSubdivision : ISOCodedFirstLevelSubdivi
     public required string ISO3166_1_Code { get; init; }
     public required string ISO3166_2_Code { get; init; }
     public required int CountryId { get; init; }
-    public required int GlobalRegionId { get; init; }
+    public required int SecondLevelRegionId { get; init; }
     public required int? FileIdFlag { get; init; }
     public required int HagueStatusId { get; init; }
     public required string? ResidencyRequirements { get; init; }

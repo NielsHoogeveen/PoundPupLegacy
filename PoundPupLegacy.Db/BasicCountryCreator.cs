@@ -16,7 +16,7 @@ public class BasicCountryCreator : IEntityCreator<BasicCountry>
         await using var topLevelCountryWriter = await TopLevelCountryWriter.CreateAsync(connection);
         await using var basicCountryWriter = await BasicCountryWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
 

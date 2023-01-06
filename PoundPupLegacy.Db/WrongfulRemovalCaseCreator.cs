@@ -10,10 +10,11 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
+        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var caseWriter = await CaseWriter.CreateAsync(connection);
         await using var wrongfulRemovalCaseWriter = await WrongfulRemovalCaseWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         await foreach (var wrongfulRemovalCase in wrongfulRemovalCases)
@@ -21,6 +22,7 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
             await nodeWriter.WriteAsync(wrongfulRemovalCase);
             await documentableWriter.WriteAsync(wrongfulRemovalCase);
             await locatableWriter.WriteAsync(wrongfulRemovalCase);
+            await nameableWriter.WriteAsync(wrongfulRemovalCase);
             await caseWriter.WriteAsync(wrongfulRemovalCase);
             await wrongfulRemovalCaseWriter.WriteAsync(wrongfulRemovalCase);
             await EntityCreator.WriteTerms(wrongfulRemovalCase, termWriter, termReader, termHierarchyWriter);

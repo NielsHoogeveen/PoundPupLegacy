@@ -2,9 +2,9 @@
 
 namespace PoundPupLegacy.Db.Readers;
 
-internal class TermReader : DatabaseReader<Term>, IDatabaseReader<TermReader>
+public class TermReaderByName : DatabaseReader<Term>, IDatabaseReader<TermReaderByName>
 {
-    public static async Task<TermReader> CreateAsync(NpgsqlConnection connection)
+    public static async Task<TermReaderByName> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             SELECT id, nameable_id FROM term WHERE vocabulary_id = @vocabulary_id AND name = @name
@@ -19,14 +19,18 @@ internal class TermReader : DatabaseReader<Term>, IDatabaseReader<TermReader>
         command.Parameters.Add("name", NpgsqlDbType.Varchar);
         await command.PrepareAsync();
 
-        return new TermReader(command);
+        return new TermReaderByName(command);
 
     }
 
-    internal TermReader(NpgsqlCommand command) : base(command) { }
+    internal TermReaderByName(NpgsqlCommand command) : base(command) { }
 
-    internal async Task<Term> ReadAsync(int vocabularyId, string name)
+    public async Task<Term> ReadAsync(int vocabularyId, string name)
     {
+        if(name is null)
+        {
+            throw new ArgumentNullException(nameof(name));
+        }
         _command.Parameters["vocabulary_id"].Value = vocabularyId;
         _command.Parameters["name"].Value = name;
 

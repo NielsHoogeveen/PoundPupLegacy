@@ -3,66 +3,92 @@ using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Xml.Linq;
 
-namespace PoundPupLegacy.Convert
+namespace PoundPupLegacy.Convert;
+
+internal partial class Program
 {
-    internal partial class Program
-    {
 
-        private static async Task MigrateSecondLevelGlobalRegions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigrateSecondLevelGlobalRegions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    {
+        await using var tx = await connection.BeginTransactionAsync();
+        try
         {
             await SecondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(mysqlconnection), connection);
+            await tx.CommitAsync();
         }
-
-        private static async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(MySqlConnection mysqlconnection)
+        catch (Exception)
         {
-            var sql = $"""
-                SELECT
-                n.nid id,
-                n.uid user_id,
+            await tx.RollbackAsync();
+            throw;
+        }
+    }
+
+    private static async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(MySqlConnection mysqlconnection)
+    {
+        var sql = $"""
+                SELECT n.nid id,
+                n.uid access_role_id,
                 n.title,
-                n.`status`,
-                FROM_UNIXTIME(n.created) created, 
-                FROM_UNIXTIME(n.changed) `changed`, 
-                n2.nid continent_id
+                n.`status` node_status_id,
+                FROM_UNIXTIME(n.created) created_date_time, 
+                FROM_UNIXTIME(n.changed) changed_date_time,
+                nr.body description,
+                cc.field_tile_image_fid file_id_tile_image,
+                n2.nid first_level_global_region_id,
+                n2.title first_level_global_region_name
                 FROM node n 
-                JOIN category_hierarchy ch ON ch.cid = n.nid 
-                JOIN node n2 ON n2.nid = ch.parent 
+                JOIN category_hierarchy ch ON ch.cid = n.nid
+                JOIN node n2 ON n2.nid = ch.parent
+                		LEFT JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
+                	LEFT JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 WHERE n.`type` = 'region_facts'
                 AND n.nid < 30000
                 AND n2.`type` = 'region_facts'
                 """;
 
-            using var readCommand = mysqlconnection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
+        using var readCommand = mysqlconnection.CreateCommand();
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = sql;
 
-            var reader = await readCommand.ExecuteReaderAsync();
+        var reader = await readCommand.ExecuteReaderAsync();
 
-            while (await reader.ReadAsync())
+        while (await reader.ReadAsync())
+        {
+            var id = reader.GetInt32("id");
+            var name = reader.GetString("title");
+            var parentRegionName = reader.GetString("first_level_global_region_name");
+
+            var vocabularyNames = new List<VocabularyName>
             {
-                var id = reader.GetInt32("id");
-                var title = reader.GetString("title");
-                yield return new SecondLevelGlobalRegion
+                new VocabularyName
                 {
-                    Id = reader.GetInt32("id"),
-                    AccessRoleId = reader.GetInt32("user_id"),
-                    CreatedDateTime = reader.GetDateTime("created"),
-                    ChangedDateTime = reader.GetDateTime("changed"),
-                    Title = reader.GetString("title"),
-                    NodeStatusId = reader.GetInt32("status"),
-                    NodeTypeId = 12,
-                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
-                    Description = "",
-                    FileIdTileImage = null,
-                    Name = reader.GetString("title"),
-                    FirstLevelGlobalRegionId = reader.GetInt32("continent_id")
-                };
+                    VocabularyId = TOPICS,
+                    Name = name,
+                    ParentNames = new List<string>{ parentRegionName},
+                }
+            };
 
-            }
-            await reader.CloseAsync();
+            yield return new SecondLevelGlobalRegion
+            {
+                Id = id,
+                AccessRoleId = reader.GetInt32("access_role_id"),
+                CreatedDateTime = reader.GetDateTime("created_date_time"),
+                ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                Title = name,
+                NodeStatusId = reader.GetInt32("node_status_id"),
+                NodeTypeId = 12,
+                VocabularyNames = vocabularyNames,
+                Description = reader.GetString("description"),
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
+                Name = name,
+                FirstLevelGlobalRegionId = reader.GetInt32("first_level_global_region_id")
+            };
+
         }
-
+        await reader.CloseAsync();
     }
+
 }

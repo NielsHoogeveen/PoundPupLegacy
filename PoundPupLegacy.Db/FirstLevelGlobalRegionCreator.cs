@@ -14,7 +14,7 @@ public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegi
         await using var globalRegionWriter = await GlobalRegionWriter.CreateAsync(connection);
         await using var firstLevelGlobalRegionWriter = await FirstLevelGlobalRegionWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReader.CreateAsync(connection);
+        await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
 
         await foreach (var node in nodes)
