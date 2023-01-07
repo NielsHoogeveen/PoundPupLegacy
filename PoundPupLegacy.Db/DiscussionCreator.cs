@@ -2,18 +2,18 @@
 
 public class DiscussionCreator : IEntityCreator<Discussion>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Discussion> blogPosts, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<Discussion> discussions, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
         await using var simpleTextNodeWriter = await SimpleTextNodeWriter.CreateAsync(connection);
-        await using var blogPostWriter = await DiscussionWriter.CreateAsync(connection);
+        await using var discussionWriter = await DiscussionWriter.CreateAsync(connection);
 
-        await foreach (var blogPost in blogPosts)
+        await foreach (var discussion in discussions)
         {
-            await nodeWriter.WriteAsync(blogPost);
-            await simpleTextNodeWriter.WriteAsync(blogPost);
-            await blogPostWriter.WriteAsync(blogPost);
+            await nodeWriter.WriteAsync(discussion);
+            await simpleTextNodeWriter.WriteAsync(discussion);
+            await discussionWriter.WriteAsync(discussion);
         }
     }
 }

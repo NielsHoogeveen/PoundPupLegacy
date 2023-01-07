@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Web.Data;
 
@@ -29,8 +30,12 @@ namespace PoundPupLegacy.Web
             }
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider("d:\\ppl\\files"),
+                RequestPath = "/files"
+            }); 
 
             app.UseRouting();
 

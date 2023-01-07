@@ -87,19 +87,23 @@ internal partial class Program
                     FROM_UNIXTIME(n.created) created, 
                     FROM_UNIXTIME(n.changed) `changed`,
                     10 node_type_id,
-                    FALSE is_topic,
                     r.field_report_date_value publication_date,
                     case when r.field_web_address_url = '' then null else r.field_web_address_url end source_url,
                     nr.body `text`,
-                    n2.nid document_type_id
+                    c.document_type_id
                 FROM node n
                 JOIN content_type_adopt_ind_rep r ON r.nid = n.nid AND r.vid = n.vid
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                LEFT JOIN category_node c ON c.nid = n.nid 
-                LEFT JOIN node n2 ON n2.nid = c.cid
-                LEFT JOIN category cat ON cat.cid = c.cid 
-                LEFT JOIN node n3 ON n3.nid = cat.cnid 
-                WHERE cat.cnid is null or cat.cnid = 42416 AND nr.body <> ''
+                LEFT JOIN (
+                select 
+                    c.nid,
+                    n2.nid document_type_id
+                FROM category_node c 
+                JOIN node n2 ON n2.nid = c.cid
+                JOIN category cat ON cat.cid = c.cid AND cat.cnid = 42416 
+                JOIN node n3 ON n3.nid = cat.cnid 
+                ) c ON c.nid = n.nid 
+                WHERE n.`type` = 'adopt_ind_rep'
                 UNION
                 SELECT
                     n.nid id,
@@ -109,19 +113,23 @@ internal partial class Program
                     FROM_UNIXTIME(n.created) created, 
                     FROM_UNIXTIME(n.changed) `changed`,
                     10 node_type_id,
-                    FALSE is_topic,
                     r.field_date_value publication_date,
                     case when r.field_source_url = '' then null else r.field_source_url end source_url,
                     r.field_body_value `text`,
-                    n2.nid document_type_id
+                    c.document_type_id
                 FROM node n
                 JOIN content_type_case_file r ON r.nid = n.nid AND r.vid = n.vid
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                LEFT JOIN category_node c ON c.nid = n.nid 
-                LEFT JOIN node n2 ON n2.nid = c.cid
-                LEFT JOIN category cat ON cat.cid = c.cid 
-                LEFT JOIN node n3 ON n3.nid = cat.cnid 
-                WHERE cat.cnid is null or cat.cnid = 42416 AND r.field_body_value <> ''
+                LEFT JOIN (
+                SELECT
+                    c.nid,
+                    n2.nid document_type_id
+                FROM 
+                category_node c 
+                JOIN node n2 ON n2.nid = c.cid
+                JOIN category cat ON cat.cid = c.cid AND cat.cnid = 42416 
+                ) c ON c.nid = n.nid 
+                WHERE n.`type` = 'case_file'
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

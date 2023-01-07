@@ -50,7 +50,7 @@ internal partial class Program
                 STR_TO_DATE(field_born_value,'%Y-%m-%d') date_of_birth,
                 STR_TO_DATE(field_died_value,'%Y-%m-%d') date_of_death
                 FROM node n 
-                JOIN content_type_adopt_person o ON o.nid = n.nid AND o.vid = n.vid
+                LEFT JOIN content_type_adopt_person o ON o.nid = n.nid AND o.vid = n.vid
                 LEFT JOIN node n2 ON n2.title = n.title AND n2.nid <> n.nid AND n2.`type` = 'category_cat'
                 LEFT JOIN (
                 select
@@ -72,7 +72,7 @@ internal partial class Program
                     WHERE n.`type` = 'category_cat'
                 ) p ON p.cid = n.nid
                 ) c ON c.field_related_page_nid = n.nid
-                WHERE n.`type` = 'adopt_person' AND c.title IS NOT null
+                WHERE n.`type` = 'adopt_person'
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -85,15 +85,17 @@ internal partial class Program
         while (await reader.ReadAsync())
         {
             var title = reader.GetString("title");
-            var topicName = reader.GetString("topic_name");
-            var vocabularyNames = new List<VocabularyName>
+            var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
+            var vocabularyNames = new List<VocabularyName>();
+            if(topicName is not null) 
             {
+                vocabularyNames.Add(
                 new VocabularyName
                 {
                     VocabularyId = TOPICS,
                     Name = topicName,
                     ParentNames = new List<string>(),
-                }
+                });
             };
 
             yield return new Person

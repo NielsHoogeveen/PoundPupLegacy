@@ -8,12 +8,14 @@ namespace PoundPupLegacy.Convert;
 
 internal partial class Program
 {
-    private static async Task MigrateBlogPosts(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+
+
+    private static async Task MigrateDisruptedPlacementCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await BlogPostCreator.CreateAsync(ReadBlogPosts(mysqlconnection), connection);
+            await DisruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases(mysqlconnection), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -21,9 +23,8 @@ internal partial class Program
             await tx.RollbackAsync();
             throw;
         }
-
     }
-    private static async IAsyncEnumerable<BlogPost> ReadBlogPosts(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<DisruptedPlacementCase> ReadDisruptedPlacementCases(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -34,10 +35,14 @@ internal partial class Program
                      n.`status`,
                      FROM_UNIXTIME(n.created) created, 
                      FROM_UNIXTIME(n.changed) `changed`,
-                     nr.body `text`
+                     44 node_type_id,
+                     cc.nid IS NOT null is_topic,
+                     field_description_long_value description,
+                     field_disruption_date_value `date`
                 FROM node n
-                JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                WHERE n.`type` = 'blog' AND n.uid <> 0
+                JOIN content_type_disrupted_placement_case c ON c.nid = n.nid AND c.vid = n.vid
+                LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid 
+                LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -49,22 +54,25 @@ internal partial class Program
 
         while (await reader.ReadAsync())
         {
-            var discussion = new BlogPost
+            var id = reader.GetInt32("id");
+            var name = reader.GetString("title");
+            var country = new DisruptedPlacementCase
             {
-                Id = reader.GetInt32("id"),
+                Id = id,
                 AccessRoleId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
+                Title = name,
                 NodeStatusId = reader.GetInt32("status"),
-                NodeTypeId = 35,
-                Text = reader.GetString("text"),
-
+                NodeTypeId = reader.GetInt32("node_type_id"),
+                VocabularyNames = new List<VocabularyName>(),
+                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
+                Description = reader.GetString("description"),
+                FileIdTileImage = null,
             };
-            yield return discussion;
+            yield return country;
 
         }
         await reader.CloseAsync();
     }
-
 }

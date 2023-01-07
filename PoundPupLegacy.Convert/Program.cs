@@ -79,6 +79,9 @@ internal partial class Program
             new NodeType(39, "type of abuse", "Defines the types of abuse a child has endured"),
             new NodeType(40, "type of abuser", "Defines the relationship the abuser has with respect to the abused"),
             new NodeType(41, "basic nameable", "Can be used as a term without having additional data"),
+            new NodeType(42, "page", "A simpe text node"),
+            new NodeType(43, "review", "A book review"),
+            new NodeType(44, "disrupted placement case", "A situation where the placement of a child was reverted"),
         };
 
 
@@ -192,21 +195,26 @@ internal partial class Program
             //await MigrateInformalIntermediateLevelSubdivisions(mysqlconnection, connection);
             //await MigrateFormalIntermediateLevelSubdivisions(mysqlconnection, connection);
             //await MigrateBasicSecondLevelSubdivisions(mysqlconnection, connection);
-            //await MigrateSimpleTextPosts(mysqlconnection, connection);
+            //await MigrateBlogPosts(mysqlconnection, connection);
+            //await MigrateArticles(mysqlconnection, connection);
+            //await MigrateDiscussions(mysqlconnection, connection);
             //await MigrateAdoptionExports(mysqlconnection, connection);
             //await MigrateDocuments(mysqlconnection, connection);
             //await MigrateOrganizations(mysqlconnection, connection);
             //await MigratePersons(mysqlconnection, connection);
-            //await MigrateAttachmentTherapists(mysqlconnection, connection);
             //await MigrateAbuseCases(mysqlconnection, connection);
             //await MigrateChildTraffickingCases(mysqlconnection, connection);
             //await MigrateCoercedAdoptionCases(mysqlconnection, connection);
+            //await MigrateDisruptedPlacementCases(mysqlconnection, connection);
             //await MigrateDeportationCases(mysqlconnection, connection);
             //await MigrateFathersRightsViolationCases(mysqlconnection, connection);
             //await MigrateWrongfulMedicationCases(mysqlconnection, connection);
             //await MigrateWrongfulRemovalCases(mysqlconnection, connection);
             //await MigrateLocations(mysqlconnection, connection);
-            await MigrateNodeTerms(mysqlconnection, connection);
+            //await MigrateNodeTerms(mysqlconnection, connection);
+            //await MigratePages(mysqlconnection, connection);
+            //await MigrateReviews(mysqlconnection, connection);
+            await MigrateComments(mysqlconnection, connection);
             await mysqlconnection.CloseAsync();
             await connection.CloseAsync();
         }

@@ -8,12 +8,12 @@ namespace PoundPupLegacy.Convert;
 
 internal partial class Program
 {
-    private static async Task MigrateBlogPosts(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async Task MigratePages(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await BlogPostCreator.CreateAsync(ReadBlogPosts(mysqlconnection), connection);
+            await PageCreator.CreateAsync(ReadPages(mysqlconnection), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -23,7 +23,7 @@ internal partial class Program
         }
 
     }
-    private static async IAsyncEnumerable<BlogPost> ReadBlogPosts(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Page> ReadPages(MySqlConnection mysqlconnection)
     {
 
         var sql = $"""
@@ -37,7 +37,7 @@ internal partial class Program
                      nr.body `text`
                 FROM node n
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                WHERE n.`type` = 'blog' AND n.uid <> 0
+                WHERE n.`type` = 'page' AND n.uid <> 0
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -49,7 +49,7 @@ internal partial class Program
 
         while (await reader.ReadAsync())
         {
-            var discussion = new BlogPost
+            yield return new Page
             {
                 Id = reader.GetInt32("id"),
                 AccessRoleId = reader.GetInt32("user_id"),
@@ -57,12 +57,10 @@ internal partial class Program
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
                 NodeStatusId = reader.GetInt32("status"),
-                NodeTypeId = 35,
+                NodeTypeId = 42,
                 Text = reader.GetString("text"),
 
             };
-            yield return discussion;
-
         }
         await reader.CloseAsync();
     }
