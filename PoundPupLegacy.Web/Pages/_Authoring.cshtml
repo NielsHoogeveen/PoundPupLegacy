@@ -1,0 +1,19 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Authoring
+@{
+    @if (@Model.Id != 0)
+    {
+        <div class="author">
+            by <span class="name"><a href="/access_role/@Model.Id">@Model.Name</a></span>
+            on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
+        </div>
+    }
+    @if (Model.Id == 0)
+    {
+        <div class="author">
+            by <span class="name"><em>@Model.Name</em></span>
+            on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
+        </div>
+    }
+}

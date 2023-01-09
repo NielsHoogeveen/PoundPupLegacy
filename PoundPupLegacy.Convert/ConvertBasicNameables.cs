@@ -46,7 +46,7 @@ internal partial class Program
                 JOIN category c ON c.cid = n.nid AND c.cnid = 4126
                 JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                LEFT JOIN node n2 ON n2.title = n.title AND n2.nid <> n.nid AND n2.`type` IN ('adopt_person','country_type', 'adopt_orgs', 'case', 'region_facts')
+                LEFT JOIN node n2 ON n2.title = n.title AND n2.nid <> n.nid AND n2.`type` IN ('adopt_person','country_type', 'adopt_orgs', 'case', 'region_facts', 'coerced_adoption_cases', 'child_trafficking', 'child_trafficking_case')
                 LEFT JOIN node n3 ON n3.nid = cc.field_related_page_nid
                 WHERE  (n3.nid IS NULL OR n3.`type` = 'group')
                 AND n.title NOT IN 
@@ -55,13 +55,15 @@ internal partial class Program
                    'adoptive mother',
                    'foster care',
                    'guardianship',
-                   'residential care',
+                   'institutional care',
                    'adoption agencies',
+                   'legal guardians',
                    'church',
                    'boot camp',
                    'media',
                    'blog',
                    'orphanages',
+                   'orphanage',
                    'adoption advocates',
                    'boarding school',
                    'adoption facilitators',

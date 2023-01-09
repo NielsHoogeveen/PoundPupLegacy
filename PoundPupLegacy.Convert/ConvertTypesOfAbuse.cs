@@ -47,31 +47,31 @@ internal partial class Program
                 ELSE cc.field_tile_image_fid 
                 end file_id_tile_image
                 FROM(
-                SELECT 118 AS id, 'Non-lethal physical abuse' AS title, 'non-lethal physical abuse' AS topic_name, 'physical abuse' AS first_parent_topic_name, NULL AS second_parent_topic_name
+                SELECT {NON_LETHAL_PHYSICAL_ABUSE} AS id, 'Non-lethal physical abuse' AS title, 'non-lethal physical abuse' AS topic_name, 'physical abuse' AS first_parent_topic_name, NULL AS second_parent_topic_name
                 UNION
-                SELECT 119, 'Lethal physical abuse', 'lethal physical abuse', 'physical abuse', 'lethal abuse'
+                SELECT {LETHAL_PHYSICAL_ABUSE}, 'Lethal physical abuse', 'lethal physical abuse', 'physical abuse', 'lethal abuse'
                 UNION
-                SELECT 120, 'Physical exploitation', 'physical exploitation', 'exploitation', null
+                SELECT {PHYSICAL_EXPLOITATION}, 'Physical exploitation', 'physical exploitation', 'exploitation', null
                 UNION
-                SELECT 121, 'Sexual abuse', 'sexual abuse', 'Child abuse forms', null
+                SELECT {SEXUAL_ABUSE}, 'Sexual abuse', 'sexual abuse', 'Child abuse forms', null
                 UNION
-                SELECT 122, 'Sexual exploitation', 'sexual exploitation', 'exploitation', 'sexual abuse'
+                SELECT {SEXUAL_EXPLOITATION}, 'Sexual exploitation', 'sexual exploitation', 'exploitation', 'sexual abuse'
                 UNION
-                SELECT 123, 'Non-lethal neglect', 'non-lethal neglect' , 'neglect', null
+                SELECT {NON_LETHAL_NEGLECT}, 'Non-lethal neglect', 'non-lethal neglect' , 'neglect', null
                 UNION
-                SELECT 124, 'Lethal neglect', 'lethal neglect' , 'lethal abuse', 'neglect'
+                SELECT {LETHAL_NEGLECT}, 'Lethal neglect', 'lethal neglect' , 'lethal abuse', 'neglect'
                 UNION
-                SELECT 125, 'Non-lethal deprivation', 'non-lethal deprivation' , 'deprivation', null
+                SELECT {NON_LETHAL_DEPRIVATION}, 'Non-lethal deprivation', 'non-lethal deprivation' , 'deprivation', null
                 UNION
-                SELECT 126, 'Lethal deprivation', 'lethal deprivation' , 'lethal abuse', 'deprivation'
+                SELECT {LETHAL_DEPRIVATION}, 'Lethal deprivation', 'lethal deprivation' , 'lethal abuse', 'deprivation'
                 UNION
-                SELECT 127, 'Economic exploitation', 'economic exploitation' , 'exploitation', null
+                SELECT {ECONOMIC_EXPLOITATION}, 'Economic exploitation', 'economic exploitation' , 'exploitation', null
                 UNION
-                SELECT 128, 'Verbal abuse', 'verbal abuse' , 'emotional abuse', NULL
+                SELECT {VERBAL_ABUSE}, 'Verbal abuse', 'verbal abuse' , 'emotional abuse', NULL
                 UNION
-                SELECT 129, 'Medical abuse', 'medical abuse' , 'Child abuse forms', NULL
+                SELECT {MEDICAL_ABUSE}, 'Medical abuse', 'medical abuse' , 'Child abuse forms', NULL
                 UNION
-                SELECT 130, 'Death by unknown cause', NULL, NULL , null
+                SELECT {DEATH_BY_UNKNOWN_CAUSE}, 'Death by unknown cause', NULL, NULL , null
                 ) AS t
                 LEFT JOIN node n ON n.title = t.topic_name AND n.`type` = 'category_cat'
                 LEFT JOIN category c ON c.cid = n.nid AND c.cnid = 4126

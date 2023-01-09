@@ -41,21 +41,22 @@ namespace PoundPupLegacy.Convert
                     ELSE nr.body
                 		end description,
                 t.topic_name,
+                t.parent_topic_name,
                 n.nid,
                 case 
                 	when cc.field_tile_image_fid = 0 then null
                 	ELSE cc.field_tile_image_fid 
                 end file_id_tile_image
                 FROM(
-                SELECT 106 AS id, 'Adoption' AS title, 'adoption' AS topic_name
+                SELECT {ADOPTION} AS id, 'Adoption' AS title, 'adoption' AS topic_name, 'Child placement forms' AS parent_topic_name
                 UNION
-                SELECT 107, 'Foster Care', 'foster care' 
+                SELECT {FOSTER_CARE}, 'Foster Care', 'foster care', 'Child placement forms'
                 UNION
-                SELECT 108, 'To be adopted', NULL
+                SELECT {TO_BE_ADOPTED}, 'To be adopted', NULL, NULL
                 UNION
-                SELECT 109, 'Legal Guardianship', 'guardianship'
+                SELECT {LEGAL_GUARDIANSHIP}, 'Legal Guardianship', 'guardianship', 'Child placement forms'
                 UNION
-                SELECT 110, 'Institution', 'residential care'
+                SELECT {INSTITUTION}, 'Institution', 'institutional care', 'residential care'
                 ) AS t
                 LEFT JOIN node n ON n.title = t.topic_name AND n.`type` = 'category_cat'
                 LEFT JOIN category c ON c.cid = n.nid AND c.cnid = 4126
@@ -75,7 +76,7 @@ namespace PoundPupLegacy.Convert
                 var id = reader.GetInt32("id");
                 var name = reader.GetString("title");
                 var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
-
+                var parentTopicName = reader.IsDBNull("parent_topic_name") ? null : reader.GetString("parent_topic_name");
                 var vocabularyNames = new List<VocabularyName>
                 {
                     new VocabularyName
@@ -87,11 +88,16 @@ namespace PoundPupLegacy.Convert
                 };
                 if (topicName != null)
                 {
+                    var parentNames = new List<string>();
+                    if(parentTopicName != null)
+                    {
+                        parentNames.Add(parentTopicName);
+                    }
                     vocabularyNames.Add(new VocabularyName
                     {
                         VocabularyId = TOPICS,
                         Name = topicName,
-                        ParentNames = new List<string>()
+                        ParentNames = parentNames
                     });
                 }
 

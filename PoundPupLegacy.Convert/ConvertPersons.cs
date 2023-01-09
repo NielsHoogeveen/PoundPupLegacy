@@ -45,7 +45,10 @@ internal partial class Program
                 FROM_UNIXTIME(n.created) created_date_time, 
                 FROM_UNIXTIME(n.changed) changed_date_time,
                 24 node_type_id,
-                c.title topic_name,
+                case 
+                	when c.title IS NOT NULL then c.title
+                	ELSE c2.title
+                 	end topic_name,
                 CASE WHEN o.field_image_fid = 0 THEN null ELSE o.field_image_fid END file_id_portrait,
                 STR_TO_DATE(field_born_value,'%Y-%m-%d') date_of_birth,
                 STR_TO_DATE(field_died_value,'%Y-%m-%d') date_of_death
@@ -53,26 +56,34 @@ internal partial class Program
                 LEFT JOIN content_type_adopt_person o ON o.nid = n.nid AND o.vid = n.vid
                 LEFT JOIN node n2 ON n2.title = n.title AND n2.nid <> n.nid AND n2.`type` = 'category_cat'
                 LEFT JOIN (
-                select
-                n.nid,
-                n.title,
-                cc.field_tile_image_title,
-                cc.field_related_page_nid,
-                p.nid parent_id,
-                p.title parent_name
-                FROM node n
-                JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
-                LEFT JOIN (
-                    SELECT
-                    n.nid, 
-                    n.title,
-                    ch.cid
-                    FROM node n
-                    JOIN category_hierarchy ch ON ch.parent = n.nid
-                    WHERE n.`type` = 'category_cat'
-                ) p ON p.cid = n.nid
+                	select
+                	n.nid,
+                	n.title,
+                	cc.field_tile_image_title,
+                	cc.field_related_page_nid,
+                	p.nid parent_id,
+                	p.title parent_name
+                	FROM node n
+                	JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
+                	LEFT JOIN (
+                	    SELECT
+                	    n.nid, 
+                	    n.title,
+                	    ch.cid
+                	    FROM node n
+                	    JOIN category_hierarchy ch ON ch.parent = n.nid
+                	    WHERE n.`type` = 'category_cat'
+                	) p ON p.cid = n.nid
                 ) c ON c.field_related_page_nid = n.nid
+                LEFT JOIN(
+                    select
+                    DISTINCT n.title
+                    FROM node n
+                    JOIN category c ON c.cid = n.nid AND c.cnid = 4126
+                    GROUP BY n.title
+                ) c2 ON c2.title = n.title
                 WHERE n.`type` = 'adopt_person'
+                AND n.nid not in (45656)
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

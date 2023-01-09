@@ -62,57 +62,74 @@ internal partial class Program
 
         var sql = $"""
                 SELECT
-                  n.nid id,
-                  n.uid access_role_id,
-                  n.title,
-                  n.`status` node_status_id,
-                  FROM_UNIXTIME(n.created) created_date_time, 
-                  FROM_UNIXTIME(n.changed) changed_date_time,
-                  23 node_type_id,
-                  o.field_website_2_url website_url,
-                  FROM_UNIXTIME(o.field_start_date_0_value) established, 
-                  FROM_UNIXTIME(UNIX_TIMESTAMP(o.field_end_date_value)) `terminated`,
-                  o.field_email_address_email email_address,
-                  o.field_description_3_value description,
-                  c.title topic_name,
-                  GROUP_CONCAT(c.parent_name, ',') topic_parent_names
+                	n.nid id,
+                	n.uid access_role_id,
+                	n.title,
+                	n.`status` node_status_id,
+                	FROM_UNIXTIME(n.created) created_date_time, 
+                	FROM_UNIXTIME(n.changed) changed_date_time,
+                	23 node_type_id,
+                	o.field_website_2_url website_url,
+                	FROM_UNIXTIME(o.field_start_date_0_value) established, 
+                	FROM_UNIXTIME(UNIX_TIMESTAMP(o.field_end_date_value)) `terminated`,
+                	o.field_email_address_email email_address,
+                	o.field_description_3_value description,
+                	case 
+                		when c.title IS NOT NULL then c.title
+                		ELSE c2.title
+                	END topic_name,
+                	case 
+                		when c.topic_parent_names IS NOT NULL then c.topic_parent_names
+                		ELSE c2.topic_parent_names
+                	END topic_parent_names
                 FROM node n 
                 JOIN content_type_adopt_orgs o ON o.nid = n.nid AND o.vid = n.vid
                 LEFT JOIN (
-                select
-                n.nid,
-                n.title,
-                cc.field_tile_image_title,
-                cc.field_related_page_nid,
-                p.nid parent_id,
-                p.title parent_name
-                FROM node n
-                JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
-                LEFT JOIN (
-                	SELECT
-                	n.nid, 
-                	n.title,
-                	ch.cid
+                	select
+                		n.nid,
+                		n.title,
+                		cc.field_tile_image_title,
+                		cc.field_related_page_nid,
+                		GROUP_CONCAT(p.title, ',') topic_parent_names
                 	FROM node n
-                	JOIN category_hierarchy ch ON ch.parent = n.nid
-                	WHERE n.`type` = 'category_cat'
-                ) p ON p.cid = n.nid
+                	JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
+                	LEFT JOIN (
+                		SELECT
+                			n.nid, 
+                			n.title,
+                			ch.cid
+                		FROM node n
+                		JOIN category_hierarchy ch ON ch.parent = n.nid
+                		WHERE n.`type` = 'category_cat'
+                	) p ON p.cid = n.nid
+                	GROUP BY 
+                		n.nid,
+                		n.title,
+                		cc.field_tile_image_title,
+                		cc.field_related_page_nid
                 ) c ON c.field_related_page_nid = n.nid
+                LEFT JOIN (
+                	select
+                		n.nid,
+                		n.title,
+                		GROUP_CONCAT(p.title, ',') topic_parent_names
+                	FROM node n
+                	JOIN category c ON c.cid = n.nid AND c.cnid = 4126
+                	LEFT JOIN (
+                		SELECT
+                			n.nid, 
+                			n.title,
+                			ch.cid
+                		FROM node n
+                		JOIN category_hierarchy ch ON ch.parent = n.nid
+                		WHERE n.`type` = 'category_cat'
+                	) p ON p.cid = n.nid
+                	GROUP BY 
+                		n.nid,
+                		n.title
+                ) c2 ON c2.title = n.title
                 WHERE n.`type` = 'adopt_orgs'
-                GROUP BY 
-                n.nid,
-                n.uid,
-                n.title,
-                n.`status`,
-                n.created, 
-                n.changed,
-                field_related_topic_nid,
-                o.field_website_2_url,
-                o.field_start_date_0_value, 
-                o.field_end_date_value,
-                o.field_email_address_email,
-                o.field_description_3_value,
-                c.title
+                AND n.nid NOT IN (11108)
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

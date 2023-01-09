@@ -36,22 +36,28 @@ internal partial class Program
                 FROM_UNIXTIME(n.created) created_date_time, 
                 FROM_UNIXTIME(n.changed) changed_date_time,
                 26 node_type_id,
-                		c2.title topic_name,
-                		GROUP_CONCAT(c2.parent_name, ',') topic_parent_names,
-                c.field_discovery_date_value `date`,
+                		case 
+                        when c2.title IS NOT NULL then c2.title
+                        ELSE c3.title
+                END topic_name,
+                case 
+                    when c2.topic_parent_names IS NOT NULL then c2.topic_parent_names
+                    ELSE c3.topic_parent_names
+                END topic_parent_names,
+                		c.field_discovery_date_value `date`,
                 c.field_body_0_value description,
                 case 
-                    when field_child_placement_type_value = 'Adoption' then 106
-                    when field_child_placement_type_value = 'Foster care' then 107
-                    when field_child_placement_type_value = 'To be adopted' then 108
-                    when field_child_placement_type_value = 'Legal Guardianship' then 109
-                    when field_child_placement_type_value = 'Institution' then 110
+                    when field_child_placement_type_value = 'Adoption' then {ADOPTION}
+                    when field_child_placement_type_value = 'Foster care' then {FOSTER_CARE}
+                    when field_child_placement_type_value = 'To be adopted' then {TO_BE_ADOPTED}
+                    when field_child_placement_type_value = 'Legal Guardianship' then {LEGAL_GUARDIANSHIP}
+                    when field_child_placement_type_value = 'Institution' then {INSTITUTION}
                 END child_placement_type_id,
                 case 
-                    when c.field_family_size_value = '1 to 4' then 111
-                    when c.field_family_size_value = '4 to 8' then 112
-                    when c.field_family_size_value = '8 to 12' then 113
-                    when c.field_family_size_value = 'more than 12' then 114
+                    when c.field_family_size_value = '1 to 4' then {ONE_TO_FOUR}
+                    when c.field_family_size_value = '4 to 8' then {FOUR_TO_EIGHT}
+                    when c.field_family_size_value = '8 to 12' then {EIGHT_TO_TWELVE}
+                    when c.field_family_size_value = 'more than 12' then {MORE_THAN_TWELVE}
                     when field_child_placement_type_value = '' then null
                     when field_child_placement_type_value = null then null
                 END family_size_id,
@@ -68,8 +74,7 @@ internal partial class Program
                     n.title,
                     cc.field_tile_image_title,
                     cc.field_related_page_nid,
-                    p.nid parent_id,
-                    p.title parent_name
+                    GROUP_CONCAT(p.title, ',') topic_parent_names
                     FROM node n
                     JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
                     LEFT JOIN (
@@ -82,23 +87,32 @@ internal partial class Program
                         WHERE n.`type` = 'category_cat'
                     ) p ON p.cid = n.nid
                     WHERE n.nid NOT IN (44881)
+                    GROUP BY
+                    n.nid,
+                    n.title,
+                    cc.field_tile_image_title,
+                    cc.field_related_page_nid
                 ) c2 ON c2.field_related_page_nid = n.nid
-                GROUP BY
-                n.nid,
-                n.uid,
-                n.title,
-                n.`status`,
-                n.created, 
-                n.`changed`,
-                c2.title,
-                c.field_discovery_date_value,
-                c.field_body_0_value,
-                field_child_placement_type_value,
-                c.field_family_size_value,
-                c.field_home_schooling_value,
-                field_fundamentalist_faith_value ,
-                field_disabilities_value
-                
+                		LEFT JOIN (
+                    select
+                        n.nid,
+                        n.title,
+                        GROUP_CONCAT(p.title, ',') topic_parent_names
+                    FROM node n
+                    JOIN category c ON c.cid = n.nid AND c.cnid = 4126
+                    LEFT JOIN (
+                        SELECT
+                            n.nid, 
+                            n.title,
+                            ch.cid
+                        FROM node n
+                        JOIN category_hierarchy ch ON ch.parent = n.nid
+                        WHERE n.`type` = 'category_cat'
+                    ) p ON p.cid = n.nid
+                    GROUP BY 
+                        n.nid,
+                        n.title
+                ) c3 ON c3.title = n.title                
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

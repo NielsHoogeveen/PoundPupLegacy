@@ -1,0 +1,11 @@
+﻿@page "{id:int}"
+@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model PoundPupLegacy.Web.Pages.NodeModel
+
+<partial name="_Node" model="@Model.Node" />
+
+@{
+    Layout = "_MainLayout";
+}
+

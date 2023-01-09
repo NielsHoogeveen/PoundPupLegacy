@@ -101,36 +101,38 @@ internal partial class Program
         }
     }
     const int COLORADO_ADOPTION_CENTER = 105;
-    const int ADOPTION = 106;
-    const int FOSTER_CARE = 107;
+    const int ADOPTION = 4145;
+    const int FOSTER_CARE = 4342;
     const int TO_BE_ADOPTED = 108;
-    const int LEGAL_GUARDIANSHIP = 109;
-    const int INSTITUTION = 110;
+    const int LEGAL_GUARDIANSHIP = 4346;
+    const int INSTITUTION = 19384;
     const int ONE_TO_FOUR = 111;
     const int FOUR_TO_EIGHT = 112;
     const int EIGHT_TO_TWELVE = 113;
-    const int MORE_THAN_TWELVE = 114;
+    const int MORE_THAN_TWELVE = 19392;
     const int CHILD_PLACEMENT_TYPE = 115;
     const int TYPE_OF_ABUSER = 116;
     const int FAMILY_SIZE = 117;
+
     const int NON_LETHAL_PHYSICAL_ABUSE = 118;
     const int LETHAL_PHYSICAL_ABUSE = 119;
     const int PHYSICAL_EXPLOITATION = 120;
-    const int SEXUAL_ABUSE = 121;
-    const int SEXUAL_EXPLOITATION = 122;
+    const int SEXUAL_ABUSE = 6979;
+    const int SEXUAL_EXPLOITATION = 23662;
     const int NON_LETHAL_NEGLECT = 123;
-    const int LETHAL_NEGLECT = 124;
+    const int LETHAL_NEGLECT = 74428;
     const int NON_LETHAL_DEPRIVATION = 125;
-    const int LETHAL_DEPRIVATION = 126;
-    const int ECONOMIC_EXPLOITATION = 127;
-    const int VERBAL_ABUSE = 128;
-    const int MEDICAL_ABUSE = 129;
+    const int LETHAL_DEPRIVATION = 74533;
+    const int ECONOMIC_EXPLOITATION = 44447;
+    const int VERBAL_ABUSE = 74006;
+    const int MEDICAL_ABUSE = 73882;
     const int DEATH_BY_UNKNOWN_CAUSE = 130;
+
     const int ADOPTIVE_FATHER = 131;
     const int FOSTER_FATHER = 132;
-    const int ADOPTIVE_MOTHER = 133;
+    const int ADOPTIVE_MOTHER = 7990;
     const int FOSTER_MOTHER = 134;
-    const int LEGAL_GUARDIAN = 135;
+    const int LEGAL_GUARDIAN = 40242;
     const int ADOPTED_SIBLING = 136;
     const int FOSTER_SIBLING = 137;
     const int NON_ADOPTED_SIBLING = 138;
@@ -211,10 +213,12 @@ internal partial class Program
             //await MigrateWrongfulMedicationCases(mysqlconnection, connection);
             //await MigrateWrongfulRemovalCases(mysqlconnection, connection);
             //await MigrateLocations(mysqlconnection, connection);
-            //await MigrateNodeTerms(mysqlconnection, connection);
-            //await MigratePages(mysqlconnection, connection);
-            //await MigrateReviews(mysqlconnection, connection);
+            await MigrateNodeTerms(mysqlconnection, connection);
+            await MigratePages(mysqlconnection, connection);
+            await MigrateReviews(mysqlconnection, connection);
             await MigrateComments(mysqlconnection, connection);
+
+
             await mysqlconnection.CloseAsync();
             await connection.CloseAsync();
         }

@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
-using PoundPupLegacy.Web.Data;
+using PoundPupLegacy.Web.Services;
 
 namespace PoundPupLegacy.Web
 {
@@ -16,8 +14,11 @@ namespace PoundPupLegacy.Web
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddTransient<NpgsqlConnection>((sp) => new NpgsqlConnection(CONNECTSTRING));
+            builder.Services.AddTransient<FetchNodeService>();
+            builder.Services.AddTransient<FetchBlogService>();
+            builder.Services.AddTransient<RazorViewToStringService>();
+            builder.Services.AddTransient<StringToDocumentService>();
 
             var app = builder.Build();
 

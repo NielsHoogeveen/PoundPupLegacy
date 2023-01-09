@@ -46,29 +46,29 @@ internal partial class Program
                 ELSE cc.field_tile_image_fid 
                 end file_id_tile_image
                 FROM(
-                SELECT 131 AS id, 'Adoptive father' AS title, 'adoptive father' AS topic_name, 'adoptive parents' AS parent_topic_name
+                SELECT {ADOPTIVE_FATHER} AS id, 'Adoptive father' AS title, 'adoptive father' AS topic_name, 'adoptive parents' AS parent_topic_name
                 UNION
-                SELECT 132, 'Foster father', 'foster father', 'foster parents'
+                SELECT {FOSTER_FATHER}, 'Foster father', 'foster father', 'foster parents'
                 UNION
-                SELECT 133, 'Adoptive mother', 'adoptive mother', NULL
+                SELECT {ADOPTIVE_MOTHER}, 'Adoptive mother', 'adoptive mother', NULL
                 UNION
-                SELECT 134, 'Foster mother', 'foster mother', 'foster parents'
+                SELECT {FOSTER_MOTHER}, 'Foster mother', 'foster mother', 'foster parents'
                 UNION
-                SELECT 135, 'Legal guardian', 'legal guardian', NULL
+                SELECT {LEGAL_GUARDIAN}, 'Legal guardian', 'legal guardian', NULL
                 UNION
-                SELECT 136, 'Adopted sibling', NULL , NULL
+                SELECT {ADOPTED_SIBLING}, 'Adopted sibling', NULL , NULL
                 UNION
-                SELECT 137, 'Foster sibling', NULL , null
+                SELECT {FOSTER_SIBLING}, 'Foster sibling', NULL , null
                 UNION
-                SELECT 138, 'Non-adopted sibling', NULL , NULL
+                SELECT {NON_ADOPTED_SIBLING}, 'Non-adopted sibling', NULL , NULL
                 UNION
-                SELECT 139, 'Non-fostered sibling', NULL , NULL
+                SELECT {NON_FOSTERED_SIBLING}, 'Non-fostered sibling', NULL , NULL
                 UNION
-                SELECT 140, 'Other family member', NULL , NULL
+                SELECT {OTHER_FAMILY_MEMBER}, 'Other family member', NULL , NULL
                 UNION
-                SELECT 141, 'Other non-family member', NULL , NULL
+                SELECT {OTHER_NON_FAMILY_MEMBER}, 'Other non-family member', NULL , NULL
                 UNION
-                SELECT 142, 'Undetermined', NULL , null
+                SELECT {UNDETERMINED}, 'Undetermined', NULL , null
                 ) AS t
                 LEFT JOIN node n ON n.title = t.topic_name AND n.`type` = 'category_cat'
                 LEFT JOIN category c ON c.cid = n.nid AND c.cnid = 4126
