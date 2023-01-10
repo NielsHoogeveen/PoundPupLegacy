@@ -46,19 +46,20 @@ internal partial class Program
 
 
         var reader = await readCommand.ExecuteReaderAsync();
-
         while (await reader.ReadAsync())
         {
+            var id = reader.GetInt32("id");
+            var text = ReplacePHPCode(id, reader.GetString("text"));
             var discussion = new BlogPost
             {
-                Id = reader.GetInt32("id"),
+                Id = id,
                 AccessRoleId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
                 NodeStatusId = reader.GetInt32("status"),
                 NodeTypeId = 35,
-                Text = reader.GetString("text"),
+                Text = text,
 
             };
             yield return discussion;
@@ -67,4 +68,33 @@ internal partial class Program
         await reader.CloseAsync();
     }
 
+    private static string ReplacePHPCode(int id, string text)
+    {
+        List<string> codeSections = id switch
+        {
+            38035 => new List<string> { "ExecutiveCompensations" },
+            38888 => new List<string> { "CongressionalSupport" },
+            41136 => new List<string> { "HagueFacilitation"},
+            45514 => new List<string> { "AbuseTotal", "AbusePerCountry", "AbuseMap", "AbusePerState", },
+            _ => new List<string>()
+        };
+        if(codeSections.Count == 0)
+        {
+            return text;
+        }
+        var end = 0;
+        List<string> parts = new List<string>();
+        foreach(var (codeSection, index) in codeSections.Select((c, i) => (c, i)))
+        {
+            var rem = text.Substring(end);
+            var start = text.IndexOf("<?php", end);
+            var p = text.Substring(end, start - end);
+            parts.Add(p);
+            parts.Add(@$"<snippet name=""{codeSection}"">");
+            end = text.IndexOf("?>", start) + 2;
+        }
+        var part = text.Substring(end, text.Length - end);
+        parts.Add(part);
+        return parts.Aggregate("", (a, b) => a + b);
+    }
 }

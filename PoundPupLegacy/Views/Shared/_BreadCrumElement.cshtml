@@ -1,0 +1,13 @@
+﻿@using PoundPupLegacy.ViewModel
+@model IEnumerable<BreadCrumElement>
+@{
+
+    <div class="breadcrum">
+    @foreach (var element in @Model)
+    {
+        <span class="breadcrum-element">
+            <a href="@element.Url">@element.Name</a>
+        </span>
+    }
+    </div>
+}

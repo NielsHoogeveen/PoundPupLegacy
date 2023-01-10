@@ -12,7 +12,7 @@ namespace PoundPupLegacy.Web
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddRazorPages();
+            builder.Services.AddControllersWithViews();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddTransient<NpgsqlConnection>((sp) => new NpgsqlConnection(CONNECTSTRING));
             builder.Services.AddTransient<FetchNodeService>();
@@ -41,7 +41,7 @@ namespace PoundPupLegacy.Web
             app.UseRouting();
 
             app.MapBlazorHub();
-            app.MapFallbackToPage("/_Host");
+            //app.MapFallbackToPage("/_Host");
 
             app.Run();
         }

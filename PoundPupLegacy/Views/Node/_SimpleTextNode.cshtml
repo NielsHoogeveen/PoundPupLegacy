@@ -1,0 +1,23 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model SimpleTextNode
+@{
+    <div class="large-text">
+        @if (Model.SeeAlsoBoxElements is not null)
+        {
+            <div class="see-also-box">
+                <t2>See also</t2>
+                <ul>
+                    @foreach (var elem in Model.SeeAlsoBoxElements)
+                    {
+                        <li><a href="/node/@elem.Id">@elem.Name</a></li>
+                    }
+                </ul>
+            </div>
+
+        }
+        <div class="text">
+            @Html.Raw(Model.Text.Replace(@"href=""http://poundpuplegacy.org", @"href="""))
+        </div>
+    </div>
+}
