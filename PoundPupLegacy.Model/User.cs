@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record User : AccessRole
+public record User : AccessRole, Publisher
 {
     public required int? Id { get; set; }
     public required string Name { get; init; }

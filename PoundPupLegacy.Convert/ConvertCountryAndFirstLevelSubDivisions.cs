@@ -4,6 +4,7 @@ using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 using System.Numerics;
+using System.Reflection.PortableExecutable;
 using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert
@@ -86,14 +87,26 @@ namespace PoundPupLegacy.Convert
         {
             new CountryAndFirstAndBottomLevelSubdivision
             {
-                Id = ALAND,
+                Id = null ,
                 Title = "Åland",
                 Name = "Åland",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = ALAND
+                    }
+                },
                 NodeTypeId = 15,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
-                AccessRoleId = 1,
+                PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
                 {
@@ -120,14 +133,26 @@ namespace PoundPupLegacy.Convert
             },
             new CountryAndFirstAndBottomLevelSubdivision
             {
-                Id = CURACAO,
+                Id = null,
                 Title = "Curaçao",
                 Name = "Curaçao",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = CURACAO
+                    }
+                },
                 NodeTypeId = 15,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
-                AccessRoleId = 1,
+                PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
                 {
@@ -153,14 +178,26 @@ namespace PoundPupLegacy.Convert
                 OtherRequirements = null,          },
             new CountryAndFirstAndBottomLevelSubdivision
             {
-                Id = SINT_MAARTEN,
+                Id = null,
                 Title = "Sint Maarten",
                 Name = "Sint Maarten",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = SINT_MAARTEN
+                    }
+                },
                 NodeTypeId = 15,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
-                AccessRoleId = 1,
+                PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
                 {
@@ -187,14 +224,26 @@ namespace PoundPupLegacy.Convert
             },
             new CountryAndFirstAndBottomLevelSubdivision
             {
-                Id = UNITED_STATES_MINOR_OUTLYING_ISLANDS,
+                Id = null,
                 Title = "United States Minor Outlying Islands",
                 Name = "United States Minor Outlying Islands",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = UNITED_STATES_MINOR_OUTLYING_ISLANDS
+                    }
+                },
                 NodeTypeId = 15,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
-                AccessRoleId = 1,
+                PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
                 {
@@ -281,13 +330,25 @@ namespace PoundPupLegacy.Convert
 
                 yield return new CountryAndFirstAndBottomLevelSubdivision
                 {
-                    Id = id,
-                    AccessRoleId = reader.GetInt32("access_role_id"),
+                    Id = null,
+                    PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
                     Name = name,
-                    NodeStatusId = reader.GetInt32("node_status_id"),
+                    OwnerId = null,
+                    TenantNodes = new List<TenantNode>
+                    {
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
                     NodeTypeId = 15,
                     Description = "",
                     VocabularyNames = vocabularyNames,

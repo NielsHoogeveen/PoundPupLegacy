@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record UserGroup : AccessRole
+public interface UserGroup : Identifiable
 {
-    public required int? Id { get; set; }
-    public required string Name { get; init; }
+    public string Name { get;  }
+    public string Description { get; }
 }

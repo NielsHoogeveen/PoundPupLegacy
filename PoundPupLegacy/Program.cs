@@ -18,8 +18,12 @@ public class Program
         builder.Services.AddTransient<NpgsqlConnection>((sp) => new NpgsqlConnection(CONNECTSTRING));
         builder.Services.AddTransient<FetchNodeService>();
         builder.Services.AddTransient<FetchBlogService>();
+        builder.Services.AddTransient<FetchBlogsService>();
+        builder.Services.AddTransient<FetchArticlesService>();
         builder.Services.AddTransient<RazorViewToStringService>();
         builder.Services.AddTransient<StringToDocumentService>();
+        builder.Services.AddTransient<TeaserService>();
+
 
         var app = builder.Build();
 

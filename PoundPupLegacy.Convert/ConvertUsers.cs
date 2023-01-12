@@ -8,49 +8,113 @@ namespace PoundPupLegacy.Convert;
 
 internal partial class Program
 {
-    private static IEnumerable<UserGroup> GetUserGroups()
+    private static IEnumerable<UserRole> GetUserRoles()
     {
-        return new List<UserGroup>
+        return new List<UserRole>
         {
-            new UserGroup
+            new UserRole
             {
                 Id = 4,
                 Name = "Member"
             },
-            new UserGroup
+            new UserRole
             {
                 Id = 6,
                 Name = "Administrators"
             },
-            new UserGroup
+        };
+    }
+    private static IEnumerable<Tenant> GetTenants()
+    {
+        return new List<Tenant>
+        {
+            new Tenant
+            {
+                Id = 1,
+                DomainName = "poundpuplegacy.org",
+                Name = "Pound Pup Legacy",
+                Description = "",
+                VocabularyIdTagging = null
+            },
+           new Tenant
+            {
+                Id = 5,
+                DomainName = "cpctresearch.info",
+                Name = "CPCT Research",
+                Description = "",
+                VocabularyIdTagging = null
+            },
+
+        };
+    }
+    private static IEnumerable<ContentSharingGroup> GetContentSharingGroups()
+    {
+        return new List<ContentSharingGroup>
+        {
+            new ContentSharingGroup
+            {
+                Id = 2,
+                Name = "Geographical Entities",
+                Description = "",
+            },
+            new ContentSharingGroup
+            {
+                Id = 3,
+                Name = "Parties",
+                Description = "",
+            },
+            new ContentSharingGroup
+            {
+                Id = 4,
+                Name = "Cases",
+                Description = "",
+            },
+
+        };
+    }
+
+    private static IEnumerable<Collective> GetCollectives()
+    {
+        return new List<Collective>
+        {
+            new Collective
             {
                 Id = 72,
-                Name = "Staff"
+                Name = "Kerry and Niels"
             },
         };
     }
-    private static IEnumerable<UserGroupUser> GetUserGroupUsers()
+    private static IEnumerable<CollectiveUser> GetCollectiveUsers()
     {
-        return new List<UserGroupUser>
+        return new List<CollectiveUser>
         {
-            new UserGroupUser
+            new CollectiveUser
             {
-                UserGroupId = 6,
-                UserId = 1
-            },
-            new UserGroupUser
-            {
-                UserGroupId = 6,
-                UserId = 3
-            },
-            new UserGroupUser
-            {
-                UserGroupId = 72,
+                CollectiveId = 72,
                 UserId = 2
             },
-            new UserGroupUser
+            new CollectiveUser
             {
-                UserGroupId = 72,
+                CollectiveId = 72,
+                UserId = 3
+            },
+        };
+    }
+
+    private static IEnumerable<UserGroupUserRoleUser> GetUserGroupUserRoleUsers()
+    {
+        return new List<UserGroupUserRoleUser>
+        {
+            new UserGroupUserRoleUser
+            {
+                UserGroupId = 1,
+                UserRoleId = 6,
+                UserId = 2
+            },
+            new UserGroupUserRoleUser
+            {
+                UserGroupId = 1,
+                UserRoleId = 6,
                 UserId = 3
             },
         };
@@ -63,12 +127,16 @@ internal partial class Program
         try
         {
             var users = ReadUsers(mysqlconnection).ToList();
-            var memberList = users.Select(x => new UserGroupUser { UserGroupId = 4, UserId = (int)x.Id! });
+            var memberList = users.Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! });
             await AnonimousUserCreator.CreateAsync(connection);
+            await TenantCreator.CreateAsync(GetTenants().ToAsyncEnumerable(), connection);
+            await ContentSharingGroupCreator.CreateAsync(GetContentSharingGroups().ToAsyncEnumerable(), connection);
+            await UserRoleCreator.CreateAsync(GetUserRoles().ToAsyncEnumerable(), connection);
             await UserCreator.CreateAsync(users.ToAsyncEnumerable(), connection);
-            await UserGroupCreator.CreateAsync(GetUserGroups().ToAsyncEnumerable(), connection);
-            await UserGroupUserCreator.CreateAsync(GetUserGroupUsers().ToAsyncEnumerable(), connection);
-            await UserGroupUserCreator.CreateAsync(memberList.ToAsyncEnumerable(), connection);
+            await CollectiveCreator.CreateAsync(GetCollectives().ToAsyncEnumerable(), connection);
+            await CollectiveUserCreator.CreateAsync(GetCollectiveUsers().ToAsyncEnumerable(), connection);
+            await UserGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers().ToAsyncEnumerable(), connection);
+            await UserGroupUserRoleUserCreator.CreateAsync(memberList.ToAsyncEnumerable(), connection);
             await tx.CommitAsync();
         }
         catch (Exception)

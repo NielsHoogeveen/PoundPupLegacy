@@ -12,12 +12,13 @@ public class FetchBlogService
     private NpgsqlConnection _connection;
 
     private RazorViewToStringService _renderer;
-    private StringToDocumentService _stringToDocumentService;
-    public FetchBlogService(NpgsqlConnection connection, RazorViewToStringService renderer, StringToDocumentService stringToDocumentService)
+
+    private TeaserService _teaserService;
+    public FetchBlogService(NpgsqlConnection connection, RazorViewToStringService renderer, TeaserService teaserService)
     {
         _connection = connection;
         _renderer = renderer;
-        _stringToDocumentService = stringToDocumentService;
+        _teaserService = teaserService;
     }
 
     public async Task<Blog> FetchBlog(HttpContext context, int accessRoleId, int startIndex, int length)
@@ -60,7 +61,7 @@ public class FetchBlogService
             Id = x.Id,
             Authoring = x.Authoring,
             Title = x.Title,
-            Text = MakeTeaser(x.Text)
+            Text = _teaserService.MakeTeaser(x.Text)
         });
         blog.Name = MakeName(blog.Name);
         blog.BlogPostTeasers = entries.ToList();
@@ -75,12 +76,7 @@ public class FetchBlogService
         }
         return $"{name}'s blog";
     }
-    private string MakeTeaser(string text)
-    {
-        var doc = _stringToDocumentService.Convert(text);
-        var res = doc.DocumentNode.ChildNodes.Take(5).Aggregate("", (a, b) => a + b.OuterHtml.Replace(@"href=""http://poundpuplegacy.org", @"href="""));
-        return res;
-    }
+
     const string FETCH_BLOG_POSTS = """
         fetch_blog_posts AS(
             SELECT

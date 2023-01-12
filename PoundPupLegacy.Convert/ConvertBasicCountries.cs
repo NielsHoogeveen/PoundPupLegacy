@@ -3,6 +3,7 @@ using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -131,11 +132,23 @@ internal partial class Program
         new BasicCountry
         {
             Id = ANTIGUA_AND_BARBUDA,
-            AccessRoleId = 1,
+            PublisherId = 1,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             Title = "Antigua and Barbuda",
-            NodeStatusId = 1,
+            OwnerId = null,
+            TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
+                {
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = ANTIGUA_AND_BARBUDA
+                }
+            },
             NodeTypeId = 13,
             Name = "Antigua and Barbuda",
             Description = "",
@@ -163,11 +176,23 @@ internal partial class Program
         new BasicCountry
         {
             Id = PALESTINE,
-            AccessRoleId = 1,
+            PublisherId = 1,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             Title = "Palestine",
-            NodeStatusId = 1,
+            OwnerId = null,
+            TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
+                {
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = PALESTINE
+                }
+            },
             NodeTypeId = 13,
             Name = "Palestine",
             Description = "",
@@ -195,11 +220,23 @@ internal partial class Program
         new BasicCountry
         {
             Id = SAINT_HELENA_ETC,
-            AccessRoleId = 1,
+            PublisherId = 1,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             Title = "Saint Helena, Ascension and Tristan da Cunha",
-            NodeStatusId = 1,
+            OwnerId = null,
+            TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
+                {
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = SAINT_HELENA_ETC
+                }
+            },
             NodeTypeId = 13,
             Name = "Saint Helena, Ascension and Tristan da Cunha",
             Description = "",
@@ -228,11 +265,23 @@ internal partial class Program
         new BasicCountry
         {
             Id = SOUTH_SUDAN,
-            AccessRoleId = 1,
+            PublisherId = 1,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             Title = "South Sudan",
-            NodeStatusId = 1,
+            OwnerId = null,
+            TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
+                {
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = SOUTH_SUDAN
+                }
+            },
             NodeTypeId = 13,
             Name = "South Sudan",
             Description = "",
@@ -406,12 +455,24 @@ internal partial class Program
             };
             var country = new BasicCountry
             {
-                Id = id,
-                AccessRoleId = reader.GetInt32("access_role_id"),
+                Id  = null,
+                PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                NodeStatusId = reader.GetInt32("node_status_id"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
                 NodeTypeId = 13,
                 Name = name,
                 Description = "",

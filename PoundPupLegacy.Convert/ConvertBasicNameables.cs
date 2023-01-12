@@ -104,12 +104,24 @@ internal partial class Program
             var name = reader.GetString("title");
             var country = new BasicNameable
             {
-                Id = id,
-                AccessRoleId = reader.GetInt32("user_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = name,
-                NodeStatusId = reader.GetInt32("status"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,

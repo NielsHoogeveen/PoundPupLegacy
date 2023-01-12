@@ -2,6 +2,7 @@
 using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
+using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -14,12 +15,24 @@ internal partial class Program
         {
             new FamilySize
             {
-                Id = ONE_TO_FOUR,
-                AccessRoleId = 1,
+                Id = null,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "1 to 4",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = ONE_TO_FOUR
+                    }
+                },
                 NodeTypeId = 28,
                 Description = "",
                 FileIdTileImage = null,
@@ -36,11 +49,23 @@ internal partial class Program
             new FamilySize
             {
                 Id = FOUR_TO_EIGHT,
-                AccessRoleId = 1,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "4 to 8",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = FOUR_TO_EIGHT
+                    }
+                },
                 NodeTypeId = 28,
                 Description = "",
                 FileIdTileImage = null,
@@ -56,12 +81,24 @@ internal partial class Program
             },
             new FamilySize
             {
-                Id = EIGHT_TO_TWELVE,
-                AccessRoleId = 1,
+                Id = null,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "8 to 12",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = EIGHT_TO_TWELVE
+                    }
+                },
                 NodeTypeId = 28,
                 Description = "",
                 FileIdTileImage = null,
@@ -77,12 +114,24 @@ internal partial class Program
             },
             new FamilySize
             {
-                Id = MORE_THAN_TWELVE,
-                AccessRoleId = 1,
+                Id = null,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "more than 12",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = MORE_THAN_TWELVE
+                    }
+                },
                 NodeTypeId = 28,
                 Description = "",
                 FileIdTileImage = null,

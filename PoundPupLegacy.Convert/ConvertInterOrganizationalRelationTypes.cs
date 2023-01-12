@@ -68,12 +68,24 @@ namespace PoundPupLegacy.Convert
                 };
                 yield return new InterOrganizationalRelationType
                 {
-                    Id = id,
-                    AccessRoleId = reader.GetInt32("access_role_id"),
+                    Id = null,
+                    PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
-                    NodeStatusId = reader.GetInt32("node_status_id"),
+                    OwnerId = null,
+                    TenantNodes = new List<TenantNode>
+                    {
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
                     NodeTypeId = 2,
                     Description = reader.GetString("description"),
                     FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),

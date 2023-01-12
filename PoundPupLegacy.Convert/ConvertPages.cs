@@ -47,16 +47,31 @@ internal partial class Program
 
         var reader = await readCommand.ExecuteReaderAsync();
 
+        
         while (await reader.ReadAsync())
         {
+            var id = reader.GetInt32("id");
             yield return new Page
             {
-                Id = reader.GetInt32("id"),
-                AccessRoleId = reader.GetInt32("user_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                NodeStatusId = reader.GetInt32("status"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("status"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
+
                 NodeTypeId = 42,
                 Text = reader.GetString("text"),
 

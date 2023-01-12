@@ -7,9 +7,11 @@ namespace PoundPupLegacy.Services;
 public class FetchNodeService
 {
     private NpgsqlConnection _connection;
-    public FetchNodeService(NpgsqlConnection connection)
+    private StringToDocumentService _stringToDocumentService;
+    public FetchNodeService(NpgsqlConnection connection, StringToDocumentService stringToDocumentService)
     {
         _connection = connection;
+        _stringToDocumentService = stringToDocumentService;
     }
 
     public async Task<Node> FetchNode(int id)
@@ -17,13 +19,15 @@ public class FetchNodeService
         _connection.Open();
         var sql = $"""
             WITH 
-            {FETCH_BLOG_POSTS},
+            {FETCH_SIMPLE_TEXT_NODE},
             {FETCH_SEE_ALSO_POSTS},
             {FETCH_SEE_ALSO_DOCUMENT},
             {FETCH_TAGS_DOCUMENT},
             {FETCH_COMMENT_DOCUMENT},
             {FETCH_BLOG_POST_BREADCRUM},
             {FETCH_BLOG_POST_DOCUMENT},
+            {FETCH_ARTICLE_BREADCRUM},
+            {FETCH_ARTICLE_DOCUMENT},
             {FETCH_DOCUMENT}
             SELECT node_type_id, document from fetch_document
             """;
@@ -38,16 +42,22 @@ public class FetchNodeService
         await using var reader = await readCommand.ExecuteReaderAsync();
         await reader.ReadAsync();
         var node_type_id = reader.GetInt32(0);
-        var node = node_type_id switch
+        Node node = node_type_id switch
         {
             35 => reader.GetFieldValue<BlogPost>(1),
+            36 => reader.GetFieldValue<Article>(1),
+            37 => reader.GetFieldValue<Discussion>(1),
             _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
         };
+        if(node is SimpleTextNode stn)
+        {
+            stn.Text = _stringToDocumentService.Convert(((SimpleTextNode)node).Text).DocumentNode.InnerHtml;
+        }
         _connection.Close();
         return node!;
     }
-    const string FETCH_BLOG_POSTS = """
-        fetch_blog_post AS(
+    const string FETCH_SIMPLE_TEXT_NODE = """
+        fetch_simple_text_node AS(
             SELECT
                 n.id, 
                 n.title, 
@@ -57,7 +67,6 @@ public class FetchNodeService
                 n.access_role_id, 
                 ar.name access_role_name
             FROM public."node" n
-            JOIN public."blog_post" bp on bp.id = n.id
             JOIN public."simple_text_node" stn on stn.id = n.id
             JOIN public."access_role" ar on ar.id = n.access_role_id
             WHERE n.id = @node_id
@@ -139,7 +148,33 @@ public class FetchNodeService
                     2
                 FROM node n
                 JOIN access_role ar on ar.id = n.access_role_id
-                WHERE n.id = 38199
+                WHERE n.id = @node_id
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+    const string FETCH_ARTICLE_BREADCRUM = """
+        fetch_article_bread_crum AS (
+            SELECT json_agg(json_build_object(
+                'Url', url,
+                'Name', "name"
+                ) 
+            ) bc
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/articles', 
+                    'aricles', 
+                    1
                 ) bce
                 ORDER BY bce."order"
             ) bces
@@ -191,7 +226,29 @@ public class FetchNodeService
                 'SeeAlsoBoxElements', (SELECT agg FROM fetch_see_also_document),
                 'Comments', (SELECT agg FROM  fetch_comments_document)
             ) :: jsonb document
-            FROM fetch_blog_post n
+            FROM fetch_simple_text_node n
+        ) 
+        """;
+
+    const string FETCH_ARTICLE_DOCUMENT = """
+        fetch_article_document AS (
+            SELECT 
+                json_build_object(
+                'Id', n.id,
+                'Title', n.title, 
+                'Text', n.text,
+                'Authoring', json_build_object(
+                    'Id', n.access_role_id, 
+                    'Name', n.access_role_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'BreadCrumElements', (SELECT bc FROM fetch_article_bread_crum),
+                'Tags', (SELECT agg FROM fetch_tags_document),
+                'SeeAlsoBoxElements', (SELECT agg FROM fetch_see_also_document),
+                'Comments', (SELECT agg FROM  fetch_comments_document)
+            ) :: jsonb document
+            FROM fetch_simple_text_node n
         ) 
         """;
 
@@ -201,6 +258,7 @@ public class FetchNodeService
                 n.node_type_id,
                 case 
                     when n.node_type_id = 35 then (select document from fetch_blog_post_document)
+                    when n.node_type_id = 36 then (select document from fetch_article_document)
                 end document
             FROM node n 
             WHERE n.id = @node_id

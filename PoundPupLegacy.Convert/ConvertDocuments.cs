@@ -142,14 +142,27 @@ internal partial class Program
         while (await reader.ReadAsync())
         {
             var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") ? null : reader.GetString("publication_date"));
+            var id = reader.GetInt32("id");
             yield return new Document
             {
-                Id = reader.GetInt32("id"),
-                AccessRoleId = reader.GetInt32("user_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                NodeStatusId = reader.GetInt32("status"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("status"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 PublicationDate = publicationDate,
                 SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),

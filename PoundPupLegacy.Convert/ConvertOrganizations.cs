@@ -3,6 +3,7 @@ using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Reflection.PortableExecutable;
 using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert;
@@ -15,12 +16,24 @@ internal partial class Program
         {
             new Organization
             {
-                Id = COLORADO_ADOPTION_CENTER,
-                AccessRoleId = 1,
+                Id = null,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "Colorado Adoption Center",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = COLORADO_ADOPTION_CENTER
+                    }
+                },
                 NodeTypeId = 23,
                 WebsiteURL = null,
                 EmailAddress = null,
@@ -142,8 +155,10 @@ internal partial class Program
         while (await reader.ReadAsync())
         {
             var vocabularyNames = new List<VocabularyName>();
-            
-            if(!reader.IsDBNull("topic_name"))
+
+            var id = reader.GetInt32("id");
+
+            if (!reader.IsDBNull("topic_name"))
             {
                 var topicName = reader.GetString("topic_name");
                 var topicParentNames = reader.IsDBNull("topic_parent_names") ? 
@@ -186,12 +201,24 @@ internal partial class Program
 
             yield return new Organization
             {
-                Id = reader.GetInt32("id"),
-                AccessRoleId = reader.GetInt32("access_role_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
-                NodeStatusId = reader.GetInt32("node_status_id"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                 EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),

@@ -32,7 +32,7 @@ internal partial class Program
             var countryName = (await reader.ReadAsync(TOPICS, countryId)).Name;
             yield return new FirstAndBottomLevelSubdivision
             {
-                Id = id,
+                Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
                 Description = "",
@@ -46,8 +46,20 @@ internal partial class Program
                     }
                 },
                 NodeTypeId = int.Parse(parts[4]),
-                NodeStatusId = int.Parse(parts[5]),
-                AccessRoleId = int.Parse(parts[6]),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = int.Parse(parts[5]),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
+                PublisherId = int.Parse(parts[6]),
                 CountryId = countryId,
                 Title = title,
                 Name = name,
@@ -409,13 +421,25 @@ internal partial class Program
 
             yield return new FirstAndBottomLevelSubdivision
             {
-                Id = reader.GetInt32("id"),
-                AccessRoleId = reader.GetInt32("access_role_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
                 Name = name,
-                NodeStatusId = reader.GetInt32("node_status_id"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
                 NodeTypeId = 17,
                 VocabularyNames = vocabularyNames,
                 Description = "",

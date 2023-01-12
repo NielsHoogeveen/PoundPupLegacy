@@ -9,38 +9,38 @@
         </span>
     </div>
     <article>
-    <h1>
-        @Model.Name
-    </h1>
-    <div class="blog-teasers">
-        @foreach(var entry in Model.BlogPostTeasers)
-        {
+        <h1>
+            @Model.Name
+        </h1>
+        <div class="blog-teasers">
+            @foreach(var entry in Model.BlogPostTeasers)
+            {
                 
-            <div class="blog-teaser">
-                <h2>
-                    <a href="/node/@entry.Id">@entry.Title</a>
-                </h2>
-                <partial name="~/Views/Shared/_Authoring.cshtml" model="@entry.Authoring" />
-                @Html.Raw(entry.Text)
-            </div>
-        }
-    </div>
-    <div class="pager">
-        @if (Model.PageNumber > 1)
-        {
-            <span class="first"><a href="/blog/@Model.Id?page=1">« first</a></span>
-            <span class="previous"><a href="/blog/@Model.Id?page=@(Model.PageNumber-1)">‹ previous</a></span>
-        }
-        @foreach (var i in Enumerable.Range(1, Model.NumberOfPages))
-        {
-            <span class="pager-entry"><a href="/blog/@Model.Id?page=@i">@i</a></span>
-        }
-        @if (Model.PageNumber < Model.NumberOfPages )
-        {
-            <span class="next"><a href="/blog/@Model.Id?page=@(Model.PageNumber+1)">next ›</a></span>
-            <span class="last"><a href="/blog/@Model.Id?page=@Model.NumberOfPages">last »</a></span>
-        }
-    </div>
+                <div class="blog-teaser">
+                    <h2>
+                        <a href="/node/@entry.Id">@entry.Title</a>
+                    </h2>
+                    <partial name="~/Views/Shared/_Authoring.cshtml" model="@entry.Authoring" />
+                    @Html.Raw(entry.Text)
+                </div>
+            }
+        </div>
+        <div class="pager">
+            @if (Model.PageNumber > 1)
+            {
+                <span class="first"><a href="/blog/@Model.Id?page=1">« first</a></span>
+                <span class="previous"><a href="/blog/@Model.Id?page=@(Model.PageNumber-1)">‹ previous</a></span>
+            }
+            @foreach (var i in Enumerable.Range(1, Model.NumberOfPages))
+            {
+                <span class="pager-entry"><a href="/blog/@Model.Id?page=@i">@i</a></span>
+            }
+            @if (Model.PageNumber < Model.NumberOfPages )
+            {
+                <span class="next"><a href="/blog/@Model.Id?page=@(Model.PageNumber+1)">next ›</a></span>
+                <span class="last"><a href="/blog/@Model.Id?page=@Model.NumberOfPages">last »</a></span>
+            }
+        </div>
     </article>
 </div>
 

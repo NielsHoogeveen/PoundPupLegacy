@@ -3,11 +3,11 @@
 public record BindingCountry : Node, TopLevelCountry
 {
     public required int? Id { get; set; }
-    public required int AccessRoleId { get; init; }
+    public required int PublisherId { get; init; }
     public required DateTime CreatedDateTime { get; init; }
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
-    public required int NodeStatusId { get; init; }
+    public required int? OwnerId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
@@ -23,6 +23,7 @@ public record BindingCountry : Node, TopLevelCountry
     public required string? IncomeRequirements { get; init; }
     public required string? HealthRequirements { get; init; }
     public required string? OtherRequirements { get; init; }
+    public required List<TenantNode> TenantNodes { get; init; }
 }
 
 

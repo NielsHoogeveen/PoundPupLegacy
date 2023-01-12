@@ -3,11 +3,11 @@
 public record FirstAndBottomLevelSubdivision : ISOCodedFirstLevelSubdivision, BottomLevelSubdivision
 {
     public required int? Id { get; set; }
-    public required int AccessRoleId { get; init; }
+    public required int PublisherId { get; init; }
     public required DateTime CreatedDateTime { get; init; }
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
-    public required int NodeStatusId { get; init; }
+    public required int? OwnerId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
@@ -16,5 +16,6 @@ public record FirstAndBottomLevelSubdivision : ISOCodedFirstLevelSubdivision, Bo
     public required int CountryId { get; init; }
     public required string ISO3166_2_Code { get; init; }
     public required int? FileIdFlag { get; init; }
+    public required List<TenantNode> TenantNodes { get; init; }
 
 }

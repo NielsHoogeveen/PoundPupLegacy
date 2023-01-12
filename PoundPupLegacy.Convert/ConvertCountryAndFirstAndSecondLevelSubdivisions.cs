@@ -3,6 +3,7 @@ using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert
 {
@@ -13,14 +14,26 @@ namespace PoundPupLegacy.Convert
         {
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = SAINT_BARTH,
+                Id = null,
                 Title = "Saint Barthélemy",
                 Name = "Saint Barthélemy",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = SAINT_BARTH
+                    }
+                },
                 NodeTypeId = 16,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
-                AccessRoleId = 1,
+                PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
                 {
@@ -48,14 +61,26 @@ namespace PoundPupLegacy.Convert
             },
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = SAINT_MARTIN,
+                Id = null,
                 Title = "Saint Martin",
                 Name = "Saint Martin",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = SAINT_MARTIN
+                    }
+                },
                 NodeTypeId = 16,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
-                AccessRoleId = 1,
+                PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
                 {
@@ -82,14 +107,26 @@ namespace PoundPupLegacy.Convert
             },
             new CountryAndFirstAndSecondLevelSubdivision
             {
-                Id = FRENCH_SOUTHERN_TERRITORIES,
+                Id = null,
                 Title = "French Southern Territories",
                 Name = "French Southern Territories",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = FRENCH_SOUTHERN_TERRITORIES
+                    }
+                },
                 NodeTypeId = 15,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
-                AccessRoleId = 1,
+                PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
                 {
@@ -198,23 +235,35 @@ namespace PoundPupLegacy.Convert
 
                 yield return new CountryAndFirstAndSecondLevelSubdivision
                 {
-                    Id = reader.GetInt32("id"),
-                    AccessRoleId = reader.GetInt32("access_role_id"),
+                    Id = null,
+                    PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
                     Name = name,
-                    NodeStatusId = reader.GetInt32("node_status_id"),
+                    OwnerId = null,
+                    TenantNodes = new List<TenantNode>
+                    {
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
                     NodeTypeId = 16,
                     Description = "",
                     VocabularyNames = vocabularyNames,
                     SecondLevelRegionId = reader.GetInt32("second_level_region_id"),
-                    ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
-                                  reader.GetInt32("id") == 4010 ? "RS" :
-                                  reader.GetInt32("id") == 4014 ? "XK" :
-                                  reader.GetString("iso_3166_code"),
-                    ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
-                    CountryId = GetSupervisingCountryId(reader.GetInt32("id")),
+                    ISO3166_1_Code = id == 3847 ? "NE" :
+                                     id == 4010 ? "RS" :
+                                     id == 4014 ? "XK" :
+                                     reader.GetString("iso_3166_code"),
+                    ISO3166_2_Code = GetISO3166Code2ForCountry(id),
+                    CountryId = GetSupervisingCountryId(id),
                     FileIdFlag = null,
                     FileIdTileImage = null,
                     HagueStatusId = 41213,

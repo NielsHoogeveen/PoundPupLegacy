@@ -18,4 +18,8 @@
     <ProjectReference Include="..\PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\" />
+  </ItemGroup>
+
 </Project>

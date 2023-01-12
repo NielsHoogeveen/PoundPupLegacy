@@ -26,7 +26,7 @@ internal partial class Program
             var countryName = (await reader.ReadAsync(TOPICS, countryId)).Name;
             yield return new FormalIntermediateLevelSubdivision
             {
-                Id = id,
+                Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
                 VocabularyNames = new List<VocabularyName>
@@ -41,8 +41,20 @@ internal partial class Program
                 Description = "",
                 FileIdTileImage = null,
                 NodeTypeId = int.Parse(parts[4]),
-                NodeStatusId = int.Parse(parts[5]),
-                AccessRoleId = int.Parse(parts[6]),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = int.Parse(parts[5]),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
+                PublisherId = int.Parse(parts[6]),
                 CountryId = countryId,
                 Title = title,
                 Name = parts[9],

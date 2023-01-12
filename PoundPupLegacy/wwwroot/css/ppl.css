@@ -93,14 +93,16 @@ nav ul li:hover {
 
 content {
     min-height: 50em;
+    width: 100%;
 }
-.article-with-comments, .blog-list {
+.article-with-comments, .blog-list, .articles {
+    width: 100%;
     background-color: #e2e0dc;
     color: #222;
-    padding-bottom: 1.5em;
+    height: 100%;
 
 }
-.article-with-comments a, .blog-list a {
+.article-with-comments a, .blog-list a, .articles a {
     color: #653708;
     text-decoration: none;
 }    
@@ -110,20 +112,23 @@ article {
     padding-right: 0.5em;
 }
 
-
-
 .tags {
+
+}
+.article-with-comments .tags {
+    background-color: #cd7648;
     margin-top: 1em;
     margin-bottom: 1.5em;
     padding: 0.5em;
-    background-color: #cd7648;
 }
-.tag {
-    margin-right: 0.5em;
-    
+.articles .tags {
 }
 
-.tag a {
+.tag {
+    margin-right: 0.5em;
+}
+
+.article-with-comments .tag a {
     color: #fcf7ef;
 }
 article h1, .blog-list h1 {
@@ -250,7 +255,27 @@ blockquote {
     margin-left: 0;
     padding-left: 1em;
 }
-.blog-teasers{
+.blogs-list {
+    width: 100%; 
+    display: grid;
+    grid-template-columns: 15fr 10fr 50fr 1fr;
+}
+
+.blogs-list div {
+    padding: 0.5em;  
+    height: 4em;
+    margin-bottom: 1em;
+    border-bottom: solid 1px grey;
+}
+.blogs-list div:nth-last-child(-n+4) {
+    margin-bottom: 0;
+    border-bottom: 0; 
+}
+.blogs-list div img {
+    height: 4em;
+}
+
+.blog-teasers {
     display: grid;
 }
 
@@ -260,4 +285,40 @@ blockquote {
 }
 .blog-teaser:last-of-type{
     border-bottom: 0;
-}1
+}
+.blogs-list label{
+    background-color: #b9bbc8;
+    padding: 0.5em;
+    color: black;
+}
+
+.term-names {
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-column-gap: 0.5em;
+    padding: 0.5em;
+}
+
+.term-name {
+    width: 100%;
+    margin-bottom: 0.5em;
+    text-align: center;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    background-color: #e3caac;
+    border: solid thin #cd7648;
+    border-radius: 5px;
+}
+
+.term-name:has(input:checked) {
+    background-color: #d0b89a; 
+}
+
+.term-name label{
+    user-select: none;
+    cursor: pointer;
+    
+}
+.term-name input[type="checkbox"] {
+    display: none;
+}

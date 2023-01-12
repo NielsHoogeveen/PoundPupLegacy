@@ -1,6 +1,5 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface AccessRole : Identifiable
+public interface AccessRole : Principal
 {
-    public string Name { get; }
 }

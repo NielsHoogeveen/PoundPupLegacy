@@ -4,6 +4,7 @@ using PoundPupLegacy.Db;
 using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert
 {
@@ -29,12 +30,24 @@ namespace PoundPupLegacy.Convert
                 var topicName = (await termReader.ReadAsync(TOPICS, subdivisionId)).Name;
                 yield return new BasicSecondLevelSubdivision
                 {
-                    Id = id,
+                    Id = null,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
                     NodeTypeId = int.Parse(parts[4]),
-                    NodeStatusId = int.Parse(parts[5]),
-                    AccessRoleId = int.Parse(parts[6]),
+                    OwnerId = null,
+                    TenantNodes = new List<TenantNode>
+                    {
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = int.Parse(parts[5]),
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    PublisherId = int.Parse(parts[6]),
                     CountryId = countryId,
                     Title = title,
                     Name = parts[9],
@@ -75,12 +88,24 @@ namespace PoundPupLegacy.Convert
                 var topicName = (await termReader.ReadAsync(TOPICS, subdivisionId)).Name;
                 yield return new BasicSecondLevelSubdivision
                 {
-                    Id = id,
+                    Id = null,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
                     NodeTypeId = int.Parse(parts[4]),
-                    NodeStatusId = int.Parse(parts[5]),
-                    AccessRoleId = int.Parse(parts[6]),
+                    OwnerId = null,
+                    TenantNodes = new List<TenantNode>
+                    {
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = int.Parse(parts[5]),
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    PublisherId = int.Parse(parts[6]),
                     CountryId = int.Parse(parts[7]),
                     Title = title,
                     Name = parts[9],
@@ -166,13 +191,25 @@ namespace PoundPupLegacy.Convert
                 };
                 yield return new BasicSecondLevelSubdivision
                 {
-                    Id = reader.GetInt32("id"),
-                    AccessRoleId = reader.GetInt32("access_role_id"),
+                    Id = null,
+                    PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = title,
                     Name = reader.GetString("title"),
-                    NodeStatusId = reader.GetInt32("node_status_id"),
+                    OwnerId = null,
+                    TenantNodes = new List<TenantNode>
+                    {
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = reader.GetInt32("id")
+                        }
+                    },
                     NodeTypeId = 19,
                     Description = "",
                     VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),

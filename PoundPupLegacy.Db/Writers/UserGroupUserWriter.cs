@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class UserGroupUserWriter : DatabaseWriter<UserGroupUser>, IDatabaseWriter<UserGroupUser>
+internal class UserGroupUserWriter : DatabaseWriter<UserGroupUserRoleUser>, IDatabaseWriter<UserGroupUserRoleUser>
 {
     private const string USER_GROUP_ID = "user_group_id";
     private const string USER_ID = "user_id";
-    public static async Task<DatabaseWriter<UserGroupUser>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<UserGroupUserRoleUser>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
             connection,
@@ -28,7 +28,7 @@ internal class UserGroupUserWriter : DatabaseWriter<UserGroupUser>, IDatabaseWri
     {
     }
 
-    internal override async Task WriteAsync(UserGroupUser article)
+    internal override async Task WriteAsync(UserGroupUserRoleUser article)
     {
         WriteValue(article.UserGroupId, USER_GROUP_ID);
         WriteValue(article.UserId, USER_ID);

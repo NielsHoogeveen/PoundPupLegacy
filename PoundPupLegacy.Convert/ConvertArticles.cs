@@ -51,12 +51,24 @@ internal partial class Program
         {
             yield return new Article
             {
-                Id = reader.GetInt32("id"),
-                AccessRoleId = reader.GetInt32("user_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                NodeStatusId = reader.GetInt32("status"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = reader.GetInt32("id")
+                    }
+                },
                 NodeTypeId = 36,
                 Text = reader.GetString("text"),
 

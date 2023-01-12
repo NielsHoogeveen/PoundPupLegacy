@@ -49,6 +49,7 @@ internal partial class Program
 
         while (await reader.ReadAsync())
         {
+            var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName>
                 {
@@ -62,12 +63,24 @@ internal partial class Program
 
             yield return new HagueStatus
             {
-                Id = reader.GetInt32("id"),
-                AccessRoleId = reader.GetInt32("access_role_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                NodeStatusId = reader.GetInt32("node_status_id"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
                 NodeTypeId = 8,
                 Description = "",
                 FileIdTileImage = null,

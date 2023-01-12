@@ -1,0 +1,34 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<BlogListEntry>
+<div class="article-with-comments">
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/home">home</a>
+        </span>
+    </div>
+
+    <div class="blogs-list">
+        <label>Author</label>
+        <label>Number of posts</label>
+        <label>Lastest post</label>
+        <label>Avatar</label>
+        @foreach(var entry in Model)
+        {
+            <div><a href="/blog/@entry.Id">@entry.Name</a></div>
+            <div>@entry.NumberOfEntries</div>
+            <div><a href="/node/@entry.LatestEntryId">@entry.LatestEntryTitle</a></div>
+            @if (!string.IsNullOrEmpty(entry.FilePathAvatar))
+            {
+                <div><img src="/@entry.FilePathAvatar"/></div>
+            }
+            else
+            {
+                <div> </div>            
+            }
+    }
+    </div>
+</div>
+@{
+    Layout = "_Layout";
+}

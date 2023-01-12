@@ -3,6 +3,7 @@ using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -14,49 +15,97 @@ internal partial class Program
         {
             new Vocabulary
             {
-                Id = CHILD_PLACEMENT_TYPE,
+                Id = null,
                 Name = "Child Placement Type",
-                AccessRoleId = 1,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "Child Placement Type",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = CHILD_PLACEMENT_TYPE
+                    }
+                },
                 NodeTypeId = 36,
                 Description = ""
             },
             new Vocabulary
             {
-                Id = TYPE_OF_ABUSE,
+                Id = null,
                 Name = "Type of Abuse",
-                AccessRoleId = 1,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "Type of Abuse",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = TYPE_OF_ABUSE
+                    }
+                },
                 NodeTypeId = 36,
                 Description = ""
             },
             new Vocabulary
             {
-                Id = TYPE_OF_ABUSER,
+                Id = null,
                 Name = "Type of Abuser",
-                AccessRoleId = 1,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "Type of Abuser",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = TYPE_OF_ABUSER
+                    }
+                },
                 NodeTypeId = 36,
                 Description = ""
             },
             new Vocabulary
             {
-                Id = FAMILY_SIZE,
+                Id = null,
                 Name = "Family Size",
-                AccessRoleId = 1,
+                PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "Family Size",
-                NodeStatusId = 1,
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = FAMILY_SIZE
+                    }
+                },
                 NodeTypeId = 36,
                 Description = ""
             },
@@ -127,12 +176,24 @@ internal partial class Program
             var name = reader.GetString("name");
             yield return new Vocabulary
             {
-                Id = id,
-                AccessRoleId = reader.GetInt32("access_role_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = GetVocabularyName(id, name),
-                NodeStatusId = reader.GetInt32("node_status_id"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
                 NodeTypeId = 38,
                 Name = GetVocabularyName(id, name),
                 Description = reader.GetString("description"),

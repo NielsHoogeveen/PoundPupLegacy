@@ -2,11 +2,12 @@
 
 public interface Node : Identifiable
 {
-    public int AccessRoleId { get; }
+    public int PublisherId { get; }
     public DateTime CreatedDateTime { get; }
     public DateTime ChangedDateTime { get; }
     public string Title { get; }
-    public int NodeStatusId { get; }
     public int NodeTypeId { get; }
+    public int? OwnerId { get; }
+    public List<TenantNode> TenantNodes { get; }
 
 }

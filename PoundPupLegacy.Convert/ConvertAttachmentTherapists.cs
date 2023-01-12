@@ -85,7 +85,7 @@ internal partial class Program
 
         while (await reader.ReadAsync())
         {
-
+            var id = reader.GetInt32( "id" );
             var topicName = reader.GetString("topic_name");
             var parentName = reader.IsDBNull("parent_name")? null : reader.GetString("parent_name");
             var parentNames = new List<string>();
@@ -105,12 +105,24 @@ internal partial class Program
 
             yield return new Person
             {
-                Id = reader.GetInt32("id"),
-                AccessRoleId = reader.GetInt32("access_role_id"),
+                Id = null,
+                PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
-                NodeStatusId = reader.GetInt32("node_status_id"),
+                OwnerId = null,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    }
+                },
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 DateOfBirth = reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth"),
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),

@@ -1,0 +1,73 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Articles
+@{
+    <div class="articles">
+        <div class="breadcrum">
+            <span class="breadcrum-element">
+                <a href="/home">home</a>
+            </span>
+        </div>
+        <form id="term-form" action="/articles" method="get">
+            <div class="term-names">
+                @foreach(var termName in Model.TermNames)
+                {
+                    <div class="term-name">
+                        @if (termName.Selected)
+                        {
+                            <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="on"/>
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" />
+                        }
+                        <label class="term-name-label" for="term-name-@termName.Id">@termName.Name</label>
+                    </div>
+                }
+            </div>
+        </form>
+        <article>
+        <div class="blog-teasers">
+            @foreach (var entry in Model.ArticleListEntries)
+            {
+
+                <div class="blog-teaser">
+                    <h2>
+                        <a href="/node/@entry.Id">@entry.Title</a>
+                    </h2>
+                    <partial name="~/Views/Shared/_Authoring.cshtml" model="@entry.Authoring" />
+                    @Html.Raw(entry.Text)
+                        @if (entry.Tags is not null)
+                        {
+                            <div class="tags">
+                                @foreach (var tag in @entry.Tags)
+                                {
+                                    <span class="tag"><a href="/node/@tag.Id">@tag.Name</a></span>
+                                }
+                            </div>
+                        }
+
+                </div>
+
+            }
+        </div>
+        </article>
+    </div>
+    <script>
+        document.querySelectorAll('.term-name-label').forEach(item => {
+            item.addEventListener('click', event => {
+                console.log('clicked');
+                var elem = document.getElementById(item.getAttribute("for"));
+                if(elem.hasAttribute("checked"))
+                {
+                    elem.removeAttribute("checked");
+                }
+                else
+                {
+                    elem.setAttribute("checked", "on");
+                }
+                document.getElementById('term-form').submit();
+            })
+        })
+    </script>
+}
