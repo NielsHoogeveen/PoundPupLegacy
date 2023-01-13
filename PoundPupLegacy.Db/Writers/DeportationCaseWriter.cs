@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class DeportationCaseWriter : DatabaseWriter<DeportationCase>, IDatabaseWriter<DeportationCase>
+internal sealed class DeportationCaseWriter : DatabaseWriter<DeportationCase>, IDatabaseWriter<DeportationCase>
 {
     private const string ID = "id";
     private const string SUBDIVISION_ID_FROM = "subdivision_id_from";

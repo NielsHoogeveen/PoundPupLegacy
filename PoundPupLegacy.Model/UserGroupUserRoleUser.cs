@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record UserGroupUserRoleUser
+public sealed record UserGroupUserRoleUser
 {
     public required int UserGroupId { get; init; }
 

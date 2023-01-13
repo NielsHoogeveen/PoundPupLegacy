@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record HagueStatus : Nameable
+public sealed record HagueStatus : Nameable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class BasicSecondLevelSubdivisionWriter : DatabaseWriter<BasicSecondLevelSubdivision>, IDatabaseWriter<BasicSecondLevelSubdivision>
+internal sealed class BasicSecondLevelSubdivisionWriter : DatabaseWriter<BasicSecondLevelSubdivision>, IDatabaseWriter<BasicSecondLevelSubdivision>
 {
     private const string ID = "id";
     private const string INTERMEDIATE_LEVEL_SUBDIVISION_ID = "intermediate_level_subdivision_id";

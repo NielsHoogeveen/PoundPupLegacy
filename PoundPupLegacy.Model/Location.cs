@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Location : Identifiable
+public sealed record Location : Identifiable
 {
     public required int? Id { get; set; }
     public required string? Street { get; init; }

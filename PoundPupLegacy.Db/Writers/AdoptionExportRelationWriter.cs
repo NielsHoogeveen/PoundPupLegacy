@@ -3,7 +3,7 @@
 [assembly: InternalsVisibleTo("PoundPupLegacy.Db.Test")]
 namespace PoundPupLegacy.Db.Writers;
 
-internal class AdoptionExportRelationWriter : DatabaseWriter<AdoptionExportRelation>, IDatabaseWriter<AdoptionExportRelation>
+internal sealed class AdoptionExportRelationWriter : DatabaseWriter<AdoptionExportRelation>, IDatabaseWriter<AdoptionExportRelation>
 {
 
     private const string COUNTRY_ID_TO = "country_id_to";

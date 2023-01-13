@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class TermWriter : DatabaseWriter<Term>, IDatabaseWriter<Term>
+internal sealed class TermWriter : DatabaseWriter<Term>, IDatabaseWriter<Term>
 {
     private const string VOCABULARY_ID = "vocabulary_id";
     private const string NAME = "name";

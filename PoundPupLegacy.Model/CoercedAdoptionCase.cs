@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record CoercedAdoptionCase : Case
+public sealed record CoercedAdoptionCase : Case
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

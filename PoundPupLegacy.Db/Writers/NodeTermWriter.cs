@@ -3,7 +3,7 @@
 [assembly: InternalsVisibleTo("PoundPupLegacy.Db.Test")]
 namespace PoundPupLegacy.Db.Writers;
 
-internal class NodeTermWriter : DatabaseWriter<NodeTerm>, IDatabaseWriter<NodeTerm>
+internal sealed class NodeTermWriter : DatabaseWriter<NodeTerm>, IDatabaseWriter<NodeTerm>
 {
     private const string NODE_ID = "node_id";
     private const string TERM_ID = "term_id";

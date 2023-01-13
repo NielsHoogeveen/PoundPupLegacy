@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class FamilySizeWriter : IDatabaseWriter<FamilySize>
+internal sealed class FamilySizeWriter : IDatabaseWriter<FamilySize>
 {
     public static async Task<DatabaseWriter<FamilySize>> CreateAsync(NpgsqlConnection connection)
     {

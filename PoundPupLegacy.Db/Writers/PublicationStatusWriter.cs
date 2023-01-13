@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class PublicationStatusWriter : DatabaseWriter<PublicationStatus>, IDatabaseWriter<PublicationStatus>
+internal sealed class PublicationStatusWriter : DatabaseWriter<PublicationStatus>, IDatabaseWriter<PublicationStatus>
 {
     private const string ID = "id";
     private const string NAME = "name";

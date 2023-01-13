@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class CountryAndIntermediateLevelSubdivisionWriter : IDatabaseWriter<CountryAndIntermediateLevelSubdivision>
+internal sealed class CountryAndIntermediateLevelSubdivisionWriter : IDatabaseWriter<CountryAndIntermediateLevelSubdivision>
 {
     public static async Task<DatabaseWriter<CountryAndIntermediateLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class GeographicalEnityWriter : IDatabaseWriter<GeographicalEntity>
+internal sealed class GeographicalEnityWriter : IDatabaseWriter<GeographicalEntity>
 {
     public static async Task<DatabaseWriter<GeographicalEntity>> CreateAsync(NpgsqlConnection connection)
     {

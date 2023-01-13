@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class TypeOfAbuserWriter : IDatabaseWriter<TypeOfAbuser>
+internal sealed class TypeOfAbuserWriter : IDatabaseWriter<TypeOfAbuser>
 {
     public static async Task<DatabaseWriter<TypeOfAbuser>> CreateAsync(NpgsqlConnection connection)
     {

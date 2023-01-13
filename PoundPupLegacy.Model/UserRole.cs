@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record UserRole: AccessRole
+public sealed record UserRole : AccessRole
 {
     public required int? Id { get; set; }
 

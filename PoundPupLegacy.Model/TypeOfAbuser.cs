@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record TypeOfAbuser : Nameable
+public sealed record TypeOfAbuser : Nameable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

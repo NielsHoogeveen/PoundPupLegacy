@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record FirstLevelGlobalRegion : GlobalRegion
+public sealed record FirstLevelGlobalRegion : GlobalRegion
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

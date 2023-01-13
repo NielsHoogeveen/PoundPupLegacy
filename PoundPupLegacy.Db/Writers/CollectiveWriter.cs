@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class CollectiveWriter : IDatabaseWriter<Collective>
+internal sealed class CollectiveWriter : IDatabaseWriter<Collective>
 {
     public static async Task<DatabaseWriter<Collective>> CreateAsync(NpgsqlConnection connection)
     {

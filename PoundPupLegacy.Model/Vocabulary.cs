@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Vocabulary : Node
+public sealed record Vocabulary : Node
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class DocumentTypeWriter : IDatabaseWriter<DocumentType>
+internal sealed class DocumentTypeWriter : IDatabaseWriter<DocumentType>
 {
     public static async Task<DatabaseWriter<DocumentType>> CreateAsync(NpgsqlConnection connection)
     {

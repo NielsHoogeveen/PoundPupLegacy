@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class SimpleTextNodeWriter : DatabaseWriter<SimpleTextNode>, IDatabaseWriter<SimpleTextNode>
+internal sealed class SimpleTextNodeWriter : DatabaseWriter<SimpleTextNode>, IDatabaseWriter<SimpleTextNode>
 {
     private const string ID = "id";
     private const string TEXT = "text";

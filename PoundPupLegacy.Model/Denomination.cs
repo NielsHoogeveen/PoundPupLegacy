@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Denomination : Nameable
+public sealed record Denomination : Nameable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

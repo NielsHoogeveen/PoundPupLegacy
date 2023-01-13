@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class HagueStatusWriter : IDatabaseWriter<HagueStatus>
+internal sealed class HagueStatusWriter : IDatabaseWriter<HagueStatus>
 {
     public static async Task<DatabaseWriter<HagueStatus>> CreateAsync(NpgsqlConnection connection)
     {

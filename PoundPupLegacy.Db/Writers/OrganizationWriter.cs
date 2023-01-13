@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class OrganizationWriter : DatabaseWriter<Organization>, IDatabaseWriter<Organization>
+internal sealed class OrganizationWriter : DatabaseWriter<Organization>, IDatabaseWriter<Organization>
 {
     private const string ID = "id";
     private const string WEBSITE_URL = "website_url";

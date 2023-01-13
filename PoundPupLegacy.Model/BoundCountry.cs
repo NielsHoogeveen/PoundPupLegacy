@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record BoundCountry : Country, ISOCodedSubdivision
+public sealed record BoundCountry : Country, ISOCodedSubdivision
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

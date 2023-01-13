@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Collective: Publisher
+public sealed record Collective : Publisher
 {
     public required int? Id { get; set; }
 

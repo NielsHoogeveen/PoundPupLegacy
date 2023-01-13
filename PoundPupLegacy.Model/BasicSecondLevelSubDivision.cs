@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record BasicSecondLevelSubdivision : SecondLevelSubdivision
+public sealed record BasicSecondLevelSubdivision : SecondLevelSubdivision
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

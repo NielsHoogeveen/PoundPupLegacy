@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record InformalIntermediateLevelSubdivision : IntermediateLevelSubdivision
+public sealed record InformalIntermediateLevelSubdivision : IntermediateLevelSubdivision
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

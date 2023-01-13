@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace PoundPupLegacy.Db.Writers;
 
-internal class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWriter<TenantNode>
+internal sealed class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWriter<TenantNode>
 {
 
     private const string TENANT_ID = "tenant_id";
@@ -61,7 +61,7 @@ internal class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWriter<Te
     internal override async Task WriteAsync(TenantNode tenantNode)
     {
         WriteValue(tenantNode.TenantId, TENANT_ID);
-        WriteValue(tenantNode.UrlId, URL_ID);
+        WriteValue(tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value: tenantNode.NodeId, URL_ID);
         WriteNullableValue(tenantNode.UrlPath, URL_PATH);
         WriteValue(tenantNode.NodeId, NODE_ID);
         WriteNullableValue(tenantNode.SubgroupId, SUBGROUP_ID);

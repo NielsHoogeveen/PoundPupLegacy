@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class BoundCountryWriter : DatabaseWriter<BoundCountry>, IDatabaseWriter<BoundCountry>
+internal sealed class BoundCountryWriter : DatabaseWriter<BoundCountry>, IDatabaseWriter<BoundCountry>
 {
     private const string ID = "id";
     private const string BINDING_COUNTRY_ID = "binding_country_id";

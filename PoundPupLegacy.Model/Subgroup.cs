@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Subgroup: UserGroup
+public sealed record Subgroup : UserGroup
 {
     public required int? Id { get; set; }
     public required string Name { get; init; }

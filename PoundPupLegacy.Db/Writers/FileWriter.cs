@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Db.Writers;
 
-internal class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.File>
+internal sealed class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<Model.File>
 {
     private const string ID = "id";
     private const string PATH = "path";

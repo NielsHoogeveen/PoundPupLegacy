@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class ChildTraffickingCaseWriter : DatabaseWriter<ChildTraffickingCase>, IDatabaseWriter<ChildTraffickingCase>
+internal sealed class ChildTraffickingCaseWriter : DatabaseWriter<ChildTraffickingCase>, IDatabaseWriter<ChildTraffickingCase>
 {
     private const string ID = "id";
     private const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class GlobalRegionWriter : IDatabaseWriter<GlobalRegion>
+internal sealed class GlobalRegionWriter : IDatabaseWriter<GlobalRegion>
 {
     public static async Task<DatabaseWriter<GlobalRegion>> CreateAsync(NpgsqlConnection connection)
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class TopLevelCountryWriter : DatabaseWriter<TopLevelCountry>, IDatabaseWriter<TopLevelCountry>
+internal sealed class TopLevelCountryWriter : DatabaseWriter<TopLevelCountry>, IDatabaseWriter<TopLevelCountry>
 {
     private const string ID = "id";
     private const string ISO_3166_1_CODE = "iso_3166_1_code";

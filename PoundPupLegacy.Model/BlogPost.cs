@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record BlogPost : SimpleTextNode
+public sealed record BlogPost : SimpleTextNode
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

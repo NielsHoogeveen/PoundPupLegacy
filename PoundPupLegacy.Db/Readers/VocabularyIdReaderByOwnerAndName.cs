@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Db.Readers;
 
-public class VocabularyIdReaderByOwnerAndName : DatabaseReader<Term>, IDatabaseReader<VocabularyIdReaderByOwnerAndName>
+public sealed class VocabularyIdReaderByOwnerAndName : DatabaseReader<Term>, IDatabaseReader<VocabularyIdReaderByOwnerAndName>
 {
     public static async Task<VocabularyIdReaderByOwnerAndName> CreateAsync(NpgsqlConnection connection)
     {

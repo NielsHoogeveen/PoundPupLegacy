@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Unit
+public sealed record Unit
 {
 }

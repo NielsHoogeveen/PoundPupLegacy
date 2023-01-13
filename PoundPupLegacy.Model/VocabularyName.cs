@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record VocabularyName
+public sealed record VocabularyName
 {
     public required int OwnerId { get; init; }
     public string Name { get; init; }

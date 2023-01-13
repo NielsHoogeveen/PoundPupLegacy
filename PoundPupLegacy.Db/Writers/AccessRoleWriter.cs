@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class AccessRoleWriter : IDatabaseWriter<AccessRole>
+internal sealed class AccessRoleWriter : IDatabaseWriter<AccessRole>
 {
     public static async Task<DatabaseWriter<AccessRole>> CreateAsync(NpgsqlConnection connection)
     {

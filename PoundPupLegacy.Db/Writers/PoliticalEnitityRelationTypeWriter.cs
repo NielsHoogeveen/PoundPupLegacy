@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class PoliticalEntityRelationTypeWriter : DatabaseWriter<PoliticalEntityRelationType>, IDatabaseWriter<PoliticalEntityRelationType>
+internal sealed class PoliticalEntityRelationTypeWriter : DatabaseWriter<PoliticalEntityRelationType>, IDatabaseWriter<PoliticalEntityRelationType>
 {
     private const string ID = "id";
     private const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";

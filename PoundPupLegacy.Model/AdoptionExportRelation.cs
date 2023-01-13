@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record AdoptionExportRelation
+public sealed record AdoptionExportRelation
 {
     public required int CountryIdTo { get; init; }
     public required int? CountryIdFrom { get; init; }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record DateTimeRange
+public sealed record DateTimeRange
 {
     public DateTimeRange(DateTime? start, DateTime? end)
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class ReviewWriter : IDatabaseWriter<Review>
+internal sealed class ReviewWriter : IDatabaseWriter<Review>
 {
     public static async Task<DatabaseWriter<Review>> CreateAsync(NpgsqlConnection connection)
     {

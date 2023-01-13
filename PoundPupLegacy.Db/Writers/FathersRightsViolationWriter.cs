@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class FathersRightsViolationCaseWriter : IDatabaseWriter<FathersRightsViolationCase>
+internal sealed class FathersRightsViolationCaseWriter : IDatabaseWriter<FathersRightsViolationCase>
 {
     public static async Task<DatabaseWriter<FathersRightsViolationCase>> CreateAsync(NpgsqlConnection connection)
     {

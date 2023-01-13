@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class PoliticalEntityWriter : DatabaseWriter<PoliticalEntity>, IDatabaseWriter<PoliticalEntity>
+internal sealed class PoliticalEntityWriter : DatabaseWriter<PoliticalEntity>, IDatabaseWriter<PoliticalEntity>
 {
     private const string ID = "id";
     private const string FILE_ID_FLAG = "file_id_flag";

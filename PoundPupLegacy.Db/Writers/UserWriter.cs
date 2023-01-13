@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
+internal sealed class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
 {
     private const string ID = "id";
     private const string CREATED_DATE_TIME = "created_date_time";

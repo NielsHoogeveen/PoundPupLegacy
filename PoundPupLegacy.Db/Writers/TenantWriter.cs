@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class TenantWriter : DatabaseWriter<Tenant>, IDatabaseWriter<Tenant>
+internal sealed class TenantWriter : DatabaseWriter<Tenant>, IDatabaseWriter<Tenant>
 {
     private const string ID = "id";
     private const string DOMAIN_NAME = "domain_name";

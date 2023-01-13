@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class UserRoleWriter : IDatabaseWriter<UserRole>
+internal sealed class UserRoleWriter : IDatabaseWriter<UserRole>
 {
     public static async Task<DatabaseWriter<UserRole>> CreateAsync(NpgsqlConnection connection)
     {

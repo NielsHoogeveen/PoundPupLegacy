@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class LocationLocatableWriter : DatabaseWriter<LocationLocatable>, IDatabaseWriter<LocationLocatable>
+internal sealed class LocationLocatableWriter : DatabaseWriter<LocationLocatable>, IDatabaseWriter<LocationLocatable>
 {
     private const string LOCATION_ID = "location_id";
     private const string LOCATABLE_ID = "locatable_id";

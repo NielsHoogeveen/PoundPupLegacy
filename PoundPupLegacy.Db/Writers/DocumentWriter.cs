@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter<Document>
+internal sealed class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter<Document>
 {
 
     private const string ID = "id";

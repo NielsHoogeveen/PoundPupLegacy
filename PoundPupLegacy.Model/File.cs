@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record File : Identifiable
+public sealed record File : Identifiable
 {
     public required int? Id { get; set; }
 

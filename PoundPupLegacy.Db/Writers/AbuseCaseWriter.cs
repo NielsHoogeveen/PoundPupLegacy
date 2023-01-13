@@ -3,7 +3,7 @@
 [assembly: InternalsVisibleTo("PoundPupLegacy.Db.Test")]
 namespace PoundPupLegacy.Db.Writers;
 
-internal class AbuseCaseWriter : DatabaseWriter<AbuseCase>, IDatabaseWriter<AbuseCase>
+internal sealed class AbuseCaseWriter : DatabaseWriter<AbuseCase>, IDatabaseWriter<AbuseCase>
 {
     private const string ID = "id";
     private const string CHILD_PLACEMENT_TYPE_ID = "child_placement_type_id";

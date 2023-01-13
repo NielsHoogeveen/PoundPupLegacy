@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class CountryWriter : DatabaseWriter<Country>, IDatabaseWriter<Country>
+internal sealed class CountryWriter : DatabaseWriter<Country>, IDatabaseWriter<Country>
 {
     private const string ID = "id";
     private const string HAGUE_STATUS_ID = "hague_status_id";

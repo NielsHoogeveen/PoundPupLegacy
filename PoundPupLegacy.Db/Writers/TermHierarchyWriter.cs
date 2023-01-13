@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class TermHierarchyWriter : DatabaseWriter<TermHierarchy>, IDatabaseWriter<TermHierarchy>
+internal sealed class TermHierarchyWriter : DatabaseWriter<TermHierarchy>, IDatabaseWriter<TermHierarchy>
 {
     private const string TERM_ID_PARENT = "term_id_parent";
     private const string TERM_ID_CHILD = "term_id_child";

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record BasicCountry : Node, TopLevelCountry
+public sealed record BasicCountry : Node, TopLevelCountry
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record WrongfulMedicationCase : Case
+public sealed record WrongfulMedicationCase : Case
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

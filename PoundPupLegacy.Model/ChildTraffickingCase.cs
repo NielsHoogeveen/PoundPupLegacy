@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record ChildTraffickingCase : Case
+public sealed record ChildTraffickingCase : Case
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

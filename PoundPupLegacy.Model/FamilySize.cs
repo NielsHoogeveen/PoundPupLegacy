@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record FamilySize : Nameable
+public sealed record FamilySize : Nameable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

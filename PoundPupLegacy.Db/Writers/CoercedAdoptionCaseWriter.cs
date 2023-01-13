@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class CoercedAdoptionCaseWriter : IDatabaseWriter<CoercedAdoptionCase>
+internal sealed class CoercedAdoptionCaseWriter : IDatabaseWriter<CoercedAdoptionCase>
 {
     public static async Task<DatabaseWriter<CoercedAdoptionCase>> CreateAsync(NpgsqlConnection connection)
     {

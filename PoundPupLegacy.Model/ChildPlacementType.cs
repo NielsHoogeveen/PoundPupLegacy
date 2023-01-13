@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record ChildPlacementType : Nameable
+public sealed record ChildPlacementType : Nameable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

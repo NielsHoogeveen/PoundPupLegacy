@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Person: Party
+public sealed record Person : Party
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

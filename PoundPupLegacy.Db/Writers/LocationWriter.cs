@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Db.Writers;
 
-internal class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Location>
+internal sealed class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter<Location>
 {
     private const string ID = "id";
     private const string STREET = "street";

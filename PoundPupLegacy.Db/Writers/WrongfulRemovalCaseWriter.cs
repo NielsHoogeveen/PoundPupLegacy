@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class WrongfulRemovalCaseWriter : IDatabaseWriter<WrongfulRemovalCase>
+internal sealed class WrongfulRemovalCaseWriter : IDatabaseWriter<WrongfulRemovalCase>
 {
     public static async Task<DatabaseWriter<WrongfulRemovalCase>> CreateAsync(NpgsqlConnection connection)
     {

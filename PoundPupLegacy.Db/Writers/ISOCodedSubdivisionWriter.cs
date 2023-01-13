@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class ISOCodedSubdivisionWriter : DatabaseWriter<ISOCodedSubdivision>, IDatabaseWriter<ISOCodedSubdivision>
+internal sealed class ISOCodedSubdivisionWriter : DatabaseWriter<ISOCodedSubdivision>, IDatabaseWriter<ISOCodedSubdivision>
 {
     private const string ID = "id";
     private const string ISO_3166_2_CODE = "iso_3166_2_code";

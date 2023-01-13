@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class ContentSharingGroupWriter : IDatabaseWriter<ContentSharingGroup>
+internal sealed class ContentSharingGroupWriter : IDatabaseWriter<ContentSharingGroup>
 {
     public static async Task<DatabaseWriter<ContentSharingGroup>> CreateAsync(NpgsqlConnection connection)
     {

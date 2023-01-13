@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record TermHierarchy
+public sealed record TermHierarchy
 {
     public required int TermIdPartent { get; init; }
 

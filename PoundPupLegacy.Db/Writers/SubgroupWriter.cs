@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class SubgroupWriter : DatabaseWriter<Subgroup>, IDatabaseWriter<Subgroup>
+internal sealed class SubgroupWriter : DatabaseWriter<Subgroup>, IDatabaseWriter<Subgroup>
 {
     private const string ID = "id";
     private const string TENANT_ID = "tenant_id";

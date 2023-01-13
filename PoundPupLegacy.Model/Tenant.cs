@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record Tenant: Owner
+public sealed record Tenant : Owner
 {
     public required int? Id { get; set; }
     public required string Name { get; init; }

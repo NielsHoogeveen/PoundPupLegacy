@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class CollectiveUserWriter : DatabaseWriter<CollectiveUser>, IDatabaseWriter<CollectiveUser>
+internal sealed class CollectiveUserWriter : DatabaseWriter<CollectiveUser>, IDatabaseWriter<CollectiveUser>
 {
     private const string COLLECTIVE_ID = "collective_id";
     private const string USER_ID = "user_id";

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class BindingCountryWriter : IDatabaseWriter<BindingCountry>
+internal sealed class BindingCountryWriter : IDatabaseWriter<BindingCountry>
 {
     public static async Task<DatabaseWriter<BindingCountry>> CreateAsync(NpgsqlConnection connection)
     {

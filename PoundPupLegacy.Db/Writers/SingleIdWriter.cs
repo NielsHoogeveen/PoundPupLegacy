@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class SingleIdWriter : DatabaseWriter<int>
+internal sealed class SingleIdWriter : DatabaseWriter<int>
 {
 
     internal const string ID = "id";
@@ -37,7 +37,7 @@ internal class SingleIdWriter : DatabaseWriter<int>
         await _command.ExecuteNonQueryAsync();
     }
 }
-internal class SingleIdWriter<T> : DatabaseWriter<T> where T : Identifiable
+internal sealed class SingleIdWriter<T> : DatabaseWriter<T> where T : Identifiable
 {
     internal SingleIdWriter(NpgsqlCommand command) : base(command)
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record CountryAndIntermediateLevelSubdivision : ISOCodedFirstLevelSubdivision, TopLevelCountry, IntermediateLevelSubdivision, CountryAndFirstLevelSubdivision
+public sealed record CountryAndIntermediateLevelSubdivision : ISOCodedFirstLevelSubdivision, TopLevelCountry, IntermediateLevelSubdivision, CountryAndFirstLevelSubdivision
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

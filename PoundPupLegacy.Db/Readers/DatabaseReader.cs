@@ -9,10 +9,10 @@
     {
         public abstract static Task<T> CreateAsync(NpgsqlConnection connection);
     }
-    public class DatabaseReader<T> : IDatabaseReader
+    public abstract class DatabaseReader<T> : IDatabaseReader
     {
         protected NpgsqlCommand _command;
-        internal DatabaseReader(NpgsqlCommand command)
+        protected DatabaseReader(NpgsqlCommand command)
         {
             _command = command;
 

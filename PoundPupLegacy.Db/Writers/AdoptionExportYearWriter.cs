@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class AdoptionExportYearWriter : DatabaseWriter<AdoptionExportYear>, IDatabaseWriter<AdoptionExportYear>
+internal sealed class AdoptionExportYearWriter : DatabaseWriter<AdoptionExportYear>, IDatabaseWriter<AdoptionExportYear>
 {
 
     private const string ADOPTION_EXPORT_RELATION_ID = "adoption_export_relation_id";

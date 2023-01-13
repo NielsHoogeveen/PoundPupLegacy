@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabaseWriter<Subdivision>
+internal sealed class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabaseWriter<Subdivision>
 {
     private const string ID = "id";
     private const string NAME = "name";

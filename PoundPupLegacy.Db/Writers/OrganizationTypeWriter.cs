@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class OrganizationTypeWriter : DatabaseWriter<OrganizationType>, IDatabaseWriter<OrganizationType>
+internal sealed class OrganizationTypeWriter : DatabaseWriter<OrganizationType>, IDatabaseWriter<OrganizationType>
 {
     private const string ID = "id";
     private const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";

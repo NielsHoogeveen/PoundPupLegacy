@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record AdoptionExportYear
+public sealed record AdoptionExportYear
 {
     public required int AdoptionExportRelationId { get; init; }
     public required int Year { get; init; }

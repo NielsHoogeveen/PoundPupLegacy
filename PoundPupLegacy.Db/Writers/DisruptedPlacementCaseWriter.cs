@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class DisruptedPlacementCaseWriter : IDatabaseWriter<DisruptedPlacementCase>
+internal sealed class DisruptedPlacementCaseWriter : IDatabaseWriter<DisruptedPlacementCase>
 {
     public static async Task<DatabaseWriter<DisruptedPlacementCase>> CreateAsync(NpgsqlConnection connection)
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class UserGroupUserWriter : DatabaseWriter<UserGroupUserRoleUser>, IDatabaseWriter<UserGroupUserRoleUser>
+internal sealed class UserGroupUserWriter : DatabaseWriter<UserGroupUserRoleUser>, IDatabaseWriter<UserGroupUserRoleUser>
 {
     private const string USER_GROUP_ID = "user_group_id";
     private const string USER_ID = "user_id";

@@ -1,17 +1,17 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record TenantNode
+public sealed record TenantNode
 {
-    public int TenantId { get; init; }
+    public required int TenantId { get; init; }
 
-    public int UrlId { get; init; }
+    public required int? UrlId { get; init; }
 
-    public string? UrlPath { get; init; }
+    public required string? UrlPath { get; init; }
 
-    public int? NodeId { get; set; }
+    public required int? NodeId { get; set; }
 
-    public int? SubgroupId { get; init; }
+    public required int? SubgroupId { get; init; }
 
-    public int PublicationStatusId { get; init; }
+    public required int PublicationStatusId { get; init; }
 
 }

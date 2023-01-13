@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameable>
+internal sealed class NameableWriter : DatabaseWriter<Nameable>, IDatabaseWriter<Nameable>
 {
     private const string ID = "id";
     private const string DESCRIPTION = "description";

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class InterPersonalRelationTypeWriter : DatabaseWriter<InterPersonalRelationType>, IDatabaseWriter<InterPersonalRelationType>
+internal sealed class InterPersonalRelationTypeWriter : DatabaseWriter<InterPersonalRelationType>, IDatabaseWriter<InterPersonalRelationType>
 {
     private const string ID = "id";
     private const string IS_SYMMETRIC = "is_symmetric";

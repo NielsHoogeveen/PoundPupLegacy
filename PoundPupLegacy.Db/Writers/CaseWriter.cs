@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal class CaseWriter : DatabaseWriter<Case>, IDatabaseWriter<Case>
+internal sealed class CaseWriter : DatabaseWriter<Case>, IDatabaseWriter<Case>
 {
     private const string ID = "id";
     private const string DESCRIPTION = "description";
