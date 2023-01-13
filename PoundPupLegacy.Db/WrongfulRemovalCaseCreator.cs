@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -16,6 +17,8 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var wrongfulRemovalCase in wrongfulRemovalCases)
         {
@@ -25,7 +28,13 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
             await nameableWriter.WriteAsync(wrongfulRemovalCase);
             await caseWriter.WriteAsync(wrongfulRemovalCase);
             await wrongfulRemovalCaseWriter.WriteAsync(wrongfulRemovalCase);
-            await EntityCreator.WriteTerms(wrongfulRemovalCase, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(wrongfulRemovalCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in wrongfulRemovalCase.TenantNodes)
+            {
+                tenantNode.NodeId = wrongfulRemovalCase.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

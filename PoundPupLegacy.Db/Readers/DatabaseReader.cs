@@ -17,7 +17,7 @@
             _command = command;
 
         }
-        public async ValueTask DisposeAsync()
+        public virtual async ValueTask DisposeAsync()
         {
             await _command.DisposeAsync();
         }

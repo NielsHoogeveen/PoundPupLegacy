@@ -34,10 +34,12 @@ internal partial class Program
                     n2.title,
                     n2.`status` node_status_id,
                     FROM_UNIXTIME(n2.created) created_date_time, 
-                    FROM_UNIXTIME(n2.changed) changed_date_time
+                    FROM_UNIXTIME(n2.changed) changed_date_time,
+                    ua.dst url_path
                     FROM node n1 
                     JOIN category c ON c.cnid = n1.nid
                     JOIN node n2 ON n2.nid = c.cid
+                    LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n2.nid
                     WHERE n1.nid  = 42416
                   """;
 
@@ -59,14 +61,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_DOCUMENTATION,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -79,8 +81,9 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = DOCUMENT_TYPES,
-                        Name = name,
+                        OwnerId = OWNER_DOCUMENTATION,
+                        Name = VOCABULARY_DOCUMENT_TYPE,
+                        TermName = name,
                         ParentNames = new List<string>(),
                     },
                 },

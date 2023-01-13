@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -16,6 +17,8 @@ public class PersonCreator : IEntityCreator<Person>
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var person in persons)
         {
@@ -25,7 +28,13 @@ public class PersonCreator : IEntityCreator<Person>
             await nameableWriter.WriteAsync(person);
             await partyWriter.WriteAsync(person);
             await personWriter.WriteAsync(person);
-            await EntityCreator.WriteTerms(person, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(person, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in person.TenantNodes)
+            {
+                tenantNode.NodeId = person.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

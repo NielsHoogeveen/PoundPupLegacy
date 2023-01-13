@@ -39,8 +39,10 @@ namespace PoundPupLegacy.Convert
                     case 
                     	when n.nid IN (16911, 16904, 16909, 16912, 16916, 35216) then true
                     	ELSE false
-                    END is_symmetric
+                    END is_symmetric,
+                    ua.dst url_path
                     FROM node n
+                    LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                     JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                     JOIN category c ON c.cid = n.nid AND c.cnid = 16900
                     """;
@@ -61,8 +63,9 @@ namespace PoundPupLegacy.Convert
                 {
                     new VocabularyName
                     {
-                        VocabularyId = 16900,
-                        Name = name,
+                        OwnerId = OWNER_PARTIES,
+                        Name = VOCABULARY_INTERPERSONAL_RELATION_TYPE,
+                        TermName = name,
                         ParentNames = new List<string>(),
                     }
                 };
@@ -73,14 +76,14 @@ namespace PoundPupLegacy.Convert
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
-                    OwnerId = null,
+                    OwnerId = OWNER_PARTIES,
                     TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
                         {
                             TenantId = 1,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
-                            UrlPath = null,
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                             NodeId = null,
                             SubgroupId = null,
                             UrlId = id

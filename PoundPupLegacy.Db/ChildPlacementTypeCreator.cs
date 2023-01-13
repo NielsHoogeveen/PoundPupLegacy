@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -13,14 +14,21 @@ public class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-
-        await foreach(var childPlacementType in childPlacementTypes)
+        await foreach (var childPlacementType in childPlacementTypes)
         {
             await nodeWriter.WriteAsync(childPlacementType);
             await nameableWriter.WriteAsync(childPlacementType);
             await childPlacementTypeWriter.WriteAsync(childPlacementType);
-            await EntityCreator.WriteTerms(childPlacementType, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(childPlacementType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in childPlacementType.TenantNodes)
+            {
+                tenantNode.NodeId = childPlacementType.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

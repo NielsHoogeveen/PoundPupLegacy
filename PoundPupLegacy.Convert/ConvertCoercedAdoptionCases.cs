@@ -45,8 +45,10 @@ internal partial class Program
                         ELSE c3.topic_parent_names
                     END topic_parent_names,                     
                      field_long_description_3_value description,
-                     field_reporting_date_0_value `date`
+                     field_reporting_date_0_value `date`,
+                    ua.dst url_path
                 FROM node n
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_coerced_adoption_cases c ON c.nid = n.nid AND c.vid = n.vid
                 LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid AND cc.nid <> 44518
                 LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
@@ -121,20 +123,21 @@ internal partial class Program
 
                 vocabularyNames.Add(new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = topicParentNames,
                 });
             }
 
             var country = new CoercedAdoptionCase
             {
-                Id = id,
+                Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

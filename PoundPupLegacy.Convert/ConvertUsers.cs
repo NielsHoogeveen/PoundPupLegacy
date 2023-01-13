@@ -30,7 +30,7 @@ internal partial class Program
         {
             new Tenant
             {
-                Id = 1,
+                Id = PPL,
                 DomainName = "poundpuplegacy.org",
                 Name = "Pound Pup Legacy",
                 Description = "",
@@ -38,7 +38,7 @@ internal partial class Program
             },
            new Tenant
             {
-                Id = 5,
+                Id = CPCT,
                 DomainName = "cpctresearch.info",
                 Name = "CPCT Research",
                 Description = "",
@@ -47,29 +47,41 @@ internal partial class Program
 
         };
     }
+    const int PPL = 1;
+    const int OWNER_GEOGRAPHY = 2;
+    const int OWNER_PARTIES = 3;
+    const int OWNER_CASES = 4;
+    const int OWNER_DOCUMENTATION = 5;
+    const int CPCT = 6;
+
     private static IEnumerable<ContentSharingGroup> GetContentSharingGroups()
     {
         return new List<ContentSharingGroup>
         {
             new ContentSharingGroup
             {
-                Id = 2,
+                Id = OWNER_GEOGRAPHY,
                 Name = "Geographical Entities",
                 Description = "",
             },
             new ContentSharingGroup
             {
-                Id = 3,
+                Id = OWNER_PARTIES,
                 Name = "Parties",
                 Description = "",
             },
             new ContentSharingGroup
             {
-                Id = 4,
+                Id = OWNER_CASES,
                 Name = "Cases",
                 Description = "",
             },
-
+            new ContentSharingGroup
+            {
+                Id = OWNER_DOCUMENTATION,
+                Name = "Documentation",
+                Description = "",
+            },
         };
     }
 

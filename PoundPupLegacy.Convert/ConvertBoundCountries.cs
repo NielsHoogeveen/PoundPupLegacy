@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -10,10 +11,11 @@ namespace PoundPupLegacy.Convert
     {
         private static async Task MigrateBoundCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
+            await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
             await using var tx = await connection.BeginTransactionAsync();
             try
             {
-                await BoundCountryCreator.CreateAsync(ReadBoundCountries(mysqlconnection), connection);
+                await BoundCountryCreator.CreateAsync(ReadBoundCountries(mysqlconnection, nodeIdReader), connection);
                 await tx.CommitAsync();
             }
             catch (Exception)
@@ -23,7 +25,7 @@ namespace PoundPupLegacy.Convert
             }
         }
 
-        private static async IAsyncEnumerable<BoundCountry> ReadBoundCountries(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<BoundCountry> ReadBoundCountries(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
         {
             var sql = $"""
                 SELECT
@@ -34,8 +36,10 @@ namespace PoundPupLegacy.Convert
                     FROM_UNIXTIME(n.created) created_date_time, 
                     FROM_UNIXTIME(n.changed) changed_date_time,
                     n2.nid binding_country_id,
-                    n2.title binding_country_name
+                    n2.title binding_country_name,
+                    ua.dst url_path
                 FROM node n 
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_country_type cou ON cou.nid = n.nid
                 JOIN category_hierarchy ch ON ch.cid = n.nid
                 JOIN node n2 ON n2.nid = ch.parent
@@ -59,8 +63,9 @@ namespace PoundPupLegacy.Convert
                 {
                     new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = name,
+                        OwnerId = PPL,
+                        Name = VOCABULARY_TOPICS,
+                        TermName = name,
                         ParentNames = new List<string>{ bindingCountryName },
                     }
                 };
@@ -72,14 +77,14 @@ namespace PoundPupLegacy.Convert
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
-                    OwnerId = null,
+                    OwnerId = OWNER_GEOGRAPHY,
                     TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
                         {
                             TenantId = 1,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
-                            UrlPath = null,
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                             NodeId = null,
                             SubgroupId = null,
                             UrlId = id
@@ -88,13 +93,13 @@ namespace PoundPupLegacy.Convert
                     NodeTypeId = 14,
                     Description = "",
                     VocabularyNames = vocabularyNames,
-                    BindingCountryId = reader.GetInt32("binding_country_id"),
+                    BindingCountryId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("binding_country_id")),
                     Name = name,
                     ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
-                    CountryId = reader.GetInt32("binding_country_id"),
+                    CountryId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("binding_country_id")),
                     FileIdFlag = null,
                     FileIdTileImage = null,
-                    HagueStatusId = 41215,
+                    HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41215),
                     ResidencyRequirements = null,
                     AgeRequirements = null,
                     HealthRequirements = null,

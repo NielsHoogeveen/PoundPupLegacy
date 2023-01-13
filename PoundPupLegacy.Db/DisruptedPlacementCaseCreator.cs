@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -16,6 +17,8 @@ public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCa
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var disruptedPlacementCase in disruptedPlacementCases)
         {
@@ -25,7 +28,13 @@ public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCa
             await nameableWriter.WriteAsync(disruptedPlacementCase);
             await caseWriter.WriteAsync(disruptedPlacementCase);
             await disruptedPlacementCaseWriter.WriteAsync(disruptedPlacementCase);
-            await EntityCreator.WriteTerms(disruptedPlacementCase, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(disruptedPlacementCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in disruptedPlacementCase.TenantNodes)
+            {
+                tenantNode.NodeId = disruptedPlacementCase.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

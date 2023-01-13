@@ -29,20 +29,22 @@ internal partial class Program
 
         var sql = $"""
                 SELECT
-                 n.nid id,
-                 n.uid user_id,
-                 n.title,
-                 n.`status`,
-                 FROM_UNIXTIME(n.created) created, 
-                 FROM_UNIXTIME(n.changed) `changed`,
-                 41 node_type_id,
-                 nr.body description,
-                 n2.`type`,
+                    n.nid id,
+                    n.uid user_id,
+                    n.title,
+                    n.`status`,
+                    FROM_UNIXTIME(n.created) created, 
+                    FROM_UNIXTIME(n.changed) `changed`,
+                    41 node_type_id,
+                    nr.body description,
+                    n2.`type`,
                 case 
-                	when field_tile_image_fid = 0 then null
-                	ELSE field_tile_image_fid
-                END file_id_tile_image
+                    when field_tile_image_fid = 0 then null
+                    ELSE field_tile_image_fid
+                END file_id_tile_image,
+                ua.dst url_path
                 FROM node n
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN category c ON c.cid = n.nid AND c.cnid = 4126
                 JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
@@ -51,42 +53,42 @@ internal partial class Program
                 WHERE  (n3.nid IS NULL OR n3.`type` = 'group')
                 AND n.title NOT IN 
                 (
-                   'adoption',
-                   'adoptive mother',
-                   'foster care',
-                   'guardianship',
-                   'institutional care',
-                   'adoption agencies',
-                   'legal guardians',
-                   'church',
-                   'boot camp',
-                   'media',
-                   'blog',
-                   'orphanages',
-                   'orphanage',
-                   'adoption advocates',
-                   'boarding school',
-                   'adoption facilitators',
-                   'maternity homes',
-                   'sexual abuse',
-                   'sexual exploitation',
-                   'lethal neglect',
-                   'lethal deprivation',
-                   'economic exploitation',
-                   'verbal abuse',
-                   'medical abuse',
-                   'lawyers',
-                   'therapists',
-                   'Christianity',
-                   'Northern Ireland',
-                   'mega families',
-                   'Mary Landrieu',
-                   'Hilary Clinton',
-                   'Michele Bachmann',
-                   'Kevin and Kody Pribbernow'
+                    'adoption',
+                    'adoptive mother',
+                    'foster care',
+                    'guardianship',
+                    'institutional care',
+                    'adoption agencies',
+                    'legal guardians',
+                    'church',
+                    'boot camp',
+                    'media',
+                    'blog',
+                    'orphanages',
+                    'orphanage',
+                    'adoption advocates',
+                    'boarding school',
+                    'adoption facilitators',
+                    'maternity homes',
+                    'sexual abuse',
+                    'sexual exploitation',
+                    'lethal neglect',
+                    'lethal deprivation',
+                    'economic exploitation',
+                    'verbal abuse',
+                    'medical abuse',
+                    'lawyers',
+                    'therapists',
+                    'Christianity',
+                    'Northern Ireland',
+                    'mega families',
+                    'Mary Landrieu',
+                    'Hilary Clinton',
+                    'Michele Bachmann',
+                    'Kevin and Kody Pribbernow'
                 )
                 AND n.nid NOT IN (
-                	22589
+                    22589
                 )
                 AND n2.nid IS  NULL
                 """;
@@ -102,21 +104,32 @@ internal partial class Program
         {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var country = new BasicNameable
+            var vocabularyNames = new List<VocabularyName>
+                {
+                    new VocabularyName
+                    {
+                        OwnerId = PPL,
+                        Name = VOCABULARY_TOPICS,
+                        TermName = name,
+                        ParentNames = new List<string>(),
+                    }
+                };
+
+            yield return new BasicNameable
             {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        PublicationStatusId = reader.GetInt32("status"),
+                        UrlPath = reader.IsDBNull("url_path") ? null: reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -125,9 +138,8 @@ internal partial class Program
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
-                VocabularyNames = GetVocabularyNames(TOPICS, id, name, new Dictionary<int, List<VocabularyName>>()),
+                VocabularyNames = vocabularyNames,
             };
-            yield return country;
 
         }
         await reader.CloseAsync();

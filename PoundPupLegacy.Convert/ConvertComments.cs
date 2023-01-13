@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -10,10 +11,11 @@ internal partial class Program
 {
     private static async Task MigrateComments(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await CommentCreator.CreateAsync(ReadComments(mysqlconnection), connection);
+            await CommentCreator.CreateAsync(ReadComments(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -23,7 +25,7 @@ internal partial class Program
         }
 
     }
-    private static async IAsyncEnumerable<Comment> ReadComments(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Comment> ReadComments(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -73,7 +75,7 @@ internal partial class Program
             var discussion = new Comment
             {
                 Id = reader.GetInt32("id"),
-                NodeId = reader.GetInt32("node_id"),
+                NodeId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("node_id")),
                 CommentIdParent = reader.GetInt32("comment_id_parent") == 0 ? null: reader.GetInt32("comment_id_parent"),
                 AccessRoleId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

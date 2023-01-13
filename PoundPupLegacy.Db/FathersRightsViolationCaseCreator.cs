@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -16,6 +17,8 @@ public class FathersRightsViolationCaseCreator : IEntityCreator<FathersRightsVio
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var fathersRightsViolationCase in fathersRightsViolationCases)
         {
@@ -25,7 +28,13 @@ public class FathersRightsViolationCaseCreator : IEntityCreator<FathersRightsVio
             await nameableWriter.WriteAsync(fathersRightsViolationCase);
             await caseWriter.WriteAsync(fathersRightsViolationCase);
             await fathersRightsViolationCaseWriter.WriteAsync(fathersRightsViolationCase);
-            await EntityCreator.WriteTerms(fathersRightsViolationCase, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(fathersRightsViolationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in fathersRightsViolationCase.TenantNodes)
+            {
+                tenantNode.NodeId = fathersRightsViolationCase.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

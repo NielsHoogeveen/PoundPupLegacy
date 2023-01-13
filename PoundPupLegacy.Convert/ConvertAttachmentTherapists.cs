@@ -97,8 +97,9 @@ internal partial class Program
             {
                 new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = parentNames,
                 }
             };

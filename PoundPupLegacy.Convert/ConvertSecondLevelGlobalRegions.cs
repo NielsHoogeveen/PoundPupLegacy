@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 using System.Xml.Linq;
@@ -12,10 +13,11 @@ internal partial class Program
 
     private static async Task MigrateSecondLevelGlobalRegions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await SecondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(mysqlconnection), connection);
+            await SecondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -25,7 +27,7 @@ internal partial class Program
         }
     }
 
-    private static async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
         var sql = $"""
                 SELECT n.nid id,
@@ -37,8 +39,10 @@ internal partial class Program
                 nr.body description,
                 cc.field_tile_image_fid file_id_tile_image,
                 n2.nid first_level_global_region_id,
-                n2.title first_level_global_region_name
+                n2.title first_level_global_region_name,
+                ua.dst url_path
                 FROM node n 
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN category_hierarchy ch ON ch.cid = n.nid
                 JOIN node n2 ON n2.nid = ch.parent
                 		LEFT JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
@@ -65,8 +69,9 @@ internal partial class Program
             {
                 new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = name,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = name,
                     ParentNames = new List<string>{ parentRegionName},
                 }
             };
@@ -78,14 +83,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -96,7 +101,7 @@ internal partial class Program
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
                 Name = name,
-                FirstLevelGlobalRegionId = reader.GetInt32("first_level_global_region_id")
+                FirstLevelGlobalRegionId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("first_level_global_region_id"))
             };
 
         }

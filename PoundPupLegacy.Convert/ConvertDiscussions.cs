@@ -57,13 +57,13 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                OwnerId = null,
+                OwnerId = PPL,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,

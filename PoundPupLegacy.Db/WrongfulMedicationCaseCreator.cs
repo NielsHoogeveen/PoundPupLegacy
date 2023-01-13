@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -16,6 +17,8 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var wrongfulMedicationCase in wrongfulMedicationCases)
         {
@@ -25,7 +28,13 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
             await nameableWriter.WriteAsync(wrongfulMedicationCase);    
             await caseWriter.WriteAsync(wrongfulMedicationCase);
             await wrongfulMedicationCaseWriter.WriteAsync(wrongfulMedicationCase);
-            await EntityCreator.WriteTerms(wrongfulMedicationCase, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(wrongfulMedicationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in wrongfulMedicationCase.TenantNodes)
+            {
+                tenantNode.NodeId = wrongfulMedicationCase.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

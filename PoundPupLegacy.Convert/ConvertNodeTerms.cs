@@ -12,10 +12,11 @@ internal partial class Program
 
     private static async Task MigrateNodeTerms(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await NodeTermCreator.CreateAsync(ReadNodeTerms(mysqlconnection, connection), connection);
+            await NodeTermCreator.CreateAsync(ReadNodeTerms(mysqlconnection, connection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -24,7 +25,7 @@ internal partial class Program
             throw;
         }
     }
-    private static async IAsyncEnumerable<NodeTerm> ReadNodeTerms(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async IAsyncEnumerable<NodeTerm> ReadNodeTerms(MySqlConnection mysqlconnection, NpgsqlConnection connection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         await using var termReader = await TermReaderByNameableId.CreateAsync(connection);
@@ -58,28 +59,30 @@ internal partial class Program
                 JOIN category_node cn ON cn.nid = n.nid
                 JOIN category c ON c.cid = cn.cid AND c.cnid = 4126
                 LEFT JOIN(
-                        SELECT 
-                        cc.nid,
-                        n.nid node_id
-                        FROM content_type_category_cat cc 
-                        JOIN node n3 ON n3.nid = cc.nid AND n3.vid = cc.vid
-                        JOIN node n ON n.nid = cc.field_related_page_nid
-                        WHERE n.`type` NOT IN ('group')
+                    SELECT 
+                    cc.nid,
+                    n.nid node_id
+                    FROM content_type_category_cat cc 
+                    JOIN node n3 ON n3.nid = cc.nid AND n3.vid = cc.vid
+                    JOIN node n ON n.nid = cc.field_related_page_nid
+                    WHERE n.`type` NOT IN ('group')
                 ) n3 ON n3.nid = c.cid
                 LEFT JOIN(
-                        SELECT 
-                        case 
-                				when n2.nid is NULL then n.nid 
-                				ELSE n2.nid
-                			end node_id,
-                        n.nid
-                        FROM node n 
-                        LEFT JOIN node n2 ON n2.title = n.title and n2.`type` in ('adopt_person','country_type', 'adopt_orgs', 'case', 'region_facts', 'coerced_adoption_cases', 'child_trafficking', 'child_trafficking_case')
+                    SELECT 
+                    case 
+                		when n2.nid is NULL then n.nid 
+                		ELSE n2.nid
+                	end node_id,
+                    n.nid
+                    FROM node n 
+                    LEFT JOIN node n2 ON n2.title = n.title and n2.`type` in ('adopt_person','country_type', 'adopt_orgs', 'case', 'region_facts', 'coerced_adoption_cases', 'child_trafficking', 'child_trafficking_case')
                 ) n4 ON n4.nid = c.cid
                 WHERE  n.nid NOT IN (
                     22589
                 )
                 AND (n3.nid IS NOT NULL OR n4.nid IS NOT NULL)
+                AND n.`type` NOT IN ('amazon_node', 'poll', 'video', 'amazon', 'website', 'image', 'award_poll', 'book_page', 'panel', 'viewnode')
+                AND n.uid <> 0
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -91,11 +94,11 @@ internal partial class Program
 
         while (await reader.ReadAsync())
         {
-            var nodeId = reader.GetInt32("node_id");
-            var nameableId = reader.GetInt32("nameable_id");
+            var nodeId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("node_id"));
+            var nameableId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("nameable_id"));
 
 
-            var term = await termReader.ReadAsync(TOPICS, nameableId);
+            var term = await termReader.ReadAsync(PPL, VOCABULARY_TOPICS, nameableId);
 
             yield return new NodeTerm
             {

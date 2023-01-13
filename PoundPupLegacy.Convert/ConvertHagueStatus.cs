@@ -34,8 +34,10 @@ internal partial class Program
                        n.title,
                        n.`status` node_status_id,
                        FROM_UNIXTIME(n.created) created_date_time, 
-                       FROM_UNIXTIME(n.changed) changed_date_time
+                       FROM_UNIXTIME(n.changed) changed_date_time,
+                       ua.dst url_path
                     FROM node n
+                    LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                     JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                     JOIN category c ON c.cid = n.nid AND c.cnid = 41212
                 """;
@@ -55,8 +57,9 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = 41212,
-                        Name = name,
+                        OwnerId = OWNER_PARTIES,
+                        Name = VOCABULARY_HAGUE_STATUS,
+                        TermName = name,
                         ParentNames = new List<string>(),
                     }
                 };
@@ -68,14 +71,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_PARTIES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

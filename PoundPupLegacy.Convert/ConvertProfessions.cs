@@ -46,8 +46,10 @@ internal partial class Program
                        case
                        when n.nid IN (27214,27215) then true
                        ELSE false
-                       END has_concrete_subtype
+                       END has_concrete_subtype,
+                       ua.dst url_path
                     FROM node n
+                    LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                     JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                     JOIN category c ON c.cid = n.nid AND c.cnid = 27213
                     LEFT JOIN (
@@ -86,8 +88,9 @@ internal partial class Program
             {
                 new VocabularyName
                 {
-                    VocabularyId = 27213,
-                    Name = name,
+                    OwnerId = OWNER_PARTIES,
+                    Name = VOCABULARY_PROFESSION,
+                    TermName = name,
                     ParentNames = new List<string>(),
                 }
             };
@@ -95,8 +98,9 @@ internal partial class Program
             {
                 vocabularyNames.Add(new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = new List<string>()
                 });
             }
@@ -108,14 +112,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_PARTIES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

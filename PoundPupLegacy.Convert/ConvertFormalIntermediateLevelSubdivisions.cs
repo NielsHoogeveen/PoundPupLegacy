@@ -8,7 +8,7 @@ namespace PoundPupLegacy.Convert;
 
 internal partial class Program
 {
-    private static async IAsyncEnumerable<FormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(NpgsqlConnection connection)
+    private static async IAsyncEnumerable<FormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(NpgsqlConnection connection, NodeIdByUrlIdReader nodeIdReader)
     {
         await using var reader = await TermReaderByNameableId.CreateAsync(connection);
         await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\FormalIntermediateLevelSubdivisions.csv").Skip(1))
@@ -22,8 +22,8 @@ internal partial class Program
                 id = NodeId;
             }
             var title = parts[8];
-            var countryId = int.Parse(parts[7]);
-            var countryName = (await reader.ReadAsync(TOPICS, countryId)).Name;
+            var countryId = await nodeIdReader.ReadAsync(PPL, int.Parse(parts[7]));
+            var countryName = (await reader.ReadAsync(PPL, VOCABULARY_TOPICS, countryId)).Name;
             yield return new FormalIntermediateLevelSubdivision
             {
                 Id = null,
@@ -33,15 +33,16 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = title,
+                        OwnerId = PPL,
+                        Name = VOCABULARY_TOPICS,
+                        TermName = title,
                         ParentNames = new List<string> { countryName },
                     }
                 },
                 Description = "",
                 FileIdTileImage = null,
                 NodeTypeId = int.Parse(parts[4]),
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -66,10 +67,11 @@ internal partial class Program
 
     private static async Task MigrateFormalIntermediateLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await FormalIntermediateLevelSubdivisionCreator.CreateAsync(ReadFormalIntermediateLevelSubdivisionCsv(connection), connection);
+            await FormalIntermediateLevelSubdivisionCreator.CreateAsync(ReadFormalIntermediateLevelSubdivisionCsv(connection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)

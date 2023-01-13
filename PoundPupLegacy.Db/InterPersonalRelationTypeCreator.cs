@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -13,14 +14,21 @@ public class InterPersonalRelationTypeCreator : IEntityCreator<InterPersonalRela
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
-
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var interPersonalRelationType in interPersonalRelationTypes)
         {
             await nodeWriter.WriteAsync(interPersonalRelationType);
             await nameableWriter.WriteAsync(interPersonalRelationType);
             await interPersonalRelationTypeWriter.WriteAsync(interPersonalRelationType);
-            await EntityCreator.WriteTerms(interPersonalRelationType, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(interPersonalRelationType, termWriter, termReader, termHierarchyWriter,vocabularyIdReader);
+            foreach (var tenantNode in interPersonalRelationType.TenantNodes)
+            {
+                tenantNode.NodeId = interPersonalRelationType.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

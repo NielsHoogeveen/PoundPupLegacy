@@ -42,8 +42,10 @@ namespace PoundPupLegacy.Convert
                     		when n2.field_tile_image_fid = 0 then null
                     		ELSE n2.field_tile_image_fid
                     	END file_id_tile_image,
-                       n2.title topic_name
+                       n2.title topic_name,
+                       ua.dst url_path
                     FROM node n
+                    LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                     JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                     JOIN category c ON c.cid = n.nid AND c.cnid = 39428
                     LEFT JOIN (
@@ -80,8 +82,9 @@ namespace PoundPupLegacy.Convert
                 {
                     new VocabularyName
                     {
-                        VocabularyId = 39428,
-                        Name = name,
+                        OwnerId = OWNER_PARTIES,
+                        Name = VOCABULARY_DENOMINATION,
+                        TermName = name,
                         ParentNames = new List<string>(),
                     }
                 };
@@ -89,8 +92,9 @@ namespace PoundPupLegacy.Convert
                 {
                     vocabularyNames.Add(new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = topicName,
+                        OwnerId = PPL,
+                        Name = VOCABULARY_TOPICS,
+                        TermName = topicName,
                         ParentNames = new List<string>()
                     });
                 }
@@ -102,14 +106,14 @@ namespace PoundPupLegacy.Convert
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
-                    OwnerId = null,
+                    OwnerId = OWNER_PARTIES,
                     TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
                         {
                             TenantId = 1,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
-                            UrlPath = null,
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                             NodeId = null,
                             SubgroupId = null,
                             UrlId = id

@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -15,6 +16,8 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var node in nodes)
         {
@@ -24,7 +27,13 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
             await geographicalEntityWriter.WriteAsync(node);
             await globalRegionWriter.WriteAsync(node);
             await secondLevelGlobalRegionWriter.WriteAsync(node);
-            await EntityCreator.WriteTerms(node, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(node, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in node.TenantNodes)
+            {
+                tenantNode.NodeId = node.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

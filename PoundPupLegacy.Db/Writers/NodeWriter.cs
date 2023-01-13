@@ -7,7 +7,6 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
     private const string CREATED_DATE_TIME = "created_date_time";
     private const string CHANGED_DATE_TIME = "changed_date_time";
     private const string TITLE = "title";
-    private const string NODE_STATUS_ID = "node_status_id";
     private const string NODE_TYPE_ID = "node_type_id";
     private const string OWNER_ID = "owner_id";
 
@@ -30,10 +29,6 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
             new ColumnDefinition{
                 Name = TITLE,
                 NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-            new ColumnDefinition{
-                Name = NODE_STATUS_ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
                 Name = NODE_TYPE_ID,
@@ -72,7 +67,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
         WriteNullableValue(node.OwnerId, OWNER_ID);
         node.Id = await _command.ExecuteScalarAsync() switch
         {
-            int i => i,
+            long i => (int)i,
             _ => throw new Exception("Insert of node does not return an id.")
         };
     }

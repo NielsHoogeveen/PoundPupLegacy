@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -11,10 +12,11 @@ internal partial class Program
 
     private static async Task MigrateDocuments(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await DocumentCreator.CreateAsync(ReadDocuments(mysqlconnection), connection);
+            await DocumentCreator.CreateAsync(ReadDocuments(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -75,7 +77,7 @@ internal partial class Program
 
         }
     }
-    private static async IAsyncEnumerable<Document> ReadDocuments(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<Document> ReadDocuments(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -150,7 +152,7 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                OwnerId = null,
+                OwnerId = OWNER_DOCUMENTATION,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -167,7 +169,7 @@ internal partial class Program
                 PublicationDate = publicationDate,
                 SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
                 Text = reader.GetString("text"),
-                DocumentTypeId = reader.IsDBNull("document_type_id") ? null : reader.GetInt32("document_type_id"),
+                DocumentTypeId = reader.IsDBNull("document_type_id") ? null : await nodeIdReader.ReadAsync(PPL, reader.GetInt32("document_type_id")),
             };
 
         }

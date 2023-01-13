@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -19,7 +20,8 @@ public class BoundCountryCreator : IEntityCreator<BoundCountry>
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
-
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var country in countries)
         {
@@ -32,7 +34,13 @@ public class BoundCountryCreator : IEntityCreator<BoundCountry>
             await subdivisionWriter.WriteAsync(country);
             await isoCodedSubdivisionWriter.WriteAsync(country);
             await boundCountryWriter.WriteAsync(country);
-            await EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in country.TenantNodes)
+            {
+                tenantNode.NodeId = country.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

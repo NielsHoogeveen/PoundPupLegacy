@@ -28,16 +28,18 @@ internal partial class Program
 
         var sql = $"""
                 SELECT
-                     n.nid id,
-                     n.uid user_id,
-                     n.title,
-                     n.`status`,
-                     FROM_UNIXTIME(n.created) created, 
-                     FROM_UNIXTIME(n.changed) `changed`,
-                     34 node_type_id,
-                     field_long_description_0_value description,
-                     field_removal_date_value `date`
+                    n.nid id,
+                    n.uid user_id,
+                    n.title,
+                    n.`status`,
+                    FROM_UNIXTIME(n.created) created, 
+                    FROM_UNIXTIME(n.changed) `changed`,
+                    34 node_type_id,
+                    field_long_description_0_value description,
+                    field_removal_date_value `date`,
+                    ua.dst url_path
                 FROM node n
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_wrongful_removal_case c ON c.nid = n.nid AND c.vid = n.vid
                 """;
         using var readCommand = mysqlconnection.CreateCommand();
@@ -59,14 +61,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

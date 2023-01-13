@@ -10,33 +10,27 @@ namespace PoundPupLegacy.Convert;
 internal partial class Program
 {
 
-    private static List<Location> GetLocations()
+    private static async IAsyncEnumerable<Location> GetLocations(NodeIdByUrlIdReader nodeIdReader)
     {
-        return new List<Location>
+        yield return new Location
         {
-            new Location
-            {
-                Id = 100001,
-                Street = "8010 S County Road 5 Suite 205",
-                Additional = null,
-                PostalCode = "80528",
-                City = "Fort Collins",
-                SubdivisionId = 2951,
-                CountryId = 3805,
-                Latitude = decimal.Parse("40.47622551263952"),
-                Longitude = decimal.Parse("-104.98063363798134")
-            }
+            Id = 100001,
+            Street = "8010 S County Road 5 Suite 205",
+            Additional = null,
+            PostalCode = "80528",
+            City = "Fort Collins",
+            SubdivisionId = await nodeIdReader.ReadAsync(PPL, 2951),
+            CountryId = await nodeIdReader.ReadAsync(PPL, 3805),
+            Latitude = decimal.Parse("40.47622551263952"),
+            Longitude = decimal.Parse("-104.98063363798134")
         };
     }
-    private static List<LocationLocatable> GetLocationLocatables()
+    private static async IAsyncEnumerable<LocationLocatable> GetLocationLocatables(NodeIdByUrlIdReader nodeIdReader)
     {
-        return new List<LocationLocatable>
+        yield return new LocationLocatable
         {
-            new LocationLocatable
-            {
-                LocationId = 100001,
-                LocatableId = 105
-            }
+            LocationId = 100001,
+            LocatableId = await nodeIdReader.ReadAsync(PPL, 105)
         };
     }
     private static string? GetStreet(int id, string? street)
@@ -245,7 +239,7 @@ internal partial class Program
         };
     }
 
-    private static async Task<int?> GetSubdivisionId(int id, int? stateId, SubdivisionIdReaderByIso3166Code reader)
+    private static async Task<int?> GetSubdivisionId(int id, int? stateId, SubdivisionIdReaderByIso3166Code reader, NodeIdByUrlIdReader nodeIdReader)
     {
         if (stateId == null)
         {
@@ -885,7 +879,7 @@ internal partial class Program
         }
         else
         {
-            return id switch
+            var ret = id switch
             {
                 262 => 2954,
                 1065 => 2954,
@@ -899,11 +893,18 @@ internal partial class Program
                 2527 => null,
                 _ => stateId
             };
+            if (ret == null) { 
+                return null;
+            }
+            else
+            {
+                return await nodeIdReader.ReadAsync(PPL, (int)ret);
+            }
         }
     }
-    private static int? GetCountryId(int id, int? countryId)
+    private static async Task<int?> GetCountryId(int id, int? countryId, NodeIdByUrlIdReader nodeIdReader)
     {
-        return id switch
+        var ret = id switch
         {
             664 => 4048,
             1428 => 3909,
@@ -911,17 +912,25 @@ internal partial class Program
             2073 => 4050,
             _ => countryId
         };
+        if(ret == null) 
+        { 
+            return null;
+        }
+        else
+        {
+            return await nodeIdReader.ReadAsync(PPL, (int)ret!);
+        }
     }
 
     private static async Task MigrateLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
-
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await LocationCreator.CreateAsync(GetLocations().ToAsyncEnumerable(), connection);
-            await LocationCreator.CreateAsync(ReadUSLocations(mysqlconnection, connection), connection);
-            await LocationLocatableCreator.CreateAsync(GetLocationLocatables().ToAsyncEnumerable(), connection);
+            await LocationCreator.CreateAsync(GetLocations(nodeIdReader), connection);
+            await LocationCreator.CreateAsync(ReadUSLocations(mysqlconnection, connection, nodeIdReader), connection);
+            await LocationLocatableCreator.CreateAsync(GetLocationLocatables(nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -931,7 +940,7 @@ internal partial class Program
         }
 
     }
-    private static async IAsyncEnumerable<Location> ReadUSLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async IAsyncEnumerable<Location> ReadUSLocations(MySqlConnection mysqlconnection, NpgsqlConnection connection, NodeIdByUrlIdReader nodeIdReader)
     {
         await using var subdivisionReader = await SubdivisionIdReaderByIso3166Code.CreateAsync(connection);
         var sql = $"""
@@ -969,8 +978,8 @@ internal partial class Program
                 Additional = GetAdditional(reader.GetInt32("id"), reader.IsDBNull("additional") ? null : reader.GetString("additional")),
                 City = GetCity(reader.GetInt32("id"), reader.IsDBNull("city") ? null : reader.GetString("city")),
                 PostalCode = GetPostalCode(reader.GetInt32("id"), reader.IsDBNull("postal_code") ? null : reader.GetString("postal_code")),
-                SubdivisionId = await GetSubdivisionId(reader.GetInt32("id"), reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id"), subdivisionReader),
-                CountryId = GetCountryId(reader.GetInt32("id"), reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id")),
+                SubdivisionId = await GetSubdivisionId(reader.GetInt32("id"), reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id"), subdivisionReader, nodeIdReader),
+                CountryId = await GetCountryId(reader.GetInt32("id"), reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id"), nodeIdReader),
                 Latitude = GetLatitude(reader.GetInt32("id"), reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
                 Longitude = GetLongitude(reader.GetInt32("id"), reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
             };

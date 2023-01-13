@@ -46,7 +46,8 @@ namespace PoundPupLegacy.Convert
                 case 
                 	when cc.field_tile_image_fid = 0 then null
                 	ELSE cc.field_tile_image_fid 
-                end file_id_tile_image
+                end file_id_tile_image,
+                ua.dst url_path
                 FROM(
                 SELECT {ADOPTION} AS id, 'Adoption' AS title, 'adoption' AS topic_name, 'Child placement forms' AS parent_topic_name
                 UNION
@@ -59,6 +60,7 @@ namespace PoundPupLegacy.Convert
                 SELECT {INSTITUTION}, 'Institution', 'institutional care', 'residential care'
                 ) AS t
                 LEFT JOIN node n ON n.title = t.topic_name AND n.`type` = 'category_cat'
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 LEFT JOIN category c ON c.cid = n.nid AND c.cnid = 4126
                 LEFT JOIN content_type_category_cat cc on cc.nid = n.nid AND cc.vid = n.vid
                 LEFT JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
@@ -81,8 +83,9 @@ namespace PoundPupLegacy.Convert
                 {
                     new VocabularyName
                     {
-                        VocabularyId = CHILD_PLACEMENT_TYPE,
-                        Name = name,
+                        OwnerId = OWNER_CASES,
+                        Name = VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        TermName = name,
                         ParentNames = new List<string>(),
                     }
                 };
@@ -95,8 +98,9 @@ namespace PoundPupLegacy.Convert
                     }
                     vocabularyNames.Add(new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = topicName,
+                        OwnerId = PPL,
+                        Name = VOCABULARY_TOPICS,
+                        TermName = topicName,
                         ParentNames = parentNames
                     });
                 }
@@ -108,14 +112,14 @@ namespace PoundPupLegacy.Convert
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
-                    OwnerId = null,
+                    OwnerId = OWNER_CASES,
                     TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
                         {
                             TenantId = 1,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
-                            UrlPath = null,
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                             NodeId = null,
                             SubgroupId = null,
                             UrlId = id

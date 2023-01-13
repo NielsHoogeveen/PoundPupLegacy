@@ -7,7 +7,12 @@ public class TermReaderByNameableId : DatabaseReader<Term>, IDatabaseReader<Term
     public static async Task<TermReaderByNameableId> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
-            SELECT id, name FROM term WHERE vocabulary_id = @vocabulary_id AND nameable_id = @nameable_id
+            SELECT 
+                t.id, 
+                t.name 
+            FROM term t
+            JOIN vocabulary v on v.id = t.vocabulary_id
+            WHERE v.owner_id = @owner_id AND v.name = @vocabulary_name AND nameable_id = @nameable_id
             """;
 
         var command = connection.CreateCommand();
@@ -15,7 +20,8 @@ public class TermReaderByNameableId : DatabaseReader<Term>, IDatabaseReader<Term
         command.CommandTimeout = 300;
         command.CommandText = sql;
 
-        command.Parameters.Add("vocabulary_id", NpgsqlDbType.Integer);
+        command.Parameters.Add("owner_id", NpgsqlDbType.Integer);
+        command.Parameters.Add("vocabulary_name", NpgsqlDbType.Varchar);
         command.Parameters.Add("nameable_id", NpgsqlDbType.Integer);
         await command.PrepareAsync();
 
@@ -25,9 +31,10 @@ public class TermReaderByNameableId : DatabaseReader<Term>, IDatabaseReader<Term
 
     internal TermReaderByNameableId(NpgsqlCommand command) : base(command) { }
 
-    public async Task<Term> ReadAsync(int vocabularyId, int nameableId)
+    public async Task<Term> ReadAsync(int ownerId, string vocabularyName, int nameableId)
     {
-        _command.Parameters["vocabulary_id"].Value = vocabularyId;
+        _command.Parameters["owner_id"].Value = ownerId;
+        _command.Parameters["vocabulary_name"].Value = vocabularyName;
         _command.Parameters["nameable_id"].Value = nameableId;
 
         var reader = await _command.ExecuteReaderAsync();
@@ -38,13 +45,13 @@ public class TermReaderByNameableId : DatabaseReader<Term>, IDatabaseReader<Term
             {
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("name"),
-                VocabularyId = vocabularyId,
+                VocabularyId = ownerId,
                 NameableId = nameableId
             };
             await reader.CloseAsync();
             return term;
         }
         await reader.CloseAsync();
-        throw new Exception($"term {nameableId} cannot be found in vocabulary {vocabularyId}");
+        throw new Exception($"term {nameableId} cannot be found in vocabulary {vocabularyName} of owner {ownerId}");
     }
 }

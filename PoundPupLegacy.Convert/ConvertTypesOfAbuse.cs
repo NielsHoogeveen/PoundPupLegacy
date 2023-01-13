@@ -45,7 +45,8 @@ internal partial class Program
                 case 
                 when cc.field_tile_image_fid = 0 then null
                 ELSE cc.field_tile_image_fid 
-                end file_id_tile_image
+                end file_id_tile_image,
+                ua.dst url_path
                 FROM(
                 SELECT {NON_LETHAL_PHYSICAL_ABUSE} AS id, 'Non-lethal physical abuse' AS title, 'non-lethal physical abuse' AS topic_name, 'physical abuse' AS first_parent_topic_name, NULL AS second_parent_topic_name
                 UNION
@@ -74,6 +75,7 @@ internal partial class Program
                 SELECT {DEATH_BY_UNKNOWN_CAUSE}, 'Death by unknown cause', NULL, NULL , null
                 ) AS t
                 LEFT JOIN node n ON n.title = t.topic_name AND n.`type` = 'category_cat'
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 LEFT JOIN category c ON c.cid = n.nid AND c.cnid = 4126
                 LEFT JOIN content_type_category_cat cc on cc.nid = n.nid AND cc.vid = n.vid
                 LEFT JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
@@ -98,8 +100,9 @@ internal partial class Program
             {
                 new VocabularyName
                 {
-                    VocabularyId = TYPE_OF_ABUSE,
-                    Name = name,
+                    OwnerId = OWNER_CASES,
+                    Name = VOCABULARY_TYPE_OF_ABUSE,
+                    TermName = name,
                     ParentNames = new List<string>(),
                 }
             };
@@ -117,8 +120,9 @@ internal partial class Program
 
                 vocabularyNames.Add(new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = lst
                 });
             }
@@ -130,14 +134,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

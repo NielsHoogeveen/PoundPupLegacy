@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -13,13 +14,21 @@ public class HagueStatusCreator : IEntityCreator<HagueStatus>
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var hagueStatus in hagueStatuss)
         {
             await nodeWriter.WriteAsync(hagueStatus);
             await nameableWriter.WriteAsync(hagueStatus);
             await hagueStatusWriter.WriteAsync(hagueStatus);
-            await EntityCreator.WriteTerms(hagueStatus, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(hagueStatus, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in hagueStatus.TenantNodes)
+            {
+                tenantNode.NodeId = hagueStatus.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -12,10 +13,11 @@ internal partial class Program
 
     private static async Task MigrateDeportationCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await DeportationCaseCreator.CreateAsync(ReadDeportationCases(mysqlconnection), connection);
+            await DeportationCaseCreator.CreateAsync(ReadDeportationCases(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -25,7 +27,7 @@ internal partial class Program
         }
        
     }
-    private static async IAsyncEnumerable<DeportationCase> ReadDeportationCases(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<DeportationCase> ReadDeportationCases(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -40,14 +42,16 @@ internal partial class Program
                      field_description_6_value description,
                      MIN(cf.field_date_value) `date`,
                      case 
-                	  		when field_state_nid = 0 then null 
-                		  else field_state_nid
-                	  end subdivision_id_from,
-                	  case
+                	    when field_state_nid = 0 then null 
+                		else field_state_nid
+                	end subdivision_id_from,
+                	case
                 		when field_country_0_nid = 0 then null
                 		ELSE field_country_0_nid
-                	  END country_id_to
+                	END country_id_to,
+                    ua.dst url_path
                 FROM node n
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_deportation_case c ON c.nid = n.nid AND c.vid = n.vid
                 LEFT JOIN content_field_cases fc ON fc.field_cases_nid = n.nid
                 LEFT JOIN node n3 ON fc.nid = n3.nid AND fc.vid = n3.vid
@@ -80,14 +84,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        PublicationStatusId = reader.GetInt32("status"),
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -97,8 +101,8 @@ internal partial class Program
                 VocabularyNames = new List<VocabularyName>(),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
-                SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from") ? null : reader.GetInt32("subdivision_id_from"),
-                CountryIdTo = reader.IsDBNull("country_id_to") ? null : reader.GetInt32("country_id_to"),
+                SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from") ? null : await nodeIdReader.ReadAsync(PPL, reader.GetInt32("subdivision_id_from")),
+                CountryIdTo = reader.IsDBNull("country_id_to") ? null : await nodeIdReader.ReadAsync(PPL, reader.GetInt32("country_id_to")),
                 FileIdTileImage = null,
             };
             yield return country;

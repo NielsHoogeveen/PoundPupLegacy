@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -13,13 +14,21 @@ public class TypeOfAbuseCreator : IEntityCreator<TypeOfAbuse>
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var typeOfAbuse in typesOfAbuse)
         {
             await nodeWriter.WriteAsync(typeOfAbuse);
             await nameableWriter.WriteAsync(typeOfAbuse);
             await typeOfAbuseWriter.WriteAsync(typeOfAbuse);
-            await EntityCreator.WriteTerms(typeOfAbuse, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(typeOfAbuse, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in typeOfAbuse.TenantNodes)
+            {
+                tenantNode.NodeId = typeOfAbuse.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

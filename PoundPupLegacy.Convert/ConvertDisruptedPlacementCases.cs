@@ -38,8 +38,10 @@ internal partial class Program
                      44 node_type_id,
                      cc.nid IS NOT null is_topic,
                      field_description_long_value description,
-                     field_disruption_date_value `date`
+                     field_disruption_date_value `date`,
+                    ua.dst url_path
                 FROM node n
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_disrupted_placement_case c ON c.nid = n.nid AND c.vid = n.vid
                 LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid 
                 LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
@@ -63,14 +65,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        PublicationStatusId = reader.GetInt32("status"),
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

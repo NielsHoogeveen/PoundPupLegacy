@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -16,7 +17,8 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
-
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var childTraffickingCase in childTraffickingCases)
         {
@@ -26,7 +28,13 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
             await nameableWriter.WriteAsync(childTraffickingCase);
             await caseWriter.WriteAsync(childTraffickingCase);
             await childTraffickingCaseWriter.WriteAsync(childTraffickingCase);
-            await EntityCreator.WriteTerms(childTraffickingCase, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(childTraffickingCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in childTraffickingCase.TenantNodes)
+            {
+                tenantNode.NodeId = childTraffickingCase.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -21,6 +22,8 @@ public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIn
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await  TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var subdivision in subdivisions)
         {
@@ -35,7 +38,13 @@ public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIn
             await intermediateLevelSubdivisionWriter.WriteAsync(subdivision);
             await isoCodedFirstLevelSubdivisionWriter.WriteAsync(subdivision);
             await formalIntermediateLevelSubdivisionWriter.WriteAsync(subdivision);
-            await EntityCreator.WriteTerms(subdivision, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(subdivision, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in subdivision.TenantNodes)
+            {
+                tenantNode.NodeId = subdivision.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

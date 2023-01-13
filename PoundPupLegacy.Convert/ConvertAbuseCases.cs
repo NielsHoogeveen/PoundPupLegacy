@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -12,10 +13,11 @@ internal partial class Program
 
     private static async Task MigrateAbuseCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await AbuseCaseCreator.CreateAsync(ReadAbuseCases(mysqlconnection), connection);
+            await AbuseCaseCreator.CreateAsync(ReadAbuseCases(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch(Exception)
@@ -24,7 +26,7 @@ internal partial class Program
             throw;
         }
     }
-    private static async IAsyncEnumerable<AbuseCase> ReadAbuseCases(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<AbuseCase> ReadAbuseCases(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -63,8 +65,10 @@ internal partial class Program
                 END family_size_id,
                 case when c.field_home_schooling_value = 'yes' then true else null END home_schooling_involved,
                 case when field_fundamentalist_faith_value = 'yes' then TRUE ELSE NULL END fundamental_faith_involved,
-                case when field_disabilities_value = 'yes' then TRUE ELSE NULL END disabilities_involved
+                case when field_disabilities_value = 'yes' then TRUE ELSE NULL END disabilities_involved,
+                ua.dst url_path
                 FROM node n
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_case c ON c.nid = n.nid AND c.vid = n.vid
                 LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid AND cc.nid <> 44518
                 LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
@@ -140,8 +144,9 @@ internal partial class Program
 
                 vocabularyNames.Add(new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = topicParentNames,
                 });
             }
@@ -154,14 +159,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -171,8 +176,8 @@ internal partial class Program
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
-                ChildPlacementTypeId = reader.GetInt32("child_placement_type_id"),
-                FamilySizeId = reader.IsDBNull("family_size_id") ? null : reader.GetInt32("family_size_id"),
+                ChildPlacementTypeId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("child_placement_type_id")),
+                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await nodeIdReader.ReadAsync(PPL, reader.GetInt32("family_size_id")),
                 HomeschoolingInvolved = reader.IsDBNull("home_schooling_involved") ? null : reader.GetBoolean("home_schooling_involved"),
                 FundamentalFaithInvolved = reader.IsDBNull("fundamental_faith_involved") ? null : reader.GetBoolean("fundamental_faith_involved"),
                 DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),

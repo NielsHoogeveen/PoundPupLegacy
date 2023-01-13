@@ -10,21 +10,22 @@ namespace PoundPupLegacy.Db
 
     internal static class EntityCreator
     {
-        internal static async Task WriteTerms(Nameable nameable, DatabaseWriter<Term> termWriter, TermReaderByName termReader, DatabaseWriter<TermHierarchy> termHierarchyWriter)
+        internal static async Task WriteTerms(Nameable nameable, DatabaseWriter<Term> termWriter, TermReaderByName termReader, DatabaseWriter<TermHierarchy> termHierarchyWriter, VocabularyIdReaderByOwnerAndName vocabularyIdReader)
         {
             foreach (var vocabularyName in nameable.VocabularyNames)
             {
+                var vocubularyId = await vocabularyIdReader.ReadAsync(vocabularyName.OwnerId, vocabularyName.Name);
                 var term = new Term
                 {
-                    Name = vocabularyName.Name,
+                    Name = vocabularyName.TermName,
                     Id = null,
-                    VocabularyId = vocabularyName.VocabularyId,
+                    VocabularyId = vocubularyId,
                     NameableId = (int)nameable.Id!
                 };
                 await termWriter.WriteAsync(term);
                 foreach (var parent in vocabularyName.ParentNames)
                 {
-                    var parentTerm = await termReader.ReadAsync(vocabularyName.VocabularyId, parent);
+                    var parentTerm = await termReader.ReadAsync(vocubularyId, parent);
                     await termHierarchyWriter.WriteAsync(new TermHierarchy { TermIdPartent = (int)parentTerm.Id!, TermIdChild = (int)term.Id! });
                 }
             }

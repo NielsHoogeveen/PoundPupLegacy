@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -12,10 +13,11 @@ internal partial class Program
 
     private static async Task MigrateChildTraffickingCases(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await ChildTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(mysqlconnection), connection);
+            await ChildTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -25,7 +27,7 @@ internal partial class Program
         }
        
     }
-    private static async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -41,8 +43,10 @@ internal partial class Program
                     field_description_7_value description,
                     field_discovery_date_0_value `date`,
                     field_number_of_children_value number_of_children_involved,
-                    field_country_from_nid country_id_from
+                    field_country_from_nid country_id_from,
+                    ua.dst url_path
                 FROM node n
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_child_trafficking_case c ON c.nid = n.nid AND c.vid = n.vid
                 LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid 
                 LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
@@ -66,14 +70,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -84,7 +88,7 @@ internal partial class Program
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
-                CountryIdFrom = reader.GetInt32("country_id_from"),
+                CountryIdFrom = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("country_id_from")),
                 FileIdTileImage = null,
             };
             yield return country;

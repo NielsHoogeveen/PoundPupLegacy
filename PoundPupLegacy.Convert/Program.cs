@@ -14,27 +14,28 @@ internal partial class Program
     const string ConnectStringPostgresql = "Host=localhost;Username=postgres;Password=niels;Database=ppl;Include Error Detail=True";
 
     private record NodeType(int Id, string Name, string Description);
-    private static List<VocabularyName> GetVocabularyNames(int vocabularyId, int id, string name, Dictionary<int, List<VocabularyName>> dictionary)
-    {
-        var list = new List<VocabularyName>
-                {
-                    new VocabularyName
-                    {
-                        VocabularyId = vocabularyId,
-                        Name = name,
-                        ParentNames = new List<string>(),
-                    },
-                };
-        if (dictionary.TryGetValue(id, out var vocabularyNames))
-        {
-            foreach (var vocabularyName in vocabularyNames)
-            {
-                list.Add(vocabularyName);
-            }
-        }
-        return list;
-    }
 
+    private static async Task TruncateDatabase(NpgsqlConnection postgresqlConnection)
+    {
+        var sql = """
+            TRUNCATE node 
+            RESTART IDENTITY
+            CASCADE;
+            TRUNCATE principal 
+            RESTART IDENTITY
+            CASCADE;
+            TRUNCATE user_group 
+            RESTART IDENTITY
+            CASCADE;
+            TRUNCATE node_type 
+            RESTART IDENTITY
+            CASCADE;
+            """;
+        using var command = postgresqlConnection.CreateCommand();
+        command.CommandType = System.Data.CommandType.Text;
+        command.CommandText = sql;
+        await command.ExecuteNonQueryAsync();
+    }
     private static async Task AddNodeTypes(NpgsqlConnection postgresqlConnection)
     {
         var nodeTypes = new NodeType[]
@@ -154,7 +155,7 @@ internal partial class Program
     const int CURACAO = 4129;
     const int SINT_MAARTEN = 4130;
 
-    const int TOPICS = 4126;
+    
     const int DOCUMENT_TYPES = 42416;
     const int ORGANIZATION_TYPE = 12622;
 
@@ -167,10 +168,11 @@ internal partial class Program
             await mysqlconnection.OpenAsync();
             await connection.OpenAsync();
             //await MigratePublicationStatuses(connection);
-            await MigrateUsers(mysqlconnection, connection);
             //await MigrateFiles(mysqlconnection, connection);
 
+            //await TruncateDatabase(connection);
             //await AddNodeTypes(connection);
+            //await MigrateUsers(mysqlconnection, connection);
             //await MigrateVocabularies(mysqlconnection, connection);
             //await MigrateBasicNameables(mysqlconnection, connection);
             //await MigrateChildPlacementTypes(mysqlconnection, connection);
@@ -213,9 +215,9 @@ internal partial class Program
             //await MigrateWrongfulMedicationCases(mysqlconnection, connection);
             //await MigrateWrongfulRemovalCases(mysqlconnection, connection);
             //await MigrateLocations(mysqlconnection, connection);
-            //await MigrateNodeTerms(mysqlconnection, connection);
             //await MigratePages(mysqlconnection, connection);
             //await MigrateReviews(mysqlconnection, connection);
+            //await MigrateNodeTerms(mysqlconnection, connection);
             //await MigrateComments(mysqlconnection, connection);
 
 
@@ -242,9 +244,28 @@ internal partial class Program
 
         }
     }
+    public static string CreateMD5(string input)
+    {
+        // Use input string to calculate MD5 hash
+        using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+        {
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            byte[] hashBytes = md5.ComputeHash(inputBytes);
 
+            return System.Convert.ToHexString(hashBytes); // .NET 5 +
+
+            // Convert the byte array to hexadecimal string prior to .NET 5
+            // StringBuilder sb = new System.Text.StringBuilder();
+            // for (int i = 0; i < hashBytes.Length; i++)
+            // {
+            //     sb.Append(hashBytes[i].ToString("X2"));
+            // }
+            // return sb.ToString();
+        }
+    }
     static async Task Main(string[] args)
     {
+        //Console.WriteLine(CreateMD5("wellhung"));
         await Migrate();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 using System.Reflection.PortableExecutable;
@@ -127,133 +128,136 @@ internal partial class Program
         };
     }
 
-    private static IEnumerable<BasicCountry> basicCountries = new List<BasicCountry>
+    private static async IAsyncEnumerable<BasicCountry> GetBasicCountries(NodeIdByUrlIdReader nodeIdReader) 
     {
-        new BasicCountry
+        yield return new BasicCountry
         {
-            Id = ANTIGUA_AND_BARBUDA,
+            Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             Title = "Antigua and Barbuda",
-            OwnerId = null,
+            OwnerId = OWNER_GEOGRAPHY,
             TenantNodes = new List<TenantNode>
-            {
-                new TenantNode
                 {
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    NodeId = null,
-                    SubgroupId = null,
-                    UrlId = ANTIGUA_AND_BARBUDA
-                }
-            },
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = "antigua_and_barbuda",
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = ANTIGUA_AND_BARBUDA
+                    }
+                },
             NodeTypeId = 13,
             Name = "Antigua and Barbuda",
             Description = "",
             VocabularyNames = new List<VocabularyName>
-            {
-                new VocabularyName
-                    {
-                        VocabularyId = TOPICS,
-                        Name = "Antigua and Barbuda",
-                        ParentNames = new List<string>{ "Caribbean" },
-                    }
-            },
-            SecondLevelRegionId = 3822,
+                {
+                    new VocabularyName
+                        {
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = "Antigua and Barbuda",
+                            ParentNames = new List<string>{ "Caribbean" },
+                        }
+                },
+            SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, 3822),
             ISO3166_1_Code = "AG",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = 41213,
+            HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41213),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-        },
-        new BasicCountry
+        };
+        yield return new BasicCountry
         {
-            Id = PALESTINE,
+            Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             Title = "Palestine",
-            OwnerId = null,
+            OwnerId = OWNER_GEOGRAPHY,
             TenantNodes = new List<TenantNode>
-            {
-                new TenantNode
                 {
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    NodeId = null,
-                    SubgroupId = null,
-                    UrlId = PALESTINE
-                }
-            },
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = "palestine",
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = PALESTINE
+                    }
+                },
             NodeTypeId = 13,
             Name = "Palestine",
             Description = "",
             VocabularyNames = new List<VocabularyName>
-            {
-                new VocabularyName
-                    {
-                        VocabularyId = TOPICS,
-                        Name = "Palestine",
-                        ParentNames = new List<string>{ "Western Asia" },
-                    }
-            },
-            SecondLevelRegionId = 3817,
+                {
+                    new VocabularyName
+                        {
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = "Palestine",
+                            ParentNames = new List<string>{ "Western Asia" },
+                        }
+                },
+            SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, 3817),
             ISO3166_1_Code = "PS",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = 41213,
+            HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41213),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-        },
-        new BasicCountry
+        };
+        yield return new BasicCountry
         {
-            Id = SAINT_HELENA_ETC,
+            Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             Title = "Saint Helena, Ascension and Tristan da Cunha",
-            OwnerId = null,
+            OwnerId = OWNER_GEOGRAPHY,
             TenantNodes = new List<TenantNode>
-            {
-                new TenantNode
                 {
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    NodeId = null,
-                    SubgroupId = null,
-                    UrlId = SAINT_HELENA_ETC
-                }
-            },
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = SAINT_HELENA_ETC
+                    }
+                },
             NodeTypeId = 13,
             Name = "Saint Helena, Ascension and Tristan da Cunha",
             Description = "",
             VocabularyNames = new List<VocabularyName>
-            {
-                new VocabularyName
-                    {
-                        VocabularyId = TOPICS,
-                        Name = "Saint Helena, Ascension and Tristan da Cunha",
-                        ParentNames = new List<string>{ "Western Africa" },
-                    }
-            },
-            SecondLevelRegionId = 3825,
+                {
+                    new VocabularyName
+                        {
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = "Saint Helena, Ascension and Tristan da Cunha",
+                            ParentNames = new List<string>{ "Western Africa" },
+                        }
+                },
+            SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, 3825),
             ISO3166_1_Code = "SH",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = 41213,
+            HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41213),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -261,44 +265,45 @@ internal partial class Program
             MarriageRequirements = null,
             OtherRequirements = null,
 
-        },
-        new BasicCountry
+        };
+        yield return new BasicCountry
         {
-            Id = SOUTH_SUDAN,
+            Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             Title = "South Sudan",
-            OwnerId = null,
+            OwnerId = OWNER_GEOGRAPHY,
             TenantNodes = new List<TenantNode>
-            {
-                new TenantNode
                 {
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    NodeId = null,
-                    SubgroupId = null,
-                    UrlId = SOUTH_SUDAN
-                }
-            },
+                    new TenantNode
+                    {
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = "south_sudan",
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = SOUTH_SUDAN
+                    }
+                },
             NodeTypeId = 13,
             Name = "South Sudan",
             Description = "",
             VocabularyNames = new List<VocabularyName>
-            {
-                new VocabularyName
-                    {
-                        VocabularyId = TOPICS,
-                        Name = "South Sudan",
-                        ParentNames = new List<string>{ "Eastern Africa" },
-                    }
-            },
-            SecondLevelRegionId = 3827,
+                {
+                    new VocabularyName
+                        {
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = "South Sudan",
+                            ParentNames = new List<string>{ "Eastern Africa" },
+                        }
+                },
+            SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, 3827),
             ISO3166_1_Code = "SS",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = 41213,
+            HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41213),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -306,25 +311,17 @@ internal partial class Program
             MarriageRequirements = null,
             OtherRequirements = null,
 
-        }
-    };
+        };
+    }
 
     private static async Task MigrateBasicCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            var countries = basicCountries.Select(x =>
-            {
-                if (x.Id == 0)
-                {
-                    NodeId++;
-                    x.Id = NodeId;
-                }
-                return x;
-            });
-            await BasicCountryCreator.CreateAsync(countries.ToAsyncEnumerable(), connection);
-            await BasicCountryCreator.CreateAsync(ReadBasicCountries(mysqlconnection), connection);
+            await BasicCountryCreator.CreateAsync(GetBasicCountries(nodeIdReader), connection);
+            await BasicCountryCreator.CreateAsync(ReadBasicCountries(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -334,7 +331,7 @@ internal partial class Program
         }
 
     }
-    private static async IAsyncEnumerable<BasicCountry> ReadBasicCountries(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<BasicCountry> ReadBasicCountries(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -379,8 +376,10 @@ internal partial class Program
                         CASE
                             WHEN field_other_requirements_value = '' THEN NULL
                             ELSE field_other_requirements_value
-                        END other_requirements
+                        END other_requirements,
+                        ua.dst url_path
                     FROM node n 
+                    LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                     JOIN content_type_country_type cou ON cou.nid = n.nid 
                     JOIN category_hierarchy ch ON ch.cid = n.nid 
                     JOIN node n2 ON n2.nid = ch.parent 
@@ -448,8 +447,9 @@ internal partial class Program
             {
                 new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = new List<string>{ regionName },
                 }
             };
@@ -460,14 +460,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -477,14 +477,14 @@ internal partial class Program
                 Name = name,
                 Description = "",
                 VocabularyNames = vocabularyNames,
-                SecondLevelRegionId = reader.GetInt32("second_level_region_id"),
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("second_level_region_id")),
                 ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                               reader.GetInt32("id") == 4010 ? "RS" :
                               reader.GetInt32("id") == 4014 ? "XK" :
                               reader.GetString("iso_3166_code"),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = GetHagueStatus(name),
+                HagueStatusId = await nodeIdReader.ReadAsync(PPL, GetHagueStatus(name)),
                 ResidencyRequirements = reader.IsDBNull("residency_requirements") ? null : reader.GetString("residency_requirements"),
                 AgeRequirements = reader.IsDBNull("age_requirements") ? null : reader.GetString("age_requirements"),
                 MarriageRequirements = reader.IsDBNull("marriage_requirements") ? null : reader.GetString("marriage_requirements"),

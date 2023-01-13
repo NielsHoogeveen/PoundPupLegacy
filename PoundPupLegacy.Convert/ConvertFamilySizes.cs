@@ -1,8 +1,6 @@
-﻿using MySqlConnector;
-using Npgsql;
+﻿using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
-using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -20,7 +18,7 @@ internal partial class Program
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "1 to 4",
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -40,20 +38,21 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = CHILD_PLACEMENT_TYPE,
-                        Name = "1 to 4",
+                        OwnerId = OWNER_CASES,
+                        Name = VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        TermName = "1 to 4",
                         ParentNames = new List<string>(),
                     },
                 },
             },
             new FamilySize
             {
-                Id = FOUR_TO_EIGHT,
+                Id = null,
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "4 to 8",
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -73,8 +72,9 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = CHILD_PLACEMENT_TYPE,
-                        Name = "4 to 8",
+                        OwnerId = OWNER_CASES,
+                        Name = VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        TermName = "4 to 8",
                         ParentNames = new List<string>(),
                     },
                 },
@@ -86,7 +86,7 @@ internal partial class Program
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "8 to 12",
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -106,8 +106,9 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = CHILD_PLACEMENT_TYPE,
-                        Name = "8 to 12",
+                        OwnerId = OWNER_CASES,
+                        Name = VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        TermName = "8 to 12",
                         ParentNames = new List<string>(),
                     },
                 },
@@ -119,7 +120,7 @@ internal partial class Program
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "more than 12",
-                OwnerId = null,
+                OwnerId = OWNER_CASES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -139,14 +140,16 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = CHILD_PLACEMENT_TYPE,
-                        Name = "more than 12",
+                        OwnerId = OWNER_CASES,
+                        Name = VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        TermName = "more than 12",
                         ParentNames = new List<string>(),
                     },
                     new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = "mega families",
+                        OwnerId = PPL,
+                        Name = VOCABULARY_TOPICS,
+                        TermName = "mega families",
                         ParentNames = new List<string>(),
                     },
                 },

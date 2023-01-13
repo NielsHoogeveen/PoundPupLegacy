@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 using System.Reflection.PortableExecutable;
@@ -10,47 +11,48 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
-        private static List<CountryAndFirstAndSecondLevelSubdivision> RegionSubdivisionCountries = new List<CountryAndFirstAndSecondLevelSubdivision>
+        private static async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries(NodeIdByUrlIdReader nodeIdReader)
         {
-            new CountryAndFirstAndSecondLevelSubdivision
+            yield return new CountryAndFirstAndSecondLevelSubdivision
             {
                 Id = null,
                 Title = "Saint Barthélemy",
                 Name = "Saint Barthélemy",
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
-                {
-                    new TenantNode
                     {
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = SAINT_BARTH
-                    }
-                },
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = SAINT_BARTH
+                        }
+                    },
                 NodeTypeId = 16,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
-                {
-                    new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = "Saint Barthélemy",
-                        ParentNames = new List<string>{ "Caribbean" },
-                    }
-                },
-                SecondLevelRegionId = 3809,
-                CountryId = 4018,
+                        new VocabularyName
+                        {
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = "Saint Barthélemy",
+                            ParentNames = new List<string>{ "Caribbean" },
+                        }
+                    },
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, 3809),
+                CountryId = await nodeIdReader.ReadAsync(PPL, 4018),
                 ISO3166_1_Code = "BL",
                 ISO3166_2_Code = "FR-BL",
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = 41213,
+                HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41213),
                 ResidencyRequirements = null,
                 AgeRequirements = null,
                 HealthRequirements = null,
@@ -58,115 +60,111 @@ namespace PoundPupLegacy.Convert
                 MarriageRequirements = null,
                 OtherRequirements = null,
 
-            },
-            new CountryAndFirstAndSecondLevelSubdivision
+            };
+            yield return new CountryAndFirstAndSecondLevelSubdivision
             {
                 Id = null,
                 Title = "Saint Martin",
                 Name = "Saint Martin",
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
-                {
-                    new TenantNode
                     {
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = SAINT_MARTIN
-                    }
-                },
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = SAINT_MARTIN
+                        }
+                    },
                 NodeTypeId = 16,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
-                {
-                    new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = "Saint Martin",
-                        ParentNames = new List<string>{ "Caribbean" },
-                    }
-                },
-                SecondLevelRegionId = 3809,
-                CountryId = 4018,
+                        new VocabularyName
+                        {
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = "Saint Martin",
+                            ParentNames = new List<string>{ "Caribbean" },
+                        }
+                    },
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, 3809),
+                CountryId = await nodeIdReader.ReadAsync(PPL, 4018),
                 ISO3166_1_Code = "MF",
                 ISO3166_2_Code = "FR-MF",
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = 41213,
+                HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41213),
                 ResidencyRequirements = null,
                 AgeRequirements = null,
                 HealthRequirements = null,
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
-            },
-            new CountryAndFirstAndSecondLevelSubdivision
+            };
+            yield return new CountryAndFirstAndSecondLevelSubdivision
             {
                 Id = null,
                 Title = "French Southern Territories",
                 Name = "French Southern Territories",
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
-                {
-                    new TenantNode
                     {
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = FRENCH_SOUTHERN_TERRITORIES
-                    }
-                },
+                        new TenantNode
+                        {
+                            TenantId = 1,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = FRENCH_SOUTHERN_TERRITORIES
+                        }
+                    },
                 NodeTypeId = 15,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 PublisherId = 1,
                 Description = "",
                 VocabularyNames = new List<VocabularyName>
-                {
-                    new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = "French Southern Territories",
-                        ParentNames = new List<string>{ "Southern Africa" },
-                    }
-                },
-                SecondLevelRegionId = 3828,
-                CountryId = 4018,
+                        new VocabularyName
+                        {
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = "French Southern Territories",
+                            ParentNames = new List<string>{ "Southern Africa" },
+                        }
+                    },
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, 3828),
+                CountryId = await nodeIdReader.ReadAsync(PPL, 4018),
                 ISO3166_1_Code = "TF",
                 ISO3166_2_Code = "FR-TF",
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = 41213,
+                HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41213),
                 ResidencyRequirements = null,
                 AgeRequirements = null,
                 HealthRequirements = null,
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
-            },
-
-        };
+            };
+        }
 
         private static async Task MigrateCountryAndFirstAndSecondLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
-
+            await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
             await using var tx = await connection.BeginTransactionAsync();
             try
             {
-                foreach (var country in RegionSubdivisionCountries)
-                {
-                    NodeId++;
-                    country.Id = NodeId;
-                }
-                await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(RegionSubdivisionCountries.ToAsyncEnumerable(), connection);
-                await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(mysqlconnection), connection);
+                await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(GetRegionSubdivisionCountries(nodeIdReader), connection);
+                await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(mysqlconnection, nodeIdReader), connection);
                 await tx.CommitAsync();
             }
             catch (Exception)
@@ -175,7 +173,7 @@ namespace PoundPupLegacy.Convert
                 throw;
             }
         }
-        private static async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
         {
 
 
@@ -189,8 +187,10 @@ namespace PoundPupLegacy.Convert
                     FROM_UNIXTIME(n.changed) changed_date_time,
                     n2.nid second_level_region_id,
                     n2.title second_level_region_name,
-                    upper(cou.field_country_code_value) iso_3166_code
-                    FROM node n 
+                    upper(cou.field_country_code_value) iso_3166_code,
+                    ua.dst url_path
+                FROM node n 
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_country_type cou ON cou.nid = n.nid
                 JOIN category_hierarchy ch ON ch.cid = n.nid
                 JOIN node n2 ON n2.nid = ch.parent
@@ -226,8 +226,9 @@ namespace PoundPupLegacy.Convert
                 {
                     new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = name,
+                        OwnerId = PPL,
+                        Name = VOCABULARY_TOPICS,
+                        TermName = name,
                         ParentNames = new List<string>{ regionName },
                     }
                 };
@@ -241,14 +242,14 @@ namespace PoundPupLegacy.Convert
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
                     Name = name,
-                    OwnerId = null,
+                    OwnerId = OWNER_GEOGRAPHY,
                     TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
                         {
                             TenantId = 1,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
-                            UrlPath = null,
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                             NodeId = null,
                             SubgroupId = null,
                             UrlId = id
@@ -257,16 +258,16 @@ namespace PoundPupLegacy.Convert
                     NodeTypeId = 16,
                     Description = "",
                     VocabularyNames = vocabularyNames,
-                    SecondLevelRegionId = reader.GetInt32("second_level_region_id"),
+                    SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("second_level_region_id")),
                     ISO3166_1_Code = id == 3847 ? "NE" :
                                      id == 4010 ? "RS" :
                                      id == 4014 ? "XK" :
                                      reader.GetString("iso_3166_code"),
                     ISO3166_2_Code = GetISO3166Code2ForCountry(id),
-                    CountryId = GetSupervisingCountryId(id),
+                    CountryId = await nodeIdReader.ReadAsync(PPL, GetSupervisingCountryId(id)),
                     FileIdFlag = null,
                     FileIdTileImage = null,
-                    HagueStatusId = 41213,
+                    HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41213),
                     ResidencyRequirements = null,
                     AgeRequirements = null,
                     HealthRequirements = null,

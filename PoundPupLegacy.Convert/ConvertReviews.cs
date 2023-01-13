@@ -47,9 +47,10 @@ internal partial class Program
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        var id = reader.GetInt32("id");
+        
         while (await reader.ReadAsync())
         {
+            var id = reader.GetInt32("id");
             yield return new Review
             {
                 Id = null,
@@ -57,7 +58,7 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
-                OwnerId = null,
+                OwnerId = PPL,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

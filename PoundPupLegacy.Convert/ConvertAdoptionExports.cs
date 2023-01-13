@@ -2,6 +2,7 @@
 using Npgsql;
 using NpgsqlTypes;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -54,11 +55,12 @@ internal partial class Program
 
     private static async Task MigrateAdoptionExports(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await AdoptionExportRelationCreator.CreateAsync(ReadAdoptionExportRelations(mysqlconnection), connection);
-            await AdoptionExportYearCreator.CreateAsync(ReadAdoptionExportYears(mysqlconnection, connection), connection);
+            await AdoptionExportRelationCreator.CreateAsync(ReadAdoptionExportRelations(mysqlconnection, nodeIdReader), connection);
+            await AdoptionExportYearCreator.CreateAsync(ReadAdoptionExportYears(mysqlconnection, connection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -68,7 +70,7 @@ internal partial class Program
         }
 
     }
-    private static async IAsyncEnumerable<AdoptionExportRelation> ReadAdoptionExportRelations(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<AdoptionExportRelation> ReadAdoptionExportRelations(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -163,8 +165,8 @@ internal partial class Program
         {
             var country = new AdoptionExportRelation
             {
-                CountryIdTo = reader.GetInt32("country_id_to"),
-                CountryIdFrom = reader.IsDBNull("country_id_from") ? null : reader.GetInt32("country_id_from"),
+                CountryIdTo = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("country_id_to")),
+                CountryIdFrom = reader.IsDBNull("country_id_from") ? null : await nodeIdReader.ReadAsync(PPL, reader.GetInt32("country_id_from")),
                 CountryNameFrom = reader.IsDBNull("country_name_from") ? null : reader.GetString("country_name_from"),
             };
             yield return country;
@@ -173,7 +175,7 @@ internal partial class Program
         await reader.CloseAsync();
     }
 
-    private static async IAsyncEnumerable<AdoptionExportYear> ReadAdoptionExportYears(MySqlConnection mysqlconnection, NpgsqlConnection connection)
+    private static async IAsyncEnumerable<AdoptionExportYear> ReadAdoptionExportYears(MySqlConnection mysqlconnection, NpgsqlConnection connection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -282,8 +284,8 @@ internal partial class Program
             var country = new AdoptionExportYear
             {
                 AdoptionExportRelationId = GetAdoptionExportRelationId(
-                    reader.GetInt32("country_id_to"),
-                    reader.IsDBNull("country_id_from") ? null : reader.GetInt32("country_id_from"),
+                    await nodeIdReader.ReadAsync(PPL, reader.GetInt32("country_id_to")),
+                    reader.IsDBNull("country_id_from") ? null : await nodeIdReader.ReadAsync(PPL, reader.GetInt32("country_id_from")),
                     reader.IsDBNull("country_name_from") ? null : reader.GetString("country_name_from"),
                     connection
                     ),

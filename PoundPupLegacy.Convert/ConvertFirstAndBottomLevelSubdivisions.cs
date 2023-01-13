@@ -11,7 +11,7 @@ namespace PoundPupLegacy.Convert;
 internal partial class Program
 {
 
-    private static async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv(NpgsqlConnection connection)
+    private static async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv(NpgsqlConnection connection, NodeIdByUrlIdReader nodeIdReader)
     {
         await using var reader = await TermReaderByNameableId.CreateAsync(connection);
 
@@ -27,9 +27,9 @@ internal partial class Program
                 NodeId++;
                 id = NodeId;
             }
-            var countryId = int.Parse(parts[7]);
+            var countryId = await nodeIdReader.ReadAsync(PPL, int.Parse(parts[7]));
 
-            var countryName = (await reader.ReadAsync(TOPICS, countryId)).Name;
+            var countryName = (await reader.ReadAsync(PPL, VOCABULARY_TOPICS, countryId)).Name;
             yield return new FirstAndBottomLevelSubdivision
             {
                 Id = null,
@@ -40,13 +40,14 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = title,
+                        OwnerId = PPL,
+                        Name = VOCABULARY_TOPICS,
+                        TermName = title,
                         ParentNames = new List<string> { countryName },
                     }
                 },
                 NodeTypeId = int.Parse(parts[4]),
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -349,11 +350,12 @@ internal partial class Program
 
     private static async Task MigrateFirstAndBottomLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await FirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadDirectSubDivisionCsv(connection), connection);
-            await FirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadFormalFirstLevelSubdivisions(mysqlconnection), connection);
+            await FirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadDirectSubDivisionCsv(connection, nodeIdReader), connection);
+            await FirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadFormalFirstLevelSubdivisions(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -362,7 +364,7 @@ internal partial class Program
             throw;
         }
     }
-    private static async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
         var continentIds = new List<int> { 3806, 3810, 3811, 3816, 3822, 3823 };
 
@@ -380,10 +382,12 @@ internal partial class Program
                 else n2.title
             end country_name,
             n3.title topic_name,
-            s.field_statecode_value iso_3166_2_code
+            s.field_statecode_value iso_3166_2_code,
+            ua.dst url_path
             FROM node n 
+            LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
             JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid
-                JOIN node n3 ON n3.nid = cc.nid AND n3.vid = cc.vid
+            JOIN node n3 ON n3.nid = cc.nid AND n3.vid = cc.vid
             JOIN content_type_statefact s ON s.nid = n.nid
             JOIN category_hierarchy ch ON ch.cid = n.nid
             JOIN node n2 ON n2.nid = ch.parent
@@ -413,8 +417,9 @@ internal partial class Program
             {
                 new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = new List<string>{ countryName },
                 }
             };
@@ -427,14 +432,14 @@ internal partial class Program
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
                 Name = name,
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -443,9 +448,9 @@ internal partial class Program
                 NodeTypeId = 17,
                 VocabularyNames = vocabularyNames,
                 Description = "",
-                CountryId = reader.GetInt32("id") == 11827 ? 11571 :
+                CountryId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("id") == 11827 ? 11571 :
                             reader.GetInt32("id") == 11789 ? 11571 :
-                            reader.GetInt32("country_id"),
+                            reader.GetInt32("country_id")),
                 ISO3166_2_Code = isoCode,
                 FileIdFlag = null,
                 FileIdTileImage = null,

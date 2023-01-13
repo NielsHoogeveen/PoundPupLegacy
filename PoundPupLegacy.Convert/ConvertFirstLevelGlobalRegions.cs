@@ -33,8 +33,10 @@ internal partial class Program
             FROM_UNIXTIME(n.created) created_date_time, 
             FROM_UNIXTIME(n.changed) changed_date_time,
             nr.body description,
-            cc.field_tile_image_fid file_id_tile_image
+            cc.field_tile_image_fid file_id_tile_image,
+            ua.dst url_path
             FROM node n 
+            LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
             JOIN category_hierarchy ch ON ch.cid = n.nid
             JOIN node n2 ON n2.nid = ch.parent
                 	LEFT JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
@@ -60,8 +62,9 @@ internal partial class Program
             {
                 new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = name,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = name,
                     ParentNames = new List<string>{ "Around the world"},
                 }
             };
@@ -73,14 +76,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

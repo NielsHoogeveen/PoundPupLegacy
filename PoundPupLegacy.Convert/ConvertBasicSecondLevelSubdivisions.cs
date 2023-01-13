@@ -11,7 +11,7 @@ namespace PoundPupLegacy.Convert
     internal partial class Program
     {
 
-        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(NpgsqlConnection connection)
+        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(NpgsqlConnection connection, NodeIdByUrlIdReader nodeIdReader)
         {
             await using var termReader = await TermReaderByNameableId.CreateAsync(connection);
             await using var subdivisionReader = await SubdivisionIdReaderByName.CreateAsync(connection);
@@ -25,16 +25,16 @@ namespace PoundPupLegacy.Convert
                     id = NodeId;
                 }
                 var title = parts[8];
-                var countryId = int.Parse(parts[7]);
+                var countryId = await nodeIdReader.ReadAsync(PPL, int.Parse(parts[7]));
                 var subdivisionId = await subdivisionReader.ReadAsync(countryId, parts[11]);
-                var topicName = (await termReader.ReadAsync(TOPICS, subdivisionId)).Name;
+                var topicName = (await termReader.ReadAsync(PPL, VOCABULARY_TOPICS, subdivisionId)).Name;
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = null,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
                     NodeTypeId = int.Parse(parts[4]),
-                    OwnerId = null,
+                    OwnerId = OWNER_GEOGRAPHY,
                     TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
@@ -56,8 +56,9 @@ namespace PoundPupLegacy.Convert
                     {
                         new VocabularyName
                         {
-                            VocabularyId = TOPICS,
-                            Name = title,
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = title,
                             ParentNames = new List<string> { topicName },
                         }
                     },
@@ -69,7 +70,7 @@ namespace PoundPupLegacy.Convert
             }
         }
 
-        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionCsv(NpgsqlConnection connection)
+        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionCsv(NpgsqlConnection connection, NodeIdByUrlIdReader nodeIdReader)
         {
             await using var termReader = await TermReaderByNameableId.CreateAsync(connection);
             await using var subdivisionReader = await SubdivisionIdReaderByIso3166Code.CreateAsync(connection);
@@ -85,14 +86,14 @@ namespace PoundPupLegacy.Convert
                 }
                 var title = parts[8];
                 var subdivisionId = await subdivisionReader.ReadAsync(parts[11]);
-                var topicName = (await termReader.ReadAsync(TOPICS, subdivisionId)).Name;
+                var topicName = (await termReader.ReadAsync(PPL, VOCABULARY_TOPICS, subdivisionId)).Name;
                 yield return new BasicSecondLevelSubdivision
                 {
                     Id = null,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
                     NodeTypeId = int.Parse(parts[4]),
-                    OwnerId = null,
+                    OwnerId = OWNER_GEOGRAPHY,
                     TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
@@ -106,7 +107,7 @@ namespace PoundPupLegacy.Convert
                         }
                     },
                     PublisherId = int.Parse(parts[6]),
-                    CountryId = int.Parse(parts[7]),
+                    CountryId = await nodeIdReader.ReadAsync(PPL, int.Parse(parts[7])),
                     Title = title,
                     Name = parts[9],
                     Description = "",
@@ -114,8 +115,9 @@ namespace PoundPupLegacy.Convert
                     {
                         new VocabularyName
                         {
-                            VocabularyId = TOPICS,
-                            Name = title,
+                            OwnerId = PPL,
+                            Name = VOCABULARY_TOPICS,
+                            TermName = title,
                             ParentNames = new List<string> { topicName },
                         }
                     },
@@ -128,12 +130,13 @@ namespace PoundPupLegacy.Convert
         }
         private static async Task MigrateBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection, NpgsqlConnection connection)
         {
+            await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
             await using var tx = await connection.BeginTransactionAsync();
             try
             {
-                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(connection), connection);
-                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionCsv(connection), connection);
-                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(mysqlconnection), connection);
+                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(connection, nodeIdReader), connection);
+                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionCsv(connection, nodeIdReader), connection);
+                await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(mysqlconnection, nodeIdReader), connection);
                 await tx.CommitAsync();
             }
             catch (Exception)
@@ -143,7 +146,7 @@ namespace PoundPupLegacy.Convert
             }
 
         }
-        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection)
+        private static async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
         {
             var sql = $"""
                 SELECT
@@ -158,8 +161,10 @@ namespace PoundPupLegacy.Convert
                     3805 country_id,
                     CONCAT('US-', s.field_statecode_value) 
                     iso_3166_2_code,
-                    s.field_state_flag_fid file_id_flag
+                    s.field_state_flag_fid file_id_flag,
+                    ua.dst url_path
                 FROM node n 
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_statefact s ON s.nid = n.nid
                 JOIN category_hierarchy ch ON ch.cid = n.nid
                 JOIN node n2 ON n2.nid = ch.parent
@@ -184,8 +189,9 @@ namespace PoundPupLegacy.Convert
                 {
                     new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = title,
+                        OwnerId = PPL, 
+                        Name = VOCABULARY_TOPICS, 
+                        TermName = title,
                         ParentNames = new List<string>{ subdivisioName },
                     }
                 };
@@ -197,14 +203,14 @@ namespace PoundPupLegacy.Convert
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = title,
                     Name = reader.GetString("title"),
-                    OwnerId = null,
+                    OwnerId = OWNER_GEOGRAPHY,
                     TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
                         {
                             TenantId = 1,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
-                            UrlPath = null,
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                             NodeId = null,
                             SubgroupId = null,
                             UrlId = reader.GetInt32("id")
@@ -212,9 +218,9 @@ namespace PoundPupLegacy.Convert
                     },
                     NodeTypeId = 19,
                     Description = "",
-                    VocabularyNames = GetVocabularyNames(TOPICS, id, title, new Dictionary<int, List<VocabularyName>>()),
-                    IntermediateLevelSubdivisionId = reader.GetInt32("intermediate_level_subdivision_id"),
-                    CountryId = reader.GetInt32("country_id"),
+                    VocabularyNames = vocabularyNames,
+                    IntermediateLevelSubdivisionId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("intermediate_level_subdivision_id")),
+                    CountryId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("country_id")),
                     ISO3166_2_Code = reader.GetString("iso_3166_2_code"),
                     FileIdFlag = reader.IsDBNull("file_id_flag") ? null : reader.GetInt32("file_id_flag"),
                     FileIdTileImage = null,

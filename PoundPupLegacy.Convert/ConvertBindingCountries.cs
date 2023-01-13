@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -12,10 +13,11 @@ internal partial class Program
 
     private static async Task MigrateBindingCountries(MySqlConnection mysqlconnection, NpgsqlConnection connection)
     {
+        await using var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(connection);
         await using var tx = await connection.BeginTransactionAsync();
         try
         {
-            await BindingCountryCreator.CreateAsync(ReadBindingCountries(mysqlconnection), connection);
+            await BindingCountryCreator.CreateAsync(ReadBindingCountries(mysqlconnection, nodeIdReader), connection);
             await tx.CommitAsync();
         }
         catch (Exception)
@@ -24,7 +26,7 @@ internal partial class Program
             throw;
         }
     }
-    private static async IAsyncEnumerable<BindingCountry> ReadBindingCountries(MySqlConnection mysqlconnection)
+    private static async IAsyncEnumerable<BindingCountry> ReadBindingCountries(MySqlConnection mysqlconnection, NodeIdByUrlIdReader nodeIdReader)
     {
 
         var sql = $"""
@@ -37,8 +39,10 @@ internal partial class Program
                     FROM_UNIXTIME(n.changed) changed_date_time, 
                     n2.nid second_level_region_id,
                     n2.title second_level_region_name,
-                    upper(cou.field_country_code_value) iso_3166_1_code
+                    upper(cou.field_country_code_value) iso_3166_1_code,
+                    ua.dst url_path
                 FROM node n 
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_country_type cou ON cou.nid = n.nid 
                 JOIN category_hierarchy ch ON ch.cid = n.nid 
                 JOIN node n2 ON n2.nid = ch.parent 
@@ -66,8 +70,9 @@ internal partial class Program
                 {
                     new VocabularyName
                     {
-                        VocabularyId = TOPICS,
-                        Name = name,
+                        OwnerId = PPL, 
+                        Name = VOCABULARY_TOPICS, 
+                        TermName = name,
                         ParentNames = new List<string>{ regionName},
                     }
                 };
@@ -79,14 +84,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
-                OwnerId = null,
+                OwnerId = OWNER_GEOGRAPHY,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
@@ -96,11 +101,11 @@ internal partial class Program
                 Description = "",
                 VocabularyNames = vocabularyNames,
                 Name = name,
-                SecondLevelRegionId = reader.GetInt32("second_level_region_id"),
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(PPL, reader.GetInt32("second_level_region_id")),
                 ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = 41215,
+                HagueStatusId = await nodeIdReader.ReadAsync(PPL, 41215),
                 ResidencyRequirements = null,
                 AgeRequirements = null,
                 HealthRequirements = null,

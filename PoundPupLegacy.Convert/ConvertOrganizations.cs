@@ -21,7 +21,7 @@ internal partial class Program
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
                 Title = "Colorado Adoption Center",
-                OwnerId = null,
+                OwnerId = OWNER_PARTIES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -94,8 +94,10 @@ internal partial class Program
                 	case 
                 		when c.topic_parent_names IS NOT NULL then c.topic_parent_names
                 		ELSE c2.topic_parent_names
-                	END topic_parent_names
+                	END topic_parent_names,
+                   ua.dst url_path
                 FROM node n 
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_adopt_orgs o ON o.nid = n.nid AND o.vid = n.vid
                 LEFT JOIN (
                 	select
@@ -193,8 +195,9 @@ internal partial class Program
 
                 vocabularyNames.Add(new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = topicParentNames,
                 });
             }
@@ -206,14 +209,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
-                OwnerId = null,
+                OwnerId = OWNER_PARTIES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

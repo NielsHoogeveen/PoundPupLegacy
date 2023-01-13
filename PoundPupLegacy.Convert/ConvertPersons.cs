@@ -51,8 +51,10 @@ internal partial class Program
                  	end topic_name,
                 CASE WHEN o.field_image_fid = 0 THEN null ELSE o.field_image_fid END file_id_portrait,
                 STR_TO_DATE(field_born_value,'%Y-%m-%d') date_of_birth,
-                STR_TO_DATE(field_died_value,'%Y-%m-%d') date_of_death
+                STR_TO_DATE(field_died_value,'%Y-%m-%d') date_of_death,
+                ua.dst url_path
                 FROM node n 
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 LEFT JOIN content_type_adopt_person o ON o.nid = n.nid AND o.vid = n.vid
                 LEFT JOIN node n2 ON n2.title = n.title AND n2.nid <> n.nid AND n2.`type` = 'category_cat'
                 LEFT JOIN (
@@ -104,8 +106,9 @@ internal partial class Program
                 vocabularyNames.Add(
                 new VocabularyName
                 {
-                    VocabularyId = TOPICS,
-                    Name = topicName,
+                    OwnerId = PPL,
+                    Name = VOCABULARY_TOPICS,
+                    TermName = topicName,
                     ParentNames = new List<string>(),
                 });
             };
@@ -117,14 +120,14 @@ internal partial class Program
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = title,
-                OwnerId = null,
+                OwnerId = OWNER_PARTIES,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

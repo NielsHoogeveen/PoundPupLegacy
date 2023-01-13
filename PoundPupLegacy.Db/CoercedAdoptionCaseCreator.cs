@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -16,6 +17,8 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var coercedAdoptionCase in coercedAdoptionCases)
         {
@@ -25,7 +28,13 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
             await nameableWriter.WriteAsync(coercedAdoptionCase);
             await caseWriter.WriteAsync(coercedAdoptionCase);
             await coercedAdoptionCaseWriter.WriteAsync(coercedAdoptionCase);
-            await EntityCreator.WriteTerms(coercedAdoptionCase, termWriter, termReader, termHierarchyWriter);
+            await EntityCreator.WriteTerms(coercedAdoptionCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in coercedAdoptionCase.TenantNodes)
+            {
+                tenantNode.NodeId = coercedAdoptionCase.Id;
+                await tenantNodeWriter.WriteAsync(tenantNode);
+            }
+
         }
     }
 }

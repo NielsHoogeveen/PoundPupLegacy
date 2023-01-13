@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record AnonymousUser : AccessRole
+public record AnonymousUser : AccessRole, Publisher
 {
     public int? Id { get; set; }
     public string Name { get; }
