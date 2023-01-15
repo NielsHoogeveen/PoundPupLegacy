@@ -9,7 +9,7 @@ namespace PoundPupLegacy;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         const string CONNECTSTRING = "Host=localhost;Username=postgres;Password=niels;Database=ppl;Include Error Detail=True";
 
@@ -36,7 +36,7 @@ public class Program
         builder.Services.AddTransient<StringToDocumentService>();
         builder.Services.AddTransient<TeaserService>();
         builder.Services.AddTransient<AuthenticationService>();
-        builder.Services.AddSingleton<UserService>();
+        builder.Services.AddSingleton<SiteDataService>();
 
         var app = builder.Build();
 
@@ -75,6 +75,12 @@ public class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        var res = app.Services.GetService<SiteDataService>();
+        if (res != null)
+        {
+            await res.InitializeAsync();
+        }
 
         app.Run();
     }

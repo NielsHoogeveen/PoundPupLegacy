@@ -77,6 +77,7 @@ internal sealed class SecondLevelGlobalRegionMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),

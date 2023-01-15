@@ -23,6 +23,10 @@ public class HomeController : Controller
         var bla = HttpContext.Items["UserMenu"];
         return View();
     }
+    public IActionResult AllElse()
+    {
+        return View();
+    }
 
     public IActionResult Privacy()
     {

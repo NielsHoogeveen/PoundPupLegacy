@@ -1,10 +1,4 @@
-﻿using PoundPupLegacy.Model;
-using System.Collections.Immutable;
-using System.Drawing;
-using System.IO;
-using System.Xml.Linq;
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 
 internal sealed class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWriter<TenantNode>
 {
@@ -46,7 +40,7 @@ internal sealed class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWr
             },
         };
 
-        var command = await CreateInsertStatementAsync(
+        var command = await CreateIdentityInsertStatementAsync(
             connection,
             "tenant_node",
             collumnDefinitions
@@ -60,13 +54,20 @@ internal sealed class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWr
 
     internal override async Task WriteAsync(TenantNode tenantNode)
     {
+        if(tenantNode.Id != null)
+        {
+            throw new Exception($"Id of tenant node needs to be null");
+        }
         WriteValue(tenantNode.TenantId, TENANT_ID);
         WriteValue(tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value: tenantNode.NodeId, URL_ID);
         WriteNullableValue(tenantNode.UrlPath, URL_PATH);
         WriteValue(tenantNode.NodeId, NODE_ID);
         WriteNullableValue(tenantNode.SubgroupId, SUBGROUP_ID);
         WriteValue(tenantNode.PublicationStatusId, PUBLICATION_STATUS_ID);
-        await _command.ExecuteNonQueryAsync();
+        tenantNode.Id = await _command.ExecuteScalarAsync() switch
+        {
+            long i => (int)i,
+            _ => throw new Exception("No id was generated for tenant node")
+        };
     }
-
 }

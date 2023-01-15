@@ -143,6 +143,7 @@ internal sealed class ActMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = null,

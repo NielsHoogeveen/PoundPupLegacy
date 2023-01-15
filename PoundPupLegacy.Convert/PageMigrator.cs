@@ -28,8 +28,10 @@ internal sealed class PageMigrator : Migrator
                      n.`status`,
                      FROM_UNIXTIME(n.created) created, 
                      FROM_UNIXTIME(n.changed) `changed`,
-                     nr.body `text`
+                     nr.body `text`,
+                     ua.dst url_path
                 FROM node n
+                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 WHERE n.`type` = 'page' AND n.uid <> 0
                 """;
@@ -57,9 +59,10 @@ internal sealed class PageMigrator : Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id

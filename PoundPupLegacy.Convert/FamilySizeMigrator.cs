@@ -26,6 +26,7 @@ internal sealed class FamilySizeMigrator : Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -60,6 +61,7 @@ internal sealed class FamilySizeMigrator : Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -94,6 +96,7 @@ internal sealed class FamilySizeMigrator : Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -128,6 +131,7 @@ internal sealed class FamilySizeMigrator : Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,

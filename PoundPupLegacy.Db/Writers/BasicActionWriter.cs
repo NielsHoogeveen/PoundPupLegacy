@@ -4,7 +4,7 @@ internal sealed class BasicActionWriter : DatabaseWriter<BasicAction>, IDatabase
 {
 
     private const string ID = "id";
-    private const string ACTION = "action";
+    private const string PATH = "path";
     private const string DESCRIPTION = "description";
     public static async Task<DatabaseWriter<BasicAction>> CreateAsync(NpgsqlConnection connection)
     {
@@ -17,7 +17,7 @@ internal sealed class BasicActionWriter : DatabaseWriter<BasicAction>, IDatabase
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ACTION,
+                    Name = PATH,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
@@ -36,12 +36,12 @@ internal sealed class BasicActionWriter : DatabaseWriter<BasicAction>, IDatabase
 
     internal override async Task WriteAsync(BasicAction actionAccessPrivilege)
     {
-        if(actionAccessPrivilege.Id.HasValue)
+        if(!actionAccessPrivilege.Id.HasValue)
         {
             throw new NullReferenceException();
         }
         WriteValue(actionAccessPrivilege.Id!.Value, ID);
-        WriteNullableValue(actionAccessPrivilege.Action, ACTION);
+        WriteNullableValue(actionAccessPrivilege.Path, PATH);
         WriteNullableValue(actionAccessPrivilege.Description, DESCRIPTION);
         await _command.ExecuteNonQueryAsync();
     }

@@ -14,6 +14,7 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         await (new PublicationStatusMigrator(this)).Migrate();
         await (new FileMigrator(this)).Migrate();
         await (new NodeTypeMigrator(this)).Migrate();
+        await (new ActionMigrator(this)).Migrate();
         await (new UserMigrator(this)).Migrate();
         await (new VocabularyMigrator(this)).Migrate();
         await (new BasicNameableMigrator(this)).Migrate();
@@ -63,6 +64,7 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         await (new ActMigrator(this)).Migrate();
         await (new BillMigrator(this)).Migrate();
         await (new NodeTermMigrator(this)).Migrate();
+        await (new MenuMigrator(this)).Migrate();
     }
 
     internal const string ConnectionStringMariaDb = "server=localhost;userid=root;Password=niels;database=ppldb";
@@ -78,13 +80,15 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         var postgresConnection = new NpgsqlConnection(ConnectStringPostgresql);
         await mysqlConnection.OpenAsync();
         await postgresConnection.OpenAsync();
-        var nodeIdReader = await NodeIdByUrlIdReader.CreateAsync(postgresConnection);
+        var nodeIdReader = await NodeIdReaderByUrlId.CreateAsync(postgresConnection);
         var termByNameableIdReader = await TermReaderByNameableId.CreateAsync(postgresConnection);
         var subdivisionReader = await SubdivisionIdReaderByName.CreateAsync(postgresConnection);
         var subdivisionReaderByIsoCode = await SubdivisionIdReaderByIso3166Code.CreateAsync(postgresConnection);
         var createNodeActionIdReaderByNodeTypeId = await CreateNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
         var deleteNodeActionIdReaderByNodeTypeId = await DeleteNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
         var editNodeActionIdReaderByNodeTypeId = await EditNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
+        var actionIdReaderByPath  = await ActionIdReaderByPath.CreateAsync(postgresConnection);
+        var tenantNodeIdReaderByUrlId = await TenantNodeIdReaderByUrlId.CreateAsync(postgresConnection);
         Console.WriteLine($" took {_stopwatch.ElapsedMilliseconds} ms");
         return new MySqlToPostgresConverter(
             mysqlConnection, 
@@ -95,27 +99,33 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
             subdivisionReaderByIsoCode,
             createNodeActionIdReaderByNodeTypeId,
             deleteNodeActionIdReaderByNodeTypeId,
-            editNodeActionIdReaderByNodeTypeId);
+            editNodeActionIdReaderByNodeTypeId,
+            actionIdReaderByPath,
+            tenantNodeIdReaderByUrlId);
     }
     internal MySqlConnection MysqlConnection { get; }
     internal NpgsqlConnection PostgresConnection { get; }
-    internal NodeIdByUrlIdReader NodeIdReader { get; }
+    internal NodeIdReaderByUrlId NodeIdReader { get; }
     internal TermReaderByNameableId TermByNameableIdReader { get; }
     internal SubdivisionIdReaderByName SubdivisionIdReader { get; }
     internal SubdivisionIdReaderByIso3166Code SubdivisionIdReaderByIso3166Code { get; }
     internal CreateNodeActionIdReaderByNodeTypeId CreateNodeActionIdReaderByNodeTypeId { get; }
     internal DeleteNodeActionIdReaderByNodeTypeId DeleteNodeActionIdReaderByNodeTypeId { get; }
     internal EditNodeActionIdReaderByNodeTypeId EditNodeActionIdReaderByNodeTypeId { get; }
+    internal ActionIdReaderByPath ActionIdReaderByPath { get; }
+    internal TenantNodeIdReaderByUrlId TenantNodeIdByUrlIdReader { get; }
     public MySqlToPostgresConverter(
         MySqlConnection mysqlConnection, 
         NpgsqlConnection postgresConnection, 
-        NodeIdByUrlIdReader nodeIdReader, 
+        NodeIdReaderByUrlId nodeIdReader, 
         TermReaderByNameableId termByNameableIdReader, 
         SubdivisionIdReaderByName subdivisionIdReader, 
         SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code,
         CreateNodeActionIdReaderByNodeTypeId createNodeActionIdReaderByNodeTypeId,
         DeleteNodeActionIdReaderByNodeTypeId deleteNodeActionIdReaderByNodeTypeId,
-        EditNodeActionIdReaderByNodeTypeId editNodeActionIdReaderByNodeTypeId
+        EditNodeActionIdReaderByNodeTypeId editNodeActionIdReaderByNodeTypeId,
+        ActionIdReaderByPath actionIdReaderByPath,
+        TenantNodeIdReaderByUrlId tenantNodeIdReaderByUrlId
         )
     {
         MysqlConnection = mysqlConnection;
@@ -127,6 +137,8 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         CreateNodeActionIdReaderByNodeTypeId  = createNodeActionIdReaderByNodeTypeId;
         DeleteNodeActionIdReaderByNodeTypeId = deleteNodeActionIdReaderByNodeTypeId;
         EditNodeActionIdReaderByNodeTypeId = editNodeActionIdReaderByNodeTypeId;
+        ActionIdReaderByPath = actionIdReaderByPath;
+        TenantNodeIdByUrlIdReader = tenantNodeIdReaderByUrlId;
     }
 
     private async Task TruncateDatabase()
@@ -153,6 +165,9 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
             RESTART IDENTITY
             CASCADE;
             TRUNCATE action 
+            RESTART IDENTITY
+            CASCADE;
+            TRUNCATE menu_item 
             RESTART IDENTITY
             CASCADE;
             """;

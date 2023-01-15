@@ -40,6 +40,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = int.Parse(parts[5]),
                         UrlPath = null,

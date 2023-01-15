@@ -12,16 +12,13 @@ public class UserMenuMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, UserService userService, RazorViewToStringService razorViewToStringService)
+    public async Task InvokeAsync(HttpContext httpContext, SiteDataService userService, RazorViewToStringService razorViewToStringService)
     {
-        if (httpContext.User != null)
-        {
-            var userMenu = await userService.GetMenuItemsForUserId(httpContext.User);
+        var userMenu = userService.GetMenuItemsForUser(httpContext.User);
 
-            var userMenuHtml = await razorViewToStringService.GetFromView("/Views/Shared/_UserMenu.cshtml", userMenu, httpContext);
+        var userMenuHtml = await razorViewToStringService.GetFromView("/Views/Shared/_UserMenu.cshtml", userMenu, httpContext);
 
-            httpContext.Items.Add("UserMenu", userMenuHtml);
-            await _next(httpContext);
-        }
+        httpContext.Items.Add("UserMenu", userMenuHtml);
+        await _next(httpContext);
     }
 }

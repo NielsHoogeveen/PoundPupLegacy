@@ -60,6 +60,7 @@ internal sealed class FathersRightsViolationsCaseMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),

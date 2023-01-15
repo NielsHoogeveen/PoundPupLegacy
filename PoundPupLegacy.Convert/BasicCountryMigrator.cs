@@ -140,6 +140,7 @@ internal sealed class BasicCountryMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = "antigua_and_barbuda",
@@ -185,6 +186,7 @@ internal sealed class BasicCountryMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = "palestine",
@@ -230,6 +232,7 @@ internal sealed class BasicCountryMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -276,6 +279,7 @@ internal sealed class BasicCountryMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = "south_sudan",
@@ -452,6 +456,7 @@ internal sealed class BasicCountryMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),

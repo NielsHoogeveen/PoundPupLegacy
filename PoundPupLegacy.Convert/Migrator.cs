@@ -10,19 +10,21 @@ namespace PoundPupLegacy.Convert;
 
 internal abstract class Migrator
 {
-    protected MySqlConnection _mysqlConnection;
-    protected NpgsqlConnection _postgresConnection;
-    protected NodeIdByUrlIdReader _nodeIdReader;
-    protected TermReaderByNameableId _termReaderByNameableId;
-    protected SubdivisionIdReaderByName _subdivisionIdReader;
-    protected SubdivisionIdReaderByIso3166Code _subdivisionIdReaderByIso3166Code;
-    protected CreateNodeActionIdReaderByNodeTypeId _createNodeActionIdReaderByNodeTypeId;
-    protected DeleteNodeActionIdReaderByNodeTypeId _deleteNodeActionIdReaderByNodeTypeId;
-    protected EditNodeActionIdReaderByNodeTypeId _editNodeActionIdReaderByNodeTypeId;
+    protected readonly MySqlConnection _mysqlConnection;
+    protected readonly NpgsqlConnection _postgresConnection;
+    protected readonly NodeIdReaderByUrlId _nodeIdReader;
+    protected readonly TermReaderByNameableId _termReaderByNameableId;
+    protected readonly SubdivisionIdReaderByName _subdivisionIdReader;
+    protected readonly SubdivisionIdReaderByIso3166Code _subdivisionIdReaderByIso3166Code;
+    protected readonly CreateNodeActionIdReaderByNodeTypeId _createNodeActionIdReaderByNodeTypeId;
+    protected readonly DeleteNodeActionIdReaderByNodeTypeId _deleteNodeActionIdReaderByNodeTypeId;
+    protected readonly EditNodeActionIdReaderByNodeTypeId _editNodeActionIdReaderByNodeTypeId;
+    protected readonly ActionIdReaderByPath _actionReaderByPath;
+    protected readonly TenantNodeIdReaderByUrlId _tenantNodeIdByUrlIdReader;
 
 
 
-    private Stopwatch stopwatch = new Stopwatch();
+    private readonly Stopwatch stopwatch = new Stopwatch();
 
     protected Migrator(MySqlToPostgresConverter mySqlToPostgresConverter)
     {
@@ -35,6 +37,8 @@ internal abstract class Migrator
         _createNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.CreateNodeActionIdReaderByNodeTypeId;
         _deleteNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.DeleteNodeActionIdReaderByNodeTypeId;
         _editNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.EditNodeActionIdReaderByNodeTypeId;
+        _actionReaderByPath = mySqlToPostgresConverter.ActionIdReaderByPath;
+        _tenantNodeIdByUrlIdReader = mySqlToPostgresConverter.TenantNodeIdByUrlIdReader;
     }
 
     public async Task Migrate()

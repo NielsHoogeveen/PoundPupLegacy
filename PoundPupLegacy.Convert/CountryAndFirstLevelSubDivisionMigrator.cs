@@ -30,6 +30,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -77,6 +78,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = "curacao",
@@ -124,6 +126,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = "sint_maarten",
@@ -171,6 +174,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -284,6 +288,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),

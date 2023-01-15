@@ -29,6 +29,7 @@ internal sealed class VocabularyMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -53,6 +54,7 @@ internal sealed class VocabularyMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -77,6 +79,7 @@ internal sealed class VocabularyMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -101,6 +104,7 @@ internal sealed class VocabularyMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -125,6 +129,7 @@ internal sealed class VocabularyMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -149,6 +154,7 @@ internal sealed class VocabularyMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
@@ -243,6 +249,7 @@ internal sealed class VocabularyMigrator: Migrator
                 {
                     new TenantNode
                     {
+                        Id = null,
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = null,

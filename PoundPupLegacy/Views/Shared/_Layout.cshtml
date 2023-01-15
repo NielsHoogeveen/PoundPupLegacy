@@ -34,41 +34,7 @@
                     Home
                 </li>
                 </a>
-                <a href="/blogs">
-                <li>
-                    Blogs
-                </li>
-                </a>
-                <a href="/articles">
-                <li>
-                    Articles
-                </li>
-                </a>
-                <a href="/about_us">
-                <li>
-                    About Us
-                </li>
-                </a>
-                <a href="/our_position">
-                <li>
-                    Our Position
-                </li>
-                </a>
-                <a href="/faq">
-                <li>
-                    FAQ
-                </li>
-                </a>
-                <a href="/ways_to_help">
-                <li>
-                    Ways to help
-                </li>
-                </a>
-                <a href="/contact">
-                <li>
-                    Contact
-                </li>
-                </a>
+                @Html.Raw(@Context.Items["UserMenu"])
             @if (this.User.Identity!.IsAuthenticated == false)
             {
                 <li>
@@ -82,7 +48,7 @@
             }
             else
             {
-                @Html.Raw(@Context.Items["UserMenu"])
+               
                 <li>
                     <form id="login-form" action="/logout" method="post">
                         <input type="submit" value="logout"></input>

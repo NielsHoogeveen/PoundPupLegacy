@@ -25,6 +25,17 @@ internal sealed class UserMigrator : Migrator
             Id = 6,
             Name = "Administrators"
         };
+        yield return new UserRole
+        {
+            Id = 11,
+            Name = "Editor"
+        };
+        yield return new UserRole
+        {
+            Id = 12,
+            Name = "Everyone"
+        };
+
     }
     private static async IAsyncEnumerable<Tenant> GetTenants()
     {
@@ -107,6 +118,12 @@ internal sealed class UserMigrator : Migrator
         {
             UserGroupId = 1,
             UserRoleId = 6,
+            UserId = 1
+        };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = 1,
+            UserRoleId = 11,
             UserId = 2
         };
         yield return new UserGroupUserRoleUser
@@ -153,25 +170,59 @@ internal sealed class UserMigrator : Migrator
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(37)
         };
 
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 11,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(26),
+        };
 
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 11,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(29),
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 11,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(23),
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 11,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(24),
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/articles")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/blogs")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/contact")
+        };
     }
 
     protected override async Task MigrateImpl()
     {
-        var users = ReadUsers().ToList();
-        var memberList = users.Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! });
         await AnonimousUserCreator.CreateAsync(_postgresConnection);
         await TenantCreator.CreateAsync(GetTenants(), _postgresConnection);
         await ContentSharingGroupCreator.CreateAsync(GetContentSharingGroups(), _postgresConnection);
         await UserRoleCreator.CreateAsync(GetUserRoles(), _postgresConnection);
-        await UserCreator.CreateAsync(users.ToAsyncEnumerable(), _postgresConnection);
+        await UserCreator.CreateAsync(ReadUsers(), _postgresConnection);
         await CollectiveCreator.CreateAsync(GetCollectives(), _postgresConnection);
         await CollectiveUserCreator.CreateAsync(GetCollectiveUsers(), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
-        await UserGroupUserRoleUserCreator.CreateAsync(memberList.ToAsyncEnumerable(), _postgresConnection);
+        await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! }), _postgresConnection);
+        await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 12, UserId = (int)x.Id! }), _postgresConnection);
         await AccessRolePrivilegeCreator.CreateAsync(GetAccessRolePrivileges(), _postgresConnection);
     }
-    private IEnumerable<User> ReadUsers()
+    private async IAsyncEnumerable<User> ReadUsers()
     {
 
         using var readCommand = _mysqlConnection.CreateCommand();
@@ -221,7 +272,7 @@ internal sealed class UserMigrator : Migrator
                 ) )
                 """;
 
-        var reader = readCommand.ExecuteReader();
+        var reader = await readCommand.ExecuteReaderAsync();
 
         while (reader.Read())
         {
@@ -242,6 +293,6 @@ internal sealed class UserMigrator : Migrator
                 Avatar = avatar
             };
         }
-        reader.Close();
+        await reader.CloseAsync();
     }
 }
