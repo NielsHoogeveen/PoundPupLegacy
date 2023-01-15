@@ -4,6 +4,6 @@ internal sealed class FormalIntermediateLevelSubdivisionWriter : IDatabaseWriter
 {
     public static async Task<DatabaseWriter<FormalIntermediateLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<FormalIntermediateLevelSubdivision>(await SingleIdWriter.CreateSingleIdCommandAsync("formal_intermediate_level_subdivision", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<FormalIntermediateLevelSubdivision>("formal_intermediate_level_subdivision", connection);
     }
 }

@@ -14,9 +14,12 @@ internal sealed class NodeTypeMigrator : Migrator
     protected override async Task MigrateImpl()
     {
         await NodeTypeCreator.CreateAsync(GetNodeTypes(), _postgresConnection);
+        await CreateNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id }), _postgresConnection);
+        await DeleteNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id }), _postgresConnection);
+        await EditNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id }), _postgresConnection);
     }
 
-    private static async IAsyncEnumerable<NodeType> GetNodeTypes()
+    internal static async IAsyncEnumerable<NodeType> GetNodeTypes()
     {
         await Task.CompletedTask;
         yield return new NodeType(1, "organization type", "Organizations are loosely defined as something a collection of people work together. Therefore a bill or a trip is also regarderd an organization, even though it does not have a formal position as such");

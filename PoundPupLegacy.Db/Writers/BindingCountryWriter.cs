@@ -4,6 +4,6 @@ internal sealed class BindingCountryWriter : IDatabaseWriter<BindingCountry>
 {
     public static async Task<DatabaseWriter<BindingCountry>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<BindingCountry>(await SingleIdWriter.CreateSingleIdCommandAsync("binding_country", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<BindingCountry>("binding_country", connection);
     }
 }

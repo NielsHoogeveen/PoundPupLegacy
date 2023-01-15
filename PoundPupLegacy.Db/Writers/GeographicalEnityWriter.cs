@@ -4,6 +4,6 @@ internal sealed class GeographicalEnityWriter : IDatabaseWriter<GeographicalEnti
 {
     public static async Task<DatabaseWriter<GeographicalEntity>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<GeographicalEntity>(await SingleIdWriter.CreateSingleIdCommandAsync("geographical_entity", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<GeographicalEntity>("geographical_entity", connection);
     }
 }

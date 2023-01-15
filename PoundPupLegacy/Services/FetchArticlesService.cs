@@ -19,17 +19,17 @@ public class FetchArticlesService
          select 
         	json_agg(name)
         		FROM(
-        			select 
-        				t.id "Id",
+        			SELECT 
+        				tn.url_id "Id",
         				t.name "Name",
                         false "Selected"
-        			from article a
-        			join node n on n.id = a.id 
-        			join node_term nt on nt.node_id = n.id
-        			join term t on t.id = nt.term_id
-        			where n.node_status_id = 1
+        			FROM article a
+        			JOIN node n on n.id = a.id 
+        			JOIN node_term nt on nt.node_id = n.id
+        			JOIN term t on t.id = nt.term_id
+                    JOIN tenant_node tn on tn.node_id = t.nameable_id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
         			group by 
-        				t.id,
+        				tn.url_id,
         				t.name
         			order by count(a.id) desc, t.name
         			LIMIT 15
@@ -41,32 +41,33 @@ public class FetchArticlesService
          select 
         	json_agg(name)
         		FROM(
-        			select 
-        				t.id "Id",
+        			SELECT 
+        				tn.url_id "Id",
         				t.name "Name",
-                        case
-                            when t.id in ({0}) then true
-                            else false
-                        end "Selected"
-        			from article a
-        			join node n on n.id = a.id 
-        			join node_term nt on nt.node_id = n.id
-        			join term t on t.id = nt.term_id
-        			where n.node_status_id = 1
-                    AND n.id in (
+                        CASE
+                            WHEN tn.url_id in ({0}) THEN true
+                            ELSE false
+                        END "Selected"
+        			FROM article a
+        			JOIN tenant_node tn2 on tn2.node_id = a.id AND tn2.tenant_id = @tenant_id AND tn2.publication_status_id = 1 
+        			JOIN node_term nt on nt.node_id = a.id
+        			JOIN term t on t.id = nt.term_id
+                    JOIN tenant_node tn on tn.node_id = t.nameable_id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
+                    AND a.id in (
                         SELECT
                             n.id
                         FROM node n
                         join article a on a.id = n.id
-                        join access_role ar on ar.id = n.access_role_id
-        	            join term t on t.id in ({0})
+                        JOIN tenant_node tn2 on tn2.node_id = a.id AND tn2.tenant_id = @tenant_id AND tn2.publication_status_id = 1 
+                        join tenant_node tn on tn.url_id in ({0}) AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
+                        join term t on t.nameable_id = tn.node_id
         	            left join node_term nt on nt.node_id = n.id and nt.term_id = t.id
         	            GROUP BY
         	                n.id
                         HAVING COUNT(n.id) = COUNT(nt.node_id)
                     )
         			group by 
-        				t.id,
+        				tn.url_id,
         				t.name
         			order by count(a.id) desc, t.name
         			LIMIT 15
@@ -77,28 +78,29 @@ public class FetchArticlesService
     const string FETCH_ARTICLES = """
         fetch_articles as (	
         	 select
-        	 n.id "Id",
+        	 tn.url_id "Id",
         	 n.title "Title",
-             stn.text "Text",
+             stn.teaser "Text",
         	 json_build_object(
-        	    'Id', ar.id,
-        		'Name', ar.name,
+        	    'Id', p.id,
+        		'Name', p.name,
         		'CreatedDateTime', n.created_date_time,
         		'ChangedDateTime', n.changed_date_time 
         	 ) "Authoring",
              (select json_agg(json_build_object(
-                    'Id', t.id,
+                    'Id', tn.url_id,
                     'Name', t.name
                 ))
                 FROM node_term nt
                 JOIN term t on t.id = nt.term_id
+                JOIN tenant_node tn on tn.node_id = t.nameable_id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
                 WHERE nt.node_id = n.id
              ) "Tags"
         	 FROM node n
         	 join article a on a.id = n.id
              join simple_text_node stn on stn.id = n.id
-        	 join access_role ar on ar.id = n.access_role_id
-             WHERE n.node_status_id = 1
+        	 join principal p on p.id = n.publisher_id
+             JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
         	 ORDER BY n.changed_date_time DESC
         	 LIMIT 10
         	)
@@ -106,36 +108,39 @@ public class FetchArticlesService
     const string FETCH_ARTICLES_FILTERED = """
         fetch_articles as (	
             select
-            n.id "Id",
+            tn.url_id "Id",
             n.title "Title",
-            stn.text "Text",
+            stn.teaser "Text",
             json_build_object(
-                'Id', ar.id,
-                'Name', ar.name,
+                'Id', p.id,
+                'Name', p.name,
                 'CreatedDateTime', n.created_date_time,
                 'ChangedDateTime', n.changed_date_time 
             ) "Authoring",
             (select json_agg(json_build_object(
-                    'Id', t.id,
+                    'Id', tn.url_id,
                     'Name', t.name
                 ))
                 FROM node_term nt
                 JOIN term t on t.id = nt.term_id
+                JOIN tenant_node tn on tn.node_id = t.nameable_id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
                 WHERE nt.node_id = n.id
              ) "Tags"
             FROM node n
+            JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
             join article a on a.id = n.id
             join simple_text_node stn on stn.id = n.id
-            join access_role ar on ar.id = n.access_role_id
-        	join term t on t.id in ({0})
+            join principal p on p.id = n.publisher_id
+            JOIN tenant_node tn2 on tn2.url_id in ({0}) AND tn2.tenant_id = @tenant_id AND tn2.publication_status_id = 1 
+        	join term t on t.nameable_id = tn2.node_id
         	left join node_term nt on nt.node_id = n.id and nt.term_id = t.id
-            WHERE n.node_status_id = 1
         	GROUP BY
+            tn.url_id,
         	n.id,
             n.title,
-            stn.text,
-            ar.id,
-            ar.name,
+            stn.teaser,
+            p.id,
+            p.name,
             n.created_date_time,
             n.changed_date_time 
             HAVING COUNT(n.id) = COUNT(nt.node_id)
@@ -171,25 +176,14 @@ public class FetchArticlesService
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
+        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
         await readCommand.PrepareAsync();
+        readCommand.Parameters["tenant_id"].Value = 1;
         await using var reader = await readCommand.ExecuteReaderAsync();
         await reader.ReadAsync();
         var articles = reader.GetFieldValue<Articles>(0);
         _connection.Close();
-        var teasers = articles.ArticleListEntries.Select(e => new ArticleListEntry
-        {
-            Id = e.Id,
-            Authoring = e.Authoring,
-            Title = e.Title,
-            Text = _teaserService.MakeTeaser(e.Text),
-            Tags = e.Tags,
-        });
-
-        return new Articles
-        {
-            TermNames = articles.TermNames,
-            ArticleListEntries = teasers.ToList(),
-        };
+        return articles;
     }
 
     public async Task<Articles> GetArticles()
@@ -212,24 +206,13 @@ public class FetchArticlesService
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
+        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
         await readCommand.PrepareAsync();
+        readCommand.Parameters["tenant_id"].Value = 1;
         await using var reader = await readCommand.ExecuteReaderAsync();
         await reader.ReadAsync();
         var articles = reader.GetFieldValue<Articles>(0);
         _connection.Close();
-        var teasers = articles.ArticleListEntries.Select(e => new ArticleListEntry
-        {
-            Id = e.Id,
-            Authoring = e.Authoring,
-            Title = e.Title,
-            Text = _teaserService.MakeTeaser(e.Text),
-            Tags = e.Tags,
-        });
-
-        return new Articles
-        {
-            TermNames = articles.TermNames,
-            ArticleListEntries = teasers.ToList(),
-        };
+        return articles;
     }
 }

@@ -4,6 +4,6 @@ internal sealed class CoercedAdoptionCaseWriter : IDatabaseWriter<CoercedAdoptio
 {
     public static async Task<DatabaseWriter<CoercedAdoptionCase>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<CoercedAdoptionCase>(await SingleIdWriter.CreateSingleIdCommandAsync("coerced_adoption_case", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<CoercedAdoptionCase>("coerced_adoption_case", connection);
     }
 }

@@ -1,12 +1,13 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db.Readers;
+using System.Diagnostics;
 
 namespace PoundPupLegacy.Convert;
 
 internal partial class MySqlToPostgresConverter: IAsyncDisposable
 {
-
+    private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
     public async Task Convert()
     {
         await TruncateDatabase();
@@ -58,9 +59,10 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         await (new LocationMigrator(this)).Migrate();
         await (new PageMigrator(this)).Migrate();
         await (new ReviewMigrator(this)).Migrate();
-        await (new NodeTermMigrator(this)).Migrate();
         await (new CommentMigrator(this)).Migrate();
-
+        await (new ActMigrator(this)).Migrate();
+        await (new BillMigrator(this)).Migrate();
+        await (new NodeTermMigrator(this)).Migrate();
     }
 
     internal const string ConnectionStringMariaDb = "server=localhost;userid=root;Password=niels;database=ppldb";
@@ -69,6 +71,9 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
 
     public static async Task<MySqlToPostgresConverter> GetInstance()
     {
+        
+        Console.Write("Setting up connections and opening readers");
+        _stopwatch.Restart();
         var mysqlConnection = new MySqlConnection(ConnectionStringMariaDb);
         var postgresConnection = new NpgsqlConnection(ConnectStringPostgresql);
         await mysqlConnection.OpenAsync();
@@ -77,7 +82,20 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         var termByNameableIdReader = await TermReaderByNameableId.CreateAsync(postgresConnection);
         var subdivisionReader = await SubdivisionIdReaderByName.CreateAsync(postgresConnection);
         var subdivisionReaderByIsoCode = await SubdivisionIdReaderByIso3166Code.CreateAsync(postgresConnection);
-        return new MySqlToPostgresConverter(mysqlConnection, postgresConnection, nodeIdReader, termByNameableIdReader, subdivisionReader, subdivisionReaderByIsoCode);
+        var createNodeActionIdReaderByNodeTypeId = await CreateNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
+        var deleteNodeActionIdReaderByNodeTypeId = await DeleteNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
+        var editNodeActionIdReaderByNodeTypeId = await EditNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
+        Console.WriteLine($" took {_stopwatch.ElapsedMilliseconds} ms");
+        return new MySqlToPostgresConverter(
+            mysqlConnection, 
+            postgresConnection, 
+            nodeIdReader, 
+            termByNameableIdReader, 
+            subdivisionReader, 
+            subdivisionReaderByIsoCode,
+            createNodeActionIdReaderByNodeTypeId,
+            deleteNodeActionIdReaderByNodeTypeId,
+            editNodeActionIdReaderByNodeTypeId);
     }
     internal MySqlConnection MysqlConnection { get; }
     internal NpgsqlConnection PostgresConnection { get; }
@@ -85,7 +103,20 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
     internal TermReaderByNameableId TermByNameableIdReader { get; }
     internal SubdivisionIdReaderByName SubdivisionIdReader { get; }
     internal SubdivisionIdReaderByIso3166Code SubdivisionIdReaderByIso3166Code { get; }
-    public MySqlToPostgresConverter(MySqlConnection mysqlConnection, NpgsqlConnection postgresConnection, NodeIdByUrlIdReader nodeIdReader, TermReaderByNameableId termByNameableIdReader, SubdivisionIdReaderByName subdivisionIdReader, SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code)
+    internal CreateNodeActionIdReaderByNodeTypeId CreateNodeActionIdReaderByNodeTypeId { get; }
+    internal DeleteNodeActionIdReaderByNodeTypeId DeleteNodeActionIdReaderByNodeTypeId { get; }
+    internal EditNodeActionIdReaderByNodeTypeId EditNodeActionIdReaderByNodeTypeId { get; }
+    public MySqlToPostgresConverter(
+        MySqlConnection mysqlConnection, 
+        NpgsqlConnection postgresConnection, 
+        NodeIdByUrlIdReader nodeIdReader, 
+        TermReaderByNameableId termByNameableIdReader, 
+        SubdivisionIdReaderByName subdivisionIdReader, 
+        SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code,
+        CreateNodeActionIdReaderByNodeTypeId createNodeActionIdReaderByNodeTypeId,
+        DeleteNodeActionIdReaderByNodeTypeId deleteNodeActionIdReaderByNodeTypeId,
+        EditNodeActionIdReaderByNodeTypeId editNodeActionIdReaderByNodeTypeId
+        )
     {
         MysqlConnection = mysqlConnection;
         PostgresConnection = postgresConnection;
@@ -93,10 +124,15 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         TermByNameableIdReader = termByNameableIdReader;
         SubdivisionIdReader = subdivisionIdReader;
         SubdivisionIdReaderByIso3166Code = subdivisionIdReaderByIso3166Code;
+        CreateNodeActionIdReaderByNodeTypeId  = createNodeActionIdReaderByNodeTypeId;
+        DeleteNodeActionIdReaderByNodeTypeId = deleteNodeActionIdReaderByNodeTypeId;
+        EditNodeActionIdReaderByNodeTypeId = editNodeActionIdReaderByNodeTypeId;
     }
 
     private async Task TruncateDatabase()
     {
+        _stopwatch.Restart();
+        Console.Write("Cleaning database");
         var sql = """
             TRUNCATE publication_status
             RESTART IDENTITY
@@ -116,11 +152,15 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
             TRUNCATE node_type 
             RESTART IDENTITY
             CASCADE;
+            TRUNCATE action 
+            RESTART IDENTITY
+            CASCADE;
             """;
         using var command = PostgresConnection.CreateCommand();
         command.CommandType = System.Data.CommandType.Text;
         command.CommandText = sql;
         await command.ExecuteNonQueryAsync();
+        Console.WriteLine($" took {_stopwatch.ElapsedMilliseconds} ms");
     }
 
     public async ValueTask DisposeAsync()

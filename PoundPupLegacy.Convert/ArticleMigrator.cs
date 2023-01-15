@@ -64,8 +64,8 @@ internal sealed class ArticleMigrator: Migrator
                     }
                 },
                 NodeTypeId = 36,
-                Text = reader.GetString("text"),
-
+                Text = TextToHtml(reader.GetString("text")),
+                Teaser = TextToTeaser(reader.GetString("text")),
             };
         }
         await reader.CloseAsync();

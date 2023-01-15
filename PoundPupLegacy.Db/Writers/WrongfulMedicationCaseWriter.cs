@@ -4,6 +4,6 @@ internal sealed class WrongfulMedicationCaseWriter : IDatabaseWriter<WrongfulMed
 {
     public static async Task<DatabaseWriter<WrongfulMedicationCase>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<WrongfulMedicationCase>(await SingleIdWriter.CreateSingleIdCommandAsync("wrongful_medication_case", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<WrongfulMedicationCase>("wrongful_medication_case", connection);
     }
 }

@@ -1,53 +1,68 @@
-﻿namespace PoundPupLegacy.Db.Writers;
-
-internal sealed class SingleIdWriter : DatabaseWriter<int>
+﻿namespace PoundPupLegacy.Db.Writers
 {
 
-    internal const string ID = "id";
-
-    internal static async Task<NpgsqlCommand> CreateSingleIdCommandAsync(string tableName, NpgsqlConnection connection)
+    internal sealed class SingleIdWriter: DatabaseWriter
     {
-        var command = await CreateInsertStatementAsync(
-            connection,
-            tableName,
-            new ColumnDefinition[] {
-                new ColumnDefinition{
+        internal const string ID = "id";
+        internal static async Task<DatabaseWriter<T>> CreateSingleIdWriterAsync<T>(string tableName, NpgsqlConnection connection, bool insertIdentity = true)
+            where T : Identifiable
+        {
+            var columnDefinitions = new List<ColumnDefinition>();
+            if (insertIdentity)
+            {
+                columnDefinitions.Add(new ColumnDefinition
+                {
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
-                },
+                });
             }
-        );
-        return command;
-    }
+            var command = insertIdentity ? 
+                await CreateInsertStatementAsync(
+                connection,
+                tableName,
+                columnDefinitions
+            ) : await CreateIdentityInsertStatementAsync(
+                connection,
+                tableName,
+                columnDefinitions
+            );
+            return new SingleIdWriter<T>(command, insertIdentity, tableName);
 
-    internal static async Task<DatabaseWriter<int>> CreateSingleIdWriterAsync(string tableName, NpgsqlConnection connection)
-    {
-        var command = await CreateSingleIdCommandAsync(tableName, connection);
-        return new SingleIdWriter(command);
+        }
+
 
     }
+    internal sealed class SingleIdWriter<T> : DatabaseWriter<T> where T : Identifiable
+    {
+        internal const string ID = "id";
 
-    private SingleIdWriter(NpgsqlCommand command) : base(command)
-    {
-    }
+        private readonly bool _identityInsert;
+        private readonly string _tableName;
+        internal SingleIdWriter(NpgsqlCommand command, bool identityInsert, string tableName) : base(command)
+        {
+            _identityInsert = identityInsert;
+            _tableName = tableName;
+        }
 
-    internal override async Task WriteAsync(int id)
-    {
-        WriteValue(id, ID);
-        await _command.ExecuteNonQueryAsync();
-    }
-}
-internal sealed class SingleIdWriter<T> : DatabaseWriter<T> where T : Identifiable
-{
-    internal SingleIdWriter(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    internal override async Task WriteAsync(T node)
-    {
-        if (node.Id is null)
-            throw new NullReferenceException();
-        WriteValue(node.Id, SingleIdWriter.ID);
-        await _command.ExecuteNonQueryAsync();
+        internal override async Task WriteAsync(T identifiable)
+        {
+            if (_identityInsert)
+            {
+                if (identifiable.Id is null)
+                    throw new NullReferenceException($"Id for {_tableName} should not be null");
+                WriteValue(identifiable.Id, ID);
+                await _command.ExecuteNonQueryAsync();
+            }
+            else
+            {
+                if (identifiable.Id is not null)
+                    throw new Exception($"Id for {_tableName} should be set to null");
+                identifiable.Id = await _command.ExecuteScalarAsync() switch
+                {
+                    long i => (int)i,
+                    _ => throw new Exception($"No id has been assigned when adding a {_tableName}"),
+                };
+            }
+        }
     }
 }

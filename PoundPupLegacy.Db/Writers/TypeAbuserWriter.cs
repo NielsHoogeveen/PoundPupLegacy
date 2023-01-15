@@ -4,6 +4,6 @@ internal sealed class TypeOfAbuserWriter : IDatabaseWriter<TypeOfAbuser>
 {
     public static async Task<DatabaseWriter<TypeOfAbuser>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<TypeOfAbuser>(await SingleIdWriter.CreateSingleIdCommandAsync("type_of_abuser", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<TypeOfAbuser>("type_of_abuser", connection);
     }
 }

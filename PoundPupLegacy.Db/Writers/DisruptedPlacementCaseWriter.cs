@@ -4,6 +4,6 @@ internal sealed class DisruptedPlacementCaseWriter : IDatabaseWriter<DisruptedPl
 {
     public static async Task<DatabaseWriter<DisruptedPlacementCase>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<DisruptedPlacementCase>(await SingleIdWriter.CreateSingleIdCommandAsync("disrupted_placement_case", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<DisruptedPlacementCase>("disrupted_placement_case", connection);
     }
 }

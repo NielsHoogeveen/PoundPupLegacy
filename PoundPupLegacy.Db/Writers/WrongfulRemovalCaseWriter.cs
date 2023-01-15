@@ -4,6 +4,6 @@ internal sealed class WrongfulRemovalCaseWriter : IDatabaseWriter<WrongfulRemova
 {
     public static async Task<DatabaseWriter<WrongfulRemovalCase>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<WrongfulRemovalCase>(await SingleIdWriter.CreateSingleIdCommandAsync("wrongful_removal_case", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<WrongfulRemovalCase>("wrongful_removal_case", connection);
     }
 }

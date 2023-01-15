@@ -4,6 +4,6 @@ internal sealed class FathersRightsViolationCaseWriter : IDatabaseWriter<Fathers
 {
     public static async Task<DatabaseWriter<FathersRightsViolationCase>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<FathersRightsViolationCase>(await SingleIdWriter.CreateSingleIdCommandAsync("fathers_rights_violation_case", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<FathersRightsViolationCase>("fathers_rights_violation_case", connection);
     }
 }

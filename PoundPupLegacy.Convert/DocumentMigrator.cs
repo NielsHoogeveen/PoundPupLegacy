@@ -108,7 +108,8 @@ internal sealed class DocumentMigrator: Migrator
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 PublicationDate = publicationDate,
                 SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
-                Text = reader.GetString("text"),
+                Text = TextToHtml(reader.GetString("text")),
+                Teaser = TextToTeaser(reader.GetString("text")),
                 DocumentTypeId = reader.IsDBNull("document_type_id") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("document_type_id")),
             };
 

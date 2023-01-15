@@ -10,5 +10,7 @@ public sealed record Article : SimpleTextNode
     public required int? OwnerId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Text { get; set; }
+
+    public required string Teaser { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
 }

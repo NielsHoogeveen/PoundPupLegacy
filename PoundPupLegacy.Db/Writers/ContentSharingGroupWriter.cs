@@ -4,6 +4,6 @@ internal sealed class ContentSharingGroupWriter : IDatabaseWriter<ContentSharing
 {
     public static async Task<DatabaseWriter<ContentSharingGroup>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<ContentSharingGroup>(await SingleIdWriter.CreateSingleIdCommandAsync("content_sharing_group", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<ContentSharingGroup>("content_sharing_group", connection);
     }
 }

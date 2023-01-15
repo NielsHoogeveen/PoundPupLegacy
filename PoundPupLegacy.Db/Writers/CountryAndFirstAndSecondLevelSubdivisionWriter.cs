@@ -4,6 +4,6 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionWriter : IDatabase
 {
     public static async Task<DatabaseWriter<CountryAndFirstAndSecondLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<CountryAndFirstAndSecondLevelSubdivision>(await SingleIdWriter.CreateSingleIdCommandAsync("country_and_first_and_second_level_subdivision", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<CountryAndFirstAndSecondLevelSubdivision>("country_and_first_and_second_level_subdivision", connection);
     }
 }

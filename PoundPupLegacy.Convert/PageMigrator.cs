@@ -67,8 +67,8 @@ internal sealed class PageMigrator : Migrator
                 },
 
                 NodeTypeId = 42,
-                Text = reader.GetString("text"),
-
+                Text = TextToHtml(reader.GetString("text")),
+                Teaser = TextToTeaser(reader.GetString("text")),
             };
         }
         await reader.CloseAsync();

@@ -8,6 +8,7 @@ internal sealed class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter
     private const string PUBLICATION_DATE_RANGE = "publication_date_range";
     private const string SOURCE_URL = "source_url";
     private const string TEXT = "text";
+    private const string TEASER = "teaser";
     private const string DOCUMENT_TYPE_ID = "document_type_id";
     public static async Task<DatabaseWriter<Document>> CreateAsync(NpgsqlConnection connection)
     {
@@ -25,6 +26,10 @@ internal sealed class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter
                 },
                 new ColumnDefinition{
                     Name = TEXT,
+                    NpgsqlDbType = NpgsqlDbType.Varchar
+                },
+                new ColumnDefinition{
+                    Name = TEASER,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
@@ -54,6 +59,7 @@ internal sealed class DocumentWriter : DatabaseWriter<Document>, IDatabaseWriter
             throw new NullReferenceException();
         WriteValue(document.Id, ID);
         WriteValue(document.Text, TEXT);
+        WriteValue(document.Teaser, TEASER);
         WriteDateTimeRange(document.PublicationDate, PUBLICATION_DATE, PUBLICATION_DATE_RANGE);
         WriteNullableValue(document.SourceUrl, SOURCE_URL);
         WriteNullableValue(document.DocumentTypeId, DOCUMENT_TYPE_ID);

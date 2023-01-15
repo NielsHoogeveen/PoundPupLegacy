@@ -69,6 +69,26 @@
                     Contact
                 </li>
                 </a>
+            @if (this.User.Identity!.IsAuthenticated == false)
+            {
+                <li>
+                    <form id="login-form" action="/login" method="post">
+                        <input type="text" name="user"></input>
+                        <input type="password" name="password"></input>
+                        <br/>
+                        <input type="submit" value="login"></input>
+                    </form>
+                </li>
+            }
+            else
+            {
+                @Html.Raw(@Context.Items["UserMenu"])
+                <li>
+                    <form id="login-form" action="/logout" method="post">
+                        <input type="submit" value="logout"></input>
+                    </form>
+                </li>
+            }
             </ul>
         </nav>
         <content>

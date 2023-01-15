@@ -79,6 +79,8 @@ internal sealed class OrganizationMigrator: Migrator
                    ua.dst url_path
                 FROM node n 
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
+                LEFT JOIN category_node cna ON cna.nid = n.nid AND cna.cid = 38518
+                LEFT JOIN category_node cnb ON cnb.nid = n.nid AND cnb.cid = 38308
                 JOIN content_type_adopt_orgs o ON o.nid = n.nid AND o.vid = n.vid
                 LEFT JOIN (
                 	select
@@ -126,6 +128,8 @@ internal sealed class OrganizationMigrator: Migrator
                 ) c2 ON c2.title = n.title
                 WHERE n.`type` = 'adopt_orgs'
                 AND n.nid NOT IN (11108)
+                AND cna.nid IS NULL
+                AND cnb.nid IS NULL
                 """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

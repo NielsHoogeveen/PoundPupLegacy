@@ -11,7 +11,63 @@ public interface IDatabaseWriter<T> : IDatabaseWriter
     public abstract static Task<DatabaseWriter<T>> CreateAsync(NpgsqlConnection connection);
 }
 
-public abstract class DatabaseWriter<T> : IAsyncDisposable
+public abstract class DatabaseWriter : IDatabaseWriter
+{
+
+    protected struct ColumnDefinition
+    {
+        public required string Name { get; init; }
+        public required NpgsqlDbType NpgsqlDbType { get; init; }
+    }
+    protected static async Task<NpgsqlCommand> CreateIdentityInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
+    {
+        var sql = $"""
+            INSERT INTO public."{tableName}"(
+                {string.Join(',', columnDefinitions.Select(x => x.Name))}
+            ) 
+            VALUES(
+                {string.Join(',', columnDefinitions.Select(x => $"@{x.Name}"))}
+            );
+            SELECT lastval();
+            """;
+        var sqlEmpty = $"""
+            INSERT INTO public."{tableName}" DEFAULT VALUES;
+            SELECT lastval();
+            """;
+
+        return await CreatePreparedStatementAsync(connection, columnDefinitions, columnDefinitions.Any() ? sql : sqlEmpty);
+    }
+
+    protected static async Task<NpgsqlCommand> CreateInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
+    {
+        var sql = $"""
+            INSERT INTO public."{tableName}"(
+                {string.Join(',', columnDefinitions.Select(x => x.Name))}
+            ) 
+            VALUES(
+                {string.Join(',', columnDefinitions.Select(x => $"@{x.Name}"))}
+            )
+            """;
+        return await CreatePreparedStatementAsync(connection, columnDefinitions, sql);
+    }
+    protected static async Task<NpgsqlCommand> CreatePreparedStatementAsync(NpgsqlConnection connection, IEnumerable<ColumnDefinition> columnDefinitions, string sql)
+    {
+
+        var command = connection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = sql;
+        foreach (var column in columnDefinitions)
+        {
+            command.Parameters.Add(column.Name, column.NpgsqlDbType);
+        }
+        await command.PrepareAsync();
+        return command;
+    }
+
+
+}
+public abstract class DatabaseWriter<T>: DatabaseWriter, IAsyncDisposable
 {
     protected readonly NpgsqlCommand _command;
 
@@ -21,6 +77,7 @@ public abstract class DatabaseWriter<T> : IAsyncDisposable
     }
 
     internal abstract Task WriteAsync(T item);
+
 
     protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange)
     {
@@ -90,56 +147,9 @@ public abstract class DatabaseWriter<T> : IAsyncDisposable
     {
         command.Parameters[parameter].Value = value;
     }
-
-    protected struct ColumnDefinition
-    {
-        public required string Name { get; init; }
-        public required NpgsqlDbType NpgsqlDbType { get; init; }
-    }
-
-    protected static async Task<NpgsqlCommand> CreateIdentityInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
-    {
-        var sql = $"""
-            INSERT INTO public."{tableName}"(
-                {string.Join(',', columnDefinitions.Select(x => x.Name))}
-            ) 
-            VALUES(
-                {string.Join(',', columnDefinitions.Select(x => $"@{x.Name}"))}
-            );
-            SELECT lastval();
-            """;
-        return await CreatePreparedStatementAsync(connection, columnDefinitions, sql);
-    }
-
-    protected static async Task<NpgsqlCommand> CreateInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
-    {
-        var sql = $"""
-            INSERT INTO public."{tableName}"(
-                {string.Join(',', columnDefinitions.Select(x => x.Name))}
-            ) 
-            VALUES(
-                {string.Join(',', columnDefinitions.Select(x => $"@{x.Name}"))}
-            )
-            """;
-        return await CreatePreparedStatementAsync(connection, columnDefinitions, sql);
-    }
-    protected static async Task<NpgsqlCommand> CreatePreparedStatementAsync(NpgsqlConnection connection, IEnumerable<ColumnDefinition> columnDefinitions, string sql)
-    {
-
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-        foreach (var column in columnDefinitions)
-        {
-            command.Parameters.Add(column.Name, column.NpgsqlDbType);
-        }
-        await command.PrepareAsync();
-        return command;
-    }
-
     public async virtual ValueTask DisposeAsync()
     {
         await _command.DisposeAsync();
     }
+
 }

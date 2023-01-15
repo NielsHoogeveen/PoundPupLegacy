@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using PoundPupLegacy.Middleware;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Services;
@@ -14,6 +16,16 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                options.SlidingExpiration = true;
+                options.AccessDeniedPath = "/Forbidden/";
+            
+            });
+        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllersWithViews();
         builder.Services.AddTransient<NpgsqlConnection>((sp) => new NpgsqlConnection(CONNECTSTRING));
         builder.Services.AddTransient<FetchNodeService>();
@@ -23,9 +35,11 @@ public class Program
         builder.Services.AddTransient<RazorViewToStringService>();
         builder.Services.AddTransient<StringToDocumentService>();
         builder.Services.AddTransient<TeaserService>();
-
+        builder.Services.AddTransient<AuthenticationService>();
+        builder.Services.AddSingleton<UserService>();
 
         var app = builder.Build();
+
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
@@ -33,8 +47,15 @@ public class Program
             app.UseExceptionHandler("/Home/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
-        }
 
+        }
+        var cookiePolicyOptions = new CookiePolicyOptions
+        {
+            MinimumSameSitePolicy = SameSiteMode.Strict,
+        };
+
+        
+        app.UseCookiePolicy(cookiePolicyOptions);
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseStaticFiles(new StaticFileOptions
@@ -46,7 +67,10 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseCustomMiddleware();
 
         app.MapControllerRoute(
             name: "default",

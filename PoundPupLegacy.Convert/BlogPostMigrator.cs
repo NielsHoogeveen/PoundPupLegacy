@@ -65,7 +65,9 @@ internal sealed class BlogPostMigrator: Migrator
                     }
                 },
                 NodeTypeId = 35,
-                Text = text,
+                Text = TextToHtml(text),
+                Teaser = TextToTeaser(text),
+
 
             };
             yield return discussion;

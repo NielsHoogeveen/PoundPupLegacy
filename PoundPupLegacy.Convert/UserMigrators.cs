@@ -117,6 +117,44 @@ internal sealed class UserMigrator : Migrator
         };
     }
 
+    private async IAsyncEnumerable<AccessRolePrivilege> GetAccessRolePrivileges()
+    {
+        await foreach(var nodeType in NodeTypeMigrator.GetNodeTypes()) 
+        {
+            yield return new AccessRolePrivilege
+            {
+                AccessRoleId = 6,
+                ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id)
+            };
+            yield return new AccessRolePrivilege
+            {
+                AccessRoleId = 6,
+                ActionId = await _deleteNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id)
+            };
+            yield return new AccessRolePrivilege
+            {
+                AccessRoleId = 6,
+                ActionId = await _editNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id)
+            };
+        }
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 4,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(35)
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 4,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(36)
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 4,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(37)
+        };
+
+
+    }
 
     protected override async Task MigrateImpl()
     {
@@ -131,6 +169,7 @@ internal sealed class UserMigrator : Migrator
         await CollectiveUserCreator.CreateAsync(GetCollectiveUsers(), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(memberList.ToAsyncEnumerable(), _postgresConnection);
+        await AccessRolePrivilegeCreator.CreateAsync(GetAccessRolePrivileges(), _postgresConnection);
     }
     private IEnumerable<User> ReadUsers()
     {

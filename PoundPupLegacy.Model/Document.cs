@@ -12,6 +12,7 @@ public sealed record Document : Node
     public required DateTimeRange? PublicationDate { get; init; }
     public required string? SourceUrl { get; init; }
     public required string Text { get; init; }
+    public required string Teaser { get; init; }
     public required int? DocumentTypeId { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
 }

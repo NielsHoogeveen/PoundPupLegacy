@@ -4,6 +4,6 @@ internal sealed class DocumentTypeWriter : IDatabaseWriter<DocumentType>
 {
     public static async Task<DatabaseWriter<DocumentType>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<DocumentType>(await SingleIdWriter.CreateSingleIdCommandAsync("document_type", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<DocumentType>("document_type", connection);
     }
 }

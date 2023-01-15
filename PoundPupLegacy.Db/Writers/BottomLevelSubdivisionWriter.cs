@@ -4,6 +4,6 @@ internal sealed class BottomLevelSubdivisionWriter : IDatabaseWriter<BottomLevel
 {
     public static async Task<DatabaseWriter<BottomLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<BottomLevelSubdivision>(await SingleIdWriter.CreateSingleIdCommandAsync("bottom_level_subdivision", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<BottomLevelSubdivision>("bottom_level_subdivision", connection);
     }
 }

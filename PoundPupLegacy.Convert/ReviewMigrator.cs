@@ -66,8 +66,8 @@ internal sealed class ReviewMigrator: Migrator
                 },
 
                 NodeTypeId = 35,
-                Text = reader.GetString("text"),
-
+                Text = TextToHtml(reader.GetString("text")),
+                Teaser = TextToTeaser(reader.GetString("text")),
             };
 
         }

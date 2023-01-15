@@ -4,6 +4,7 @@ internal sealed class SimpleTextNodeWriter : DatabaseWriter<SimpleTextNode>, IDa
 {
     private const string ID = "id";
     private const string TEXT = "text";
+    private const string TEASER = "teaser";
     public static async Task<DatabaseWriter<SimpleTextNode>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
@@ -16,6 +17,10 @@ internal sealed class SimpleTextNodeWriter : DatabaseWriter<SimpleTextNode>, IDa
                 },
                 new ColumnDefinition{
                     Name = TEXT,
+                    NpgsqlDbType = NpgsqlDbType.Varchar
+                },
+                new ColumnDefinition{
+                    Name = TEASER,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
             }
@@ -35,6 +40,7 @@ internal sealed class SimpleTextNodeWriter : DatabaseWriter<SimpleTextNode>, IDa
 
         WriteValue(simpleTextNode.Id, ID);
         WriteValue(simpleTextNode.Text, TEXT);
+        WriteValue(simpleTextNode.Teaser, TEASER);
         await _command.ExecuteNonQueryAsync();
     }
 }

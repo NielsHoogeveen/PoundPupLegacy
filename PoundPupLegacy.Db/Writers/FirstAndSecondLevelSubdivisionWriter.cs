@@ -4,6 +4,6 @@ internal sealed class FirstAndSecondLevelSubdivisionWriter : IDatabaseWriter<Fir
 {
     public static async Task<DatabaseWriter<FirstAndSecondLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<FirstAndSecondLevelSubdivision>(await SingleIdWriter.CreateSingleIdCommandAsync("first_and_second_level_subdivision", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<FirstAndSecondLevelSubdivision>("first_and_second_level_subdivision", connection);
     }
 }

@@ -67,8 +67,8 @@ internal sealed class DiscussionMigrator: Migrator
                     }
                 },
                 NodeTypeId = 37,
-                Text = reader.GetString("text"),
-
+                Text = TextToHtml(reader.GetString("text")),
+                Teaser = TextToTeaser(reader.GetString("text")),
             };
             yield return discussion;
 

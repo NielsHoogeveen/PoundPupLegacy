@@ -4,6 +4,6 @@ internal sealed class FirstLevelGlobalRegionWriter : IDatabaseWriter<FirstLevelG
 {
     public static async Task<DatabaseWriter<FirstLevelGlobalRegion>> CreateAsync(NpgsqlConnection connection)
     {
-        return new SingleIdWriter<FirstLevelGlobalRegion>(await SingleIdWriter.CreateSingleIdCommandAsync("first_level_global_region", connection));
+        return await SingleIdWriter.CreateSingleIdWriterAsync<FirstLevelGlobalRegion>("first_level_global_region", connection);
     }
 }

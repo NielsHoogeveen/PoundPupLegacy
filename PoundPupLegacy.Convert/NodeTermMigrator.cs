@@ -69,7 +69,8 @@ internal sealed class NodeTermMigrator: Migrator
                     LEFT JOIN node n2 ON n2.title = n.title and n2.`type` in ('adopt_person','country_type', 'adopt_orgs', 'case', 'region_facts', 'coerced_adoption_cases', 'child_trafficking', 'child_trafficking_case')
                 ) n4 ON n4.nid = c.cid
                 WHERE  n.nid NOT IN (
-                    22589
+                    22589,
+                    54123
                 )
                 AND (n3.nid IS NOT NULL OR n4.nid IS NOT NULL)
                 AND n.`type` NOT IN ('amazon_node', 'poll', 'video', 'amazon', 'website', 'image', 'award_poll', 'book_page', 'panel', 'viewnode')

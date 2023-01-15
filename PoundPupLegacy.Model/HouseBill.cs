@@ -13,5 +13,6 @@ public sealed record HouseBill : Bill
     public required List<VocabularyName> VocabularyNames { get; init; }
     public required int? FileIdTileImage { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+    public required DateTime? IntroductionDate { get; init; }
 
 }
