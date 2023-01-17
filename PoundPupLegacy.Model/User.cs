@@ -11,4 +11,5 @@ public sealed record User : AccessRole, Publisher
     public required string Email { get; init; }
     public required string Password { get; init; }
     public required string? Avatar { get; init; }
+    public required int UserStatusId { get; init; }
 }

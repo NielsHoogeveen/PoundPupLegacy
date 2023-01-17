@@ -6,7 +6,7 @@ public class CommentWriter : DatabaseWriter<Comment>, IDatabaseWriter<Comment>
     private const string ID = "id";
     private const string NODE_ID = "node_id";
     private const string COMMENT_ID_PARENT = "comment_id_parent";
-    private const string ACCESS_ROLE_ID = "access_role_id";
+    private const string PUBLISHER_ID = "publisher_id";
     private const string NODE_STATUS_ID = "node_status_id";
     private const string IP_ADDRESS = "ip_address";
     private const string CREATED_DATE_TIME = "created_date_time";
@@ -19,7 +19,7 @@ public class CommentWriter : DatabaseWriter<Comment>, IDatabaseWriter<Comment>
     {
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition{
-                Name = ACCESS_ROLE_ID,
+                Name = PUBLISHER_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
@@ -83,7 +83,7 @@ public class CommentWriter : DatabaseWriter<Comment>, IDatabaseWriter<Comment>
         {
             WriteValue(node.NodeId, NODE_ID, _identityCommand);
             WriteNullableValue(node.CommentIdParent, COMMENT_ID_PARENT, _identityCommand);
-            WriteValue(node.AccessRoleId, ACCESS_ROLE_ID, _identityCommand);
+            WriteValue(node.PublisherId, PUBLISHER_ID, _identityCommand);
             WriteValue(node.NodeStatusId, NODE_STATUS_ID, _identityCommand);
             WriteValue(node.IPAddress, IP_ADDRESS, _identityCommand);
             WriteValue(node.CreatedDateTime, CREATED_DATE_TIME, _identityCommand);
@@ -100,7 +100,7 @@ public class CommentWriter : DatabaseWriter<Comment>, IDatabaseWriter<Comment>
             WriteValue(node.Id, ID);
             WriteValue(node.NodeId, NODE_ID);
             WriteNullableValue(node.CommentIdParent, COMMENT_ID_PARENT);
-            WriteValue(node.AccessRoleId, ACCESS_ROLE_ID);
+            WriteValue(node.PublisherId, PUBLISHER_ID);
             WriteValue(node.NodeStatusId, NODE_STATUS_ID);
             WriteValue(node.IPAddress, IP_ADDRESS);
             WriteValue(node.CreatedDateTime, CREATED_DATE_TIME);

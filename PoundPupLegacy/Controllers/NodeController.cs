@@ -23,7 +23,11 @@ public class NodeController : Controller
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        var node = await _fetchNodeService.FetchNode(id);
+        var node = await _fetchNodeService.FetchNode(id, HttpContext.User);
+        if(node == null)
+        {
+            return NotFound();
+        }
         _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
 
         return View("Node",node);

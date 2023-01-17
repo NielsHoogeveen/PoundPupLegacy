@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Db.Readers;
 
-public sealed class EditNodeActionIdReaderByNodeTypeId : DatabaseReader<Term>, IDatabaseReader<EditNodeActionIdReaderByNodeTypeId>
+public sealed class EditNodeActionIdReaderByNodeTypeId : DatabaseUpdater<Term>, IDatabaseReader<EditNodeActionIdReaderByNodeTypeId>
 {
     public static async Task<EditNodeActionIdReaderByNodeTypeId> CreateAsync(NpgsqlConnection connection)
     {

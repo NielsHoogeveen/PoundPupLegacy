@@ -8,7 +8,7 @@ public sealed record Comment : Identifiable
 
     public required int? CommentIdParent { get; init;}
 
-    public required int AccessRoleId { get; init; }
+    public required int PublisherId { get; init; }
 
     public required int NodeStatusId { get; init;}
 

@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using PoundPupLegacy.ViewModel;
 using System.Data;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace PoundPupLegacy.Services;
@@ -18,7 +19,7 @@ public class SiteDataService
 
     }
 
-    private int GetUserId(ClaimsPrincipal? cp)
+    public int GetUserId(ClaimsPrincipal? cp)
     {
         if (cp == null)
         {
@@ -41,7 +42,8 @@ public class SiteDataService
     }
     private async Task LoadUserMenusAsync()
     {
-        _logger.LogInformation("Loading user menus");
+        var sw = Stopwatch.StartNew();
+        
         await _connection.OpenAsync();
         var sql = $"""
             with 
@@ -156,6 +158,7 @@ public class SiteDataService
             _userMenus.Add((user_id, tenant_id), menuItems);
         }
         await _connection.CloseAsync();
+        _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
     }
     public IEnumerable<MenuItem> GetMenuItemsForUser(ClaimsPrincipal? cp)
     {

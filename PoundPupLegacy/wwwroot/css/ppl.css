@@ -228,34 +228,20 @@ article .text{
     position:relative;
 }
 
-.comment-unpublished {
-    background-color: #d5d5d5;
+.comment-unpublished, .node-unpublished {
+    background-color: #e1c4c4;
 }
-.watermark-inner {
-    /* Center the content */
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    /* Absolute position */
-    left: 0px;
-    position: absolute;
-    top: 0px;
-    /* Take full size */
-    height: 100%;
-    width: 100%;
-}
-
-.watermark-body {
-    /* Text color */
-    color: rgba(0, 0, 0, 0.2);
-    /* Text styles */
-    font-size: 3rem;
+.watermark {
+    height: 0;
+    overflow: visible;
+    color: #bbb;
+    font-size: 75px;
+    line-height: 1;
+    font-family: Impact,"Arial Narrow",Helvetica,sans-serif;
     font-weight: bold;
     text-transform: uppercase;
-    /* Rotate the text */
-    transform: rotate(-5deg);
-    /* Disable the selection */
-    user-select: none;
+    text-align: center;
+    word-wrap: break-word;
 }
 
 .breadcrum {

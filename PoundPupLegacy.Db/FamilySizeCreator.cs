@@ -12,7 +12,7 @@ public class FamilySizeCreator : IEntityCreator<FamilySize>
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var familySizeWriter = await FamilySizeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await TermReaderByName.CreateAsync(connection);
+        await using var termReader = await  TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);

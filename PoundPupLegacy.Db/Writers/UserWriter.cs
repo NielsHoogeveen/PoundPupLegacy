@@ -10,6 +10,7 @@ internal sealed class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
     private const string EMAIL = "email";
     private const string PASSWORD = "password";
     private const string AVATAR = "avatar";
+    private const string USER_STATUS_ID = "user_status_id";
     public static async Task<DatabaseWriter<User>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
@@ -48,6 +49,10 @@ internal sealed class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
                     Name = AVATAR,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
+                new ColumnDefinition{
+                    Name = USER_STATUS_ID,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
             }
         );
         return new UserWriter(command);
@@ -70,6 +75,7 @@ internal sealed class UserWriter : DatabaseWriter<User>, IDatabaseWriter<User>
         WriteNullableValue(user.AnimalWithin, ANIMAL_WITHIN);
         WriteNullableValue(user.RelationToChildPlacement, RELATION_TO_CHILD_PLACEMENT);
         WriteNullableValue(user.Avatar, AVATAR);
+        WriteValue(user.UserStatusId, USER_STATUS_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

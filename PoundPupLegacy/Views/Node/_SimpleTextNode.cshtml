@@ -10,7 +10,7 @@
                 <ul>
                     @foreach (var elem in Model.SeeAlsoBoxElements)
                     {
-                        <li><a href="/node/@elem.Id">@elem.Name</a></li>
+                        <li><a href="@elem.Path">@elem.Name</a></li>
                     }
                 </ul>
             </div>

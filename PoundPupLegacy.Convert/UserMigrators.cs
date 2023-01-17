@@ -250,18 +250,23 @@ internal sealed class UserMigrator : Migrator
                     CASE 
                 	    WHEN u.picture = '' then null
                 		ELSE u.picture
-                    END avatar
+                    END avatar,
+                    u.status user_status_id
                 FROM users u
                 LEFT JOIN bio b ON b.uid = u.uid
                 LEFT JOIN node n2 ON n2.nid = b.nid
                 LEFT JOIN node_revisions nr ON nr.nid = n2.nid AND nr.vid = n2.vid
                 LEFT JOIN content_type_uprofile ctb ON ctb.nid = n2.nid AND ctb.vid = n2.vid
                 WHERE u.uid IN (
-                    SELECT distinct
-                    u.uid 
-                    FROM users u
-                    JOIN node n ON n.uid = u.uid
-                    WHERE n.`type` NOT IN ('uprofile', 'usernode') AND u.uid <> 0
+                    select
+                        distinct
+                        u.uid
+                    from(
+                        select
+                        u.uid
+                        FROM users u
+                        WHERE (u.`status` = 1 OR u.login <> 0) and u.uid NOT IN (0, 965, 1233, 1655, 1745, 1780, 6197)
+                    ) u
                 )
                 AND u.uid <> 72
                 AND (b.nid is NULL OR b.nid IN (
@@ -290,7 +295,8 @@ internal sealed class UserMigrator : Migrator
                 RelationToChildPlacement = relationToChildPlacement == "(NULL)" ? "Other" : relationToChildPlacement,
                 Email = reader.GetString("email"),
                 Password = reader.GetString("password"),
-                Avatar = avatar
+                Avatar = avatar,
+                UserStatusId = reader.GetInt32("user_status_id"),
             };
         }
         await reader.CloseAsync();

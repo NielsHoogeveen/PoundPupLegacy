@@ -33,7 +33,7 @@ internal sealed class DiscussionMigrator: Migrator
                      nr.body `text`
                 FROM node n
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                WHERE n.`type` = 'discussion' AND n.uid <> 0
+                WHERE n.`type` = 'discussion' AND n.uid not in (0, 39)
                 """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

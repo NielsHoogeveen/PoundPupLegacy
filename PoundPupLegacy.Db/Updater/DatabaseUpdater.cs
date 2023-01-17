@@ -1,15 +1,15 @@
-﻿namespace PoundPupLegacy.Db.Readers
+﻿namespace PoundPupLegacy.Db.Updaters
 {
-    public interface IDatabaseReader : IAsyncDisposable
+    public interface IDatabaseUpdater : IAsyncDisposable
     {
 
     }
-    public interface IDatabaseReader<T> : IDatabaseReader
-        where T : IDatabaseReader<T>
+    public interface IDatabaseUpdater<T> : IDatabaseUpdater
+        where T : IDatabaseUpdater<T>
     {
         public abstract static Task<T> CreateAsync(NpgsqlConnection connection);
     }
-    public abstract class DatabaseUpdater<T> : IDatabaseReader
+    public abstract class DatabaseUpdater<T> : IDatabaseUpdater
     {
         protected NpgsqlCommand _command;
         protected DatabaseUpdater(NpgsqlCommand command)

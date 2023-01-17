@@ -6,6 +6,7 @@ public record class Discussion: SimpleTextNode
     public string Title { get; set; }
     public string Text { get; set; }
     public Authoring Authoring { get; set; }
+    public bool HasBeenPublished { get; set; }
     public Tag[] Tags { get; set; }
     public SeeAlsoBoxElement[] SeeAlsoBoxElements { get; set; }
     public Comment[] Comments { get; set; }

@@ -60,11 +60,12 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         await (new LocationMigrator(this)).Migrate();
         await (new PageMigrator(this)).Migrate();
         await (new ReviewMigrator(this)).Migrate();
-        await (new CommentMigrator(this)).Migrate();
         await (new ActMigrator(this)).Migrate();
         await (new BillMigrator(this)).Migrate();
         await (new NodeTermMigrator(this)).Migrate();
         await (new MenuMigrator(this)).Migrate();
+        await (new DocumentableDocumentMigrator(this)).Migrate();
+        await (new CommentMigrator(this)).Migrate();
     }
 
     internal const string ConnectionStringMariaDb = "server=localhost;userid=root;Password=niels;database=ppldb";

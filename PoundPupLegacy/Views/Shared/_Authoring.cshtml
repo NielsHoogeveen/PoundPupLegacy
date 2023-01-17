@@ -5,7 +5,7 @@
     @if (@Model.Id != 0)
     {
         <div class="author">
-            by <span class="name"><a href="/access_role/@Model.Id">@Model.Name</a></span>
+            by <span class="name"><a href="/user/@Model.Id">@Model.Name</a></span>
             on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
         </div>
     }

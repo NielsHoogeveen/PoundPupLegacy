@@ -2,9 +2,15 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Node
 @{
-    <div class="article-with-comments">
+    var ModelClassName = Model.HasBeenPublished ? "node" : "node node-unpublished";
+    <div class="article-with-comments @ModelClassName">
 
+        
         <partial name="_BreadCrumElement" model="@Model.BreadCrumElements" />
+        @if (!Model.HasBeenPublished)
+        {
+            <div class="watermark">Unpublished</div>
+        }
         <article>
             <div class="title">
                 <h1>@Model.Title</h1>
@@ -20,7 +26,7 @@
             <div class="tags">
                 @foreach (var tag in @Model.Tags)
                 {
-                    <span class="tag"><a href="/node/@tag.Id">@tag.Name</a></span>
+                    <span class="tag"><a href="@tag.Path">@tag.Name</a></span>
                 }
             </div>
         }

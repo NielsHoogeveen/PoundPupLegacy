@@ -31,7 +31,7 @@ internal sealed class BlogPostMigrator: Migrator
                      nr.body `text`
                 FROM node n
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                WHERE n.`type` = 'blog' AND n.uid <> 0
+                WHERE n.`type` = 'blog' AND n.uid not in (0, 39)
                 """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
