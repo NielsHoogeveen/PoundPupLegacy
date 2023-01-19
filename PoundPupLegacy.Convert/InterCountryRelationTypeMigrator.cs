@@ -4,38 +4,37 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PoliticalEnitityRelationTypeMigrator: Migrator
+internal sealed class InterCountryRelationTypeMigrator : Migrator
 {
-    public PoliticalEnitityRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
-    protected override string Name => "political entity relation types";
+    public InterCountryRelationTypeMigrator(MySqlToPostgresConverter converter): base(converter) { }
+
+    protected override string Name => "inter-country relation types";
 
     protected override async Task MigrateImpl()
     {
-        await PoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(), _postgresConnection);
+        await InterCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(), _postgresConnection);
     }
-    private async IAsyncEnumerable<PoliticalEntityRelationType> ReadPoliticalEntityRelationTypes()
+    private async IAsyncEnumerable<InterCountryRelationType> ReadInterCountryRelationTypes()
     {
 
         var sql = $"""
                 SELECT
-                    n.nid id,
-                    n.uid access_role_id,
-                    n.title,
-                    n.`status` node_status_id,
-                    FROM_UNIXTIME(n.created) created_date_time, 
-                    FROM_UNIXTIME(n.changed) changed_date_time,
+                    id,
+                    1 access_role_id,
+                    title,
+                    1 node_status_id,
+                    NOW() created_date_time, 
+                    NOW() changed_date_time,
                     '' description,
                     NULL file_id_tile_image,
-                    case 
-                        when n.nid IN (12662, 12660) then true
-                        ELSE false
-                    END has_concrete_subtype,
-                    ua.dst url_path
-                FROM node n
-                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
-                JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                JOIN category c ON c.cid = n.nid AND c.cnid = 12652
+                 	0 is_symmetric,
+                    NULL url_path
+                FROM (
+                	SELECT {Constants.ADOPTION_IMPORT} id, 'imports from' title
+                	UNION
+                	SELECT {Constants.ADOPTION_EXPORT} id, 'exports to' title
+                ) x
                 """;
 
         using var readCommand = _mysqlConnection.CreateCommand();
@@ -55,13 +54,12 @@ internal sealed class PoliticalEnitityRelationTypeMigrator: Migrator
                 new VocabularyName
                 {
                     OwnerId = Constants.OWNER_PARTIES,
-                    Name = Constants.VOCABULARY_POLITICAL_ENTITY_RELATION_TYPE,
+                    Name = Constants.VOCABULARY_INTERPERSONAL_RELATION_TYPE,
                     TermName = name,
                     ParentNames = new List<string>(),
                 }
             };
-
-            yield return new PoliticalEntityRelationType
+            yield return new InterCountryRelationType
             {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
@@ -82,11 +80,11 @@ internal sealed class PoliticalEnitityRelationTypeMigrator: Migrator
                         UrlId = id
                     }
                 },
-                NodeTypeId = 3,
+                NodeTypeId = 50,
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
-                HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
                 VocabularyNames = vocabularyNames,
+                IsSymmetric = reader.GetBoolean("is_symmetric"),
             };
 
         }

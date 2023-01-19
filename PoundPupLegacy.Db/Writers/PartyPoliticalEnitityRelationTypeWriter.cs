@@ -1,14 +1,14 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal sealed class PoliticalEntityRelationTypeWriter : DatabaseWriter<PoliticalEntityRelationType>, IDatabaseWriter<PoliticalEntityRelationType>
+internal sealed class PoliticalEntityRelationTypeWriter : DatabaseWriter<PartyPoliticalEntityRelationType>, IDatabaseWriter<PartyPoliticalEntityRelationType>
 {
     private const string ID = "id";
     private const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
-    public static async Task<DatabaseWriter<PoliticalEntityRelationType>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<PartyPoliticalEntityRelationType>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
             connection,
-            "political_entity_relation_type",
+            "party_political_entity_relation_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = ID,
@@ -28,7 +28,7 @@ internal sealed class PoliticalEntityRelationTypeWriter : DatabaseWriter<Politic
     {
     }
 
-    internal override async Task WriteAsync(PoliticalEntityRelationType politicalEntityRelationType)
+    internal override async Task WriteAsync(PartyPoliticalEntityRelationType politicalEntityRelationType)
     {
         if (politicalEntityRelationType.Id is null)
             throw new NullReferenceException();

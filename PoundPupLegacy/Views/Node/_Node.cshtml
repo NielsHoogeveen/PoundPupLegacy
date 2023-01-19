@@ -20,6 +20,10 @@
                 {
                     <partial name="_SimpleTextNode" model="@simpleTextNode" />
                 }
+                @if(Model is Country country)
+                {
+                    <partial name="_Country" model="@country" />
+                }
         </article>
         @if (Model.Tags is not null)
         {

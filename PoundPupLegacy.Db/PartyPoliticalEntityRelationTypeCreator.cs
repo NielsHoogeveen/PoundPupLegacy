@@ -3,9 +3,9 @@ using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
-public class PoliticalEntityRelationTypeCreator : IEntityCreator<PoliticalEntityRelationType>
+public class PartyPoliticalEntityRelationTypeCreator : IEntityCreator<PartyPoliticalEntityRelationType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<PoliticalEntityRelationType> politicalEntityRelationTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<PartyPoliticalEntityRelationType> politicalEntityRelationTypes, NpgsqlConnection connection)
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);

@@ -337,3 +337,13 @@ blockquote {
 .term-name input[type="checkbox"] {
     display: none;
 }
+td {
+    border-left: solid 1px grey;
+    border-bottom: solid 1px grey;
+}
+tr.subtotal{
+    background-color: #e3caac;
+}
+tr.total {
+    background-color: #d9b78f;
+}

@@ -33,39 +33,42 @@ internal sealed class CommentMigrator: Migrator
     {
 
         var sql = $"""
-                SELECT 
-                    c.cid id,
-                    c.nid node_id,
-                    c.pid comment_id_parent,
-                    c.uid publisher_id,
-                    c.`status` node_status_id,
-                    FROM_UNIXTIME(c.`timestamp`) created_date_time, 
-                    c.hostname ip_address,
-                    c.subject title,
-                    c.`comment` `text`
-                FROM comments c
-                JOIN node n ON n.nid = c.nid AND n.`type` NOT IN (
-                    'poll', 
-                    'book_page', 
-                    'message', 
-                    'video', 
-                    'map', 
-                    'amazon', 
-                    'image', 
-                    'amazon_node', 
-                    'adopt_affiliation', 
-                    'adopt_positions', 
-                    'award_poll', 
-                    'quotations', 
-                    'event', 
-                    'adopt_country_link', 
-                    'usernode',
-                    'panel',
-                    'viewnode',
-                    'website'
-                ) AND n.uid <> 0
-                ORDER BY c.cid
-                """;
+            SELECT 
+                distinct
+                c.cid id,
+                c.nid node_id,
+                c.pid comment_id_parent,
+                c.uid publisher_id,
+                c.`status` node_status_id,
+                FROM_UNIXTIME(c.`timestamp`) created_date_time, 
+                c.hostname ip_address,
+                c.subject title,
+                c.`comment` `text`
+            FROM comments c
+            LEFT JOIN comments c2 ON c2.pid = c.cid
+            JOIN node n ON n.nid = c.nid AND n.`type` NOT IN (
+                'poll', 
+                'book_page', 
+                'message', 
+                'video', 
+                'map', 
+                'amazon', 
+                'image', 
+                'amazon_node', 
+                'adopt_affiliation', 
+                'adopt_positions', 
+                'award_poll', 
+                'quotations', 
+                'event', 
+                'adopt_country_link', 
+                'usernode',
+                'panel',
+                'viewnode',
+                'website'
+            ) AND n.uid <> 0
+            AND NOT (c.uid = 0 AND c.`status` = 1 AND c2.cid IS null)
+            ORDER BY c.cid
+            """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;

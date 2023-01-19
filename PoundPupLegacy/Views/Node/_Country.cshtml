@@ -1,0 +1,34 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Country
+<div class="adoption-imports">
+<table>
+    <tr>
+        <th></th>
+            @foreach (var year in Enumerable.Range(Model.AdoptionImports.StartYear, Model.AdoptionImports.EndYear - Model.AdoptionImports.StartYear + 1))
+            {
+                <th>@year</th>
+            }
+            <th>total</th>
+        </tr>
+    @foreach(var row in Model.AdoptionImports.Imports)
+    {
+         var rowGroup = row.RowType == 2 ? "subtotal" : row.RowType == 3 ? "total" : "";
+         <tr class="@rowGroup">
+            <td>@row.CountryFrom</td>
+
+            @foreach(var elem in row.Values.OrderBy(x => x.Year))
+            {
+                    <td>
+                        @if (elem.NumberOfChildren != 0) 
+                        {
+                            @elem.NumberOfChildren
+                        }
+                    </td>
+            }
+        </tr>
+    }
+</table>
+</div>
+@{
+}

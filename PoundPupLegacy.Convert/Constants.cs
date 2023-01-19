@@ -53,6 +53,9 @@ internal static class Constants
     internal const int UNDETERMINED = 142;
     internal const int TYPE_OF_ABUSE = 143;
 
+    internal const int ADOPTION_IMPORT = 144;
+    internal const int ADOPTION_EXPORT = 145;
+
     internal const int ANTIGUA_AND_BARBUDA = 4073;
     internal const int PALESTINE = 4082;
     internal const int SAINT_HELENA_ETC = 4087;

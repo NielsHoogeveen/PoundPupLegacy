@@ -24,7 +24,7 @@ internal sealed class NodeTypeMigrator : Migrator
         await Task.CompletedTask;
         yield return new NodeType(1, "organization type", "Organizations are loosely defined as something a collection of people work together. Therefore a bill or a trip is also regarderd an organization, even though it does not have a formal position as such");
         yield return new NodeType(2, "inter-organizational relation type", "Defines the type of relation between two organizations");
-        yield return new NodeType(3, "political entity relation type", "Defines the type of relation between a person or organization and a political entity");
+        yield return new NodeType(3, "party political entity relation type", "Defines the type of relation between a person or organization and a political entity");
         yield return new NodeType(4, "person organization relation type", "Defines the type of relation between a person and an organization");
         yield return new NodeType(5, "inter-personal relationship type", "Defines the type of relation between a person and another person");
         yield return new NodeType(6, "profession", "The type of professions a person can have");
@@ -65,6 +65,12 @@ internal sealed class NodeTypeMigrator : Migrator
         yield return new NodeType(42, "page", "A simpe text node");
         yield return new NodeType(43, "review", "A book review");
         yield return new NodeType(44, "disrupted placement case", "A situation where the placement of a child was reverted");
+        yield return new NodeType(45, "inter country relation", "A relation between two countries");
+        yield return new NodeType(46, "inter personal relation", "A relation between two persons");
+        yield return new NodeType(47, "inter organizational relation", "A relation between two organizations");
+        yield return new NodeType(48, "person organization relation", "A relation between a person and an organization");
+        yield return new NodeType(49, "party political entity relation", "A relation between a person and an organization");
+        yield return new NodeType(50, "inter country relation type", "The type of relation two countries can have");
     }
 
 }
