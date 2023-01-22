@@ -12,4 +12,6 @@ public record struct BasicCountry : TopLevelCountry
     public BreadCrumElement[] BreadCrumElements { get; set; }
 
     public AdoptionImports AdoptionImports { get; set; }
+
+    public DocumentListItem[] Documents { get; set; }
 }

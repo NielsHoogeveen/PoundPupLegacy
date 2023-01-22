@@ -27,6 +27,7 @@ public class Program
         builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllersWithViews();
+        builder.Services.AddServerSideBlazor();
         builder.Services.AddTransient<NpgsqlConnection>((sp) => new NpgsqlConnection(CONNECTSTRING));
         builder.Services.AddTransient<FetchNodeService>();
         builder.Services.AddTransient<FetchBlogService>();
@@ -54,6 +55,7 @@ public class Program
             MinimumSameSitePolicy = SameSiteMode.Strict,
         };
 
+
         
         app.UseCookiePolicy(cookiePolicyOptions);
         app.UseHttpsRedirection();
@@ -75,6 +77,8 @@ public class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        app.MapBlazorHub();
 
         var res = app.Services.GetService<SiteDataService>();
         if (res != null)

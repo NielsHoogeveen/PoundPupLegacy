@@ -1,0 +1,13 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<DocumentListItem>
+@{
+    <table>
+        @foreach(var document in Model.OrderBy(x => x.SortOrder)){
+        <tr>
+            <td><a href="@document.Path">@document.Title</a></td>
+            <td>@document.PublicationDate</td>
+        </tr>
+        }
+    </table>
+}

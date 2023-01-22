@@ -3,8 +3,7 @@
 @model Node
 
 <partial name="_Node" model="@Model" />
-
 @{
-    Layout = "_Layout";
+    Layout = this.User.Identity.IsAuthenticated ? "_LayoutWithBlazor" : "_Layout";
 }
 

@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.Db;
+﻿using Npgsql;
+using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -11,6 +12,13 @@ internal sealed class LocationMigrator: Migrator
     }
 
     protected override string Name => "locations";
+    protected override async Task MigrateImpl()
+    {
+        await LocationCreator.CreateAsync(GetLocations(), _postgresConnection);
+        await LocationCreator.CreateAsync(ReadLocations(), _postgresConnection);
+        await LocationLocatableCreator.CreateAsync(GetLocationLocatables(), _postgresConnection);
+
+    }
 
     private async IAsyncEnumerable<Location> GetLocations()
     {
@@ -48,6 +56,9 @@ internal sealed class LocationMigrator: Migrator
             1138 => "Lambhvel Road",
             2699 => "",
             332 => null,
+            10690 => " Avda Playa Los Pescaditos, 1 Portal 2, Vvda. 4",
+            815 => "Avenue de Montchoisi 15",
+            10311 => "Rte de Béthusy 29",
             _ => street
         };
     }
@@ -58,6 +69,10 @@ internal sealed class LocationMigrator: Migrator
             1137 => "porte # 11-616",
             2366 => "Villa Hermosa neighborhood",
             735 => "Colonia Centro, Centro, Cuauhtémoc",
+            3622 => "Truc Ninh District",
+            3894 => "North Island",
+            3937 => "Illinois and New York State",
+            
             _ => additional
         };
     }
@@ -68,9 +83,12 @@ internal sealed class LocationMigrator: Migrator
             1420 => "78201",
             1137 => "H3E 1T8",
             735 => "06000",
+            10690 => "38180",
+            815 => "CH-1006",
             _ => postalCode
         };
     }
+
     private static decimal? GetLatitude(int id, decimal? longitude)
     {
         return id switch
@@ -78,6 +96,8 @@ internal sealed class LocationMigrator: Migrator
             1420 => decimal.Parse("29.474257243949754"),
             2699 => decimal.Parse("9.905252"),
             735 => decimal.Parse("19.433611"),
+            815 => decimal.Parse("46.5163186731659"),
+            10311 => decimal.Parse("46.613281067902165"),
             _ => longitude
         };
     }
@@ -88,6 +108,8 @@ internal sealed class LocationMigrator: Migrator
             1420 => decimal.Parse("-98.51049867541713"),
             2699 => decimal.Parse("-84.620304"),
             735 => decimal.Parse("-99.144167"),
+            815 => decimal.Parse("6.63568918857433"),
+            10311 => decimal.Parse("6.645766682480712"),
             _ => lattitude
         };
     }
@@ -95,6 +117,7 @@ internal sealed class LocationMigrator: Migrator
     {
         return id switch
         {
+            2527 => null,
             231 => "Morristown",
             3937 => "Westville",
             2019 => "Guatemala City",
@@ -133,7 +156,6 @@ internal sealed class LocationMigrator: Migrator
             3660 => "Shashamane",
             2001 => "Wolaita Sodo",
             2699 => "La Ceiba Cascajal",
-            2527 => null,
             1137 => "Verdun",
             2216 => "La Uruca",
             2641 => "Guatemala City",
@@ -224,6 +246,7 @@ internal sealed class LocationMigrator: Migrator
             3596 => "Đồng Hới",
             2784 => "Ho Chi Minh City",
             2781 => "Ho Chi Minh City",
+            2066 => "Ho Chi Minh City",
             2586 => null,
             2782 => null,
             2995 => "Bucharest",
@@ -236,10 +259,102 @@ internal sealed class LocationMigrator: Migrator
             1144 => "Madrid",
             342 => "London",
             1083 => "Lisboa",
-
+            1804 => null,
+            2664 => null,
+            2798 => "Incheon",
+            979 => "Tallinn",
+            1672 => "Solna",
+            1901 => "Uppsala",
+            3936 => null,
+            1516 => "Barkingside",
+            1069 => "Andorra la Vella",
+            851 => "Grottaferrata",
+            3539 => "Alicante",
+            10690 => "Santa Cruz de Tenerife",
+            1045 => "San Vicente del Raspeig",
+            3949 => "Santiago de Compostela",
+            1074 => "Vienna",
+            1073 => "Vienna",
+            825 => "Liege",
+            1573 => "Ottignies-Louvain-la-Neuve",
+            720 => "La Madeleine",
+            2617 => null,
+            9566 => "Val d'Erdre-Auxence",
+            798 => "Berlin",
+            815 => "Lausanne",
+            10311 => "Bretigny-sur-Morrens",
+            2037 => "Apia",
+            2598 => "Apia",
+            2603 => "Apia",
+            3087 => "Apia",
+            2589 => "Faleasiu",
+            2592 => "Faleasiu",
+            2597 => "Faleasiu",
+            2687 => null,
+            1558 => "Kyiv",
+            1635 => "Kyiv",
+            2602 => "Kyiv",
+            1531 => "Saint Petersburg",
+            717 => "Warsaw",
+            889 => "Warsaw",
+            1724 => "Warsaw",
+            2866 => "Tbilisi",
+            1086 => "Monthey",
+            1088 => "Fribourg",
+            1091 => "Fribourg",
+            1093 => "Fribourg",
             _ => city
         };
     }
+
+    private async Task<int?> GetSubdivisionId(int id, int? stateId, int? countryId, string? code) 
+    {
+        if(countryId is null)
+        {
+            return null;
+        }
+
+        var res = await GetSubdivisionId(id, stateId);
+        if(res != null)
+        {
+            return res;
+        }
+        var stateCode = code switch
+        {   
+            "HK-HWC" => null,
+            "HK-HCW" => null,
+            "HK-KYT" => null,
+            "GB-JSY" => null,
+            "CZ-JM" => "CZ-643",
+            "RO-DI" => "RO-DB",
+            "RO-HA" => "RO-HR",
+            "UA-LV" => "UA-46",
+            "UA-KV" => "UA-32",
+            "UA-KL" => "UA-63",
+            "UA-LU" => "UA-09",
+            "GT-GU" => "GT-01",
+            "GT-QZ" => "GT-09",
+            "CR-AL" => "CR-A",
+            "UK-KL" => "UA-63",
+            "CN-43" => "CN-HN",
+            "CN-11" => "CN-BJ",
+            "CN-52" => "CN-GZ",
+            "CN-36" => "CN-FJ",
+            "CN-41" => "CN-HA",
+            "CN-13" => "CN-HE",
+            "CN-44" => "CN-GD",
+            "CN-61" => "CN-SN",
+            "VN-BT" => "VN-40",
+            "VN-HC" => "VN-SG",
+            _ => code
+        };
+        if (stateCode == null)
+        {
+            return null;
+        }
+        return await _subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
+    }
+
 
     private async Task<int?> GetSubdivisionId(int id, int? stateId)
     {
@@ -247,6 +362,70 @@ internal sealed class LocationMigrator: Migrator
         {
             var stateCode = id switch
             {
+                1071 => "DO-01",
+                4170 => "DO-30",
+                1479 => "CO-DC",
+                3996 => null,
+                262 => "US-DC",
+                294 => "US-NY",
+                2118 => "US-NY",
+                1896 => "US-NY",
+                1420 => "US-TX",
+                296 => "US-MA",
+                987 => "US-NJ",
+                719 => "TH-10",
+                2066 => "VN-SG",
+                775 => "NL-FR",
+                1092 => "CH-ZH",
+                1089 => "CH-LU",
+                1086 => "CH-VS",
+                1080 => "CH-TI",
+                1082 => "CH-ZH",
+                872 => "CH-VD",
+                1078 => "CH-VD",
+                1087 => "CH-VD",
+                1088 => "CH-FR",
+                1091 => "CH-FR",
+                1093 => "CH-FR",
+                2866 => "GE-TB",
+                721 => "BY-MI",
+                1633 => "MD-CU",
+                3821 => "PL-22",
+                717 => "PL-14",
+                889 => "PL-14",
+                1724 => "PL-14",
+                452 => "RO-BT",
+                1397 => "RO-MS",
+                1955 => "RO-BV",
+                1531 => "RU-SPE",
+                1063 => "SK-BL",
+                1558 => "UA-32",
+                1635 => "UA-32",
+                2602 => "UA-32",
+                548 => "AU-VIC",
+                907 => "AU-VIC",
+                1953 => "AU-ACT",
+                1954 => "AU-NSW",
+                2687 => "MH-KWA",
+                2361 => "MH-MAJ",
+                2037 => "WS-TU",
+                2598 => "WS-TU",
+                2603 => "WS-TU",
+                3087 => "WS-TU",
+                2595 => "WS-TU",
+                2589 => "WS-AA",
+                2592 => "WS-AA",
+                2597 => "WS-AA",
+                2711 => "WS-AA",
+                2593 => "WS-AA",
+                2594 => "WS-AA",
+                3708 => "RO-BC",
+                3839 => "GB-LDS",
+                3694 => "GB-WKF",
+                3923 => "GB-WKF",
+                3676 => "GB-CHE",
+                1754 => "GB-NIR",
+                1158 => "CN-GX",
                 1428 => "MX-TLA",
                 2019 => "GT-01",
                 2073 => "MH-MAJ",
@@ -863,14 +1042,233 @@ internal sealed class LocationMigrator: Migrator
                 765 => "DE-NW",
                 767 => "DE-BW",
                 1115 => "DE-BW",
-                1446 => "DE-BW",
+                1116 => "DE-BW",
                 3727 => "CH-GE",
                 1090 => "CH-GE",
                 858 => "CH-GE",
                 1084 => "CH-GE",
                 1081 => "CH-GE",
-
-
+                2076 => "VN-63",
+                3622 => "VN-67",
+                2783 => "VN-49",
+                2203 => "VN-43",
+                2587 => "VN-43",
+                1804 => "JP-23",
+                2664 => "JP-47",
+                2798 => "KR-41",
+                3385 => "TW-NWT",
+                873 => "TW-NWT",
+                762 => "DK-82",
+                763 => "DK-84",
+                3528 => "DK-84",
+                3829 => "DK-85",
+                979 => "EE-37",
+                768 => "IS-1",
+                2269 => "IE-L",
+                2804 => "IE-L",
+                1061 => "LV-RIX",
+                743 => "LT-VL",
+                777 => "NO-42",
+                776 => "NO-03",
+                547 => "NO-03",
+                1762 => "SE-F",
+                779 => "SE-N",
+                782 => "SE-BD",
+                1672 => "SE-AB",
+                1901 => "SE-C",
+                1616 => "GB-LEC",
+                1516 => "GB-LND",
+                1625 => "AL-11",
+                728 => "AL-11",
+                1072 => "AD-07",
+                1069 => "AD-07",
+                1014 => "AD-07",
+                1627 => "BA-BIH",
+                2210 => "GR-G",
+                945 => "IT-82",
+                943 => "IT-72",
+                920 => "IT-62",
+                962 => "IT-42",
+                947 => "IT-42",
+                932 => "IT-82",
+                961 => "IT-57",
+                804 => "IT-36",
+                1622 => "IT-75",
+                926 => "IT-25",
+                1619 => "IT-45",
+                957 => "IT-25",
+                913 => "IT-25",
+                895 => "IT-42",
+                949 => "IT-72",
+                938 => "IT-45",
+                899 => "IT-21",
+                929 => "IT-78",
+                908 => "IT-57",
+                1584 => "IT-45",
+                924 => "IT-75",
+                851 => "IT-62",
+                955 => "IT-21",
+                921 => "IT-45",
+                919 => "IT-65",
+                935 => "IT-25",
+                806 => "IT-34",
+                910 => "IT-52",
+                883 => "IT-62",
+                917 => "IT-65",
+                462 => "IT-25",
+                1623 => "IT-82",
+                1618 => "IT-34",
+                942 => "IT-36",
+                2162 => "IT-25",
+                915 => "IT-72",
+                914 => "IT-34",
+                952 => "IT-82",
+                930 => "IT-45",
+                884 => "IT-57",
+                1127 => "IT-25",
+                893 => "IT-45",
+                941 => "IT-77",
+                853 => "IT-52",
+                898 => "IT-82",
+                950 => "IT-52",
+                2025 => "IT-88",
+                925 => "IT-72",
+                948 => "IT-55",
+                807 => "IT-32",
+                960 => "IT-36",
+                958 => "IT-25",
+                939 => "IT-25",
+                931 => "IT-21",
+                954 => "IT-34",
+                959 => "IT-34",
+                3540 => "ES-C",
+                1043 => "ES-MD",
+                3539 => "ES-VC",
+                1002 => "ES-VC",
+                1016 => "ES-VC",
+                1141 => "ES-MC",
+                854 => "ES-AL",
+                1000 => "ES-TO",
+                3550 => "ES-B",
+                1018 => "ES-BI",
+                1155 => "ES-CA",
+                1019 => "ES-MU",
+                1034 => "ES-SE",
+                856 => "ES-TF",
+                997 => "ES-GI",
+                1143 => "ES-C",
+                3548 => "ES-AB",
+                3545 => "ES-VA",
+                1012 => "ES-LE",
+                3551 => "ES-LO",
+                1041 => "ES-MA",
+                1147 => "ES-PM",
+                887 => "ES-GC",
+                3547 => "ES-CC",
+                998 => "ES-CC",
+                1142 => "ES-O",
+                3543 => "ES-PM",
+                3552 => "ES-NA",
+                821 => "ES-SA",
+                1149 => "ES-SS",
+                1146 => "ES-SS",
+                1045 => "ES-A",
+                3544 => "ES-TO",
+                3542 => "ES-S",
+                3949 => "ES-C",
+                3546 => "ES-TO",
+                1004 => "ES-GC",
+                1042 => "ES-TE",
+                1036 => "ES-VA",
+                1152 => "ES-VA",
+                1990 => "ES-PO",
+                3553 => "ES-PO",
+                813 => "ES-Z",
+                1845 => "AT-3",
+                795 => "AT-9",
+                1074 => "AT-9",
+                1073 => "AT-9",
+                1569 => "BE-VAN",
+                826 => "BE-VOV",
+                869 => "BE-WNA",
+                760 => "BE-WHT",
+                1572 => "BE-WLG",
+                2136 => "BE-WNA",
+                870 => "BE-VAN",
+                481 => "BE-VOV",
+                2133 => "BE-WHT",
+                825 => "BE-WLG",
+                1574 => "BE-WLG",
+                1570 => "BE-VOV",
+                868 => "BE-WBR",
+                761 => "BE-WLG",
+                1573 => "BE-WBR",
+                3646 => "FR-72",
+                734 => "FR-44",
+                688 => "FR-16",
+                748 => "FR-78",
+                724 => "FR-65",
+                746 => "FR-6AE",
+                3643 => "FR-54",
+                730 => "FR-33",
+                747 => "FR-92",
+                731 => "FR-19",
+                736 => "FR-78",
+                742 => "FR-77",
+                3642 => "FR-61",
+                740 => "FR-35",
+                739 => "FR-78",
+                3640 => "FR-37",
+                687 => "FR-30",
+                732 => "FR-16",
+                741 => "FR-50",
+                3641 => "FR-23",
+                725 => "FR-38",
+                3644 => "FR-37",
+                720 => "FR-59",
+                726 => "FR-22",
+                3639 => "FR-72",
+                733 => "FR-59",
+                744 => "FR-59",
+                714 => "FR-69",
+                715 => "FR-13",
+                716 => "FR-82",
+                709 => "FR-92",
+                738 => "FR-73",
+                718 => "FR-92",
+                1894 => "FR-78",
+                2617 => "FR-73",
+                1307 => "FR-38",
+                711 => "FR-49",
+                1802 => "FR-43",
+                867 => "DE-NW",
+                1119 => "DE-BY",
+                1117 => "DE-BY",
+                2244 => "DE-BW",
+                800 => "DE-BE",
+                798 => "DE-BE",
+                1030 => "DE-NW",
+                886 => "DE-NW",
+                850 => "DE-HE",
+                2010 => "DE-HH",
+                1446 => "DE-RP",
+                2186 => "DE-BW",
+                866 => "DE-BY",
+                799 => "DE-NI",
+                2854 => "DE-NW",
+                772 => "LU-CA",
+                1122 => "NL-NH",
+                1924 => "NL-NH",
+                1123 => "NL-ZH",
+                774 => "NL-GE",
+                1033 => "NL-GE",
+                1101 => "NL-GE",
+                863 => "NL-GE",
+                2017 => "NL-ZH",
+                815 => "CH-VD",
+                1077 => "CH-BE",
+                871 => "CH-SO",
+                816 => "CH-VD",
                 _ => null
             };
             if (stateCode == null)
@@ -912,6 +1310,8 @@ internal sealed class LocationMigrator: Migrator
             1428 => 3909,
             2019 => 3904,
             2073 => 4050,
+            3936 => 11569,
+            2262 => 3996,
             _ => countryId
         };
         if(ret == null) 
@@ -924,22 +1324,24 @@ internal sealed class LocationMigrator: Migrator
         }
     }
 
-    protected override async Task MigrateImpl()
-    {
-        await LocationCreator.CreateAsync(GetLocations(), _postgresConnection);
-        await LocationCreator.CreateAsync(ReadUSLocations(), _postgresConnection);
-        await LocationLocatableCreator.CreateAsync(GetLocationLocatables(), _postgresConnection);
 
-    }
-    private async IAsyncEnumerable<Location> ReadUSLocations()
+
+    private async IAsyncEnumerable<Location> ReadLocations()
     {
         var sql = $"""
-                SELECT 
+            SELECT 
                 l.lid id,
+                n.nid node_id,
+                n.title title,
                 case when l.street = '' then NULL ELSE l.street END street,
                 l.additional,
                 case when l.city = '' then NULL ELSE l.city END city,
                 l.postal_code,
+                case 
+            		when l.province = '' then null
+            		when l.province = 'xx'  then null
+            		ELSE  concat(upper(c.field_country_code_value), '-',l.province)
+            	END subdivision_code,
                 s.nid subdivision_id,
                 c.nid country_id,
                 l.latitude,
@@ -950,7 +1352,7 @@ internal sealed class LocationMigrator: Migrator
                 JOIN content_type_country_type c ON lower(c.field_country_code_value) = lower(l.country)
                 JOIN node n2 ON n2.nid = c.nid
                 LEFT JOIN content_type_statefact s ON s.field_country_1_nid = c.nid AND s.field_statecode_value = l.province
-                """;
+            """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
@@ -961,6 +1363,10 @@ internal sealed class LocationMigrator: Migrator
 
         while (await reader.ReadAsync())
         {
+            var id = reader.GetInt32("id");
+            int? subDivisionId = reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id");
+            string? code = reader.IsDBNull("subdivision_code") ? null : reader.GetString("subdivision_code").Replace("UK-", "GB-");
+            int? countryId = reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id");
             yield return new Location
             {
                 Id = reader.GetInt32("id"),
@@ -968,8 +1374,8 @@ internal sealed class LocationMigrator: Migrator
                 Additional = GetAdditional(reader.GetInt32("id"), reader.IsDBNull("additional") ? null : reader.GetString("additional")),
                 City = GetCity(reader.GetInt32("id"), reader.IsDBNull("city") ? null : reader.GetString("city")),
                 PostalCode = GetPostalCode(reader.GetInt32("id"), reader.IsDBNull("postal_code") ? null : reader.GetString("postal_code")),
-                SubdivisionId = await GetSubdivisionId(reader.GetInt32("id"), reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id")),
-                CountryId = await GetCountryId(reader.GetInt32("id"), reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id")),
+                SubdivisionId = await GetSubdivisionId(reader.GetInt32("id"), subDivisionId, countryId, code),
+                CountryId = await GetCountryId(reader.GetInt32("id"), countryId),
                 Latitude = GetLatitude(reader.GetInt32("id"), reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
                 Longitude = GetLongitude(reader.GetInt32("id"), reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
             };

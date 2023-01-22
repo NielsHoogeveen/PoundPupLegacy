@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.ViewModel", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Db.Test", "PoundPupLegacy.Db.Test\PoundPupLegacy.Db.Test.csproj", "{0EABBB7B-E7F3-4C36-8951-4D206F9EF8C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy", "PoundPupLegacy\PoundPupLegacy.csproj", "{9D20839E-3087-4B82-99D5-652491A95FA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy", "PoundPupLegacy\PoundPupLegacy.csproj", "{9D20839E-3087-4B82-99D5-652491A95FA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.Test", "PoundPupLegacy.Test\PoundPupLegacy.Test.csproj", "{9FF6F2E0-8779-4828-8EAF-6DF196CCB323}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Test", "PoundPupLegacy.Test\PoundPupLegacy.Test.csproj", "{9FF6F2E0-8779-4828-8EAF-6DF196CCB323}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

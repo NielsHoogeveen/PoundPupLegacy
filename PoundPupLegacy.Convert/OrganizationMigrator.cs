@@ -12,9 +12,8 @@ internal sealed class OrganizationMigrator: Migrator
 
     protected override string Name => "organizations";
 
-    private static async IAsyncEnumerable<Organization> GetOrganizations()
+    private async IAsyncEnumerable<Organization> GetOrganizations()
     {
-        await Task.CompletedTask;
         yield return new Organization
         {
             Id = null,
@@ -44,6 +43,14 @@ internal sealed class OrganizationMigrator: Migrator
             Description = "",
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName>(),
+            OrganizationTypes = new List<OrganizationOrganizationType>
+            {
+                new OrganizationOrganizationType
+                {
+                    OrganizationId = null,
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, 12625)
+                }
+            }
         };
     }
 
@@ -56,82 +63,103 @@ internal sealed class OrganizationMigrator: Migrator
     {
 
         var sql = $"""
-                SELECT
-                	n.nid id,
-                	n.uid access_role_id,
-                	n.title,
-                	n.`status` node_status_id,
-                	FROM_UNIXTIME(n.created) created_date_time, 
-                	FROM_UNIXTIME(n.changed) changed_date_time,
-                	23 node_type_id,
-                	o.field_website_2_url website_url,
-                	FROM_UNIXTIME(o.field_start_date_0_value) established, 
-                	FROM_UNIXTIME(UNIX_TIMESTAMP(o.field_end_date_value)) `terminated`,
-                	o.field_email_address_email email_address,
-                	o.field_description_3_value description,
-                	case 
-                		when c.title IS NOT NULL then c.title
-                		ELSE c2.title
-                	END topic_name,
-                	case 
-                		when c.topic_parent_names IS NOT NULL then c.topic_parent_names
-                		ELSE c2.topic_parent_names
-                	END topic_parent_names,
-                   ua.dst url_path
-                FROM node n 
-                LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
-                LEFT JOIN category_node cna ON cna.nid = n.nid AND cna.cid = 38518
-                LEFT JOIN category_node cnb ON cnb.nid = n.nid AND cnb.cid = 38308
-                JOIN content_type_adopt_orgs o ON o.nid = n.nid AND o.vid = n.vid
+            SELECT
+                n.nid id,
+                n.uid access_role_id,
+                n.title,
+                n.`status` node_status_id,
+                FROM_UNIXTIME(n.created) created_date_time, 
+                FROM_UNIXTIME(n.changed) changed_date_time,
+                23 node_type_id,
+                o.field_website_2_url website_url,
+                FROM_UNIXTIME(o.field_start_date_0_value) established, 
+                FROM_UNIXTIME(UNIX_TIMESTAMP(o.field_end_date_value)) `terminated`,
+                o.field_email_address_email email_address,
+                o.field_description_3_value description,
+                case 
+                    when c.title IS NOT NULL then c.title
+                    ELSE c2.title
+                END topic_name,
+                case 
+                    when c.topic_parent_names IS NOT NULL then c.topic_parent_names
+                    ELSE c2.topic_parent_names
+                END topic_parent_names,
+                ua.dst url_path,
+                	group_concat(nots.nid SEPARATOR ',') organization_types
+            FROM node n 
+            LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
+            LEFT JOIN category_node cna ON cna.nid = n.nid AND cna.cid = 38518
+            LEFT JOIN category_node cnb ON cnb.nid = n.nid AND cnb.cid = 38308
+            JOIN content_type_adopt_orgs o ON o.nid = n.nid AND o.vid = n.vid
+            JOIN category_node cnot ON cnot.nid = n.nid
+            JOIN category `cot` ON `cot`.cid = cnot.cid AND `cot`.cnid = 12622
+            JOIN node nots ON nots.nid = `cot`.cid
+            LEFT JOIN (
+                select
+                    n.nid,
+                    n.title,
+                    cc.field_tile_image_title,
+                    cc.field_related_page_nid,
+                    GROUP_CONCAT(p.title, ',') topic_parent_names
+                FROM node n
+                JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
                 LEFT JOIN (
-                	select
-                		n.nid,
-                		n.title,
-                		cc.field_tile_image_title,
-                		cc.field_related_page_nid,
-                		GROUP_CONCAT(p.title, ',') topic_parent_names
-                	FROM node n
-                	JOIN content_type_category_cat cc ON cc.nid = n.nid AND cc.vid = n.vid
-                	LEFT JOIN (
-                		SELECT
-                			n.nid, 
-                			n.title,
-                			ch.cid
-                		FROM node n
-                		JOIN category_hierarchy ch ON ch.parent = n.nid
-                		WHERE n.`type` = 'category_cat'
-                	) p ON p.cid = n.nid
-                	GROUP BY 
-                		n.nid,
-                		n.title,
-                		cc.field_tile_image_title,
-                		cc.field_related_page_nid
-                ) c ON c.field_related_page_nid = n.nid
+                    SELECT
+                        n.nid, 
+                        n.title,
+                        ch.cid
+                    FROM node n
+                    JOIN category_hierarchy ch ON ch.parent = n.nid
+                    WHERE n.`type` = 'category_cat'
+                ) p ON p.cid = n.nid
+                GROUP BY 
+                    n.nid,
+                    n.title,
+                    cc.field_tile_image_title,
+                    cc.field_related_page_nid
+            ) c ON c.field_related_page_nid = n.nid
+            LEFT JOIN (
+                select
+                    n.nid,
+                    n.title,
+                    GROUP_CONCAT(p.title, ',') topic_parent_names
+                FROM node n
+                JOIN category c ON c.cid = n.nid AND c.cnid = 4126
                 LEFT JOIN (
-                	select
-                		n.nid,
-                		n.title,
-                		GROUP_CONCAT(p.title, ',') topic_parent_names
-                	FROM node n
-                	JOIN category c ON c.cid = n.nid AND c.cnid = 4126
-                	LEFT JOIN (
-                		SELECT
-                			n.nid, 
-                			n.title,
-                			ch.cid
-                		FROM node n
-                		JOIN category_hierarchy ch ON ch.parent = n.nid
-                		WHERE n.`type` = 'category_cat'
-                	) p ON p.cid = n.nid
-                	GROUP BY 
-                		n.nid,
-                		n.title
-                ) c2 ON c2.title = n.title
-                WHERE n.`type` = 'adopt_orgs'
-                AND n.nid NOT IN (11108)
-                AND cna.nid IS NULL
-                AND cnb.nid IS NULL
-                """;
+                    SELECT
+                        n.nid, 
+                        n.title,
+                        ch.cid
+                    FROM node n
+                    JOIN category_hierarchy ch ON ch.parent = n.nid
+                    WHERE n.`type` = 'category_cat'
+                ) p ON p.cid = n.nid
+                GROUP BY 
+                    n.nid,
+                    n.title
+            ) c2 ON c2.title = n.title
+                	WHERE n.`type` = 'adopt_orgs'
+            AND n.nid NOT IN (11108)
+            AND cna.nid IS NULL
+            AND cnb.nid IS NULL
+            GROUP BY
+                n.nid,
+                n.uid,
+                n.title,
+                n.`status`,
+                n.created, 
+                n.`changed`,
+                o.field_website_2_url,
+                o.field_start_date_0_value, 
+                o.field_end_date_value,
+                o.field_email_address_email,
+                o.field_description_3_value,
+                c.title,
+                c2.title,
+                	c.topic_parent_names ,
+                	c2.topic_parent_names,
+                ua.dst
+            """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
@@ -143,6 +171,19 @@ internal sealed class OrganizationMigrator: Migrator
         while (await reader.ReadAsync())
         {
             var vocabularyNames = new List<VocabularyName>();
+
+
+            var typeIds = reader
+                            .GetString("organization_types")
+                            .Split(',')
+                            .Where(x=> !string.IsNullOrEmpty(x))
+                            .Select(x => int.Parse(x));
+            var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
+            foreach(var typeId in typeIds)
+            {
+                var organizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, typeId);
+                organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
+            }
 
             var id = reader.GetInt32("id");
 
@@ -188,6 +229,7 @@ internal sealed class OrganizationMigrator: Migrator
                 });
             }
 
+
             yield return new Organization
             {
                 Id = null,
@@ -217,6 +259,7 @@ internal sealed class OrganizationMigrator: Migrator
                 Terminated = reader.IsDBNull("terminated") ? null : reader.GetDateTime("terminated"),
                 FileIdTileImage = null,
                 VocabularyNames = vocabularyNames,
+                OrganizationTypes = organizationOrganizationTypes,
             };
 
         }

@@ -19,6 +19,7 @@ public class OrganizationCreator : IEntityCreator<Organization>
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var organizationOrganizationTypeWriter = await OrganizationOrganizationTypeWriter.CreateAsync(connection);
 
         await foreach (var organization in organizations)
         {
@@ -34,7 +35,11 @@ public class OrganizationCreator : IEntityCreator<Organization>
                 tenantNode.NodeId = organization.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }
-
+            foreach(var organizationOrganizationType in organization.OrganizationTypes)
+            {
+                organizationOrganizationType.OrganizationId = organization.Id;
+                await organizationOrganizationTypeWriter.WriteAsync(organizationOrganizationType);
+            }
         }
     }
 }

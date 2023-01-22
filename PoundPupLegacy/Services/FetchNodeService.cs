@@ -27,6 +27,7 @@ public class FetchNodeService
             {FETCH_SEE_ALSO_POSTS},
             {FETCH_SEE_ALSO_DOCUMENT},
             {FETCH_TAGS_DOCUMENT},
+            {FETCH_DOCUMENTS_DOCUMENT},
             {FETCH_COMMENT_DOCUMENT},
             {FETCH_BLOG_POST_BREADCRUM},
             {FETCH_BLOG_POST_DOCUMENT},
@@ -242,13 +243,61 @@ public class FetchNodeService
         )
         """;
 
+    const string FETCH_DOCUMENTS_DOCUMENT = """
+        fetch_documents as(
+            select
+                json_agg(
+                    json_build_object(
+                        'Path', path,
+                        'Title', title,
+                        'PublicationDate', publication_date,
+                        'SortOrder', sort_order
+                    )::jsonb
+                )::jsonb documents
+            from(
+                select
+                    path,
+                    title,
+                    publication_date,
+                    row_number() over(order by sort_date desc) sort_order
+                from(
+                    select
+                        case 
+        	                when tn2.url_path is null then '/node/' || tn2.url_id
+        	                else '/' || tn2.url_path
+                        end path,
+                        n2.title,
+                        case 
+        	                when d.publication_date is not null then d.publication_date
+        	                else lower(d.publication_date_range)
+                        end sort_date,
+                        case 
+        	                when d.publication_date is not null 
+        		                then extract(year from d.publication_date) || ' ' || to_char(d.publication_date, 'Month') || ' ' || extract(DAY FROM d.publication_date)
+        	                when extract(month from lower(d.publication_date_range)) = extract(month from upper(d.publication_date_range)) 
+        		                then extract(year from lower(d.publication_date_range)) || ' ' || to_char(lower(d.publication_date_range), 'Month') 
+        	                when extract(year from lower(d.publication_date_range)) = extract(year from upper(d.publication_date_range)) 
+        		                then extract(year from lower(d.publication_date_range))  || ''
+        	                else ''
+                        end publication_date
+                    from documentable_document dd
+                    join tenant_node tn on tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.node_id = dd.documentable_id
+                    join tenant_node tn2 on tn2.node_id = dd.document_id and tn2.tenant_id = @tenant_id
+                    join node n2 on n2.Id = tn2.node_id
+                    join "document" d on d.id = n2.id
+                ) x
+            ) docs
+        )
+        """;
+
     const string FETCH_BLOG_POST_BREADCRUM = """
         fetch_blog_post_bread_crum AS (
-            SELECT json_agg(json_build_object(
-                'Url', url,
-                'Name', "name"
-                ) 
-            ) bc
+            SELECT json_agg(
+                json_build_object(
+                    'Url', url,
+                    'Name', "name"
+                )::jsonb 
+            )::jsonb bc
             FROM(
             SELECT
         	    url,
@@ -278,11 +327,12 @@ public class FetchNodeService
         """;
     const string FETCH_ARTICLE_BREADCRUM = """
         fetch_article_bread_crum AS (
-            SELECT json_agg(json_build_object(
-                'Url', url,
-                'Name', "name"
-                ) 
-            ) bc
+            SELECT json_agg(
+                json_build_object(
+                    'Url', url,
+                    'Name', "name"
+                )::jsonb 
+            )::jsonb bc
             FROM(
             SELECT
         	    url,
@@ -305,11 +355,12 @@ public class FetchNodeService
 
     const string FETCH_COUNTRY_BREADCRUM = """
         fetch_country_bread_crum AS (
-            SELECT json_agg(json_build_object(
-                'Url', url,
-                'Name', "name"
-                ) 
-            ) bc
+            SELECT json_agg(
+                json_build_object(
+                    'Url', url,
+                    'Name', "name"
+                )::jsonb
+            )::jsonb bc
             FROM(
             SELECT
         	    url,
@@ -332,9 +383,9 @@ public class FetchNodeService
 
     const string FETCH_COMMENT_DOCUMENT = """
         fetch_comments_document AS (
-            SELECT json_agg(tree) agg
+            SELECT json_agg(tree)::jsonb agg
             FROM (
-                SELECT to_jsonb(sub) AS tree
+                SELECT to_jsonb(sub)::jsonb AS tree
                 FROM (
         	        SELECT 
         		        c.id AS "Id", 
@@ -344,7 +395,7 @@ public class FetchNodeService
         			        'Name', p.name,
                             'CreatedDateTime', c.created_date_time,
                             'ChangedDateTime', c.created_date_time
-                        ) AS "Authoring",
+                        )::jsonb AS "Authoring",
         		        c.title AS "Title", 
         		        c.text AS "Text", 
         		        f_comment_tree(c.id) AS "Comments"
@@ -360,104 +411,108 @@ public class FetchNodeService
 
     const string FETCH_ADOPTION_IMPORTS = """
         fetch_adoption_imports as(
-        select
-            json_build_object(
-                'StartYear', start_year,
-                'EndYear', end_year,
-                'Imports', json_agg(json_build_object(
-                'CountryFrom', name,
-                'RowType', row_type,
-                'Values', y))
-            ) imports
-        from(
-        select
-        	name,
-        	row_type,
-        	start_year,
-        	end_year,
-        	json_agg(json_build_object(
-        		'Year', "year",
-        		'NumberOfChildren', number_of_children
-        	)
-        ) as y
-        from(
-        	select
-        		row_number() over () id,
-        		case 
-        			when sub is not null then 1
-        			when origin is not null then 2
-        			else 3
-        		end row_type,
-        		case 
-        			when sub is not null then sub
-        			when origin is not null then origin
-        			else null
-        		end name,
-        		number_of_children,
-        		case when "year" is null then 10000
-        		else "year"
-        		end "year",
-        		min("year") over() start_year,
-        		max("year") over() end_year
-        	from(
-        		select
-        		distinct
-        		t.*
-        		from(
-        			select
-        			* 
-        			from
-        			(
-        				select
-        					*,
-        					SUM(number_of_children_involved) over (partition by country_to, "year") toty,
-        					SUM(number_of_children_involved) over (partition by country_to, region_from, "year") totry,
-        					SUM(number_of_children_involved) over (partition by country_to, country_from, "year") totcy,
-        					SUM(number_of_children_involved) over (partition by country_to) tot,
-        					SUM(number_of_children_involved) over (partition by country_to, region_from) totr,
-        					SUM(number_of_children_involved) over (partition by country_to, country_from) totc
-        				from(
-        					select
-        						nto.title country_to,
-        						rfm.title region_from,
-        						nfm.title country_from,
-        						case when 
-        							icr.number_of_children_involved is null then 0
-        							else icr.number_of_children_involved
-        						end number_of_children_involved,
-        						extract('year' from upper(cr.date_range)) "year"
-        					from country_report cr
-                            join node nto on nto.id = cr.country_id
-        					join tenant_node tn on tn.node_id = nto.id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
-        					join top_level_country cto on cto.id = nto.id
-        					join top_level_country cfm on true 
-        					join node rfm on rfm.id = cfm.global_region_id
-        					join node nfm on nfm.id = cfm.id
-                            join tenant_node tn2 on tn2.tenant_id = @tenant_id and tn2.url_id = 144
-        					LEFT join inter_country_relation icr on icr.country_id_from = cto.id and cfm.id = icr.country_id_to and icr.date_range = cr.date_range and icr.inter_country_relation_type_id = tn2.node_id
-        					WHERE tn.url_id = @url_id 
+            select
+                json_build_object(
+                    'StartYear', start_year,
+                    'EndYear', end_year,
+                    'Imports', json_agg(
+                        json_build_object(
+                           'CountryFrom', name,
+                            'RowType', row_type,
+                            'Values', y
+                        )::jsonb
+                    )::jsonb
+                ) imports
+            from(
+                select
+        	        name,
+        	        row_type,
+        	        start_year,
+        	        end_year,
+        	        json_agg(
+                        json_build_object(
+            		        'Year', "year",
+            		        'NumberOfChildren', number_of_children
+            	        )::jsonb
+                    )::jsonb y
+                from(
+        	        select
+        		        row_number() over () id,
+        		        case 
+        			        when sub is not null then 1
+        			        when origin is not null then 2
+        			        else 3
+        		        end row_type,
+        		        case 
+        			        when sub is not null then sub
+        			        when origin is not null then origin
+        			        else null
+        		        end name,
+        		        number_of_children,
+        		        case when "year" is null then 10000
+        		        else "year"
+        		        end "year",
+        		        min("year") over() start_year,
+        		        max("year") over() end_year
+        	        from(
+        		        select
+        		        distinct
+        		        t.*
+        		        from(
+        			        select
+        			        * 
+        			        from
+        			        (
+        				        select
+        					        *,
+        					        SUM(number_of_children_involved) over (partition by country_to, "year") toty,
+        					        SUM(number_of_children_involved) over (partition by country_to, region_from, "year") totry,
+        					        SUM(number_of_children_involved) over (partition by country_to, country_from, "year") totcy,
+        					        SUM(number_of_children_involved) over (partition by country_to) tot,
+        					        SUM(number_of_children_involved) over (partition by country_to, region_from) totr,
+        					        SUM(number_of_children_involved) over (partition by country_to, country_from) totc
+        				        from(
+        					        select
+        						        nto.title country_to,
+        						        rfm.title region_from,
+        						        nfm.title country_from,
+        						        case when 
+        							        icr.number_of_children_involved is null then 0
+        							        else icr.number_of_children_involved
+        						        end number_of_children_involved,
+        						        extract('year' from upper(cr.date_range)) "year"
+        					        from country_report cr
+                                    join node nto on nto.id = cr.country_id
+        					        join tenant_node tn on tn.node_id = nto.id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
+        					        join top_level_country cto on cto.id = nto.id
+        					        join top_level_country cfm on true 
+        					        join node rfm on rfm.id = cfm.global_region_id
+        					        join node nfm on nfm.id = cfm.id
+                                    join tenant_node tn2 on tn2.tenant_id = @tenant_id and tn2.url_id = 144
+        					        LEFT join inter_country_relation icr on icr.country_id_from = cto.id and cfm.id = icr.country_id_to and icr.date_range = cr.date_range and icr.inter_country_relation_type_id = tn2.node_id
+        					        WHERE tn.url_id = @url_id 
 
-        				) a
-        			) a
-        			where totc <> 0
-        			ORDER BY country_to, region_from, country_from, "year"
-        		) c
-        		cross join lateral(
-        			values
-        			(null, null, toty, c."year"),
-        			(region_from, null, totry, c."year"),
-        			(region_from, country_from, totcy, c."year"),
-        			(null, null, tot, null),
-        			(region_from, null, totr, null),
-        			(region_from, country_from, totc, null)
-        		) as t(origin, sub, number_of_children, "year")
-        		order by t.origin, t.sub, t."year"
-        	) x
-        )imports
-        group by imports.name, row_type, start_year, end_year
-        order by min(id)
-                    ) y
-                    group by start_year, end_year
+        				        ) a
+        			        ) a
+        			        where totc <> 0
+        			        ORDER BY country_to, region_from, country_from, "year"
+        		        ) c
+        		        cross join lateral(
+        			        values
+        			        (null, null, toty, c."year"),
+        			        (region_from, null, totry, c."year"),
+        			        (region_from, country_from, totcy, c."year"),
+        			        (null, null, tot, null),
+        			        (region_from, null, totr, null),
+        			        (region_from, country_from, totc, null)
+        		        ) as t(origin, sub, number_of_children, "year")
+        		        order by t.origin, t.sub, t."year"
+        	        ) x
+                ) imports
+                group by imports.name, row_type, start_year, end_year
+                order by min(id)
+            ) y
+            group by start_year, end_year
         )
         """;
 
@@ -480,7 +535,8 @@ public class FetchNodeService
                 'BreadCrumElements', (SELECT bc FROM fetch_country_bread_crum),
                 'Tags', (SELECT agg FROM fetch_tags_document),
                 'Comments', (SELECT agg FROM  fetch_comments_document),
-                'AdoptionImports', (SELECT imports FROM fetch_adoption_imports)
+                'AdoptionImports', (SELECT imports FROM fetch_adoption_imports),
+                'Documents', (select documents from fetch_documents)
             ) :: jsonb document
             FROM fetch_basic_country n
         ) 
@@ -543,7 +599,7 @@ public class FetchNodeService
                     when an.node_type_id = 35 then (select document from fetch_blog_post_document)
                     when an.node_type_id = 36 then (select document from fetch_article_document)
                     when an.node_type_id = 13 then (select document from fetch_basic_country_document)
-                end document
+                end :: jsonb document
             FROM authenticated_node an 
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
         ) 

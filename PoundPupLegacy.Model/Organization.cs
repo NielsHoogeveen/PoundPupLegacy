@@ -17,5 +17,6 @@ public sealed record Organization : Party
     public required List<VocabularyName> VocabularyNames { get; init; }
     public required int? FileIdTileImage { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+    public required List<OrganizationOrganizationType> OrganizationTypes { get; set; }
 
 }
