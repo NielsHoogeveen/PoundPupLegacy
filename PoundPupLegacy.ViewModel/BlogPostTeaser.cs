@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct BlogPostTeaser
+public record BlogPostTeaser
 {
     public int Id { get; set; }
     public string Title { get; set; }

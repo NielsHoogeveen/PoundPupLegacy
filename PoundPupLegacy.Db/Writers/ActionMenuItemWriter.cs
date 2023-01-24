@@ -37,7 +37,7 @@ internal sealed class ActionMenuItemWriter : DatabaseWriter<ActionMenuItem>, IDa
     internal override async Task WriteAsync(ActionMenuItem actionMenuItem)
     {
         WriteValue(actionMenuItem.Id, ID);
-        WriteValue(actionMenuItem.Name, NAME);
+        WriteValue(actionMenuItem.Name.Trim(), NAME);
         WriteValue(actionMenuItem.ActionId, ACTION_ID);
         await _command.ExecuteNonQueryAsync();
     }

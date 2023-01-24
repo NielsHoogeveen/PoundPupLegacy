@@ -1,200 +1,200 @@
-﻿Id;Created;Changed;IsTerm;NodeId;Status;UserId;CountryId;Title;Name;Iso3166_2Code
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Auvergne-Rhône-Alpes (French metropolitan region); Auvergne-Rhône-Alpes;FR-ARA
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Bourgogne-Franche-Comté (French metropolitan region); Bourgogne-Franche-Comté;FR-BFC
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Bretagne (French metropolitan region); Bretagne;FR-BRE
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Centre-Val de Loire (French metropolitan region); Centre-Val de Loire;FR-CVL
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Corse (French metropolitan collectivity with special status); Corse;FR-20R
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Grand-Est (French metropolitan region); Grand-Est;FR-GES
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Hauts-de-France (French metropolitan region); Hauts-de-France;FR-HDF
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Île-de-France (French metropolitan region); Île-de-France;FR-IDF
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Normandie (French metropolitan region); Normandie;FR-NOR
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Nouvelle-Aquitaine (French metropolitan region); Nouvelle-Aquitaine;FR-NAQ
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Occitanie (French metropolitan region); Occitanie;FR-OCC
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Pays-de-la-Loire (French metropolitan region); Pays-de-la-Loire;FR-PDL
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Provence-Alpes-Côte-d’Azur (French metropolitan region); Provence-Alpes-Côte-d’Azur;FR-PAC
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Abruzzo (Italian region); Abruzzo;IT-65
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Basilicata (Italian region); Basilicata;IT-77
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Calabria (Italian region); Calabria;IT-78
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Campania (Italian region); Campania;IT-72
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Emilia-Romagna (Italian region); Emilia-Romagna;IT-45
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Lazio (Italian region); Lazio;IT-62
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Liguria (Italian region); Liguria;IT-42
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Lombardia (Italian region); Lombardia;IT-25
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Marche (Italian region); Marche;IT-57
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Molise (Italian region); Molise;IT-67
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Piemonte (Italian region); Piemonte;IT-21
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Puglia (Italian region); Puglia;IT-75
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Toscana (Italian region); Toscana;IT-52
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Umbria (Italian region); Umbria;IT-55
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Veneto (Italian region); Veneto;IT-34
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Friuli Venezia Giulia (Italian autonomous region); Friuli Venezia Giulia;IT-36
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Sardegna (Italian autonomous region); Sardegna;IT-88
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Sicilia (Italian autonomous region); Sicilia;IT-82
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Trentino-Alto Adige (Italian autonomous region); Trentino-Alto Adige;IT-32
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Valle d'Aosta (Italian autonomous region); Valle d'Aosta;IT-23
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Andalusia (Spanish autonomous community);Andalusia;ES-AN
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Aragon (Spanish autonomous community);Aragon;ES-AR
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Principality of Asturias (Spanish autonomous community);Principality of Asturias;ES-AS
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Canary Islands (Spanish autonomous community);Canary Islands;ES-CN
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Cantabria (Spanish autonomous community);Cantabria autonomous community;ES-CB
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Castile and León (Spanish autonomous community);Castile and León;ES-CL
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Castile-La Mancha (Spanish autonomous community);Castile-La Mancha;ES-CM
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Catalonia (Spanish autonomous community);Catalonia;ES-CT
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Ceuta (Spanish autonomous city in North Africa);Ceuta;ES-CE
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Extremadura (Spanish autonomous community);Extremadura;ES-EX
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Galicia (Spanish autonomous community);Galicia;ES-GA
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Balearic Islands (Spanish autonomous community);Balearic Islands;ES-IB
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;La Rioja (Spanish autonomous community);La Rioja autonomous community;ES-RI
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Community of Madrid (Spanish autonomous community);Community of Madrid;ES-MD
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Melilla (Spanish autonomous city in North Africa);Melilla;ES-ML
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Region of Murcia (Spanish autonomous community);Region of Murcia;ES-MC
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Chartered Community of Navarre (Spanish autonomous community);Chartered Community of Navarre;ES-NC
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Basque Country (Spanish autonomous community);Basque Country;ES-PV
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Valencian Community (Spanish autonomous community);Valencian Community;ES-VC
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4025;Naxçıvan (Azerbajiani automous republic);Naxçıvan republic;AZ-NX
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4017;Brussels-Capital Region (Belgian region);Brussels-Capital Region;BE-BRU
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4017;Flemish Region (Belgian region);Flemish Region;BE-VLG
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4017;Walloon Region (Belgian region);Walloon Region;BE-WAL
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Boucle du Mouhoun (Burkinese region);Boucle du Mouhoun;BF-01
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Cascades (Burkinese region);Cascades;BF-02
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre (Burkinese region);Centre;BF-03
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre-Est (Burkinese region);Centre-Est;BF-04
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre-Nord (Burkinese region);Centre-Nord;BF-05
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre-Ouest (Burkinese region);Centre-Ouest;BF-06
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre-Sud (Burkinese region);Centre-Sud;BF-07
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Est (Burkinese region);Est;BF-08
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Hauts-Bassins (Burkinese region);Hauts-Bassins;BF-09
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Nord (Burkinese region);Nord;BF-10
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Plateau-Central (Burkinese region);Plateau-Central;BF-11
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Sahel (Burkinese region);Sahel;BF-12
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Sud-Ouest (Burkinese region);Sud-Ouest;BF-13
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3838;Ilhas de Barlavento (Cape Verdian geographical region);Ilhas de Barlavento;CV-B
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3838;Ilhas de Sotavento (Cape Verdian geographical region);Ilhas de Sotavento;CV-S
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;South Bohemia (Czech region);South Bohemia;CZ-31
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;South Moravia (Czech region);South Moravia;CZ-64
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Karlovy Vary (Czech region);Karlovy Vary region;CZ-41
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Hradec Králové (Czech region);Hradec Králové region;CZ-52
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Liberec (Czech region);Liberec region;CZ-51
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Moravia-Silesia (Czech region);Moravia-Silesia;CZ-80
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Olomouc (Czech region);Olomouc region;CZ-71
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Pardubice (Czech region);Pardubice region;CZ-53
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Plzeň (Czech region);Plzeň;CZ-32
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Prague (Czech capital city);Prague;CZ-10
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Central Bohemia (Czech region);Central Bohemia;CZ-20
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Ústí nad Labem (Czech region);Ústí nad Labem region;CZ-42
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Vysočina (Czech region);Vysočina;CZ-63
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Zlín (Czech region);Zlín region;CZ-72
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Cibao Nordeste (Dominican region);Cibao Nordeste;DO-33
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Cibao Noroeste (Dominican region);Cibao Noroeste;DO-34
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Cibao Norte (Dominican region);Cibao Norte;DO-35
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Cibao Sur (Dominican region);Cibao Sur;DO-36
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;El Valle (Dominican region);El Valle;DO-37
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Enriquillo (Dominican region);Enriquillo;DO-38
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Higuamo (Dominican region);Higuamo;DO-39
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Ozama (Dominican region);Ozama;DO-40
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Valdesia (Dominican region);Valdesia;DO-41
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Yuma (Dominican region);Yuma;DO-42
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Harju (Estonian county);Harju;EE-37
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Hiiu (Estonian county);Hiiu;EE-39
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Ida-Viru (Estonian county);Ida-Viru;EE-45
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Jõgeva (Estonian county);Jõgeva county;EE-50
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Järva (Estonian county);Järva county;EE-52
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Lääne (Estonian county);Lääne;EE-56
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Lääne-Viru (Estonian county);Lääne-Viru;EE-60
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Põlva (Estonian county);Põlva county;EE-64
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Pärnu (Estonian county);Pärnu county;EE-68
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Rapla (Estonian county);Rapla county;EE-71
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Saare (Estonian county);Saare;EE-74
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Tartu (Estonian county);Tartu county;EE-79
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Valga (Estonian county);Valga county;EE-81
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Viljandi (Estonian county);Viljandi county;EE-84
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Võru (Estonian county);Võru county;EE-87
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Central (Fijian division);Central;FJ-C
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Eastern (Fijian division);Eastern;FJ-E
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Northern (Fijian division);Northern;FJ-N
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Western (Fijian division);Western;FJ-W
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Rotuma (Fijian dependency);Rotuma;FJ-R
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Boké (Guinean administrative region);Boké administrative region;GN-B
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Faranah (Guinean administrative region);Faranah administrative region;GN-F
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Kankan (Guinean administrative region);Kankan administrative region;GN-K
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Kindia (Guinean administrative region);Kindia administrative region;GN-D
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Labé (Guinean administrative region);Labé administrative region;GN-L
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Mamou (Guinean administrative region);Mamou administrative region;GN-M
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Nzérékoré (Guinean administrative region);Nzérékoré administrative region;GN-N
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Conakry (Guinean governorate);Conakry;GN-C
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3858;Región Continental (Equatorial Guinean region);Región Continental;GQ-C
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3858;Región Insular (Equatorial Guinean region);Región Insular;GQ-I
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3843;Leste (Guinea Bissauan region);Leste;GW-L
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3843;Norte (Guinea Bissauan region);Norte;GW-N
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3843;Sul (Guinea Bissauan region);Sul;GW-S
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Jawa (Indonesean geographical unit);Jawa;ID-JW
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Kalimantan (Indonesean geographical unit);Kalimantan;ID-KA
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Maluku (Indonesean geographical unit);Maluku;ID-ML
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Nusa Tenggara (Indonesean geographical unit);Nusa Tenggara;ID-NU
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Papua (Indonesean geographical unit);Papua;ID-PP
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Sulawesi (Indonesean geographical unit);Sulawesi;ID-SL
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Sumatera (Indonesean geographical unit);Sumatera;ID-SM
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3987;Connaught (Irish Province);Connaught;IE-C
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3987;Leinster (Irish Province);Leinster;IE-L
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3987;Munster (Irish Province);Munster;IE-M
-11572;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3987;Ulster (Irish Province);Ulster;IE-U
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Höfuðborgarsvæði (Icelandic region);Höfuðborgarsvæði;IS-1
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Suðurnes (Icelandic region);Suðurnes;IS-2
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Vesturland (Icelandic region);Vesturland;IS-3
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Vestfirðir (Icelandic region);Vestfirðir;IS-4
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Norðurland vestra (Icelandic region);Norðurland vestra;IS-5
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Norðurland eystra (Icelandic region);Norðurland eystra;IS-6
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Austurland (Icelandic region);Austurland;IS-7
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Suðurland (Icelandic region);Suðurland;IS-8
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3915;Saint Kitts (state of Saint Kitts and Nevis);Saint Kitts;KN-K
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3915;Nevis (state of Saint Kitts and Nevis);Nevis;KN-N
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Béni Mellal-Khénifra (Moroccan region);Béni Mellal-Khénifra;MA-05
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Casablanca-Settat (Moroccan region);Casablanca-Settat;MA-06
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Dakhla-Oued Ed-Dahab (Moroccan region);Dakhla-Oued Ed-Dahab;MA-12
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Drâa-Tafilalet (Moroccan region);Drâa-Tafilalet;MA-08
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Fès-Meknès (Moroccan region);Fès-Meknès;MA-03
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Guelmim-Oued Noun (EH-partial) (Moroccan region);Guelmim-Oued Noun (EH-partial);MA-10
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;L'Oriental (Moroccan region);L'Oriental;MA-02
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Laâyoune-Sakia El Hamra  (Moroccan region);Laâyoune-Sakia El Hamra ;MA-11
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Marrakech-Safi (Moroccan region);Marrakech-Safi;MA-07
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Rabat-Salé-Kénitra (Moroccan region);Rabat-Salé-Kénitra;MA-04
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Souss-Massa (Moroccan region);Souss-Massa;MA-09
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Tanger-Tétouan-Al Hoceïma (Moroccan region);Tanger-Tétouan-Al Hoceïma;MA-01
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4050;Ralik chain (island chain of Marshall islands);Ralik chain;MH-L
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4050;Ratak chain (island chain of Marshall islands);Ratak chain;MH-T
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3870;Chapakati (Malawian region);Chapakati;MW-C
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3870;Chakumpoto (Malawian region);Chakumpoto;MW-N
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3870;Chakumwera (Malawian region);Chakumwera;MW-S
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;  Kosovo-Metohija (Serbian autonomous province);  Kosovo-Metohija;RS-KM
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010; Vojvodina (Serbian autonomous province); Vojvodina;RS-VO
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Autonomous Region in Muslim Mindanao (Philippine region);Autonomous Region in Muslim Mindanao;PH-14
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Bicol (Philippine region);Bicol;PH-05
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Cagayan Valley (Philippine region);Cagayan Valley;PH-02
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Calabarzon (Philippine region);Calabarzon;PH-40
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Caraga (Philippine region);Caraga;PH-13
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Central Luzon (Philippine region);Central Luzon;PH-03
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Central Visayas (Philippine region);Central Visayas;PH-07
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Cordillera Administrative Region (Philippine region);Cordillera Administrative Region;PH-15
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Davao (Philippine region);Davao;PH-11
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Eastern Visayas (Philippine region);Eastern Visayas;PH-08
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Ilocos (Philippine region);Ilocos;PH-01
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Mimaropa (Philippine region);Mimaropa;PH-41
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;National Capital Region (Philippine region);National Capital Region;PH-00
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Northern Mindanao (Philippine region);Northern Mindanao;PH-10
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Soccsksargen (Philippine region);Soccsksargen;PH-12
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Western Visayas (Philippine region);Western Visayas;PH-06
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Zamboanga Peninsula (Philippine region);Zamboanga Peninsula;PH-09
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3875;Central (Ugandan geographical region);Central;UG-C
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3875;Eastern (Ugandan geographical region);Eastern;UG-E
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3875;Northern (Ugandan geographical region);Northern;UG-N
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3875;Western (Ugandan geographical region);Western;UG-W
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Western Province (Sri Lankan province);Western Province;LK-1
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Central Province (Sri Lankan province);Central Province;LK-2
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Southern Province (Sri Lankan province);Southern Province;LK-3
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Northern Province (Sri Lankan province);Northern Province;LK-4
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Eastern Province (Sri Lankan province);Eastern Province;LK-5
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;North Western Province (Sri Lankan province);North Western Province;LK-6
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;North Central Province (Sri Lankan province);North Central Province;LK-7
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Uva Province (Sri Lankan province);Uva Province;LK-8
-0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Sabaragamuwa Province (Sri Lankan province);Sabaragamuwa Province;LK-9
-26832;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3992;Northern Ireland;Northern Ireland;GB-NIR
+﻿Id;Created;Changed;IsTerm;NodeId;Status;UserId;CountryId;Title;Name;Iso3166_2Code;Subdivision_type_name
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Auvergne-Rhône-Alpes (French metropolitan region); Auvergne-Rhône-Alpes;FR-ARA;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Bourgogne-Franche-Comté (French metropolitan region); Bourgogne-Franche-Comté;FR-BFC;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Bretagne (French metropolitan region); Bretagne;FR-BRE;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Centre-Val de Loire (French metropolitan region); Centre-Val de Loire;FR-CVL;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Corse (French metropolitan collectivity with special status); Corse;FR-20R;Metropolitan collectivity with special status
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Grand-Est (French metropolitan region); Grand-Est;FR-GES;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Hauts-de-France (French metropolitan region); Hauts-de-France;FR-HDF;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Île-de-France (French metropolitan region); Île-de-France;FR-IDF;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Normandie (French metropolitan region); Normandie;FR-NOR;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Nouvelle-Aquitaine (French metropolitan region); Nouvelle-Aquitaine;FR-NAQ;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Occitanie (French metropolitan region); Occitanie;FR-OCC;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Pays-de-la-Loire (French metropolitan region); Pays-de-la-Loire;FR-PDL;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4018; Provence-Alpes-Côte-d’Azur (French metropolitan region); Provence-Alpes-Côte-d’Azur;FR-PAC;Metropolitan region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Abruzzo (Italian region); Abruzzo;IT-65;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Basilicata (Italian region); Basilicata;IT-77;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Calabria (Italian region); Calabria;IT-78;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Campania (Italian region); Campania;IT-72;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Emilia-Romagna (Italian region); Emilia-Romagna;IT-45;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Lazio (Italian region); Lazio;IT-62;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Liguria (Italian region); Liguria;IT-42;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Lombardia (Italian region); Lombardia;IT-25;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Marche (Italian region); Marche;IT-57;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Molise (Italian region); Molise;IT-67;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Piemonte (Italian region); Piemonte;IT-21;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Puglia (Italian region); Puglia;IT-75;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Toscana (Italian region); Toscana;IT-52;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Umbria (Italian region); Umbria;IT-55;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Veneto (Italian region); Veneto;IT-34;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Friuli Venezia Giulia (Italian autonomous region); Friuli Venezia Giulia;IT-36;Autonomous region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Sardegna (Italian autonomous region); Sardegna;IT-88;Autonomous region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Sicilia (Italian autonomous region); Sicilia;IT-82;Autonomous region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Trentino-Alto Adige (Italian autonomous region); Trentino-Alto Adige;IT-32;Autonomous region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4004; Valle d'Aosta (Italian autonomous region); Valle d'Aosta;IT-23;Autonomous region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Andalusia (Spanish autonomous community);Andalusia;ES-AN;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Aragon (Spanish autonomous community);Aragon;ES-AR;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Principality of Asturias (Spanish autonomous community);Principality of Asturias;ES-AS;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Canary Islands (Spanish autonomous community);Canary Islands;ES-CN;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Cantabria (Spanish autonomous community);Cantabria autonomous community;ES-CB;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Castile and León (Spanish autonomous community);Castile and León;ES-CL;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Castile-La Mancha (Spanish autonomous community);Castile-La Mancha;ES-CM;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Catalonia (Spanish autonomous community);Catalonia;ES-CT;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Ceuta (Spanish autonomous city in North Africa);Ceuta;ES-CE;Autonomous city
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Extremadura (Spanish autonomous community);Extremadura;ES-EX;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Galicia (Spanish autonomous community);Galicia;ES-GA;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Balearic Islands (Spanish autonomous community);Balearic Islands;ES-IB;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;La Rioja (Spanish autonomous community);La Rioja autonomous community;ES-RI;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Community of Madrid (Spanish autonomous community);Community of Madrid;ES-MD;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Melilla (Spanish autonomous city in North Africa);Melilla;ES-ML;Autonomous city
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Region of Murcia (Spanish autonomous community);Region of Murcia;ES-MC;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Chartered Community of Navarre (Spanish autonomous community);Chartered Community of Navarre;ES-NC;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Basque Country (Spanish autonomous community);Basque Country;ES-PV;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4012;Valencian Community (Spanish autonomous community);Valencian Community;ES-VC;Autonomous community
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4025;Naxçıvan (Azerbajiani automous republic);Naxçıvan republic;AZ-NX;Autonomous republic
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4017;Brussels-Capital Region (Belgian region);Brussels-Capital Region;BE-BRU;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4017;Flemish Region (Belgian region);Flemish Region;BE-VLG;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4017;Walloon Region (Belgian region);Walloon Region;BE-WAL;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Boucle du Mouhoun (Burkinese region);Boucle du Mouhoun;BF-01;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Cascades (Burkinese region);Cascades;BF-02;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre (Burkinese region);Centre;BF-03;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre-Est (Burkinese region);Centre-Est;BF-04;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre-Nord (Burkinese region);Centre-Nord;BF-05;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre-Ouest (Burkinese region);Centre-Ouest;BF-06;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Centre-Sud (Burkinese region);Centre-Sud;BF-07;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Est (Burkinese region);Est;BF-08;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Hauts-Bassins (Burkinese region);Hauts-Bassins;BF-09;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Nord (Burkinese region);Nord;BF-10;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Plateau-Central (Burkinese region);Plateau-Central;BF-11;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Sahel (Burkinese region);Sahel;BF-12;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3837;Sud-Ouest (Burkinese region);Sud-Ouest;BF-13;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3838;Ilhas de Barlavento (Cape Verdian geographical region);Ilhas de Barlavento;CV-B;Geographical region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3838;Ilhas de Sotavento (Cape Verdian geographical region);Ilhas de Sotavento;CV-S;Geographical region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;South Bohemia (Czech region);South Bohemia;CZ-31;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;South Moravia (Czech region);South Moravia;CZ-64;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Karlovy Vary (Czech region);Karlovy Vary region;CZ-41;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Hradec Králové (Czech region);Hradec Králové region;CZ-52;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Liberec (Czech region);Liberec region;CZ-51;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Moravia-Silesia (Czech region);Moravia-Silesia;CZ-80;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Olomouc (Czech region);Olomouc region;CZ-71;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Pardubice (Czech region);Pardubice region;CZ-53;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Plzeň (Czech region);Plzeň;CZ-32;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Prague (Czech capital city);Prague;CZ-10;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Central Bohemia (Czech region);Central Bohemia;CZ-20;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Ústí nad Labem (Czech region);Ústí nad Labem region;CZ-42;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Vysočina (Czech region);Vysočina;CZ-63;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4029;Zlín (Czech region);Zlín region;CZ-72;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Cibao Nordeste (Dominican region);Cibao Nordeste;DO-33;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Cibao Noroeste (Dominican region);Cibao Noroeste;DO-34;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Cibao Norte (Dominican region);Cibao Norte;DO-35;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Cibao Sur (Dominican region);Cibao Sur;DO-36;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;El Valle (Dominican region);El Valle;DO-37;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Enriquillo (Dominican region);Enriquillo;DO-38;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Higuamo (Dominican region);Higuamo;DO-39;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Ozama (Dominican region);Ozama;DO-40;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Valdesia (Dominican region);Valdesia;DO-41;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3900;Yuma (Dominican region);Yuma;DO-42;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Harju (Estonian county);Harju;EE-37;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Hiiu (Estonian county);Hiiu;EE-39;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Ida-Viru (Estonian county);Ida-Viru;EE-45;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Jõgeva (Estonian county);Jõgeva county;EE-50;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Järva (Estonian county);Järva county;EE-52;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Lääne (Estonian county);Lääne;EE-56;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Lääne-Viru (Estonian county);Lääne-Viru;EE-60;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Põlva (Estonian county);Põlva county;EE-64;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Pärnu (Estonian county);Pärnu county;EE-68;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Rapla (Estonian county);Rapla county;EE-71;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Saare (Estonian county);Saare;EE-74;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Tartu (Estonian county);Tartu county;EE-79;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Valga (Estonian county);Valga county;EE-81;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Viljandi (Estonian county);Viljandi county;EE-84;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3984;Võru (Estonian county);Võru county;EE-87;County
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Central (Fijian division);Central;FJ-C;Division
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Eastern (Fijian division);Eastern;FJ-E;Division
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Northern (Fijian division);Northern;FJ-N;Division
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Western (Fijian division);Western;FJ-W;Division
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4043;Rotuma (Fijian dependency);Rotuma;FJ-R;Dependency
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Boké (Guinean administrative region);Boké administrative region;GN-B;Administrative region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Faranah (Guinean administrative region);Faranah administrative region;GN-F;Administrative region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Kankan (Guinean administrative region);Kankan administrative region;GN-K;Administrative region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Kindia (Guinean administrative region);Kindia administrative region;GN-D;Administrative region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Labé (Guinean administrative region);Labé administrative region;GN-L;Administrative region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Mamou (Guinean administrative region);Mamou administrative region;GN-M;Administrative region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Nzérékoré (Guinean administrative region);Nzérékoré administrative region;GN-N;Administrative region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3842;Conakry (Guinean governorate);Conakry;GN-C;Governorate
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3858;Región Continental (Equatorial Guinean region);Región Continental;GQ-C;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3858;Región Insular (Equatorial Guinean region);Región Insular;GQ-I;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3843;Leste (Guinea Bissauan region);Leste;GW-L;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3843;Norte (Guinea Bissauan region);Norte;GW-N;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3843;Sul (Guinea Bissauan region);Sul;GW-S;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Jawa (Indonesean geographical unit);Jawa;ID-JW;Geographical unit
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Kalimantan (Indonesean geographical unit);Kalimantan;ID-KA;Geographical unit
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Maluku (Indonesean geographical unit);Maluku;ID-ML;Geographical unit
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Nusa Tenggara (Indonesean geographical unit);Nusa Tenggara;ID-NU;Geographical unit
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Papua (Indonesean geographical unit);Papua;ID-PP;Geographical unit
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Sulawesi (Indonesean geographical unit);Sulawesi;ID-SL;Geographical unit
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3966;Sumatera (Indonesean geographical unit);Sumatera;ID-SM;Geographical unit
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3987;Connaught (Irish Province);Connaught;IE-C;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3987;Leinster (Irish Province);Leinster;IE-L;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3987;Munster (Irish Province);Munster;IE-M;Province
+11572;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3987;Ulster (Irish Province);Ulster;IE-U;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Höfuðborgarsvæði (Icelandic region);Höfuðborgarsvæði;IS-1;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Suðurnes (Icelandic region);Suðurnes;IS-2;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Vesturland (Icelandic region);Vesturland;IS-3;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Vestfirðir (Icelandic region);Vestfirðir;IS-4;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Norðurland vestra (Icelandic region);Norðurland vestra;IS-5;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Norðurland eystra (Icelandic region);Norðurland eystra;IS-6;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Austurland (Icelandic region);Austurland;IS-7;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3986;Suðurland (Icelandic region);Suðurland;IS-8;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3915;Saint Kitts (state of Saint Kitts and Nevis);Saint Kitts;KN-K;State
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3915;Nevis (state of Saint Kitts and Nevis);Nevis;KN-N;State
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Béni Mellal-Khénifra (Moroccan region);Béni Mellal-Khénifra;MA-05;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Casablanca-Settat (Moroccan region);Casablanca-Settat;MA-06;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Dakhla-Oued Ed-Dahab (Moroccan region);Dakhla-Oued Ed-Dahab;MA-12;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Drâa-Tafilalet (Moroccan region);Drâa-Tafilalet;MA-08;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Fès-Meknès (Moroccan region);Fès-Meknès;MA-03;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Guelmim-Oued Noun (EH-partial) (Moroccan region);Guelmim-Oued Noun (EH-partial);MA-10;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;L'Oriental (Moroccan region);L'Oriental;MA-02;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Laâyoune-Sakia El Hamra  (Moroccan region);Laâyoune-Sakia El Hamra ;MA-11;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Marrakech-Safi (Moroccan region);Marrakech-Safi;MA-07;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Rabat-Salé-Kénitra (Moroccan region);Rabat-Salé-Kénitra;MA-04;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Souss-Massa (Moroccan region);Souss-Massa;MA-09;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3832;Tanger-Tétouan-Al Hoceïma (Moroccan region);Tanger-Tétouan-Al Hoceïma;MA-01;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4050;Ralik chain (island chain of Marshall islands);Ralik chain;MH-L;Island chain
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4050;Ratak chain (island chain of Marshall islands);Ratak chain;MH-T;Island chain
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3870;Chapakati (Malawian region);Chapakati;MW-C;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3870;Chakumpoto (Malawian region);Chakumpoto;MW-N;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3870;Chakumwera (Malawian region);Chakumwera;MW-S;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;  Kosovo-Metohija (Serbian autonomous province);  Kosovo-Metohija;RS-KM;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010; Vojvodina (Serbian autonomous province); Vojvodina;RS-VO;Autonomous province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Autonomous Region in Muslim Mindanao (Philippine region);Autonomous Region in Muslim Mindanao;PH-14;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Bicol (Philippine region);Bicol;PH-05;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Cagayan Valley (Philippine region);Cagayan Valley;PH-02;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Calabarzon (Philippine region);Calabarzon;PH-40;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Caraga (Philippine region);Caraga;PH-13;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Central Luzon (Philippine region);Central Luzon;PH-03;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Central Visayas (Philippine region);Central Visayas;PH-07;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Cordillera Administrative Region (Philippine region);Cordillera Administrative Region;PH-15;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Davao (Philippine region);Davao;PH-11;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Eastern Visayas (Philippine region);Eastern Visayas;PH-08;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Ilocos (Philippine region);Ilocos;PH-01;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Mimaropa (Philippine region);Mimaropa;PH-41;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;National Capital Region (Philippine region);National Capital Region;PH-00;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Northern Mindanao (Philippine region);Northern Mindanao;PH-10;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Soccsksargen (Philippine region);Soccsksargen;PH-12;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Western Visayas (Philippine region);Western Visayas;PH-06;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;4010;Zamboanga Peninsula (Philippine region);Zamboanga Peninsula;PH-09;Region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3875;Central (Ugandan geographical region);Central;UG-C;Geographical region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3875;Eastern (Ugandan geographical region);Eastern;UG-E;Geographical region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3875;Northern (Ugandan geographical region);Northern;UG-N;Geographical region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3875;Western (Ugandan geographical region);Western;UG-W;Geographical region
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Western Province (Sri Lankan province);Western Province;LK-1;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Central Province (Sri Lankan province);Central Province;LK-2;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Southern Province (Sri Lankan province);Southern Province;LK-3;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Northern Province (Sri Lankan province);Northern Province;LK-4;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Eastern Province (Sri Lankan province);Eastern Province;LK-5;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;North Western Province (Sri Lankan province);North Western Province;LK-6;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;North Central Province (Sri Lankan province);North Central Province;LK-7;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Uva Province (Sri Lankan province);Uva Province;LK-8;Province
+0;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3963;Sabaragamuwa Province (Sri Lankan province);Sabaragamuwa Province;LK-9;Province
+26832;12/20/2022 17:48;12/20/2022 17:48;TRUE;22;1;1;3992;Northern Ireland;Northern Ireland;GB-NIR;Province

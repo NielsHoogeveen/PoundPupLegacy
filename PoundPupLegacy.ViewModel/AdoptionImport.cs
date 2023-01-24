@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct AdoptionImport
+public record AdoptionImport
 {
     public string CountryFrom { get; set; }
 

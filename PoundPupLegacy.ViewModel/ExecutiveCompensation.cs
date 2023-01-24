@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct ExecutiveCompensation
+public record ExecutiveCompensation
 {
 }

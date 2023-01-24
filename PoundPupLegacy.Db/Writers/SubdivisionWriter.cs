@@ -5,6 +5,7 @@ internal sealed class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabase
     private const string ID = "id";
     private const string NAME = "name";
     private const string COUNTRY_ID = "country_id";
+    private const string SUBDIVISION_TYPE_ID = "subdivision_type_id";
     public static async Task<DatabaseWriter<Subdivision>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
@@ -23,6 +24,10 @@ internal sealed class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabase
                     Name = COUNTRY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
+                new ColumnDefinition{
+                    Name = SUBDIVISION_TYPE_ID,
+                    NpgsqlDbType = NpgsqlDbType.Integer
+                },
             }
         );
         return new SubdivisionWriter(command);
@@ -37,10 +42,16 @@ internal sealed class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabase
     {
         if (subdivision.Id is null)
             throw new NullReferenceException();
-
-        WriteValue(subdivision.Id, ID);
-        WriteValue(subdivision.Name, NAME);
-        WriteValue(subdivision.CountryId, COUNTRY_ID);
-        await _command.ExecuteNonQueryAsync();
+        try
+        {
+            WriteValue(subdivision.Id, ID);
+            WriteValue(subdivision.Name.Trim(), NAME);
+            WriteValue(subdivision.CountryId, COUNTRY_ID);
+            WriteValue(subdivision.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
+            await _command.ExecuteNonQueryAsync();
+        }catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
     }
 }

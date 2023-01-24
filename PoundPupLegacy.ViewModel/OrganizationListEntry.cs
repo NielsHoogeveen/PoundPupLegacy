@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record SeeAlsoBoxElement
+public record OrganizationListEntry
 {
-    public string Path { get; set; }
     public string Name { get; set; }
+    public string Path { get; set; }
 }

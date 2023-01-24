@@ -32,7 +32,7 @@ public sealed class TermReaderByName : DatabaseUpdater<Term>, IDatabaseReader<Te
             throw new ArgumentNullException(nameof(name));
         }
         _command.Parameters["vocabulary_id"].Value = vocabularyId;
-        _command.Parameters["name"].Value = name;
+        _command.Parameters["name"].Value = name.Trim();
 
         var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows)

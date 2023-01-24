@@ -26,4 +26,6 @@ public sealed record CountryAndFirstAndBottomLevelSubdivision : Node, CountryAnd
     public required string? HealthRequirements { get; init; }
     public required string? OtherRequirements { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+
+    public required int SubdivisionTypeId { get; init; }
 }

@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -20,6 +21,12 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
 
     private async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision> GetCountryAndFirstAndBottomLevelSubdivisions()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+        
+
         yield return new CountryAndFirstAndBottomLevelSubdivision
         {
             Id = null,
@@ -67,6 +74,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
+            SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Autonomous region"))!.NameableId,
         };
         yield return new CountryAndFirstAndBottomLevelSubdivision
         {
@@ -115,6 +123,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
+            SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Country"))!.NameableId,
         };
         yield return new CountryAndFirstAndBottomLevelSubdivision
         {
@@ -163,6 +172,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
+            SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Country"))!.NameableId,
         };
         yield return new CountryAndFirstAndBottomLevelSubdivision
         {
@@ -211,11 +221,16 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
+            SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Outlying area"))!.NameableId,
         };
     }
 
     private async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision> ReadCountryAndFirstAndIntermediateLevelSubdivisions()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
 
 
         var sql = $"""
@@ -224,6 +239,16 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             n.uid access_role_id,
             n.title,
             n.`status` node_status_id,
+            case 
+            	when n.nid = 3891 then 'Country'
+            	when n.nid = 3914 then 'Outlying area'
+            	when n.nid = 3920 then 'Outlying area'
+            	when n.nid = 4048 then 'Outlying area'
+                when n.nid = 4053 then 'Outlying area'
+                when n.nid = 4055 then 'Outlying area'
+                when n.nid = 3980 then 'Special administrative region'
+                when n.nid = 3981 then 'Special administrative region'
+            END subdivision_type_name,
         FROM_UNIXTIME(n.created) created_date_time, 
         FROM_UNIXTIME(n.changed) changed_date_time,
         n2.nid second_level_region_id,
@@ -316,6 +341,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
+                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, reader.GetString("subdivision_type_name")))!.NameableId,
             };
         }
         await reader.CloseAsync();

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct Authoring
+public record Authoring
 {
     public int Id { get; set; }
     public string Name { get; set; }

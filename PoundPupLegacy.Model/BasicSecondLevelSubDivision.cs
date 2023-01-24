@@ -18,4 +18,5 @@ public sealed record BasicSecondLevelSubdivision : SecondLevelSubdivision
     public required int IntermediateLevelSubdivisionId { get; init; }
     public required int? FileIdFlag { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+    public required int SubdivisionTypeId { get; init; }
 }

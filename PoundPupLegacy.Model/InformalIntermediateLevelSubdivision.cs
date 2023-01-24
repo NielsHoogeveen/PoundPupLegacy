@@ -15,4 +15,5 @@ public sealed record InformalIntermediateLevelSubdivision : IntermediateLevelSub
     public required List<VocabularyName> VocabularyNames { get; init; }
     public required int CountryId { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+    public required int SubdivisionTypeId { get; init; }
 }

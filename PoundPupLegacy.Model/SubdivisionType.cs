@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public sealed record FirstAndBottomLevelSubdivision : ISOCodedFirstLevelSubdivision, BottomLevelSubdivision
+public sealed record SubdivisionType : Nameable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }
@@ -9,15 +9,9 @@ public sealed record FirstAndBottomLevelSubdivision : ISOCodedFirstLevelSubdivis
     public required string Title { get; init; }
     public required int? OwnerId { get; init; }
     public required int NodeTypeId { get; init; }
-    public required string Name { get; init; }
     public required string Description { get; init; }
     public required int? FileIdTileImage { get; init; }
     public required List<VocabularyName> VocabularyNames { get; init; }
-    public required int CountryId { get; init; }
-    public required string ISO3166_2_Code { get; init; }
-    public required int? FileIdFlag { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
-
-    public required int SubdivisionTypeId { get; init; }
 
 }

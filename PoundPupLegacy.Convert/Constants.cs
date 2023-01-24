@@ -90,4 +90,5 @@ internal static class Constants
     internal const string VOCABULARY_HAGUE_STATUS = "Hague status";
     internal const string VOCABULARY_DOCUMENT_TYPE = "Document type";
     internal const string VOCABULARY_TOPICS = "Topics";
+    internal const string VOCABULARY_SUBDIVISION_TYPE = "Subdivision type";
 }

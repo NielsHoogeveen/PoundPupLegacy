@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -11,12 +12,16 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : Migrator
     public FirstAndBottomLevelSubdivisionMigrator(MySqlToPostgresConverter converter): base(converter) { }
     private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv()
     {
-        
+
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
 
         await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\direct_subdivisions.csv").Skip(1))
         {
 
-            var parts = line.Split(new char[] { ';' });
+            var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             var title = parts[8];
             var name = parts[9];
             int? id = int.Parse(parts[0]) == 0 ? null: int.Parse(parts[0]);
@@ -61,6 +66,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : Migrator
                 ISO3166_2_Code = parts[10],
                 FileIdFlag = null,
                 FileIdTileImage = null,
+                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, parts[11].Trim())).NameableId,
             };
         }
     }
@@ -349,10 +355,15 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : Migrator
     }
     private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+
         var continentIds = new List<int> { 3806, 3810, 3811, 3816, 3822, 3823 };
 
         var sql = $"""
-            SELECT
+             SELECT
             n.nid id,
             n.uid access_role_id,
             n.title,
@@ -366,7 +377,25 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : Migrator
             end country_name,
             n3.title topic_name,
             s.field_statecode_value iso_3166_2_code,
-            ua.dst url_path
+            ua.dst url_path,
+            case 
+                when n3.title LIKE '%Autonomous region%' then 'Autonomous region'
+                when n3.title LIKE '%Province%' then 'Province'
+                when n3.title LIKE '%province' then 'Province'
+            		when n3.title LIKE '%Municipality%' then 'Municipality'
+            		when n3.title LIKE '%Republic%' then 'Republic'
+            		when n3.title LIKE '%Oblast%' then 'Administrative region'
+            		when n3.title LIKE '%Krai%' then 'Administrative region'
+            		when n3.title LIKE '%Okrug%' then 'Autonomous district'
+            		when n3.title LIKE '%Territory%' then 'Territory'
+            		when n.nid IN (58303, 58305) then 'Autonomous city'
+            		when n.nid IN (45270) then 'Municipality'
+            		when n.nid IN (57989) then 'Territory'
+            		when n2.nid = 3885 then 'Province'
+            		when n2.nid = 4038 then 'State'
+            		when n.nid IN (58121) then 'Union territory'
+            		when n2.nid = 3959 then 'State'
+            	END subdivision_type_name
             FROM node n 
             LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
             JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid
@@ -438,7 +467,8 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : Migrator
                 ISO3166_2_Code = isoCode,
                 FileIdFlag = null,
                 FileIdTileImage = null,
-            };
+                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, reader.GetString("subdivision_type_name"))).NameableId
+        };
 
         }
         await reader.CloseAsync();

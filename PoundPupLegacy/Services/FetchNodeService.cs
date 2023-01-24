@@ -29,6 +29,8 @@ public class FetchNodeService
             {FETCH_TAGS_DOCUMENT},
             {FETCH_DOCUMENTS_DOCUMENT},
             {FETCH_COMMENT_DOCUMENT},
+            {FETCH_ORGANIZATIONS_OF_COUNTRY_DOCUMENT},
+            {FETCH_COUNTRY_SUBDIVISION},
             {FETCH_BLOG_POST_BREADCRUM},
             {FETCH_BLOG_POST_DOCUMENT},
             {FETCH_ARTICLE_BREADCRUM},
@@ -243,6 +245,47 @@ public class FetchNodeService
         )
         """;
 
+    const string FETCH_ORGANIZATIONS_OF_COUNTRY_DOCUMENT = """
+        fetch_organization_types as(
+            select
+                json_agg(
+                    json_build_object(
+        	            'OrganizationTypeName', organization_type,
+        	            'Organizations', organizations
+                    )
+                ) organization_types
+            from(
+                select
+        	        organization_type,
+        	        json_agg(
+        	            json_build_object(
+        		            'Name', organization_name,
+        		            'Path', "path"
+        	            )
+                    ) organizations
+                from(
+                    select
+                        n2.title organization_type,
+                        n.title organization_name,
+                        case 
+        	                when tn2.url_path is null then '/node/' || tn2.url_id
+        	                else '/' || tn2.url_path
+                        end "path"
+                    from node n
+                    join tenant_node tn2 on tn2.node_id = n.id and tn2.tenant_id = @tenant_id
+                    join organization o on o.id = n.id
+                    join organization_organization_type oot on oot.organization_id = o.id
+                    join organization_type ot on ot.id = oot.organization_type_id
+                    join node n2 on n2.id = ot.id
+                    join location_locatable ll on ll.locatable_id = n.id
+                    join "location" l on l.id = ll.location_id
+                    join tenant_node tn on tn.url_id = @url_id and tn.node_id = l.country_id and tn.tenant_id = @tenant_id
+        	        ) x
+                group by x.organization_type
+            ) x
+        )
+        """;
+
     const string FETCH_DOCUMENTS_DOCUMENT = """
         fetch_documents as(
             select
@@ -350,6 +393,30 @@ public class FetchNodeService
                 ) bce
                 ORDER BY bce."order"
             ) bces
+        )
+        """;
+
+    const string FETCH_COUNTRY_SUBDIVISION = """
+        fetch_country_subdivisions as (
+            select
+                json_agg(to_jsonb(x)) subdivisions
+                from(
+                select
+                s.name "Name",
+                case 
+        	        when tn2.url_path is null then '/node/' || tn2.url_id
+        	        else tn2.url_path
+                end "Path"	
+            from country c
+            join tenant_node tn on tn.node_id = c.id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            join tenant t on t.id = tn.tenant_id
+            join subdivision s on s.country_id = c.id
+            join tenant_node tn2 on tn2.node_id = s.id and tn.tenant_id = @tenant_id 
+            join term tp on tp.nameable_id = c.id and tp.vocabulary_id = t.vocabulary_id_tagging
+            join term tc on tc.nameable_id = s.id and tc.vocabulary_id = t.vocabulary_id_tagging
+            join term_hierarchy th on th.term_id_parent = tp.id and th.term_id_child = tc.id
+            order by s.name
+            ) x
         )
         """;
 
@@ -536,7 +603,9 @@ public class FetchNodeService
                 'Tags', (SELECT agg FROM fetch_tags_document),
                 'Comments', (SELECT agg FROM  fetch_comments_document),
                 'AdoptionImports', (SELECT imports FROM fetch_adoption_imports),
-                'Documents', (select documents from fetch_documents)
+                'Documents', (select documents from fetch_documents),
+                'OrganizationTypes', (select organization_types from fetch_organization_types),
+                'Subdivisions', (select subdivisions from fetch_country_subdivisions)
             ) :: jsonb document
             FROM fetch_basic_country n
         ) 

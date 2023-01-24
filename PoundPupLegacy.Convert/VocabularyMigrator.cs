@@ -167,6 +167,31 @@ internal sealed class VocabularyMigrator: Migrator
             NodeTypeId = 36,
             Description = ""
         };
+        yield return new Vocabulary
+        {
+            Id = null,
+            Name = Constants.VOCABULARY_SUBDIVISION_TYPE,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = Constants.VOCABULARY_SUBDIVISION_TYPE,
+            OwnerId = Constants.OWNER_GEOGRAPHY,
+            TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+            NodeTypeId = 36,
+            Description = ""
+        };
     }
 
     private static string GetVocabularyName(int id, string name)

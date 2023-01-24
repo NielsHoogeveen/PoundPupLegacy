@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -12,6 +13,12 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
 
     private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+        var subdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Overseas collectivity"))!.NameableId;
+
         yield return new CountryAndFirstAndSecondLevelSubdivision
         {
             Id = null,
@@ -19,33 +26,33 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
             Name = "Saint Barthélemy",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.SAINT_BARTH
-                    }
-                },
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.SAINT_BARTH
+                }
+            },
             NodeTypeId = 16,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_TOPICS,
-                        TermName = "Saint Barthélemy",
-                        ParentNames = new List<string>{ "Caribbean" },
-                    }
-                },
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Saint Barthélemy",
+                    ParentNames = new List<string> { "Caribbean" },
+                }
+            },
             SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, 3809),
             CountryId = await _nodeIdReader.ReadAsync(Constants.PPL, 4018),
             ISO3166_1_Code = "BL",
@@ -59,7 +66,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-
+            SubdivisionTypeId = subdivisionTypeId,
         };
         yield return new CountryAndFirstAndSecondLevelSubdivision
         {
@@ -108,6 +115,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
+            SubdivisionTypeId = subdivisionTypeId,
         };
         yield return new CountryAndFirstAndSecondLevelSubdivision
         {
@@ -156,6 +164,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
+            SubdivisionTypeId = subdivisionTypeId,
         };
     }
 
@@ -166,7 +175,11 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
     }
     private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
 
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+        var subdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Overseas collectivity"))!.NameableId;
 
         var sql = $"""
             SELECT
@@ -266,6 +279,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
+                SubdivisionTypeId = subdivisionTypeId,
             };
         }
         await reader.CloseAsync();

@@ -1,7 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record SeeAlsoBoxElement
+public record SubdivisionListItem
 {
-    public string Path { get; set; }
     public string Name { get; set; }
+
+    public string Path { get; set; }
 }

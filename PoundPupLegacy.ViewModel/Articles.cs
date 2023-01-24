@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct Articles: PagedList
+public record Articles: PagedList
 {
     public List<TermName> TermNames { get; set; }
     public List<ArticleListEntry> ArticleListEntries { get; set; }

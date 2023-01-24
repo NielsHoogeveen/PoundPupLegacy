@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct AdoptionImports
+public record AdoptionImports
 {
     public int StartYear { get; set; }
 

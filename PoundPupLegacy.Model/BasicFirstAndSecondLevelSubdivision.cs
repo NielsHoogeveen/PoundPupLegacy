@@ -17,4 +17,5 @@ public sealed record BasicFirstAndSecondLevelSubdivision : FirstAndSecondLevelSu
     public required int CountryId { get; init; }
     public required int? FileIdFlag { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+    public required int SubdivisionTypeId { get; init; }
 }

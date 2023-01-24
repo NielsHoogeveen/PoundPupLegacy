@@ -62,7 +62,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
         WriteValue(node.PublisherId, PUBLISHER_ID);
         WriteValue(node.CreatedDateTime, CREATED_DATE_TIME);
         WriteValue(node.ChangedDateTime, CHANGED_DATE_TIME);
-        WriteValue(node.Title, TITLE);
+        WriteValue(node.Title.Trim(), TITLE);
         WriteValue(node.NodeTypeId, NODE_TYPE_ID);
         WriteNullableValue(node.OwnerId, OWNER_ID);
         node.Id = await _command.ExecuteScalarAsync() switch

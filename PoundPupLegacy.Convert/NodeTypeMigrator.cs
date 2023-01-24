@@ -71,6 +71,7 @@ internal sealed class NodeTypeMigrator : Migrator
         yield return new NodeType(48, "person organization relation", "A relation between a person and an organization");
         yield return new NodeType(49, "party political entity relation", "A relation between a person and an organization");
         yield return new NodeType(50, "inter country relation type", "The type of relation two countries can have");
+        yield return new NodeType(51, "subdivision type", "The type of a subdivision of a country can have");
     }
 
 }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct TermName
+public record TermName
 {
     public int Id { get; set; }
 

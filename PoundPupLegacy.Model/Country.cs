@@ -9,4 +9,5 @@ public interface Country : PoliticalEntity
     public string? IncomeRequirements { get; }
     public string? HealthRequirements { get; }
     public string? OtherRequirements { get; }
+
 }

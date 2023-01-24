@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct Comment
+public record Comment
 {
     public int Id { get; set; }
     public string Title { get; set; }

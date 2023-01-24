@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public struct DocumentListItem
+public record DocumentListItem
 {
     public string Path { get; set; }
 

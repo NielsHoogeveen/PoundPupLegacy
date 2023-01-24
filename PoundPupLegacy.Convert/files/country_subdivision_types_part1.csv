@@ -1,0 +1,333 @@
+﻿country_id;subdivision_type_name
+3805;State
+3805;Outlying area
+3805;Region
+3829;Province
+3830;Governorate
+3831;Popularate
+3832;Province
+3832;Prefecture
+3832;Region
+3833;State
+3834;Governorate
+3836;District
+3837;Province
+3837;Region
+3838;Geographical region
+3839;District
+3840;City
+3840;Division
+3841;Region
+3842;Prefecture
+3842;Administrative region
+3842;Governorate
+3843;Region
+3843;Sector
+3844;County
+3845;District
+3845;Region
+3846;Region
+3848;Capital territory
+3848;State
+3848;Province
+3849;Region
+3850;Province
+3850;Municipality
+3852;Province
+3853;Region
+3854;Commune
+3854;Prefecture
+3855;Province
+3856;Department
+3857;Province
+3857;City
+3858;Province
+3858;Region
+3859;Province
+3860;District
+3861;Province
+3862;City
+3862;Province
+3863;Island
+3864;Region
+3864;City
+3865;Region
+3866;Administration
+3866;State
+3867;Region
+3868;County
+3869;Province
+3870;District
+3870;Region
+3871;Dependency
+3871;District
+3872;City
+3872;Province
+3873;District
+3874;Region
+3875;District
+3875;City
+3875;Geographical region
+3876;Province
+3877;Province
+3880;District
+3880;City
+3880;Town
+3881;District
+3882;Region
+3883;Province
+3884;Region
+3885;Province
+3885;Territory
+3889;Municipality
+3892;District
+3893;Parish
+3894;District
+3897;Province
+3898;Province
+3898;Special municipality
+3899;Parish
+3900;District
+3900;Province
+3900;Region
+3901;Department
+3902;Parish
+3902;Dependency
+3904;Department
+3905;Department
+3906;Department
+3907;Parish
+3909;Federal entity
+3909;State
+3912;Department
+3912;Region
+3913;Province
+3913;Region
+3915;Parish
+3915;State
+3916;District
+3917;Parish
+3918;Borough
+3918;Region
+3918;City
+3918;Ward
+3921;City
+3921;Province
+3922;Department
+3923;State
+3923;Federal district
+3924;Region
+3925;Municipality
+3925;Department
+3926;Province
+3927;Region
+3928;Capital
+3928;Department
+3929;Region
+3930;District
+3931;Municipality
+3932;State
+3932;Federal dependency
+3932;Capital district
+3936;Municipality
+3936;Province
+3937;Governorate
+3938;Province
+3940;District
+3941;Governorate
+3942;Governorate
+3943;Governorate
+3944;Governorate
+3945;Municipality
+3946;Region
+3947;Province
+3948;Emirate
+3949;Governorate
+3949;Municipality
+3950;Province
+3951;Region
+3951;City
+3952;City
+3952;Region
+3953;Capital city
+3953;Province
+3954;Territory
+3954;Region
+3954;District
+3955;Region
+3955;City
+3956;City
+3956;Region
+3956;Republic
+3958;District
+3959;Union territory
+3959;State
+3960;City
+3960;Atol
+3962;Territory
+3962;Province
+3962;Administered area
+3963;District
+3963;Province
+3964;District
+3965;Autonomous municipality
+3965;Province
+3966;Province
+3966;Capital region
+3966;Special region
+3966;Geographical unit
+3967;Prefecture
+3967;Province
+3968;Federal territory
+3968;Territory
+3968;State
+3969;Region
+3969;State
+3969;Territory
+3970;Province
+3971;Municipality
+3971;District
+3972;Special administrative city
+3972;Region
+3972;Province
+3972;Metropolitan administration
+3973;Municipality
+3973;Special administrative region
+3974;Province
+3974;Municipality
+3975;Autonomous region
+3975;Special administrative region
+3975;Province
+3975;Municipality
+3976;Region
+3976;Prefecture
+3977;City
+3977;Province
+3978;City
+3978;Metropolitan city
+3978;Province
+3978;Special self-governing province
+3978;Special self-governing city
+3979;City
+3979;County
+3979;Special municipality
+3983;Region
+3984;Rural municipality
+3984;Urban municipality
+3984;County
+3985;Autonomous region
+3985;Region
+3986;Municipality
+3986;Region
+3987;County
+3987;Province
+3988;Municipality
+3988;State city
+3989;County
+3990;County
+3991;County
+3992;District
+3992;Country
+3992;Province
+3997;County
+3998;Parish
+3999;Region
+4001;City
+4001;County
+4002;District
+4003;Administrative region
+4003;Region
+4004;Province
+4004;Autonomous province
+4004;Free municipal consortium
+4004;Metropolitan city
+4004;Region
+4004;Autonomous region
+4005;Municipality
+4006;Local council
+4007;Municipality
+4008;District
+4008;Autonomous region
+4009;Municipality
+4010;District
+4010;City
+4010;Region
+4010;Autonomous province
+4012;Province
+4012;Autonomous community
+4012;Autonomous city
+4015;Province
+4016;State
+4017;Province
+4017;Region
+4018;Metropolitan departement
+4018;European collectivity
+4018;Metropolitan collectivity with special status
+4018;Overseas collectivity
+4018;Dependency
+4018;Metropolitan region
+4019;State
+4020;Commune
+4021;Canton
+4022;Quarter
+4023;Province
+4023;Special municipality
+4023;Country
+4024;Canton
+4024;County
+4025;Rayon
+4025;Municipality
+4025;Autonomous republic
+4026;Republic
+4026;City
+4026;Region
+4027;Province
+4028;Region
+4028;Municipality
+4029;District
+4029;Region
+4030;Municipality
+4030;County
+4030;City with county rights
+4031;Autonomous territorial unit
+4031;City
+4031;District
+4031;Territorial unit
+4032;Voivodeship
+4032;Municipality
+4033;Department
+4033;Municipality
+4034;Republic
+4034;Administrative region
+4034;Autonomous city
+4034;Autonomous district
+4035;Region
+4036;Region
+4036;Republic
+4036;City
+4038;State
+4038;Territory
+4039;Region
+4039;Island authority
+4043;Province
+4043;Division
+4043;Dependency
+4045;Region
+4045;Province
+4045;District
+4046;Province
+4047;Province
+4049;Island
+4050;Municipality
+4050;Island chain
+4051;State
+4052;District
+4054;State
+4059;District
+4061;Division
+4062;Town council
+4062;Island council
+4073;Parish
+4082;Governorate
+4087;Municipality
+4093;State

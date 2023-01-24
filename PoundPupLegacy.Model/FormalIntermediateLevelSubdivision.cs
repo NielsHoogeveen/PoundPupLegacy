@@ -17,5 +17,6 @@ public sealed record FormalIntermediateLevelSubdivision : ISOCodedFirstLevelSubd
     public required string ISO3166_2_Code { get; init; }
     public required int? FileIdFlag { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+    public required int SubdivisionTypeId { get; init; }
 
 }

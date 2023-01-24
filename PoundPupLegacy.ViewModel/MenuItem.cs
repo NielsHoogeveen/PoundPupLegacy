@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record struct MenuItem
+public record MenuItem
 {
     public string Name { get; set; }
 

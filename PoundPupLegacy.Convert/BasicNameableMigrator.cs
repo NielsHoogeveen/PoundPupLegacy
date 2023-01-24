@@ -78,7 +78,7 @@ internal sealed class BasicNameableMigrator : Migrator
                     'Kevin and Kody Pribbernow'
                 )
                 AND n.nid NOT IN (
-                    22589
+                    22589, 74730
                 )
                 AND n2.nid IS  NULL
                 """;

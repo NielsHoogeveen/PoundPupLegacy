@@ -11,4 +11,5 @@ public sealed record Location : Identifiable
     public required decimal? Latitude { get; init; }
     public required int? CountryId { get; init; }
     public required int? SubdivisionId { get; init; }
+    public required List<LocationLocatable> Locatables { get; init; }
 }

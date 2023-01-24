@@ -43,6 +43,7 @@ internal sealed class NodeTermMigrator: Migrator
                         when n4.node_id = 19256 then 6135
                         when n4.node_id = 22589 then 22591
                         when n4.node_id = 45656 then 41375
+                        when n4.node_id = 74730 then 55660
                         when n3.node_id IS NULL then n4.node_id
                         ELSE n3.node_id
                     end nameable_id

@@ -16,8 +16,6 @@ internal sealed class LocationMigrator: Migrator
     {
         await LocationCreator.CreateAsync(GetLocations(), _postgresConnection);
         await LocationCreator.CreateAsync(ReadLocations(), _postgresConnection);
-        await LocationLocatableCreator.CreateAsync(GetLocationLocatables(), _postgresConnection);
-
     }
 
     private async IAsyncEnumerable<Location> GetLocations()
@@ -32,15 +30,8 @@ internal sealed class LocationMigrator: Migrator
             SubdivisionId = await _nodeIdReader.ReadAsync(Constants.PPL, 2951),
             CountryId = await _nodeIdReader.ReadAsync(Constants.PPL, 3805),
             Latitude = decimal.Parse("40.47622551263952"),
-            Longitude = decimal.Parse("-104.98063363798134")
-        };
-    }
-    private async IAsyncEnumerable<LocationLocatable> GetLocationLocatables()
-    {
-        yield return new LocationLocatable
-        {
-            LocationId = 100001,
-            LocatableId = await _nodeIdReader.ReadAsync(Constants.PPL, 105)
+            Longitude = decimal.Parse("-104.98063363798134"),
+            Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = 100001, LocatableId = await _nodeIdReader.ReadAsync(Constants.PPL, 105) } }
         };
     }
     private static string? GetStreet(int id, string? street)
@@ -1352,6 +1343,8 @@ internal sealed class LocationMigrator: Migrator
                 JOIN content_type_country_type c ON lower(c.field_country_code_value) = lower(l.country)
                 JOIN node n2 ON n2.nid = c.nid
                 LEFT JOIN content_type_statefact s ON s.field_country_1_nid = c.nid AND s.field_statecode_value = l.province
+                WHERE n.`type` NOT IN ('content_organisations', 'prisons', 'prisonpup')
+                AND n.nid NOT IN (11108)
             """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -1367,17 +1360,19 @@ internal sealed class LocationMigrator: Migrator
             int? subDivisionId = reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id");
             string? code = reader.IsDBNull("subdivision_code") ? null : reader.GetString("subdivision_code").Replace("UK-", "GB-");
             int? countryId = reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id");
+            var locatableId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id"));
             yield return new Location
             {
-                Id = reader.GetInt32("id"),
-                Street = GetStreet(reader.GetInt32("id"), reader.IsDBNull("street") ? null : reader.GetString("street")),
-                Additional = GetAdditional(reader.GetInt32("id"), reader.IsDBNull("additional") ? null : reader.GetString("additional")),
-                City = GetCity(reader.GetInt32("id"), reader.IsDBNull("city") ? null : reader.GetString("city")),
-                PostalCode = GetPostalCode(reader.GetInt32("id"), reader.IsDBNull("postal_code") ? null : reader.GetString("postal_code")),
-                SubdivisionId = await GetSubdivisionId(reader.GetInt32("id"), subDivisionId, countryId, code),
-                CountryId = await GetCountryId(reader.GetInt32("id"), countryId),
-                Latitude = GetLatitude(reader.GetInt32("id"), reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
-                Longitude = GetLongitude(reader.GetInt32("id"), reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
+                Id = id,
+                Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
+                Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),
+                City = GetCity(id, reader.IsDBNull("city") ? null : reader.GetString("city")),
+                PostalCode = GetPostalCode(id, reader.IsDBNull("postal_code") ? null : reader.GetString("postal_code")),
+                SubdivisionId = await GetSubdivisionId(id, subDivisionId, countryId, code),
+                CountryId = await GetCountryId(id, countryId),
+                Latitude = GetLatitude(id, reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
+                Longitude = GetLongitude(id, reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
+                Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = id, LocatableId = locatableId} }
             };
 
         }

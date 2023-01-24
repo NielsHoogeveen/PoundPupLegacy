@@ -36,7 +36,7 @@ internal sealed class TermWriter : DatabaseWriter<Term>, IDatabaseWriter<Term>
     internal override async Task WriteAsync(Term term)
     {
         WriteValue(term.VocabularyId, VOCABULARY_ID);
-        WriteValue(term.Name, NAME);
+        WriteValue(term.Name.Trim(), NAME);
         WriteValue(term.NameableId, NAMEABLE_ID);
         var retval = await _command.ExecuteScalarAsync();
         term.Id = retval switch

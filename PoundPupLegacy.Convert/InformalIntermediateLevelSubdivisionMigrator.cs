@@ -1,6 +1,8 @@
 ﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -12,10 +14,15 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : Migrator
 
     private async IAsyncEnumerable<InformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisionCsv()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+
         await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\InformalIntermediateLevelSubdivisions.csv").Skip(1))
         {
 
-            var parts = line.Split(new char[] { ';' });
+            var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int? id = int.Parse(parts[0]) == 0 ? null: int.Parse(parts[0]);
             var title = parts[8];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
@@ -56,6 +63,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : Migrator
                 CountryId = countryId,
                 Title = title,
                 Name = parts[9],
+                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Region")).NameableId
             };
         }
     }
@@ -67,6 +75,11 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : Migrator
     }
     private async IAsyncEnumerable<InformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisions()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+
         var sql = $"""
             SELECT
                 n.nid id,
@@ -133,6 +146,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : Migrator
                 VocabularyNames = vocabularyNames,
                 Description = "",
                 FileIdTileImage = null,
+                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Region")).NameableId
             };
         }
         await reader.CloseAsync();

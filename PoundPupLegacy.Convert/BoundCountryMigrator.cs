@@ -1,6 +1,8 @@
 ﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert;
 
@@ -17,6 +19,12 @@ internal sealed class BoundCountryMigrator : CountryMigrator
 
     private async IAsyncEnumerable<BoundCountry> ReadBoundCountries()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+        var subdivisionType = await termReader.ReadAsync(vocabularyId, "Country");
+
         var sql = $"""
             SELECT
                 n.nid id,
@@ -97,6 +105,7 @@ internal sealed class BoundCountryMigrator : CountryMigrator
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
+                SubdivisionTypeId = subdivisionType!.NameableId,
             };
 
         }

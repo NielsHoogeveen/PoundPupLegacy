@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -12,9 +13,14 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : Migrator
 
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+
         await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\BasicSecondLevelSubdivisionsInInformalPrimarySubdivision.csv").Skip(1))
         {
-            var parts = line.Split(new char[] { ';' });
+            var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int? id = int.Parse(parts[0]) == 0? null: int.Parse(parts[0]);
             var title = parts[8];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
@@ -59,16 +65,22 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : Migrator
                 IntermediateLevelSubdivisionId = subdivisionId,
                 FileIdFlag = null,
                 FileIdTileImage = null,
+                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, parts[12].Trim())).NameableId
             };
         }
     }
 
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionCsv()
     {
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+
         await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\BasicSecondLevelSubdivisions.csv").Skip(1))
         {
 
-            var parts = line.Split(new char[] { ';' });
+            var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
             var subdivisionId = await _subdivisionIdReaderByIso3166Code.ReadAsync(parts[11]);
@@ -112,6 +124,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : Migrator
                 IntermediateLevelSubdivisionId = subdivisionId,
                 FileIdFlag = null,
                 FileIdTileImage = null,
+                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, parts[12].Trim())).NameableId
             };
         }
     }
@@ -124,6 +137,12 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : Migrator
     }
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions()
     {
+
+        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
+        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+
+        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+
         var sql = $"""
             SELECT
                 n.nid id,
@@ -201,6 +220,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : Migrator
                 ISO3166_2_Code = reader.GetString("iso_3166_2_code"),
                 FileIdFlag = reader.IsDBNull("file_id_flag") ? null : reader.GetInt32("file_id_flag"),
                 FileIdTileImage = null,
+                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "State")).NameableId
             };
         }
         await reader.CloseAsync();

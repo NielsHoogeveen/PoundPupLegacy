@@ -12,11 +12,13 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
     {
         //await TruncateDatabase();
         //await (new PublicationStatusMigrator(this)).Migrate();
-        //await (new FileMigrator(this)).Migrate();
         //await (new NodeTypeMigrator(this)).Migrate();
+        //await (new FileMigrator(this)).Migrate();
+
         //await (new ActionMigrator(this)).Migrate();
         //await (new UserMigrator(this)).Migrate();
         //await (new VocabularyMigrator(this)).Migrate();
+        //await (new SubdivisionTypeMigrator(this)).Migrate();
         //await (new BasicNameableMigrator(this)).Migrate();
         //await (new ChildPlacementTypeMigrator(this)).Migrate();
         //await (new OrganizationTypeMigrator(this)).Migrate();
@@ -36,9 +38,12 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         //await (new SecondLevelGlobalRegionMigrator(this)).Migrate();
         //await (new BasicCountryMigrator(this)).Migrate();
         //await (new BindingCountryMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartOne(this)).Migrate();
         //await (new BoundCountryMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartTwo(this)).Migrate();
         //await (new CountryAndFirstLevelSubDivisionMigrator(this)).Migrate();
         //await (new CountryAndFirstAndSecondLevelSubdivisionMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartThree(this)).Migrate();
         //await (new FirstAndBottomLevelSubdivisionMigrator(this)).Migrate();
         //await (new InformalIntermediateLevelSubdivisionMigrator(this)).Migrate();
         //await (new FormalIntermediateLevelSubdivisionMigrator(this)).Migrate();
@@ -46,7 +51,7 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         //await (new BlogPostMigrator(this)).Migrate();
         //await (new ArticleMigrator(this)).Migrate();
         //await (new DiscussionMigrator(this)).Migrate();
-        await (new AdoptionImportMigrator(this)).Migrate();
+        //await (new AdoptionImportMigrator(this)).Migrate();
         //await (new DocumentMigrator(this)).Migrate();
         //await (new OrganizationMigrator(this)).Migrate();
         //await (new PersonMigrator(this)).Migrate();
@@ -67,6 +72,7 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         //await (new MenuMigrator(this)).Migrate();
         //await (new DocumentableDocumentMigrator(this)).Migrate();
         //await (new CommentMigrator(this)).Migrate();
+
     }
 
     internal const string ConnectionStringMariaDb = "server=localhost;userid=root;Password=niels;database=ppl";
