@@ -33,7 +33,7 @@ internal sealed class PageMigrator : Migrator
                 FROM node n
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-                WHERE n.`type` = 'page' AND n.uid <> 0
+                WHERE n.`type` = 'page' AND n.uid <> 0 and n.nid not in (63169)
                 """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

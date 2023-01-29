@@ -25,6 +25,109 @@ internal sealed class PersonMigrator: Migrator
             _ => dateTime
         };
     }
+    private static DateTime? GetDateOfBirth(int id, DateTime? dateTime)
+    {
+        return id switch
+        {
+            10342 => DateTime.Parse("1958-01-26"),
+            10732 => DateTime.Parse("1954-05-29"),
+            10743 => DateTime.Parse("1941-07-18"),
+            38317 => DateTime.Parse("1933-05-31"),
+            38337 => DateTime.Parse("1943-08-15"),
+            38614 => DateTime.Parse("1967-03-11"),
+            39136 => DateTime.Parse("1929-02-09"),
+            39202 => DateTime.Parse("1952-07-16"),
+            39211 => DateTime.Parse("1948-05-20"),
+            39248 => DateTime.Parse("1935-06-01"),
+            39276 => DateTime.Parse("1948-07-13"),
+            61293 => DateTime.Parse("1947-10-26"),
+            39152 => DateTime.Parse("1932-01-28"),
+            38322 => DateTime.Parse("1953-07-07"),
+            62138 => DateTime.Parse("1963-10-19"),
+            61467 => DateTime.Parse("1953-01-22"),
+            62481 => DateTime.Parse("1958-12-03"),
+            62517 => DateTime.Parse("1961-01-10"),
+            62897 => DateTime.Parse("1957-12-10"),
+            60392 => DateTime.Parse("1948-07-23"),
+            10813 => DateTime.Parse("1934-07-16"),
+            62393 => DateTime.Parse("1973-11-27"),
+            59375 => DateTime.Parse("1958-05-30"),
+            61798 => DateTime.Parse("1942-04-25"),
+            61966 => DateTime.Parse("1958-11-22"),
+            62011 => DateTime.Parse("1973-10-01"),
+            62026 => DateTime.Parse("1972-08-25"),
+            63210 => DateTime.Parse("1958-07-12"),
+            74198 => DateTime.Parse("1966-03-22"),
+            74201 => DateTime.Parse("1956-12-05"),
+            74204 => DateTime.Parse("1967-11-18"),
+            74207 => DateTime.Parse("1962-05-14"),
+            74210 => DateTime.Parse("1952-03-31"),
+            74213 => DateTime.Parse("1966-12-17"),
+            74219 => DateTime.Parse("1969-03-29"),
+            74222 => DateTime.Parse("1965-04-04"),
+            38973 => DateTime.Parse("1942-10-15"),
+            39119 => DateTime.Parse("1947-07-22"),
+            39177 => DateTime.Parse("1957-10-11"),
+            39232 => DateTime.Parse("1935-01-05"),
+            51380 => DateTime.Parse("1976-07-27"),
+            60412 => DateTime.Parse("1933-06-09"),
+            60488 => DateTime.Parse("1973-08-03"),
+            61082 => DateTime.Parse("1941-01-23"),
+            61665 => DateTime.Parse("1963-08-17"),
+            62556 => DateTime.Parse("1971-11-30"),
+            63139 => DateTime.Parse("1936-11-29"),
+            62570 => DateTime.Parse("1973-02-07"),
+            62129 => DateTime.Parse("1948-05-16"),
+            62983 => DateTime.Parse("1956-08-15"),
+            62141 => DateTime.Parse("1954-10-02"),
+            63244 => DateTime.Parse("1963-04-09"),
+            74231 => DateTime.Parse("1963-01-31"),
+            74234 => DateTime.Parse("1957-09-06"),
+            74238 => DateTime.Parse("1960-04-22"),
+            74241 => DateTime.Parse("1963-12-22"),
+            74244 => DateTime.Parse("1951-11-07"),
+            64530 => DateTime.Parse("1930-04-14"),
+            62736 => DateTime.Parse("1934-10-21"),
+            62051 => DateTime.Parse("1957-07-29"),
+            74225 => DateTime.Parse("1959-02-16"),
+            62643 => DateTime.Parse("1969-06-16"),
+            62931 => DateTime.Parse("1974-09-09"),
+            62934 => DateTime.Parse("1974-10-09"),
+            65781 => DateTime.Parse("1946-04-15"),
+            74263 => DateTime.Parse("1954-09-16"),
+            74269 => DateTime.Parse("1953-11-01"),
+            74275 => DateTime.Parse("1961-05-08"),
+            74278 => DateTime.Parse("1967-03-18"),
+            74284 => DateTime.Parse("1953-11-23"),
+            74288 => DateTime.Parse("1954-10-18"),
+            62865 => DateTime.Parse("1958-11-26"),
+            74247 => DateTime.Parse("1967-07-01"),
+            74250 => DateTime.Parse("1969-06-23"),
+            74254 => DateTime.Parse("1960-12-30"),
+            74257 => DateTime.Parse("1955-04-26"),
+            74260 => DateTime.Parse("1968-05-11"),
+            74359 => DateTime.Parse("1950-06-20"),
+            74368 => DateTime.Parse("1971-06-05"),
+            62776 => DateTime.Parse("1970-09-26"),
+            62872 => DateTime.Parse("1931-12-20"),
+            63075 => DateTime.Parse("1951-03-20"),
+            74291 => DateTime.Parse("1961-03-03"),
+            62396 => DateTime.Parse("1958-12-17"),
+            61452 => DateTime.Parse("1940-07-03"),
+            61540 => DateTime.Parse("1971-10-17"),
+            61553 => DateTime.Parse("1971-06-04"),
+            61750 => DateTime.Parse("1972-10-20"),
+            61830 => DateTime.Parse("1974-02-27"),
+            62323 => DateTime.Parse("1937-07-16"),
+            64421 => DateTime.Parse("1969-04-27"),
+            74152 => DateTime.Parse("1964-11-13"),
+            74157 => DateTime.Parse("1949-12-10"),
+            74172 => DateTime.Parse("1960-08-30"),
+            74176 => DateTime.Parse("1954-10-24"),
+            74192 => DateTime.Parse("1954-05-14"),
+            _ => dateTime
+        };
+    }
 
     private async IAsyncEnumerable<Person> ReadPersons()
     {
@@ -33,7 +136,10 @@ internal sealed class PersonMigrator: Migrator
                 SELECT
                 n.nid id,
                 n.uid access_role_id,
-                n.title,
+                case 
+                    when n.title = 'Cory Brooker' then 'Cory Booker'
+                    else n.title
+                end title,
                 n.`status` node_status_id,
                 FROM_UNIXTIME(n.created) created_date_time, 
                 FROM_UNIXTIME(n.changed) changed_date_time,
@@ -78,7 +184,7 @@ internal sealed class PersonMigrator: Migrator
                     GROUP BY n.title
                 ) c2 ON c2.title = n.title
                 WHERE n.`type` = 'adopt_person'
-                AND n.nid not in (45656)
+                AND n.nid not in (45656, 74250)
                 """;
         using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -131,9 +237,15 @@ internal sealed class PersonMigrator: Migrator
                 Description = "",
                 FileIdTileImage = null,
                 VocabularyNames = vocabularyNames,
-                DateOfBirth = reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth"),
+                DateOfBirth = GetDateOfBirth(reader.GetInt32("id"), reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth")),
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
                 FileIdPortrait = reader.IsDBNull("file_id_portrait") ? null : reader.GetInt32("file_id_portrait"),
+                FirstName = null,
+                LastName = null,
+                MiddleName = null,
+                FullName = null,
+                GovtrackId = null,
+                Suffix = null,
             };
 
         }

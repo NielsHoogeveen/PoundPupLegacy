@@ -14,5 +14,5 @@ public record BasicCountry : TopLevelCountry
     public DocumentListItem[] Documents { get; set; }
     public OrganizationTypeWithOrganizations[] OrganizationTypes { get; set; }
 
-    public SubdivisionListItem[] Subdivisions { get; set; }
+    public CountrySubdivisionType[] SubdivisionTypes { get; set; }
 }

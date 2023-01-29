@@ -2,24 +2,8 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Country
 
-@foreach(var organizationType in Model.OrganizationTypes)
-{
-    <div>
-        @organizationType.OrganizationTypeName
-    </div>
-    <ul>
-    @foreach(var organization in organizationType.Organizations)
-    {
-        <li>
-            <a href="@organization.Path">@organization.Name</a>
-        </li>
-    }
-    </ul>
-}
-
+<partial name="_SubdivisionTypes" model="@Model.SubdivisionTypes" />
+<partial name="_OrganizationTypes" model="@Model.OrganizationTypes" />
 <partial name="_Documents" model="@Model.Documents" />
 <partial name="_AdoptionImports" model="@Model.AdoptionImports" />
 
-
-@{
-}

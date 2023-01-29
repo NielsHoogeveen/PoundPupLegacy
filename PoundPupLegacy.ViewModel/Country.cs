@@ -6,5 +6,5 @@ public interface Country: PoliticalEntity
 
     public OrganizationTypeWithOrganizations[] OrganizationTypes { get; set; }
 
-    public SubdivisionListItem[] Subdivisions { get; set; }
+    public CountrySubdivisionType[] SubdivisionTypes { get; set; }
 }

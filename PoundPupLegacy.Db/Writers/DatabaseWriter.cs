@@ -77,6 +77,44 @@ public abstract class DatabaseWriter<T>: DatabaseWriter, IAsyncDisposable
     }
 
     internal abstract Task WriteAsync(T item);
+    protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDateRange)
+    {
+        if (dateTimeRange is null)
+        {
+            throw new ArgumentNullException(nameof(dateTimeRange));
+        }
+        else
+        {
+            if (dateTimeRange.Start.HasValue && dateTimeRange.End.HasValue)
+            {
+                if (dateTimeRange.Start.Equals(dateTimeRange.End.Value))
+                {
+                    throw new ArgumentException("A date range should have a start that is below the end");
+
+                }
+                else
+                {
+                    _command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")}, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
+                }
+
+            }
+            else if (!dateTimeRange.Start.HasValue && dateTimeRange.End.HasValue)
+            {
+                _command.Parameters[parameterDateRange].Value = $"(, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
+
+            }
+            else if (dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue)
+            {
+                _command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")},)";
+
+            }
+            else if (!dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue)
+            {
+                _command.Parameters[parameterDateRange].Value = $"(,)";
+
+            }
+        }
+    }
 
 
     protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange)

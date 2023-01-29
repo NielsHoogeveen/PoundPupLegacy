@@ -399,23 +399,27 @@ public class FetchNodeService
     const string FETCH_COUNTRY_SUBDIVISION = """
         fetch_country_subdivisions as (
             select
-                json_agg(to_jsonb(x)) subdivisions
-                from(
-                select
-                s.name "Name",
-                case 
-        	        when tn2.url_path is null then '/node/' || tn2.url_id
-        	        else tn2.url_path
-                end "Path"	
-            from country c
-            join tenant_node tn on tn.node_id = c.id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
-            join tenant t on t.id = tn.tenant_id
-            join subdivision s on s.country_id = c.id
-            join tenant_node tn2 on tn2.node_id = s.id and tn.tenant_id = @tenant_id 
-            join term tp on tp.nameable_id = c.id and tp.vocabulary_id = t.vocabulary_id_tagging
-            join term tc on tc.nameable_id = s.id and tc.vocabulary_id = t.vocabulary_id_tagging
-            join term_hierarchy th on th.term_id_parent = tp.id and th.term_id_child = tc.id
-            order by s.name
+        	json_agg(to_jsonb(x)) "document"
+            from(
+        	    select
+        	    n.title "Name", 
+        	    json_agg(json_build_object(
+        	    'Name', s.name,
+        	    'Path', case 
+        		    when tn2.url_path is null then '/node/' || tn2.url_id
+        		    else tn2.url_path
+        	    end
+        	    )) "Subdivisions"
+        	    from country c
+        	    join tenant_node tn on tn.node_id = c.id and tn.tenant_id = 1 and tn.url_id = 4023
+        	    join tenant t on t.id = tn.tenant_id
+        	    join subdivision s on s.country_id = c.id
+        	    join node n on n.id = s.subdivision_type_id
+        	    join tenant_node tn2 on tn2.node_id = s.id and tn.tenant_id = 1
+        	    join term tp on tp.nameable_id = c.id and tp.vocabulary_id = t.vocabulary_id_tagging
+        	    join term tc on tc.nameable_id = s.id and tc.vocabulary_id = t.vocabulary_id_tagging
+        	    join term_hierarchy th on th.term_id_parent = tp.id and th.term_id_child = tc.id
+        	    group by n.title
             ) x
         )
         """;
@@ -605,7 +609,7 @@ public class FetchNodeService
                 'AdoptionImports', (SELECT imports FROM fetch_adoption_imports),
                 'Documents', (select documents from fetch_documents),
                 'OrganizationTypes', (select organization_types from fetch_organization_types),
-                'Subdivisions', (select subdivisions from fetch_country_subdivisions)
+                'SubdivisionTypes', (select document from fetch_country_subdivisions)
             ) :: jsonb document
             FROM fetch_basic_country n
         ) 

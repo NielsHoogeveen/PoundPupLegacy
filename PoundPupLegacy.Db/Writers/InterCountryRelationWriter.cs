@@ -6,7 +6,6 @@ internal sealed class InterCountryRelationWriter : DatabaseWriter<InterCountryRe
     private const string ID = "id";
     private const string COUNTRY_ID_FROM = "country_id_from";
     private const string COUNTRY_ID_TO = "country_id_to";
-    private const string DATE = "date";
     private const string DATE_RANGE = "date_range";
     private const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
     private const string MONEY_INVOLVED = "money_involved";
@@ -43,10 +42,6 @@ internal sealed class InterCountryRelationWriter : DatabaseWriter<InterCountryRe
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
-                    Name = DATE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
-                new ColumnDefinition{
                     Name = DOCUMENT_ID_PROOF,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
@@ -70,7 +65,7 @@ internal sealed class InterCountryRelationWriter : DatabaseWriter<InterCountryRe
         WriteValue(interCountryRelation.Id, ID);
         WriteValue(interCountryRelation.CountryIdFrom, COUNTRY_ID_FROM);
         WriteValue(interCountryRelation.CountryIdTo, COUNTRY_ID_TO);
-        WriteDateTimeRange(interCountryRelation.DateTimeRange, DATE, DATE_RANGE);
+        WriteDateTimeRange(interCountryRelation.DateTimeRange, DATE_RANGE);
         WriteValue(interCountryRelation.InterCountryRelationTypeId, INTER_COUNTRY_RELATION_TYPE_ID);
         WriteNullableValue(interCountryRelation.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
         WriteNullableValue(interCountryRelation.MoneyInvolved, MONEY_INVOLVED);

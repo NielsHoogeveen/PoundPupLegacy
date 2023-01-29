@@ -16,5 +16,10 @@ public sealed record Person : Party
     public required List<VocabularyName> VocabularyNames { get; init; }
     public required int? FileIdTileImage { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
-
+    public required string? FirstName { get; init; }
+    public required string? MiddleName { get; init; }
+    public required string? LastName { get; init; }
+    public required string? FullName { get; init; }
+    public required string? Suffix { get; init; }
+    public required int? GovtrackId { get; init; }
 }

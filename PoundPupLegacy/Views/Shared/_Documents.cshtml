@@ -1,8 +1,9 @@
 ﻿@using PoundPupLegacy.ViewModel;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model IEnumerable<DocumentListItem>
-@{
-    <table>
+<div class="section">
+    <h3>Documents</h3>
+    <table style="margin-bottom:1em;">
         @foreach(var document in Model.OrderBy(x => x.SortOrder)){
         <tr>
             <td><a href="@document.Path">@document.Title</a></td>
@@ -10,4 +11,5 @@
         </tr>
         }
     </table>
-}
+</div>
+

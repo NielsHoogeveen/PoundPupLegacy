@@ -383,3 +383,6 @@ tr.total {
 .total {
     background-color: #bb9363;
 }
+.section{
+    border-bottom: solid thin gray;
+}
