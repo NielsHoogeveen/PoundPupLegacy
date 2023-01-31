@@ -407,7 +407,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : Migrator
             AND n2.`type` = 'country_type'
             AND s.field_statecode_value IS NOT NULL
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

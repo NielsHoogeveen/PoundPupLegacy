@@ -41,7 +41,7 @@ internal sealed class BindingCountryMigrator : Migrator
                     3992
                 )
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

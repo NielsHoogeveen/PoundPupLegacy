@@ -10,50 +10,50 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
     private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
     public async Task Convert()
     {
-        await TruncateDatabase();
-        await (new PublicationStatusMigrator(this)).Migrate();
-        await (new NodeTypeMigrator(this)).Migrate();
-        await (new FileMigrator(this)).Migrate();
+        //await TruncateDatabase();
+        //await (new PublicationStatusMigrator(this)).Migrate();
+        //await (new NodeTypeMigrator(this)).Migrate();
+        //await (new FileMigrator(this)).Migrate();
 
-        await (new ActionMigrator(this)).Migrate();
-        await (new UserMigrator(this)).Migrate();
-        await (new VocabularyMigrator(this)).Migrate();
-        await (new SubdivisionTypeMigrator(this)).Migrate();
-        await (new BasicNameableMigrator(this)).Migrate();
-        await (new ChildPlacementTypeMigrator(this)).Migrate();
-        await (new OrganizationTypeMigrator(this)).Migrate();
-        await (new InterCountryRelationTypeMigrator(this)).Migrate();
-        await (new InterOrganizationalRelationTypeMigrator(this)).Migrate();
-        await (new InterPersonalRelationTypeMigrator(this)).Migrate();
-        await (new PartyPoliticalEntityRelationTypeMigrator(this)).Migrate();
-        await (new PersonOrganizationRelationTypeMigrator(this)).Migrate();
-        await (new TypeOfAbuseMigrator(this)).Migrate();
-        await (new TypeOfAbuserMigrator(this)).Migrate();
-        await (new FamilySizeMigrator(this)).Migrate();
-        await (new ProfessionMigrator(this)).Migrate();
-        await (new DenominationMigrator(this)).Migrate();
-        await (new HagueStatusMigrator(this)).Migrate();
-        await (new DocumentTypeMigrator(this)).Migrate();
-        await (new FirstLevelGlobalRegionMigrator(this)).Migrate();
-        await (new SecondLevelGlobalRegionMigrator(this)).Migrate();
-        await (new BasicCountryMigrator(this)).Migrate();
-        await (new BindingCountryMigrator(this)).Migrate();
-        await (new CountrySubdivisionTypeMigratorPartOne(this)).Migrate();
-        await (new BoundCountryMigrator(this)).Migrate();
-        await (new CountrySubdivisionTypeMigratorPartTwo(this)).Migrate();
-        await (new CountryAndFirstLevelSubDivisionMigrator(this)).Migrate();
-        await (new CountryAndFirstAndSecondLevelSubdivisionMigrator(this)).Migrate();
-        await (new CountrySubdivisionTypeMigratorPartThree(this)).Migrate();
-        await (new FirstAndBottomLevelSubdivisionMigrator(this)).Migrate();
-        await (new InformalIntermediateLevelSubdivisionMigrator(this)).Migrate();
-        await (new FormalIntermediateLevelSubdivisionMigrator(this)).Migrate();
-        await (new BasicSecondLevelSubdivisionMigrator(this)).Migrate();
-        await (new BlogPostMigrator(this)).Migrate();
-        await (new ArticleMigrator(this)).Migrate();
-        await (new DiscussionMigrator(this)).Migrate();
-        await (new AdoptionImportMigrator(this)).Migrate();
-        await (new DocumentMigrator(this)).Migrate();
-        await (new OrganizationMigrator(this)).Migrate();
+        //await (new ActionMigrator(this)).Migrate();
+        //await (new UserMigrator(this)).Migrate();
+        //await (new VocabularyMigrator(this)).Migrate();
+        //await (new SubdivisionTypeMigrator(this)).Migrate();
+        //await (new BasicNameableMigrator(this)).Migrate();
+        //await (new ChildPlacementTypeMigrator(this)).Migrate();
+        //await (new OrganizationTypeMigrator(this)).Migrate();
+        //await (new InterCountryRelationTypeMigrator(this)).Migrate();
+        //await (new InterOrganizationalRelationTypeMigrator(this)).Migrate();
+        //await (new InterPersonalRelationTypeMigrator(this)).Migrate();
+        //await (new PartyPoliticalEntityRelationTypeMigrator(this)).Migrate();
+        //await (new PersonOrganizationRelationTypeMigrator(this)).Migrate();
+        //await (new TypeOfAbuseMigrator(this)).Migrate();
+        //await (new TypeOfAbuserMigrator(this)).Migrate();
+        //await (new FamilySizeMigrator(this)).Migrate();
+        //await (new ProfessionMigrator(this)).Migrate();
+        //await (new DenominationMigrator(this)).Migrate();
+        //await (new HagueStatusMigrator(this)).Migrate();
+        //await (new DocumentTypeMigrator(this)).Migrate();
+        //await (new FirstLevelGlobalRegionMigrator(this)).Migrate();
+        //await (new SecondLevelGlobalRegionMigrator(this)).Migrate();
+        //await (new BasicCountryMigrator(this)).Migrate();
+        //await (new BindingCountryMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartOne(this)).Migrate();
+        //await (new BoundCountryMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartTwo(this)).Migrate();
+        //await (new CountryAndFirstLevelSubDivisionMigrator(this)).Migrate();
+        //await (new CountryAndFirstAndSecondLevelSubdivisionMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartThree(this)).Migrate();
+        //await (new FirstAndBottomLevelSubdivisionMigrator(this)).Migrate();
+        //await (new InformalIntermediateLevelSubdivisionMigrator(this)).Migrate();
+        //await (new FormalIntermediateLevelSubdivisionMigrator(this)).Migrate();
+        //await (new BasicSecondLevelSubdivisionMigrator(this)).Migrate();
+        //await (new BlogPostMigrator(this)).Migrate();
+        //await (new ArticleMigrator(this)).Migrate();
+        //await (new DiscussionMigrator(this)).Migrate();
+        //await (new AdoptionImportMigrator(this)).Migrate();
+        //await (new DocumentMigrator(this)).Migrate();
+        //await (new OrganizationMigrator(this)).Migrate();
         await (new PersonMigrator(this)).Migrate();
         await (new AbuseCaseMigrator(this)).Migrate();
         await (new ChildTraffickingCaseMigrator(this)).Migrate();
@@ -82,7 +82,8 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
 
     }
 
-    internal const string ConnectionStringMariaDb = "server=localhost;userid=root;Password=niels;database=ppl";
+    internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=niels;database=ppl";
+    internal const string ConnectionStringMariaDbCPCT = "server=localhost;userid=root;Password=niels;database=cpct";
 
     internal const string ConnectStringPostgresql = "Host=localhost;Username=postgres;Password=niels;Database=ppl;Include Error Detail=True";
 
@@ -91,9 +92,11 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         
         Console.Write("Setting up connections and opening readers");
         _stopwatch.Restart();
-        var mysqlConnection = new MySqlConnection(ConnectionStringMariaDb);
+        var mysqlConnectionPPL = new MySqlConnection(ConnectionStringMariaDbPPL);
+        var mysqlConnectionCPCT = new MySqlConnection(ConnectionStringMariaDbCPCT);
         var postgresConnection = new NpgsqlConnection(ConnectStringPostgresql);
-        await mysqlConnection.OpenAsync();
+        await mysqlConnectionPPL.OpenAsync(); 
+        await mysqlConnectionCPCT.OpenAsync();
         await postgresConnection.OpenAsync();
         var nodeIdReader = await NodeIdReaderByUrlId.CreateAsync(postgresConnection);
         var termByNameableIdReader = await TermReaderByNameableId.CreateAsync(postgresConnection);
@@ -106,7 +109,8 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         var tenantNodeIdReaderByUrlId = await TenantNodeIdReaderByUrlId.CreateAsync(postgresConnection);
         Console.WriteLine($" took {_stopwatch.ElapsedMilliseconds} ms");
         return new MySqlToPostgresConverter(
-            mysqlConnection, 
+            mysqlConnectionPPL,
+            mysqlConnectionCPCT,
             postgresConnection, 
             nodeIdReader, 
             termByNameableIdReader, 
@@ -118,7 +122,8 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
             actionIdReaderByPath,
             tenantNodeIdReaderByUrlId);
     }
-    internal MySqlConnection MysqlConnection { get; }
+    internal MySqlConnection MysqlConnectionPPL { get; }
+    internal MySqlConnection MysqlConnectionCPCT { get; }
     internal NpgsqlConnection PostgresConnection { get; }
     internal NodeIdReaderByUrlId NodeIdReader { get; }
     internal TermReaderByNameableId TermByNameableIdReader { get; }
@@ -130,7 +135,8 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
     internal ActionIdReaderByPath ActionIdReaderByPath { get; }
     internal TenantNodeIdReaderByUrlId TenantNodeIdByUrlIdReader { get; }
     public MySqlToPostgresConverter(
-        MySqlConnection mysqlConnection, 
+        MySqlConnection mysqlConnectionPPL,
+        MySqlConnection mysqlConnectionCPCT,
         NpgsqlConnection postgresConnection, 
         NodeIdReaderByUrlId nodeIdReader, 
         TermReaderByNameableId termByNameableIdReader, 
@@ -143,7 +149,8 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         TenantNodeIdReaderByUrlId tenantNodeIdReaderByUrlId
         )
     {
-        MysqlConnection = mysqlConnection;
+        MysqlConnectionPPL = mysqlConnectionPPL;
+        MysqlConnectionCPCT = mysqlConnectionCPCT;
         PostgresConnection = postgresConnection;
         NodeIdReader = nodeIdReader;
         TermByNameableIdReader = termByNameableIdReader;
@@ -196,9 +203,11 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await PostgresConnection.CloseAsync();
-        await MysqlConnection.CloseAsync();
+        await MysqlConnectionPPL.CloseAsync();
+        await MysqlConnectionCPCT.CloseAsync();
         await PostgresConnection.DisposeAsync();
-        await MysqlConnection.DisposeAsync();
+        await MysqlConnectionPPL.DisposeAsync();
+        await MysqlConnectionCPCT.DisposeAsync();
         await NodeIdReader.DisposeAsync();
         await TermByNameableIdReader.DisposeAsync();
         await SubdivisionIdReader.DisposeAsync();

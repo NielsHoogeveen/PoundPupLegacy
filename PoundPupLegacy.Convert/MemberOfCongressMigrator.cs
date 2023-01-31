@@ -115,13 +115,7 @@ internal class MemberOfCongressMigrator : Migrator
     {
         _membersOfCongress = await GetMembersOfCongress().ToListAsync();
 
-        //await PersonCreator.CreateAsync(GetMembersOfCongressAsync(), _postgresConnection);
-        await foreach(var term in GetTerms()) 
-        { 
-            if(term.Id == 412219)
-            Console.WriteLine(term);
-        }
-
+        await PersonCreator.CreateAsync(GetMembersOfCongressAsync(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<TempTerm> GetTerms()

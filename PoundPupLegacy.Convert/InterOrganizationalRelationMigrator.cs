@@ -56,8 +56,18 @@ internal sealed class InterOrganizationalRelationMigrator: Migrator
                         n.`status` status,
                         FROM_UNIXTIME(n.created) created_date_time, 
                         FROM_UNIXTIME(n.changed) changed_date_time,
-                        n2.nid organization_id_from,
-                        n3.nid organization_id_to,
+                        case 
+                            when n2.nid = 7760 then 8063
+                            when n2.nid = 30638 then 14681
+                            when n2.nid = 12700 then 52558
+                            else n2.nid
+                        end organization_id_from,
+                        case 
+                            when n3.nid = 7760 then 8063
+                            when n2.nid = 30638 then 14681
+                            when n3.nid = 12700 then 52558
+                            else n3.nid
+                        end organization_id_to,
                         STR_TO_DATE(REPLACE(p.field_date_from_value, '-00', '-01'),'%Y-%m-%d') start_date,
                     STR_TO_DATE(REPLACE(p.field_end_date_0_value,'-00', '-01'),'%Y-%m-%d') end_date,
                         n4.nid geographical_entity_id,
@@ -94,7 +104,7 @@ internal sealed class InterOrganizationalRelationMigrator: Migrator
                     ) fp ON fp.nid = n.nid AND fp.vid = n.vid
                 ) x
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

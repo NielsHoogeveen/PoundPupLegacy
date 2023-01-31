@@ -127,7 +127,7 @@ internal sealed class TermHierarchyMigrator: Migrator
                  AND (n3.nid IS NOT NULL OR n4.nid IS NOT NULL)
                  AND n3.nid not in (4126)
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -253,7 +253,7 @@ internal sealed class VocabularyMigrator: Migrator
             JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
             WHERE n.`type` = 'category_cont' AND n.nid not in (220, 12707, 42422)
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

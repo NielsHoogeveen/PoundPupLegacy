@@ -55,7 +55,10 @@ internal sealed class PersonOrganizationRelationMigrator: Migrator
                         FROM_UNIXTIME(n.created) created_date_time, 
                         FROM_UNIXTIME(n.changed) changed_date_time,
                         n2.nid person_id,
-                        n3.nid organization_id,
+                        case 
+                        when n3.nid = 30638 then 14681
+                        else n3.nid
+                	    end organization_id,
                         STR_TO_DATE(REPLACE(p.field_start_date_value, '-00', '-01'),'%Y-%m-%d') start_date,
                         case 
                             when n.nid = 30588 then null
@@ -91,7 +94,7 @@ internal sealed class PersonOrganizationRelationMigrator: Migrator
                     ) fp ON fp.nid = n.nid AND fp.vid = n.vid
                 ) x
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

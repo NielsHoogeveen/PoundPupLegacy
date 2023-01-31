@@ -10,7 +10,8 @@ namespace PoundPupLegacy.Convert;
 
 internal abstract class Migrator
 {
-    protected readonly MySqlConnection _mysqlConnection;
+    protected readonly MySqlConnection _mysqlConnectionPPL;
+    protected readonly MySqlConnection _mysqlConnectionCPCT;
     protected readonly NpgsqlConnection _postgresConnection;
     protected readonly NodeIdReaderByUrlId _nodeIdReader;
     protected readonly TermReaderByNameableId _termReaderByNameableId;
@@ -28,7 +29,8 @@ internal abstract class Migrator
 
     protected Migrator(MySqlToPostgresConverter mySqlToPostgresConverter)
     {
-        _mysqlConnection = mySqlToPostgresConverter.MysqlConnection;
+        _mysqlConnectionPPL = mySqlToPostgresConverter.MysqlConnectionPPL;
+        _mysqlConnectionCPCT = mySqlToPostgresConverter.MysqlConnectionCPCT;
         _postgresConnection = mySqlToPostgresConverter.PostgresConnection;
         _nodeIdReader = mySqlToPostgresConverter.NodeIdReader;
         _termReaderByNameableId = mySqlToPostgresConverter.TermByNameableIdReader;

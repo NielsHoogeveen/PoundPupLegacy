@@ -108,7 +108,7 @@ internal sealed class AbuseCaseMigrator: Migrator
                         n.title
                 ) c3 ON c3.title = n.title                
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

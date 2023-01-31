@@ -51,7 +51,10 @@ internal sealed class PartyPoliticalEntityRelationMigrator: Migrator
                 	  n.`status` status,
                 	  FROM_UNIXTIME(n.created) created_date_time, 
                 	  FROM_UNIXTIME(n.changed) changed_date_time,
-                	  n2.nid party_id,
+                      case 
+                        when n2.nid = 30638 then 14681
+                        else n2.nid
+                	  end party_id,
                 	  n3.nid political_entity_id,
                 	  STR_TO_DATE(REPLACE(p.field_from_date_value, '-00', '-01'),'%Y-%m-%d') start_date,
                 	  STR_TO_DATE(REPLACE(p.field_to_date_0_value,'-00', '-01'),'%Y-%m-%d') end_date,
@@ -77,7 +80,7 @@ internal sealed class PartyPoliticalEntityRelationMigrator: Migrator
                 	c.cnid
                 ) x
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

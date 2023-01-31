@@ -38,7 +38,7 @@ internal sealed class FirstLevelGlobalRegionMigrator : Migrator
             AND n2.`type` = 'category_cont'
             """;
 
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

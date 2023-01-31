@@ -34,7 +34,7 @@ internal sealed class DocumentTypeMigrator: Migrator
                     WHERE n1.nid  = 42416
                   """;
 
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -1344,9 +1344,9 @@ internal sealed class LocationMigrator: Migrator
                 JOIN node n2 ON n2.nid = c.nid
                 LEFT JOIN content_type_statefact s ON s.field_country_1_nid = c.nid AND s.field_statecode_value = l.province
                 WHERE n.`type` NOT IN ('content_organisations', 'prisons', 'prisonpup')
-                AND n.nid NOT IN (11108)
+                AND n.nid NOT IN (11108, 7760, 12700, 30638)
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = _mysqlConnectionPPL.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
