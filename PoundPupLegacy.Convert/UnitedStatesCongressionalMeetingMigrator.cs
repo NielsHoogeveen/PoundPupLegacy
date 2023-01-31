@@ -3,7 +3,7 @@ using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 namespace PoundPupLegacy.Convert;
 
-internal sealed class UnitedStatesCongressionalMeetingMigrator : Migrator
+internal sealed class UnitedStatesCongressionalMeetingMigrator : PPLMigrator
 {
     protected override string Name => "united states congressional meetings";
 

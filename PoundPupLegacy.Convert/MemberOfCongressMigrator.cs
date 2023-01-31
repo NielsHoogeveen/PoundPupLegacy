@@ -100,7 +100,7 @@ public record TempTerm
     public string State { get; set; }
 }
 
-internal class MemberOfCongressMigrator : Migrator
+internal class MemberOfCongressMigrator : PPLMigrator
 {
 
     private List<MemberOfCongress> _membersOfCongress = new List<MemberOfCongress>();

@@ -24,7 +24,7 @@ public CountrySubdivisionTypeMigratorPartThree(MySqlToPostgresConverter converte
     protected override string FileName => "country_subdivision_types_part3.csv";
 }
 
-internal abstract class CountrySubdivisionTypeMigrator : Migrator
+internal abstract class CountrySubdivisionTypeMigrator : PPLMigrator
 {
 
     protected abstract string FileName { get; }

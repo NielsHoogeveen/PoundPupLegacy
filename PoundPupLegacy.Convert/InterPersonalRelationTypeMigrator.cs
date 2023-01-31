@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterPersonalRelationTypeMigrator : Migrator
+internal sealed class InterPersonalRelationTypeMigrator : PPLMigrator
 {
 
     public InterPersonalRelationTypeMigrator(MySqlToPostgresConverter converter): base(converter) { }
@@ -41,7 +41,7 @@ internal sealed class InterPersonalRelationTypeMigrator : Migrator
                 JOIN category c ON c.cid = n.nid AND c.cnid = 16900
                 """;
 
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

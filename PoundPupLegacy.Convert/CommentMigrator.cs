@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class CommentMigrator: Migrator
+internal sealed class CommentMigrator: PPLMigrator
 {
     public CommentMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -69,7 +69,7 @@ internal sealed class CommentMigrator: Migrator
             AND NOT (c.uid = 0 AND c.`status` = 1 AND c2.cid IS null)
             ORDER BY c.cid
             """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

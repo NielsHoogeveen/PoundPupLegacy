@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class WrongfulRemovalCaseMigrator: Migrator
+internal sealed class WrongfulRemovalCaseMigrator: PPLMigrator
 {
     public WrongfulRemovalCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -35,7 +35,7 @@ internal sealed class WrongfulRemovalCaseMigrator: Migrator
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_wrongful_removal_case c ON c.nid = n.nid AND c.vid = n.vid
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

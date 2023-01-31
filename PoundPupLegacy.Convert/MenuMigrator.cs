@@ -3,7 +3,7 @@ using PoundPupLegacy.Db;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class MenuMigrator : Migrator
+internal sealed class MenuMigrator : PPLMigrator
 {
     protected override string Name => "menu items";
 

@@ -5,7 +5,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class BasicSecondLevelSubdivisionMigrator : Migrator
+internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
 {
     protected override string Name => "basic second level subdivisions";
 
@@ -168,7 +168,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : Migrator
             AND s.field_statecode_value IS NOT NULL
             ORDER BY s.field_statecode_value
             """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

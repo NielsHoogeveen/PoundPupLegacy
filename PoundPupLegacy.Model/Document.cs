@@ -15,4 +15,5 @@ public sealed record Document : Node
     public required string Teaser { get; init; }
     public required int? DocumentTypeId { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+    public required List<int> Documentables { get; init; }
 }

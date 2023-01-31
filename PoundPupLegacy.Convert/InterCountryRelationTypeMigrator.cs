@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterCountryRelationTypeMigrator : Migrator
+internal sealed class InterCountryRelationTypeMigrator : PPLMigrator
 {
 
     public InterCountryRelationTypeMigrator(MySqlToPostgresConverter converter): base(converter) { }
@@ -37,7 +37,7 @@ internal sealed class InterCountryRelationTypeMigrator : Migrator
                 ) x
                 """;
 
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

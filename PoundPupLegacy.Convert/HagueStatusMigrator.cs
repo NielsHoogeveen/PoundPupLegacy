@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class HagueStatusMigrator: Migrator
+internal sealed class HagueStatusMigrator: PPLMigrator
 {
     public HagueStatusMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
@@ -32,7 +32,7 @@ internal sealed class HagueStatusMigrator: Migrator
                     JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                     JOIN category c ON c.cid = n.nid AND c.cnid = 41212
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

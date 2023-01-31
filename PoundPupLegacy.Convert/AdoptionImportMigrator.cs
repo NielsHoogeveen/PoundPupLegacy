@@ -9,7 +9,7 @@ using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class AdoptionImportMigrator : Migrator
+internal sealed class AdoptionImportMigrator : PPLMigrator
 {
     public AdoptionImportMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -270,7 +270,7 @@ internal sealed class AdoptionImportMigrator : Migrator
                 AND NOT (country_id_to = 4023 AND country_id_from = 3936 AND `year` = 2009)
                 AND  NOT(country_id_to = 4018 AND `year` = 2017)
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

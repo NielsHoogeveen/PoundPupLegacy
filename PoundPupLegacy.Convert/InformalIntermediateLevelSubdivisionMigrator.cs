@@ -6,7 +6,7 @@ using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InformalIntermediateLevelSubdivisionMigrator : Migrator
+internal sealed class InformalIntermediateLevelSubdivisionMigrator : PPLMigrator
 {
     protected override string Name => "informal intermediate level subdivisions";
 
@@ -96,7 +96,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : Migrator
             JOIN node n2 ON n2.nid = ch.parent
             WHERE n.`type` = 'region_facts'AND n2.`type` = 'country_type'
             """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

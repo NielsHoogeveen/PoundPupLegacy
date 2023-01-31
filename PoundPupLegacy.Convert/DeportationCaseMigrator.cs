@@ -7,7 +7,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class DeportationCaseMigrator: Migrator
+internal sealed class DeportationCaseMigrator: PPLMigrator
 {
     public DeportationCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -58,7 +58,7 @@ internal sealed class DeportationCaseMigrator: Migrator
                      n.changed,
                      field_description_6_value
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

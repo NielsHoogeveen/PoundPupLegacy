@@ -3,7 +3,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class FileMigrator : Migrator
+internal sealed class FileMigrator : PPLMigrator
 {
 
     public FileMigrator(MySqlToPostgresConverter converter): base(converter)
@@ -30,7 +30,7 @@ internal sealed class FileMigrator : Migrator
                 FROM `files` f
                 WHERE fileName NOT IN ('preview', 'thumbnail', '_original')
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

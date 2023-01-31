@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class UserMigrator : Migrator
+internal sealed class UserMigrator : PPLMigrator
 {
     protected override string Name => "users";
     public UserMigrator(MySqlToPostgresConverter converter) : base(converter)
@@ -225,7 +225,7 @@ internal sealed class UserMigrator : Migrator
     private async IAsyncEnumerable<User> ReadUsers()
     {
 
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = """

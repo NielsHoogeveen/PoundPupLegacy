@@ -5,7 +5,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class LocationMigrator: Migrator
+internal sealed class LocationMigrator: PPLMigrator
 {
     public LocationMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -1346,7 +1346,7 @@ internal sealed class LocationMigrator: Migrator
                 WHERE n.`type` NOT IN ('content_organisations', 'prisons', 'prisonpup')
                 AND n.nid NOT IN (11108, 7760, 12700, 30638)
             """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

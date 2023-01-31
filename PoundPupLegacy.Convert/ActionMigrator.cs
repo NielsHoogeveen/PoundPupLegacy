@@ -3,7 +3,7 @@ using PoundPupLegacy.Db;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class ActionMigrator : Migrator
+internal sealed class ActionMigrator : PPLMigrator
 {
     protected override string Name => "actions";
 

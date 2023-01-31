@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class BasicCountryMigrator: Migrator
+internal sealed class BasicCountryMigrator: PPLMigrator
 {
     protected override string Name => "basic countries";
 
@@ -409,12 +409,11 @@ internal sealed class BasicCountryMigrator: Migrator
                         3914,
                         3920,
                         4000,
-                        3992,
-                        3911
+                        3992
                     )
                 
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

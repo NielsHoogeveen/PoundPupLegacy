@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class FathersRightsViolationsCaseMigrator: Migrator
+internal sealed class FathersRightsViolationsCaseMigrator: PPLMigrator
 {
     public FathersRightsViolationsCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -35,7 +35,7 @@ internal sealed class FathersRightsViolationsCaseMigrator: Migrator
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_fathers_rights_violations c ON c.nid = n.nid AND c.vid = n.vid
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

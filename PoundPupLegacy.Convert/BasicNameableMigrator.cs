@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class BasicNameableMigrator : Migrator
+internal sealed class BasicNameableMigrator : PPLMigrator
 {
     public BasicNameableMigrator(MySqlToPostgresConverter converter): base(converter) { }
 
@@ -82,7 +82,7 @@ internal sealed class BasicNameableMigrator : Migrator
                 )
                 AND n2.nid IS  NULL
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

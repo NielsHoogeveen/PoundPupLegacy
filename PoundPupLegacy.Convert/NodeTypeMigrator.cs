@@ -3,7 +3,7 @@ using PoundPupLegacy.Db;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class NodeTypeMigrator : Migrator
+internal sealed class NodeTypeMigrator : PPLMigrator
 {
     protected override string Name => "node types";
 

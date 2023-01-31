@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Model;
-using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db.Readers;
 using System.Diagnostics;
@@ -10,8 +9,6 @@ namespace PoundPupLegacy.Convert;
 
 internal abstract class Migrator
 {
-    protected readonly MySqlConnection _mysqlConnectionPPL;
-    protected readonly MySqlConnection _mysqlConnectionCPCT;
     protected readonly NpgsqlConnection _postgresConnection;
     protected readonly NodeIdReaderByUrlId _nodeIdReader;
     protected readonly TermReaderByNameableId _termReaderByNameableId;
@@ -22,15 +19,13 @@ internal abstract class Migrator
     protected readonly EditNodeActionIdReaderByNodeTypeId _editNodeActionIdReaderByNodeTypeId;
     protected readonly ActionIdReaderByPath _actionReaderByPath;
     protected readonly TenantNodeIdReaderByUrlId _tenantNodeIdByUrlIdReader;
-
+    protected readonly TenantNodeReaderByUrlId _tenantNodeByUrlIdReader;
 
 
     private readonly Stopwatch stopwatch = new Stopwatch();
 
     protected Migrator(MySqlToPostgresConverter mySqlToPostgresConverter)
     {
-        _mysqlConnectionPPL = mySqlToPostgresConverter.MysqlConnectionPPL;
-        _mysqlConnectionCPCT = mySqlToPostgresConverter.MysqlConnectionCPCT;
         _postgresConnection = mySqlToPostgresConverter.PostgresConnection;
         _nodeIdReader = mySqlToPostgresConverter.NodeIdReader;
         _termReaderByNameableId = mySqlToPostgresConverter.TermByNameableIdReader;
@@ -41,6 +36,7 @@ internal abstract class Migrator
         _editNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.EditNodeActionIdReaderByNodeTypeId;
         _actionReaderByPath = mySqlToPostgresConverter.ActionIdReaderByPath;
         _tenantNodeIdByUrlIdReader = mySqlToPostgresConverter.TenantNodeIdByUrlIdReader;
+        _tenantNodeByUrlIdReader = mySqlToPostgresConverter.TenantNodeByUrlIdReader;
     }
 
     public async Task Migrate()

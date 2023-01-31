@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class OrganizationTypeMigrator: Migrator
+internal sealed class OrganizationTypeMigrator: PPLMigrator
 {
 
     public OrganizationTypeMigrator(MySqlToPostgresConverter converter): base(converter) { }
@@ -79,7 +79,7 @@ internal sealed class OrganizationTypeMigrator: Migrator
             ) n2 ON n2.title = v.topic_name
             """;
 
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

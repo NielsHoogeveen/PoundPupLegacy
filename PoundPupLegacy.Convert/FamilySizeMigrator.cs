@@ -4,7 +4,7 @@ using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class FamilySizeMigrator : Migrator
+internal sealed class FamilySizeMigrator : PPLMigrator
 {
 
     public FamilySizeMigrator(MySqlToPostgresConverter converter) : base(converter) { }

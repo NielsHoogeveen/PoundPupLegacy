@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class NodeTermMigrator: Migrator
+internal sealed class NodeTermMigrator: PPLMigrator
 {
     public NodeTermMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -77,7 +77,7 @@ internal sealed class NodeTermMigrator: Migrator
                 AND n.`type` NOT IN ('amazon_node', 'poll', 'video', 'amazon', 'website', 'image', 'award_poll', 'book_page', 'panel', 'viewnode')
                 AND n.uid <> 0
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

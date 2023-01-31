@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class BillMigrator: Migrator
+internal sealed class BillMigrator: PPLMigrator
 {
     public BillMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -110,7 +110,7 @@ internal sealed class BillMigrator: Migrator
                  WHERE SUBSTRING(title, 1, 2) = 'H.'
                 
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -263,7 +263,7 @@ internal sealed class BillMigrator: Migrator
                  WHERE SUBSTRING(title, 1, 2) = 'S.'
                 
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

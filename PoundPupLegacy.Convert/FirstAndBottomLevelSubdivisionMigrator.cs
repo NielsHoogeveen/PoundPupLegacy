@@ -5,7 +5,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class FirstAndBottomLevelSubdivisionMigrator : Migrator
+internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
 {
     protected override string Name => "first and bottom level subdivisions";
 
@@ -407,7 +407,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : Migrator
             AND n2.`type` = 'country_type'
             AND s.field_statecode_value IS NOT NULL
             """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class SubdivisionTypeMigrator : Migrator
+internal sealed class SubdivisionTypeMigrator : PPLMigrator
 {
 
     public SubdivisionTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }

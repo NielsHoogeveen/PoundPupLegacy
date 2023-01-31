@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class DisruptedPlacementCaseMigrator: Migrator
+internal sealed class DisruptedPlacementCaseMigrator: PPLMigrator
 {
     public DisruptedPlacementCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -38,7 +38,7 @@ internal sealed class DisruptedPlacementCaseMigrator: Migrator
                 LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid 
                 LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal abstract class CountryMigrator: Migrator
+internal abstract class CountryMigrator: PPLMigrator
 {
     public CountryMigrator(MySqlToPostgresConverter converter): base(converter) { }
     protected static string GetISO3166Code2ForCountry(int id)

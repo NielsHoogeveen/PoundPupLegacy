@@ -4,13 +4,13 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentMigrator: Migrator
+internal sealed class DocumentMigratorPPL: PPLMigrator
 {
-    public DocumentMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public DocumentMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
     }
 
-    protected override string Name => "documents";
+    protected override string Name => "documents ppl";
 
     protected override async Task MigrateImpl()
     {
@@ -73,7 +73,7 @@ internal sealed class DocumentMigrator: Migrator
                 ) c ON c.nid = n.nid 
                 WHERE n.`type` = 'case_file'
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -112,9 +112,11 @@ internal sealed class DocumentMigrator: Migrator
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
                 DocumentTypeId = reader.IsDBNull("document_type_id") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("document_type_id")),
+                Documentables = new List<int>(),
             };
 
         }
         await reader.CloseAsync();
     }
+
 }

@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class ActMigrator: Migrator
+internal sealed class ActMigrator: PPLMigrator
 {
     public ActMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -99,7 +99,7 @@ internal sealed class ActMigrator: Migrator
                 	WHERE n.`type` = 'adopt_orgs' AND n.uid <> 0
                 	AND (cn.nid IS NOT NULL OR n.nid IN(64018, 73678, 59410, 64614, 64123, 64297, 64324, 64151))
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

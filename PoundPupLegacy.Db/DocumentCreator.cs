@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Db;
+﻿namespace PoundPupLegacy.Db;
 
 public class DocumentCreator : IEntityCreator<Document>
 {
@@ -10,6 +8,7 @@ public class DocumentCreator : IEntityCreator<Document>
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
         await using var documentWriter = await DocumentWriter.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var documentableDocumentWriter = await DocumentableDocumentWriter.CreateAsync(connection);
 
         await foreach (var document in documents)
         {
@@ -20,7 +19,10 @@ public class DocumentCreator : IEntityCreator<Document>
                 tenantNode.NodeId = document.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }
-
+            foreach(var documentable in document.Documentables)
+            {
+                await documentableDocumentWriter.WriteAsync(new DocumentableDocument { DocumentableId = documentable, DocumentId = document.Id!.Value });
+            }
         }
     }
 }

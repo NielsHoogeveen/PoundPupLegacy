@@ -3,7 +3,7 @@ using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
-internal sealed class AbuseCaseMigrator: Migrator
+internal sealed class AbuseCaseMigrator: PPLMigrator
 {
     public AbuseCaseMigrator(MySqlToPostgresConverter converter) : base(converter)
     {
@@ -108,7 +108,7 @@ internal sealed class AbuseCaseMigrator: Migrator
                         n.title
                 ) c3 ON c3.title = n.title                
                 """;
-        using var readCommand = _mysqlConnectionPPL.CreateCommand();
+        using var readCommand = _mysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

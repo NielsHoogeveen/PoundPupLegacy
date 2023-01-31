@@ -3,7 +3,7 @@ using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 namespace PoundPupLegacy.Convert;
 
-internal sealed class FormalIntermediateLevelSubdivisionMigrator : Migrator
+internal sealed class FormalIntermediateLevelSubdivisionMigrator : PPLMigrator
 {
     protected override string Name => "formal intermediate level subdivisions";
 

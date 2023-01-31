@@ -4,7 +4,7 @@ using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PublicationStatusMigrator : Migrator
+internal sealed class PublicationStatusMigrator : PPLMigrator
 {
     protected override string Name => "publication statuses";
     public PublicationStatusMigrator(MySqlToPostgresConverter converter): base(converter) { }
