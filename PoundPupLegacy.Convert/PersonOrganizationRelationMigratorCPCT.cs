@@ -83,7 +83,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT: CPCTMigrator
                     WHERE n.nid > 33162
                 ) x
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

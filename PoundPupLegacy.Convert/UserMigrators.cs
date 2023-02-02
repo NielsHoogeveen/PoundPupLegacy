@@ -225,7 +225,7 @@ internal sealed class UserMigrator : PPLMigrator
     private async IAsyncEnumerable<User> ReadUsers()
     {
 
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = """

@@ -30,7 +30,7 @@ internal sealed class FileMigrator : PPLMigrator
                 FROM `files` f
                 WHERE fileName NOT IN ('preview', 'thumbnail', '_original')
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

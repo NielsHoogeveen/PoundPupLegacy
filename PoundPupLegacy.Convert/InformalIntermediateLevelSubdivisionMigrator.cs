@@ -96,7 +96,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : PPLMigrator
             JOIN node n2 ON n2.nid = ch.parent
             WHERE n.`type` = 'region_facts'AND n2.`type` = 'country_type'
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

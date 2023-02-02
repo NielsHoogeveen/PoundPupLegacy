@@ -9,13 +9,16 @@ public class NodeController : Controller
 {
     private readonly ILogger<NodeController> _logger;
     private readonly FetchNodeService _fetchNodeService;
+    private readonly SiteDataService _siteDataService;
 
     public NodeController(
         ILogger<NodeController> logger, 
-        FetchNodeService fetchNodeService) 
+        FetchNodeService fetchNodeService, 
+        SiteDataService siteDataService) 
     {
         _logger = logger;
         _fetchNodeService = fetchNodeService;
+        _siteDataService = siteDataService;
     }
 
     [HttpGet("{id}")]
@@ -23,6 +26,16 @@ public class NodeController : Controller
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
+        var tenantId = _siteDataService.GetTenantId(this.HttpContext.Request.Host.Value);
+        if (tenantId is null)
+        {
+            return NotFound();
+        }
+        var urlPath = _siteDataService.GetUrlPathForId(tenantId.Value, id);
+        if (urlPath is not null)
+        {
+            return Redirect($"/{urlPath}");
+        }
         var node = await _fetchNodeService.FetchNode(id, HttpContext.User);
         if(node == null)
         {
@@ -32,4 +45,5 @@ public class NodeController : Controller
 
         return View("Node",node);
     }
+
 }

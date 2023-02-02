@@ -270,7 +270,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                 AND NOT (country_id_to = 4023 AND country_id_from = 3936 AND `year` = 2009)
                 AND  NOT(country_id_to = 4018 AND `year` = 2017)
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

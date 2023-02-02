@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Models;
+using PoundPupLegacy.Services;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -11,11 +12,21 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly Services.AuthenticationService _authenticationService;
+    private readonly FetchNodeService _fetchNodeService;
+    private readonly SiteDataService _siteDataService;
+    private readonly RazorViewToStringService _viewService;
 
-    public HomeController(ILogger<HomeController> logger, Services.AuthenticationService authenticationService)
+    public HomeController(ILogger<HomeController> logger, 
+        Services.AuthenticationService authenticationService,
+        FetchNodeService fetchNodeService,
+        SiteDataService siteDataService,
+        RazorViewToStringService viewService)
     {
         _logger = logger;
         _authenticationService = authenticationService;
+        _fetchNodeService = fetchNodeService;
+        _siteDataService = siteDataService;
+        _viewService = viewService;
     }
 
     public IActionResult Index()
@@ -23,11 +34,31 @@ public class HomeController : Controller
         var bla = HttpContext.Items["UserMenu"];
         return View();
     }
-    public IActionResult AllElse()
-    {
-        return View();
-    }
 
+    public async Task<IActionResult> AllElse()
+    {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        
+        var tenantId = _siteDataService.GetTenantId(this.HttpContext.Request.Host.Value);
+        if (tenantId is null)
+        {
+            return NotFound();
+        }
+        var urlId = _siteDataService.GetIdForUrlPath(tenantId.Value, this.HttpContext.Request.Path.Value!.Substring(1));
+        if (urlId is null)
+        {
+            return NotFound();
+        }
+        var node = await _fetchNodeService.FetchNode(urlId.Value, HttpContext.User);
+        if (node == null)
+        {
+            return NotFound();
+        }
+        _logger.LogInformation($"Fetched node {urlId} in {stopwatch.Elapsed.TotalMilliseconds} ms");
+
+        return View("/Views/Node/Node.cshtml", node);
+    }
     public IActionResult Privacy()
     {
         return View();

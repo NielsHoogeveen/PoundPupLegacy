@@ -35,7 +35,7 @@ internal sealed class WrongfulMedicationCaseMigrator: PPLMigrator
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_wrongful_medication_case c ON c.nid = n.nid AND c.vid = n.vid
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

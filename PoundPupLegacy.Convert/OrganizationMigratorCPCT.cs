@@ -168,7 +168,7 @@ internal sealed class OrganizationMigratorCPCT: CPCTMigrator
          * 48330 => 48545 cpct
          * 47699 => 48846 cpct
          */
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

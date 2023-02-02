@@ -69,7 +69,7 @@ internal sealed class CommentMigrator: PPLMigrator
             AND NOT (c.uid = 0 AND c.`status` = 1 AND c2.cid IS null)
             ORDER BY c.cid
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

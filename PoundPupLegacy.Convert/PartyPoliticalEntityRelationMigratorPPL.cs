@@ -4,9 +4,9 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PartyPoliticalEntityRelationMigrator: PPLMigrator
+internal sealed class PartyPoliticalEntityRelationMigratorPPL: PPLMigrator
 {
-    public PartyPoliticalEntityRelationMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public PartyPoliticalEntityRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
     }
 
@@ -80,7 +80,7 @@ internal sealed class PartyPoliticalEntityRelationMigrator: PPLMigrator
                 	c.cnid
                 ) x
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

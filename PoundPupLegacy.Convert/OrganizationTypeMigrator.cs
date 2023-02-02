@@ -79,7 +79,7 @@ internal sealed class OrganizationTypeMigrator: PPLMigrator
             ) n2 ON n2.title = v.topic_name
             """;
 
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

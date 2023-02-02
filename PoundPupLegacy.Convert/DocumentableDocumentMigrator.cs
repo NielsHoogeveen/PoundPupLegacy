@@ -44,7 +44,7 @@ internal sealed class DocumentableDocumentMigrator: PPLMigrator
                 JOIN content_type_adopt_ind_rep r ON r.nid = n.nid AND r.vid = n.vid
                 JOIN node n2 ON n2.nid = cfr.field_pers_org_nid
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

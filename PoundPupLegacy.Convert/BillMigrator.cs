@@ -110,7 +110,7 @@ internal sealed class BillMigrator: PPLMigrator
                  WHERE SUBSTRING(title, 1, 2) = 'H.'
                 
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -263,7 +263,7 @@ internal sealed class BillMigrator: PPLMigrator
                  WHERE SUBSTRING(title, 1, 2) = 'S.'
                 
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

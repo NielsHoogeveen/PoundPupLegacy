@@ -77,7 +77,7 @@ internal sealed class DocumentMigratorCPCT: CPCTMigrator
                 nr.body,
                 c.document_type_id
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -41,7 +41,7 @@ internal sealed class InterPersonalRelationTypeMigrator : PPLMigrator
                 JOIN category c ON c.cid = n.nid AND c.cnid = 16900
                 """;
 
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

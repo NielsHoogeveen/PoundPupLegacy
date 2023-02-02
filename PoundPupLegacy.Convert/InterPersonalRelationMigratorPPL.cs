@@ -4,9 +4,9 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterPersonalRelationMigrator: PPLMigrator
+internal sealed class InterPersonalRelationMigratorPPL: PPLMigrator
 {
-    public InterPersonalRelationMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public InterPersonalRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
     }
 
@@ -78,7 +78,7 @@ internal sealed class InterPersonalRelationMigrator: PPLMigrator
                     ) fp ON fp.nid = n.nid AND fp.vid = n.vid
                 ) x
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

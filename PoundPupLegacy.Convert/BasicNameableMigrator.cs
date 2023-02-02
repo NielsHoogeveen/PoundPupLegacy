@@ -82,7 +82,7 @@ internal sealed class BasicNameableMigrator : PPLMigrator
                 )
                 AND n2.nid IS  NULL
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

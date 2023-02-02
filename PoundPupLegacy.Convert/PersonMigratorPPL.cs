@@ -186,7 +186,7 @@ internal sealed class PersonMigratorPPL: PPLMigrator
                 WHERE n.`type` = 'adopt_person'
                 AND n.nid not in (45656, 74250)
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

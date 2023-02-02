@@ -4,11 +4,11 @@ namespace PoundPupLegacy.Convert;
 
 internal abstract class CPCTMigrator : Migrator
 {
-    protected readonly MySqlConnection _mysqlConnection;
+    protected override MySqlConnection MysqlConnection { get; }
 
     protected CPCTMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
-        _mysqlConnection = mySqlToPostgresConverter.MysqlConnectionCPCT;
+        MysqlConnection = mySqlToPostgresConverter.MysqlConnectionCPCT;
     }
 
     protected async Task<(int, int)> GetNodeId(int urlId)

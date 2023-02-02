@@ -211,7 +211,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
                 4063,
                 3878)
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

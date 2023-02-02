@@ -73,7 +73,7 @@ internal sealed class DocumentMigratorPPL: PPLMigrator
                 ) c ON c.nid = n.nid 
                 WHERE n.`type` = 'case_file'
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

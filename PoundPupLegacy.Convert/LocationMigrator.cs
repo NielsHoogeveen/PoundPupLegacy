@@ -1346,7 +1346,7 @@ internal sealed class LocationMigrator: PPLMigrator
                 WHERE n.`type` NOT IN ('content_organisations', 'prisons', 'prisonpup')
                 AND n.nid NOT IN (11108, 7760, 12700, 30638)
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

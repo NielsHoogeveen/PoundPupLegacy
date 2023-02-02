@@ -4,11 +4,14 @@ using PoundPupLegacy.Db.Readers;
 using System.Diagnostics;
 using HtmlAgilityPack;
 using System.Text;
+using MySqlConnector;
 
 namespace PoundPupLegacy.Convert;
 
 internal abstract class Migrator
 {
+
+    protected abstract MySqlConnection MysqlConnection { get; }
     protected readonly NpgsqlConnection _postgresConnection;
     protected readonly NodeIdReaderByUrlId _nodeIdReader;
     protected readonly TermReaderByNameableId _termReaderByNameableId;

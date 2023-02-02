@@ -2,7 +2,10 @@
 using PoundPupLegacy.ViewModel;
 using System.Data;
 using System.Diagnostics;
+using System.Reflection.PortableExecutable;
 using System.Security.Claims;
+using Tenant = PoundPupLegacy.ViewModel.Tenant;
+using MenuItem = PoundPupLegacy.ViewModel.MenuItem;
 
 namespace PoundPupLegacy.Services;
 
@@ -12,6 +15,8 @@ public class SiteDataService
     private readonly ILogger<SiteDataService> _logger;
 
     private readonly Dictionary<(int, int), List<MenuItem>> _userMenus = new Dictionary<(int, int), List<MenuItem>>();
+
+    private readonly List<Tenant> _tenants = new List<Tenant>();
     public SiteDataService(NpgsqlConnection connection, ILogger<SiteDataService> logger) 
     { 
         _connection = connection;
@@ -38,8 +43,108 @@ public class SiteDataService
     public async Task InitializeAsync()
     {
         _logger.LogInformation("Loading site data");
+        await LoadTenants();
         await LoadUserMenusAsync();
     }
+
+    public string? GetUrlPathForId(int tenantId, int urlId)
+    {
+        var tenant = _tenants.Find(x => x.Id == tenantId);
+        if (tenant is null)
+        {
+            throw new NullReferenceException("Tenant should not be null");
+        }
+        if(tenant.IdToUrl.TryGetValue(urlId, out var urlPath))
+        {
+            return urlPath;
+        }
+        return null;
+    }
+
+    public int? GetTenantId(string domainName)
+    {
+        if(domainName == "localhost:7141")
+        {
+            return 1;
+        }
+        var tenant = _tenants.Find(x => x.DomainName == domainName);
+        if(tenant is not null)
+        {
+            return tenant.Id;
+        }
+        return null;
+    }
+
+    public int? GetIdForUrlPath(int tenantId, string urlPath)
+    {
+        var tenant = _tenants.Find(x => x.Id == tenantId);
+        if (tenant is null)
+        {
+            throw new NullReferenceException("Tenant should not be null");
+        }
+        if (tenant.UrlToId.TryGetValue(urlPath, out var urlId))
+        {
+            return urlId;
+        }
+        return null;
+    }
+
+    private async Task LoadTenants()
+    {
+        var sw = Stopwatch.StartNew();
+
+        await _connection.OpenAsync();
+        using (var readCommand = _connection.CreateCommand())
+        {
+            var sql = $"""
+            select
+            t.id,
+            t.domain_name
+            from tenant t
+            """;
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            await readCommand.PrepareAsync();
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var tenantId = reader.GetInt32(0);
+                var domainName = reader.GetString(1);
+                _tenants.Add(new Tenant { Id = tenantId, DomainName = domainName, IdToUrl = new Dictionary<int, string>(), UrlToId = new Dictionary<string, int>() });
+            }
+        }
+        using (var readCommand = _connection.CreateCommand())
+        {
+            var sql = $"""
+            select
+            tn.tenant_id,
+            tn.url_id,
+            tn.url_path
+            from tenant_node tn 
+            where tn.url_path is not null
+            """;
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            await readCommand.PrepareAsync();
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var tenant = _tenants.Find(x => x.Id == reader.GetInt32(0));
+                if(tenant is null)
+                {
+                    throw new NullReferenceException("Tenant should not be null");
+                }
+                tenant.UrlToId.Add(reader.GetString(2), reader.GetInt32(1));
+                tenant.IdToUrl.Add(reader.GetInt32(1), reader.GetString(2));
+            }
+        }
+        await _connection.CloseAsync();
+        _logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
+
+    }
+
     private async Task LoadUserMenusAsync()
     {
         var sw = Stopwatch.StartNew();

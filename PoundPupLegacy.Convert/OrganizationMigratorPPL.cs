@@ -198,7 +198,7 @@ internal sealed class OrganizationMigratorPPL: PPLMigrator
                 	c2.topic_parent_names,
                 ua.dst
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

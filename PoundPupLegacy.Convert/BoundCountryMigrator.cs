@@ -45,7 +45,7 @@ internal sealed class BoundCountryMigrator : CountryMigrator
             AND n2.`type` = 'country_type'
             AND n.nid <> 11572
             """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

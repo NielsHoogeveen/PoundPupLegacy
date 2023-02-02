@@ -4,13 +4,13 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterOrganizationalRelationMigrator: PPLMigrator
+internal sealed class InterOrganizationalRelationMigratorPPL: PPLMigrator
 {
-    public InterOrganizationalRelationMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public InterOrganizationalRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
     }
 
-    protected override string Name => "person organization relation";
+    protected override string Name => "person organization relation (ppl)";
 
     protected override async Task MigrateImpl()
     {
@@ -104,7 +104,7 @@ internal sealed class InterOrganizationalRelationMigrator: PPLMigrator
                     ) fp ON fp.nid = n.nid AND fp.vid = n.vid
                 ) x
                 """;
-        using var readCommand = _mysqlConnection.CreateCommand();
+        using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -15,7 +15,6 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -77,6 +76,11 @@ public class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        app.MapControllerRoute(
+           name: "all-else",
+           pattern: "{*url}",
+           defaults: new { controller = "Home", action = "AllElse" });
 
         app.MapBlazorHub();
 
