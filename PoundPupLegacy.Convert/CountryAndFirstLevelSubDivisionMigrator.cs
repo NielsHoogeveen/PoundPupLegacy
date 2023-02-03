@@ -38,8 +38,18 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.ALAND
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -87,9 +97,19 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = "curacao",
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.CURACAO
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.CURACAO
@@ -136,9 +156,19 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = "sint_maarten",
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.SINT_MAARTEN
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.SINT_MAARTEN
@@ -185,8 +215,18 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -314,12 +354,22 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id < 33163 ? id : null
                     }
                 },
                 NodeTypeId = 15,

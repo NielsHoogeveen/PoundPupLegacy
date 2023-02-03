@@ -114,8 +114,18 @@ internal sealed class SubdivisionTypeMigrator : PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,

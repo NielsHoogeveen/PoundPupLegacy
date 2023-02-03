@@ -27,8 +27,18 @@ internal sealed class FamilySizeMigrator : PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.ONE_TO_FOUR
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -62,8 +72,18 @@ internal sealed class FamilySizeMigrator : PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.FOUR_TO_EIGHT
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -97,8 +117,18 @@ internal sealed class FamilySizeMigrator : PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.EIGHT_TO_TWELVE
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -132,8 +162,18 @@ internal sealed class FamilySizeMigrator : PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.MORE_THAN_TWELVE
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,

@@ -27,8 +27,18 @@ internal sealed class OrganizationMigratorPPL: PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.COLORADO_ADOPTION_CENTER
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -65,8 +75,18 @@ internal sealed class OrganizationMigratorPPL: PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = 17036
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -281,12 +301,22 @@ internal sealed class OrganizationMigratorPPL: PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id < 33163 ? id : null
                     }
                 },
                 NodeTypeId = reader.GetInt16("node_type_id"),

@@ -26,6 +26,7 @@ public class FetchNodeService
             {FETCH_SIMPLE_TEXT_NODE},
             {FETCH_SEE_ALSO_POSTS},
             {FETCH_SEE_ALSO_DOCUMENT},
+            {FETCH_LOCATION},
             {FETCH_TAGS_DOCUMENT},
             {FETCH_DOCUMENTS_DOCUMENT},
             {FETCH_COMMENT_DOCUMENT},
@@ -33,6 +34,7 @@ public class FetchNodeService
             {FETCH_COUNTRY_SUBDIVISION},
             {FETCH_BLOG_POST_BREADCRUM},
             {FETCH_BLOG_POST_DOCUMENT},
+            {FETCH_ORGANIZATION_BREADCRUM},
             {FETCH_ARTICLE_BREADCRUM},
             {FETCH_ARTICLE_DOCUMENT},
             {FETCH_COUNTRY_BREADCRUM},
@@ -154,6 +156,35 @@ public class FetchNodeService
                 where an.status <> -1
         )
         """;
+
+    const string FETCH_LOCATION = """
+        select
+            json_agg(to_jsonb(x))
+        from(
+            select 
+            l.id,
+            l.street,
+            l.additional,
+            l.city,
+            l.postal_code,
+            json_build_object(
+        	    'Id', tn2.url_id,
+        	    'Name', s.name
+            ) subdivision,
+            json_build_object(
+        	    'Id', tn3.url_id,
+        	    'Name', nc.title
+            ) country
+            from "location" l
+            join location_locatable ll on ll.location_id = l.id
+            join node nc on nc.id = l.country_id
+            join subdivision s on s.id = l.subdivision_id
+            join tenant_node tn on tn.node_id = ll.locatable_id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = @tenant_id
+            join tenant_node tn3 on tn3.node_id = nc.id and tn3.tenant_id = @tenant_id
+        )x
+        """;
+
     const string FETCH_SIMPLE_TEXT_NODE = """
         fetch_simple_text_node AS(
             SELECT
@@ -396,6 +427,34 @@ public class FetchNodeService
         )
         """;
 
+    const string FETCH_ORGANIZATION_BREADCRUM = """
+        fetch_article_bread_crum AS (
+            SELECT json_agg(
+                json_build_object(
+                    'Url', url,
+                    'Name', "name"
+                )::jsonb 
+            )::jsonb bc
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/organizations', 
+                    'organizations', 
+                    1
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+
     const string FETCH_COUNTRY_SUBDIVISION = """
         fetch_country_subdivisions as (
             select
@@ -411,7 +470,7 @@ public class FetchNodeService
         	    end
         	    )) "Subdivisions"
         	    from country c
-        	    join tenant_node tn on tn.node_id = c.id and tn.tenant_id = 1 and tn.url_id = 4023
+        	    join tenant_node tn on tn.node_id = c.id and tn.tenant_id = 1 and tn.url_id = @url_id
         	    join tenant t on t.id = tn.tenant_id
         	    join subdivision s on s.country_id = c.id
         	    join node n on n.id = s.subdivision_type_id

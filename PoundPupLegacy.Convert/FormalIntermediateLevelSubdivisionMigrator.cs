@@ -47,12 +47,22 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : PPLMigrator
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = int.Parse(parts[5]),
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id < 33163 ? id : null
                     }
                 },
                 PublisherId = int.Parse(parts[6]),

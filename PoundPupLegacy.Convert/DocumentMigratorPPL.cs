@@ -104,6 +104,16 @@ internal sealed class DocumentMigratorPPL: PPLMigrator
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id < 33163 ? id : null
                     }
                 },
                 NodeTypeId = reader.GetInt16("node_type_id"),

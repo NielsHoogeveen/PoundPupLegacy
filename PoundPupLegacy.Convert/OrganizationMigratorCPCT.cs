@@ -98,7 +98,7 @@ internal sealed class OrganizationMigratorCPCT: CPCTMigrator
                     n.title
             ) c2 ON c2.title = n.title
             WHERE n.`type` = 'adopt_orgs'
-            AND n.nid  > 33250
+            AND n.nid  > 33163
             AND n.nid not in (
                 34880, 
                 35725, 

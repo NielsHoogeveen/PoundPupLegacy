@@ -30,8 +30,18 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
                 new TenantNode
                 {
                     Id = null,
-                    TenantId = 1,
+                    TenantId = Constants.PPL,
                     PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.SAINT_BARTH
+                },
+                new TenantNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
                     UrlPath = null,
                     NodeId = null,
                     SubgroupId = null,
@@ -79,8 +89,18 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.SAINT_MARTIN
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -128,8 +148,18 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.FRENCH_SOUTHERN_TERRITORIES
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
@@ -252,12 +282,22 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryM
                     new TenantNode
                     {
                         Id = null,
-                        TenantId = 1,
+                        TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = id
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id < 33163 ? id : null
                     }
                 },
                 NodeTypeId = 16,
