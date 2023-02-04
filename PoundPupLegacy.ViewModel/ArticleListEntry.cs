@@ -9,5 +9,5 @@ public record ArticleListEntry
 
     public Authoring Authoring { get; set; }
 
-    public Tag[] Tags { get; set; }
+    public Link[] Tags { get; set; }
 }

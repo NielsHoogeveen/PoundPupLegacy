@@ -7,10 +7,10 @@ public record Discussion: SimpleTextNode
     public string Text { get; set; }
     public Authoring Authoring { get; set; }
     public bool HasBeenPublished { get; set; }
-    public Tag[] Tags { get; set; }
-    public SeeAlsoBoxElement[] SeeAlsoBoxElements { get; set; }
+    public Link[] Tags { get; set; }
+    public Link[] SeeAlsoBoxElements { get; set; }
     public Comment[] Comments { get; set; }
 
-    public BreadCrumElement[] BreadCrumElements { get; set; }
+    public Link[] BreadCrumElements { get; set; }
 
 }

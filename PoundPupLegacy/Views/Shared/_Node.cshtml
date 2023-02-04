@@ -16,19 +16,19 @@
             <div class="title">
                 <h1>@Model.Title</h1>
             </div>
-            
-                @if(User.Identity.IsAuthenticated){
-                    <component type="typeof(Counter)" render-mode="ServerPrerendered" />
-                }
-                @if (Model is SimpleTextNode simpleTextNode)
-                {
-                    <partial name="~/Views/Shared/_Authoring.cshtml" model="@Model.Authoring" />
-                    <partial name="_SimpleTextNode" model="@simpleTextNode" />
-                }
-                @if(Model is Country country)
-                {
-                    <partial name="_Country" model="@country" />
-                }
+            @if (Model is SimpleTextNode simpleTextNode)
+            {
+                <partial name="~/Views/Shared/_Authoring.cshtml" model="@Model.Authoring" />
+                <partial name="_SimpleTextNode" model="@simpleTextNode" />
+            }
+            @if(Model is Country country)
+            {
+                <partial name="_Country" model="@country" />
+            }
+            @if (Model is Organization organization)
+            {
+                <partial name="_Organization" model="@organization" />
+            }
         </article>
         @if (Model.Tags is not null)
         {

@@ -1,20 +1,13 @@
 ﻿@using PoundPupLegacy.ViewModel;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<OrganizationTypeWithOrganizations>
-<div class="section">
-    <h3>Organizations</h3>
-    @foreach (var organizationType in Model)
-    {
-        <div>
-            @organizationType.OrganizationTypeName
-        </div>
-        <ul>
-            @foreach (var organization in organizationType.Organizations)
-            {
-                <li>
-                    <a href="@organization.Path">@organization.Name</a>
-                </li>
-            }
-        </ul>
-    }
-</div>
+@model IEnumerable<Link>
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var link in Model)
+        {
+            <li><partial name="_Link" model="@link" /></li>
+        }
+    </ul>
+}

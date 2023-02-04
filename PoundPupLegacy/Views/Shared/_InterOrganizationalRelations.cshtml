@@ -1,0 +1,24 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<InterOrganizationalRelation>
+
+@if (Model.Any())
+{
+    <table style="width: 100%">
+        @foreach (var relation in Model)
+        {
+            <tr>
+                <td>
+                    <partial name="_Link" model="@relation.OrganizationFrom" />
+                </td>
+                <td>
+                    <partial name="_Link" model="@relation.InterOrganizationalRelationType" />
+                </td>
+                <td>
+                    <partial name="_Link" model="@relation.OrganizationTo" />
+                </td>
+            </tr>
+        }
+    </table>
+}
+

@@ -1,0 +1,85 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Organizations
+<div class="articles">
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/home">home</a>
+        </span>
+    </div>
+    <form>
+        <select name="country">
+            <option value="0"></option>
+            @foreach (var country in Model.Countries)
+            {
+                if (country.Selected)
+                {
+                    <option value="@country.Id" selected>@country.Name</option>
+                }
+                else
+                {
+                    <option value="@country.Id">@country.Name</option>
+                }
+                
+            }
+        </select>
+        <select name="organization_type">
+            <option value="0"></option>
+            @foreach (var organizationType in Model.OrganizationTypes)
+            {
+                if (organizationType.Selected)
+                {
+                    <option value="@organizationType.Id" selected>@organizationType.Name</option>
+                }
+                else
+                {
+                    <option value="@organizationType.Id">@organizationType.Name</option>
+                }
+                
+            }
+        </select>
+        <select name="search_option">
+            @if (Model.SelectedSearchOption == SearchOption.Contains)
+            {
+                <option value="contains" selected>contains</option>
+            }
+            else
+            {
+                <option value="contains">contains</option>
+            }
+            @if (Model.SelectedSearchOption == SearchOption.IsEqualTo)
+            {
+                <option value="is_equal_to" selected>is equal to</option>
+            }
+            else
+            {
+                <option value="is_equal_to">is equal to</option>
+            }
+            @if (Model.SelectedSearchOption == SearchOption.StartsWith)
+            {
+                <option value="starts_with" selected>starts with</option>
+            }
+            else
+            {
+                <option value="starts_with">starts with</option>
+            }
+            @if (Model.SelectedSearchOption == SearchOption.EndsWith)
+            {
+
+                <option value="ends_with" selected>ends with</option>
+            }
+            else
+            {
+                <option value="ends_with">ends with</option>
+            }
+        </select>
+        <input type="text" name="search" value="@Model.SearchTerm"/>
+        <input type="submit" value="Search" />
+        </form>
+    @foreach (var organization in Model.OrganizationListEntries)
+    {
+        <div>
+            <a href="@organization.Path">@organization.Name</a>
+        </div>
+    }
+</div>

@@ -27,11 +27,12 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddTransient<NpgsqlConnection>((sp) => new NpgsqlConnection(CONNECTSTRING));
+        builder.Services.AddTransient((sp) => new NpgsqlConnection(CONNECTSTRING));
         builder.Services.AddTransient<FetchNodeService>();
         builder.Services.AddTransient<FetchBlogService>();
         builder.Services.AddTransient<FetchBlogsService>();
         builder.Services.AddTransient<FetchArticlesService>();
+        builder.Services.AddTransient<FetchOrganizationsService>();
         builder.Services.AddTransient<RazorViewToStringService>();
         builder.Services.AddTransient<StringToDocumentService>();
         builder.Services.AddTransient<TeaserService>();

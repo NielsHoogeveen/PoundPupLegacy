@@ -6,8 +6,8 @@ public interface Node
     public string Title { get; set; }
     public Authoring Authoring { get; set; }
     public bool HasBeenPublished { get; set; }
-    public Tag[] Tags { get; set; }
+    public Link[] Tags { get; set; }
     public Comment[] Comments { get; set; }
-    public BreadCrumElement[] BreadCrumElements { get; set; }
+    public Link[] BreadCrumElements { get; set; }
 
 }

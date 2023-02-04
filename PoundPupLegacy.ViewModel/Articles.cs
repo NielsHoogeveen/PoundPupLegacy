@@ -2,8 +2,8 @@
 
 public record Articles: PagedList
 {
-    public List<TermName> TermNames { get; set; }
-    public List<ArticleListEntry> ArticleListEntries { get; set; }
+    public SelectionItem[] TermNames { get; set; }
+    public ArticleListEntry[] ArticleListEntries { get; set; }
     public int NumberOfEntries { get; set; }
     public int PageNumber { get; set; }
     public int NumberOfPages { get; set; }

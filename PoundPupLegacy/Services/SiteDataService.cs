@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using Tenant = PoundPupLegacy.ViewModel.Tenant;
-using MenuItem = PoundPupLegacy.ViewModel.MenuItem;
+using MenuItem = PoundPupLegacy.ViewModel.Link;
 
 namespace PoundPupLegacy.Services;
 
@@ -259,13 +259,13 @@ public class SiteDataService
         {
             var user_id = reader.GetInt32(0);
             var tenant_id = reader.GetInt32(1);
-            var menuItems = reader.GetFieldValue<List<MenuItem>>(2);
+            var menuItems = reader.GetFieldValue<List<Link>>(2);
             _userMenus.Add((user_id, tenant_id), menuItems);
         }
         await _connection.CloseAsync();
         _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
     }
-    public IEnumerable<MenuItem> GetMenuItemsForUser(ClaimsPrincipal? cp)
+    public IEnumerable<Link> GetMenuItemsForUser(ClaimsPrincipal? cp)
     {
         if(_userMenus.TryGetValue((GetUserId(cp), 1), out var lst))
         {

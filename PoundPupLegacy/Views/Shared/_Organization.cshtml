@@ -1,0 +1,21 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Organization
+
+<partial name="_OrganizationTypes" model="@Model.OrganizationTypes" />
+
+<div class="text">
+    @Html.Raw(Model.Description.Replace(@"href=""http://poundpuplegacy.org", @"href="""))
+</div>
+<div>
+    @Model.WebsiteUrl
+</div>
+<div>
+    @Model.EmailAddress
+</div>
+
+<partial name="_InterOrganizationalRelations" model="@Model.InterOrganizationalRelations" />
+
+<partial name="_Documents" model="@Model.Documents" />
+
+<partial name="_Locations" model="@Model.Locations" />

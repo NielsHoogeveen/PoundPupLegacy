@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record BasicCountry : TopLevelCountry
+public record Organization : Nameable, Documentable, Locatable
 {
     public string Description { get; set; }
     public int Id { get; set; }
@@ -10,9 +10,13 @@ public record BasicCountry : TopLevelCountry
     public Link[] Tags { get; set; }
     public Comment[] Comments { get; set; }
     public Link[] BreadCrumElements { get; set; }
-    public AdoptionImports AdoptionImports { get; set; }
     public DocumentListItem[] Documents { get; set; }
-    public OrganizationTypeWithOrganizations[] OrganizationTypes { get; set; }
+    public string? WebsiteUrl { get; set; }
+    public string? EmailAddress { get; set; }
+    public DateTime? Established { get; set; }
+    public DateTime? Terminated { get; set; }
+    public Link[] OrganizationTypes { get; set; }
+    public Location[] Locations { get; set; }
 
-    public CountrySubdivisionType[] SubdivisionTypes { get; set; }
+    public InterOrganizationalRelation[] InterOrganizationalRelations { get; set; }
 }

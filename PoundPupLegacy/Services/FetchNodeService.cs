@@ -23,26 +23,26 @@ public class FetchNodeService
         var sql = $"""
             WITH 
             {AUTHENTICATED_NODE},
-            {FETCH_SIMPLE_TEXT_NODE},
-            {FETCH_SEE_ALSO_POSTS},
-            {FETCH_SEE_ALSO_DOCUMENT},
-            {FETCH_LOCATION},
-            {FETCH_TAGS_DOCUMENT},
-            {FETCH_DOCUMENTS_DOCUMENT},
-            {FETCH_COMMENT_DOCUMENT},
-            {FETCH_ORGANIZATIONS_OF_COUNTRY_DOCUMENT},
-            {FETCH_COUNTRY_SUBDIVISION},
-            {FETCH_BLOG_POST_BREADCRUM},
-            {FETCH_BLOG_POST_DOCUMENT},
-            {FETCH_ORGANIZATION_BREADCRUM},
-            {FETCH_ARTICLE_BREADCRUM},
-            {FETCH_ARTICLE_DOCUMENT},
-            {FETCH_COUNTRY_BREADCRUM},
-            {FETCH_ADOPTION_IMPORTS},
-            {FETCH_BASIC_COUNTRY},
-            {FETCH_BASIC_COUNTRY_DOCUMENT},
-            {FETCH_DOCUMENT}
-            SELECT node_type_id, document from fetch_document
+            {SEE_ALSO_DOCUMENT},
+            {LOCATIONS_DOCUMENT},
+            {INTER_ORGANIZATIONAL_RELATION_DOCUMENT},
+            {ORGANIZATION_TYPES_DOCUMENT},
+            {TAGS_DOCUMENT},
+            {DOCUMENTS_DOCUMENT},
+            {COMMENTS_DOCUMENT},
+            {ORGANIZATIONS_OF_COUNTRY_DOCUMENT},
+            {COUNTRY_SUBDIVISIONS_DOCUMENT},
+            {BLOG_POST_BREADCRUM_DOCUMENT},
+            {ORGANIZATION_BREADCRUM_DOCUMENT},
+            {ARTICLE_BREADCRUM_DOCUMENT},
+            {COUNTRY_BREADCRUM_DOCUMENT},
+            {ADOPTION_IMPORTS_DOCUMENT},
+            {BLOG_POST_DOCUMENT},
+            {ARTICLE_DOCUMENT},
+            {ORGANIZATION_DOCUMENT},
+            {BASIC_COUNTRY_DOCUMENT},
+            {NODE_DOCUMENT}
+            SELECT node_type_id, document from node_document
             """;
 
         using var readCommand = _connection.CreateCommand();
@@ -67,6 +67,7 @@ public class FetchNodeService
         Node node = node_type_id switch
         {
             13 => reader.GetFieldValue<BasicCountry>(1),
+            23 => reader.GetFieldValue<Organization>(1),
             35 => reader.GetFieldValue<BlogPost>(1),
             36 => reader.GetFieldValue<Article>(1),
             37 => reader.GetFieldValue<Discussion>(1),
@@ -157,109 +158,323 @@ public class FetchNodeService
         )
         """;
 
-    const string FETCH_LOCATION = """
-        select
-            json_agg(to_jsonb(x))
-        from(
-            select 
-            l.id,
-            l.street,
-            l.additional,
-            l.city,
-            l.postal_code,
-            json_build_object(
-        	    'Id', tn2.url_id,
-        	    'Name', s.name
-            ) subdivision,
-            json_build_object(
-        	    'Id', tn3.url_id,
-        	    'Name', nc.title
-            ) country
-            from "location" l
-            join location_locatable ll on ll.location_id = l.id
-            join node nc on nc.id = l.country_id
-            join subdivision s on s.id = l.subdivision_id
-            join tenant_node tn on tn.node_id = ll.locatable_id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
-            join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = @tenant_id
-            join tenant_node tn3 on tn3.node_id = nc.id and tn3.tenant_id = @tenant_id
-        )x
-        """;
-
-    const string FETCH_SIMPLE_TEXT_NODE = """
-        fetch_simple_text_node AS(
-            SELECT
-                an.url_id, 
-                an.title, 
-                an.created_date_time, 
-                an.changed_date_time, 
-                stn.text, 
-                an.publisher_id, 
-                p.name publisher_name,
-                an.has_been_published
-            FROM authenticated_node an
-            join simple_text_node stn on stn.id = an.node_id 
-            JOIN public.principal p on p.id = an.publisher_id
-        )
-        """;
-    const string FETCH_BASIC_COUNTRY = """
-        fetch_basic_country AS(
-            SELECT
-                an.url_id, 
-                an.title, 
-                an.created_date_time, 
-                an.changed_date_time, 
-                nm.description, 
-                an.publisher_id, 
-                p.name publisher_name,
-                an.has_been_published
-            FROM authenticated_node an
-            join top_level_country tlc on tlc.id = an.node_id 
-            join nameable nm on nm.id = an.node_id
-            JOIN public.principal p on p.id = an.publisher_id
+    const string LOCATIONS_DOCUMENT = """
+        locations_document as(
+            select
+                json_agg(json_build_object(
+        			'Id', "id",
+        			'Street', street,
+        			'Additional', additional,
+        			'City', city,
+        			'PostalCode', postal_code,
+        			'Subdivision', subdivision,
+        			'Country', country,
+                    'Latitude', latitude,
+                    'Longitude', longitude
+        		))::jsonb document
+            from(
+                select 
+                l.id,
+                l.street,
+                l.additional,
+                l.city,
+                l.postal_code,
+                json_build_object(
+                	'Path', case when tn2.url_path is null then '/node/' || tn2.url_id else '/' || tn2.url_path end,
+                	'Name', s.name
+                ) subdivision,
+                json_build_object(
+                	'Path', case when tn3.url_path is null then '/node/' || tn3.url_id else '/' || tn3.url_path end,
+                	'Name', nc.title
+                ) country,
+                l.latitude,
+                l.longitude
+                from "location" l
+                join location_locatable ll on ll.location_id = l.id
+                join node nc on nc.id = l.country_id
+                join subdivision s on s.id = l.subdivision_id
+                join tenant_node tn on tn.node_id = ll.locatable_id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = @tenant_id
+                join tenant_node tn3 on tn3.node_id = nc.id and tn3.tenant_id = @tenant_id
+            )x
         )
         """;
 
-    const string FETCH_SEE_ALSO_POSTS = """
-        fetch_see_also_posts AS (
-         SELECT 
-            case 
-                when tn.url_path is null then '/node/' || tn.url_id
-                else '/' || tn.url_path
-            end path,
-            n2.title
-        FROM authenticated_node an
-        JOIN node_term nt1 on nt1.node_id = an.node_id
-        JOIN node_term nt2 on nt2.term_id = nt1.term_id and nt2.node_id <> nt1.node_id
-        JOIN tenant_node tn on tn.node_id = nt2.node_id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
-        JOIN node n2 on n2.id = tn.node_id
-        GROUP BY an.node_id, tn.node_id, tn.url_path, tn.url_id, n2.title
-        HAVING COUNT(tn.node_id) > 2 
-        ORDER BY count(tn.node_id) desc, n2.title
-        LIMIT 10
+    const string INTER_ORGANIZATIONAL_RELATION_DOCUMENT = """
+        inter_organizational_relation_document as(
+            select
+                json_agg(json_build_object(
+        	        'OrganizationFrom', organization_from,
+        	        'OrganizationTo', organization_to,
+        	        'InterOrganizationalRelationType', inter_organizational_relation_type,
+        	        'GeographicEntity', geographic_entity,
+        	        'DateRange', date_range,
+        	        'MoneyInvolved', money_involved,
+        	        'NumberOfChildrenInvolved', number_of_children_involved,
+        	        'Description', description,
+        	        'Direction', direction
+                ))::jsonb document
+            from(
+        	    select
+        	    json_build_object(
+        		    'Name', organization_name_from,
+        		    'Path', organization_path_from
+        	    ) organization_from,
+        	    json_build_object(
+        		    'Name', organization_name_to,
+        		    'Path', organization_path_to
+        	    ) organization_to,
+        	    json_build_object(
+        		    'Name', inter_organizational_relation_type_name,
+        		    'Path', inter_organizational_relation_type_path
+        	    ) inter_organizational_relation_type,
+        	    case
+        	    when geographic_entity_name is null then null
+        	    else json_build_object(
+        			    'Name', geographic_entity_name,
+        			    'Path', geographic_entity_path) 
+        	    end geographic_entity,
+        	    date_range,
+        	    money_involved,
+        	    number_of_children_involved,
+        	    description,
+        	    direction
+        	    from(
+        		    select
+        		    organization_name_from,
+        		    case 
+        			    when organization_path_from is null then '/node/' || organization_id_from
+        			    else '/' || organization_path_from
+        		    end organization_path_from,
+        		    organization_name_to,
+        		    case 
+        			    when organization_path_to is null then '/node/' || organization_id_to
+        			    else '/' || organization_path_to
+        		    end organization_path_to,
+        		    inter_organizational_relation_type_name,
+        		    case 
+        			    when inter_organizational_relation_type_path is null then '/node/' || inter_organizational_relation_type_id
+        			    else '/' || inter_organizational_relation_type_path
+        		    end inter_organizational_relation_type_path,
+        		    geographic_entity_name,
+        		    case
+        			    when geographic_entity_path is null and geographic_entity_id is null then null
+        			    when geographic_entity_path is null  then '/node/' || geographic_entity_id
+        			    else '/' || geographic_entity_path
+        		    end geographic_entity_path,
+        		    date_range,
+        		    money_involved,
+        		    number_of_children_involved,
+        		    description,
+        		    direction
+        		    from(
+        			    select
+        			    distinct
+        			    tn1.url_id organization_id_from,
+        			    tn1.url_path organization_path_from,
+        			    n1.title organization_name_from,
+        			    tn2.url_id organization_id_to,
+        			    tn2.url_path organization_path_to,
+        			    n2.title organization_name_to,
+        			    tn3.url_id inter_organizational_relation_type_id,
+        			    tn3.url_path inter_organizational_relation_type_path,
+        			    n3.title inter_organizational_relation_type_name,
+        			    tn4.url_id geographic_entity_id,
+        			    tn4.url_path geographic_entity_path,
+        			    tn4.title  geographic_entity_name,
+        			    r.date_range,
+        			    r.money_involved,
+        			    r.number_of_children_involved,
+        			    r.description,
+        			    1 direction
+        			    from node n
+        			    join inter_organizational_relation r on r.id = n.id
+        			    join inter_organizational_relation_type rt on rt.id = r.inter_organizational_relation_type_id
+        			    join node n3 on n3.id = rt.id
+        			    join node n1 on n1.id = r.organization_id_from
+        			    join organization o1 on o1.id = n1.id
+        			    join node n2 on n2.id = r.organization_id_to
+        			    join organization o2 on o2.id = n2.id
+        			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
+        			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    left join (
+        				    select 
+        				    tn.url_id,
+        				    n.title,
+        				    tn.node_id,
+        				    tn.url_path
+        				    from node n
+        				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id 
+        			    ) tn4 on tn4.node_id = r.geographical_entity_id
+        			    where rt.is_symmetric
+        			    union 
+        			    select
+        			    distinct
+        			    tn2.url_id organization_id_to,
+        			    tn2.url_path organization_path_to,
+        			    n2.title organization_name_to,
+        			    tn1.url_id organization_id_from,
+        			    tn1.url_path organization_path_from,
+        			    n1.title organization_name_from,
+        			    tn3.url_id inter_organizational_relation_type_id,
+        			    tn3.url_path inter_organizational_relation_type_path,
+        			    n3.title inter_organizational_relation_type_name,
+        			    tn4.url_id geographic_entity_id,
+        			    tn4.url_path geographic_entity_path,
+        			    tn4.title  geographic_entity_name,
+        			    r.date_range,
+        			    r.money_involved,
+        			    r.number_of_children_involved,
+        			    r.description,
+        			    1 direction
+        			    from node n
+        			    join inter_organizational_relation r on r.id = n.id
+        			    join inter_organizational_relation_type rt on rt.id = r.inter_organizational_relation_type_id
+        			    join node n3 on n3.id = rt.id
+        			    join node n1 on n1.id = r.organization_id_from
+        			    join organization o1 on o1.id = n1.id
+        			    join node n2 on n2.id = r.organization_id_to
+        			    join organization o2 on o2.id = n2.id
+        			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id
+        			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    left join (
+        				    select 
+        				    tn.url_id,
+        				    n.title,
+        				    tn.node_id,
+        				    tn.url_path
+        				    from node n
+        				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id 
+        			    ) tn4 on tn4.node_id = r.geographical_entity_id
+        			    where rt.is_symmetric
+        			    union 
+        			    select
+        			    distinct
+        			    tn1.url_id organization_id_from,
+        			    tn1.url_path organization_path_from,
+        			    n1.title organization_name_from,
+        			    tn2.url_id organization_id_to,
+        			    tn2.url_path organization_path_to,
+        			    n2.title organization_name_to,
+        			    tn3.url_id inter_organizational_relation_type_id,
+        			    tn3.url_path inter_organizational_relation_type_path,
+        			    n3.title inter_organizational_relation_type_name,
+        			    tn4.url_id geographic_entity_id,
+        			    tn4.url_path geographic_entity_path,
+        			    tn4.title  geographic_entity_name,
+        			    r.date_range,
+        			    r.money_involved,
+        			    r.number_of_children_involved,
+        			    r.description,
+        			    2 direction
+        			    from node n
+        			    join inter_organizational_relation r on r.id = n.id
+        			    join inter_organizational_relation_type rt on rt.id = r.inter_organizational_relation_type_id
+        			    join node n3 on n3.id = rt.id
+        			    join node n1 on n1.id = r.organization_id_from
+        			    join organization o1 on o1.id = n1.id
+        			    join node n2 on n2.id = r.organization_id_to
+        			    join organization o2 on o2.id = n2.id
+        			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
+        			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id 
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    left join (
+        				    select 
+        				    tn.url_id,
+        				    n.title,
+        				    tn.node_id,
+        				    tn.url_path
+        				    from node n
+        				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id 
+        			    ) tn4 on tn4.node_id = r.geographical_entity_id
+        			    where not rt.is_symmetric
+        			    union 
+        			    select
+        			    distinct
+        			    tn1.url_id organization_id_from,
+        			    tn1.url_path organization_path_from,
+        			    n1.title organization_name_from,
+        			    tn2.url_id organization_id_to,
+        			    tn2.url_path organization_path_to,
+        			    n2.title organization_name_to,
+        			    tn3.url_id inter_organizational_relation_type_id,
+        			    tn3.url_path inter_organizational_relation_type_path,
+        			    n3.title inter_organizational_relation_type_name,
+        			    tn4.url_id geographic_entity_id,
+        			    tn4.url_path geographic_entity_path,
+        			    tn4.title  geographic_entity_name,
+        			    r.date_range,
+        			    r.money_involved,
+        			    r.number_of_children_involved,
+        			    r.description,
+        			    3 direction
+        			    from node n
+        			    join inter_organizational_relation r on r.id = n.id
+        			    join inter_organizational_relation_type rt on rt.id = r.inter_organizational_relation_type_id
+        			    join node n3 on n3.id = rt.id
+        			    join node n1 on n1.id = r.organization_id_from
+        			    join organization o1 on o1.id = n1.id
+        			    join node n2 on n2.id = r.organization_id_to
+        			    join organization o2 on o2.id = n2.id
+        			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id 
+        			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    left join (
+        				    select 
+        				    tn.url_id,
+        				    n.title,
+        				    tn.node_id,
+        				    tn.url_path
+        				    from node n
+        				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id 
+        			    ) tn4 on tn4.node_id = r.geographical_entity_id
+        			    where not rt.is_symmetric
+        		    ) x
+        	    ) x
+            )x
         )
         """;
-    const string FETCH_SEE_ALSO_DOCUMENT = """
-        fetch_see_also_document AS(
+
+    const string SEE_ALSO_DOCUMENT = """
+        see_also_document AS(
             SELECT
                 json_agg(
                     json_build_object(
                         'Path', sa.path,
                         'Name', sa.title
                     )::jsonb
-                )::jsonb agg
-            FROM fetch_see_also_posts sa
+                )::jsonb document
+            FROM (
+                SELECT 
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end path,
+                    n2.title
+                FROM authenticated_node an
+                JOIN node_term nt1 on nt1.node_id = an.node_id
+                JOIN node_term nt2 on nt2.term_id = nt1.term_id and nt2.node_id <> nt1.node_id
+                JOIN tenant_node tn on tn.node_id = nt2.node_id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
+                JOIN node n2 on n2.id = tn.node_id
+                GROUP BY an.node_id, tn.node_id, tn.url_path, tn.url_id, n2.title
+                HAVING COUNT(tn.node_id) > 2 
+                ORDER BY count(tn.node_id) desc, n2.title
+                LIMIT 10
+            ) sa
         )
         """;
 
-    const string FETCH_TAGS_DOCUMENT = """
-        fetch_tags_document AS (
+    const string TAGS_DOCUMENT = """
+        tags_document AS (
             SELECT
                 json_agg(
                     json_build_object(
                         'Path',  t.path,
                         'Name', t.name
                     )::jsonb
-                )::jsonb as agg
+                )::jsonb as document
             FROM (
                 select
                     case 
@@ -276,15 +491,15 @@ public class FetchNodeService
         )
         """;
 
-    const string FETCH_ORGANIZATIONS_OF_COUNTRY_DOCUMENT = """
-        fetch_organization_types as(
+    const string ORGANIZATIONS_OF_COUNTRY_DOCUMENT = """
+        organizations_of_country_document as(
             select
                 json_agg(
                     json_build_object(
         	            'OrganizationTypeName', organization_type,
         	            'Organizations', organizations
                     )
-                ) organization_types
+                )::jsonb document
             from(
                 select
         	        organization_type,
@@ -317,8 +532,8 @@ public class FetchNodeService
         )
         """;
 
-    const string FETCH_DOCUMENTS_DOCUMENT = """
-        fetch_documents as(
+    const string DOCUMENTS_DOCUMENT = """
+        documents_document as(
             select
                 json_agg(
                     json_build_object(
@@ -327,7 +542,7 @@ public class FetchNodeService
                         'PublicationDate', publication_date,
                         'SortOrder', sort_order
                     )::jsonb
-                )::jsonb documents
+                )::jsonb document
             from(
                 select
                     path,
@@ -364,14 +579,14 @@ public class FetchNodeService
         )
         """;
 
-    const string FETCH_BLOG_POST_BREADCRUM = """
-        fetch_blog_post_bread_crum AS (
+    const string BLOG_POST_BREADCRUM_DOCUMENT = """
+        blog_post_bread_crum_document AS (
             SELECT json_agg(
                 json_build_object(
-                    'Url', url,
+                    'Path', url,
                     'Name', "name"
                 )::jsonb 
-            )::jsonb bc
+            )::jsonb document
             FROM(
             SELECT
         	    url,
@@ -399,14 +614,14 @@ public class FetchNodeService
             ) bces
         )
         """;
-    const string FETCH_ARTICLE_BREADCRUM = """
-        fetch_article_bread_crum AS (
+    const string ARTICLE_BREADCRUM_DOCUMENT = """
+        article_bread_crum_document AS (
             SELECT json_agg(
                 json_build_object(
-                    'Url', url,
+                    'Path', url,
                     'Name', "name"
                 )::jsonb 
-            )::jsonb bc
+            )::jsonb document
             FROM(
             SELECT
         	    url,
@@ -427,14 +642,14 @@ public class FetchNodeService
         )
         """;
 
-    const string FETCH_ORGANIZATION_BREADCRUM = """
-        fetch_article_bread_crum AS (
+    const string ORGANIZATION_BREADCRUM_DOCUMENT = """
+        organization_bread_crum_document AS (
             SELECT json_agg(
                 json_build_object(
-                    'Url', url,
+                    'Path', url,
                     'Name', "name"
                 )::jsonb 
-            )::jsonb bc
+            )::jsonb document
             FROM(
             SELECT
         	    url,
@@ -455,42 +670,53 @@ public class FetchNodeService
         )
         """;
 
-    const string FETCH_COUNTRY_SUBDIVISION = """
-        fetch_country_subdivisions as (
+    const string COUNTRY_SUBDIVISIONS_DOCUMENT = """
+        country_subdivisions_document as (
             select
-        	json_agg(to_jsonb(x)) "document"
-            from(
-        	    select
-        	    n.title "Name", 
         	    json_agg(json_build_object(
-        	    'Name', s.name,
-        	    'Path', case 
-        		    when tn2.url_path is null then '/node/' || tn2.url_id
-        		    else tn2.url_path
-        	    end
-        	    )) "Subdivisions"
-        	    from country c
-        	    join tenant_node tn on tn.node_id = c.id and tn.tenant_id = 1 and tn.url_id = @url_id
-        	    join tenant t on t.id = tn.tenant_id
-        	    join subdivision s on s.country_id = c.id
-        	    join node n on n.id = s.subdivision_type_id
-        	    join tenant_node tn2 on tn2.node_id = s.id and tn.tenant_id = 1
-        	    join term tp on tp.nameable_id = c.id and tp.vocabulary_id = t.vocabulary_id_tagging
-        	    join term tc on tc.nameable_id = s.id and tc.vocabulary_id = t.vocabulary_id_tagging
-        	    join term_hierarchy th on th.term_id_parent = tp.id and th.term_id_child = tc.id
-        	    group by n.title
+        		    'Name', subdivision_type_name,
+        		    'Subdivisions', subdivisions
+        	    ))::jsonb document
+        	from(
+                select
+        	        subdivision_type_name,
+        	        json_agg(json_build_object(
+        		        'Name', subdivision_name,
+        		        'Path', case 
+        			        when url_path is null then '/node/' || url_id
+        			        else url_path
+        		        end
+        		        )) "subdivisions"
+                FROM(
+        	        select
+        		        distinct
+        		        n.title subdivision_type_name, 
+        		        s.name subdivision_name,
+        		        tn2.url_path,
+        		        tn2.url_id
+        	        from country c
+        	        join tenant_node tn on tn.node_id = c.id and tn.tenant_id = 1 and tn.url_id = @url_id
+        	        join tenant t on t.id = tn.tenant_id
+        	        join subdivision s on s.country_id = c.id
+        	        join node n on n.id = s.subdivision_type_id
+        	        join tenant_node tn2 on tn2.node_id = s.id and tn.tenant_id = 1
+        	        join term tp on tp.nameable_id = c.id and tp.vocabulary_id = t.vocabulary_id_tagging
+        	        join term tc on tc.nameable_id = s.id and tc.vocabulary_id = t.vocabulary_id_tagging
+        	        join term_hierarchy th on th.term_id_parent = tp.id and th.term_id_child = tc.id
+                ) x
+                GROUP BY subdivision_type_name
             ) x
         )
         """;
 
-    const string FETCH_COUNTRY_BREADCRUM = """
-        fetch_country_bread_crum AS (
+    const string COUNTRY_BREADCRUM_DOCUMENT = """
+        country_bread_crum_document AS (
             SELECT json_agg(
                 json_build_object(
-                    'Url', url,
+                    'Path', url,
                     'Name', "name"
                 )::jsonb
-            )::jsonb bc
+            )::jsonb document
             FROM(
             SELECT
         	    url,
@@ -511,9 +737,9 @@ public class FetchNodeService
         )
         """;
 
-    const string FETCH_COMMENT_DOCUMENT = """
-        fetch_comments_document AS (
-            SELECT json_agg(tree)::jsonb agg
+    const string COMMENTS_DOCUMENT = """
+        comments_document AS (
+            SELECT json_agg(tree)::jsonb document
             FROM (
                 SELECT to_jsonb(sub)::jsonb AS tree
                 FROM (
@@ -539,8 +765,8 @@ public class FetchNodeService
         )
         """;
 
-    const string FETCH_ADOPTION_IMPORTS = """
-        fetch_adoption_imports as(
+    const string ADOPTION_IMPORTS_DOCUMENT = """
+        adoption_imports_document as(
             select
                 json_build_object(
                     'StartYear', start_year,
@@ -552,7 +778,7 @@ public class FetchNodeService
                             'Values', y
                         )::jsonb
                     )::jsonb
-                ) imports
+                )::jsonb document
             from(
                 select
         	        name,
@@ -647,8 +873,8 @@ public class FetchNodeService
         """;
 
 
-    const string FETCH_BASIC_COUNTRY_DOCUMENT = """
-        fetch_basic_country_document AS (
+    const string BASIC_COUNTRY_DOCUMENT = """
+        basic_country_document AS (
             SELECT 
                 json_build_object(
                 'Id', n.url_id,
@@ -662,21 +888,108 @@ public class FetchNodeService
                     'ChangedDateTime', n.changed_date_time
                 ),
                 'HasBeenPublished', n.has_been_published,
-                'BreadCrumElements', (SELECT bc FROM fetch_country_bread_crum),
-                'Tags', (SELECT agg FROM fetch_tags_document),
-                'Comments', (SELECT agg FROM  fetch_comments_document),
-                'AdoptionImports', (SELECT imports FROM fetch_adoption_imports),
-                'Documents', (select documents from fetch_documents),
-                'OrganizationTypes', (select organization_types from fetch_organization_types),
-                'SubdivisionTypes', (select document from fetch_country_subdivisions)
+                'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'Comments', (SELECT document FROM  comments_document),
+                'AdoptionImports', (SELECT document FROM adoption_imports_document),
+                'Documents', (SELECT document from documents_document),
+                'OrganizationTypes', (SELECT document FROM organizations_of_country_document),
+                'SubdivisionTypes', (SELECT document FROM country_subdivisions_document)
             ) :: jsonb document
-            FROM fetch_basic_country n
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join top_level_country tlc on tlc.id = an.node_id 
+                join nameable nm on nm.id = an.node_id
+                JOIN public.principal p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
+    const string ORGANIZATION_TYPES_DOCUMENT = """
+        organization_types_document AS (
+            select
+                json_agg(json_build_object(
+        	        'Name', "name",
+        	        'Path', "path"
+                ))::jsonb "document"
+            from(
+            select
+            n.title "name",
+            case 
+        	    when tn2.url_path is null then '/node/' || tn2.url_id
+        	    else tn2.url_path
+            end path	
+            from organization_type ot
+            join node n on n.id = ot.id
+            join organization_organization_type oot on oot.organization_type_id = ot.id
+            join organization o on o.id = oot.organization_id
+            join tenant_node tn1 on tn1.node_id = o.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
+            join tenant_node tn2 on tn2.node_id = ot.id and tn2.tenant_id = @tenant_id 
+            ) x
+        )
+        """;
+
+    const string ORGANIZATION_DOCUMENT = """
+        organization_document AS (
+            SELECT 
+                json_build_object(
+                'Id', n.url_id,
+                'Title', n.title, 
+                'Description', n.description,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', json_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'HasBeenPublished', n.has_been_published,
+                'WebsiteUrl', n.website_url,
+                'EmailAddress', n.email_address,
+                'Established', n.established,
+                'Terminated', n.terminated,
+                'BreadCrumElements', (SELECT document FROM organization_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'Comments', (SELECT document FROM  comments_document),
+                'Documents', (SELECT document FROM documents_document),
+                'OrganizationTypes', (SELECT document FROM organization_types_document),
+                'Locations', (SELECT document FROM locations_document),
+                'InterOrganizationalRelations', (SELECT document FROM inter_organizational_relation_document)
+            ) :: jsonb document
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
+                    o.website_url,
+                    o.email_address,
+                    o.established,
+                    o.terminated
+                FROM authenticated_node an
+                join organization o on o.id = an.node_id 
+                join nameable nm on nm.id = an.node_id
+                JOIN public.principal p on p.id = an.publisher_id
+            ) n
         ) 
         """;
 
 
-    const string FETCH_BLOG_POST_DOCUMENT = """
-        fetch_blog_post_document AS (
+    const string BLOG_POST_DOCUMENT = """
+        blog_post_document AS (
             SELECT 
                 json_build_object(
                 'Id', n.url_id,
@@ -690,17 +1003,30 @@ public class FetchNodeService
                     'ChangedDateTime', n.changed_date_time
                 ),
                 'HasBeenPublished', n.has_been_published,
-                'BreadCrumElements', (SELECT bc FROM fetch_blog_post_bread_crum),
-                'Tags', (SELECT agg FROM fetch_tags_document),
-                'SeeAlsoBoxElements', (SELECT agg FROM fetch_see_also_document),
-                'Comments', (SELECT agg FROM  fetch_comments_document)
+                'BreadCrumElements', (SELECT document FROM blog_post_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
+                'Comments', (SELECT document FROM  comments_document)
             ) :: jsonb document
-            FROM fetch_simple_text_node n
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    stn.text, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join simple_text_node stn on stn.id = an.node_id 
+                JOIN public.principal p on p.id = an.publisher_id
+            ) n
         ) 
         """;
 
-    const string FETCH_ARTICLE_DOCUMENT = """
-        fetch_article_document AS (
+    const string ARTICLE_DOCUMENT = """
+        article_document AS (
             SELECT 
                 json_build_object(
                 'Id', n.url_id,
@@ -714,23 +1040,37 @@ public class FetchNodeService
                     'ChangedDateTime', n.changed_date_time
                 ),
                 'HasBeenPublished', n.has_been_published,
-                'BreadCrumElements', (SELECT bc FROM fetch_article_bread_crum),
-                'Tags', (SELECT agg FROM fetch_tags_document),
-                'SeeAlsoBoxElements', (SELECT agg FROM fetch_see_also_document),
-                'Comments', (SELECT agg FROM  fetch_comments_document)
+                'BreadCrumElements', (SELECT document FROM article_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
+                'Comments', (SELECT document FROM  comments_document)
                     ) :: jsonb document
-            FROM fetch_simple_text_node n
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    stn.text, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join simple_text_node stn on stn.id = an.node_id 
+                JOIN public.principal p on p.id = an.publisher_id
+            ) n
         ) 
         """;
 
-    const string FETCH_DOCUMENT = """
-        fetch_document AS (
+    const string NODE_DOCUMENT = """
+        node_document AS (
             SELECT
                 an.node_type_id,
-                case 
-                    when an.node_type_id = 35 then (select document from fetch_blog_post_document)
-                    when an.node_type_id = 36 then (select document from fetch_article_document)
-                    when an.node_type_id = 13 then (select document from fetch_basic_country_document)
+                case
+                    when an.node_type_id = 13 then (select document from basic_country_document)
+                    when an.node_type_id = 23 then (select document from organization_document)
+                    when an.node_type_id = 35 then (select document from blog_post_document)
+                    when an.node_type_id = 36 then (select document from article_document)
                 end :: jsonb document
             FROM authenticated_node an 
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
