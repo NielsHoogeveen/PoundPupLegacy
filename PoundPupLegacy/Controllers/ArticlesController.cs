@@ -13,10 +13,12 @@ public class ArticlesController : Controller
 
     private readonly FetchArticlesService _fetchArticlesService;
     private readonly ILogger<ArticlesController> _logger;
+    private readonly SiteDataService _siteDataService;
 
-    public ArticlesController(ILogger<ArticlesController> logger, FetchArticlesService fetchArticlesService)
+    public ArticlesController(ILogger<ArticlesController> logger, FetchArticlesService fetchArticlesService, SiteDataService siteDataService)
     {
         _fetchArticlesService = fetchArticlesService;
+        _siteDataService = siteDataService;
         _logger = logger;
     }
 
@@ -51,9 +53,10 @@ public class ArticlesController : Controller
         }
         var stopwatch = new Stopwatch();
         stopwatch.Start();
+        var tenantId = _siteDataService.GetTenantId(HttpContext);
         var termIds = query == null? new List<int>(): GetTermIds(query.Keys).ToList();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var articles = termIds.Any() ? await _fetchArticlesService.GetArticles(termIds, startIndex, NUMBER_OF_ENTRIES) : await _fetchArticlesService.GetArticles((pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES);
+        var articles = termIds.Any() ? await _fetchArticlesService.GetArticles(termIds, startIndex, NUMBER_OF_ENTRIES, tenantId) : await _fetchArticlesService.GetArticles((pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES, tenantId);
         articles.PageNumber = pageNumber;
         articles.NumberOfPages = (articles.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         articles.QueryString = string.Join("&", termIds.Select(x => $"{TERM_NAME_PREFIX}{x}"));

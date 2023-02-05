@@ -17,7 +17,7 @@ public class FetchNodeService
         _siteDateService = siteDataService;
     }
 
-    public async Task<Node?> FetchNode(int id, ClaimsPrincipal? claimsPrincipal)
+    public async Task<Node?> FetchNode(int id, HttpContext context)
     {
         _connection.Open();
         var sql = $"""
@@ -55,7 +55,7 @@ public class FetchNodeService
         await readCommand.PrepareAsync();
         readCommand.Parameters["url_id"].Value = id;
         readCommand.Parameters["tenant_id"].Value = 1;
-        readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId(claimsPrincipal);
+        readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId(context);
         await using var reader = await readCommand.ExecuteReaderAsync();
         await reader.ReadAsync();
         if (!reader.HasRows)
@@ -607,7 +607,7 @@ public class FetchNodeService
                     p.name || '''s blog', 
                     2
                 FROM authenticated_node an
-                JOIN principal p on p.id = an.publisher_id
+                JOIN publisher p on p.id = an.publisher_id
                 WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
                 ) bce
                 ORDER BY bce."order"
@@ -756,7 +756,7 @@ public class FetchNodeService
         		        c.text AS "Text", 
         		        f_comment_tree(c.id) AS "Comments"
         	        FROM comment c
-        	        JOIN principal p on p.id = c.publisher_id
+        	        JOIN publisher p on p.id = c.publisher_id
                     JOIN authenticated_node an on an.node_id = c.node_id
         	        WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
         	        AND c.comment_id_parent is null
@@ -909,7 +909,7 @@ public class FetchNodeService
                 FROM authenticated_node an
                 join top_level_country tlc on tlc.id = an.node_id 
                 join nameable nm on nm.id = an.node_id
-                JOIN public.principal p on p.id = an.publisher_id
+                JOIN publisher p on p.id = an.publisher_id
             ) n
         ) 
         """;
@@ -982,7 +982,7 @@ public class FetchNodeService
                 FROM authenticated_node an
                 join organization o on o.id = an.node_id 
                 join nameable nm on nm.id = an.node_id
-                JOIN public.principal p on p.id = an.publisher_id
+                JOIN publisher p on p.id = an.publisher_id
             ) n
         ) 
         """;
@@ -1020,7 +1020,7 @@ public class FetchNodeService
                     an.has_been_published
                 FROM authenticated_node an
                 join simple_text_node stn on stn.id = an.node_id 
-                JOIN public.principal p on p.id = an.publisher_id
+                JOIN publisher p on p.id = an.publisher_id
             ) n
         ) 
         """;
@@ -1057,7 +1057,7 @@ public class FetchNodeService
                     an.has_been_published
                 FROM authenticated_node an
                 join simple_text_node stn on stn.id = an.node_id 
-                JOIN public.principal p on p.id = an.publisher_id
+                JOIN publisher p on p.id = an.publisher_id
             ) n
         ) 
         """;

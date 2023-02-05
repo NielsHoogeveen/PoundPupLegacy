@@ -35,6 +35,30 @@ internal sealed class ActionMigrator : PPLMigrator
         yield return new BasicAction
         {
             Id = null,
+            Path = "/organizations",
+            Description = "Show all organizations"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/persons",
+            Description = "Show all persons"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/topics",
+            Description = "Show all topics"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/countries",
+            Description = "Show all topics"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
             Path = "/contact",
             Description = "Contact page"
         };

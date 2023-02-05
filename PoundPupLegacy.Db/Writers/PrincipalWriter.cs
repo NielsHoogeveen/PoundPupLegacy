@@ -4,16 +4,10 @@ namespace PoundPupLegacy.Db.Writers;
 public class PrincipalWriter : DatabaseWriter<Principal>, IDatabaseWriter<Principal>
 {
     private const string ID = "id";
-    private const string NAME = "name";
 
     public static async Task<DatabaseWriter<Principal>> CreateAsync(NpgsqlConnection connection)
     {
         var columnDefinitions = new ColumnDefinition[] {
-            new ColumnDefinition
-            {
-                Name = NAME,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
         };
 
         var identityInsertCommand = await CreateIdentityInsertStatementAsync(
@@ -46,12 +40,10 @@ public class PrincipalWriter : DatabaseWriter<Principal>, IDatabaseWriter<Princi
         if(principal.Id is not null)
         {
             WriteValue(principal.Id, ID);
-            WriteValue(principal.Name, NAME);
             await _command.ExecuteNonQueryAsync();
         }
         else
         {
-            WriteValue(principal.Name, NAME, _identityInsertCommand);
             principal.Id = await _command.ExecuteScalarAsync() switch
             {
                 int i => i,

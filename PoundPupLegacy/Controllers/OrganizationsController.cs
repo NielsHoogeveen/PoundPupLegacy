@@ -108,9 +108,9 @@ public class OrganizationsController : Controller
         int? countryId = GetCountryId(query["country"]);
         int? organizationTypeId = GetCountryId(query["organization_type"]);
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var userId = _siteDataService.GetUserId(HttpContext.User);
-        var tenantId = _siteDataService.GetTenantId(HttpContext.Request.Host.Value);
-        var organizations = await _fetchOrganizationsService.FetchOrganizations(NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption, tenantId!.Value, userId);
+        var userId = _siteDataService.GetUserId(HttpContext);
+        var tenantId = _siteDataService.GetTenantId(HttpContext);
+        var organizations = await _fetchOrganizationsService.FetchOrganizations(NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption, tenantId, userId);
         organizations.PageNumber = pageNumber;
         organizations.NumberOfPages = (organizations.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         organizations.QueryString = $"&search={searchTerm}";

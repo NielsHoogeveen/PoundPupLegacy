@@ -18,7 +18,6 @@ internal sealed class MenuMigrator : PPLMigrator
     }
 
     private async IAsyncEnumerable<ActionMenuItem> GetActionMenuItems() {
-        await Task.CompletedTask;
         yield return new ActionMenuItem
         {
             Id = null,
@@ -42,51 +41,80 @@ internal sealed class MenuMigrator : PPLMigrator
         yield return new ActionMenuItem
         {
             Id = null,
+            ActionId = await _actionReaderByPath.ReadAsync("/topics"),
+            Name = "Topics",
+            Weight = 5,
+        };
+        yield return new ActionMenuItem
+        {
+            Id = null,
+            ActionId = await _actionReaderByPath.ReadAsync("/countries"),
+            Name = "Countries",
+            Weight = 6,
+        };
+        yield return new ActionMenuItem
+        {
+            Id = null,
+            ActionId = await _actionReaderByPath.ReadAsync("/organizations"),
+            Name = "Organizations",
+            Weight = 7,
+        };
+        yield return new ActionMenuItem
+        {
+            Id = null,
+            ActionId = await _actionReaderByPath.ReadAsync("/persons"),
+            Name = "Persons",
+            Weight = 8,
+        };
+
+        yield return new ActionMenuItem
+        {
+            Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(35),
             Name = "Create Blog",
-            Weight = 5,
+            Weight = 9,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(36),
             Name = "Create Article",
-            Weight = 6,
+            Weight = 10,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(37),
             Name = "Create Discussion",
-            Weight = 7,
+            Weight = 11,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(26),
             Name = "Create Abuse Case",
-            Weight = 8,
+            Weight = 12,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(29),
             Name = "Create Child Trafficking Case",
-            Weight = 9,
+            Weight = 13,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(23),
             Name = "Create Organization",
-            Weight = 10,
+            Weight = 14,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(24),
             Name = "Create Person",
-            Weight = 11,
+            Weight = 15,
         };
     }
     private async IAsyncEnumerable<TenantNodeMenuItem> GetTenantNodeMenuItems()

@@ -7,4 +7,5 @@ public sealed record Tenant : Owner
     public required string Description { get; init; }
     public required string DomainName { get; init; }
     public required int? VocabularyIdTagging { get; init; }
+    public required UserRole UserRoleNotLoggedIn { get; init; }
 }

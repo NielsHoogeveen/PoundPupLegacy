@@ -6,4 +6,6 @@ public sealed record UserRole : AccessRole
 
     public required string Name { get; init; }
 
+    public required int? UserGroupId { get; set; }
+
 }

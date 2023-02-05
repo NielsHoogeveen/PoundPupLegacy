@@ -26,17 +26,13 @@ public class NodeController : Controller
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        var tenantId = _siteDataService.GetTenantId(this.HttpContext.Request.Host.Value);
-        if (tenantId is null)
-        {
-            return NotFound();
-        }
-        var urlPath = _siteDataService.GetUrlPathForId(tenantId.Value, id);
+        var tenantId = _siteDataService.GetTenantId(HttpContext);
+        var urlPath = _siteDataService.GetUrlPathForId(tenantId, id);
         if (urlPath is not null)
         {
             return Redirect($"/{urlPath}");
         }
-        var node = await _fetchNodeService.FetchNode(id, HttpContext.User);
+        var node = await _fetchNodeService.FetchNode(id, HttpContext);
         if(node == null)
         {
             return NotFound();

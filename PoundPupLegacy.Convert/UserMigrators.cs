@@ -18,24 +18,39 @@ internal sealed class UserMigrator : PPLMigrator
         yield return new UserRole
         {
             Id = 4,
-            Name = "Member"
+            Name = "Member",
+            UserGroupId = Constants.PPL,
         };
         yield return new UserRole
         {
             Id = 6,
-            Name = "Administrators"
+            Name = "Administrator",
+            UserGroupId = Constants.PPL,
         };
         yield return new UserRole
         {
             Id = 11,
-            Name = "Editor"
+            Name = "Editor",
+            UserGroupId = Constants.PPL,
         };
         yield return new UserRole
         {
-            Id = 12,
-            Name = "Everyone"
+            Id = 16,
+            Name = "Member",
+            UserGroupId = Constants.CPCT,
         };
-
+        yield return new UserRole
+        {
+            Id = 18,
+            Name = "Editor",
+            UserGroupId = Constants.CPCT,
+        };
+        yield return new UserRole
+        {
+            Id = 19,
+            Name = "Administrator",
+            UserGroupId = Constants.CPCT,
+        };
     }
     private static async IAsyncEnumerable<Tenant> GetTenants()
     {
@@ -46,7 +61,13 @@ internal sealed class UserMigrator : PPLMigrator
             DomainName = "poundpuplegacy.org",
             Name = "Pound Pup Legacy",
             Description = "",
-            VocabularyIdTagging = null
+            VocabularyIdTagging = null,
+            UserRoleNotLoggedIn = new UserRole
+            {
+                Id = 12,
+                Name = "Everyone",
+                UserGroupId = null,
+            },
         };
         yield return new Tenant
         {
@@ -54,7 +75,13 @@ internal sealed class UserMigrator : PPLMigrator
             DomainName = "cpctresearch.info",
             Name = "CPCT Research",
             Description = "",
-            VocabularyIdTagging = null
+            VocabularyIdTagging = null,
+            UserRoleNotLoggedIn = new UserRole
+            {
+                Id = 13,
+                Name = "Everyone",
+                UserGroupId = null,
+            },
         };
     }
 
@@ -132,6 +159,24 @@ internal sealed class UserMigrator : PPLMigrator
             UserRoleId = 6,
             UserId = 3
         };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = 6,
+            UserRoleId = 6,
+            UserId = 1
+        };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = 6,
+            UserRoleId = 18,
+            UserId = 2
+        };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = 6,
+            UserRoleId = 6,
+            UserId = 131
+        };
     }
 
     private async IAsyncEnumerable<AccessRolePrivilege> GetAccessRolePrivileges()
@@ -175,7 +220,6 @@ internal sealed class UserMigrator : PPLMigrator
             AccessRoleId = 11,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(26),
         };
-
         yield return new AccessRolePrivilege
         {
             AccessRoleId = 11,
@@ -193,6 +237,16 @@ internal sealed class UserMigrator : PPLMigrator
         };
         yield return new AccessRolePrivilege
         {
+            AccessRoleId = 18,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(23),
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 18,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(24),
+        };
+        yield return new AccessRolePrivilege
+        {
             AccessRoleId = 12,
             ActionId = await _actionReaderByPath.ReadAsync("/articles")
         };
@@ -204,7 +258,42 @@ internal sealed class UserMigrator : PPLMigrator
         yield return new AccessRolePrivilege
         {
             AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/organizations")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/persons")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/topics")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/countries")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
             ActionId = await _actionReaderByPath.ReadAsync("/contact")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 16,
+            ActionId = await _actionReaderByPath.ReadAsync("/organizations")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 16,
+            ActionId = await _actionReaderByPath.ReadAsync("/persons")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 16,
+            ActionId = await _actionReaderByPath.ReadAsync("/countries")
         };
     }
 
@@ -220,6 +309,8 @@ internal sealed class UserMigrator : PPLMigrator
         await UserGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! }), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 12, UserId = (int)x.Id! }), _postgresConnection);
+        await UserGroupUserRoleUserCreator.CreateAsync(new List<int> { 137,136,135,134,131,2,1}.Select(x => new UserGroupUserRoleUser { UserGroupId = 6, UserRoleId = 16, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
+
         await AccessRolePrivilegeCreator.CreateAsync(GetAccessRolePrivileges(), _postgresConnection);
     }
     private async IAsyncEnumerable<User> ReadUsers()

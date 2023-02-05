@@ -13,7 +13,7 @@ public class BlogsController : Controller
     }
     public async Task<IActionResult> Index()
     {
-        var model = await _fetchBlogsService.FetchBlogs();
+        var model = await _fetchBlogsService.FetchBlogs(HttpContext);
         return View("Blogs",model);
     }
 }

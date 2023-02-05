@@ -2,4 +2,6 @@
 
 public interface Publisher: Principal
 {
+    public string Name { get; }
+
 }

@@ -114,7 +114,7 @@ public class FetchArticlesService
              FROM node n
         	 join article a on a.id = n.id
              join simple_text_node stn on stn.id = n.id
-        	 join principal p on p.id = n.publisher_id
+        	 join publisher p on p.id = n.publisher_id
              JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
         	 ORDER BY n.changed_date_time DESC
         	 LIMIT @length OFFSET @start_index
@@ -157,7 +157,7 @@ public class FetchArticlesService
                     ) t
              ) "Tags"
             FROM node n
-            join principal p on p.id = n.publisher_id
+            join publisher p on p.id = n.publisher_id
             join simple_text_node stn on stn.id = n.id
             JOIN tenant_node tna on tna.node_id = n.id AND tna.tenant_id = @tenant_id AND tna.publication_status_id = 1
             join article a on a.id = n.id
@@ -217,7 +217,7 @@ public class FetchArticlesService
         )
         """;
 
-    public async Task<Articles> GetArticles(List<int> selectedTerms, int startIndex, int length)
+    public async Task<Articles> GetArticles(List<int> selectedTerms, int startIndex, int length, int tenantId)
     {
         var termsList = string.Join(',', selectedTerms.Select(x => x.ToString()));
         _connection.Open();
@@ -244,7 +244,7 @@ public class FetchArticlesService
         readCommand.Parameters.Add("length", NpgsqlDbType.Integer);
         readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
         await readCommand.PrepareAsync();
-        readCommand.Parameters["tenant_id"].Value = 1;
+        readCommand.Parameters["tenant_id"].Value = tenantId;
         readCommand.Parameters["length"].Value = length;
         readCommand.Parameters["start_index"].Value = startIndex;
         await using var reader = await readCommand.ExecuteReaderAsync();
@@ -254,7 +254,7 @@ public class FetchArticlesService
         return articles;
     }
 
-    public async Task<Articles> GetArticles(int startIndex, int length)
+    public async Task<Articles> GetArticles(int startIndex, int length, int tenantId)
     {
         _connection.Open();
         var sql = $"""
@@ -280,7 +280,7 @@ public class FetchArticlesService
         readCommand.Parameters.Add("length", NpgsqlDbType.Integer);
         readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
         await readCommand.PrepareAsync();
-        readCommand.Parameters["tenant_id"].Value = 1;
+        readCommand.Parameters["tenant_id"].Value = tenantId;
         readCommand.Parameters["length"].Value = length;
         readCommand.Parameters["start_index"].Value = startIndex;
         await using var reader = await readCommand.ExecuteReaderAsync();

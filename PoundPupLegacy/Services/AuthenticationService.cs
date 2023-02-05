@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 using Npgsql;
 using System.Data;
 using System.Security.Claims;
@@ -23,7 +22,7 @@ public class AuthenticationService
             select 
             p.id 
             from "user" u
-            join principal p on p.id = u.id
+            join publisher p on p.id = u.id
             where LOWER(p.name) = @name and u.password = @password
             """;
 

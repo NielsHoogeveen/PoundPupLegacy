@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Services;
 using PoundPupLegacy.ViewModel;
 using System.Data;
 
@@ -6,14 +7,16 @@ namespace PoundPupLegacy.Web.Services;
 
 public class FetchBlogsService
 {
-    private NpgsqlConnection _connection;
+    private readonly NpgsqlConnection _connection;
+    private readonly SiteDataService _siteDataService;
 
-    public FetchBlogsService(NpgsqlConnection connection)
+    public FetchBlogsService(NpgsqlConnection connection, SiteDataService siteDataService)
     {
         _connection = connection;
+        _siteDataService = siteDataService;
     }
 
-    public async Task<List<BlogListEntry>> FetchBlogs()
+    public async Task<List<BlogListEntry>> FetchBlogs(HttpContext context)
     {
         _connection.Open();
         var sql = $"""
@@ -30,13 +33,13 @@ public class FetchBlogsService
                         select 
                             n2.title 
                         from node n2 
-                        JOIN tenant_node tn2 on tn2.node_id = n2.id
+                        JOIN tenant_node tn2 on tn2.node_id = n2.id AND tn2.tenant_id = @tenant_id
                         where tn2.url_id = max( tn.url_id)
                     ) "LatestEntryTitle"
-                from principal p
+                from publisher p
                 left join "user" u on u.id = p.id
                 join node n on n.publisher_id = p.id 
-                join tenant_node tn on tn.node_id = n.id and tn.publication_status_id = 1
+                join tenant_node tn on tn.node_id = n.id and tn.publication_status_id = 1 and tn.tenant_id = @tenant_id
                 join blog_post b on b.id = n.id
                 group by p.name,
                 p.id,
@@ -50,7 +53,9 @@ public class FetchBlogsService
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
+        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
         await readCommand.PrepareAsync();
+        readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId(context);
         await using var reader = await readCommand.ExecuteReaderAsync();
         await reader.ReadAsync();
         var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);

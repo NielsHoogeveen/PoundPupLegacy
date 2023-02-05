@@ -40,17 +40,13 @@ public class HomeController : Controller
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         
-        var tenantId = _siteDataService.GetTenantId(this.HttpContext.Request.Host.Value);
-        if (tenantId is null)
-        {
-            return NotFound();
-        }
-        var urlId = _siteDataService.GetIdForUrlPath(tenantId.Value, this.HttpContext.Request.Path.Value!.Substring(1));
+        var tenantId = _siteDataService.GetTenantId(HttpContext);
+        var urlId = _siteDataService.GetIdForUrlPath(HttpContext);
         if (urlId is null)
         {
             return NotFound();
         }
-        var node = await _fetchNodeService.FetchNode(urlId.Value, HttpContext.User);
+        var node = await _fetchNodeService.FetchNode(urlId.Value, HttpContext);
         if (node == null)
         {
             return NotFound();

@@ -2,8 +2,6 @@
 using PoundPupLegacy.ViewModel;
 using System.Data;
 using System.Diagnostics;
-using System.Reflection.PortableExecutable;
-using System.Security.Claims;
 using Tenant = PoundPupLegacy.ViewModel.Tenant;
 using MenuItem = PoundPupLegacy.ViewModel.Link;
 
@@ -24,8 +22,9 @@ public class SiteDataService
 
     }
 
-    public int GetUserId(ClaimsPrincipal? cp)
+    public int GetUserId(HttpContext context)
     {
+        var cp = context.User;
         if (cp == null)
         {
             return 0;
@@ -61,8 +60,9 @@ public class SiteDataService
         return null;
     }
 
-    public int? GetTenantId(string domainName)
+    public int GetTenantId(HttpContext context)
     {
+        var domainName = context.Request.Host.Value;
         if(domainName == "localhost:7141")
         {
             return 1;
@@ -72,11 +72,14 @@ public class SiteDataService
         {
             return tenant.Id;
         }
-        return null;
+        return 1;
     }
 
-    public int? GetIdForUrlPath(int tenantId, string urlPath)
+    public int? GetIdForUrlPath(HttpContext context)
     {
+
+        var tenantId = GetTenantId(context);
+        var urlPath = context.Request.Path.Value!.Substring(1);
         var tenant = _tenants.Find(x => x.Id == tenantId);
         if (tenant is null)
         {
@@ -177,7 +180,7 @@ public class SiteDataService
             		union
             		select
             		0,
-            		12,
+            		t.user_role_id_not_logged_in,
             		t.id tenant_id
             		from tenant t
             	) uar
@@ -265,15 +268,15 @@ public class SiteDataService
         await _connection.CloseAsync();
         _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
     }
-    public IEnumerable<Link> GetMenuItemsForUser(ClaimsPrincipal? cp)
+    public IEnumerable<Link> GetMenuItemsForUser(HttpContext context)
     {
-        if(_userMenus.TryGetValue((GetUserId(cp), 1), out var lst))
+        if(_userMenus.TryGetValue((GetUserId(context), GetTenantId(context)), out var lst))
         {
             return lst;
         }
         else
         {
-            throw new Exception("user menu not found");
+            return new List<Link>();
         }
     }
 }
