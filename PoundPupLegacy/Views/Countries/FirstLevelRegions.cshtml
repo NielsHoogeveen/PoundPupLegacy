@@ -1,0 +1,55 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<FirstLevelRegionListEntry>
+<div class="articles">
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/home">home</a>
+        </span>
+    </div>
+    <article>
+    @foreach(var entry in Model)
+    {
+        <ul>
+            <li>
+                <a href="@entry.Path">@entry.Name</a>
+            </li>
+            @if (entry.Regions is not null)
+            {
+                <ul>
+
+                    @foreach (var region in entry.Regions)
+                    {
+                        <li>
+                            <a href="@region.Path">@region.Name</a>
+                        </li>
+                        @if (region.Countries is not null)
+                        {
+                            <ul>
+                                @foreach (var country in region.Countries)
+                                {
+                                    <li>
+                                        <a href="@country.Path">@country.Name</a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    }
+                </ul>
+            }
+            @if (entry.Countries is not null)
+            {
+                <ul>
+
+                    @foreach (var country in entry.Countries)
+                    {
+                        <li>
+                            <a href="@country.Path">@country.Name</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </ul>
+    }
+    </article>
+</div>
