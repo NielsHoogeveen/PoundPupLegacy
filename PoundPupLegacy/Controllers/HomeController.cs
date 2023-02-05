@@ -38,6 +38,10 @@ public class HomeController : Controller
     public async Task<IActionResult> AllElse()
     {
         var stopwatch = new Stopwatch();
+        if(Request.Path == "/NotFound")
+        {
+            return View("NotFound");
+        }
         stopwatch.Start();
         
         var tenantId = _siteDataService.GetTenantId(HttpContext);
@@ -102,4 +106,5 @@ public class HomeController : Controller
         var u = HttpContext.User;
         return new RedirectResult(path);
     }
+
 }

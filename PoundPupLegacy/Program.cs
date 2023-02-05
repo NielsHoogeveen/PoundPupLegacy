@@ -59,6 +59,16 @@ public class Program
 
         
         app.UseCookiePolicy(cookiePolicyOptions);
+
+        app.Use(async (context, next) =>
+        {
+            await next();
+            if (context.Response.StatusCode == 404)
+            {
+                context.Request.Path = "/NotFound";
+                await next();
+            }
+        });
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseStaticFiles(new StaticFileOptions
@@ -67,12 +77,12 @@ public class Program
             RequestPath = "/files"
         });
 
-
         app.UseRouting();
 
         app.UseAuthentication();
         app.UseAuthorization();
 
+        
         app.UseCustomMiddleware();
 
         app.MapControllerRoute(

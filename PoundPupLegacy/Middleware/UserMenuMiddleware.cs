@@ -17,7 +17,7 @@ public class UserMenuMiddleware
         var userMenu = userService.GetMenuItemsForUser(httpContext);
 
         var userMenuHtml = await razorViewToStringService.GetFromView("/Views/Shared/_UserMenu.cshtml", userMenu, httpContext);
-
+        httpContext.Items.Remove("UserMenu");
         httpContext.Items.Add("UserMenu", userMenuHtml);
         await _next(httpContext);
     }
