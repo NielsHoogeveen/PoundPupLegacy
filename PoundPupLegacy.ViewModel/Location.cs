@@ -8,6 +8,6 @@ public record Location
     public string? PostalCode { get; set; }
     public Link? Subdivision { get; set; }
     public Link Country { get; set; }
-    public decimal Latitude { get; set; }
-    public decimal Longitude { get; set; }
+    public decimal? Latitude { get; set; }
+    public decimal? Longitude { get; set; }
 }

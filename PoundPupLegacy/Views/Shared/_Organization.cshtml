@@ -14,8 +14,15 @@
     @Model.EmailAddress
 </div>
 
-<partial name="_InterOrganizationalRelations" model="@Model.InterOrganizationalRelations" />
-
-<partial name="_Documents" model="@Model.Documents" />
-
-<partial name="_Locations" model="@Model.Locations" />
+@if (Model.InterOrganizationalRelations is not null)
+{
+    <partial name="_InterOrganizationalRelations" model="@Model.InterOrganizationalRelations" />
+}
+@if (Model.Documents is not null)
+{
+    <partial name="_Documents" model="@Model.Documents" />
+}
+@if (Model.Locations is not null)
+{
+    <partial name="_Locations" model="@Model.Locations" />
+}

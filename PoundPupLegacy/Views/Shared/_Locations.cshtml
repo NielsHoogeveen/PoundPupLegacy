@@ -14,42 +14,44 @@
     <div><a href="@location.Country.Path">@location.Country.Name</a></div>
     
 }
-<div id="map" style="height: 400px;width:700px;"></div>
+@if(Model.Any(x => x.Latitude is not null && x.Longitude is not null))
+{
+    <div id="map" style="height: 400px;width:700px;"></div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL_Y-3alaKm4UQqh9nxsOuVrR_LCxmGNU&callback=initMap&v=weekly"
-        defer></script>
-<script>
-    function initMap() {
-        // The location of Uluru
-        const locations = [ 
-        @foreach(var (location, index) in Model.Select((location, index) => (location,index)))
-        {
-            @Html.Raw($"['', {@location.Latitude},{@location.Longitude}, {index}],")
-    }
-        ];
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 10,
-            center: @Html.Raw($"new google.maps.LatLng({Model.Average(x => x.Latitude)}, {Model.Average(x => x.Longitude)})"),
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
-        const infowindow = new google.maps.InfoWindow();
-
-        var marker, i;
-
-        for (i = 0; i < locations.length; i++) {
-            marker = new google.maps.Marker({
-                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-                map: map
-            });
-
-            google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                return function () {
-                    infowindow.setContent(locations[i][0]);
-                    infowindow.open(map, marker);
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL_Y-3alaKm4UQqh9nxsOuVrR_LCxmGNU&callback=initMap&v=weekly" defer></script>
+    <script>
+        function initMap() {
+            
+            const locations = [ 
+                @foreach (var (location, index) in Model.Where(x => x.Latitude is not null && x.Longitude is not null).Select((location, index) => (location,index)))
+                {
+                        @Html.Raw($"['', {@location.Latitude},{@location.Longitude}, {index}],")
                 }
-            })(marker, i));
-        }
-    }
+            ];
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: @Html.Raw($"new google.maps.LatLng({Model.Average(x => x.Latitude)}, {Model.Average(x => x.Longitude)})"),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            const infowindow = new google.maps.InfoWindow();
 
-    window.initMap = initMap;
-</script>
+            var marker, i;
+
+            for (i = 0; i < locations.length; i++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                    map: map
+                });
+
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    return function () {
+                        infowindow.setContent(locations[i][0]);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, i));
+            }
+        }
+
+        window.initMap = initMap;
+    </script>
+}
