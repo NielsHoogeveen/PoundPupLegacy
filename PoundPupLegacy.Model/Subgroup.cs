@@ -6,4 +6,6 @@ public sealed record Subgroup : UserGroup
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required int TenantId { get; init; }
+    public required AdministratorRole AdministratorRole { get; init; }
+
 }

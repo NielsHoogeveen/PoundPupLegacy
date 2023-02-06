@@ -1,11 +1,8 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public sealed record UserRole : AccessRole
+public interface UserRole : Principal
 {
-    public required int? Id { get; set; }
+    string Name { get;  }
 
-    public required string Name { get; init; }
-
-    public required int? UserGroupId { get; set; }
-
+    int? UserGroupId { get; }
 }

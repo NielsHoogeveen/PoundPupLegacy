@@ -1,6 +1,12 @@
-﻿@{
+﻿@using PoundPupLegacy.Services;
+@inject SiteDataService siteDataService
+@{
     ViewBag.Title = "404";
 }
 
 <h1>404 - Page not found</h1>
+@{
+    Layout = siteDataService.GetLayout(Context);
+}
+
 

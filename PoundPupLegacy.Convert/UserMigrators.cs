@@ -12,43 +12,31 @@ internal sealed class UserMigrator : PPLMigrator
 
     }
 
-    private static async IAsyncEnumerable<UserRole> GetUserRoles()
+    private static async IAsyncEnumerable<AccessRole> GetAccessRoles()
     {
         await Task.CompletedTask;
-        yield return new UserRole
+        yield return new AccessRole
         {
             Id = 4,
             Name = "Member",
             UserGroupId = Constants.PPL,
         };
-        yield return new UserRole
-        {
-            Id = 6,
-            Name = "Administrator",
-            UserGroupId = Constants.PPL,
-        };
-        yield return new UserRole
+        yield return new AccessRole
         {
             Id = 11,
             Name = "Editor",
             UserGroupId = Constants.PPL,
         };
-        yield return new UserRole
+        yield return new AccessRole
         {
             Id = 16,
             Name = "Member",
             UserGroupId = Constants.CPCT,
         };
-        yield return new UserRole
+        yield return new AccessRole
         {
             Id = 18,
             Name = "Editor",
-            UserGroupId = Constants.CPCT,
-        };
-        yield return new UserRole
-        {
-            Id = 19,
-            Name = "Administrator",
             UserGroupId = Constants.CPCT,
         };
     }
@@ -62,12 +50,17 @@ internal sealed class UserMigrator : PPLMigrator
             Name = "Pound Pup Legacy",
             Description = "",
             VocabularyIdTagging = null,
-            UserRoleNotLoggedIn = new UserRole
+            AccessRoleNotLoggedIn = new AccessRole
             {
                 Id = 12,
                 Name = "Everyone",
                 UserGroupId = null,
             },
+            AdministratorRole = new AdministratorRole
+            {
+                Id = 6,
+                UserGroupId = null,
+            }
         };
         yield return new Tenant
         {
@@ -76,12 +69,17 @@ internal sealed class UserMigrator : PPLMigrator
             Name = "CPCT Research",
             Description = "",
             VocabularyIdTagging = null,
-            UserRoleNotLoggedIn = new UserRole
+            AccessRoleNotLoggedIn = new AccessRole
             {
                 Id = 13,
                 Name = "Everyone",
                 UserGroupId = null,
             },
+            AdministratorRole = new AdministratorRole
+            {
+                Id = 19,
+                UserGroupId = null,
+            }
         };
     }
 
@@ -93,24 +91,28 @@ internal sealed class UserMigrator : PPLMigrator
             Id = Constants.OWNER_GEOGRAPHY,
             Name = "Geographical Entities",
             Description = "",
+            AdministratorRole = new AdministratorRole { Id = 29, UserGroupId = null}
         };
         yield return new ContentSharingGroup
         {
             Id = Constants.OWNER_PARTIES,
             Name = "Parties",
             Description = "",
+            AdministratorRole = new AdministratorRole { Id = 31, UserGroupId = null }
         };
         yield return new ContentSharingGroup
         {
             Id = Constants.OWNER_CASES,
             Name = "Cases",
             Description = "",
+            AdministratorRole = new AdministratorRole { Id = 33, UserGroupId = null }
         };
         yield return new ContentSharingGroup
         {
             Id = Constants.OWNER_DOCUMENTATION,
             Name = "Documentation",
             Description = "",
+            AdministratorRole = new AdministratorRole { Id = 34, UserGroupId = null }
         };
     }
 
@@ -143,62 +145,76 @@ internal sealed class UserMigrator : PPLMigrator
         await Task.CompletedTask;
         yield return new UserGroupUserRoleUser
         {
-            UserGroupId = 1,
+            UserGroupId = 0,
+            UserRoleId = 21,
+            UserId = 1
+        };
+
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = Constants.PPL,
             UserRoleId = 6,
             UserId = 1
         };
         yield return new UserGroupUserRoleUser
         {
-            UserGroupId = 1,
-            UserRoleId = 11,
-            UserId = 2
-        };
-        yield return new UserGroupUserRoleUser
-        {
-            UserGroupId = 1,
+            UserGroupId = Constants.PPL,
             UserRoleId = 6,
             UserId = 3
         };
         yield return new UserGroupUserRoleUser
         {
-            UserGroupId = 6,
-            UserRoleId = 6,
+            UserGroupId = Constants.PPL,
+            UserRoleId = 11,
+            UserId = 2
+        };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = Constants.CPCT,
+            UserRoleId = 19,
             UserId = 1
         };
         yield return new UserGroupUserRoleUser
         {
-            UserGroupId = 6,
+            UserGroupId = Constants.CPCT,
+            UserRoleId = 19,
+            UserId = 131
+        };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = Constants.CPCT,
             UserRoleId = 18,
             UserId = 2
         };
         yield return new UserGroupUserRoleUser
         {
-            UserGroupId = 6,
-            UserRoleId = 6,
-            UserId = 131
+            UserGroupId = Constants.OWNER_GEOGRAPHY,
+            UserRoleId = 29,
+            UserId = 1
+        };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = Constants.OWNER_PARTIES,
+            UserRoleId = 31,
+            UserId = 1
+        };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = Constants.OWNER_CASES,
+            UserRoleId = 33,
+            UserId = 1
+        };
+        yield return new UserGroupUserRoleUser
+        {
+            UserGroupId = Constants.OWNER_DOCUMENTATION,
+            UserRoleId = 34,
+            UserId = 1
         };
     }
 
     private async IAsyncEnumerable<AccessRolePrivilege> GetAccessRolePrivileges()
     {
-        await foreach(var nodeType in NodeTypeMigrator.GetNodeTypes()) 
-        {
-            yield return new AccessRolePrivilege
-            {
-                AccessRoleId = 6,
-                ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id)
-            };
-            yield return new AccessRolePrivilege
-            {
-                AccessRoleId = 6,
-                ActionId = await _deleteNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id)
-            };
-            yield return new AccessRolePrivilege
-            {
-                AccessRoleId = 6,
-                ActionId = await _editNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id)
-            };
-        }
+
         yield return new AccessRolePrivilege
         {
             AccessRoleId = 4,
@@ -268,6 +284,46 @@ internal sealed class UserMigrator : PPLMigrator
         yield return new AccessRolePrivilege
         {
             AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/abuse_cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/child_trafficking_cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/deportation_cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/wrongful_removal_cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/wrongful_medication_cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/fathers_rights_violation_cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/coerced_adoption_cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
             ActionId = await _actionReaderByPath.ReadAsync("/topics")
         };
         yield return new AccessRolePrivilege
@@ -300,9 +356,10 @@ internal sealed class UserMigrator : PPLMigrator
     protected override async Task MigrateImpl()
     {
         await AnonimousUserCreator.CreateAsync(_postgresConnection);
+        await SystemGroupCreator.CreateAsync(_postgresConnection);
         await TenantCreator.CreateAsync(GetTenants(), _postgresConnection);
         await ContentSharingGroupCreator.CreateAsync(GetContentSharingGroups(), _postgresConnection);
-        await UserRoleCreator.CreateAsync(GetUserRoles(), _postgresConnection);
+        await AccessRoleCreator.CreateAsync(GetAccessRoles(), _postgresConnection);
         await UserCreator.CreateAsync(ReadUsers(), _postgresConnection);
         await CollectiveCreator.CreateAsync(GetCollectives(), _postgresConnection);
         await CollectiveUserCreator.CreateAsync(GetCollectiveUsers(), _postgresConnection);

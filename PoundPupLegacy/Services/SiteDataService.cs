@@ -180,7 +180,7 @@ public class SiteDataService
             		union
             		select
             		0,
-            		t.user_role_id_not_logged_in,
+            		t.access_role_id_not_logged_in,
             		t.id tenant_id
             		from tenant t
             	) uar
@@ -278,5 +278,20 @@ public class SiteDataService
         {
             return new List<Link>();
         }
+    }
+
+    public string GetLayout(HttpContext context)
+    {
+        var tenantId = GetTenantId(context);
+        var signedIn = GetUserId(context) != 0;
+
+        return (tenantId, signedIn) switch
+        {
+            (1, false) => "_LayoutPPL",
+            (1, true) => "_LayoutPPL",
+            (6, false) => "_LayoutCPCT",
+            (6, true) => "_LayoutCPCT",
+            _ => "_LayoutPPL"
+        };
     }
 }

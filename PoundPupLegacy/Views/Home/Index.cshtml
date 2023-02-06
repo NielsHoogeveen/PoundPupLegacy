@@ -1,4 +1,11 @@
-﻿@{
+﻿@using PoundPupLegacy.Services;
+@inject SiteDataService siteDataService
+@{
     ViewData["Title"] = "Home Page";
 }
 <p>Welcome to Pound Pup Legacy</p>
+
+@{
+    Layout = siteDataService.GetLayout(Context);
+}
+

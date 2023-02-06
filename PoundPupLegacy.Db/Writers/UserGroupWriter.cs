@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using PoundPupLegacy.Model;
+using System.Collections.Immutable;
 
 namespace PoundPupLegacy.Db.Writers;
 public class UserGroupWriter : DatabaseWriter<UserGroup>, IDatabaseWriter<UserGroup>
@@ -6,6 +7,7 @@ public class UserGroupWriter : DatabaseWriter<UserGroup>, IDatabaseWriter<UserGr
     private const string ID = "id";
     private const string NAME = "name";
     private const string DESCRIPTION = "description";
+    private const string ADMINISTRATOR_ROLE_ID = "administrator_role_id";
 
     public static async Task<DatabaseWriter<UserGroup>> CreateAsync(NpgsqlConnection connection)
     {
@@ -19,6 +21,10 @@ public class UserGroupWriter : DatabaseWriter<UserGroup>, IDatabaseWriter<UserGr
             {
                 Name = DESCRIPTION,
                 NpgsqlDbType = NpgsqlDbType.Varchar
+            }, 
+            new ColumnDefinition{
+                Name = ADMINISTRATOR_ROLE_ID,
+                NpgsqlDbType = NpgsqlDbType.Integer
             },
 
         };
@@ -55,12 +61,14 @@ public class UserGroupWriter : DatabaseWriter<UserGroup>, IDatabaseWriter<UserGr
             WriteValue(userGroup.Id, ID);
             WriteValue(userGroup.Name, NAME);
             WriteValue(userGroup.Description, DESCRIPTION);
+            WriteValue(userGroup.AdministratorRole.Id, ADMINISTRATOR_ROLE_ID);
             await _command.ExecuteNonQueryAsync();
         }
         else
         {
             WriteValue(userGroup.Name, NAME, _identityInsertCommand);
             WriteValue(userGroup.Description, DESCRIPTION, _identityInsertCommand);
+            WriteValue(userGroup.AdministratorRole.Id, ADMINISTRATOR_ROLE_ID);
             userGroup.Id = await _command.ExecuteScalarAsync() switch
             {
                 int i => i,

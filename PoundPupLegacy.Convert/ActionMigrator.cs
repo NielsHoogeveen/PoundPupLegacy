@@ -59,6 +59,54 @@ internal sealed class ActionMigrator : PPLMigrator
         yield return new BasicAction
         {
             Id = null,
+            Path = "/cases",
+            Description = "Show all cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/abuse_cases",
+            Description = "Show all abuse cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/child_trafficking_cases",
+            Description = "Show all child trafficking cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/deportation_cases",
+            Description = "Show all deportation cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/wrongful_removal_cases",
+            Description = "Show all wrongful removal cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/wrongful_medication_cases",
+            Description = "Show all wrongful medication cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/fathers_rights_violation_cases",
+            Description = "Show all father's rights violation cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/coerced_adoption_cases",
+            Description = "Show all coerced adoption cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
             Path = "/contact",
             Description = "Contact page"
         };

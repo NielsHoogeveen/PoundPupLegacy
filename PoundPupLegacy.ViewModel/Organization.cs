@@ -17,6 +17,7 @@ public record Organization : Nameable, Documentable, Locatable
     public DateTime? Terminated { get; set; }
     public Link[] OrganizationTypes { get; set; }
     public Location[] Locations { get; set; }
-
+    public Link[] SubTopics { get; set; }
+    public Link[] SuperTopics { get; set; }
     public InterOrganizationalRelation[] InterOrganizationalRelations { get; set; }
 }

@@ -23,6 +23,7 @@ internal sealed class TermHierarchyMigrator: PPLMigrator
 
         var sql = $"""
                 SELECT
+                DISTINCT
                 n.nid node_id_child,
                 case
                    when n4.node_id = 19316 then 39429
@@ -125,7 +126,7 @@ internal sealed class TermHierarchyMigrator: PPLMigrator
                      54123
                  )
                  AND (n3.nid IS NOT NULL OR n4.nid IS NOT NULL)
-                 AND n3.nid not in (4126)
+                 AND n4.nid not in (4126)
                 """;
         using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

@@ -29,6 +29,14 @@
             {
                 <partial name="_Organization" model="@organization" />
             }
+            @if (Model is BasicNameable basicNameable)
+            {
+                <partial name="_BasicNameable" model="@basicNameable" />
+            }
+            @if (Model is AbuseCase abuseCase)
+            {
+                <partial name="_AbuseCase" model="@abuseCase" />
+            }
         </article>
         @if (Model.Tags is not null)
         {

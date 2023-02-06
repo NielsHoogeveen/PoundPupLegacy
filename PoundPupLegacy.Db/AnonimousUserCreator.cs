@@ -6,12 +6,10 @@ public class AnonimousUserCreator
     {
 
         await using var principalWriter = await PrincipalWriter.CreateAsync(connection);
-        await using var accessRoleWriter = await AccessRoleWriter.CreateAsync(connection);
         await using var publisherWriter = await PublisherWriter.CreateAsync(connection);
 
         var user = new AnonymousUser();
         await principalWriter.WriteAsync(user);
-        await accessRoleWriter.WriteAsync(user);
         await publisherWriter.WriteAsync(user);
     }
 }

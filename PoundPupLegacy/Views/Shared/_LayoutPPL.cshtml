@@ -12,6 +12,10 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <link href="/css/ppl.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" asp-append-version="true" />
+    @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
+    {
+        <script src="_framework/blazor.server.js"></script>
+    }
 </head>
 <body>
 
@@ -20,7 +24,7 @@
             <div class="logo">
                 <div class="acronym">PPL</div>
                 <div class="full-name">
-                    Pound Pup Legacy
+                    Pound Pup Legacy *
                 </div>
             </div>
             <div>
@@ -37,26 +41,25 @@
                 </li>
                 </a>
                 @Html.Raw(@Context.Items["UserMenu"])
-            @if (this.User.Identity!.IsAuthenticated == false)
-            {
-                <li>
-                    <form id="login-form" action="/login" method="post">
-                        <input type="text" name="user"></input>
-                        <input type="password" name="password"></input>
-                        <br/>
-                        <input type="submit" value="login"></input>
-                    </form>
-                </li>
-            }
-            else
-            {
-               
-                <li>
-                    <form id="login-form" action="/logout" method="post">
-                        <input type="submit" value="logout"></input>
-                    </form>
-                </li>
-            }
+                @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
+                {
+                    <li>
+                        <form id="login-form" action="/logout" method="post">
+                            <input type="submit" value="logout"></input>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <form id="login-form" action="/login" method="post">
+                            <input type="text" name="user"></input>
+                            <input type="password" name="password"></input>
+                            <br />
+                            <input type="submit" value="login"></input>
+                        </form>
+                    </li>
+                }
             </ul>
         </nav>
         <content>

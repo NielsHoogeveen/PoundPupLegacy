@@ -1,7 +1,6 @@
 ﻿using Npgsql;
 using PoundPupLegacy.ViewModel;
 using System.Data;
-using System.Security.Claims;
 
 namespace PoundPupLegacy.Services;
 
@@ -28,6 +27,8 @@ public class FetchNodeService
             {INTER_ORGANIZATIONAL_RELATION_DOCUMENT},
             {ORGANIZATION_TYPES_DOCUMENT},
             {TAGS_DOCUMENT},
+            {SUBTOPICS_DOCUMENT},
+            {SUPERTOPICS_DOCUMENT},
             {DOCUMENTS_DOCUMENT},
             {COMMENTS_DOCUMENT},
             {ORGANIZATIONS_OF_COUNTRY_DOCUMENT},
@@ -35,10 +36,16 @@ public class FetchNodeService
             {BLOG_POST_BREADCRUM_DOCUMENT},
             {ORGANIZATION_BREADCRUM_DOCUMENT},
             {ARTICLE_BREADCRUM_DOCUMENT},
+            {ABUSE_CASE_BREADCRUM_DOCUMENT},
+            {CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT},
             {COUNTRY_BREADCRUM_DOCUMENT},
+            {TOPICS_BREADCRUM_DOCUMENT},
             {ADOPTION_IMPORTS_DOCUMENT},
             {BLOG_POST_DOCUMENT},
             {ARTICLE_DOCUMENT},
+            {ABUSE_CASE_DOCUMENT},
+            {CHILD_TRAFFICKING_CASE_DOCUMENT},
+            {BASIC_NAMEABLE_DOCUMENT},
             {ORGANIZATION_DOCUMENT},
             {BASIC_COUNTRY_DOCUMENT},
             {NODE_DOCUMENT}
@@ -68,9 +75,11 @@ public class FetchNodeService
         {
             13 => reader.GetFieldValue<BasicCountry>(1),
             23 => reader.GetFieldValue<Organization>(1),
+            26 => reader.GetFieldValue<AbuseCase>(1),
             35 => reader.GetFieldValue<BlogPost>(1),
             36 => reader.GetFieldValue<Article>(1),
             37 => reader.GetFieldValue<Discussion>(1),
+            41 => reader.GetFieldValue<BasicNameable>(1),
             _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
         };
         if(node is SimpleTextNode stn)
@@ -125,12 +134,13 @@ public class FetchNodeService
                                 else -1
                             end status
                         from user_group_user_role_user ugu
+                        join user_group ug on ug.id = ugu.user_group_id
                         WHERE ugu.user_group_id = 
                         case
                             when tn.subgroup_id is null then tn.tenant_id 
                             else tn.subgroup_id 
                         end 
-                        AND ugu.user_role_id = 6
+                        AND ugu.user_role_id = ug.administrator_role_id
                         AND ugu.user_id = @user_id
                     )
                     when tn.publication_status_id = 1 then 1
@@ -155,6 +165,130 @@ public class FetchNodeService
                     WHERE tn.tenant_id = @tenant_id AND tn.url_id = @url_id
                 ) an
                 where an.status <> -1
+        )
+        """;
+
+    const string SUBTOPICS_DOCUMENT = """
+        subtopics_document as(
+            select
+                json_agg(
+                    json_build_object(
+                        'Name', "name", 
+                        'Path', url_path
+                    )
+                ) "document"
+            from(
+                select
+                    n.title "name",
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end url_path,
+                    case
+                        when tn.publication_status_id = 0 then (
+                            select
+                                case 
+                                    when count(*) > 0 then 0
+                                    else -1
+                                end status
+                            from user_group_user_role_user ugu
+                            join user_group ug on ug.id = ugu.user_group_id
+                            WHERE ugu.user_group_id = 
+                            case
+                                when tn.subgroup_id is null then tn.tenant_id 
+                                else tn.subgroup_id 
+                            end 
+                            AND ugu.user_role_id = ug.administrator_role_id
+                            AND ugu.user_id = @user_id
+                        )
+                        when tn.publication_status_id = 1 then 1
+                        when tn.publication_status_id = 2 then (
+                            select
+                                case 
+                                    when count(*) > 0 then 1
+                                    else -1
+                                end status
+                            from user_group_user_role_user ugu
+                            WHERE ugu.user_group_id = 
+                                case
+                                    when tn.subgroup_id is null then tn.tenant_id 
+                                    else tn.subgroup_id 
+                                end
+                                AND ugu.user_id = @user_id
+                            )
+                    end status	
+                from tenant_node tn
+        		join tenant tt on tt.id = tn.tenant_id
+                join node n on n.id = tn.node_id
+        		join term t1 on t1.nameable_id =  n.id and t1.vocabulary_id = tt.vocabulary_id_tagging
+        		join term_hierarchy th on th.term_id_child = t1.id
+        		join term t2 on t2.id = th.term_id_parent
+        		join tenant_node tn2 on tn2.tenant_id = tn.tenant_id and tn2.node_id = t2.nameable_id
+                WHERE tn.tenant_id = @tenant_id AND tn2.url_id = @url_id
+            ) an
+            where an.status <> -1
+        )
+        """;
+
+    const string SUPERTOPICS_DOCUMENT = """
+        supertopics_document as(
+            select
+                json_agg(
+                    json_build_object(
+                        'Name', "name", 
+                        'Path', url_path
+                    )
+                ) "document"
+            from(
+                select
+                    n.title "name",
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end url_path,
+                    case
+                        when tn.publication_status_id = 0 then (
+                            select
+                                case 
+                                    when count(*) > 0 then 0
+                                    else -1
+                                end status
+                            from user_group_user_role_user ugu
+                            join user_group ug on ug.id = ugu.user_group_id
+                            WHERE ugu.user_group_id = 
+                            case
+                                when tn.subgroup_id is null then tn.tenant_id 
+                                else tn.subgroup_id 
+                            end 
+                            AND ugu.user_role_id = ug.administrator_role_id
+                            AND ugu.user_id = @user_id
+                        )
+                        when tn.publication_status_id = 1 then 1
+                        when tn.publication_status_id = 2 then (
+                            select
+                                case 
+                                    when count(*) > 0 then 1
+                                    else -1
+                                end status
+                            from user_group_user_role_user ugu
+                            WHERE ugu.user_group_id = 
+                                case
+                                    when tn.subgroup_id is null then tn.tenant_id 
+                                    else tn.subgroup_id 
+                                end
+                                AND ugu.user_id = @user_id
+                            )
+                    end status	
+                from tenant_node tn
+        		join tenant tt on tt.id = tn.tenant_id
+                join node n on n.id = tn.node_id
+        		join term t1 on t1.nameable_id =  n.id and t1.vocabulary_id = tt.vocabulary_id_tagging
+        		join term_hierarchy th on th.term_id_parent = t1.id
+        		join term t2 on t2.id = th.term_id_child
+        		join tenant_node tn2 on tn2.tenant_id = tn.tenant_id and tn2.node_id = t2.nameable_id
+                WHERE tn.tenant_id = @tenant_id AND tn2.url_id = @url_id
+            ) an
+            where an.status <> -1
         )
         """;
 
@@ -641,7 +775,33 @@ public class FetchNodeService
             ) bces
         )
         """;
-
+    const string TOPICS_BREADCRUM_DOCUMENT = """
+        topics_bread_crum_document AS (
+            SELECT json_agg(
+                json_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )::jsonb 
+            )::jsonb document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/topics', 
+                    'topics', 
+                    1
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
     const string ORGANIZATION_BREADCRUM_DOCUMENT = """
         organization_bread_crum_document AS (
             SELECT json_agg(
@@ -731,6 +891,72 @@ public class FetchNodeService
                     '/countries', 
                     'countries', 
                     1
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+
+    const string ABUSE_CASE_BREADCRUM_DOCUMENT = """
+        abuse_case_bread_crum_document AS (
+            SELECT json_agg(
+                json_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )::jsonb
+            )::jsonb document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/abuse_cases', 
+                    'Abuse cases', 
+                    2
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+
+    const string CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT = """
+        child_trafficking_case_bread_crum_document AS (
+            SELECT json_agg(
+                json_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )::jsonb
+            )::jsonb document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/child_trafficking_cases', 
+                    'Child trafficing cases', 
+                    2
                 ) bce
                 ORDER BY bce."order"
             ) bces
@@ -894,7 +1120,9 @@ public class FetchNodeService
                 'AdoptionImports', (SELECT document FROM adoption_imports_document),
                 'Documents', (SELECT document from documents_document),
                 'OrganizationTypes', (SELECT document FROM organizations_of_country_document),
-                'SubdivisionTypes', (SELECT document FROM country_subdivisions_document)
+                'SubdivisionTypes', (SELECT document FROM country_subdivisions_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document)
             ) :: jsonb document
             FROM (
                  SELECT
@@ -963,7 +1191,9 @@ public class FetchNodeService
                 'Documents', (SELECT document FROM documents_document),
                 'OrganizationTypes', (SELECT document FROM organization_types_document),
                 'Locations', (SELECT document FROM locations_document),
-                'InterOrganizationalRelations', (SELECT document FROM inter_organizational_relation_document)
+                'InterOrganizationalRelations', (SELECT document FROM inter_organizational_relation_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document)
             ) :: jsonb document
             FROM (
                  SELECT
@@ -1062,6 +1292,122 @@ public class FetchNodeService
         ) 
         """;
 
+    const string BASIC_NAMEABLE_DOCUMENT = """
+        basic_nameable_document AS (
+            SELECT 
+                json_build_object(
+                    'Id', n.url_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', json_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM topics_bread_crum_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document)
+                ) :: jsonb document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join basic_nameable bn on bn.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+    const string ABUSE_CASE_DOCUMENT = """
+        abuse_case_document AS (
+            SELECT 
+                json_build_object(
+                    'Id', n.url_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', json_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM abuse_case_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Documents', (SELECT document FROM documents_document),
+                    'Locations', (SELECT document FROM locations_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document)
+                ) :: jsonb document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join abuse_case ac on ac.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+    const string CHILD_TRAFFICKING_CASE_DOCUMENT = """
+        child_trafficking_case_document AS (
+            SELECT 
+                json_build_object(
+                    'Id', n.url_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', json_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM child_trafficking_case_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Documents', (SELECT document FROM documents_document),
+                    'Locations', (SELECT document FROM locations_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document)
+                ) :: jsonb document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join child_trafficking_case ac on ac.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
     const string NODE_DOCUMENT = """
         node_document AS (
             SELECT
@@ -1069,8 +1415,11 @@ public class FetchNodeService
                 case
                     when an.node_type_id = 13 then (select document from basic_country_document)
                     when an.node_type_id = 23 then (select document from organization_document)
+                    when an.node_type_id = 26 then (select document from abuse_case_document)
+                    when an.node_type_id = 27 then (select document from child_trafficking_case_document)
                     when an.node_type_id = 35 then (select document from blog_post_document)
                     when an.node_type_id = 36 then (select document from article_document)
+                    when an.node_type_id = 41 then (select document from basic_nameable_document)
                 end :: jsonb document
             FROM authenticated_node an 
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id

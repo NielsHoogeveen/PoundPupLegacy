@@ -5,7 +5,8 @@ internal sealed class TenantWriter : DatabaseWriter<Tenant>, IDatabaseWriter<Ten
     private const string ID = "id";
     private const string DOMAIN_NAME = "domain_name";
     private const string VOCABULARY_ID_TAGGING = "vocabulary_id_tagging";
-    private const string USER_ROLE_ID_NOT_LOGGED_IN = "user_role_id_not_logged_in";
+    private const string ACCESS_ROLE_ID_NOT_LOGGED_IN = "access_role_id_not_logged_in";
+
     public static async Task<DatabaseWriter<Tenant>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
@@ -25,9 +26,10 @@ internal sealed class TenantWriter : DatabaseWriter<Tenant>, IDatabaseWriter<Ten
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = USER_ROLE_ID_NOT_LOGGED_IN,
+                    Name = ACCESS_ROLE_ID_NOT_LOGGED_IN,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
+               
             }
         );
         return new TenantWriter(command);
@@ -45,7 +47,7 @@ internal sealed class TenantWriter : DatabaseWriter<Tenant>, IDatabaseWriter<Ten
         WriteValue(@tenant.Id, ID);
         WriteValue(@tenant.DomainName, DOMAIN_NAME);
         WriteNullableValue(@tenant.VocabularyIdTagging, VOCABULARY_ID_TAGGING);
-        WriteValue(@tenant.UserRoleNotLoggedIn.Id, USER_ROLE_ID_NOT_LOGGED_IN);
+        WriteValue(@tenant.AccessRoleNotLoggedIn.Id, ACCESS_ROLE_ID_NOT_LOGGED_IN);
         await _command.ExecuteNonQueryAsync();
     }
 }

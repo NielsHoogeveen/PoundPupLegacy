@@ -1,6 +1,8 @@
-﻿@using PoundPupLegacy.ViewModel;
+﻿@using PoundPupLegacy.Services;
+@using PoundPupLegacy.ViewModel;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model IEnumerable<FirstLevelRegionListEntry>
+@inject SiteDataService siteDataService
 <div class="articles">
     <div class="breadcrum">
         <span class="breadcrum-element">
@@ -53,3 +55,6 @@
     }
     </article>
 </div>
+@{
+    Layout = siteDataService.GetLayout(Context);
+}

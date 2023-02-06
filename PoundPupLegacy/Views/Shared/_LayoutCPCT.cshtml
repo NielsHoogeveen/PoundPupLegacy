@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PoundPupLegacy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Rosario:wght@515&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=BhuTuka+Expanded+One&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&amp;display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link href="/css/cpct.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" asp-append-version="true" />
+    @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
+    {
+        <script src="_framework/blazor.server.js"></script>
+    }
+</head>
+<body>
+
+    <header>
+        <div class="title">
+            
+        </div>
+    </header>
+    <div class="main">
+        <nav>
+            <ul>
+                <a href="/">
+                <li>
+                    Home
+                </li>
+                </a>
+                @Html.Raw(@Context.Items["UserMenu"])
+                @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
+                {
+                    <li>
+                        <form id="login-form" action="/logout" method="post">
+                            <input type="submit" value="logout"></input>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <form id="login-form" action="/login" method="post">
+                            <input type="text" name="user"></input>
+                            <input type="password" name="password"></input>
+                            <br />
+                            <input type="submit" value="login"></input>
+                        </form>
+                    </li>
+                }
+
+            </ul>
+        </nav>
+        <content>
+            @RenderBody()
+        </content>
+    </div>
+    <footer>
+    </footer>
+
+</body>
+</html>

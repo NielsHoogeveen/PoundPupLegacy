@@ -1,0 +1,12 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<Link>
+
+<ul>
+    @foreach(var topic in Model)
+    {
+        <li>
+            <a href="@topic.Path">@topic.Name</a>
+        </li>
+    }
+</ul>

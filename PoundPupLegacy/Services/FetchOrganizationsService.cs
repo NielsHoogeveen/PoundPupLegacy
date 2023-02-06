@@ -108,12 +108,13 @@ public class FetchOrganizationsService
             					else -1
             				end status
             			from user_group_user_role_user ugu
+                        join user_group ug on ug.id = ugu.user_group_id
             			WHERE ugu.user_group_id = 
             			case
             				when tn.subgroup_id is null then tn.tenant_id 
             				else tn.subgroup_id 
             			end 
-            			AND ugu.user_role_id = 6
+            			AND ugu.user_role_id = ug.administrator_role_id
             			AND ugu.user_id = @user_id
             		)
             		when tn.publication_status_id = 1 then 1

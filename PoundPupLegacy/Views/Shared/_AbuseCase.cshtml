@@ -1,0 +1,16 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model AbuseCase
+
+@if (Model.InterOrganizationalRelations is not null)
+{
+    <partial name="_InterOrganizationalRelations" model="@Model.InterOrganizationalRelations" />
+}
+@if (Model.Documents is not null)
+{
+    <partial name="_Documents" model="@Model.Documents" />
+}
+@if (Model.Locations is not null)
+{
+    <partial name="_Locations" model="@Model.Locations" />
+}

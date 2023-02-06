@@ -1,0 +1,30 @@
+﻿@using PoundPupLegacy.Services;
+@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Cases
+@inject SiteDataService siteDataService
+<div class="article-with-comments">
+
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/home">home</a>
+        </span>
+    </div>
+    
+    <article>
+        <div>
+            @foreach(var entry in Model.CaseListEntries)
+            {
+                @if (!entry.HasBeenPublished)
+                {
+                    <div class="watermark">Unpublished</div>
+                }
+                <h3>@entry.Title</h3>
+                @Html.Raw(entry.Text)
+            }
+        </div>
+    </article>
+</div>
+@{
+    Layout = siteDataService.GetLayout(Context);
+}
