@@ -9,12 +9,22 @@ namespace PoundPupLegacy.Services;
 
 public class SiteDataService
 {
+    private record UserTenantAction
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required string Action { get; init; }
+    }
+
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<SiteDataService> _logger;
 
-    private readonly Dictionary<(int, int), List<MenuItem>> _userMenus = new Dictionary<(int, int), List<MenuItem>>();
+    private HashSet<UserTenantAction> _userTenantActions = new HashSet<UserTenantAction>();
 
-    private readonly List<Tenant> _tenants = new List<Tenant>();
+
+    private Dictionary<(int, int), List<MenuItem>> _userMenus = new Dictionary<(int, int), List<MenuItem>>();
+
+    private List<Tenant> _tenants = new List<Tenant>();
     public SiteDataService(NpgsqlConnection connection, ILogger<SiteDataService> logger) 
     { 
         _connection = connection;
@@ -42,8 +52,9 @@ public class SiteDataService
     public async Task InitializeAsync()
     {
         _logger.LogInformation("Loading site data");
-        await LoadTenants();
+        await LoadTenantsAsync();
         await LoadUserMenusAsync();
+        await LoadUserTenantActionsAsync();
     }
 
     public string? GetUrlPathForId(int tenantId, int urlId)
@@ -58,6 +69,18 @@ public class SiteDataService
             return urlPath;
         }
         return null;
+    }
+
+    public bool HasAccess(HttpContext context)
+    {
+        return _userTenantActions.Contains(
+            new UserTenantAction 
+            { 
+                UserId = GetUserId(context), 
+                TenantId = GetTenantId(context), 
+                Action = context.Request.Path 
+            }
+        );
     }
 
     public int GetTenantId(HttpContext context)
@@ -92,8 +115,9 @@ public class SiteDataService
         return null;
     }
 
-    private async Task LoadTenants()
+    private async Task LoadTenantsAsync()
     {
+        var tenants = new List<Tenant>();
         var sw = Stopwatch.StartNew();
 
         await _connection.OpenAsync();
@@ -114,8 +138,9 @@ public class SiteDataService
             {
                 var tenantId = reader.GetInt32(0);
                 var domainName = reader.GetString(1);
-                _tenants.Add(new Tenant { Id = tenantId, DomainName = domainName, IdToUrl = new Dictionary<int, string>(), UrlToId = new Dictionary<string, int>() });
+                tenants.Add(new Tenant { Id = tenantId, DomainName = domainName, IdToUrl = new Dictionary<int, string>(), UrlToId = new Dictionary<string, int>() });
             }
+            _tenants = tenants;
         }
         using (var readCommand = _connection.CreateCommand())
         {
@@ -151,7 +176,7 @@ public class SiteDataService
     private async Task LoadUserMenusAsync()
     {
         var sw = Stopwatch.StartNew();
-        
+        var userMenus = new Dictionary<(int, int), List<MenuItem>>();
         await _connection.OpenAsync();
         var sql = $"""
             with 
@@ -263,11 +288,66 @@ public class SiteDataService
             var user_id = reader.GetInt32(0);
             var tenant_id = reader.GetInt32(1);
             var menuItems = reader.GetFieldValue<List<Link>>(2);
-            _userMenus.Add((user_id, tenant_id), menuItems);
+            userMenus.Add((user_id, tenant_id), menuItems);
         }
         await _connection.CloseAsync();
+        _userMenus = userMenus;
         _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
     }
+
+    private async Task LoadUserTenantActionsAsync()
+    {
+        var sw = Stopwatch.StartNew();
+        var userTenantActions = new HashSet<UserTenantAction>();
+        await _connection.OpenAsync();
+        var sql = """
+            select
+            distinct
+            ugur.user_id,
+            t.id tenant_id,
+            ba.path
+            from basic_action ba
+            join access_role_privilege arp on arp.action_id = ba.id
+            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+            join tenant t on t.id = ugur.user_group_id
+            union
+            select
+            distinct
+            0,
+            t.id tenant_id,
+            ba.path
+            from basic_action ba
+            join access_role_privilege arp on arp.action_id = ba.id
+            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+            join tenant t on t.id = ugur.user_group_id
+            where arp.access_role_id = t.access_role_id_not_logged_in
+            """;
+        using var readCommand = _connection.CreateCommand();
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = sql;
+        await readCommand.PrepareAsync();
+        await using var reader = await readCommand.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            var userId = reader.GetInt32(0);
+            var tenantId = reader.GetInt32(1);
+            var action = reader.GetFieldValue<string>(2);
+
+            userTenantActions.Add(
+                 new UserTenantAction
+                {
+                    UserId = userId,
+                    TenantId = tenantId,
+                    Action = action,
+                }
+            );
+        }
+        _userTenantActions = userTenantActions;
+        await _connection.CloseAsync();
+        _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
+    }
+
     public IEnumerable<Link> GetMenuItemsForUser(HttpContext context)
     {
         if(_userMenus.TryGetValue((GetUserId(context), GetTenantId(context)), out var lst))

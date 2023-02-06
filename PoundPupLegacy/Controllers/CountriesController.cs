@@ -11,17 +11,23 @@ public class CountriesController : Controller
 
     private readonly FetchCountriesService _fetchCountriesService;
     private readonly ILogger<CountriesController> _logger;
+    private readonly SiteDataService _siteDataService;
 
-    public CountriesController(ILogger<CountriesController> logger, FetchCountriesService fetchCountriesService)
+    public CountriesController(ILogger<CountriesController> logger, FetchCountriesService fetchCountriesService, SiteDataService siteDataService)
     {
         _fetchCountriesService = fetchCountriesService;
         _logger = logger;
+        _siteDataService = siteDataService;
     }
 
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
+        if (!_siteDataService.HasAccess(HttpContext))
+        {
+            return NotFound();
+        }
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var firstLevelRegions = await _fetchCountriesService.FetchCountries(HttpContext);

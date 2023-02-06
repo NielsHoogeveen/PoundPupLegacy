@@ -40,6 +40,10 @@ public class ArticlesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
+        if (!_siteDataService.HasAccess(HttpContext))
+        {
+            return NotFound();
+        }
         var pageNumber = 1;
 
         var query = this.HttpContext.Request.Query;
