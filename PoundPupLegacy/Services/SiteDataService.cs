@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using Tenant = PoundPupLegacy.ViewModel.Tenant;
 using MenuItem = PoundPupLegacy.ViewModel.Link;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace PoundPupLegacy.Services;
 
@@ -16,20 +17,30 @@ public class SiteDataService
         public required string Action { get; init; }
     }
 
+    private record Data
+    {
+        public required HashSet<UserTenantAction> UserTenantActions { get; init; }
+
+
+        public required Dictionary<(int, int), List<MenuItem>> UserMenus { get; init; }
+
+        public required List<Tenant> Tenants { get; init; }
+
+    }
+    private Data _data = new Data 
+    { 
+        Tenants = new List<Tenant>(), 
+        UserMenus = new Dictionary<(int, int), List<MenuItem>>(), 
+        UserTenantActions = new HashSet<UserTenantAction>() 
+    };
+
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<SiteDataService> _logger;
 
-    private HashSet<UserTenantAction> _userTenantActions = new HashSet<UserTenantAction>();
-
-
-    private Dictionary<(int, int), List<MenuItem>> _userMenus = new Dictionary<(int, int), List<MenuItem>>();
-
-    private List<Tenant> _tenants = new List<Tenant>();
     public SiteDataService(NpgsqlConnection connection, ILogger<SiteDataService> logger) 
     { 
         _connection = connection;
         _logger = logger;
-
     }
 
     public int GetUserId(HttpContext context)
@@ -49,17 +60,26 @@ public class SiteDataService
 
     }
 
+    /*
+     * Assignment is atomic, therefore if we prepare all data in a single object,
+     * we can reinitialize using a single assignment. As a result, from the 
+     * users perspective reinitialization of site data is an atomic action
+     */
     public async Task InitializeAsync()
     {
         _logger.LogInformation("Loading site data");
-        await LoadTenantsAsync();
-        await LoadUserMenusAsync();
-        await LoadUserTenantActionsAsync();
+        var data = new Data
+        {
+            Tenants = await LoadTenantsAsync(),
+            UserMenus = await LoadUserMenusAsync(),
+            UserTenantActions = await LoadUserTenantActionsAsync(),
+        };
+        _data = data;
     }
 
     public string? GetUrlPathForId(int tenantId, int urlId)
     {
-        var tenant = _tenants.Find(x => x.Id == tenantId);
+        var tenant = _data.Tenants.Find(x => x.Id == tenantId);
         if (tenant is null)
         {
             throw new NullReferenceException("Tenant should not be null");
@@ -73,7 +93,7 @@ public class SiteDataService
 
     public bool HasAccess(HttpContext context)
     {
-        return _userTenantActions.Contains(
+        return _data.UserTenantActions.Contains(
             new UserTenantAction 
             { 
                 UserId = GetUserId(context), 
@@ -90,7 +110,7 @@ public class SiteDataService
         {
             return 1;
         }
-        var tenant = _tenants.Find(x => x.DomainName == domainName);
+        var tenant = _data.Tenants.Find(x => x.DomainName == domainName);
         if(tenant is not null)
         {
             return tenant.Id;
@@ -103,7 +123,7 @@ public class SiteDataService
 
         var tenantId = GetTenantId(context);
         var urlPath = context.Request.Path.Value!.Substring(1);
-        var tenant = _tenants.Find(x => x.Id == tenantId);
+        var tenant = _data.Tenants.Find(x => x.Id == tenantId);
         if (tenant is null)
         {
             throw new NullReferenceException("Tenant should not be null");
@@ -115,7 +135,7 @@ public class SiteDataService
         return null;
     }
 
-    private async Task LoadTenantsAsync()
+    private async Task<List<Tenant>> LoadTenantsAsync()
     {
         var tenants = new List<Tenant>();
         var sw = Stopwatch.StartNew();
@@ -138,9 +158,14 @@ public class SiteDataService
             {
                 var tenantId = reader.GetInt32(0);
                 var domainName = reader.GetString(1);
-                tenants.Add(new Tenant { Id = tenantId, DomainName = domainName, IdToUrl = new Dictionary<int, string>(), UrlToId = new Dictionary<string, int>() });
+                tenants.Add(new Tenant 
+                { 
+                    Id = tenantId, 
+                    DomainName = domainName, 
+                    IdToUrl = new Dictionary<int, string>(), 
+                    UrlToId = new Dictionary<string, int>() 
+                });
             }
-            _tenants = tenants;
         }
         using (var readCommand = _connection.CreateCommand())
         {
@@ -159,7 +184,7 @@ public class SiteDataService
             await using var reader = await readCommand.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                var tenant = _tenants.Find(x => x.Id == reader.GetInt32(0));
+                var tenant = tenants.Find(x => x.Id == reader.GetInt32(0));
                 if(tenant is null)
                 {
                     throw new NullReferenceException("Tenant should not be null");
@@ -170,10 +195,11 @@ public class SiteDataService
         }
         await _connection.CloseAsync();
         _logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
+        return tenants;
 
     }
 
-    private async Task LoadUserMenusAsync()
+    private async Task<Dictionary<(int, int), List<MenuItem>>> LoadUserMenusAsync()
     {
         var sw = Stopwatch.StartNew();
         var userMenus = new Dictionary<(int, int), List<MenuItem>>();
@@ -291,11 +317,11 @@ public class SiteDataService
             userMenus.Add((user_id, tenant_id), menuItems);
         }
         await _connection.CloseAsync();
-        _userMenus = userMenus;
         _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
+        return userMenus;
     }
 
-    private async Task LoadUserTenantActionsAsync()
+    private async Task<HashSet<UserTenantAction>> LoadUserTenantActionsAsync()
     {
         var sw = Stopwatch.StartNew();
         var userTenantActions = new HashSet<UserTenantAction>();
@@ -343,14 +369,15 @@ public class SiteDataService
                 }
             );
         }
-        _userTenantActions = userTenantActions;
+        
         await _connection.CloseAsync();
         _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
+        return userTenantActions;
     }
 
     public IEnumerable<Link> GetMenuItemsForUser(HttpContext context)
     {
-        if(_userMenus.TryGetValue((GetUserId(context), GetTenantId(context)), out var lst))
+        if(_data.UserMenus.TryGetValue((GetUserId(context), GetTenantId(context)), out var lst))
         {
             return lst;
         }
