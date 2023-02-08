@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -9,6 +8,7 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -23,6 +23,7 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
         await foreach (var wrongfulRemovalCase in wrongfulRemovalCases)
         {
             await nodeWriter.WriteAsync(wrongfulRemovalCase);
+            await searchableWriter.WriteAsync(wrongfulRemovalCase);
             await documentableWriter.WriteAsync(wrongfulRemovalCase);
             await locatableWriter.WriteAsync(wrongfulRemovalCase);
             await nameableWriter.WriteAsync(wrongfulRemovalCase);

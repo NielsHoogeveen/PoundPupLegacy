@@ -9,6 +9,7 @@ public class HagueStatusCreator : IEntityCreator<HagueStatus>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var hagueStatusWriter = await HagueStatusWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class HagueStatusCreator : IEntityCreator<HagueStatus>
         await foreach (var hagueStatus in hagueStatuss)
         {
             await nodeWriter.WriteAsync(hagueStatus);
+            await searchableWriter.WriteAsync(hagueStatus);
             await nameableWriter.WriteAsync(hagueStatus);
             await hagueStatusWriter.WriteAsync(hagueStatus);
             await EntityCreator.WriteTerms(hagueStatus, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

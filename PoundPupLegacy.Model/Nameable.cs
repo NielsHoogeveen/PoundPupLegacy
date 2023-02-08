@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface Nameable : Node
+public interface Nameable : Searchable
 {
     string Description { get; }
 

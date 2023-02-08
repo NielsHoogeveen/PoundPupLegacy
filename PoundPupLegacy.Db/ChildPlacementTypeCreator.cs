@@ -9,6 +9,7 @@ public class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var childPlacementTypeWriter = await ChildPlacementTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
         await foreach (var childPlacementType in childPlacementTypes)
         {
             await nodeWriter.WriteAsync(childPlacementType);
+            await searchableWriter.WriteAsync(childPlacementType);
             await nameableWriter.WriteAsync(childPlacementType);
             await childPlacementTypeWriter.WriteAsync(childPlacementType);
             await EntityCreator.WriteTerms(childPlacementType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

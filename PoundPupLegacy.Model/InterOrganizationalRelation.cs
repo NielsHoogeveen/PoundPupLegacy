@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record InterOrganizationalRelation : Documentable
+public record InterOrganizationalRelation : Node
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

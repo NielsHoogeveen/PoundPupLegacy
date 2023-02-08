@@ -110,5 +110,11 @@ internal sealed class ActionMigrator : PPLMigrator
             Path = "/contact",
             Description = "Contact page"
         };
+        yield return new BasicAction
+        {
+            Id = null,
+            Path = "/search",
+            Description = "Full text search"
+        };
     }
 }

@@ -9,6 +9,7 @@ public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCa
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -23,6 +24,7 @@ public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCa
         await foreach (var disruptedPlacementCase in disruptedPlacementCases)
         {
             await nodeWriter.WriteAsync(disruptedPlacementCase);
+            await searchableWriter.WriteAsync(disruptedPlacementCase);
             await documentableWriter.WriteAsync(disruptedPlacementCase);
             await locatableWriter.WriteAsync(disruptedPlacementCase);
             await nameableWriter.WriteAsync(disruptedPlacementCase);

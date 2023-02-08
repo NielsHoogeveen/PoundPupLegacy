@@ -9,6 +9,7 @@ public class PersonCreator : IEntityCreator<Person>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -23,6 +24,7 @@ public class PersonCreator : IEntityCreator<Person>
         await foreach (var person in persons)
         {
             await nodeWriter.WriteAsync(person);
+            await searchableWriter.WriteAsync(person);
             await documentableWriter.WriteAsync(person);
             await locatableWriter.WriteAsync(person);
             await nameableWriter.WriteAsync(person);

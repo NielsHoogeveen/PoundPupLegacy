@@ -9,6 +9,7 @@ public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIn
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var geographicalEntityWriter = await GeographicalEnityWriter.CreateAsync(connection);
@@ -28,6 +29,7 @@ public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIn
         await foreach (var subdivision in subdivisions)
         {
             await nodeWriter.WriteAsync(subdivision);
+            await searchableWriter.WriteAsync(subdivision);
             await documentableWriter.WriteAsync(subdivision);
             await nameableWriter.WriteAsync(subdivision);
             await geographicalEntityWriter.WriteAsync(subdivision);

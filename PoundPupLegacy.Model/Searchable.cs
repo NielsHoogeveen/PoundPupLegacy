@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface Locatable : Searchable
+public interface Searchable: Node
 {
 }

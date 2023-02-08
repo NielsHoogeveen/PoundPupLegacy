@@ -9,6 +9,7 @@ public class OrganizationCreator : IEntityCreator<Organization>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -24,6 +25,7 @@ public class OrganizationCreator : IEntityCreator<Organization>
         await foreach (var organization in organizations)
         {
             await nodeWriter.WriteAsync(organization);
+            await searchableWriter.WriteAsync(organization);
             await documentableWriter.WriteAsync(organization);
             await locatableWriter.WriteAsync(organization);
             await nameableWriter.WriteAsync(organization);

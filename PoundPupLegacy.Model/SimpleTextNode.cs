@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface SimpleTextNode: Node
+public interface SimpleTextNode: Searchable
 {
     string Text { get; }
 

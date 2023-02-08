@@ -9,6 +9,7 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -23,6 +24,7 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
         await foreach (var coercedAdoptionCase in coercedAdoptionCases)
         {
             await nodeWriter.WriteAsync(coercedAdoptionCase);
+            await searchableWriter.WriteAsync(coercedAdoptionCase); 
             await documentableWriter.WriteAsync(coercedAdoptionCase);
             await locatableWriter.WriteAsync(coercedAdoptionCase);
             await nameableWriter.WriteAsync(coercedAdoptionCase);

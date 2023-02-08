@@ -9,6 +9,7 @@ public class InterOrganizationalRelationTypeCreator : IEntityCreator<InterOrgani
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var interOrganizationalRelationTypeWriter = await InterOrganizationalRelationTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class InterOrganizationalRelationTypeCreator : IEntityCreator<InterOrgani
         await foreach (var interOrganizationalRelationType in interOrganizationalRelationTypes)
         {
             await nodeWriter.WriteAsync(interOrganizationalRelationType);
+            await searchableWriter.WriteAsync(interOrganizationalRelationType);
             await nameableWriter.WriteAsync(interOrganizationalRelationType);
             await interOrganizationalRelationTypeWriter.WriteAsync(interOrganizationalRelationType);
             await EntityCreator.WriteTerms(interOrganizationalRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

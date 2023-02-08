@@ -9,6 +9,7 @@ public class FathersRightsViolationCaseCreator : IEntityCreator<FathersRightsVio
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -23,6 +24,7 @@ public class FathersRightsViolationCaseCreator : IEntityCreator<FathersRightsVio
         await foreach (var fathersRightsViolationCase in fathersRightsViolationCases)
         {
             await nodeWriter.WriteAsync(fathersRightsViolationCase);
+            await searchableWriter.WriteAsync(fathersRightsViolationCase);
             await documentableWriter.WriteAsync(fathersRightsViolationCase);
             await locatableWriter.WriteAsync(fathersRightsViolationCase);
             await nameableWriter.WriteAsync(fathersRightsViolationCase);

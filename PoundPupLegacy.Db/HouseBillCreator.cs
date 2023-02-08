@@ -10,6 +10,7 @@ public class HouseBillCreator : IEntityCreator<HouseBill>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var billWriter = await BillWriter.CreateAsync(connection);
@@ -23,6 +24,7 @@ public class HouseBillCreator : IEntityCreator<HouseBill>
         await foreach (var houseBill in houseBills)
         {
             await nodeWriter.WriteAsync(houseBill);
+            await searchableWriter.WriteAsync(houseBill);
             await nameableWriter.WriteAsync(houseBill);
             await documentableWriter.WriteAsync(houseBill);
             await billWriter.WriteAsync(houseBill);

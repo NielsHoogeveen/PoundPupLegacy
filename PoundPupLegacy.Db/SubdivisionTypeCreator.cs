@@ -8,6 +8,7 @@ public class SubdivisionTypeCreator : IEntityCreator<SubdivisionType>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var subdivisionTypeWriter = await SubdivisionTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -19,6 +20,7 @@ public class SubdivisionTypeCreator : IEntityCreator<SubdivisionType>
         await foreach (var subdivisionType in subdivisionTypes)
         {
             await nodeWriter.WriteAsync(subdivisionType);
+            await searchableWriter.WriteAsync(subdivisionType);
             await nameableWriter.WriteAsync(subdivisionType);
             await subdivisionTypeWriter.WriteAsync(subdivisionType);
             await EntityCreator.WriteTerms(subdivisionType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

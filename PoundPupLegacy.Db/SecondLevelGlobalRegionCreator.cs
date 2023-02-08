@@ -8,6 +8,7 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
     public static async Task CreateAsync(IAsyncEnumerable<SecondLevelGlobalRegion> nodes, NpgsqlConnection connection)
     {
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var geographicalEntityWriter = await GeographicalEnityWriter.CreateAsync(connection);
@@ -22,6 +23,7 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
         await foreach (var node in nodes)
         {
             await nodeWriter.WriteAsync(node);
+            await searchableWriter.WriteAsync(node);
             await documentableWriter.WriteAsync(node);
             await nameableWriter.WriteAsync(node);
             await geographicalEntityWriter.WriteAsync(node);

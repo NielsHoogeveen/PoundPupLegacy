@@ -10,6 +10,7 @@ public class BasicNameableCreator : IEntityCreator<BasicNameable>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var basicNameableWriter = await BasicNameableWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -21,6 +22,7 @@ public class BasicNameableCreator : IEntityCreator<BasicNameable>
         await foreach (var basicNameable in basicNameables)
         {
             await nodeWriter.WriteAsync(basicNameable);
+            await searchableWriter.WriteAsync(basicNameable);
             await nameableWriter.WriteAsync(basicNameable);
             await basicNameableWriter.WriteAsync(basicNameable);
             await EntityCreator.WriteTerms(basicNameable, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

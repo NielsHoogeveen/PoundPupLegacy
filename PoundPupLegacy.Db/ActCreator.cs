@@ -8,6 +8,7 @@ public class ActCreator : IEntityCreator<Act>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var actWriter = await ActWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class ActCreator : IEntityCreator<Act>
         await foreach (var act in acts)
         {
             await nodeWriter.WriteAsync(act);
+            await searchableWriter.WriteAsync(act);
             await nameableWriter.WriteAsync(act);
             await documentableWriter.WriteAsync(act);
             await actWriter.WriteAsync(act);

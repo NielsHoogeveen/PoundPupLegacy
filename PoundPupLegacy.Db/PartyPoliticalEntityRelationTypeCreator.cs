@@ -9,6 +9,7 @@ public class PartyPoliticalEntityRelationTypeCreator : IEntityCreator<PartyPolit
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var politicalEntityRelationTypeWriter = await PoliticalEntityRelationTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class PartyPoliticalEntityRelationTypeCreator : IEntityCreator<PartyPolit
         await foreach (var politicalEntityRelationType in politicalEntityRelationTypes)
         {
             await nodeWriter.WriteAsync(politicalEntityRelationType);
+            await searchableWriter.WriteAsync(politicalEntityRelationType);
             await nameableWriter.WriteAsync(politicalEntityRelationType);
             await politicalEntityRelationTypeWriter.WriteAsync(politicalEntityRelationType);
             await EntityCreator.WriteTerms(politicalEntityRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

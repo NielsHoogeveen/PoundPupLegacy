@@ -8,6 +8,7 @@ public class BlogPostCreator : IEntityCreator<BlogPost>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var simpleTextNodeWriter = await SimpleTextNodeWriter.CreateAsync(connection);
         await using var blogPostWriter = await BlogPostWriter.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
@@ -15,6 +16,7 @@ public class BlogPostCreator : IEntityCreator<BlogPost>
         await foreach (var blogPost in blogPosts)
         {
             await nodeWriter.WriteAsync(blogPost);
+            await searchableWriter.WriteAsync(blogPost);
             await simpleTextNodeWriter.WriteAsync(blogPost);
             await blogPostWriter.WriteAsync(blogPost);
             foreach (var tenantNode in blogPost.TenantNodes)

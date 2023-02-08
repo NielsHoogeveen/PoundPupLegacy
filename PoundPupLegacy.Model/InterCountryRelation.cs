@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Model;
 
-public sealed record InterCountryRelation : Documentable
+public sealed record InterCountryRelation : Node
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

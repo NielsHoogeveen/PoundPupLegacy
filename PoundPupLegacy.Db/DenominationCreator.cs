@@ -9,6 +9,7 @@ public class DenominationCreator : IEntityCreator<Denomination>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var denominationWriter = await DenominationWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class DenominationCreator : IEntityCreator<Denomination>
         await foreach (var denomination in denominations)
         {
             await nodeWriter.WriteAsync(denomination);
+            await searchableWriter.WriteAsync(denomination);
             await nameableWriter.WriteAsync(denomination);
             await denominationWriter.WriteAsync(denomination);
             await EntityCreator.WriteTerms(denomination, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

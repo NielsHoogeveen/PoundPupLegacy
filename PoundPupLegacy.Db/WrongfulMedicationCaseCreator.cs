@@ -9,6 +9,7 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -23,6 +24,7 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
         await foreach (var wrongfulMedicationCase in wrongfulMedicationCases)
         {
             await nodeWriter.WriteAsync(wrongfulMedicationCase);
+            await searchableWriter.WriteAsync(wrongfulMedicationCase);
             await documentableWriter.WriteAsync(wrongfulMedicationCase);
             await locatableWriter.WriteAsync(wrongfulMedicationCase);
             await nameableWriter.WriteAsync(wrongfulMedicationCase);    

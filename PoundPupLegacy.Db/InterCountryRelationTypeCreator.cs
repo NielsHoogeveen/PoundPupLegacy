@@ -9,6 +9,7 @@ public class InterCountryRelationTypeCreator : IEntityCreator<InterCountryRelati
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var interCountryRelationTypeWriter = await InterCountryRelationTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class InterCountryRelationTypeCreator : IEntityCreator<InterCountryRelati
         await foreach (var interCountryRelationType in interCountryRelationTypes)
         {
             await nodeWriter.WriteAsync(interCountryRelationType);
+            await searchableWriter.WriteAsync(interCountryRelationType);
             await nameableWriter.WriteAsync(interCountryRelationType);
             await interCountryRelationTypeWriter.WriteAsync(interCountryRelationType);
             await EntityCreator.WriteTerms(interCountryRelationType, termWriter, termReader, termHierarchyWriter,vocabularyIdReader);

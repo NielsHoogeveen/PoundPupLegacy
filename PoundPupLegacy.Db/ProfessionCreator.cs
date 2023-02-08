@@ -9,6 +9,7 @@ public class ProfessionCreator : IEntityCreator<Profession>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var professionWriter = await ProfessionWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class ProfessionCreator : IEntityCreator<Profession>
         await foreach (var profession in professions)
         {
             await nodeWriter.WriteAsync(profession);
+            await searchableWriter.WriteAsync(profession);  
             await nameableWriter.WriteAsync(profession);
             await professionWriter.WriteAsync(profession);
             await EntityCreator.WriteTerms(profession, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

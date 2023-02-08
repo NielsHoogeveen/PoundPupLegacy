@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record PartyPoliticalEntityRelation : Documentable
+public record PartyPoliticalEntityRelation : Node
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

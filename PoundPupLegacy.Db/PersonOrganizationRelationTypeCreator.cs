@@ -9,6 +9,7 @@ public class PersonOrganizationRelationTypeCreator : IEntityCreator<PersonOrgani
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var personOrganizationRelationTypeWriter = await PersonOrganizationRelationTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class PersonOrganizationRelationTypeCreator : IEntityCreator<PersonOrgani
         await foreach (var personOrganizationRelationType in personOrganizationRelationTypes)
         {
             await nodeWriter.WriteAsync(personOrganizationRelationType);
+            await searchableWriter.WriteAsync(personOrganizationRelationType);
             await nameableWriter.WriteAsync(personOrganizationRelationType);
             await personOrganizationRelationTypeWriter.WriteAsync(personOrganizationRelationType);
             await EntityCreator.WriteTerms(personOrganizationRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

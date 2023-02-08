@@ -9,6 +9,7 @@ public class InterPersonalRelationTypeCreator : IEntityCreator<InterPersonalRela
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var interPersonalRelationTypeWriter = await InterPersonalRelationTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class InterPersonalRelationTypeCreator : IEntityCreator<InterPersonalRela
         await foreach (var interPersonalRelationType in interPersonalRelationTypes)
         {
             await nodeWriter.WriteAsync(interPersonalRelationType);
+            await searchableWriter.WriteAsync(interPersonalRelationType);
             await nameableWriter.WriteAsync(interPersonalRelationType);
             await interPersonalRelationTypeWriter.WriteAsync(interPersonalRelationType);
             await EntityCreator.WriteTerms(interPersonalRelationType, termWriter, termReader, termHierarchyWriter,vocabularyIdReader);

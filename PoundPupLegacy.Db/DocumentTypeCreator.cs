@@ -9,6 +9,7 @@ public class DocumentTypeCreator : IEntityCreator<DocumentType>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var documentTypeWriter = await DocumentTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class DocumentTypeCreator : IEntityCreator<DocumentType>
         await foreach (var documentType in documentTypes)
         {
             await nodeWriter.WriteAsync(documentType);
+            await searchableWriter.WriteAsync(documentType);
             await nameableWriter.WriteAsync(documentType);
             await documentTypeWriter.WriteAsync(documentType);
             await EntityCreator.WriteTerms(documentType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

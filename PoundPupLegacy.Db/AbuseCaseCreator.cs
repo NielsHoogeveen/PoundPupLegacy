@@ -9,6 +9,7 @@ public class AbuseCaseCreator : IEntityCreator<AbuseCase>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -23,6 +24,7 @@ public class AbuseCaseCreator : IEntityCreator<AbuseCase>
         await foreach (var abuseCase in abuseCases)
         {
             await nodeWriter.WriteAsync(abuseCase);
+            await searchableWriter.WriteAsync(abuseCase);
             await documentableWriter.WriteAsync(abuseCase);
             await locatableWriter.WriteAsync(abuseCase);
             await nameableWriter.WriteAsync(abuseCase);

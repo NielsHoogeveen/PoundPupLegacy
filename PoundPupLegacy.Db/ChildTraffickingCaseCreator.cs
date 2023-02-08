@@ -9,6 +9,7 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var locatableWriter = await LocatableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
@@ -23,6 +24,7 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
         await foreach (var childTraffickingCase in childTraffickingCases)
         {
             await nodeWriter.WriteAsync(childTraffickingCase);
+            await searchableWriter.WriteAsync(childTraffickingCase);
             await documentableWriter.WriteAsync(childTraffickingCase);
             await locatableWriter.WriteAsync(childTraffickingCase);
             await nameableWriter.WriteAsync(childTraffickingCase);

@@ -338,6 +338,11 @@ internal sealed class UserMigrator : PPLMigrator
         };
         yield return new AccessRolePrivilege
         {
+            AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/search")
+        };
+        yield return new AccessRolePrivilege
+        {
             AccessRoleId = 16,
             ActionId = await _actionReaderByPath.ReadAsync("/organizations")
         };
@@ -350,6 +355,11 @@ internal sealed class UserMigrator : PPLMigrator
         {
             AccessRoleId = 16,
             ActionId = await _actionReaderByPath.ReadAsync("/countries")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 16,
+            ActionId = await _actionReaderByPath.ReadAsync("/search")
         };
     }
 

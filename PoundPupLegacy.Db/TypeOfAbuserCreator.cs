@@ -9,6 +9,7 @@ public class TypeOfAbuserCreator : IEntityCreator<TypeOfAbuser>
     {
 
         await using var nodeWriter = await NodeWriter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var typeOfAbuserWriter = await TypeOfAbuserWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
@@ -20,6 +21,7 @@ public class TypeOfAbuserCreator : IEntityCreator<TypeOfAbuser>
         await foreach (var typeOfAbuser in typesOfAbuser)
         {
             await nodeWriter.WriteAsync(typeOfAbuser);
+            await searchableWriter.WriteAsync(typeOfAbuser);
             await nameableWriter.WriteAsync(typeOfAbuser);
             await typeOfAbuserWriter.WriteAsync(typeOfAbuser);
             await EntityCreator.WriteTerms(typeOfAbuser, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

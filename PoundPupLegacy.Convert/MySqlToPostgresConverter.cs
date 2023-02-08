@@ -86,6 +86,7 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
         await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
         await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
+        await (new SearchableMigrator(this)).Migrate();
     }
 
     internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=niels;database=ppl";
