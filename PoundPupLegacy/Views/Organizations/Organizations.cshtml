@@ -78,10 +78,10 @@
         <input type="text" name="search" value="@Model.SearchTerm"/>
         <input type="submit" value="Search" />
         </form>
-    @foreach (var organization in Model.OrganizationListEntries)
+    @foreach (var organization in Model.Entries)
     {
         <div>
-            <a href="@organization.Path">@organization.Name</a>
+            <a href="@organization.Path">@organization.Title</a>
         </div>
     }
 </div>

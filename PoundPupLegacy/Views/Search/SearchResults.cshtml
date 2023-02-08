@@ -1,0 +1,23 @@
+﻿@using PoundPupLegacy.Services;
+@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model SearchResult
+@inject SiteDataService siteDataService
+
+<div class="blog-list">
+    <article>
+    @foreach(var entry in Model.Entries)
+    {
+        <div class="blog-teaser">
+            <h2>
+                <a href="@entry.Path">@entry.Title</a>
+            </h2>
+            @Html.Raw(entry.Teaser)
+            <div style="clear:both"></div>
+        </div>
+    }
+    </article>
+</div>
+@{
+    Layout = siteDataService.GetLayout(Context);
+}

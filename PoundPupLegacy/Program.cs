@@ -35,6 +35,7 @@ public class Program
         builder.Services.AddTransient<FetchOrganizationsService>();
         builder.Services.AddTransient<FetchCasesService>();
         builder.Services.AddTransient<FetchCountriesService>();
+        builder.Services.AddTransient<FetchSearchService>();
         builder.Services.AddTransient<RazorViewToStringService>();
         builder.Services.AddTransient<StringToDocumentService>();
         builder.Services.AddTransient<TeaserService>();

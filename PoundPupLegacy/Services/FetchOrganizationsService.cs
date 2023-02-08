@@ -37,10 +37,10 @@ public class FetchOrganizationsService
             select
             	json_build_object(
             	    'NumberOfEntries', number_of_entries,
-            	    'OrganizationListEntries', json_agg(
+            	    'Entries', json_agg(
             	        json_build_object(
             	        'Path', url_path,
-            	        'Name', title,
+            	        'Title', title,
             	        'HasBeenPublished', case 
             		        when status = 0 then false
             		        else true
@@ -171,7 +171,7 @@ public class FetchOrganizationsService
             _connection.Close();
             return new Organizations
             {
-                OrganizationListEntries = new OrganizationListEntry[] { }
+                Entries = new OrganizationListEntry[] { }
             };
         }
     }

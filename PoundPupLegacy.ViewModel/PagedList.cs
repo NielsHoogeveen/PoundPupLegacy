@@ -62,4 +62,10 @@ public interface PagedList
     public string QueryString { get; set; }
 
     public string Path { get; }
+
+}
+public interface PagedList<T> : PagedList
+    where T: ListEntry
+{
+    public T[] Entries { get; set; }
 }
