@@ -2,17 +2,17 @@
 using PoundPupLegacy.ViewModel;
 using System.Data;
 
-namespace PoundPupLegacy.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class FetchNodeService
+internal class FetchNodeService: IFetchNodeService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly StringToDocumentService _stringToDocumentService;
-    private readonly SiteDataService _siteDateService;
-    public FetchNodeService(NpgsqlConnection connection, StringToDocumentService stringToDocumentService, SiteDataService siteDataService)
+    private readonly ISiteDataService _siteDateService;
+    public FetchNodeService(
+        NpgsqlConnection connection, 
+        ISiteDataService siteDataService)
     {
         _connection = connection;
-        _stringToDocumentService = stringToDocumentService;
         _siteDateService = siteDataService;
     }
 
@@ -82,10 +82,6 @@ public class FetchNodeService
             41 => reader.GetFieldValue<BasicNameable>(1),
             _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
         };
-        if(node is SimpleTextNode stn)
-        {
-            stn.Text = _stringToDocumentService.Convert(((SimpleTextNode)node).Text).DocumentNode.InnerHtml;
-        }
         _connection.Close();
         return node!;
     }

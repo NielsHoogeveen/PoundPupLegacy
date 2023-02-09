@@ -2,7 +2,7 @@
 @using PoundPupLegacy.Services;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Node
-@inject SiteDataService siteDataService
+@inject ISiteDataService siteDataService
 
 <partial name="_Node" model="@Model" />
 @{

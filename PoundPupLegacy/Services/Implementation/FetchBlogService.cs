@@ -1,24 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Npgsql;
+﻿using Npgsql;
 using NpgsqlTypes;
-using PoundPupLegacy.Services;
 using PoundPupLegacy.ViewModel;
 using System.Data;
 
-namespace PoundPupLegacy.Web.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class FetchBlogService
+internal class FetchBlogService: IFetchBlogService
 {
     private NpgsqlConnection _connection;
 
-    private RazorViewToStringService _renderer;
+    private IRazorViewToStringService _renderer;
 
-    private TeaserService _teaserService;
-    public FetchBlogService(NpgsqlConnection connection, RazorViewToStringService renderer, TeaserService teaserService)
+    public FetchBlogService(NpgsqlConnection connection, IRazorViewToStringService renderer)
     {
         _connection = connection;
         _renderer = renderer;
-        _teaserService = teaserService;
     }
 
     public async Task<Blog> FetchBlog(HttpContext context, int accessRoleId, int startIndex, int length)
@@ -61,7 +57,7 @@ public class FetchBlogService
             Id = x.Id,
             Authoring = x.Authoring,
             Title = x.Title,
-            Text = _teaserService.MakeTeaser(x.Text)
+            Text = x.Text
         });
         blog.Name = MakeName(blog.Name);
         blog.BlogPostTeasers = entries.ToList();
@@ -84,7 +80,7 @@ public class FetchBlogService
                 n.title, 
                 n.created_date_time, 
                 n.changed_date_time, 
-                stn.text, 
+                stn.teaser,
                 n.access_role_id, 
                 ar.name access_role_name
             FROM public."node" n
@@ -104,7 +100,7 @@ public class FetchBlogService
                 json_build_object(
                 'Id', n.id,
                 'Title', n.title, 
-                'Text', n.text,
+                'Text', n.teaser,
                 'Authoring', json_build_object(
                     'Id', n.access_role_id, 
                     'Name', n.access_role_name,

@@ -4,11 +4,10 @@ using System.Data;
 using System.Diagnostics;
 using Tenant = PoundPupLegacy.ViewModel.Tenant;
 using MenuItem = PoundPupLegacy.ViewModel.Link;
-using Microsoft.AspNetCore.ResponseCompression;
 
-namespace PoundPupLegacy.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class SiteDataService
+internal class SiteDataService: ISiteDataService
 {
     private record UserTenantAction
     {

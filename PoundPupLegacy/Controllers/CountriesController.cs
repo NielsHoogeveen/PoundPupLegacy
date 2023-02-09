@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.Web.Services;
 using System.Diagnostics;
 
 namespace PoundPupLegacy.Controllers;
@@ -9,11 +8,11 @@ namespace PoundPupLegacy.Controllers;
 public class CountriesController : Controller
 {
 
-    private readonly FetchCountriesService _fetchCountriesService;
+    private readonly IFetchCountriesService _fetchCountriesService;
     private readonly ILogger<CountriesController> _logger;
-    private readonly SiteDataService _siteDataService;
+    private readonly ISiteDataService _siteDataService;
 
-    public CountriesController(ILogger<CountriesController> logger, FetchCountriesService fetchCountriesService, SiteDataService siteDataService)
+    public CountriesController(ILogger<CountriesController> logger, IFetchCountriesService fetchCountriesService, ISiteDataService siteDataService)
     {
         _fetchCountriesService = fetchCountriesService;
         _logger = logger;

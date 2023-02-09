@@ -5,28 +5,27 @@ using PoundPupLegacy.Models;
 using PoundPupLegacy.Services;
 using System.Diagnostics;
 using System.Security.Claims;
+using IAuthenticationService = PoundPupLegacy.Services.IAuthenticationService;
 
 namespace PoundPupLegacy.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly Services.AuthenticationService _authenticationService;
-    private readonly FetchNodeService _fetchNodeService;
-    private readonly SiteDataService _siteDataService;
-    private readonly RazorViewToStringService _viewService;
+    private readonly IAuthenticationService _authenticationService;
+    private readonly ISiteDataService _siteDataService;
+    private readonly INodeCacheService _nodeCacheService;
 
-    public HomeController(ILogger<HomeController> logger, 
-        Services.AuthenticationService authenticationService,
-        FetchNodeService fetchNodeService,
-        SiteDataService siteDataService,
-        RazorViewToStringService viewService)
+    public HomeController(
+        ILogger<HomeController> logger, 
+        IAuthenticationService authenticationService,
+        ISiteDataService siteDataService,
+        INodeCacheService nodeCacheService)
     {
         _logger = logger;
         _authenticationService = authenticationService;
-        _fetchNodeService = fetchNodeService;
         _siteDataService = siteDataService;
-        _viewService = viewService;
+        _nodeCacheService = nodeCacheService;
     }
 
     public IActionResult Index()
@@ -50,15 +49,12 @@ public class HomeController : Controller
         {
             return NotFound();
         }
-        var node = await _fetchNodeService.FetchNode(urlId.Value, HttpContext);
-        if (node == null)
-        {
-            return NotFound();
-        }
-        _logger.LogInformation($"Fetched node {urlId} in {stopwatch.Elapsed.TotalMilliseconds} ms");
-
-        return View("/Views/Node/Node.cshtml", node);
+        var id = urlId.Value;
+        var result = await _nodeCacheService.GetResult(HttpContext, id);
+        _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
+        return result;
     }
+
     public IActionResult Privacy()
     {
         return View();

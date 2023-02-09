@@ -1,33 +1,16 @@
 ﻿using Npgsql;
 using PoundPupLegacy.ViewModel;
 using System.Data;
-using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
 
-namespace PoundPupLegacy.Web.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class FetchSearchService
+internal class FetchSearchService: IFetchSearchService
 {
     private NpgsqlConnection _connection;
 
     public FetchSearchService(NpgsqlConnection connection)
     {
         _connection = connection;
-    }
-
-    public string GetPattern(string searchTerm, SearchOption searchOption)
-    {
-        if (string.IsNullOrEmpty(searchTerm))
-        {
-            return "%";
-        }
-        return searchOption switch
-        {
-            SearchOption.IsEqualTo => searchTerm,
-            SearchOption.Contains => $"%{searchTerm}%",
-            SearchOption.StartsWith => $"{searchTerm}%",
-            SearchOption.EndsWith => $"%{searchTerm}",
-            _ => throw new Exception("Cannot reach")
-        };
     }
 
     public async Task<SearchResult> FetchSearch(int limit, int offset, int tenantId, int userId, string searchString)

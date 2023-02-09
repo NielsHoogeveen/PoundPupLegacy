@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.Web.Services;
 using System.Diagnostics;
-using PoundPupLegacy.ViewModel;
 using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
 
 namespace PoundPupLegacy.Controllers;
@@ -14,30 +12,18 @@ public class OrganizationsController : Controller
 
     const string TERM_NAME_PREFIX = "term-name-";
 
-    private readonly FetchOrganizationsService _fetchOrganizationsService;
+    private readonly IFetchOrganizationsService _fetchOrganizationsService;
     private readonly ILogger<OrganizationsController> _logger;
-    private readonly SiteDataService _siteDataService;
+    private readonly ISiteDataService _siteDataService;
 
-    public OrganizationsController(ILogger<OrganizationsController> logger, FetchOrganizationsService fetchOrganizationsService, SiteDataService siteDataService)
+    public OrganizationsController(
+        ILogger<OrganizationsController> logger, 
+        IFetchOrganizationsService fetchOrganizationsService, 
+        ISiteDataService siteDataService)
     {
         _fetchOrganizationsService = fetchOrganizationsService;
         _siteDataService = siteDataService;
         _logger = logger;
-    }
-
-    private IEnumerable<int> GetTermIds(IEnumerable<string> values)
-    {
-        foreach (var term in values) 
-        {
-            if (term.StartsWith(TERM_NAME_PREFIX))
-            {
-                var remainder = term.Substring(TERM_NAME_PREFIX.Length);
-                if(int.TryParse(remainder, out int termId))
-                {
-                    yield return termId;
-                }
-            }
-        }
     }
 
     public SearchOption GetSearchOption(string? term)

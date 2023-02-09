@@ -13,10 +13,4 @@ public class UnitTest1
         http://www.thenewyorker.com/jekgewrg?hewjkgh
         """;
 
-    [Fact]
-    public void Test1()
-    {
-        var s = new StringToDocumentService();
-        var text = s.Convert(TEXT).DocumentNode.OuterHtml;
-    }
 }

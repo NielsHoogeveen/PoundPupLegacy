@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.Web.Services;
 using System.Diagnostics;
 
 namespace PoundPupLegacy.Controllers;
@@ -10,11 +9,14 @@ public class SearchController : Controller
 {
     const int NUMBER_OF_ENTRIES = 25;
 
-    private readonly FetchSearchService _fetchSearchService;
+    private readonly IFetchSearchService _fetchSearchService;
     private readonly ILogger<SearchController> _logger;
-    private readonly SiteDataService _siteDataService;
+    private readonly ISiteDataService _siteDataService;
 
-    public SearchController(ILogger<SearchController> logger, FetchSearchService fetchSearchService, SiteDataService siteDataService)
+    public SearchController(
+        ILogger<SearchController> logger, 
+        IFetchSearchService fetchSearchService, 
+        ISiteDataService siteDataService)
     {
         _fetchSearchService = fetchSearchService;
         _siteDataService = siteDataService;

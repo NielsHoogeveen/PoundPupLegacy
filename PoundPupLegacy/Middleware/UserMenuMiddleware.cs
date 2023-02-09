@@ -12,7 +12,7 @@ public class UserMenuMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, SiteDataService userService, RazorViewToStringService razorViewToStringService)
+    public async Task InvokeAsync(HttpContext httpContext, ISiteDataService userService, IRazorViewToStringService razorViewToStringService)
     {
         var userMenu = userService.GetMenuItemsForUser(httpContext);
 

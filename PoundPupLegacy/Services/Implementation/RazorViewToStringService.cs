@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace PoundPupLegacy.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class RazorViewToStringService
+internal class RazorViewToStringService: IRazorViewToStringService
 {
     private ITempDataProvider _tempDataProvider;
     private IRazorViewEngine _viewEngine;

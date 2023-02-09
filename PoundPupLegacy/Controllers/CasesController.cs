@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.Web.Services;
 using System.Diagnostics;
 
 namespace PoundPupLegacy.Controllers;
@@ -10,11 +9,14 @@ public class CasesController : Controller
 {
     const int NUMBER_OF_ENTRIES = 25;
 
-    private readonly FetchCasesService _fetchCasesService;
+    private readonly IFetchCasesService _fetchCasesService;
     private readonly ILogger<CasesController> _logger;
-    private readonly SiteDataService _siteDataService;
+    private readonly ISiteDataService _siteDataService;
 
-    public CasesController(ILogger<CasesController> logger, FetchCasesService fetchCasesService, SiteDataService siteDataService)
+    public CasesController(
+        ILogger<CasesController> logger, 
+        IFetchCasesService fetchCasesService, 
+        ISiteDataService siteDataService)
     {
         _fetchCasesService = fetchCasesService;
         _siteDataService = siteDataService;

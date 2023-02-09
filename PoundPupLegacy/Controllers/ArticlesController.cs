@@ -11,11 +11,14 @@ public class ArticlesController : Controller
 
     const string TERM_NAME_PREFIX = "term-name-";
 
-    private readonly FetchArticlesService _fetchArticlesService;
+    private readonly IFetchArticlesService _fetchArticlesService;
     private readonly ILogger<ArticlesController> _logger;
-    private readonly SiteDataService _siteDataService;
+    private readonly ISiteDataService _siteDataService;
 
-    public ArticlesController(ILogger<ArticlesController> logger, FetchArticlesService fetchArticlesService, SiteDataService siteDataService)
+    public ArticlesController(
+        ILogger<ArticlesController> logger, 
+        IFetchArticlesService fetchArticlesService, 
+        ISiteDataService siteDataService)
     {
         _fetchArticlesService = fetchArticlesService;
         _siteDataService = siteDataService;

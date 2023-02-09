@@ -3,7 +3,7 @@ using PoundPupLegacy.Middleware;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.Web.Services;
+using PoundPupLegacy.Services.Implementation;
 
 namespace PoundPupLegacy;
 
@@ -23,29 +23,35 @@ public class Program
                 options.AccessDeniedPath = "/Forbidden/";
             
             });
+        //builder.Services.AddResponseCompression(options =>
+        //{
+        //    options.EnableForHttps = true;
+        //});
         builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddTransient((sp) => new NpgsqlConnection(CONNECTSTRING));
-        builder.Services.AddTransient<FetchNodeService>();
-        builder.Services.AddTransient<FetchBlogService>();
-        builder.Services.AddTransient<FetchBlogsService>();
-        builder.Services.AddTransient<FetchArticlesService>();
-        builder.Services.AddTransient<FetchOrganizationsService>();
-        builder.Services.AddTransient<FetchCasesService>();
-        builder.Services.AddTransient<FetchCountriesService>();
-        builder.Services.AddTransient<FetchSearchService>();
-        builder.Services.AddTransient<RazorViewToStringService>();
-        builder.Services.AddTransient<StringToDocumentService>();
-        builder.Services.AddTransient<TeaserService>();
-        builder.Services.AddTransient<AuthenticationService>();
-        builder.Services.AddSingleton<SiteDataService>();
+        builder.Services.AddTransient<IFetchNodeService, FetchNodeService>();
+        builder.Services.AddTransient<IFetchBlogService, FetchBlogService>();
+        builder.Services.AddTransient<IFetchBlogsService, FetchBlogsService>();
+        builder.Services.AddTransient<IFetchArticlesService, FetchArticlesService>();
+        builder.Services.AddTransient<IFetchOrganizationsService, FetchOrganizationsService>();
+        builder.Services.AddTransient<IFetchCasesService, FetchCasesService>();
+        builder.Services.AddTransient<IFetchCountriesService, FetchCountriesService>();
+        builder.Services.AddTransient<IFetchSearchService, FetchSearchService>();
+        builder.Services.AddTransient<IRazorViewToStringService, RazorViewToStringService>();
+        builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
+        builder.Services.AddSingleton<ISiteDataService, SiteDataService>();
+        builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
 
         var app = builder.Build();
 
+        //if (!app.Environment.IsDevelopment())
+        //{
+        //    app.UseResponseCompression();
+        //}
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
@@ -98,7 +104,7 @@ public class Program
 
         app.MapBlazorHub();
 
-        var res = app.Services.GetService<SiteDataService>();
+        var res = app.Services.GetService<ISiteDataService>();
         if (res != null)
         {
             await res.InitializeAsync();

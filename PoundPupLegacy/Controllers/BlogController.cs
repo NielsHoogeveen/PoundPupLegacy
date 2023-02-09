@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PoundPupLegacy.ViewModel;
-using PoundPupLegacy.Web.Services;
+using PoundPupLegacy.Services;
 using System.Diagnostics;
-using System.Reflection.Metadata;
 
 namespace PoundPupLegacy.Controllers;
 
@@ -10,10 +8,10 @@ namespace PoundPupLegacy.Controllers;
 public class BlogController : Controller
 {
     const int NUMBER_OF_ENTRIES = 10;
-    private FetchBlogService _fetchBlogService;
+    private IFetchBlogService _fetchBlogService;
     private readonly ILogger<BlogController> _logger;
 
-    public BlogController(ILogger<BlogController> logger, FetchBlogService fetchBlogService)
+    public BlogController(ILogger<BlogController> logger, IFetchBlogService fetchBlogService)
     {
         _logger = logger;
         _fetchBlogService = fetchBlogService;

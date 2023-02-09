@@ -4,9 +4,9 @@ using System.Data;
 using System.Security.Claims;
 using System.Security.Principal;
 
-namespace PoundPupLegacy.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class AuthenticationService
+internal class AuthenticationService: IAuthenticationService
 {
     private NpgsqlConnection _connection;
     public AuthenticationService(NpgsqlConnection connection)
@@ -51,7 +51,7 @@ public class AuthenticationService
         return null;
     }
 
-    public static string CreateMD5(string input)
+    private static string CreateMD5(string input)
     {
         using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
         {

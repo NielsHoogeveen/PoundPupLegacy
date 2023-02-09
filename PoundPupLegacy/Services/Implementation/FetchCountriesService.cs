@@ -1,16 +1,15 @@
 ﻿using Npgsql;
-using PoundPupLegacy.Services;
 using PoundPupLegacy.ViewModel;
 using System.Data;
 
-namespace PoundPupLegacy.Web.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class FetchCountriesService
+internal class FetchCountriesService: IFetchCountriesService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly SiteDataService _siteDataService;
+    private readonly ISiteDataService _siteDataService;
 
-    public FetchCountriesService(NpgsqlConnection connection, SiteDataService siteDataService)
+    public FetchCountriesService(NpgsqlConnection connection, ISiteDataService siteDataService)
     {
         _connection = connection;
         _siteDataService = siteDataService;

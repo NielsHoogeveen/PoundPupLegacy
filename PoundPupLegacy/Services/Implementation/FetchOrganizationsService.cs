@@ -3,9 +3,9 @@ using PoundPupLegacy.ViewModel;
 using System.Data;
 using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
 
-namespace PoundPupLegacy.Web.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class FetchOrganizationsService
+internal class FetchOrganizationsService: IFetchOrganizationsService
 {
     private NpgsqlConnection _connection;
 
@@ -14,7 +14,7 @@ public class FetchOrganizationsService
         _connection = connection;
     }
 
-    public string GetPattern(string searchTerm, SearchOption searchOption)
+    private string GetPattern(string searchTerm, SearchOption searchOption)
     {
         if (string.IsNullOrEmpty(searchTerm))
         {

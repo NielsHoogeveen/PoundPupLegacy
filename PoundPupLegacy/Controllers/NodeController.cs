@@ -8,17 +8,17 @@ namespace PoundPupLegacy.Web.Controllers;
 public class NodeController : Controller
 {
     private readonly ILogger<NodeController> _logger;
-    private readonly FetchNodeService _fetchNodeService;
-    private readonly SiteDataService _siteDataService;
+    private readonly ISiteDataService _siteDataService;
+    private readonly INodeCacheService _nodeCacheService;
 
     public NodeController(
         ILogger<NodeController> logger, 
-        FetchNodeService fetchNodeService, 
-        SiteDataService siteDataService) 
+        ISiteDataService siteDataService,
+        INodeCacheService nodeCacheService) 
     {
         _logger = logger;
-        _fetchNodeService = fetchNodeService;
         _siteDataService = siteDataService;
+        _nodeCacheService = nodeCacheService;
     }
 
     [HttpGet("{id}")]
@@ -32,14 +32,8 @@ public class NodeController : Controller
         {
             return Redirect($"/{urlPath}");
         }
-        var node = await _fetchNodeService.FetchNode(id, HttpContext);
-        if(node == null)
-        {
-            return NotFound();
-        }
+        var result = await _nodeCacheService.GetResult(HttpContext, id);
         _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
-
-        return View("Node",node);
+        return result;
     }
-
 }

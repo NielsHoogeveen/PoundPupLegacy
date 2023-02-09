@@ -1,19 +1,17 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
-using PoundPupLegacy.Model;
 using PoundPupLegacy.ViewModel;
 using System.Data;
 
-namespace PoundPupLegacy.Services;
+namespace PoundPupLegacy.Services.Implementation;
 
-public class FetchArticlesService
+internal class FetchArticlesService: IFetchArticlesService
 {
     NpgsqlConnection _connection;
-    TeaserService _teaserService;
-    public FetchArticlesService(NpgsqlConnection connection, TeaserService teaserService)
+    
+    public FetchArticlesService(NpgsqlConnection connection)
     {
         _connection = connection;
-        _teaserService = teaserService;
     }
     const string FETCH_TERMS = """
          fetch_terms as (

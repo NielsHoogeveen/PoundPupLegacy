@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.Web.Services;
 
 namespace PoundPupLegacy.Controllers;
 
 [Route("blogs")]
 public class BlogsController : Controller
 {
-    private readonly FetchBlogsService _fetchBlogsService;
-    private readonly SiteDataService _siteDataService;
-    public BlogsController(FetchBlogsService fetchBlogsService, SiteDataService siteDataService)
+    private readonly IFetchBlogsService _fetchBlogsService;
+    private readonly ISiteDataService _siteDataService;
+    public BlogsController(IFetchBlogsService fetchBlogsService, ISiteDataService siteDataService)
     {
         _fetchBlogsService = fetchBlogsService;
         _siteDataService = siteDataService;
