@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.Db;
 
-public class NodeTypeCreator : IEntityCreator<NodeType>
+public class NodeTypeCreator : IEntityCreator<BasicNodeType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<NodeType> nodeTypes, NpgsqlConnection connection)
+    public static async Task CreateAsync(IAsyncEnumerable<BasicNodeType> nodeTypes, NpgsqlConnection connection)
     {
 
         await using var nodeTypeWriter = await NodeTypeWriter.CreateAsync(connection);

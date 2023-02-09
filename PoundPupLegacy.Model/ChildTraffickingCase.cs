@@ -17,4 +17,5 @@ public sealed record ChildTraffickingCase : Case
     public required int CountryIdFrom { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
 
+
 }

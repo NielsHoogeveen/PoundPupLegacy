@@ -17,4 +17,5 @@ public sealed record DeportationCase : Case
     public required int? CountryIdTo { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
 
+
 }

@@ -15,4 +15,5 @@ public sealed record FathersRightsViolationCase : Case
     public required DateTimeRange? Date { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
 
+
 }
