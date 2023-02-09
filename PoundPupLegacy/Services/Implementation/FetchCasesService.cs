@@ -15,8 +15,10 @@ internal class FetchCasesService: IFetchCasesService
 
     public async Task<Cases> FetchCases(int limit, int offset, int tenantId, int userId)
     {
-        _connection.Open();
-        var sql = $"""
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = $"""
             select
             	json_build_object(
             		'NumberOfEntries', number_of_entries,
@@ -102,34 +104,39 @@ internal class FetchCasesService: IFetchCasesService
             
             """;
 
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
-        await readCommand.PrepareAsync();
-        readCommand.Parameters["tenant_id"].Value = tenantId;
-        readCommand.Parameters["user_id"].Value = userId;
-        readCommand.Parameters["limit"].Value = limit;
-        readCommand.Parameters["offset"].Value = offset;
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<Cases>(0);
-            _connection.Close();
-            return organizations!;
-        }
-        else
-        {
-            _connection.Close();
-            return new Cases
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["user_id"].Value = userId;
+            readCommand.Parameters["limit"].Value = limit;
+            readCommand.Parameters["offset"].Value = offset;
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            if (reader.HasRows)
             {
-                CaseListEntries = new CaseListEntry[] { },
-                NumberOfEntries = 0,
-            };
+                await reader.ReadAsync();
+                var organizations = reader.GetFieldValue<Cases>(0);
+                return organizations!;
+            }
+            else
+            {
+                
+                return new Cases
+                {
+                    CaseListEntries = new CaseListEntry[] { },
+                    NumberOfEntries = 0,
+                };
+            }
+        }
+        finally
+        {
+            await _connection.CloseAsync();
         }
     }
 

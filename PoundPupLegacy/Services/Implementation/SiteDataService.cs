@@ -139,36 +139,38 @@ internal class SiteDataService: ISiteDataService
         var tenants = new List<Tenant>();
         var sw = Stopwatch.StartNew();
 
-        await _connection.OpenAsync();
-        using (var readCommand = _connection.CreateCommand())
+        try
         {
-            var sql = $"""
+            await _connection.OpenAsync();
+            using (var readCommand = _connection.CreateCommand())
+            {
+                var sql = $"""
             select
             t.id,
             t.domain_name
             from tenant t
             """;
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            await readCommand.PrepareAsync();
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                var tenantId = reader.GetInt32(0);
-                var domainName = reader.GetString(1);
-                tenants.Add(new Tenant 
-                { 
-                    Id = tenantId, 
-                    DomainName = domainName, 
-                    IdToUrl = new Dictionary<int, string>(), 
-                    UrlToId = new Dictionary<string, int>() 
-                });
+                readCommand.CommandType = CommandType.Text;
+                readCommand.CommandTimeout = 300;
+                readCommand.CommandText = sql;
+                await readCommand.PrepareAsync();
+                await using var reader = await readCommand.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    var tenantId = reader.GetInt32(0);
+                    var domainName = reader.GetString(1);
+                    tenants.Add(new Tenant
+                    {
+                        Id = tenantId,
+                        DomainName = domainName,
+                        IdToUrl = new Dictionary<int, string>(),
+                        UrlToId = new Dictionary<string, int>()
+                    });
+                }
             }
-        }
-        using (var readCommand = _connection.CreateCommand())
-        {
-            var sql = $"""
+            using (var readCommand = _connection.CreateCommand())
+            {
+                var sql = $"""
             select
             tn.tenant_id,
             tn.url_id,
@@ -176,25 +178,30 @@ internal class SiteDataService: ISiteDataService
             from tenant_node tn 
             where tn.url_path is not null
             """;
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            await readCommand.PrepareAsync();
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                var tenant = tenants.Find(x => x.Id == reader.GetInt32(0));
-                if(tenant is null)
+                readCommand.CommandType = CommandType.Text;
+                readCommand.CommandTimeout = 300;
+                readCommand.CommandText = sql;
+                await readCommand.PrepareAsync();
+                await using var reader = await readCommand.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
                 {
-                    throw new NullReferenceException("Tenant should not be null");
+                    var tenant = tenants.Find(x => x.Id == reader.GetInt32(0));
+                    if (tenant is null)
+                    {
+                        throw new NullReferenceException("Tenant should not be null");
+                    }
+                    tenant.UrlToId.Add(reader.GetString(2), reader.GetInt32(1));
+                    tenant.IdToUrl.Add(reader.GetInt32(1), reader.GetString(2));
                 }
-                tenant.UrlToId.Add(reader.GetString(2), reader.GetInt32(1));
-                tenant.IdToUrl.Add(reader.GetInt32(1), reader.GetString(2));
             }
+            
+            _logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
+            return tenants;
         }
-        await _connection.CloseAsync();
-        _logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
-        return tenants;
+        finally
+        {
+            await _connection.CloseAsync();
+        }
 
     }
 
@@ -202,8 +209,10 @@ internal class SiteDataService: ISiteDataService
     {
         var sw = Stopwatch.StartNew();
         var userMenus = new Dictionary<(int, int), List<MenuItem>>();
-        await _connection.OpenAsync();
-        var sql = $"""
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = $"""
             with 
             user_action as (
             	select
@@ -302,30 +311,36 @@ internal class SiteDataService: ISiteDataService
             
             """;
 
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        await readCommand.PrepareAsync();
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            var user_id = reader.GetInt32(0);
-            var tenant_id = reader.GetInt32(1);
-            var menuItems = reader.GetFieldValue<List<Link>>(2);
-            userMenus.Add((user_id, tenant_id), menuItems);
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            await readCommand.PrepareAsync();
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var user_id = reader.GetInt32(0);
+                var tenant_id = reader.GetInt32(1);
+                var menuItems = reader.GetFieldValue<List<Link>>(2);
+                userMenus.Add((user_id, tenant_id), menuItems);
+            }
+            _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
+            return userMenus;
         }
-        await _connection.CloseAsync();
-        _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
-        return userMenus;
+        finally
+        {
+            await _connection.CloseAsync();
+        }
     }
 
     private async Task<HashSet<UserTenantAction>> LoadUserTenantActionsAsync()
     {
         var sw = Stopwatch.StartNew();
         var userTenantActions = new HashSet<UserTenantAction>();
-        await _connection.OpenAsync();
-        var sql = """
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = """
             select
             distinct
             ugur.user_id,
@@ -347,31 +362,34 @@ internal class SiteDataService: ISiteDataService
             join tenant t on t.id = ugur.user_group_id
             where arp.access_role_id = t.access_role_id_not_logged_in
             """;
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        await readCommand.PrepareAsync();
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            var userId = reader.GetInt32(0);
-            var tenantId = reader.GetInt32(1);
-            var action = reader.GetFieldValue<string>(2);
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            await readCommand.PrepareAsync();
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var userId = reader.GetInt32(0);
+                var tenantId = reader.GetInt32(1);
+                var action = reader.GetFieldValue<string>(2);
 
-            userTenantActions.Add(
-                 new UserTenantAction
-                {
-                    UserId = userId,
-                    TenantId = tenantId,
-                    Action = action,
-                }
-            );
+                userTenantActions.Add(
+                     new UserTenantAction
+                     {
+                         UserId = userId,
+                         TenantId = tenantId,
+                         Action = action,
+                     }
+                );
+            }
+            _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
+            return userTenantActions;
         }
-        
-        await _connection.CloseAsync();
-        _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
-        return userTenantActions;
+        finally
+        {
+            await _connection.CloseAsync();
+        }
     }
 
     public IEnumerable<Link> GetMenuItemsForUser(HttpContext context)

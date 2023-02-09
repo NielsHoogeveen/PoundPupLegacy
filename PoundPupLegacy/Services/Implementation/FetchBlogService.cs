@@ -19,8 +19,10 @@ internal class FetchBlogService: IFetchBlogService
 
     public async Task<Blog> FetchBlog(HttpContext context, int accessRoleId, int startIndex, int length)
     {
-        _connection.Open();
-        var sql = $"""
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = $"""
             WITH 
             {FETCH_BLOG_POSTS},
             {FETCH_BLOG_POST_DOCUMENT}
@@ -37,32 +39,36 @@ internal class FetchBlogService: IFetchBlogService
                 GROUP BY ar.name
             """;
 
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        readCommand.Parameters.Add("access_role_id", NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("length", NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
-        await readCommand.PrepareAsync();
-        readCommand.Parameters["access_role_id"].Value = accessRoleId;
-        readCommand.Parameters["length"].Value = length;
-        readCommand.Parameters["start_index"].Value = startIndex;
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var blog = reader.GetFieldValue<Blog>(0);
-        var c = _renderer.GetFromView("/Pages/_ExcecutiveCompensations.cshtml", new List<ExecutiveCompensation>() ,context);
-        var entries = blog.BlogPostTeasers.Select(x => new BlogPostTeaser 
-        { 
-            Id = x.Id,
-            Authoring = x.Authoring,
-            Title = x.Title,
-            Text = x.Text
-        });
-        blog.Name = MakeName(blog.Name);
-        blog.BlogPostTeasers = entries.ToList();
-        _connection.Close();
-        return blog!;
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("access_role_id", NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("length", NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["access_role_id"].Value = accessRoleId;
+            readCommand.Parameters["length"].Value = length;
+            readCommand.Parameters["start_index"].Value = startIndex;
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            var blog = reader.GetFieldValue<Blog>(0);
+            var c = _renderer.GetFromView("/Pages/_ExcecutiveCompensations.cshtml", new List<ExecutiveCompensation>(), context);
+            var entries = blog.BlogPostTeasers.Select(x => new BlogPostTeaser
+            {
+                Id = x.Id,
+                Authoring = x.Authoring,
+                Title = x.Title,
+                Text = x.Text
+            });
+            blog.Name = MakeName(blog.Name);
+            blog.BlogPostTeasers = entries.ToList();
+            return blog!;
+        }
+        finally
+        {
+            await _connection.CloseAsync();
+        }
     }
     private static string MakeName(string name)
     {

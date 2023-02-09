@@ -18,8 +18,10 @@ internal class FetchBlogsService: IFetchBlogsService
 
     public async Task<List<BlogListEntry>> FetchBlogs(HttpContext context)
     {
-        _connection.Open();
-        var sql = $"""
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = $"""
             select 
                 json_agg(to_jsonb(b))
             from(
@@ -49,18 +51,23 @@ internal class FetchBlogsService: IFetchBlogsService
             ) b
             """;
 
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await readCommand.PrepareAsync();
-        readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId(context);
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);
-        _connection.Close();
-        return blogs!;
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId(context);
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);
+            
+            return blogs!;
+        }
+        finally
+        {
+            await _connection.CloseAsync();
+        }
     }
 
 }

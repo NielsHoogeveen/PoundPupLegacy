@@ -18,8 +18,10 @@ internal class FetchCountriesService: IFetchCountriesService
 
     public async Task<FirstLevelRegionListEntry[]> FetchCountries(HttpContext context)
     {
-        _connection.Open();
-        var sql = $"""
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = $"""
                         select
                         	json_agg(
                         		json_build_object(
@@ -114,23 +116,28 @@ internal class FetchCountriesService: IFetchCountriesService
             				) n
             """;
 
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await readCommand.PrepareAsync();
-        readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId(context);
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<FirstLevelRegionListEntry[]>(0);
-            _connection.Close();
-            return organizations!;
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId(context);
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            if (reader.HasRows)
+            {
+                await reader.ReadAsync();
+                var organizations = reader.GetFieldValue<FirstLevelRegionListEntry[]>(0);
+                return organizations!;
+            }
+            else
+            {
+                return new FirstLevelRegionListEntry[] { };
+            }
         }
-        else
+        finally
         {
-            return new FirstLevelRegionListEntry[] { };
+            await _connection.CloseAsync();
         }
     }
 }

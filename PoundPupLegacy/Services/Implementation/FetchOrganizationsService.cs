@@ -32,8 +32,10 @@ internal class FetchOrganizationsService: IFetchOrganizationsService
 
     public async Task<Organizations> FetchOrganizations(int limit, int offset, string searchTerm, SearchOption searchOption, int tenantId, int userId)
     {
-        _connection.Open();
-        var sql = $"""
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = $"""
             select
             	json_build_object(
             	    'NumberOfEntries', number_of_entries,
@@ -144,35 +146,39 @@ internal class FetchOrganizationsService: IFetchOrganizationsService
             group by number_of_entries
             """;
 
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("pattern", NpgsqlTypes.NpgsqlDbType.Varchar);
-        await readCommand.PrepareAsync();
-        readCommand.Parameters["tenant_id"].Value = tenantId;
-        readCommand.Parameters["user_id"].Value = userId;
-        readCommand.Parameters["limit"].Value = limit;
-        readCommand.Parameters["offset"].Value = offset;
-        readCommand.Parameters["pattern"].Value = GetPattern(searchTerm, searchOption);
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<Organizations>(0);
-            _connection.Close();
-            return organizations!;
-        }
-        else
-        {
-            _connection.Close();
-            return new Organizations
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("pattern", NpgsqlTypes.NpgsqlDbType.Varchar);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["user_id"].Value = userId;
+            readCommand.Parameters["limit"].Value = limit;
+            readCommand.Parameters["offset"].Value = offset;
+            readCommand.Parameters["pattern"].Value = GetPattern(searchTerm, searchOption);
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            if (reader.HasRows)
             {
-                Entries = new OrganizationListEntry[] { }
-            };
+                await reader.ReadAsync();
+                var organizations = reader.GetFieldValue<Organizations>(0);
+                return organizations!;
+            }
+            else
+            {
+                return new Organizations
+                {
+                    Entries = new OrganizationListEntry[] { }
+                };
+            }
+        }
+        finally
+        {
+            await _connection.CloseAsync();
         }
     }
 

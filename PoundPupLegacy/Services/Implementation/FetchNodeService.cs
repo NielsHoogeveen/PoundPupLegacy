@@ -18,8 +18,10 @@ internal class FetchNodeService: IFetchNodeService
 
     public async Task<Node?> FetchNode(int id, HttpContext context)
     {
-        _connection.Open();
-        var sql = $"""
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = $"""
             WITH 
             {AUTHENTICATED_NODE},
             {SEE_ALSO_DOCUMENT},
@@ -52,38 +54,43 @@ internal class FetchNodeService: IFetchNodeService
             SELECT node_type_id, document from node_document
             """;
 
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        readCommand.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await readCommand.PrepareAsync();
-        readCommand.Parameters["url_id"].Value = id;
-        readCommand.Parameters["tenant_id"].Value = 1;
-        readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId(context);
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        if (!reader.HasRows)
-        {
-            return null;
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["url_id"].Value = id;
+            readCommand.Parameters["tenant_id"].Value = 1;
+            readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId(context);
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            if (!reader.HasRows)
+            {
+                return null;
+            }
+            var node_type_id = reader.GetInt32(0);
+            var txt = reader.GetString(1);
+            Node node = node_type_id switch
+            {
+                13 => reader.GetFieldValue<BasicCountry>(1),
+                23 => reader.GetFieldValue<Organization>(1),
+                26 => reader.GetFieldValue<AbuseCase>(1),
+                35 => reader.GetFieldValue<BlogPost>(1),
+                36 => reader.GetFieldValue<Article>(1),
+                37 => reader.GetFieldValue<Discussion>(1),
+                41 => reader.GetFieldValue<BasicNameable>(1),
+                _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
+            };
+            
+            return node!;
         }
-        var node_type_id = reader.GetInt32(0);
-        var txt = reader.GetString(1);
-        Node node = node_type_id switch
+        finally
         {
-            13 => reader.GetFieldValue<BasicCountry>(1),
-            23 => reader.GetFieldValue<Organization>(1),
-            26 => reader.GetFieldValue<AbuseCase>(1),
-            35 => reader.GetFieldValue<BlogPost>(1),
-            36 => reader.GetFieldValue<Article>(1),
-            37 => reader.GetFieldValue<Discussion>(1),
-            41 => reader.GetFieldValue<BasicNameable>(1),
-            _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
-        };
-        _connection.Close();
-        return node!;
+            await _connection.CloseAsync();
+        }
     }
 
     const string AUTHENTICATED_NODE = """
