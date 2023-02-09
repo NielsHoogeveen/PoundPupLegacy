@@ -13,7 +13,22 @@ internal class FetchCasesService : IFetchCasesService
         _connection = connection;
     }
 
-    public async Task<Cases> FetchCases(int limit, int offset, int tenantId, int userId)
+    private string SqlPartForCaseType(CaseType caseType)
+    {
+        return caseType switch
+        {
+            CaseType.Abuse => "join abuse_case ac on ac.id = n.id",
+            CaseType.ChildTrafficking => "join child_trafficking_case ac on ac.id = n.id",
+            CaseType.Deportation => "join deportation_case ac on ac.id = n.id",
+            CaseType.WrongfulMedication => "join wrongful_medication_case ac on ac.id = n.id",
+            CaseType.WrongfulRemoval => "join wrongful_removal_case ac on ac.id = n.id",
+            CaseType.FathersRightsViolation => "join fathers_rights_violation_case ac on ac.id = n.id",
+            CaseType.CoercedAdoption => "join coerced_adoption_case ac on ac.id = n.id",
+            CaseType.Any => ""
+        };
+    }
+
+    public async Task<Cases> FetchCases(int limit, int offset, int tenantId, int userId, CaseType caseType)
     {
         try
         {
@@ -93,6 +108,7 @@ internal class FetchCasesService : IFetchCasesService
             		tenant_node tn
             		join node n on n.id = tn.node_id
             		join "case" c on c.id = n.id
+                    {SqlPartForCaseType(caseType)}
             		join node_type nt on nt.id = n.node_type_id
             		WHERE tn.tenant_id = @tenant_id
             	) an

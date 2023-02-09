@@ -4,17 +4,17 @@ using System.Diagnostics;
 
 namespace PoundPupLegacy.Controllers;
 
-[Route("cases")]
-public class CasesController : Controller
+[Route("child_trafficking_cases")]
+public class ChildTraffickingCasesController : Controller
 {
     const int NUMBER_OF_ENTRIES = 25;
 
     private readonly IFetchCasesService _fetchCasesService;
-    private readonly ILogger<CasesController> _logger;
+    private readonly ILogger<ChildTraffickingCasesController> _logger;
     private readonly ISiteDataService _siteDataService;
 
-    public CasesController(
-        ILogger<CasesController> logger,
+    public ChildTraffickingCasesController(
+        ILogger<ChildTraffickingCasesController> logger,
         IFetchCasesService fetchCasesService,
         ISiteDataService siteDataService)
     {
@@ -47,11 +47,11 @@ public class CasesController : Controller
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
         var userId = _siteDataService.GetUserId(HttpContext);
         var tenantId = _siteDataService.GetTenantId(HttpContext);
-        var cases = await _fetchCasesService.FetchCases(NUMBER_OF_ENTRIES, startIndex, tenantId, userId, ViewModel.CaseType.Any);
+        var cases = await _fetchCasesService.FetchCases(NUMBER_OF_ENTRIES, startIndex, tenantId, userId, ViewModel.CaseType.ChildTrafficking);
         cases.PageNumber = pageNumber;
         cases.NumberOfPages = (cases.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         _logger.LogInformation($"Fetched cases in {stopwatch.Elapsed.TotalMilliseconds} ms");
-        return View("Cases", cases);
+        return View("ChildTraffickingCases", cases);
     }
 
 }
