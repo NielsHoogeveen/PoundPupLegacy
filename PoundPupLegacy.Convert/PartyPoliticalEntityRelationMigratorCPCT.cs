@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PartyPoliticalEntityRelationMigratorCPCT: CPCTMigrator
+internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
 {
     public PartyPoliticalEntityRelationMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -131,7 +131,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT: CPCTMigrator
                 PartyId = partyId,
                 PoliticalEntityId = politicalEntityId,
                 PartyPoliticalEntityRelationTypeId = partyPpoliticalEntityTypeId,
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null: reader.GetDateTime("end_date")),
+                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = null
             };
         }

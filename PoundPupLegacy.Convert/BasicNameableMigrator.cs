@@ -6,7 +6,7 @@ namespace PoundPupLegacy.Convert;
 
 internal sealed class BasicNameableMigrator : PPLMigrator
 {
-    public BasicNameableMigrator(MySqlToPostgresConverter converter): base(converter) { }
+    public BasicNameableMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
     protected override string Name => "basic nameables";
 

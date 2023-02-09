@@ -4,13 +4,13 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class ChildTraffickingCaseMigrator: PPLMigrator
+internal sealed class ChildTraffickingCaseMigrator : PPLMigrator
 {
     public ChildTraffickingCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
     }
 
-    protected override string Name =>"child trafficking cases";
+    protected override string Name => "child trafficking cases";
 
     protected override async Task MigrateImpl()
     {

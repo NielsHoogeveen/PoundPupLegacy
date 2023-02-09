@@ -9,7 +9,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
 {
     protected override string Name => "basic second level subdivisions";
 
-    public BasicSecondLevelSubdivisionMigrator(MySqlToPostgresConverter converter): base(converter) { } 
+    public BasicSecondLevelSubdivisionMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv()
     {
@@ -21,7 +21,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
         await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\BasicSecondLevelSubdivisionsInInformalPrimarySubdivision.csv").Skip(1))
         {
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
-            int? id = int.Parse(parts[0]) == 0? null: int.Parse(parts[0]);
+            int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
             var subdivisionId = await _subdivisionIdReader.ReadAsync(countryId, parts[11]);
@@ -204,8 +204,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL, 
-                    Name = Constants.VOCABULARY_TOPICS, 
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
                     ParentNames = new List<string>{ subdivisioName },
                 }

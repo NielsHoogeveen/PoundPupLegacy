@@ -11,5 +11,5 @@ public record SearchResultListEntry : ListEntry
     public string NodeTypeName { get; set; }
 
     public int Status { get; set; }
-    
+
 }

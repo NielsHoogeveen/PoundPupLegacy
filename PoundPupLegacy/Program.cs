@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using PoundPupLegacy.Middleware;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
+using PoundPupLegacy.Middleware;
 using PoundPupLegacy.Services;
 using PoundPupLegacy.Services.Implementation;
 
@@ -21,7 +21,7 @@ public class Program
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.SlidingExpiration = true;
                 options.AccessDeniedPath = "/Forbidden/";
-            
+
             });
         //builder.Services.AddResponseCompression(options =>
         //{
@@ -65,7 +65,7 @@ public class Program
         };
 
 
-        
+
         app.UseCookiePolicy(cookiePolicyOptions);
 
         app.Use(async (context, next) =>
@@ -90,7 +90,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        
+
         app.UseCustomMiddleware();
 
         app.MapControllerRoute(

@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface Owner: UserGroup
+public interface Owner : UserGroup
 {
 }

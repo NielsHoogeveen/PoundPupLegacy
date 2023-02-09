@@ -1,5 +1,4 @@
-﻿using PoundPupLegacy.Model;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.Db.Writers;
 public class UserGroupWriter : DatabaseWriter<UserGroup>, IDatabaseWriter<UserGroup>
@@ -16,12 +15,12 @@ public class UserGroupWriter : DatabaseWriter<UserGroup>, IDatabaseWriter<UserGr
             {
                 Name = NAME,
                 NpgsqlDbType = NpgsqlDbType.Varchar
-            },            
+            },
             new ColumnDefinition
             {
                 Name = DESCRIPTION,
                 NpgsqlDbType = NpgsqlDbType.Varchar
-            }, 
+            },
             new ColumnDefinition{
                 Name = ADMINISTRATOR_ROLE_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer

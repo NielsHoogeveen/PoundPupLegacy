@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class NodeTermMigrator: PPLMigrator
+internal sealed class NodeTermMigrator : PPLMigrator
 {
     public NodeTermMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -14,9 +14,9 @@ internal sealed class NodeTermMigrator: PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        
+
         await NodeTermCreator.CreateAsync(ReadNodeTerms(), _postgresConnection);
-        
+
     }
     private async IAsyncEnumerable<NodeTerm> ReadNodeTerms()
     {

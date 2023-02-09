@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record BasicAction: Action
+public record BasicAction : Action
 {
     public required int? Id { get; set; }
 

@@ -44,8 +44,9 @@ public sealed class NodeReaderByUrlI : DatabaseUpdater<Term>, IDatabaseReader<No
         if (reader.HasRows)
         {
             await reader.ReadAsync();
-            var node = new BasicNode{
-                Id  = reader.GetInt32("id"),
+            var node = new BasicNode
+            {
+                Id = reader.GetInt32("id"),
                 PublisherId = reader.GetInt32("publisher_id"),
                 Title = reader.GetString("title"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

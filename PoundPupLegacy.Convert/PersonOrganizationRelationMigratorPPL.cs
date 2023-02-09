@@ -1,17 +1,16 @@
 ﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonOrganizationRelationMigratorPPL: PPLMigrator
+internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
 {
 
 
     public PersonOrganizationRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
-        
+
     }
 
     protected override string Name => "person organization relation (ppl)";
@@ -113,7 +112,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL: PPLMigrator
 
             int personId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("person_id"));
             int organizationId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("organization_id"));
-            int? geographicalEntityId = reader.IsDBNull("geographical_entity_id") ? null: await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("geographical_entity_id"));
+            int? geographicalEntityId = reader.IsDBNull("geographical_entity_id") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("geographical_entity_id"));
             int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
 
             yield return new PersonOrganizationRelation
@@ -152,10 +151,10 @@ internal sealed class PersonOrganizationRelationMigratorPPL: PPLMigrator
                 OrganizationId = organizationId,
                 GeographicalEntityId = geographicalEntityId,
                 PersonOrganizationRelationTypeId = personOrganizationRelationTypeId,
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null: reader.GetDateTime("end_date")),
+                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
 
                 DocumentIdProof = reader.IsDBNull("document_id_proof") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("document_id_proof")),
-                Description = reader.IsDBNull("description")? null: reader.GetString("description"),
+                Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
             };
         }
         await reader.CloseAsync();

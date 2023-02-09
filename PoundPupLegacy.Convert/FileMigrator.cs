@@ -6,7 +6,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class FileMigrator : PPLMigrator
 {
 
-    public FileMigrator(MySqlToPostgresConverter converter): base(converter)
+    public FileMigrator(MySqlToPostgresConverter converter) : base(converter)
     {
 
     }

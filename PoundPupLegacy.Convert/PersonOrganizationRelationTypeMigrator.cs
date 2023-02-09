@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonOrganizationRelationTypeMigrator: PPLMigrator
+internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
 {
     protected override string Name => "person organization relation types";
     public PersonOrganizationRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }

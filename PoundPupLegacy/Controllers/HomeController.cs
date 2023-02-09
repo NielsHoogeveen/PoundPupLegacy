@@ -17,7 +17,7 @@ public class HomeController : Controller
     private readonly INodeCacheService _nodeCacheService;
 
     public HomeController(
-        ILogger<HomeController> logger, 
+        ILogger<HomeController> logger,
         IAuthenticationService authenticationService,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService)
@@ -37,12 +37,12 @@ public class HomeController : Controller
     public async Task<IActionResult> AllElse()
     {
         var stopwatch = new Stopwatch();
-        if(Request.Path == "/NotFound")
+        if (Request.Path == "/NotFound")
         {
             return View("NotFound");
         }
         stopwatch.Start();
-        
+
         var tenantId = _siteDataService.GetTenantId(HttpContext);
         var urlId = _siteDataService.GetIdForUrlPath(HttpContext);
         if (urlId is null)

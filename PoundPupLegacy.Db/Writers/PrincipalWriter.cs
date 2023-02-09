@@ -19,9 +19,9 @@ public class PrincipalWriter : DatabaseWriter<Principal>, IDatabaseWriter<Princi
             connection,
             "principal",
             columnDefinitions.ToImmutableList().Add(
-                new ColumnDefinition 
-                { 
-                    Name = ID, 
+                new ColumnDefinition
+                {
+                    Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
 
@@ -37,7 +37,7 @@ public class PrincipalWriter : DatabaseWriter<Principal>, IDatabaseWriter<Princi
 
     internal override async Task WriteAsync(Principal principal)
     {
-        if(principal.Id is not null)
+        if (principal.Id is not null)
         {
             WriteValue(principal.Id, ID);
             await _command.ExecuteNonQueryAsync();

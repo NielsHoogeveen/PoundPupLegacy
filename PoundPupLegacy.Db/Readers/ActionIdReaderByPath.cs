@@ -26,7 +26,7 @@ public sealed class ActionIdReaderByPath : DatabaseUpdater<Term>, IDatabaseReade
 
     public async Task<int> ReadAsync(string path)
     {
-        if(path is null)
+        if (path is null)
         {
             throw new ArgumentNullException(nameof(path));
         }

@@ -5,10 +5,10 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchArticlesService: IFetchArticlesService
+internal class FetchArticlesService : IFetchArticlesService
 {
     NpgsqlConnection _connection;
-    
+
     public FetchArticlesService(NpgsqlConnection connection)
     {
         _connection = connection;

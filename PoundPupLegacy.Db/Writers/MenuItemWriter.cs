@@ -22,14 +22,14 @@ internal sealed class MenuItemWriter : DatabaseWriter<MenuItem>, IDatabaseWriter
         );
         return new MenuItemWriter(command);
     }
- 
+
     internal MenuItemWriter(NpgsqlCommand command) : base(command)
     {
     }
 
     internal override async Task WriteAsync(MenuItem menuItem)
     {
-        if(menuItem.Id != null)
+        if (menuItem.Id != null)
         {
             throw new Exception($"Id of menu item needs to be null");
         }

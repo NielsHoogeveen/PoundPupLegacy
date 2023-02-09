@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterOrganizationalRelationMigratorCPCT: CPCTMigrator
+internal sealed class InterOrganizationalRelationMigratorCPCT : CPCTMigrator
 {
     public InterOrganizationalRelationMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -133,9 +133,9 @@ internal sealed class InterOrganizationalRelationMigratorCPCT: CPCTMigrator
                 OrganizationIdTo = organizationIdTo,
                 GeographicalEntityId = null,
                 InterOrganizationalRelationTypeId = interOrganizationalRelationTypeId,
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null: reader.GetDateTime("end_date")),
-                DocumentIdProof =null,
-                Description = reader.IsDBNull("description")? null: reader.GetString("description"),
+                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
+                DocumentIdProof = null,
+                Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
                 MoneyInvolved = reader.IsDBNull("money_involved") ? null : reader.GetDecimal("money_involved"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
             };

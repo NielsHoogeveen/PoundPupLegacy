@@ -20,6 +20,6 @@ public class BlogsController : Controller
             return NotFound();
         }
         var model = await _fetchBlogsService.FetchBlogs(HttpContext);
-        return View("Blogs",model);
+        return View("Blogs", model);
     }
 }

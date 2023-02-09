@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace PoundPupLegacy.Model;
+﻿namespace PoundPupLegacy.Model;
 
 public sealed record InterCountryRelation : Node
 {

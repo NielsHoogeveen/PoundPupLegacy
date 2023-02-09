@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class ActMigrator: PPLMigrator
+internal sealed class ActMigrator : PPLMigrator
 {
     public ActMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -24,7 +24,7 @@ internal sealed class ActMigrator: PPLMigrator
         {
             39091 => DateTime.Parse("2000-10-06"),
             _ => null
-        }; 
+        };
     }
     private async IAsyncEnumerable<Act> ReadArticles()
     {
@@ -156,7 +156,7 @@ internal sealed class ActMigrator: PPLMigrator
                 Description = reader.GetString("description"),
                 VocabularyNames = vocabularyNames,
                 FileIdTileImage = null,
-                EnactmentDate =  GetEnactmentDate(id),
+                EnactmentDate = GetEnactmentDate(id),
             };
         }
         await reader.CloseAsync();

@@ -4,11 +4,11 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class BasicCountryMigrator: PPLMigrator
+internal sealed class BasicCountryMigrator : PPLMigrator
 {
     protected override string Name => "basic countries";
 
-    public BasicCountryMigrator(MySqlToPostgresConverter converter): base(converter) { }
+    public BasicCountryMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
     public static int GetHagueStatus(string name)
     {
@@ -126,7 +126,7 @@ internal sealed class BasicCountryMigrator: PPLMigrator
         };
     }
 
-    private async IAsyncEnumerable<BasicCountry> GetBasicCountries() 
+    private async IAsyncEnumerable<BasicCountry> GetBasicCountries()
     {
         yield return new BasicCountry
         {
@@ -318,8 +318,8 @@ internal sealed class BasicCountryMigrator: PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-            await BasicCountryCreator.CreateAsync(GetBasicCountries(), _postgresConnection);
-            await BasicCountryCreator.CreateAsync(ReadBasicCountries(), _postgresConnection);
+        await BasicCountryCreator.CreateAsync(GetBasicCountries(), _postgresConnection);
+        await BasicCountryCreator.CreateAsync(ReadBasicCountries(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<BasicCountry> ReadBasicCountries()
@@ -445,7 +445,7 @@ internal sealed class BasicCountryMigrator: PPLMigrator
             };
             var country = new BasicCountry
             {
-                Id  = null,
+                Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),

@@ -43,7 +43,7 @@ internal sealed class PageMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        
+
         while (await reader.ReadAsync())
         {
             var id = reader.GetInt32("id");

@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -27,7 +26,7 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
             await searchableWriter.WriteAsync(wrongfulMedicationCase);
             await documentableWriter.WriteAsync(wrongfulMedicationCase);
             await locatableWriter.WriteAsync(wrongfulMedicationCase);
-            await nameableWriter.WriteAsync(wrongfulMedicationCase);    
+            await nameableWriter.WriteAsync(wrongfulMedicationCase);
             await caseWriter.WriteAsync(wrongfulMedicationCase);
             await wrongfulMedicationCaseWriter.WriteAsync(wrongfulMedicationCase);
             await EntityCreator.WriteTerms(wrongfulMedicationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

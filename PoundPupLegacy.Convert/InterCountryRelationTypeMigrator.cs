@@ -7,7 +7,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class InterCountryRelationTypeMigrator : PPLMigrator
 {
 
-    public InterCountryRelationTypeMigrator(MySqlToPostgresConverter converter): base(converter) { }
+    public InterCountryRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
     protected override string Name => "inter-country relation types";
 

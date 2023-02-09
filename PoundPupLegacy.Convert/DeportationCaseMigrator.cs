@@ -1,13 +1,10 @@
-﻿using MySqlConnector;
-using Npgsql;
-using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Readers;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class DeportationCaseMigrator: PPLMigrator
+internal sealed class DeportationCaseMigrator : PPLMigrator
 {
     public DeportationCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -18,7 +15,7 @@ internal sealed class DeportationCaseMigrator: PPLMigrator
     protected override async Task MigrateImpl()
     {
         await DeportationCaseCreator.CreateAsync(ReadDeportationCases(), _postgresConnection);
-       
+
     }
     private async IAsyncEnumerable<DeportationCase> ReadDeportationCases()
     {

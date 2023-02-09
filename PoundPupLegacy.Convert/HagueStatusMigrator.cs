@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class HagueStatusMigrator: PPLMigrator
+internal sealed class HagueStatusMigrator : PPLMigrator
 {
     public HagueStatusMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 

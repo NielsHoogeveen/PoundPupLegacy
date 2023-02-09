@@ -1,6 +1,7 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public sealed record SenateBill : Bill { 
+public sealed record SenateBill : Bill
+{
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }
     public required DateTime CreatedDateTime { get; init; }

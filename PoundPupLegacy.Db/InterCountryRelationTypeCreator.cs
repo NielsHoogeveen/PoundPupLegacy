@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -24,7 +23,7 @@ public class InterCountryRelationTypeCreator : IEntityCreator<InterCountryRelati
             await searchableWriter.WriteAsync(interCountryRelationType);
             await nameableWriter.WriteAsync(interCountryRelationType);
             await interCountryRelationTypeWriter.WriteAsync(interCountryRelationType);
-            await EntityCreator.WriteTerms(interCountryRelationType, termWriter, termReader, termHierarchyWriter,vocabularyIdReader);
+            await EntityCreator.WriteTerms(interCountryRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in interCountryRelationType.TenantNodes)
             {
                 tenantNode.NodeId = interCountryRelationType.Id;

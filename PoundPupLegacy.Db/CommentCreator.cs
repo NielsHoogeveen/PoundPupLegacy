@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace PoundPupLegacy.Db;
+﻿namespace PoundPupLegacy.Db;
 
 public class CommentCreator : IEntityCreator<Comment>
 {

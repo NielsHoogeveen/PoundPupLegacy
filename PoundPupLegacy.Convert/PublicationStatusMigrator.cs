@@ -1,5 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;
@@ -7,7 +6,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class PublicationStatusMigrator : PPLMigrator
 {
     protected override string Name => "publication statuses";
-    public PublicationStatusMigrator(MySqlToPostgresConverter converter): base(converter) { }
+    public PublicationStatusMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
     private static async IAsyncEnumerable<PublicationStatus> GetNodeStatuses()
     {

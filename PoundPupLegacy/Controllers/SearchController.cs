@@ -14,8 +14,8 @@ public class SearchController : Controller
     private readonly ISiteDataService _siteDataService;
 
     public SearchController(
-        ILogger<SearchController> logger, 
-        IFetchSearchService fetchSearchService, 
+        ILogger<SearchController> logger,
+        IFetchSearchService fetchSearchService,
         ISiteDataService siteDataService)
     {
         _fetchSearchService = fetchSearchService;

@@ -5,7 +5,7 @@ using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchOrganizationsService: IFetchOrganizationsService
+internal class FetchOrganizationsService : IFetchOrganizationsService
 {
     private NpgsqlConnection _connection;
 

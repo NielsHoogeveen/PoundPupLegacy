@@ -12,9 +12,9 @@ public class NodeController : Controller
     private readonly INodeCacheService _nodeCacheService;
 
     public NodeController(
-        ILogger<NodeController> logger, 
+        ILogger<NodeController> logger,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService) 
+        INodeCacheService nodeCacheService)
     {
         _logger = logger;
         _siteDataService = siteDataService;

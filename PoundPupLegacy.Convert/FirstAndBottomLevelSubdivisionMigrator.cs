@@ -9,7 +9,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
 {
     protected override string Name => "first and bottom level subdivisions";
 
-    public FirstAndBottomLevelSubdivisionMigrator(MySqlToPostgresConverter converter): base(converter) { }
+    public FirstAndBottomLevelSubdivisionMigrator(MySqlToPostgresConverter converter) : base(converter) { }
     private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv()
     {
 
@@ -24,7 +24,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             var title = parts[8];
             var name = parts[9];
-            int? id = int.Parse(parts[0]) == 0 ? null: int.Parse(parts[0]);
+            int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
 
             var countryName = (await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, countryId)).Name;
@@ -478,7 +478,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
                 FileIdFlag = null,
                 FileIdTileImage = null,
                 SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, reader.GetString("subdivision_type_name"))).NameableId
-        };
+            };
 
         }
         await reader.CloseAsync();

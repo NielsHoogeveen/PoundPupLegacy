@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class CommentMigrator: PPLMigrator
+internal sealed class CommentMigrator : PPLMigrator
 {
     public CommentMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -21,7 +21,7 @@ internal sealed class CommentMigrator: PPLMigrator
     {
         return uid switch
         {
-             965 => 954,
+            965 => 954,
             1233 => 1196,
             1655 => 1531,
             1745 => 1776,
@@ -83,7 +83,7 @@ internal sealed class CommentMigrator: PPLMigrator
             {
                 Id = reader.GetInt32("id"),
                 NodeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id")),
-                CommentIdParent = reader.GetInt32("comment_id_parent") == 0 ? null: reader.GetInt32("comment_id_parent"),
+                CommentIdParent = reader.GetInt32("comment_id_parent") == 0 ? null : reader.GetInt32("comment_id_parent"),
                 PublisherId = GetUid(reader.GetInt32("publisher_id")),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 NodeStatusId = reader.GetInt32("node_status_id"),

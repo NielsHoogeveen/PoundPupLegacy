@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 

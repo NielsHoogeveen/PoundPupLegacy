@@ -1,11 +1,7 @@
-﻿using NpgsqlTypes;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
-using System.Collections.Generic;
 using System.Data;
-using System.Net.Http.Headers;
-using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -17,7 +13,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
     private interface AdoptionImports
     {
-        public int CountryIdTo { get;  }
+        public int CountryIdTo { get; }
 
         public int Amount { get; }
 
@@ -25,7 +21,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
     }
 
-    private struct SpecificAdoptionImports: AdoptionImports
+    private struct SpecificAdoptionImports : AdoptionImports
     {
         public required int CountryIdTo { get; init; }
         public required int CountryIdFrom { get; init; }
@@ -40,10 +36,10 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
     }
     private async IAsyncEnumerable<AdoptionImports> AdoptionImportCsvFiles()
     {
-        foreach(var f in new DirectoryInfo(@"..\..\..\files\imports").EnumerateFiles().Where(x => x.Extension == ".csv"))
+        foreach (var f in new DirectoryInfo(@"..\..\..\files\imports").EnumerateFiles().Where(x => x.Extension == ".csv"))
         {
             Console.WriteLine($"Processing file {f.Name}");
-            if (int.TryParse(f.Name.Substring(0, f.Name.Length - 4), out var countryIdTo)) 
+            if (int.TryParse(f.Name.Substring(0, f.Name.Length - 4), out var countryIdTo))
             {
 
                 var years = new List<int>();
@@ -57,7 +53,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                     var parts = line.Split(new char[] { ';' });
                     for (int i = 2; i < parts.Length; i++)
                     {
-                        
+
                         if (!string.IsNullOrEmpty(parts[i]))
                         {
                             var amount = int.Parse(parts[i]);
@@ -69,7 +65,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                                     CountryIdFrom = countryFromId,
                                     Amount = amount,
                                     CountryIdTo = countryIdTo,
-                                    Year = years[i-2]
+                                    Year = years[i - 2]
                                 };
 
                             }
@@ -79,7 +75,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                                 {
                                     Amount = amount,
                                     CountryIdTo = countryIdTo,
-                                    Year = years[i-2]
+                                    Year = years[i - 2]
                                 };
 
                             }
@@ -104,7 +100,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
             .OfType<SpecificAdoptionImports>()
             .Select(async x => await GetInterCountryRelation(x.CountryIdFrom, x.CountryIdTo, x.Year, x.Amount, nodeReader))
             .Select(y => y.Result);
-   
+
 
         var r = ReadAdoptionExportYears(nodeReader);
 
@@ -288,12 +284,13 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                 reader.GetInt32("year"),
                 reader.GetInt32("number_of_children"),
                 nodeReader
-                ) ;
+                );
         }
         await reader.CloseAsync();
     }
 
-    private static DateTimeRange GetDateTimeRange(int countryId, int year) {
+    private static DateTimeRange GetDateTimeRange(int countryId, int year)
+    {
         return countryId switch
         {
             3805 => new DateTimeRange(DateTime.Parse($"{year - 1}-10-01"), DateTime.Parse($"{year}-09-30")),

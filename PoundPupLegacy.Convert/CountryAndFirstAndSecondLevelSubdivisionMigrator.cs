@@ -5,7 +5,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator: CountryMigrator
+internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : CountryMigrator
 {
     protected override string Name => "countries that are both first and second level subdivisions";
 

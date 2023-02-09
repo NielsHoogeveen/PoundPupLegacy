@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class BillMigrator: PPLMigrator
+internal sealed class BillMigrator : PPLMigrator
 {
     public BillMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -167,7 +167,7 @@ internal sealed class BillMigrator: PPLMigrator
                 Description = reader.GetString("description"),
                 VocabularyNames = vocabularyNames,
                 FileIdTileImage = null,
-                IntroductionDate =  reader.IsDBNull("introduction_date") ? null: reader.GetDateTime("introduction_date"),
+                IntroductionDate = reader.IsDBNull("introduction_date") ? null : reader.GetDateTime("introduction_date"),
             };
         }
         await reader.CloseAsync();

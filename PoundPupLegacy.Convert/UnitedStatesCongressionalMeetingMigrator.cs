@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 namespace PoundPupLegacy.Convert;
 
@@ -7,7 +6,7 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator : PPLMigrator
 {
     protected override string Name => "united states congressional meetings";
 
-    public UnitedStatesCongressionalMeetingMigrator(MySqlToPostgresConverter converter) : base(converter) { }    
+    public UnitedStatesCongressionalMeetingMigrator(MySqlToPostgresConverter converter) : base(converter) { }
     private async IAsyncEnumerable<UnitedStatesCongressionalMeeting> ReadUnitedStatesCongressionalMeetingCsv()
     {
 

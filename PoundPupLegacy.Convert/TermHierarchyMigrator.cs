@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class TermHierarchyMigrator: PPLMigrator
+internal sealed class TermHierarchyMigrator : PPLMigrator
 {
     public TermHierarchyMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -14,9 +14,9 @@ internal sealed class TermHierarchyMigrator: PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        
+
         await TermHierarchyCreator.CreateAsync(ReadTermHierarchys(), _postgresConnection);
-        
+
     }
     private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys()
     {
@@ -145,7 +145,7 @@ internal sealed class TermHierarchyMigrator: PPLMigrator
 
             yield return new TermHierarchy
             {
-                
+
                 TermIdChild = termIdChild.Id!.Value,
                 TermIdPartent = termIdParent.Id!.Value,
             };

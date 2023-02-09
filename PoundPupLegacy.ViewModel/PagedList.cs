@@ -33,20 +33,20 @@ public static class PagedListExtensions
     }
     private static int GetEndPage(this PagedList pl)
     {
-        if(pl.NumberOfPages - pl.PageNumber < 5)
+        if (pl.NumberOfPages - pl.PageNumber < 5)
         {
             return pl.NumberOfPages + 1;
         }
-        if(pl.PageNumber < 6)
+        if (pl.PageNumber < 6)
         {
             return Math.Min(10, pl.NumberOfPages);
         }
         return pl.PageNumber + 5;
-        
+
     }
     public static string GetQueryString(this PagedList pl, int pageNumbeer)
     {
-        if (string.IsNullOrEmpty(pl.QueryString)) 
+        if (string.IsNullOrEmpty(pl.QueryString))
         {
             return $"page={pageNumbeer}";
         }
@@ -65,7 +65,7 @@ public interface PagedList
 
 }
 public interface PagedList<T> : PagedList
-    where T: ListEntry
+    where T : ListEntry
 {
     public T[] Entries { get; set; }
 }

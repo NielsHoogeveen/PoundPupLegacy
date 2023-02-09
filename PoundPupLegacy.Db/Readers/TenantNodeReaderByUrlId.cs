@@ -36,7 +36,7 @@ public sealed class TenantNodeReaderByUrlId : DatabaseUpdater<Term>, IDatabaseRe
 
     public async Task<TenantNode?> ReadAsync(int tenantId, int urlId)
     {
-        
+
         _command.Parameters["tenant_id"].Value = tenantId;
         _command.Parameters["url_id"].Value = urlId;
 
@@ -44,7 +44,7 @@ public sealed class TenantNodeReaderByUrlId : DatabaseUpdater<Term>, IDatabaseRe
         if (reader.HasRows)
         {
             await reader.ReadAsync();
-            var tenantNode =  new TenantNode
+            var tenantNode = new TenantNode
             {
                 Id = reader.GetInt32("id"),
                 TenantId = reader.GetInt32("tenant_id"),

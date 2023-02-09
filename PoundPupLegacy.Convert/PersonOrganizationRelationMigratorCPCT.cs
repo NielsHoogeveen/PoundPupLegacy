@@ -1,17 +1,16 @@
 ﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonOrganizationRelationMigratorCPCT: CPCTMigrator
+internal sealed class PersonOrganizationRelationMigratorCPCT : CPCTMigrator
 {
 
 
     public PersonOrganizationRelationMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
-        
+
     }
 
     protected override string Name => "person organization relation (cpct)";
@@ -113,7 +112,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT: CPCTMigrator
                         UrlId = id
                     }
                 };
-            if(personPublicationStatusId == 1 && organizationPublicationStatusId == 1)
+            if (personPublicationStatusId == 1 && organizationPublicationStatusId == 1)
             {
                 tenantNodes.Add(new TenantNode
                 {
@@ -134,7 +133,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT: CPCTMigrator
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
-                TenantNodes =  tenantNodes,
+                TenantNodes = tenantNodes,
                 NodeTypeId = 48,
                 PersonId = personId,
                 OrganizationId = organizationId,

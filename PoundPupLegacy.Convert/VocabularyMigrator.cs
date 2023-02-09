@@ -5,7 +5,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class VocabularyMigrator: PPLMigrator
+internal sealed class VocabularyMigrator : PPLMigrator
 {
 
     protected override string Name => "vocabularies";
@@ -93,15 +93,15 @@ internal sealed class VocabularyMigrator: PPLMigrator
             Description = ""
         };
         yield return new Vocabulary
-            {
-                Id = null,
-                Name = Constants.VOCABULARY_FAMILY_SIZE,
-                PublisherId = 1,
-                CreatedDateTime = DateTime.Now,
-                ChangedDateTime = DateTime.Now,
-                Title = Constants.VOCABULARY_FAMILY_SIZE,
-                OwnerId = Constants.OWNER_CASES,
-                TenantNodes = new List<TenantNode>
+        {
+            Id = null,
+            Name = Constants.VOCABULARY_FAMILY_SIZE,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = Constants.VOCABULARY_FAMILY_SIZE,
+            OwnerId = Constants.OWNER_CASES,
+            TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
                     {
@@ -114,9 +114,9 @@ internal sealed class VocabularyMigrator: PPLMigrator
                         UrlId = Constants.FAMILY_SIZE
                     }
                 },
-                NodeTypeId = 36,
-                Description = ""
-         };
+            NodeTypeId = 36,
+            Description = ""
+        };
         yield return new Vocabulary
         {
             Id = null,

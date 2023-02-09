@@ -1,12 +1,10 @@
-﻿using MySqlConnector;
-using Npgsql;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterOrganizationalRelationTypeMigrator: PPLMigrator
+internal sealed class InterOrganizationalRelationTypeMigrator : PPLMigrator
 {
     public InterOrganizationalRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 

@@ -47,19 +47,19 @@ internal sealed class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWr
         );
         return new TenantNodeWriter(command);
     }
- 
+
     internal TenantNodeWriter(NpgsqlCommand command) : base(command)
     {
     }
 
     internal override async Task WriteAsync(TenantNode tenantNode)
     {
-        if(tenantNode.Id != null)
+        if (tenantNode.Id != null)
         {
             throw new Exception($"Id of tenant node needs to be null");
         }
         WriteValue(tenantNode.TenantId, TENANT_ID);
-        WriteValue(tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value: tenantNode.NodeId, URL_ID);
+        WriteValue(tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value : tenantNode.NodeId, URL_ID);
         WriteNullableValue(tenantNode.UrlPath, URL_PATH);
         WriteValue(tenantNode.NodeId, NODE_ID);
         WriteNullableValue(tenantNode.SubgroupId, SUBGROUP_ID);

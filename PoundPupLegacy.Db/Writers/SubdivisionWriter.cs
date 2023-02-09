@@ -49,7 +49,8 @@ internal sealed class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabase
             WriteValue(subdivision.CountryId, COUNTRY_ID);
             WriteValue(subdivision.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
             await _command.ExecuteNonQueryAsync();
-        }catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
         }

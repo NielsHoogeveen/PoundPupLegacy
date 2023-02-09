@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Db;
+﻿namespace PoundPupLegacy.Db;
 
 public class ContentSharingGroupCreator : IEntityCreator<ContentSharingGroup>
 {

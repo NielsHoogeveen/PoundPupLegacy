@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -21,7 +20,7 @@ public class ProfessionCreator : IEntityCreator<Profession>
         await foreach (var profession in professions)
         {
             await nodeWriter.WriteAsync(profession);
-            await searchableWriter.WriteAsync(profession);  
+            await searchableWriter.WriteAsync(profession);
             await nameableWriter.WriteAsync(profession);
             await professionWriter.WriteAsync(profession);
             await EntityCreator.WriteTerms(profession, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

@@ -1,6 +1,4 @@
-﻿using MySqlConnector;
-using Npgsql;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -9,7 +7,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class InterPersonalRelationTypeMigrator : PPLMigrator
 {
 
-    public InterPersonalRelationTypeMigrator(MySqlToPostgresConverter converter): base(converter) { }
+    public InterPersonalRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
     protected override string Name => "inter-personal relation types";
 

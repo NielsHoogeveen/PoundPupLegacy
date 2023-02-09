@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class DisruptedPlacementCaseMigrator: PPLMigrator
+internal sealed class DisruptedPlacementCaseMigrator : PPLMigrator
 {
     public DisruptedPlacementCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {

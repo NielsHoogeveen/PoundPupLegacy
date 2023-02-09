@@ -1,6 +1,4 @@
-﻿using MySqlConnector;
-using Npgsql;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 

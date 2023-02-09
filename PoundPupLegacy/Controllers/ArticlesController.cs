@@ -16,8 +16,8 @@ public class ArticlesController : Controller
     private readonly ISiteDataService _siteDataService;
 
     public ArticlesController(
-        ILogger<ArticlesController> logger, 
-        IFetchArticlesService fetchArticlesService, 
+        ILogger<ArticlesController> logger,
+        IFetchArticlesService fetchArticlesService,
         ISiteDataService siteDataService)
     {
         _fetchArticlesService = fetchArticlesService;
@@ -27,12 +27,12 @@ public class ArticlesController : Controller
 
     private IEnumerable<int> GetTermIds(IEnumerable<string> values)
     {
-        foreach (var term in values) 
+        foreach (var term in values)
         {
             if (term.StartsWith(TERM_NAME_PREFIX))
             {
                 var remainder = term.Substring(TERM_NAME_PREFIX.Length);
-                if(int.TryParse(remainder, out int termId))
+                if (int.TryParse(remainder, out int termId))
                 {
                     yield return termId;
                 }
@@ -61,7 +61,7 @@ public class ArticlesController : Controller
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var tenantId = _siteDataService.GetTenantId(HttpContext);
-        var termIds = query == null? new List<int>(): GetTermIds(query.Keys).ToList();
+        var termIds = query == null ? new List<int>() : GetTermIds(query.Keys).ToList();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
         var articles = termIds.Any() ? await _fetchArticlesService.GetArticles(termIds, startIndex, NUMBER_OF_ENTRIES, tenantId) : await _fetchArticlesService.GetArticles((pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES, tenantId);
         articles.PageNumber = pageNumber;

@@ -12,7 +12,7 @@ public record BasicNameable : Nameable
     public Link[] BreadCrumElements { get; set; }
 
     public string Description { get; set; }
-    public Link[] Tags { get; set ; }
+    public Link[] Tags { get; set; }
     public Comment[] Comments { get; set; }
     public Link[] SubTopics { get; set; }
     public Link[] SuperTopics { get; set; }

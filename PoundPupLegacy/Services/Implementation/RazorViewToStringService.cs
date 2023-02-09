@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class RazorViewToStringService: IRazorViewToStringService
+internal class RazorViewToStringService : IRazorViewToStringService
 {
     private ITempDataProvider _tempDataProvider;
     private IRazorViewEngine _viewEngine;
-    public RazorViewToStringService(IRazorViewEngine viewEngine, ITempDataProvider tempDataProvider) 
-    { 
+    public RazorViewToStringService(IRazorViewEngine viewEngine, ITempDataProvider tempDataProvider)
+    {
         _tempDataProvider = tempDataProvider;
         _viewEngine = viewEngine;
     }

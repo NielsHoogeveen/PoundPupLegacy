@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchSearchService: IFetchSearchService
+internal class FetchSearchService : IFetchSearchService
 {
     private NpgsqlConnection _connection;
 

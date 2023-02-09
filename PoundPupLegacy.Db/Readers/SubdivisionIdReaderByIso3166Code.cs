@@ -28,7 +28,7 @@ public sealed class SubdivisionIdReaderByIso3166Code : DatabaseUpdater<int>, IDa
 
     public async Task<int> ReadAsync(string code)
     {
-        if(code is null)
+        if (code is null)
         {
             throw new ArgumentNullException(nameof(code));
         }
@@ -38,7 +38,7 @@ public sealed class SubdivisionIdReaderByIso3166Code : DatabaseUpdater<int>, IDa
         if (reader.HasRows)
         {
             await reader.ReadAsync();
-             var result =  reader.GetInt32("id");
+            var result = reader.GetInt32("id");
             await reader.CloseAsync();
             return result;
         }

@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -37,7 +36,7 @@ public class OrganizationCreator : IEntityCreator<Organization>
                 tenantNode.NodeId = organization.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }
-            foreach(var organizationOrganizationType in organization.OrganizationTypes)
+            foreach (var organizationOrganizationType in organization.OrganizationTypes)
             {
                 organizationOrganizationType.OrganizationId = organization.Id;
                 await organizationOrganizationTypeWriter.WriteAsync(organizationOrganizationType);

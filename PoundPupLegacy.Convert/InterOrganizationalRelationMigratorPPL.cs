@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterOrganizationalRelationMigratorPPL: PPLMigrator
+internal sealed class InterOrganizationalRelationMigratorPPL : PPLMigrator
 {
     public InterOrganizationalRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -119,7 +119,7 @@ internal sealed class InterOrganizationalRelationMigratorPPL: PPLMigrator
 
             int organizationIdFrom = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("organization_id_from"));
             int organizationIdTo = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("organization_id_to"));
-            int? geographicalEntityId = reader.IsDBNull("geographical_entity_id") ? null: await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("geographical_entity_id"));
+            int? geographicalEntityId = reader.IsDBNull("geographical_entity_id") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("geographical_entity_id"));
             int interOrganizationalRelationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
 
             yield return new InterOrganizationalRelation
@@ -158,9 +158,9 @@ internal sealed class InterOrganizationalRelationMigratorPPL: PPLMigrator
                 OrganizationIdTo = organizationIdTo,
                 GeographicalEntityId = geographicalEntityId,
                 InterOrganizationalRelationTypeId = interOrganizationalRelationTypeId,
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null: reader.GetDateTime("end_date")),
+                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = reader.IsDBNull("document_id_proof") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("document_id_proof")),
-                Description = reader.IsDBNull("description")? null: reader.GetString("description"),
+                Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
                 MoneyInvolved = reader.IsDBNull("money_involved") ? null : reader.GetDecimal("money_involved"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
             };

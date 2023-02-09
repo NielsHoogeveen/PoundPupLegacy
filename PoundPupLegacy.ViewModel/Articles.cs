@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record Articles: PagedList
+public record Articles : PagedList
 {
     public SelectionItem[] TermNames { get; set; }
     public ArticleListEntry[] ArticleListEntries { get; set; }

@@ -1,5 +1,5 @@
-﻿using PoundPupLegacy.Model;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;
 
@@ -7,7 +7,7 @@ internal sealed class MenuMigrator : PPLMigrator
 {
     protected override string Name => "menu items";
 
-    public MenuMigrator(MySqlToPostgresConverter converter): base(converter)
+    public MenuMigrator(MySqlToPostgresConverter converter) : base(converter)
     {
 
     }
@@ -17,7 +17,8 @@ internal sealed class MenuMigrator : PPLMigrator
         await ActionMenuItemCreator.CreateAsync(GetActionMenuItems(), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<ActionMenuItem> GetActionMenuItems() {
+    private async IAsyncEnumerable<ActionMenuItem> GetActionMenuItems()
+    {
         yield return new ActionMenuItem
         {
             Id = null,
@@ -25,7 +26,8 @@ internal sealed class MenuMigrator : PPLMigrator
             Name = "Contact",
             Weight = 2,
         };
-        yield return new ActionMenuItem {
+        yield return new ActionMenuItem
+        {
             Id = null,
             ActionId = await _actionReaderByPath.ReadAsync("/articles"),
             Name = "Articles",

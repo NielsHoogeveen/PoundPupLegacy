@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class OrganizationMigratorPPL: PPLMigrator
+internal sealed class OrganizationMigratorPPL : PPLMigrator
 {
     public OrganizationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -234,10 +234,10 @@ internal sealed class OrganizationMigratorPPL: PPLMigrator
             var typeIds = reader
                             .GetString("organization_types")
                             .Split(',')
-                            .Where(x=> !string.IsNullOrEmpty(x))
+                            .Where(x => !string.IsNullOrEmpty(x))
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
-            foreach(var typeId in typeIds)
+            foreach (var typeId in typeIds)
             {
                 var organizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, typeId);
                 organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
@@ -248,7 +248,7 @@ internal sealed class OrganizationMigratorPPL: PPLMigrator
             if (!reader.IsDBNull("topic_name"))
             {
                 var topicName = reader.GetString("topic_name");
-                var topicParentNames = reader.IsDBNull("topic_parent_names") ? 
+                var topicParentNames = reader.IsDBNull("topic_parent_names") ?
                     new List<string>() : reader.GetString("topic_parent_names")
                     .Split(',')
                     .Where(x => !string.IsNullOrEmpty(x))

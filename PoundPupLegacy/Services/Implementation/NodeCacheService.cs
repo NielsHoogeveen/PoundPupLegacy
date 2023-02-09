@@ -3,21 +3,21 @@ using System.Collections.Concurrent;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class NodeCacheService: INodeCacheService
+internal class NodeCacheService : INodeCacheService
 {
     private readonly ISiteDataService _siteDataService;
     private readonly IConfiguration _configuration;
     private readonly IFetchNodeService _fetchNodeService;
     private readonly IRazorViewToStringService _razorViewToStringService;
     public NodeCacheService(
-        ISiteDataService siteDataService, 
-        IConfiguration configuration, 
-        IFetchNodeService fetchNodeService, 
+        ISiteDataService siteDataService,
+        IConfiguration configuration,
+        IFetchNodeService fetchNodeService,
         IRazorViewToStringService razorViewToStringService)
     {
         _siteDataService = siteDataService;
         _configuration = configuration;
-        _fetchNodeService = fetchNodeService; 
+        _fetchNodeService = fetchNodeService;
         _razorViewToStringService = razorViewToStringService;
 
     }
@@ -60,7 +60,7 @@ internal class NodeCacheService: INodeCacheService
         var html = await _razorViewToStringService.GetFromView("/Views/Shared/Node.cshtml", node, context);
         return html;
     }
-    
+
     private async Task<IActionResult> AssembleNewResponse(HttpContext context, int nodeId, TenantNode tenantNode, bool storeInDictionary)
     {
         var nodeString = await GetNodeString(context, nodeId);

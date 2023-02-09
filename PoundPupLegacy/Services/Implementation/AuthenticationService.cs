@@ -6,7 +6,7 @@ using System.Security.Principal;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class AuthenticationService: IAuthenticationService
+internal class AuthenticationService : IAuthenticationService
 {
     private NpgsqlConnection _connection;
     public AuthenticationService(NpgsqlConnection connection)
@@ -36,7 +36,7 @@ internal class AuthenticationService: IAuthenticationService
         readCommand.Parameters["name"].Value = userName.ToLower();
         readCommand.Parameters["password"].Value = CreateMD5(password);
         await using var reader = await readCommand.ExecuteReaderAsync();
-        if(reader.Read())
+        if (reader.Read())
         {
             var id = reader.GetInt32(0);
             var identity = new GenericIdentity(userName);

@@ -2,12 +2,12 @@
 using PoundPupLegacy.ViewModel;
 using System.Data;
 using System.Diagnostics;
-using Tenant = PoundPupLegacy.ViewModel.Tenant;
 using MenuItem = PoundPupLegacy.ViewModel.Link;
+using Tenant = PoundPupLegacy.ViewModel.Tenant;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class SiteDataService: ISiteDataService
+internal class SiteDataService : ISiteDataService
 {
     private record UserTenantAction
     {
@@ -26,18 +26,18 @@ internal class SiteDataService: ISiteDataService
         public required List<Tenant> Tenants { get; init; }
 
     }
-    private Data _data = new Data 
-    { 
-        Tenants = new List<Tenant>(), 
-        UserMenus = new Dictionary<(int, int), List<MenuItem>>(), 
-        UserTenantActions = new HashSet<UserTenantAction>() 
+    private Data _data = new Data
+    {
+        Tenants = new List<Tenant>(),
+        UserMenus = new Dictionary<(int, int), List<MenuItem>>(),
+        UserTenantActions = new HashSet<UserTenantAction>()
     };
 
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<SiteDataService> _logger;
 
-    public SiteDataService(NpgsqlConnection connection, ILogger<SiteDataService> logger) 
-    { 
+    public SiteDataService(NpgsqlConnection connection, ILogger<SiteDataService> logger)
+    {
         _connection = connection;
         _logger = logger;
     }
@@ -49,8 +49,8 @@ internal class SiteDataService: ISiteDataService
         {
             return 0;
         }
-        var useIdText = cp.Claims.FirstOrDefault (x => x.Type == "user_id");
-        if(useIdText == null)
+        var useIdText = cp.Claims.FirstOrDefault(x => x.Type == "user_id");
+        if (useIdText == null)
         {
             return 0;
 
@@ -83,7 +83,7 @@ internal class SiteDataService: ISiteDataService
         {
             throw new NullReferenceException("Tenant should not be null");
         }
-        if(tenant.IdToUrl.TryGetValue(urlId, out var urlPath))
+        if (tenant.IdToUrl.TryGetValue(urlId, out var urlPath))
         {
             return urlPath;
         }
@@ -93,11 +93,11 @@ internal class SiteDataService: ISiteDataService
     public bool HasAccess(HttpContext context)
     {
         return _data.UserTenantActions.Contains(
-            new UserTenantAction 
-            { 
-                UserId = GetUserId(context), 
-                TenantId = GetTenantId(context), 
-                Action = context.Request.Path 
+            new UserTenantAction
+            {
+                UserId = GetUserId(context),
+                TenantId = GetTenantId(context),
+                Action = context.Request.Path
             }
         );
     }
@@ -105,12 +105,12 @@ internal class SiteDataService: ISiteDataService
     public int GetTenantId(HttpContext context)
     {
         var domainName = context.Request.Host.Value;
-        if(domainName == "localhost:7141")
+        if (domainName == "localhost:7141")
         {
             return 1;
         }
         var tenant = _data.Tenants.Find(x => x.DomainName == domainName);
-        if(tenant is not null)
+        if (tenant is not null)
         {
             return tenant.Id;
         }
@@ -194,7 +194,7 @@ internal class SiteDataService: ISiteDataService
                     tenant.IdToUrl.Add(reader.GetInt32(1), reader.GetString(2));
                 }
             }
-            
+
             _logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
             return tenants;
         }
@@ -394,7 +394,7 @@ internal class SiteDataService: ISiteDataService
 
     public IEnumerable<Link> GetMenuItemsForUser(HttpContext context)
     {
-        if(_data.UserMenus.TryGetValue((GetUserId(context), GetTenantId(context)), out var lst))
+        if (_data.UserMenus.TryGetValue((GetUserId(context), GetTenantId(context)), out var lst))
         {
             return lst;
         }

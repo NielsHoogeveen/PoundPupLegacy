@@ -1,5 +1,5 @@
-﻿using PoundPupLegacy.Model;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;
 
@@ -7,7 +7,7 @@ internal sealed class NodeTypeMigrator : PPLMigrator
 {
     protected override string Name => "node types";
 
-    public NodeTypeMigrator(MySqlToPostgresConverter converter): base(converter)
+    public NodeTypeMigrator(MySqlToPostgresConverter converter) : base(converter)
     {
 
     }

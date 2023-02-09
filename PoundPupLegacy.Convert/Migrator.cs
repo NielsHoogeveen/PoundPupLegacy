@@ -1,10 +1,10 @@
-﻿using PoundPupLegacy.Model;
+﻿using HtmlAgilityPack;
+using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db.Readers;
+using PoundPupLegacy.Model;
 using System.Diagnostics;
-using HtmlAgilityPack;
 using System.Text;
-using MySqlConnector;
 
 namespace PoundPupLegacy.Convert;
 

@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.Db.Writers
 {
 
-    internal sealed class SingleIdWriter: DatabaseWriter
+    internal sealed class SingleIdWriter : DatabaseWriter
     {
         internal const string ID = "id";
         internal static async Task<DatabaseWriter<T>> CreateSingleIdWriterAsync<T>(string tableName, NpgsqlConnection connection, bool insertIdentity = true)
@@ -16,7 +16,7 @@
                     NpgsqlDbType = NpgsqlDbType.Integer
                 });
             }
-            var command = insertIdentity ? 
+            var command = insertIdentity ?
                 await CreateInsertStatementAsync(
                 connection,
                 tableName,

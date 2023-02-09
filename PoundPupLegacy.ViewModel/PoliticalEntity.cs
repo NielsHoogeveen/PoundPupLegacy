@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public interface PoliticalEntity: GeographicalEntity
+public interface PoliticalEntity : GeographicalEntity
 {
 }

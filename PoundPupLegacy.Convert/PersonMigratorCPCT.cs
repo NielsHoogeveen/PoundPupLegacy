@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonMigratorCPCT:CPCTMigrator
+internal sealed class PersonMigratorCPCT : CPCTMigrator
 {
     public PersonMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -45,7 +45,7 @@ internal sealed class PersonMigratorCPCT:CPCTMigrator
         {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
-            
+
 
             yield return new Person
             {

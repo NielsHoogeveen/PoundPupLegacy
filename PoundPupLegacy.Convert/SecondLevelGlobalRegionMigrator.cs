@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class SecondLevelGlobalRegionMigrator: PPLMigrator
+internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
 {
 
     public SecondLevelGlobalRegionMigrator(MySqlToPostgresConverter converter) : base(converter) { }
@@ -58,7 +58,7 @@ internal sealed class SecondLevelGlobalRegionMigrator: PPLMigrator
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL, 
+                    OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = new List<string>{ parentRegionName},

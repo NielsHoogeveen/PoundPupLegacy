@@ -14,8 +14,8 @@ public class CasesController : Controller
     private readonly ISiteDataService _siteDataService;
 
     public CasesController(
-        ILogger<CasesController> logger, 
-        IFetchCasesService fetchCasesService, 
+        ILogger<CasesController> logger,
+        IFetchCasesService fetchCasesService,
         ISiteDataService siteDataService)
     {
         _fetchCasesService = fetchCasesService;

@@ -1,11 +1,10 @@
-﻿using Npgsql;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class LocationMigrator: PPLMigrator
+internal sealed class LocationMigrator : PPLMigrator
 {
     public LocationMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -63,7 +62,7 @@ internal sealed class LocationMigrator: PPLMigrator
             3622 => "Truc Ninh District",
             3894 => "North Island",
             3937 => "Illinois and New York State",
-            
+
             _ => additional
         };
     }
@@ -298,20 +297,20 @@ internal sealed class LocationMigrator: PPLMigrator
         };
     }
 
-    private async Task<int?> GetSubdivisionId(int id, int? stateId, int? countryId, string? code) 
+    private async Task<int?> GetSubdivisionId(int id, int? stateId, int? countryId, string? code)
     {
-        if(countryId is null)
+        if (countryId is null)
         {
             return null;
         }
 
         var res = await GetSubdivisionId(id, stateId);
-        if(res != null)
+        if (res != null)
         {
             return res;
         }
         var stateCode = code switch
-        {   
+        {
             "HK-HWC" => null,
             "HK-HCW" => null,
             "HK-KYT" => null,
@@ -1284,7 +1283,8 @@ internal sealed class LocationMigrator: PPLMigrator
                 2527 => null,
                 _ => stateId
             };
-            if (ret == null) { 
+            if (ret == null)
+            {
                 return null;
             }
             else
@@ -1305,8 +1305,8 @@ internal sealed class LocationMigrator: PPLMigrator
             2262 => 3996,
             _ => countryId
         };
-        if(ret == null) 
-        { 
+        if (ret == null)
+        {
             return null;
         }
         else
@@ -1372,7 +1372,7 @@ internal sealed class LocationMigrator: PPLMigrator
                 CountryId = await GetCountryId(id, countryId),
                 Latitude = GetLatitude(id, reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
                 Longitude = GetLongitude(id, reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
-                Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = id, LocatableId = locatableId} }
+                Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = id, LocatableId = locatableId } }
             };
 
         }

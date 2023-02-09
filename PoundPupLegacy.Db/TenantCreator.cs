@@ -24,7 +24,7 @@ public class TenantCreator : IEntityCreator<Tenant>
             await principalWriter.WriteAsync(accessRole);
             await userRoleWriter.WriteAsync(accessRole);
             await accessRoleWriter.WriteAsync(accessRole);
-            
+
 
             var administratorRole = tenant.AdministratorRole;
             administratorRole.UserGroupId = tenant.Id.Value;

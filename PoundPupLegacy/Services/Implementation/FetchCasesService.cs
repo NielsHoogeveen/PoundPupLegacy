@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchCasesService: IFetchCasesService
+internal class FetchCasesService : IFetchCasesService
 {
     private NpgsqlConnection _connection;
 
@@ -126,7 +126,7 @@ internal class FetchCasesService: IFetchCasesService
             }
             else
             {
-                
+
                 return new Cases
                 {
                     CaseListEntries = new CaseListEntry[] { },

@@ -4,14 +4,14 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class OrganizationTypeMigrator: PPLMigrator
+internal sealed class OrganizationTypeMigrator : PPLMigrator
 {
 
-    public OrganizationTypeMigrator(MySqlToPostgresConverter converter): base(converter) { }
+    public OrganizationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
     protected override string Name => "organization types";
 
-    protected override  async Task MigrateImpl()
+    protected override async Task MigrateImpl()
     {
         await OrganizationTypeCreator.CreateAsync(ReadOrganizationTypes(), _postgresConnection);
     }

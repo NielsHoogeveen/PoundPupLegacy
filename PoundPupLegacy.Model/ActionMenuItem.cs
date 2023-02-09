@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public sealed record ActionMenuItem: MenuItem
+public sealed record ActionMenuItem : MenuItem
 {
     public required int? Id { get; set; }
     public required int ActionId { get; init; }

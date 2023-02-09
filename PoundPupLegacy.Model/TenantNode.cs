@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public sealed record TenantNode: Identifiable
+public sealed record TenantNode : Identifiable
 {
     public required int? Id { get; set; }
     public required int TenantId { get; init; }

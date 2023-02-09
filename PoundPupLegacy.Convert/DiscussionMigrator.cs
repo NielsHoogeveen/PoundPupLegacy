@@ -1,18 +1,16 @@
-﻿using MySqlConnector;
-using Npgsql;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class DiscussionMigrator: PPLMigrator
+internal sealed class DiscussionMigrator : PPLMigrator
 {
     public DiscussionMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
     }
 
-    protected override string Name =>"discussions";
+    protected override string Name => "discussions";
 
     protected override async Task MigrateImpl()
     {

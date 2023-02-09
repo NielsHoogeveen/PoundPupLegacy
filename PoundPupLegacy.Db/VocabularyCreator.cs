@@ -13,7 +13,7 @@ public class VocabularyCreator : IEntityCreator<Vocabulary>
         {
             await nodeWriter.WriteAsync(vocabulary);
             await vocabularyWriter.WriteAsync(vocabulary);
-            foreach(var tenantNode in vocabulary.TenantNodes)
+            foreach (var tenantNode in vocabulary.TenantNodes)
             {
                 tenantNode.NodeId = vocabulary.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);

@@ -1,7 +1,5 @@
-﻿using Npgsql;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
-using System.Runtime.CompilerServices;
 
 namespace PoundPupLegacy.Convert;
 
@@ -99,7 +97,7 @@ internal sealed class SubdivisionTypeMigrator : PPLMigrator
             "Urban municipality",
         };
 
-        foreach ( var name in names)
+        foreach (var name in names)
         {
             yield return new SubdivisionType
             {

@@ -3,7 +3,7 @@ using PoundPupLegacy.Model;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
-internal sealed class AbuseCaseMigrator: PPLMigrator
+internal sealed class AbuseCaseMigrator : PPLMigrator
 {
     public AbuseCaseMigrator(MySqlToPostgresConverter converter) : base(converter)
     {

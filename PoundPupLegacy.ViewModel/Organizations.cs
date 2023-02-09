@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record Organizations: PagedList<OrganizationListEntry>
+public record Organizations : PagedList<OrganizationListEntry>
 {
     public OrganizationListEntry[] Entries { get; set; }
     public SelectionItem[] Countries { get; set; }

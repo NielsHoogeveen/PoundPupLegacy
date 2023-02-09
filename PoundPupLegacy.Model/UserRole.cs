@@ -2,7 +2,7 @@
 
 public interface UserRole : Principal
 {
-    string Name { get;  }
+    string Name { get; }
 
     int? UserGroupId { get; }
 }

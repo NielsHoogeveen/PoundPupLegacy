@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PartyPoliticalEntityRelationTypeMigrator: PPLMigrator
+internal sealed class PartyPoliticalEntityRelationTypeMigrator : PPLMigrator
 {
     public PartyPoliticalEntityRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 

@@ -21,7 +21,7 @@ public class DocumentCreator : IEntityCreator<Document>
                 tenantNode.NodeId = document.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }
-            foreach(var documentable in document.Documentables)
+            foreach (var documentable in document.Documentables)
             {
                 await documentableDocumentWriter.WriteAsync(new DocumentableDocument { DocumentableId = documentable, DocumentId = document.Id!.Value });
             }

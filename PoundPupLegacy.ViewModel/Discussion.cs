@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record Discussion: SimpleTextNode
+public record Discussion : SimpleTextNode
 {
     public int Id { get; set; }
     public string Title { get; set; }

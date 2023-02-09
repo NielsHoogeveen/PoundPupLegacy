@@ -1,5 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;

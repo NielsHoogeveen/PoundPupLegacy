@@ -30,7 +30,7 @@ public sealed class SubdivisionIdReaderByName : DatabaseUpdater<int>, IDatabaseR
 
     public async Task<int> ReadAsync(int countryId, string name)
     {
-        if(name is null)
+        if (name is null)
         {
             throw new ArgumentNullException(nameof(name));
         }

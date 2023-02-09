@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class ReviewMigrator: PPLMigrator
+internal sealed class ReviewMigrator : PPLMigrator
 {
     public ReviewMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -40,7 +40,7 @@ internal sealed class ReviewMigrator: PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        
+
         while (await reader.ReadAsync())
         {
             var id = reader.GetInt32("id");

@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterPersonalRelationMigratorPPL: PPLMigrator
+internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
 {
     public InterPersonalRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -130,7 +130,7 @@ internal sealed class InterPersonalRelationMigratorPPL: PPLMigrator
                 PersonIdFrom = organizationIdFrom,
                 PersonIdTo = organizationIdTo,
                 InterPersonalRelationTypeId = interPersonalRelationTypeId,
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null: reader.GetDateTime("end_date")),
+                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = reader.IsDBNull("document_id_proof") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("document_id_proof")),
             };
         }

@@ -7,7 +7,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : PPLMigrator
 {
     protected override string Name => "formal intermediate level subdivisions";
 
-    public FormalIntermediateLevelSubdivisionMigrator(MySqlToPostgresConverter converter) : base(converter) { }    
+    public FormalIntermediateLevelSubdivisionMigrator(MySqlToPostgresConverter converter) : base(converter) { }
     private async IAsyncEnumerable<FormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv()
     {
         await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
@@ -19,7 +19,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : PPLMigrator
         {
 
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
-            int? id = int.Parse(parts[0]) == 0? null: int.Parse(parts[0]);
+            int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
             var countryName = (await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, countryId)).Name;

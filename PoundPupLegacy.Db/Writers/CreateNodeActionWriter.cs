@@ -31,7 +31,7 @@ internal sealed class CreateNodeActionWriter : DatabaseWriter<CreateNodeAction>,
 
     internal override async Task WriteAsync(CreateNodeAction createNodeAccessPrivilege)
     {
-        if(!createNodeAccessPrivilege.Id.HasValue)
+        if (!createNodeAccessPrivilege.Id.HasValue)
         {
             throw new NullReferenceException();
         }

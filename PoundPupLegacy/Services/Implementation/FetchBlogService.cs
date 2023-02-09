@@ -5,7 +5,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchBlogService: IFetchBlogService
+internal class FetchBlogService : IFetchBlogService
 {
     private NpgsqlConnection _connection;
 

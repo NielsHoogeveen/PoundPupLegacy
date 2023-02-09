@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class BlogPostMigrator: PPLMigrator
+internal sealed class BlogPostMigrator : PPLMigrator
 {
     public BlogPostMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -83,17 +83,17 @@ internal sealed class BlogPostMigrator: PPLMigrator
         {
             38035 => new List<string> { "ExecutiveCompensations" },
             38888 => new List<string> { "CongressionalSupport" },
-            41136 => new List<string> { "HagueFacilitation"},
+            41136 => new List<string> { "HagueFacilitation" },
             45514 => new List<string> { "AbuseTotal", "AbusePerCountry", "AbuseMap", "AbusePerState", },
             _ => new List<string>()
         };
-        if(codeSections.Count == 0)
+        if (codeSections.Count == 0)
         {
             return text;
         }
         var end = 0;
         List<string> parts = new List<string>();
-        foreach(var (codeSection, index) in codeSections.Select((c, i) => (c, i)))
+        foreach (var (codeSection, index) in codeSections.Select((c, i) => (c, i)))
         {
             var rem = text.Substring(end);
             var start = text.IndexOf("<?php", end);

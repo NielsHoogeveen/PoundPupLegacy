@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record AbuseCase: Case
+public record AbuseCase : Case
 {
     public string Description { get; set; }
     public int Id { get; set; }

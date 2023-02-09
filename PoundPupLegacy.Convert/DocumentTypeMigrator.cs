@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentTypeMigrator: PPLMigrator
+internal sealed class DocumentTypeMigrator : PPLMigrator
 {
 
     public DocumentTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }

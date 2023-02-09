@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public interface GeographicalEntity: Documentable, Nameable
+public interface GeographicalEntity : Documentable, Nameable
 {
 }

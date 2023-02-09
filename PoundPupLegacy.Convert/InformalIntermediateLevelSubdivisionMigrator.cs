@@ -2,7 +2,6 @@
 using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
-using System.Reflection.PortableExecutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -23,7 +22,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : PPLMigrator
         {
 
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
-            int? id = int.Parse(parts[0]) == 0 ? null: int.Parse(parts[0]);
+            int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
             var countryName = (await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, countryId)).Name;

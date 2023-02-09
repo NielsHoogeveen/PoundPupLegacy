@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public interface Case: Nameable, Documentable, Locatable
+public interface Case : Nameable, Documentable, Locatable
 {
 
 }

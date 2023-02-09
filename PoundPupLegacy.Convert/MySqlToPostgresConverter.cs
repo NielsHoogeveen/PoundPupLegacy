@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace PoundPupLegacy.Convert;
 
-internal partial class MySqlToPostgresConverter: IAsyncDisposable
+internal partial class MySqlToPostgresConverter : IAsyncDisposable
 {
     private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
     public async Task Convert()
@@ -96,13 +96,13 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
 
     public static async Task<MySqlToPostgresConverter> GetInstance()
     {
-        
+
         Console.Write("Setting up connections and opening readers");
         _stopwatch.Restart();
         var mysqlConnectionPPL = new MySqlConnection(ConnectionStringMariaDbPPL);
         var mysqlConnectionCPCT = new MySqlConnection(ConnectionStringMariaDbCPCT);
         var postgresConnection = new NpgsqlConnection(ConnectStringPostgresql);
-        await mysqlConnectionPPL.OpenAsync(); 
+        await mysqlConnectionPPL.OpenAsync();
         await mysqlConnectionCPCT.OpenAsync();
         await postgresConnection.OpenAsync();
         var nodeIdReader = await NodeIdReaderByUrlId.CreateAsync(postgresConnection);
@@ -112,7 +112,7 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         var createNodeActionIdReaderByNodeTypeId = await CreateNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
         var deleteNodeActionIdReaderByNodeTypeId = await DeleteNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
         var editNodeActionIdReaderByNodeTypeId = await EditNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
-        var actionIdReaderByPath  = await ActionIdReaderByPath.CreateAsync(postgresConnection);
+        var actionIdReaderByPath = await ActionIdReaderByPath.CreateAsync(postgresConnection);
         var tenantNodeIdReaderByUrlId = await TenantNodeIdReaderByUrlId.CreateAsync(postgresConnection);
         var tenantNodeReaderByUrlId = await TenantNodeReaderByUrlId.CreateAsync(postgresConnection);
 
@@ -120,10 +120,10 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         return new MySqlToPostgresConverter(
             mysqlConnectionPPL,
             mysqlConnectionCPCT,
-            postgresConnection, 
-            nodeIdReader, 
-            termByNameableIdReader, 
-            subdivisionReader, 
+            postgresConnection,
+            nodeIdReader,
+            termByNameableIdReader,
+            subdivisionReader,
             subdivisionReaderByIsoCode,
             createNodeActionIdReaderByNodeTypeId,
             deleteNodeActionIdReaderByNodeTypeId,
@@ -148,10 +148,10 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
     public MySqlToPostgresConverter(
         MySqlConnection mysqlConnectionPPL,
         MySqlConnection mysqlConnectionCPCT,
-        NpgsqlConnection postgresConnection, 
-        NodeIdReaderByUrlId nodeIdReader, 
-        TermReaderByNameableId termByNameableIdReader, 
-        SubdivisionIdReaderByName subdivisionIdReader, 
+        NpgsqlConnection postgresConnection,
+        NodeIdReaderByUrlId nodeIdReader,
+        TermReaderByNameableId termByNameableIdReader,
+        SubdivisionIdReaderByName subdivisionIdReader,
         SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code,
         CreateNodeActionIdReaderByNodeTypeId createNodeActionIdReaderByNodeTypeId,
         DeleteNodeActionIdReaderByNodeTypeId deleteNodeActionIdReaderByNodeTypeId,
@@ -168,7 +168,7 @@ internal partial class MySqlToPostgresConverter: IAsyncDisposable
         TermByNameableIdReader = termByNameableIdReader;
         SubdivisionIdReader = subdivisionIdReader;
         SubdivisionIdReaderByIso3166Code = subdivisionIdReaderByIso3166Code;
-        CreateNodeActionIdReaderByNodeTypeId  = createNodeActionIdReaderByNodeTypeId;
+        CreateNodeActionIdReaderByNodeTypeId = createNodeActionIdReaderByNodeTypeId;
         DeleteNodeActionIdReaderByNodeTypeId = deleteNodeActionIdReaderByNodeTypeId;
         EditNodeActionIdReaderByNodeTypeId = editNodeActionIdReaderByNodeTypeId;
         ActionIdReaderByPath = actionIdReaderByPath;

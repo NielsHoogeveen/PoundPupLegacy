@@ -12,8 +12,8 @@ public class CommentWriter : DatabaseWriter<Comment>, IDatabaseWriter<Comment>
     private const string CREATED_DATE_TIME = "created_date_time";
     private const string TITLE = "title";
     private const string TEXT = "text";
-    
-    
+
+
 
     public static async Task<DatabaseWriter<Comment>> CreateAsync(NpgsqlConnection connection)
     {

@@ -37,9 +37,9 @@ public class UserRoleWriter : DatabaseWriter<UserRole>, IDatabaseWriter<UserRole
 
     internal override async Task WriteAsync(UserRole userRole)
     {
-            WriteValue(userRole.Id, ID);
-            WriteValue(userRole.UserGroupId, USER_GROUP_ID);
-            WriteValue(userRole.Name, NAME);
-            await _command.ExecuteNonQueryAsync();
+        WriteValue(userRole.Id, ID);
+        WriteValue(userRole.UserGroupId, USER_GROUP_ID);
+        WriteValue(userRole.Name, NAME);
+        await _command.ExecuteNonQueryAsync();
     }
 }

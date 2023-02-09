@@ -67,7 +67,7 @@ public abstract class DatabaseWriter : IDatabaseWriter
 
 
 }
-public abstract class DatabaseWriter<T>: DatabaseWriter, IAsyncDisposable
+public abstract class DatabaseWriter<T> : DatabaseWriter, IAsyncDisposable
 {
     protected readonly NpgsqlCommand _command;
 

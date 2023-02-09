@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class OrganizationMigratorCPCT: CPCTMigrator
+internal sealed class OrganizationMigratorCPCT : CPCTMigrator
 {
     public OrganizationMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {

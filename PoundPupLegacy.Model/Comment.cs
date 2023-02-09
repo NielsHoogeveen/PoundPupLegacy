@@ -6,11 +6,11 @@ public sealed record Comment : Identifiable
 
     public required int NodeId { get; init; }
 
-    public required int? CommentIdParent { get; init;}
+    public required int? CommentIdParent { get; init; }
 
     public required int PublisherId { get; init; }
 
-    public required int NodeStatusId { get; init;}
+    public required int NodeStatusId { get; init; }
 
     public required DateTime CreatedDateTime { get; init; }
 

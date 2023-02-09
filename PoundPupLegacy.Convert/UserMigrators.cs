@@ -91,7 +91,7 @@ internal sealed class UserMigrator : PPLMigrator
             Id = Constants.OWNER_GEOGRAPHY,
             Name = "Geographical Entities",
             Description = "",
-            AdministratorRole = new AdministratorRole { Id = 29, UserGroupId = null}
+            AdministratorRole = new AdministratorRole { Id = 29, UserGroupId = null }
         };
         yield return new ContentSharingGroup
         {
@@ -376,7 +376,7 @@ internal sealed class UserMigrator : PPLMigrator
         await UserGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! }), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 12, UserId = (int)x.Id! }), _postgresConnection);
-        await UserGroupUserRoleUserCreator.CreateAsync(new List<int> { 137,136,135,134,131,2,1}.Select(x => new UserGroupUserRoleUser { UserGroupId = 6, UserRoleId = 16, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
+        await UserGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = 6, UserRoleId = 16, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
 
         await AccessRolePrivilegeCreator.CreateAsync(GetAccessRolePrivileges(), _postgresConnection);
     }

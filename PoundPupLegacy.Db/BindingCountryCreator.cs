@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -26,7 +25,7 @@ public class BindingCountryCreator : IEntityCreator<BindingCountry>
         await foreach (var country in countries)
         {
             await nodeWriter.WriteAsync(country);
-            await searchableWriter.WriteAsync(country); 
+            await searchableWriter.WriteAsync(country);
             await documentableWriter.WriteAsync(country);
             await nameableWriter.WriteAsync(country);
             await geographicalEntityWriter.WriteAsync(country);

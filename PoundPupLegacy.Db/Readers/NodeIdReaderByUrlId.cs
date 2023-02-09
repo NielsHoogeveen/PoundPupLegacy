@@ -27,7 +27,7 @@ public sealed class NodeIdReaderByUrlId : DatabaseUpdater<Term>, IDatabaseReader
 
     public async Task<int> ReadAsync(int tenantId, int urlId)
     {
-        
+
         _command.Parameters["tenant_id"].Value = tenantId;
         _command.Parameters["url_id"].Value = urlId;
 

@@ -4,12 +4,12 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchNodeService: IFetchNodeService
+internal class FetchNodeService : IFetchNodeService
 {
     private readonly NpgsqlConnection _connection;
     private readonly ISiteDataService _siteDateService;
     public FetchNodeService(
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         ISiteDataService siteDataService)
     {
         _connection = connection;
@@ -84,7 +84,7 @@ internal class FetchNodeService: IFetchNodeService
                 41 => reader.GetFieldValue<BasicNameable>(1),
                 _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
             };
-            
+
             return node!;
         }
         finally

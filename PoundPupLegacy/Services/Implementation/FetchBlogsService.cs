@@ -5,7 +5,7 @@ using System.Data;
 namespace PoundPupLegacy.Services.Implementation;
 
 
-internal class FetchBlogsService: IFetchBlogsService
+internal class FetchBlogsService : IFetchBlogsService
 {
     private readonly NpgsqlConnection _connection;
     private readonly ISiteDataService _siteDataService;
@@ -61,7 +61,7 @@ internal class FetchBlogsService: IFetchBlogsService
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);
-            
+
             return blogs!;
         }
         finally

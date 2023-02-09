@@ -36,7 +36,7 @@ internal sealed class BasicActionWriter : DatabaseWriter<BasicAction>, IDatabase
 
     internal override async Task WriteAsync(BasicAction actionAccessPrivilege)
     {
-        if(!actionAccessPrivilege.Id.HasValue)
+        if (!actionAccessPrivilege.Id.HasValue)
         {
             throw new NullReferenceException();
         }

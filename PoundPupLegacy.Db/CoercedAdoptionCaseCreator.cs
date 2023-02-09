@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Db;
 
@@ -24,7 +23,7 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
         await foreach (var coercedAdoptionCase in coercedAdoptionCases)
         {
             await nodeWriter.WriteAsync(coercedAdoptionCase);
-            await searchableWriter.WriteAsync(coercedAdoptionCase); 
+            await searchableWriter.WriteAsync(coercedAdoptionCase);
             await documentableWriter.WriteAsync(coercedAdoptionCase);
             await locatableWriter.WriteAsync(coercedAdoptionCase);
             await nameableWriter.WriteAsync(coercedAdoptionCase);

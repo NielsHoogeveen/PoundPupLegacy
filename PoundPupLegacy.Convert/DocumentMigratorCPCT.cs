@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentMigratorCPCT: CPCTMigrator
+internal sealed class DocumentMigratorCPCT : CPCTMigrator
 {
     public DocumentMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -92,7 +92,7 @@ internal sealed class DocumentMigratorCPCT: CPCTMigrator
             var text = reader.GetString("text");
 
             var documentableIds = reader.IsDBNull("documentable_ids") ?
-                new List<int>():
+                new List<int>() :
                 reader
                 .GetString("documentable_ids")
                 .Split(',')
@@ -117,7 +117,7 @@ internal sealed class DocumentMigratorCPCT: CPCTMigrator
                     }
                 };
 
-            if(documentable.All(x => x.Item2 == 1) && !text.ToLower().Contains("arun dohle") && !text.ToLower().Contains("roelie post") && !text.ToLower().Contains("againstchildtrafficking.org"))
+            if (documentable.All(x => x.Item2 == 1) && !text.ToLower().Contains("arun dohle") && !text.ToLower().Contains("roelie post") && !text.ToLower().Contains("againstchildtrafficking.org"))
             {
                 tenantNodes.Add(new TenantNode
                 {

@@ -1,5 +1,5 @@
-﻿using PoundPupLegacy.Model;
-using PoundPupLegacy.Db;
+﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;
 
@@ -7,7 +7,7 @@ internal sealed class ActionMigrator : PPLMigrator
 {
     protected override string Name => "actions";
 
-    public ActionMigrator(MySqlToPostgresConverter converter): base(converter)
+    public ActionMigrator(MySqlToPostgresConverter converter) : base(converter)
     {
 
     }
@@ -19,9 +19,11 @@ internal sealed class ActionMigrator : PPLMigrator
         await EditNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id }), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<BasicAction> GetBasicActions() {
+    private async IAsyncEnumerable<BasicAction> GetBasicActions()
+    {
         await Task.CompletedTask;
-        yield return new BasicAction {
+        yield return new BasicAction
+        {
             Id = null,
             Path = "/articles",
             Description = "Show all articles"

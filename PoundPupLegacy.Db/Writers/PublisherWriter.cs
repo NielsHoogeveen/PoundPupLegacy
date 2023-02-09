@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 public class PublisherWriter : DatabaseWriter<Publisher>, IDatabaseWriter<Publisher>
 {
     private const string ID = "id";

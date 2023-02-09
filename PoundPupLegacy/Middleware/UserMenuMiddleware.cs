@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Services;
-using PoundPupLegacy.ViewModel;
 
 namespace PoundPupLegacy.Middleware;
 

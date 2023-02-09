@@ -1,5 +1,4 @@
-﻿using PoundPupLegacy.Model;
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 
 internal sealed class EditNodeActionWriter : DatabaseWriter<EditNodeAction>, IDatabaseWriter<EditNodeAction>
 {
@@ -32,7 +31,7 @@ internal sealed class EditNodeActionWriter : DatabaseWriter<EditNodeAction>, IDa
 
     internal override async Task WriteAsync(EditNodeAction editNodeAccessPrivilege)
     {
-        if(!editNodeAccessPrivilege.Id.HasValue)
+        if (!editNodeAccessPrivilege.Id.HasValue)
         {
             throw new NullReferenceException();
         }

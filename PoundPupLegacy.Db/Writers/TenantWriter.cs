@@ -29,7 +29,7 @@ internal sealed class TenantWriter : DatabaseWriter<Tenant>, IDatabaseWriter<Ten
                     Name = ACCESS_ROLE_ID_NOT_LOGGED_IN,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
-               
+
             }
         );
         return new TenantWriter(command);

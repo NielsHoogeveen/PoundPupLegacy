@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record Cases: PagedList
+public record Cases : PagedList
 {
     public CaseListEntry[] CaseListEntries { get; set; }
     public int NumberOfEntries { get; set; }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
 {
     private const string PUBLISHER_ID = "publisher_id";
@@ -55,7 +53,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
 
     internal override async Task WriteAsync(Node node)
     {
-        if(node.Id is not null)
+        if (node.Id is not null)
         {
             throw new Exception("Node id must be null upon creation");
         }

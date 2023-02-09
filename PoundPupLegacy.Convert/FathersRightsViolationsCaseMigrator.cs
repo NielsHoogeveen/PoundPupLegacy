@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class FathersRightsViolationsCaseMigrator: PPLMigrator
+internal sealed class FathersRightsViolationsCaseMigrator : PPLMigrator
 {
     public FathersRightsViolationsCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {

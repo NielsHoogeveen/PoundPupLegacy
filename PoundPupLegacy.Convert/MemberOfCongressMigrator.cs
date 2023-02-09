@@ -1,7 +1,6 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace PoundPupLegacy.Convert;
@@ -14,18 +13,18 @@ public record MemberOfCongress
     public Name name { get; set; }
     public Term[] terms { get; set; }
     public LeadershipRole[] leadership_roles { get; set; }
-    
+
 }
 
 public record Bio
 {
-     public DateTime? birthday { get; set; }
-     public string gender { get; set; }
+    public DateTime? birthday { get; set; }
+    public string gender { get; set; }
 }
 
 public record Id
 {
-  public string bioguide { get; set; }
+    public string bioguide { get; set; }
     public string thomas { get; set; }
     public string lis { get; set; }
     public int govtrack { get; set; }
@@ -120,7 +119,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
     private async IAsyncEnumerable<TempTerm> GetTerms()
     {
-        await foreach(var term in GetTerms(MemberType.Representative))
+        await foreach (var term in GetTerms(MemberType.Representative))
         {
             yield return term;
 
@@ -154,7 +153,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                 }
                 if (endPrevious is not null)
                 {
-                    if(term.start.Subtract(endPrevious.Value) < TimeSpan.FromDays(30))
+                    if (term.start.Subtract(endPrevious.Value) < TimeSpan.FromDays(30))
                     {
                         if (term.end <= DateTime.Parse("2023-01-03"))
                         {
@@ -180,16 +179,16 @@ internal class MemberOfCongressMigrator : PPLMigrator
                         endPrevious = term.end;
                     }
                 }
-                else if(term.end <= DateTime.Parse("2023-01-03"))
+                else if (term.end <= DateTime.Parse("2023-01-03"))
                 {
                     endPrevious = term.end;
                 }
 
             }
-            if(tempTerm is not null)
+            if (tempTerm is not null)
             {
                 tempTerm.EndDate = endPrevious;
-                yield return tempTerm; 
+                yield return tempTerm;
             }
         }
     }
@@ -245,7 +244,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             400585 => 39211,
             400604 => 39248,
             400516 => 39276,
-            400519  => 61293,
+            400519 => 61293,
             400074 => 38951,
             400236 => 38973,
             400428 => 39119,
@@ -298,7 +297,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             )
             """;
 
-        
+
 
         using (var readCommand = _postgresConnection.CreateCommand())
         {
@@ -366,7 +365,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                     updateCommand.Parameters["id"].Value = memberOfCongress.node_id;
                     await updateCommand.ExecuteNonQueryAsync();
                 }
-                else if(memberOfCongress.terms.Any(x => x.end > DateTime.Parse("1999-03-01")))
+                else if (memberOfCongress.terms.Any(x => x.end > DateTime.Parse("1999-03-01")))
                 {
                     yield return new Person
                     {
@@ -374,7 +373,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                         PublisherId = 2,
                         CreatedDateTime = DateTime.Now,
                         ChangedDateTime = DateTime.Now,
-                        Title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " "): memberOfCongress.name.official_full,
+                        Title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full,
                         OwnerId = Constants.OWNER_PARTIES,
                         TenantNodes = new List<TenantNode>
                         {
@@ -408,13 +407,13 @@ internal class MemberOfCongressMigrator : PPLMigrator
         }
     }
 
-    private async IAsyncEnumerable<MemberOfCongress> GetMembersOfCongress() 
+    private async IAsyncEnumerable<MemberOfCongress> GetMembersOfCongress()
     {
 
 
         string fileName = @"..\..\..\files\legislators-current.json";
         var jsonUtf8Bytes = await System.IO.File.ReadAllBytesAsync(fileName);
-        foreach(var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes)!)
+        foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes)!)
         {
             yield return member;
         }
@@ -425,5 +424,5 @@ internal class MemberOfCongressMigrator : PPLMigrator
             yield return member;
         }
     }
-    
+
 }

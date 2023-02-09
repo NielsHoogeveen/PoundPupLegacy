@@ -17,8 +17,8 @@ public class OrganizationsController : Controller
     private readonly ISiteDataService _siteDataService;
 
     public OrganizationsController(
-        ILogger<OrganizationsController> logger, 
-        IFetchOrganizationsService fetchOrganizationsService, 
+        ILogger<OrganizationsController> logger,
+        IFetchOrganizationsService fetchOrganizationsService,
         ISiteDataService siteDataService)
     {
         _fetchOrganizationsService = fetchOrganizationsService;
@@ -41,7 +41,7 @@ public class OrganizationsController : Controller
 
     public string GetSearchTerm(string? term)
     {
-        if(term is null)
+        if (term is null)
         {
             return "";
         }
@@ -50,11 +50,11 @@ public class OrganizationsController : Controller
 
     public int? GetCountryId(string? country)
     {
-        if(country is null)
+        if (country is null)
         {
             return null;
         }
-        if(int.TryParse(country, out var countryId))
+        if (int.TryParse(country, out var countryId))
         {
             return countryId;
         }
@@ -104,9 +104,9 @@ public class OrganizationsController : Controller
         organizations.PageNumber = pageNumber;
         organizations.NumberOfPages = (organizations.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         organizations.QueryString = $"&search={searchTerm}";
-        foreach(var country in organizations.Countries)
+        foreach (var country in organizations.Countries)
         {
-            if(country.Id == countryId)
+            if (country.Id == countryId)
             {
                 country.Selected = true;
                 continue;

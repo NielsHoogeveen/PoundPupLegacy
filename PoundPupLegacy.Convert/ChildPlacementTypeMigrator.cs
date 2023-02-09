@@ -4,10 +4,10 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class ChildPlacementTypeMigrator: PPLMigrator
+internal sealed class ChildPlacementTypeMigrator : PPLMigrator
 {
 
-    public ChildPlacementTypeMigrator(MySqlToPostgresConverter converter): base(converter)
+    public ChildPlacementTypeMigrator(MySqlToPostgresConverter converter) : base(converter)
     {
 
     }
@@ -87,7 +87,7 @@ internal sealed class ChildPlacementTypeMigrator: PPLMigrator
             if (topicName != null)
             {
                 var parentNames = new List<string>();
-                if(parentTopicName != null)
+                if (parentTopicName != null)
                 {
                     parentNames.Add(parentTopicName);
                 }

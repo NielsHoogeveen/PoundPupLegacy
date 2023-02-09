@@ -5,9 +5,9 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class CountrySubdivisionTypeMigratorPartOne: CountrySubdivisionTypeMigrator
+internal sealed class CountrySubdivisionTypeMigratorPartOne : CountrySubdivisionTypeMigrator
 {
-    public CountrySubdivisionTypeMigratorPartOne(MySqlToPostgresConverter converter): base(converter) { }
+    public CountrySubdivisionTypeMigratorPartOne(MySqlToPostgresConverter converter) : base(converter) { }
 
     protected override string FileName => "country_subdivision_types_part1.csv";
 }
@@ -19,7 +19,7 @@ internal sealed class CountrySubdivisionTypeMigratorPartTwo : CountrySubdivision
 }
 internal sealed class CountrySubdivisionTypeMigratorPartThree : CountrySubdivisionTypeMigrator
 {
-public CountrySubdivisionTypeMigratorPartThree(MySqlToPostgresConverter converter) : base(converter) { }
+    public CountrySubdivisionTypeMigratorPartThree(MySqlToPostgresConverter converter) : base(converter) { }
 
     protected override string FileName => "country_subdivision_types_part3.csv";
 }
@@ -30,7 +30,7 @@ internal abstract class CountrySubdivisionTypeMigrator : PPLMigrator
     protected abstract string FileName { get; }
     protected override string Name => "basic second level subdivisions";
 
-    public CountrySubdivisionTypeMigrator(MySqlToPostgresConverter converter): base(converter) { } 
+    public CountrySubdivisionTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
 
     private async IAsyncEnumerable<CountrySubdivisionType> ReadCountrySubdivisionTypesCsv()
     {
@@ -46,7 +46,7 @@ internal abstract class CountrySubdivisionTypeMigrator : PPLMigrator
             var name = parts[1];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[0]));
             var subdivisionType = await termReader.ReadAsync(vocabularyId, name);
-            if(subdivisionType is null)
+            if (subdivisionType is null)
             {
                 Console.WriteLine(name);
             }

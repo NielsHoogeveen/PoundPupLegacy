@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonMigratorPPL: PPLMigrator
+internal sealed class PersonMigratorPPL : PPLMigrator
 {
     public PersonMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
@@ -200,7 +200,7 @@ internal sealed class PersonMigratorPPL: PPLMigrator
             var title = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
             var vocabularyNames = new List<VocabularyName>();
-            if(topicName is not null) 
+            if (topicName is not null)
             {
                 vocabularyNames.Add(
                 new VocabularyName

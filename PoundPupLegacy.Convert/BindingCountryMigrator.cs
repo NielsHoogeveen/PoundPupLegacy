@@ -59,8 +59,8 @@ internal sealed class BindingCountryMigrator : PPLMigrator
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL, 
-                        Name = Constants.VOCABULARY_TOPICS, 
+                        OwnerId = Constants.PPL,
+                        Name = Constants.VOCABULARY_TOPICS,
                         TermName = name,
                         ParentNames = new List<string>{ regionName},
                     }

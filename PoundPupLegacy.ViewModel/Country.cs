@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public interface Country: PoliticalEntity
+public interface Country : PoliticalEntity
 {
     public AdoptionImports AdoptionImports { get; set; }
 

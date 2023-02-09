@@ -25,7 +25,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
         await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
 
         var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
-        
+
 
         yield return new CountryAndFirstAndBottomLevelSubdivision
         {

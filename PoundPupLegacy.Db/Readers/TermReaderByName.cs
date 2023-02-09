@@ -27,7 +27,7 @@ public sealed class TermReaderByName : DatabaseUpdater<Term>, IDatabaseReader<Te
 
     public async Task<Term> ReadAsync(int vocabularyId, string name)
     {
-        if(name is null)
+        if (name is null)
         {
             throw new ArgumentNullException(nameof(name));
         }

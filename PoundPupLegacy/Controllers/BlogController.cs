@@ -17,7 +17,7 @@ public class BlogController : Controller
         _fetchBlogService = fetchBlogService;
     }
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetBlog (int id)
+    public async Task<IActionResult> GetBlog(int id)
     {
         var pageNumber = 1;
         var pageValue = HttpContext.Request.Query["page"];
