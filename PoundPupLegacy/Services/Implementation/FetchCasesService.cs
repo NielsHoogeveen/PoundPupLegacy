@@ -24,6 +24,7 @@ internal class FetchCasesService : IFetchCasesService
             CaseType.WrongfulRemoval => "join wrongful_removal_case ac on ac.id = n.id",
             CaseType.FathersRightsViolation => "join fathers_rights_violation_case ac on ac.id = n.id",
             CaseType.CoercedAdoption => "join coerced_adoption_case ac on ac.id = n.id",
+            CaseType.DisruptedPlacement => "join disrupted_placement_case ac on ac.id = n.id",
             CaseType.Any => ""
         };
     }

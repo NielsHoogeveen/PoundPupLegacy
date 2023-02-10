@@ -324,6 +324,11 @@ internal sealed class UserMigrator : PPLMigrator
         yield return new AccessRolePrivilege
         {
             AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/disrupted_placement_cases")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
             ActionId = await _actionReaderByPath.ReadAsync("/topics")
         };
         yield return new AccessRolePrivilege

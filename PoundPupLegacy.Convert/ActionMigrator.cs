@@ -109,6 +109,12 @@ internal sealed class ActionMigrator : PPLMigrator
         yield return new BasicAction
         {
             Id = null,
+            Path = "/disrupted_placement_cases",
+            Description = "Show all disrupted placement cases"
+        };
+        yield return new BasicAction
+        {
+            Id = null,
             Path = "/contact",
             Description = "Contact page"
         };

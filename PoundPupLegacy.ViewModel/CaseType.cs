@@ -8,5 +8,6 @@ public enum CaseType
     CoercedAdoption,
     FathersRightsViolation,
     Deportation,
+    DisruptedPlacement,
     Any
 }
