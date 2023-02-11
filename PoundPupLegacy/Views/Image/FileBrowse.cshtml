@@ -1,0 +1,19 @@
+﻿@using PoundPupLegacy.Views.Shared;
+@using PoundPupLegacy.Services;
+@inject ISiteDataService siteDataService
+@{
+    Layout = "";
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="/js/editor.js"></script>
+    <title>FileBrowse</title>
+</head>
+<body>
+    <div id="editor"></div>
+    <script>
+        Editor.setupEditor('#editor', '@Context.Request.Host');
+    </script>
+</body>
+</html>

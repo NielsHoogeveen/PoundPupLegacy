@@ -14,6 +14,8 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" asp-append-version="true" />
     @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
     {
+        <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
         <script src="_framework/blazor.server.js"></script>
     }
 </head>
@@ -61,6 +63,11 @@
     </div>
     <footer>
     </footer>
-
+    @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
+    {
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+        <script src="_content/Blazored.TextEditor/quill-blot-formatter.min.js"></script>
+        <script src="_content/Blazored.TextEditor/Blazored-BlazorQuill.js"></script>
+    }
 </body>
 </html>
