@@ -45,6 +45,7 @@ public class Program
         builder.Services.AddSingleton<ISiteDataService, SiteDataService>();
         builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
         builder.Services.AddSingleton<IEditorService, EditorService>();
+        builder.Services.AddSingleton<ITextService, TextService>();
         builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();

@@ -9,14 +9,17 @@ public class EditorService : IEditorService
     private readonly NpgsqlConnection _connection;
     private readonly ISiteDataService _siteDateService;
     private readonly INodeCacheService _nodeCacheService;
+    private readonly ITextService _textService;
     public EditorService(
     NpgsqlConnection connection,
     ISiteDataService siteDataService,
-    INodeCacheService nodeCacheService)
+    INodeCacheService nodeCacheService,
+    ITextService textService)
     {
         _connection = connection;
         _siteDateService = siteDataService;
         _nodeCacheService = nodeCacheService;
+        _textService = textService;
     }
     public async Task<BlogPost?> GetBlogPost(int id)
     {
@@ -69,7 +72,7 @@ public class EditorService : IEditorService
             var sql = $"""
             update node set title=@title
             where id = @id;
-            update simple_text_node set text=@text
+            update simple_text_node set text=@text, teaser=@teaser
             where id = @id;;
             """;
 
@@ -78,11 +81,13 @@ public class EditorService : IEditorService
             command.CommandTimeout = 300;
             command.CommandText = sql;
             command.Parameters.Add("text", NpgsqlTypes.NpgsqlDbType.Varchar);
+            command.Parameters.Add("teaser", NpgsqlTypes.NpgsqlDbType.Varchar);
             command.Parameters.Add("title", NpgsqlTypes.NpgsqlDbType.Varchar);
             command.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
             await command.PrepareAsync();
             command.Parameters["title"].Value = post.Title;
-            command.Parameters["text"].Value = post.Text;
+            command.Parameters["text"].Value = _textService.FormatText(post.Text);
+            command.Parameters["teaser"].Value = _textService.FormatTeaser(post.Text);
             command.Parameters["id"].Value = post.NodeId;
             var u = await command.ExecuteNonQueryAsync();
             _nodeCacheService.Remove(post.UrlId);

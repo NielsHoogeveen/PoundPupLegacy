@@ -4,6 +4,6 @@ namespace PoundPupLegacy.Services;
 
 public interface IFetchBlogService
 {
-    Task<Blog> FetchBlog(int accessRoleId, int startIndex, int length);
+    Task<Blog> FetchBlog(int publisherId, int startIndex, int length);
 }
 
