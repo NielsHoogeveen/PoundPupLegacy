@@ -106,7 +106,7 @@ window.CKEditorInterop = (() => {
 
     return {
         init(id, uploadImageUrl, dotNetReference) {
-            ClassicEditor
+             ClassicEditor
                 .create(document.getElementById(id), {
                     toolbar: {
                         items: [
@@ -127,7 +127,8 @@ window.CKEditorInterop = (() => {
                             'insertTable',
                             'removeFormat',
                             'undo',
-                            'redo'
+                            'redo',
+                            'sourceEditing'
                         ]
                     },
                     language: 'en',

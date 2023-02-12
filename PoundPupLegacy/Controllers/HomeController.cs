@@ -93,13 +93,11 @@ public class HomeController : Controller
             IsPersistent = true,
         };
 
-        var cp = new ClaimsPrincipal(claimsIdentity);
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             new ClaimsPrincipal(claimsIdentity),
             authProperties);
 
-        var u = HttpContext.User;
         return new RedirectResult(path);
     }
 

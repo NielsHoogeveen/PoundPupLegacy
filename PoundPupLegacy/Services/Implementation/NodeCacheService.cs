@@ -29,6 +29,12 @@ internal class NodeCacheService : INodeCacheService
     }
     private readonly ConcurrentDictionary<TenantNode, string> _nodeCache = new ConcurrentDictionary<TenantNode, string>();
 
+    public void Remove(int nodeId)
+    {
+        var tenantNode = new TenantNode { NodeId = nodeId, TenantId = _siteDataService.GetTenantId() };
+        _nodeCache.TryRemove(tenantNode, out _);
+    }
+
     public async Task<IActionResult> GetResult(int nodeId)
     {
         var tenantNode = new TenantNode { NodeId = nodeId, TenantId = _siteDataService.GetTenantId() };

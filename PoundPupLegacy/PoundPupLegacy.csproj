@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PoundPupLegacy.Db\PoundPupLegacy.Db.csproj" />
+    <ProjectReference Include="..\PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj" />
   </ItemGroup>
 

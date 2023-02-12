@@ -1,8 +1,10 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-internal class BlogPost
+public record BlogPost
 {
-    public required int Id { get; init; }
+    public required int NodeId { get; init; }
+
+    public required int UrlId { get; init; }
 
     public required string Title { get; set; }
 

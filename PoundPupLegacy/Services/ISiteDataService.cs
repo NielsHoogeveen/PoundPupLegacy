@@ -8,6 +8,7 @@ public interface ISiteDataService
     Task InitializeAsync();
     string? GetUrlPathForId(int tenantId, int urlId);
     bool HasAccess();
+    bool CanEdit(Node node);
     int GetTenantId();
     int? GetIdForUrlPath();
     IEnumerable<Link> GetMenuItemsForUser();

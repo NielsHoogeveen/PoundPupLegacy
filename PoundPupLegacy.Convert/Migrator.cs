@@ -132,13 +132,20 @@ internal abstract class Migrator
         {
             text = FormatText(text);
         }
+        else
+        {
+            text = text.Replace("/r", "").Replace("/n", "");
+        }
         var doc = new HtmlDocument();
         doc.LoadHtml(text);
         var elements = MakeParagraphs(doc).ToList();
         doc.DocumentNode.RemoveAllChildren();
         foreach (var element in elements)
         {
-            doc.DocumentNode.ChildNodes.Add(element);
+            if (!(element.Name == "p" && string.IsNullOrEmpty(element.InnerHtml.Trim())))
+            {
+                doc.DocumentNode.ChildNodes.Add(element);
+            }
         }
         return doc;
     }

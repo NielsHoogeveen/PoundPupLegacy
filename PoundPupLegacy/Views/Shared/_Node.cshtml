@@ -1,7 +1,9 @@
 ﻿@using PoundPupLegacy.ViewModel
 @using PoundPupLegacy.Views.Shared
+@using PoundPupLegacy.Services
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Node
+@inject ISiteDataService siteDataService
 @{
     var ModelClassName = Model.HasBeenPublished ? "node" : "node node-unpublished";
 
@@ -10,10 +12,10 @@
     <div class="article-with-comments @ModelClassName">
 
 
-        @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
+        @if (siteDataService.CanEdit(Model))
         {
             <style>
-                input {
+                input.tab-button {
                     display: none;
                 }
                     /* hide radio buttons */
@@ -31,7 +33,7 @@
                     display: block;
                 }
 
-                input + label { /* box with rounded corner */
+                input.tab-button + label { /* box with rounded corner */
                     border: 1px solid #999;
                     background: #EEE;
                     padding: 4px 12px;
@@ -40,19 +42,19 @@
                     top: 1px;
                 }
 
-                input:checked + label { /* white background for selected tab */
+                input.tab-button:checked + label { /* white background for selected tab */
                     background: #FFF;
                     border-bottom: 1px solid transparent;
                 }
 
-                input ~ .tab { /* grey line between tab and contents */
+                input.tab-button ~ .tab { /* grey line between tab and contents */
                     border-top: 1px solid #999;
                     padding: 12px;
                 }
             </style>
-            <input type="radio" name="tabs" id="tab1" checked />
+            <input class="tab-button" type="radio" name="tabs" id="tab1" checked />
             <label for="tab1">View</label>
-            <input type="radio" name="tabs" id="tab2" />
+            <input class="tab-button" type="radio" name="tabs" id="tab2" />
             <label for="tab2">Edit</label>
         }        <div class=" tab content1">
             <partial name="_BreadCrumElement" model="@Model.BreadCrumElements" />
@@ -96,7 +98,7 @@
                 </div>
             }
         </div>
-        @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
+        @if (siteDataService.CanEdit(Model))
         {
             <div class="tab content2">
                 @if (Model is BlogPost)

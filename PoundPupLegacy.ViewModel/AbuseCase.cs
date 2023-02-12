@@ -4,6 +4,7 @@ public record AbuseCase : Case
 {
     public string Description { get; set; }
     public int Id { get; set; }
+    public int NodeTypeId { get; set; }
     public string Title { get; set; }
     public Authoring Authoring { get; set; }
     public bool HasBeenPublished { get; set; }

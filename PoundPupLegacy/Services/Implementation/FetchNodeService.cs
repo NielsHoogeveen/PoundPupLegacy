@@ -63,7 +63,7 @@ internal class FetchNodeService : IFetchNodeService
             readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
             readCommand.Parameters["url_id"].Value = id;
-            readCommand.Parameters["tenant_id"].Value = 1;
+            readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
             readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId();
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
@@ -1107,6 +1107,7 @@ internal class FetchNodeService : IFetchNodeService
             SELECT 
                 json_build_object(
                 'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
@@ -1130,6 +1131,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                  SELECT
                     an.url_id, 
+                    an.node_type_id,
                     an.title, 
                     an.created_date_time, 
                     an.changed_date_time, 
@@ -1174,6 +1176,7 @@ internal class FetchNodeService : IFetchNodeService
             SELECT 
                 json_build_object(
                 'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
@@ -1201,6 +1204,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                  SELECT
                     an.url_id, 
+                    an.node_type_id,
                     an.title, 
                     an.created_date_time, 
                     an.changed_date_time, 
@@ -1226,6 +1230,7 @@ internal class FetchNodeService : IFetchNodeService
             SELECT 
                 json_build_object(
                 'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Text', n.text,
                 'HasBeenPublished', n.has_been_published,
@@ -1244,6 +1249,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                 SELECT
                     an.url_id, 
+                    an.node_type_id,
                     an.title, 
                     an.created_date_time, 
                     an.changed_date_time, 
@@ -1263,6 +1269,7 @@ internal class FetchNodeService : IFetchNodeService
             SELECT 
                 json_build_object(
                 'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Text', n.text,
                 'HasBeenPublished', n.has_been_published,
@@ -1281,6 +1288,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                 SELECT
                     an.url_id, 
+                    an.node_type_id,
                     an.title, 
                     an.created_date_time, 
                     an.changed_date_time, 
@@ -1300,6 +1308,7 @@ internal class FetchNodeService : IFetchNodeService
             SELECT 
                 json_build_object(
                     'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
@@ -1317,6 +1326,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                 SELECT
                     an.url_id, 
+                    an.node_type_id,
                     an.title, 
                     an.created_date_time, 
                     an.changed_date_time, 
@@ -1336,6 +1346,7 @@ internal class FetchNodeService : IFetchNodeService
             SELECT 
                 json_build_object(
                     'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
@@ -1357,6 +1368,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                 SELECT
                     an.url_id, 
+                    an.node_type_id,
                     an.title, 
                     an.created_date_time, 
                     an.changed_date_time, 
@@ -1376,6 +1388,7 @@ internal class FetchNodeService : IFetchNodeService
             SELECT 
                 json_build_object(
                     'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
@@ -1397,6 +1410,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                 SELECT
                     an.url_id, 
+                    an.node_type_id,
                     an.title, 
                     an.created_date_time, 
                     an.changed_date_time, 
