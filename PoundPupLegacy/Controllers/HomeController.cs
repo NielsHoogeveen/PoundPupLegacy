@@ -43,14 +43,14 @@ public class HomeController : Controller
         }
         stopwatch.Start();
 
-        var tenantId = _siteDataService.GetTenantId(HttpContext);
-        var urlId = _siteDataService.GetIdForUrlPath(HttpContext);
+        var tenantId = _siteDataService.GetTenantId();
+        var urlId = _siteDataService.GetIdForUrlPath();
         if (urlId is null)
         {
             return NotFound();
         }
         var id = urlId.Value;
-        var result = await _nodeCacheService.GetResult(HttpContext, id);
+        var result = await _nodeCacheService.GetResult(id);
         _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
         return result;
     }

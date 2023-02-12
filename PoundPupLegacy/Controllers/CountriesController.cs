@@ -23,13 +23,13 @@ public class CountriesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess(HttpContext))
+        if (!_siteDataService.HasAccess())
         {
             return NotFound();
         }
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        var firstLevelRegions = await _fetchCountriesService.FetchCountries(HttpContext);
+        var firstLevelRegions = await _fetchCountriesService.FetchCountries();
         _logger.LogInformation($"Fetched countries in {stopwatch.Elapsed.TotalMilliseconds} ms");
         return View("FirstLevelRegions", firstLevelRegions);
     }

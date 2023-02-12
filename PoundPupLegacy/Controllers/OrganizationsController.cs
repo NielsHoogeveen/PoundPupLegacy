@@ -76,7 +76,7 @@ public class OrganizationsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess(HttpContext))
+        if (!_siteDataService.HasAccess())
         {
             return NotFound();
         }
@@ -98,8 +98,8 @@ public class OrganizationsController : Controller
         int? countryId = GetCountryId(query["country"]);
         int? organizationTypeId = GetCountryId(query["organization_type"]);
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var userId = _siteDataService.GetUserId(HttpContext);
-        var tenantId = _siteDataService.GetTenantId(HttpContext);
+        var userId = _siteDataService.GetUserId();
+        var tenantId = _siteDataService.GetTenantId();
         var organizations = await _fetchOrganizationsService.FetchOrganizations(NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption, tenantId, userId);
         organizations.PageNumber = pageNumber;
         organizations.NumberOfPages = (organizations.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;

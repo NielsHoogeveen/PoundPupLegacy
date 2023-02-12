@@ -44,6 +44,7 @@ public class Program
         builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
         builder.Services.AddSingleton<ISiteDataService, SiteDataService>();
         builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
+        builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();
 

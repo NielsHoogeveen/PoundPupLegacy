@@ -16,7 +16,7 @@ internal class FetchBlogsService : IFetchBlogsService
         _siteDataService = siteDataService;
     }
 
-    public async Task<List<BlogListEntry>> FetchBlogs(HttpContext context)
+    public async Task<List<BlogListEntry>> FetchBlogs()
     {
         try
         {
@@ -57,7 +57,7 @@ internal class FetchBlogsService : IFetchBlogsService
             readCommand.CommandText = sql;
             readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId(context);
+            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);

@@ -8,16 +8,20 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal class RazorViewToStringService : IRazorViewToStringService
 {
-    private ITempDataProvider _tempDataProvider;
-    private IRazorViewEngine _viewEngine;
-    public RazorViewToStringService(IRazorViewEngine viewEngine, ITempDataProvider tempDataProvider)
+    private readonly ITempDataProvider _tempDataProvider;
+    private readonly IRazorViewEngine _viewEngine;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public RazorViewToStringService(IRazorViewEngine viewEngine, ITempDataProvider tempDataProvider, IHttpContextAccessor httpContextAccessor)
     {
         _tempDataProvider = tempDataProvider;
         _viewEngine = viewEngine;
+        _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<string> GetFromView<T>(string viewName, T model, HttpContext context)
+    public async Task<string> GetFromView<T>(string viewName, T model)
     {
 
+        var context = _httpContextAccessor.HttpContext!;
         var viewResult = _viewEngine.GetView("", viewName, false);
         if (viewResult.Success == false)
         {

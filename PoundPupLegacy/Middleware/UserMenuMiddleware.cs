@@ -13,9 +13,9 @@ public class UserMenuMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext, ISiteDataService userService, IRazorViewToStringService razorViewToStringService)
     {
-        var userMenu = userService.GetMenuItemsForUser(httpContext);
+        var userMenu = userService.GetMenuItemsForUser();
 
-        var userMenuHtml = await razorViewToStringService.GetFromView("/Views/Shared/_UserMenu.cshtml", userMenu, httpContext);
+        var userMenuHtml = await razorViewToStringService.GetFromView("/Views/Shared/_UserMenu.cshtml", userMenu);
         httpContext.Items.Remove("UserMenu");
         httpContext.Items.Add("UserMenu", userMenuHtml);
         await _next(httpContext);

@@ -1,4 +1,6 @@
 ﻿@using PoundPupLegacy.Services;
+@using Microsoft.AspNetCore.Components
+@using PoundPupLegacy.Views.Shared
 @inject ISiteDataService siteDataService
 @{
     ViewData["Title"] = "Home Page";
@@ -6,6 +8,6 @@
 <p>Welcome to Pound Pup Legacy</p>
 
 @{
-    Layout = siteDataService.GetLayout(Context);
+    Layout = siteDataService.GetLayout();
+ 
 }
-

@@ -43,7 +43,7 @@ public class ArticlesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess(HttpContext))
+        if (!_siteDataService.HasAccess())
         {
             return NotFound();
         }
@@ -60,7 +60,7 @@ public class ArticlesController : Controller
         }
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        var tenantId = _siteDataService.GetTenantId(HttpContext);
+        var tenantId = _siteDataService.GetTenantId();
         var termIds = query == null ? new List<int>() : GetTermIds(query.Keys).ToList();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
         var articles = termIds.Any() ? await _fetchArticlesService.GetArticles(termIds, startIndex, NUMBER_OF_ENTRIES, tenantId) : await _fetchArticlesService.GetArticles((pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES, tenantId);

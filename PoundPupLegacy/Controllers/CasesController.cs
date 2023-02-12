@@ -27,7 +27,7 @@ public class CasesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess(HttpContext))
+        if (!_siteDataService.HasAccess(    ))
         {
             return NotFound();
         }
@@ -45,8 +45,8 @@ public class CasesController : Controller
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var userId = _siteDataService.GetUserId(HttpContext);
-        var tenantId = _siteDataService.GetTenantId(HttpContext);
+        var userId = _siteDataService.GetUserId();
+        var tenantId = _siteDataService.GetTenantId();
         var cases = await _fetchCasesService.FetchCases(NUMBER_OF_ENTRIES, startIndex, tenantId, userId, ViewModel.CaseType.Any);
         cases.PageNumber = pageNumber;
         cases.NumberOfPages = (cases.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;

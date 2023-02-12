@@ -15,11 +15,11 @@ public class BlogsController : Controller
     }
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess(HttpContext))
+        if (!_siteDataService.HasAccess())
         {
             return NotFound();
         }
-        var model = await _fetchBlogsService.FetchBlogs(HttpContext);
+        var model = await _fetchBlogsService.FetchBlogs();
         return View("Blogs", model);
     }
 }

@@ -16,7 +16,7 @@ internal class FetchNodeService : IFetchNodeService
         _siteDateService = siteDataService;
     }
 
-    public async Task<Node?> FetchNode(int id, HttpContext context)
+    public async Task<Node?> FetchNode(int id)
     {
         try
         {
@@ -64,7 +64,7 @@ internal class FetchNodeService : IFetchNodeService
             await readCommand.PrepareAsync();
             readCommand.Parameters["url_id"].Value = id;
             readCommand.Parameters["tenant_id"].Value = 1;
-            readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId(context);
+            readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId();
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             if (!reader.HasRows)

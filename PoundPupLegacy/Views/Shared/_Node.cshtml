@@ -4,46 +4,106 @@
 @model Node
 @{
     var ModelClassName = Model.HasBeenPublished ? "node" : "node node-unpublished";
+
+
+
     <div class="article-with-comments @ModelClassName">
 
-        
-        <partial name="_BreadCrumElement" model="@Model.BreadCrumElements" />
-        @if (!Model.HasBeenPublished)
+
+        @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
         {
-            <div class="watermark">Unpublished</div>
-        }
-        <article>
-            <div class="title">
-                <h1>@Model.Title</h1>
-            </div>
-            @if (Model is SimpleTextNode simpleTextNode)
+            <style>
+                input {
+                    display: none;
+                }
+                    /* hide radio buttons */
+                    input + label {
+                        display: inline-block
+                    }
+                    /* show labels in line */
+                    input ~ .tab {
+                        display: none
+                    }
+                /* hide contents */
+                /* show contents only for selected tab */
+                #tab1:checked ~ .tab.content1,
+                #tab2:checked ~ .tab.content2 {
+                    display: block;
+                }
+
+                input + label { /* box with rounded corner */
+                    border: 1px solid #999;
+                    background: #EEE;
+                    padding: 4px 12px;
+                    border-radius: 4px 4px 0 0;
+                    position: relative;
+                    top: 1px;
+                }
+
+                input:checked + label { /* white background for selected tab */
+                    background: #FFF;
+                    border-bottom: 1px solid transparent;
+                }
+
+                input ~ .tab { /* grey line between tab and contents */
+                    border-top: 1px solid #999;
+                    padding: 12px;
+                }
+            </style>
+            <input type="radio" name="tabs" id="tab1" checked />
+            <label for="tab1">View</label>
+            <input type="radio" name="tabs" id="tab2" />
+            <label for="tab2">Edit</label>
+        }        <div class=" tab content1">
+            <partial name="_BreadCrumElement" model="@Model.BreadCrumElements" />
+            @if (!Model.HasBeenPublished)
             {
-                <partial name="~/Views/Shared/_Authoring.cshtml" model="@Model.Authoring" />
-                <partial name="_SimpleTextNode" model="@simpleTextNode" />
+                <div class="watermark">Unpublished</div>
             }
-            @if(Model is Country country)
-            {
-                <partial name="_Country" model="@country" />
-            }
-            @if (Model is Organization organization)
-            {
-                <partial name="_Organization" model="@organization" />
-            }
-            @if (Model is BasicNameable basicNameable)
-            {
-                <partial name="_BasicNameable" model="@basicNameable" />
-            }
-            @if (Model is AbuseCase abuseCase)
-            {
-                <partial name="_AbuseCase" model="@abuseCase" />
-            }
-        </article>
-        @if (Model.Tags is not null)
-        {
-            <div class="tags">
-                @foreach (var tag in @Model.Tags)
+            <article>
+                <div class="title">
+                    <h1>@Model.Title</h1>
+                </div>
+                @if (Model is SimpleTextNode simpleTextNode)
                 {
-                    <span class="tag"><a href="@tag.Path">@tag.Name</a></span>
+                    <partial name="~/Views/Shared/_Authoring.cshtml" model="@Model.Authoring" />
+                    <partial name="_SimpleTextNode" model="@simpleTextNode" />
+                }
+                @if(Model is Country country)
+                {
+                    <partial name="_Country" model="@country" />
+                }
+                @if (Model is Organization organization)
+                {
+                    <partial name="_Organization" model="@organization" />
+                }
+                @if (Model is BasicNameable basicNameable)
+                {
+                    <partial name="_BasicNameable" model="@basicNameable" />
+                }
+                @if (Model is AbuseCase abuseCase)
+                {
+                    <partial name="_AbuseCase" model="@abuseCase" />
+                }
+            </article>
+            @if (Model.Tags is not null)
+            {
+                <div class="tags">
+                    @foreach (var tag in @Model.Tags)
+                    {
+                        <span class="tag"><a href="@tag.Path">@tag.Name</a></span>
+                    }
+                </div>
+            }
+        </div>
+        @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated)
+        {
+            <div class="tab content2">
+                @if (Model is BlogPost)
+                {
+                    <component type="typeof(BlogEditor)"
+                   render-mode="ServerPrerendered" param-Id="@Model.Id" />
+
                 }
             </div>
         }
@@ -51,6 +111,8 @@
         {
             <partial name="_Comments" model="@Model.Comments" />
         }
+        
     </div>
+
 }
 

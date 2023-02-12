@@ -17,7 +17,7 @@
                     <div class="term-name">
                         @if (termName.Selected)
                         {
-                            <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="on"/>
+                            <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="checked"/>
                         }
                         else
                         {
@@ -75,5 +75,5 @@
     </script>
 }
 @{
-    Layout = siteDataService.GetLayout(Context);
+    Layout = siteDataService.GetLayout();
 }

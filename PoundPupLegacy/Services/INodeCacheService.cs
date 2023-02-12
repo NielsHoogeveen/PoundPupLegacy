@@ -4,5 +4,5 @@ namespace PoundPupLegacy.Services;
 
 public interface INodeCacheService
 {
-    public Task<IActionResult> GetResult(HttpContext context, int nodeId);
+    public Task<IActionResult> GetResult(int nodeId);
 }

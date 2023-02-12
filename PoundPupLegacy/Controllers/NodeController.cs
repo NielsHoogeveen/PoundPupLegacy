@@ -26,13 +26,13 @@ public class NodeController : Controller
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        var tenantId = _siteDataService.GetTenantId(HttpContext);
+        var tenantId = _siteDataService.GetTenantId();
         var urlPath = _siteDataService.GetUrlPathForId(tenantId, id);
         if (urlPath is not null)
         {
             return Redirect($"/{urlPath}");
         }
-        var result = await _nodeCacheService.GetResult(HttpContext, id);
+        var result = await _nodeCacheService.GetResult(id);
         _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
         return result;
     }

@@ -35,16 +35,18 @@ internal class SiteDataService : ISiteDataService
 
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<SiteDataService> _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SiteDataService(NpgsqlConnection connection, ILogger<SiteDataService> logger)
+    public SiteDataService(NpgsqlConnection connection, ILogger<SiteDataService> logger, IHttpContextAccessor httpContextAccessor)
     {
         _connection = connection;
         _logger = logger;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public int GetUserId(HttpContext context)
+    public int GetUserId()
     {
-        var cp = context.User;
+        var cp = _httpContextAccessor.HttpContext!.User;
         if (cp == null)
         {
             return 0;
@@ -90,20 +92,22 @@ internal class SiteDataService : ISiteDataService
         return null;
     }
 
-    public bool HasAccess(HttpContext context)
+    public bool HasAccess()
     {
+        var context = _httpContextAccessor.HttpContext!;
         return _data.UserTenantActions.Contains(
             new UserTenantAction
             {
-                UserId = GetUserId(context),
-                TenantId = GetTenantId(context),
+                UserId = GetUserId(),
+                TenantId = GetTenantId(),
                 Action = context.Request.Path
             }
         );
     }
 
-    public int GetTenantId(HttpContext context)
+    public int GetTenantId()
     {
+        var context = _httpContextAccessor.HttpContext!;
         var domainName = context.Request.Host.Value;
         if (domainName == "localhost:7141")
         {
@@ -117,10 +121,11 @@ internal class SiteDataService : ISiteDataService
         return 1;
     }
 
-    public int? GetIdForUrlPath(HttpContext context)
+    public int? GetIdForUrlPath()
     {
 
-        var tenantId = GetTenantId(context);
+        var context = _httpContextAccessor.HttpContext!;
+        var tenantId = GetTenantId();
         var urlPath = context.Request.Path.Value!.Substring(1);
         var tenant = _data.Tenants.Find(x => x.Id == tenantId);
         if (tenant is null)
@@ -392,9 +397,10 @@ internal class SiteDataService : ISiteDataService
         }
     }
 
-    public IEnumerable<Link> GetMenuItemsForUser(HttpContext context)
+    public IEnumerable<Link> GetMenuItemsForUser()
     {
-        if (_data.UserMenus.TryGetValue((GetUserId(context), GetTenantId(context)), out var lst))
+        var context = _httpContextAccessor.HttpContext!;
+        if (_data.UserMenus.TryGetValue((GetUserId(), GetTenantId()), out var lst))
         {
             return lst;
         }
@@ -404,10 +410,10 @@ internal class SiteDataService : ISiteDataService
         }
     }
 
-    public string GetLayout(HttpContext context)
+    public string GetLayout()
     {
-        var tenantId = GetTenantId(context);
-        var signedIn = GetUserId(context) != 0;
+        var tenantId = GetTenantId();
+        var signedIn = GetUserId() != 0;
 
         return (tenantId, signedIn) switch
         {

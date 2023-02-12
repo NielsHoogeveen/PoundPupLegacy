@@ -2,6 +2,6 @@
 
 public interface IRazorViewToStringService
 {
-    public Task<string> GetFromView<T>(string viewName, T model, HttpContext context);
+    public Task<string> GetFromView<T>(string viewName, T model);
 }
 

@@ -29,12 +29,12 @@ internal class NodeCacheService : INodeCacheService
     }
     private readonly ConcurrentDictionary<TenantNode, string> _nodeCache = new ConcurrentDictionary<TenantNode, string>();
 
-    public async Task<IActionResult> GetResult(HttpContext context, int nodeId)
+    public async Task<IActionResult> GetResult(int nodeId)
     {
-        var tenantNode = new TenantNode { NodeId = nodeId, TenantId = _siteDataService.GetTenantId(context) };
+        var tenantNode = new TenantNode { NodeId = nodeId, TenantId = _siteDataService.GetTenantId() };
         if (_configuration["NodeCaching"] != "on")
         {
-            return await AssembleNewResponse(context, nodeId, tenantNode, false);
+            return await AssembleNewResponse(nodeId, tenantNode, false);
         }
         if (_nodeCache.TryGetValue(tenantNode, out var html))
         {
@@ -46,24 +46,24 @@ internal class NodeCacheService : INodeCacheService
         }
         else
         {
-            return await AssembleNewResponse(context, nodeId, tenantNode, true);
+            return await AssembleNewResponse(nodeId, tenantNode, true);
         }
     }
 
-    private async Task<string?> GetNodeString(HttpContext context, int id)
+    private async Task<string?> GetNodeString(int id)
     {
-        var node = await _fetchNodeService.FetchNode(id, context);
+        var node = await _fetchNodeService.FetchNode(id);
         if (node == null)
         {
             return null;
         }
-        var html = await _razorViewToStringService.GetFromView("/Views/Shared/Node.cshtml", node, context);
+        var html = await _razorViewToStringService.GetFromView("/Views/Shared/Node.cshtml", node);
         return html;
     }
 
-    private async Task<IActionResult> AssembleNewResponse(HttpContext context, int nodeId, TenantNode tenantNode, bool storeInDictionary)
+    private async Task<IActionResult> AssembleNewResponse(int nodeId, TenantNode tenantNode, bool storeInDictionary)
     {
-        var nodeString = await GetNodeString(context, nodeId);
+        var nodeString = await GetNodeString(nodeId);
         if (nodeString != null)
         {
             if (storeInDictionary)

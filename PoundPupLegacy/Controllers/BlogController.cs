@@ -30,7 +30,7 @@ public class BlogController : Controller
         }
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        var blog = await _fetchBlogService.FetchBlog(HttpContext, id, (pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES);
+        var blog = await _fetchBlogService.FetchBlog(id, (pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES);
         blog.Id = id;
         blog.PageNumber = pageNumber;
         blog.NumberOfPages = (blog.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;

@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Components\" />
+    <Folder Include="Scripts\" />
     <Folder Include="Views\Node\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>

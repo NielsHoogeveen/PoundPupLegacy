@@ -17,7 +17,7 @@ internal class FetchBlogService : IFetchBlogService
         _renderer = renderer;
     }
 
-    public async Task<Blog> FetchBlog(HttpContext context, int accessRoleId, int startIndex, int length)
+    public async Task<Blog> FetchBlog(int accessRoleId, int startIndex, int length)
     {
         try
         {
@@ -53,7 +53,7 @@ internal class FetchBlogService : IFetchBlogService
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             var blog = reader.GetFieldValue<Blog>(0);
-            var c = _renderer.GetFromView("/Pages/_ExcecutiveCompensations.cshtml", new List<ExecutiveCompensation>(), context);
+            var c = _renderer.GetFromView("/Pages/_ExcecutiveCompensations.cshtml", new List<ExecutiveCompensation>());
             var entries = blog.BlogPostTeasers.Select(x => new BlogPostTeaser
             {
                 Id = x.Id,

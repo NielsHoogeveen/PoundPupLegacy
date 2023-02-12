@@ -1,0 +1,29 @@
+﻿@using PoundPupLegacy.ViewModel;
+@inject IHttpContextAccessor httpContextAccessor;
+
+<h3>BlogEditor</h3>
+
+@{
+    var url = $"https://{httpContextAccessor.HttpContext!.Request.Host.Value}/image/upload";
+}
+
+@if (editorOptions is not null)
+{
+    <CKEditor Id="#editor"
+          @bind-Value=@editorOptions.InitialText
+    UrlToPostImage=@url>
+    </CKEditor>
+}
+@code {
+    EditorOptions? editorOptions;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.CompletedTask;
+        editorOptions = new EditorOptions();
+        editorOptions.InitialText = "";
+    }
+}

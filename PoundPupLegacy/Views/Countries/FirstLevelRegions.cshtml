@@ -18,43 +18,49 @@
             </li>
             @if (entry.Regions is not null)
             {
-                <ul>
+                <li>
+                    <ul>
 
-                    @foreach (var region in entry.Regions)
-                    {
-                        <li>
-                            <a href="@region.Path">@region.Name</a>
-                        </li>
-                        @if (region.Countries is not null)
+                        @foreach (var region in entry.Regions)
                         {
-                            <ul>
-                                @foreach (var country in region.Countries)
-                                {
-                                    <li>
-                                        <a href="@country.Path">@country.Name</a>
-                                    </li>
-                                }
-                            </ul>
+                            <li>
+                                <a href="@region.Path">@region.Name</a>
+                            </li>
+                            @if (region.Countries is not null)
+                            {
+                                <li>
+                                    <ul>
+                                        @foreach (var country in region.Countries)
+                                        {
+                                            <li>
+                                                <a href="@country.Path">@country.Name</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                 </li>
+                            }
                         }
-                    }
-                </ul>
+                    </ul>
+                </li>
             }
             @if (entry.Countries is not null)
             {
-                <ul>
+                <li>
+                    <ul>
 
-                    @foreach (var country in entry.Countries)
-                    {
-                        <li>
-                            <a href="@country.Path">@country.Name</a>
-                        </li>
-                    }
-                </ul>
+                        @foreach (var country in entry.Countries)
+                        {
+                            <li>
+                                <a href="@country.Path">@country.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </li>
             }
         </ul>
     }
     </article>
 </div>
 @{
-    Layout = siteDataService.GetLayout(Context);
+    Layout = siteDataService.GetLayout();
 }

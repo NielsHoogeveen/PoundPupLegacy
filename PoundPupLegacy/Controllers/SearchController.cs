@@ -27,7 +27,7 @@ public class SearchController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess(HttpContext))
+        if (!_siteDataService.HasAccess())
         {
             return NotFound();
         }
@@ -46,9 +46,9 @@ public class SearchController : Controller
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var userId = _siteDataService.GetUserId(HttpContext);
-        var tenantId = _siteDataService.GetTenantId(HttpContext);
-        var search = await _fetchSearchService.FetchSearch(NUMBER_OF_ENTRIES, startIndex, tenantId, userId, searchValue);
+        var userId = _siteDataService.GetUserId();
+        var tenantId = _siteDataService.GetTenantId();
+        var search = await _fetchSearchService.FetchSearch(NUMBER_OF_ENTRIES, startIndex, tenantId, userId, searchValue!);
         search.PageNumber = pageNumber;
         search.NumberOfPages = (search.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         _logger.LogInformation($"Fetched search in {stopwatch.Elapsed.TotalMilliseconds} ms");

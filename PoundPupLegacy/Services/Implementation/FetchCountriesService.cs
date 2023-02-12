@@ -16,7 +16,7 @@ internal class FetchCountriesService : IFetchCountriesService
     }
 
 
-    public async Task<FirstLevelRegionListEntry[]> FetchCountries(HttpContext context)
+    public async Task<FirstLevelRegionListEntry[]> FetchCountries()
     {
         try
         {
@@ -122,7 +122,7 @@ internal class FetchCountriesService : IFetchCountriesService
             readCommand.CommandText = sql;
             readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId(context);
+            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
             await using var reader = await readCommand.ExecuteReaderAsync();
             if (reader.HasRows)
             {
