@@ -260,8 +260,10 @@ internal class FetchArticlesService : IFetchArticlesService
 
     public async Task<Articles> GetArticles(int startIndex, int length, int tenantId)
     {
-        _connection.Open();
-        var sql = $"""
+        try
+        {
+            await _connection.OpenAsync();
+            var sql = $"""
             WITH
             {FETCH_TERMS},
             {FETCH_ARTICLES},
@@ -276,21 +278,26 @@ internal class FetchArticlesService : IFetchArticlesService
             	) ta
             """;
 
-        using var readCommand = _connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sql;
-        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("length", NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
-        await readCommand.PrepareAsync();
-        readCommand.Parameters["tenant_id"].Value = tenantId;
-        readCommand.Parameters["length"].Value = length;
-        readCommand.Parameters["start_index"].Value = startIndex;
-        await using var reader = await readCommand.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var articles = reader.GetFieldValue<Articles>(0);
-        _connection.Close();
-        return articles;
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("length", NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["length"].Value = length;
+            readCommand.Parameters["start_index"].Value = startIndex;
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            var articles = reader.GetFieldValue<Articles>(0);
+            
+            return articles;
+        }
+        finally
+        {
+            await _connection.CloseAsync();
+        }
     }
 }

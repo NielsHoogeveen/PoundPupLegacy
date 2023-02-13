@@ -27,7 +27,8 @@ public class Program
         //{
         //    options.EnableForHttps = true;
         //});
-        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        builder.Services.AddSingleton<ISiteDataService, SiteDataService>();
+        builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
@@ -42,10 +43,9 @@ public class Program
         builder.Services.AddTransient<IFetchSearchService, FetchSearchService>();
         builder.Services.AddTransient<IRazorViewToStringService, RazorViewToStringService>();
         builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
-        builder.Services.AddSingleton<ISiteDataService, SiteDataService>();
-        builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
-        builder.Services.AddSingleton<IEditorService, EditorService>();
-        builder.Services.AddSingleton<ITextService, TextService>();
+        builder.Services.AddTransient<IEditorService, EditorService>();
+        builder.Services.AddTransient<ITextService, TextService>();
+        builder.Services.AddTransient<ITopicSearchService, TopicSearchService>();
         builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();

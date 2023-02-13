@@ -88,7 +88,7 @@
                     <partial name="_AbuseCase" model="@abuseCase" />
                 }
             </article>
-            @if (Model.Tags is not null)
+            @if (Model.Tags.Any())
             {
                 <div class="tags">
                     @foreach (var tag in @Model.Tags)
@@ -109,7 +109,7 @@
                 }
             </div>
         }
-        @if (@Model.Comments is not null)
+        @if (@Model.Comments.Any())
         {
             <partial name="_Comments" model="@Model.Comments" />
         }

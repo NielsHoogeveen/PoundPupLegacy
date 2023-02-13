@@ -2,7 +2,7 @@
 
 public interface SimpleTextNode : Node
 {
-    public string Text { get; set; }
-    public Link[] SeeAlsoBoxElements { get; set; }
+    public string Text { get; }
+    public Link[] SeeAlsoBoxElements { get; }
 
 }
