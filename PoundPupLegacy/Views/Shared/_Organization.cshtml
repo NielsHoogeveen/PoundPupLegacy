@@ -13,11 +13,33 @@
 <div>
     @Model.EmailAddress
 </div>
+<partial name="_PersonOrganizationRelations" model="@Model.PersonOrganizationRelations" />
+<partial name="_InterOrganizationalRelations" model="@Model.InterOrganizationalRelations" />
 
-@if (Model.InterOrganizationalRelations is not null)
+@if (Model.PartyCaseTypes.Any())
 {
-    <partial name="_InterOrganizationalRelations" model="@Model.InterOrganizationalRelations" />
+    <div class="cases">
+        @foreach (var partyCaseType in Model.PartyCaseTypes)
+        {
+            <h3>
+                @partyCaseType.CaseTypeName
+            </h3>
+            <ul>
+                @foreach (var partyCase in partyCaseType.PartyCases)
+                {
+                    <h4>@partyCase.CasePartyTypeName</h4>
+                    @foreach (var @cace in partyCase.Cases)
+                    {
+                        <li><a href="@cace.Path">@cace.Name</a></li>
+                    }
+                }
+            </ul>
+        }
+    </div>
 }
+
+
+
 @if (Model.Documents is not null)
 {
     <partial name="_Documents" model="@Model.Documents" />

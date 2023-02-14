@@ -1,5 +1,6 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
+using System;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
@@ -20,7 +21,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
 
     private async IAsyncEnumerable<Organization> ReadOrganizations()
     {
-
+            
         var sql = $"""
             SELECT
                 n.nid id,
@@ -175,6 +176,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var miscellaneous = await _nodeIdReader.ReadAsync(Constants.PPL, 12634);
 
         while (await reader.ReadAsync())
         {
@@ -209,7 +211,8 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
                         UrlId = id
                     }
             };
-            if (!organizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(12634))
+            
+            if (!organizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(miscellaneous))
             {
                 tenantNodes.Add(new TenantNode
                 {

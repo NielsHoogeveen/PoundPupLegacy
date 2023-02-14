@@ -2,5 +2,5 @@
 
 public interface Documentable : Node
 {
-    public DocumentListItem[] Documents { get; set; }
+    public DocumentListItem[] Documents { get; }
 }

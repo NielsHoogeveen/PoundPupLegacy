@@ -1,10 +1,12 @@
 ﻿:root {
-    --header-bg-color: transparent;
-    --content-bg-color: rgba(255,255,255,0.2);
-    --nav-bg-color: transparent;
+    --header-bg-color: linear-gradient(180deg, #000 0%, #111 100%);
+    --content-bg-color: white;
+    --nav-bg-color: #ddd;
+    --nav-border-color: #808080;
     --footer-bg-color: #2c2c2c;
-    --breadcrum-bg-color: salmon;
+    --breadcrum-bg-color: #9aaddf;
     --term-bg-color: grey;
+    --watermark-color: #999;
 }
 
 html {
@@ -12,46 +14,56 @@ html {
 }
 
 body {
-    background: linear-gradient(90deg, #ced3e1 0%, #d9d3e4 100%);
+    background: white;
     height: 100%;
     width: 100%;
-    color: black;
+    color: #333;
     font-family: "Yanone Kaffeesatz", sans-serif;
     font-weight: 300;
     margin: 0;
     padding: 0;
 }
+header form {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
 header {
     background: var(--header-bg-color);
     margin: 0;
-    padding-bottom: 0.75em;
     user-select: none;
+    display:grid;
+    grid-template-columns: 10em auto;
 }
 
-header .logo{
-    margin-right: 3em;
+header .logo {
+    font-family: 'Raleway', sans-serif;
+    margin-left: 0.25em;
+    color: silver;
 }
 
 header .logo .acronym{
-    font-size: 450%;
-    font-weight: bold;
+    font-size: 150%;
+    font-weight: 400;
 }
 
 header .logo .full-name {
     font-size: 110%;
 }
-header .title {
+header .central-header {
     display: flex;
     justify-content: center;
+    vertical-align:middle;
 }
 
-header .subtitle {
-    text-align: center;
-    font-family: BhuTuka Expanded One;
-    font-size: 150%;
-    font-weight: bold;
-    margin-top: 1.5em;
-}
+    header .subtitle {
+        color: silver;
+        text-align: center;
+        font-family: BhuTuka Expanded One;
+        font-size: 120%;
+        font-weight: 900;
+        margin-top: 0.15em;
+        margin-right: 5em;
+    }
 
 footer {
     border-top: solid thin black;
@@ -78,8 +90,8 @@ footer h2 {
 }
 nav {
     background-color: var(--nav-bg-color);
-    border-top: solid thin black;
-    border-right: solid 1px black;
+    border-top: solid thin var(--nav-border-color);
+    border-right: solid 1px var(--nav-border-color);
     min-width: 10em;
 }
 nav ul {
@@ -92,7 +104,7 @@ nav ul a {
     text-decoration: none;
 }
 nav ul li {
-    border-bottom: solid 1px black;
+    border-bottom: solid 1px var(--nav-border-color);
     padding-left: 0.25em;
     padding-top: 0.25em;
     padding-bottom: 0.25em;
@@ -171,7 +183,7 @@ article {
     color: black;
 }
 article h1, .blog-list h1 {
-    color: black;
+    color: #444;
 }
 article .author{
     margin-bottom: 1em;
@@ -239,13 +251,13 @@ article .text{
 }
 
 .comment-unpublished, .node-unpublished {
-    background-color: white;
+    background-color: red;
 }
 .watermark {
     height: 0;
     overflow: visible;
-    color: black;
-    font-size: 75px;
+    color: var(--watermark-color);
+    font-size: 4em;
     line-height: 1;
     font-family: Impact,"Arial Narrow",Helvetica,sans-serif;
     font-weight: bold;
@@ -255,12 +267,13 @@ article .text{
 }
 
 .breadcrum {
-    background-color: var(--breadcrum-bg-color);
+    background: var(--breadcrum-bg-color);
     color: black;
     margin: 0;
     padding-left: 0.5em;
-    padding-bottom: 0.5em;
-    padding-top: 0.5em;
+    padding-bottom: 0.25em;
+    padding-top: 0.25em;
+    border-bottom: solid 1px black;
 }
 
 .breadcrum a {

@@ -2,9 +2,9 @@
 
 public interface Nameable : Node
 {
-    string Description { get; set; }
+    string Description { get; }
 
-    Link[] SubTopics { get; set; }
-    Link[] SuperTopics { get; set; }
+    Link[] SubTopics { get; }
+    Link[] SuperTopics { get; }
 
 }

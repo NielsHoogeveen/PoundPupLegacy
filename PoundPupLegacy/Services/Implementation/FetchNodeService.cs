@@ -26,8 +26,10 @@ internal class FetchNodeService : IFetchNodeService
             {AUTHENTICATED_NODE},
             {SEE_ALSO_DOCUMENT},
             {LOCATIONS_DOCUMENT},
+            {PARTY_CASES_DOCUMENT},
             {INTER_ORGANIZATIONAL_RELATION_DOCUMENT},
             {ORGANIZATION_TYPES_DOCUMENT},
+            {PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {TAGS_DOCUMENT},
             {SUBTOPICS_DOCUMENT},
             {SUPERTOPICS_DOCUMENT},
@@ -168,6 +170,92 @@ internal class FetchNodeService : IFetchNodeService
                     WHERE tn.tenant_id = @tenant_id AND tn.url_id = @url_id
                 ) an
                 where an.status <> -1
+        )
+        """;
+
+    const string PARTY_CASES_DOCUMENT = """
+        party_cases_document as (
+            select
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'CaseTypeName', case_type_name,
+        		    'PartyCases', party_cases
+        	    )
+            ) document
+            from(
+            select
+            case_type_name,
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'CasePartyTypeName', case_party_type_name,
+        		    'Cases', cases
+        	    )
+            ) party_cases
+            from(
+        	    select
+        	    case_type_name,
+        	    case_party_type_name,
+        	    jsonb_agg(jsonb_build_object(
+        		    'Name', title,
+        		    'Path', path
+        	    )) cases
+        	    from(
+        		    select
+        			    nt.name case_type_name,
+        			    cpt.name case_party_type_name,
+        			    n.title,
+        			    case 
+        				    when tn.url_path is null then '/node/' || tn.url_id
+        				    else '/' || tn.url_path
+        			    end path,
+        			    case 
+        				    when tn.publication_status_id = 0 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 0
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    join user_group ug on ug.id = ugu.user_group_id
+        					    WHERE ugu.user_group_id = 
+        					    case
+        						    when tn.subgroup_id is null then tn.tenant_id 
+        						    else tn.subgroup_id 
+        					    end 
+        					    AND ugu.user_role_id = ug.administrator_role_id
+        					    AND ugu.user_id = @user_id
+        				    )
+        				    when tn.publication_status_id = 1 then 1
+        				    when tn.publication_status_id = 2 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 1
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    WHERE ugu.user_group_id = 
+        						    case
+        							    when tn.subgroup_id is null then tn.tenant_id 
+        							    else tn.subgroup_id 
+        						    end
+        						    AND ugu.user_id = @user_id
+        					    )
+        			    end status	
+        		    from case_parties cp
+        		    join case_case_parties ccp on ccp.case_parties_id = cp.id 
+        		    join node n on n.id = ccp.case_id
+        		    join case_party_type cpt on cpt.id= ccp.case_party_type_id
+        		    join case_parties_organization o on o.case_parties_id = cp.id
+        		    join tenant_node tn2 on tn2.node_id = o.organization_id
+        		    join node_type nt on nt.id = n.node_type_id
+        		    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
+        		    where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+        	    )x 
+        	    where status <> -1
+        	    group by case_type_name, case_party_type_name
+            ) x
+            group by case_type_name
+            ) x        
         )
         """;
 
@@ -1171,6 +1259,72 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string PERSON_ORGANIZATION_RELATIONS_DOCUMENT = """
+        person_organization_relations_document as(
+            select
+                jsonb_agg(jsonb_build_object(
+        	        'Person', json_build_object(
+        		        'Name', person_name,
+        		        'Path', path
+        	        ),
+        	        'RelationTypeName', relation_type_name,
+        	        'DateFrom', lower(date_range),
+        	        'DateTo', upper(date_range)
+                )) document
+            from(
+                select
+        			n.title person_name,
+        			n2.title relation_type_name,
+        			por.date_range,
+        			case 
+        				when tn.url_path is null then '/node/' || tn.url_id
+        				else '/' || tn.url_path
+        			end path,
+        			case 
+        				when tn.publication_status_id = 0 then (
+        					select
+        						case 
+        							when count(*) > 0 then 0
+        							else -1
+        						end status
+        					from user_group_user_role_user ugu
+        					join user_group ug on ug.id = ugu.user_group_id
+        					WHERE ugu.user_group_id = 
+        					case
+        						when tn.subgroup_id is null then tn.tenant_id 
+        						else tn.subgroup_id 
+        					end 
+        					AND ugu.user_role_id = ug.administrator_role_id
+        					AND ugu.user_id = @user_id
+        				)
+        				when tn.publication_status_id = 1 then 1
+        				when tn.publication_status_id = 2 then (
+        					select
+        						case 
+        							when count(*) > 0 then 1
+        							else -1
+        						end status
+        					from user_group_user_role_user ugu
+        					WHERE ugu.user_group_id = 
+        						case
+        							when tn.subgroup_id is null then tn.tenant_id 
+        							else tn.subgroup_id 
+        						end
+        						AND ugu.user_id = @user_id
+        					)
+        			end status	
+        		from  node n
+        		join person pe  on pe.id = n.id
+        		join person_organization_relation por on por.person_id = pe.Id
+        		join node n2 on n2.id = por.person_organization_relation_type_id
+        		join tenant_node tn2 on tn2.node_id = por.organization_id
+        		join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
+        		where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+        	) x
+        	where x.status <> -1
+        )
+        """;
+
     const string ORGANIZATION_DOCUMENT = """
         organization_document AS (
             SELECT 
@@ -1199,7 +1353,9 @@ internal class FetchNodeService : IFetchNodeService
                 'Locations', (SELECT document FROM locations_document),
                 'InterOrganizationalRelations', (SELECT document FROM inter_organizational_relation_document),
                 'SubTopics', (SELECT document from subtopics_document),
-                'SuperTopics', (SELECT document from supertopics_document)
+                'SuperTopics', (SELECT document from supertopics_document),
+                'PartyCaseTypes', (SELECT document from party_cases_document),
+                'PersonOrganizationRelations', (SELECT document from person_organization_relations_document)
             ) :: jsonb document
             FROM (
                  SELECT
