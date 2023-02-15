@@ -1,0 +1,36 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<PartyPoliticalEntityRelation>
+@if (Model.Any())
+{
+    <h3>Relations to countries</h3>
+    <table class="political_entity_relations" style="width:100%">
+        <tr>
+            <th>Party</th>
+            <th>Relation Type</th>
+            <th>Political Entity</th>
+            <th>Date From</th>
+            <th>Date To</th>
+        @foreach (var relation in Model)
+        {
+          <tr>
+                <td>
+                    <a href="@relation.Party.Path">@relation.Party.Name</a>
+                </td>
+
+                <td>
+                    <a href="@relation.PartyPoliticalEntityRelationType.Path">@relation.PartyPoliticalEntityRelationType.Name</a>
+                </td>
+                <td>
+                  <a href="@relation.PoliticalEntity.Path">@relation.PoliticalEntity.Name</a>
+              </td>
+              <td>
+                        @relation.DateFrom?.ToString("yyyy MMMM dd")
+              </td>
+                <td>
+                        @relation.DateTo?.ToString("yyyy MMMM dd")
+                </td>
+            </tr>
+        }
+    </table>
+}

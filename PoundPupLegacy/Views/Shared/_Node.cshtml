@@ -7,8 +7,6 @@
 @{
     var ModelClassName = Model.HasBeenPublished ? "node" : "node node-unpublished";
 
-
-
     <div class="article-with-comments @ModelClassName">
 
 
@@ -31,6 +29,7 @@
                 #tab1:checked ~ .tab.content1,
                 #tab2:checked ~ .tab.content2 {
                     display: block;
+                    padding: 0;
                 }
 
                 input.tab-button + label { /* box with rounded corner */
@@ -87,6 +86,10 @@
                 {
                     <partial name="_AbuseCase" model="@abuseCase" />
                 }
+                @if (Model is Document document)
+                {
+                    <partial name="_Document" model="@document" />
+                }
             </article>
             @if (Model.Tags.Any())
             {
@@ -101,12 +104,14 @@
         @if (siteDataService.CanEdit(Model))
         {
             <div class="tab content2">
+                <article>
                 @if (Model is BlogPost)
                 {
                     <component type="typeof(BlogEditor)"
                    render-mode="ServerPrerendered" param-Id="@Model.Id" />
 
                 }
+                </article>
             </div>
         }
         @if (@Model.Comments.Any())

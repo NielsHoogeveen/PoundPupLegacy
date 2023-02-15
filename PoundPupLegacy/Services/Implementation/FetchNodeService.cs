@@ -25,9 +25,12 @@ internal class FetchNodeService : IFetchNodeService
             WITH 
             {AUTHENTICATED_NODE},
             {SEE_ALSO_DOCUMENT},
+            {DOCUMENTABLES_DOCUMENT},
             {LOCATIONS_DOCUMENT},
             {PARTY_CASES_DOCUMENT},
+            {CASE_CASE_PARTIES_DOCUMENT},
             {INTER_ORGANIZATIONAL_RELATION_DOCUMENT},
+            {PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT},
             {ORGANIZATION_TYPES_DOCUMENT},
             {PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {TAGS_DOCUMENT},
@@ -39,6 +42,7 @@ internal class FetchNodeService : IFetchNodeService
             {COUNTRY_SUBDIVISIONS_DOCUMENT},
             {BLOG_POST_BREADCRUM_DOCUMENT},
             {ORGANIZATION_BREADCRUM_DOCUMENT},
+            {DOCUMENT_BREADCRUM_DOCUMENT},
             {ARTICLE_BREADCRUM_DOCUMENT},
             {ABUSE_CASE_BREADCRUM_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT},
@@ -47,6 +51,7 @@ internal class FetchNodeService : IFetchNodeService
             {ADOPTION_IMPORTS_DOCUMENT},
             {BLOG_POST_DOCUMENT},
             {ARTICLE_DOCUMENT},
+            {DOCUMENT_DOCUMENT},
             {ABUSE_CASE_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_DOCUMENT},
             {BASIC_NAMEABLE_DOCUMENT},
@@ -77,6 +82,7 @@ internal class FetchNodeService : IFetchNodeService
             var txt = reader.GetString(1);
             Node node = node_type_id switch
             {
+                10 => reader.GetFieldValue<Document>(1),
                 13 => reader.GetFieldValue<BasicCountry>(1),
                 23 => reader.GetFieldValue<Organization>(1),
                 26 => reader.GetFieldValue<AbuseCase>(1),
@@ -173,6 +179,218 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT = """
+        party_political_entity_relations_document as(
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Party', jsonb_build_object(
+        	                'Name', party_name,
+        	                'Path', party_path
+                        ),
+                        'PoliticalEntity', jsonb_build_object(
+        	                'Name', political_entity_name,
+        	                'Path', political_entity_path
+                        ),
+                        'PartyPoliticalEntityRelationType',
+                        jsonb_build_object(
+        	                'Name', party_political_entity_relation_type_name,
+        	                'Path', party_political_entity_relation_type_path
+                        ),
+                        'DateFrom', lower(date_range),
+                        'DateTo', upper(date_range),
+                        'DocumentProof', case
+        	                when status4 is null or status4 = -1 then null
+        	                else jsonb_build_object(
+        		                'Name', document_proof_name,
+        		                'Path', document_proof_path
+        	                )
+                        end
+                    )
+                ) document
+            from(
+            select
+        		n2.title party_name,
+        		case
+        			when tn2.url_path is null then '/node/' || tn2.url_id
+        			else tn2.url_path
+        		end party_path,
+        		n3.title political_entity_name,
+        		case
+        			when tn3.url_path is null then '/node/' || tn3.url_id
+        			else tn3.url_path
+        		end political_entity_path,
+        		n4.title party_political_entity_relation_type_name,
+        		case
+        			when tn4.url_path is null then '/node/' || tn4.url_id
+        			else tn4.url_path
+        		end party_political_entity_relation_type_path,
+        		pper.date_range,
+        		case 
+        			when tn.url_path is null then '/node/' || tn.url_id
+        			else '/' || tn.url_path
+        		end path,
+        		n5.title document_proof_name,
+        		case 
+        			when tn5.id is null then null
+        			when tn5.url_path is null then '/node/' || tn.url_id
+        			else '/' || tn.url_path
+        		end document_proof_path,
+        		case 
+        			when tn.publication_status_id = 0 then (
+        				select
+        					case 
+        						when count(*) > 0 then 0
+        						else -1
+        					end status
+        				from user_group_user_role_user ugu
+        				join user_group ug on ug.id = ugu.user_group_id
+        				WHERE ugu.user_group_id = 
+        				case
+        					when tn.subgroup_id is null then tn.tenant_id 
+        					else tn.subgroup_id 
+        				end 
+        				AND ugu.user_role_id = ug.administrator_role_id
+        				AND ugu.user_id = @user_id
+        			)
+        			when tn.publication_status_id = 1 then 1
+        			when tn.publication_status_id = 2 then (
+        				select
+        					case 
+        						when count(*) > 0 then 1
+        						else -1
+        					end status
+        				from user_group_user_role_user ugu
+        				WHERE ugu.user_group_id = 
+        					case
+        						when tn.subgroup_id is null then tn.tenant_id 
+        						else tn.subgroup_id 
+        					end
+        					AND ugu.user_id = @user_id
+        				)
+        		end status,
+        		case 
+        			when tn3.publication_status_id = 0 then (
+        				select
+        					case 
+        						when count(*) > 0 then 0
+        						else -1
+        					end status
+        				from user_group_user_role_user ugu
+        				join user_group ug on ug.id = ugu.user_group_id
+        				WHERE ugu.user_group_id = 
+        				case
+        					when tn3.subgroup_id is null then tn3.tenant_id 
+        					else tn3.subgroup_id 
+        				end 
+        				AND ugu.user_role_id = ug.administrator_role_id
+        				AND ugu.user_id = @user_id
+        			)
+        			when tn3.publication_status_id = 1 then 1
+        			when tn3.publication_status_id = 2 then (
+        				select
+        					case 
+        						when count(*) > 0 then 1
+        						else -1
+        					end status
+        				from user_group_user_role_user ugu
+        				WHERE ugu.user_group_id = 
+        					case
+        						when tn3.subgroup_id is null then tn3.tenant_id 
+        						else tn3.subgroup_id 
+        					end
+        					AND ugu.user_id = @user_id
+        				)
+        		end status2,
+        		case 
+        			when tn4.publication_status_id = 0 then (
+        				select
+        					case 
+        						when count(*) > 0 then 0
+        						else -1
+        					end status
+        				from user_group_user_role_user ugu
+        				join user_group ug on ug.id = ugu.user_group_id
+        				WHERE ugu.user_group_id = 
+        				case
+        					when tn4.subgroup_id is null then tn4.tenant_id 
+        					else tn4.subgroup_id 
+        				end 
+        				AND ugu.user_role_id = ug.administrator_role_id
+        				AND ugu.user_id = @user_id
+        			)
+        			when tn4.publication_status_id = 1 then 1
+        			when tn4.publication_status_id = 2 then (
+        				select
+        					case 
+        						when count(*) > 0 then 1
+        						else -1
+        					end status
+        				from user_group_user_role_user ugu
+        				WHERE ugu.user_group_id = 
+        					case
+        						when tn4.subgroup_id is null then tn4.tenant_id 
+        						else tn4.subgroup_id 
+        					end
+        					AND ugu.user_id = @user_id
+        				)
+        		end status3,
+        		case 
+        			when tn5.publication_status_id = null then null
+        			when tn5.publication_status_id = 0 then (
+        				select
+        					case 
+        						when count(*) > 0 then 0
+        						else -1
+        					end status
+        				from user_group_user_role_user ugu
+        				join user_group ug on ug.id = ugu.user_group_id
+        				WHERE ugu.user_group_id = 
+        				case
+        					when tn5.subgroup_id is null then tn5.tenant_id 
+        					else tn5.subgroup_id 
+        				end 
+        				AND ugu.user_role_id = ug.administrator_role_id
+        				AND ugu.user_id = @user_id
+        			)
+        			when tn5.publication_status_id = 1 then 1
+        			when tn5.publication_status_id = 2 then (
+        				select
+        					case 
+        						when count(*) > 0 then 1
+        						else -1
+        					end status
+        				from user_group_user_role_user ugu
+        				WHERE ugu.user_group_id = 
+        					case
+        						when tn5.subgroup_id is null then tn5.tenant_id 
+        						else tn5.subgroup_id 
+        					end
+        					AND ugu.user_id = @user_id
+        				)
+        		end status4
+        	from  node n
+        	join tenant_node tn on tn.node_id = n.id
+        	join party_political_entity_relation pper on pper.id = n.id 
+
+        	join node n2 on n2.id = pper.party_id				
+        	join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
+
+        	join node n3 on n3.id = pper.political_entity_id				
+        	join tenant_node tn3 on tn3.node_id = n3.id and tn3.tenant_id = tn.tenant_id
+
+        	join node n4 on n4.id = pper.party_political_entity_relation_type_id
+        	join tenant_node tn4 on tn4.node_id = n4.id and tn4.tenant_id = tn.tenant_id
+
+        	left join node n5 on n5.id = pper.document_id_proof
+        	left join tenant_node tn5 on tn4.node_id = n5.id and tn5.tenant_id = tn.tenant_id
+
+        	where tn.tenant_id = @tenant_id and tn2.url_id = @url_id
+        	) x
+        	where status <> -1 and status2 <> -1 and status3 <> -1
+        )	
+        """;
+
     const string PARTY_CASES_DOCUMENT = """
         party_cases_document as (
             select
@@ -262,8 +480,8 @@ internal class FetchNodeService : IFetchNodeService
     const string SUBTOPICS_DOCUMENT = """
         subtopics_document as(
             select
-                json_agg(
-                    json_build_object(
+                jsonb_agg(
+                    jsonb_build_object(
                         'Name', "name", 
                         'Path', url_path
                     )
@@ -324,8 +542,8 @@ internal class FetchNodeService : IFetchNodeService
     const string SUPERTOPICS_DOCUMENT = """
         supertopics_document as(
             select
-                json_agg(
-                    json_build_object(
+                jsonb_agg(
+                    jsonb_build_object(
                         'Name', "name", 
                         'Path', url_path
                     )
@@ -383,10 +601,145 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string CASE_CASE_PARTIES_DOCUMENT = """
+        case_case_parties_document as(
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'PartyTypeName', "name",
+                        'OrganizationsText', organizations_text,
+                        'PersonsText', persons_text,
+                        'Organizations', organizations,
+                        'Persons', persons
+                    )
+                ) document
+            from(
+                select
+                    cpt.name,
+                    cp.organizations organizations_text,
+                    cp.persons persons_text,
+                    (
+                        select
+                            jsonb_agg(
+                                jsonb_build_object(
+                                    'Name', organization_name,
+                                    'Path', organization_path
+                                )
+                            ) organizations
+                        from(
+                            select
+                                case_parties_id,
+                                n2.title organization_name,
+                                case
+                                    when tn2.publication_status_id = 0 then (
+                                        select
+                                            case 
+                                                when count(*) > 0 then 0
+                                                else -1
+                                            end status
+                                        from user_group_user_role_user ugu
+                                        join user_group ug on ug.id = ugu.user_group_id
+                                        WHERE ugu.user_group_id = 
+                                        case
+                                            when tn2.subgroup_id is null then tn2.tenant_id 
+                                            else tn2.subgroup_id 
+                                        end 
+                                        AND ugu.user_role_id = ug.administrator_role_id
+                                        AND ugu.user_id = @user_id
+                                    )
+                                    when tn2.publication_status_id = 1 then 1
+                                    when tn2.publication_status_id = 2 then (
+                                        select
+                                            case 
+                                                when count(*) > 0 then 1
+                                                else -1
+                                            end status
+                                        from user_group_user_role_user ugu
+                                        WHERE ugu.user_group_id = 
+                                        case
+                                            when tn2.subgroup_id is null then tn2.tenant_id 
+                                            else tn2.subgroup_id 
+                                        end
+                                        AND ugu.user_id = @user_id
+                                    )
+                                 end status,
+                                case 
+                                    when tn2.url_path is null then '/node/' || tn2.url_id
+                                    else tn2.url_path
+                                end organization_path
+                            from case_parties_organization cpo 
+                            join node n2 on n2.id = cpo.organization_id
+                            join tenant_node tn2 on tn2.node_id = n2.id
+                            where tn2.tenant_id = @tenant_id and cpo.case_parties_id = cp.id
+                        ) x where status <> -1
+                    ) organizations,
+                    (
+                        select
+                            jsonb_agg(jsonb_build_object(
+                                'Name', person_name,
+                                'Path', person_path
+                            )) persons
+                        from(
+                            select
+                                case_parties_id,
+                                n3.title person_name,
+                                case
+                                    when tn3.publication_status_id = 0 then (
+                                        select
+                                            case 
+                                                when count(*) > 0 then 0
+                                                else -1
+                                            end status
+                                        from user_group_user_role_user ugu
+                                        join user_group ug on ug.id = ugu.user_group_id
+                                        WHERE ugu.user_group_id = 
+                                        case
+                                            when tn3.subgroup_id is null then tn3.tenant_id 
+                                            else tn3.subgroup_id 
+                                        end 
+                                        AND ugu.user_role_id = ug.administrator_role_id
+                                        AND ugu.user_id = @user_id
+                                    )
+                                    when tn3.publication_status_id = 1 then 1
+                                    when tn3.publication_status_id = 2 then (
+                                        select
+                                            case 
+                                                when count(*) > 0 then 1
+                                                else -1
+                                            end status
+                                        from user_group_user_role_user ugu
+                                        WHERE ugu.user_group_id = 
+                                        case
+                                            when tn3.subgroup_id is null then tn3.tenant_id 
+                                            else tn3.subgroup_id 
+                                        end
+                                        AND ugu.user_id = @user_id
+                                    )
+                                end status,
+                                case 
+                                    when tn3.url_path is null then '/node/' || tn3.url_id
+                                    else tn3.url_path
+                                end person_path
+                            from case_parties_person cpp 
+                            join node n3 on n3.id = cpp.person_id
+                            join tenant_node tn3 on tn3.node_id = n3.id
+                            where tn3.tenant_id = @tenant_id and cpp.case_parties_id = cp.id
+                        ) x where status <> -1
+                    ) persons
+                from node n
+                join case_case_parties ccp on ccp.case_id = n.id
+                join case_parties cp on cp.id = ccp.case_parties_id
+                join case_party_type cpt on cpt.id = ccp.case_party_type_id
+                join tenant_node tn on tn.node_id = n.id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            ) x
+        )
+        """;
+
     const string LOCATIONS_DOCUMENT = """
         locations_document as(
             select
-                json_agg(json_build_object(
+                jsonb_agg(jsonb_build_object(
         			'Id', "id",
         			'Street', street,
         			'Additional', additional,
@@ -396,7 +749,7 @@ internal class FetchNodeService : IFetchNodeService
         			'Country', country,
                     'Latitude', latitude,
                     'Longitude', longitude
-        		))::jsonb document
+        		)) document
             from(
                 select 
                 l.id,
@@ -404,11 +757,11 @@ internal class FetchNodeService : IFetchNodeService
                 l.additional,
                 l.city,
                 l.postal_code,
-                json_build_object(
+                jsonb_build_object(
                 	'Path', case when tn2.url_path is null then '/node/' || tn2.url_id else '/' || tn2.url_path end,
                 	'Name', s.name
                 ) subdivision,
-                json_build_object(
+                jsonb_build_object(
                 	'Path', case when tn3.url_path is null then '/node/' || tn3.url_id else '/' || tn3.url_path end,
                 	'Name', nc.title
                 ) country,
@@ -428,34 +781,35 @@ internal class FetchNodeService : IFetchNodeService
     const string INTER_ORGANIZATIONAL_RELATION_DOCUMENT = """
         inter_organizational_relation_document as(
             select
-                json_agg(json_build_object(
+                jsonb_agg(jsonb_build_object(
         	        'OrganizationFrom', organization_from,
         	        'OrganizationTo', organization_to,
         	        'InterOrganizationalRelationType', inter_organizational_relation_type,
         	        'GeographicEntity', geographic_entity,
-        	        'DateRange', date_range,
+        	        'DateFrom', lower(date_range),
+                    'DateTo', upper(date_range),
         	        'MoneyInvolved', money_involved,
         	        'NumberOfChildrenInvolved', number_of_children_involved,
         	        'Description', description,
         	        'Direction', direction
-                ))::jsonb document
+                )) document
             from(
         	    select
-        	    json_build_object(
+        	    jsonb_build_object(
         		    'Name', organization_name_from,
         		    'Path', organization_path_from
         	    ) organization_from,
-        	    json_build_object(
+        	    jsonb_build_object(
         		    'Name', organization_name_to,
         		    'Path', organization_path_to
         	    ) organization_to,
-        	    json_build_object(
+        	    jsonb_build_object(
         		    'Name', inter_organizational_relation_type_name,
         		    'Path', inter_organizational_relation_type_path
         	    ) inter_organizational_relation_type,
         	    case
         	    when geographic_entity_name is null then null
-        	    else json_build_object(
+        	    else jsonb_build_object(
         			    'Name', geographic_entity_name,
         			    'Path', geographic_entity_path) 
         	    end geographic_entity,
@@ -665,12 +1019,12 @@ internal class FetchNodeService : IFetchNodeService
     const string SEE_ALSO_DOCUMENT = """
         see_also_document AS(
             SELECT
-                json_agg(
-                    json_build_object(
+                jsonb_agg(
+                    jsonb_build_object(
                         'Path', sa.path,
                         'Name', sa.title
-                    )::jsonb
-                )::jsonb document
+                    )
+                ) document
             FROM (
                 SELECT 
                     case 
@@ -694,12 +1048,12 @@ internal class FetchNodeService : IFetchNodeService
     const string TAGS_DOCUMENT = """
         tags_document AS (
             SELECT
-                json_agg(
-                    json_build_object(
+                jsonb_agg(
+                    jsonb_build_object(
                         'Path',  t.path,
                         'Name', t.name
-                    )::jsonb
-                )::jsonb as document
+                    )
+                ) as document
             FROM (
                 select
                     case 
@@ -719,17 +1073,17 @@ internal class FetchNodeService : IFetchNodeService
     const string ORGANIZATIONS_OF_COUNTRY_DOCUMENT = """
         organizations_of_country_document as(
             select
-                json_agg(
-                    json_build_object(
+                jsonb_agg(
+                    jsonb_build_object(
         	            'OrganizationTypeName', organization_type,
         	            'Organizations', organizations
                     )
-                )::jsonb document
+                ) document
             from(
                 select
         	        organization_type,
-        	        json_agg(
-        	            json_build_object(
+        	        jsonb_agg(
+        	            jsonb_build_object(
         		            'Name', organization_name,
         		            'Path', "path"
         	            )
@@ -760,14 +1114,14 @@ internal class FetchNodeService : IFetchNodeService
     const string DOCUMENTS_DOCUMENT = """
         documents_document as(
             select
-                json_agg(
-                    json_build_object(
+                jsonb_agg(
+                    jsonb_build_object(
                         'Path', path,
                         'Title', title,
                         'PublicationDate', publication_date,
                         'SortOrder', sort_order
-                    )::jsonb
-                )::jsonb document
+                    )
+                ) document
             from(
                 select
                     path,
@@ -806,12 +1160,12 @@ internal class FetchNodeService : IFetchNodeService
 
     const string BLOG_POST_BREADCRUM_DOCUMENT = """
         blog_post_bread_crum_document AS (
-            SELECT json_agg(
-                json_build_object(
+            SELECT jsonb_agg(
+                jsonb_build_object(
                     'Path', url,
                     'Name', "name"
-                )::jsonb 
-            )::jsonb document
+                ) 
+            ) document
             FROM(
             SELECT
         	    url,
@@ -841,12 +1195,12 @@ internal class FetchNodeService : IFetchNodeService
         """;
     const string ARTICLE_BREADCRUM_DOCUMENT = """
         article_bread_crum_document AS (
-            SELECT json_agg(
-                json_build_object(
+            SELECT jsonb_agg(
+                jsonb_build_object(
                     'Path', url,
                     'Name', "name"
-                )::jsonb 
-            )::jsonb document
+                ) 
+            ) document
             FROM(
             SELECT
         	    url,
@@ -866,14 +1220,41 @@ internal class FetchNodeService : IFetchNodeService
             ) bces
         )
         """;
-    const string TOPICS_BREADCRUM_DOCUMENT = """
-        topics_bread_crum_document AS (
-            SELECT json_agg(
-                json_build_object(
+    const string DOCUMENT_BREADCRUM_DOCUMENT = """
+        document_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
                     'Path', url,
                     'Name', "name"
-                )::jsonb 
-            )::jsonb document
+                ) 
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/documents', 
+                    'documents', 
+                    1
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+    const string TOPICS_BREADCRUM_DOCUMENT = """
+        topics_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                ) 
+            ) document
             FROM(
             SELECT
         	    url,
@@ -895,12 +1276,12 @@ internal class FetchNodeService : IFetchNodeService
         """;
     const string ORGANIZATION_BREADCRUM_DOCUMENT = """
         organization_bread_crum_document AS (
-            SELECT json_agg(
-                json_build_object(
+            SELECT jsonb_agg(
+                jsonb_build_object(
                     'Path', url,
                     'Name', "name"
-                )::jsonb 
-            )::jsonb document
+                ) 
+            ) document
             FROM(
             SELECT
         	    url,
@@ -924,14 +1305,14 @@ internal class FetchNodeService : IFetchNodeService
     const string COUNTRY_SUBDIVISIONS_DOCUMENT = """
         country_subdivisions_document as (
             select
-        	    json_agg(json_build_object(
+        	    jsonb_agg(jsonb_build_object(
         		    'Name', subdivision_type_name,
         		    'Subdivisions', subdivisions
-        	    ))::jsonb document
+        	    )) document
         	from(
                 select
         	        subdivision_type_name,
-        	        json_agg(json_build_object(
+        	        jsonb_agg(jsonb_build_object(
         		        'Name', subdivision_name,
         		        'Path', case 
         			        when url_path is null then '/node/' || url_id
@@ -962,12 +1343,12 @@ internal class FetchNodeService : IFetchNodeService
 
     const string COUNTRY_BREADCRUM_DOCUMENT = """
         country_bread_crum_document AS (
-            SELECT json_agg(
-                json_build_object(
+            SELECT jsonb_agg(
+                jsonb_build_object(
                     'Path', url,
                     'Name', "name"
-                )::jsonb
-            )::jsonb document
+                )
+            ) document
             FROM(
             SELECT
         	    url,
@@ -990,12 +1371,12 @@ internal class FetchNodeService : IFetchNodeService
 
     const string ABUSE_CASE_BREADCRUM_DOCUMENT = """
         abuse_case_bread_crum_document AS (
-            SELECT json_agg(
-                json_build_object(
+            SELECT jsonb_agg(
+                jsonb_build_object(
                     'Path', url,
                     'Name', "name"
-                )::jsonb
-            )::jsonb document
+                )
+            ) document
             FROM(
             SELECT
         	    url,
@@ -1021,14 +1402,68 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string DOCUMENTABLES_DOCUMENT = """
+        documentables_document as (
+            select
+                jsonb_agg(jsonb_build_object('Name', documentable_name, 'Path', documentable_path)) document
+                from(
+                select
+                n.title documentable_name,
+                case 
+        	        when tn.url_path is null then '/node/' || tn.url_id
+        	        else tn.url_path
+                end documentable_path,
+                case
+        	        when tn.publication_status_id = 0 then (
+        		        select
+        			        case 
+        				        when count(*) > 0 then 0
+        				        else -1
+        			        end status
+        		        from user_group_user_role_user ugu
+        		        join user_group ug on ug.id = ugu.user_group_id
+        		        WHERE ugu.user_group_id = 
+        		        case
+        			        when tn.subgroup_id is null then tn.tenant_id 
+        			        else tn.subgroup_id 
+        		        end 
+        		        AND ugu.user_role_id = ug.administrator_role_id
+        		        AND ugu.user_id = @user_id
+        	        )
+        	        when tn.publication_status_id = 1 then 1
+        	        when tn.publication_status_id = 2 then (
+        		        select
+        			        case 
+        				        when count(*) > 0 then 1
+        				        else -1
+        			        end status
+        		        from user_group_user_role_user ugu
+        		        WHERE ugu.user_group_id = 
+        			        case
+        				        when tn.subgroup_id is null then tn.tenant_id 
+        				        else tn.subgroup_id 
+        			        end
+        			        AND ugu.user_id = @user_id
+        		        )
+                end status	
+            from documentable_document dd
+            join tenant_node tn2 on tn2.node_id = dd.document_id
+            join node n on n.id = dd.documentable_id
+            join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
+            where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+            ) x 
+            where status <> -1
+        )
+        """;
+
     const string CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT = """
         child_trafficking_case_bread_crum_document AS (
-            SELECT json_agg(
-                json_build_object(
+            SELECT jsonb_agg(
+                jsonb_build_object(
                     'Path', url,
                     'Name', "name"
-                )::jsonb
-            )::jsonb document
+                )
+            ) document
             FROM(
             SELECT
         	    url,
@@ -1056,19 +1491,19 @@ internal class FetchNodeService : IFetchNodeService
 
     const string COMMENTS_DOCUMENT = """
         comments_document AS (
-            SELECT json_agg(tree)::jsonb document
+            SELECT jsonb_agg(tree) document
             FROM (
-                SELECT to_jsonb(sub)::jsonb AS tree
+                SELECT to_jsonb(sub) AS tree
                 FROM (
         	        SELECT 
         		        c.id AS "Id", 
         		        c.node_status_id AS "NodeStatusId",
-        		        json_build_object(
+        		        jsonb_build_object(
         			        'Id', p.id, 
         			        'Name', p.name,
                             'CreatedDateTime', c.created_date_time,
                             'ChangedDateTime', c.created_date_time
-                        )::jsonb AS "Authoring",
+                        ) AS "Authoring",
         		        c.title AS "Title", 
         		        c.text AS "Text", 
         		        f_comment_tree(c.id) AS "Comments"
@@ -1085,29 +1520,29 @@ internal class FetchNodeService : IFetchNodeService
     const string ADOPTION_IMPORTS_DOCUMENT = """
         adoption_imports_document as(
             select
-                json_build_object(
+                jsonb_build_object(
                     'StartYear', start_year,
                     'EndYear', end_year,
-                    'Imports', json_agg(
-                        json_build_object(
+                    'Imports', jsonb_agg(
+                        jsonb_build_object(
                            'CountryFrom', name,
                             'RowType', row_type,
                             'Values', y
-                        )::jsonb
-                    )::jsonb
-                )::jsonb document
+                        )
+                    )
+                ) document
             from(
                 select
         	        name,
         	        row_type,
         	        start_year,
         	        end_year,
-        	        json_agg(
-                        json_build_object(
+        	        jsonb_agg(
+                        jsonb_build_object(
             		        'Year', "year",
             		        'NumberOfChildren', number_of_children
-            	        )::jsonb
-                    )::jsonb y
+            	        )
+                    ) y
                 from(
         	        select
         		        row_number() over () id,
@@ -1193,13 +1628,13 @@ internal class FetchNodeService : IFetchNodeService
     const string BASIC_COUNTRY_DOCUMENT = """
         basic_country_document AS (
             SELECT 
-                json_build_object(
+                jsonb_build_object(
                 'Id', n.url_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
-                'Authoring', json_build_object(
+                'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
@@ -1238,10 +1673,10 @@ internal class FetchNodeService : IFetchNodeService
     const string ORGANIZATION_TYPES_DOCUMENT = """
         organization_types_document AS (
             select
-                json_agg(json_build_object(
+                jsonb_agg(jsonb_build_object(
         	        'Name', "name",
         	        'Path', "path"
-                ))::jsonb "document"
+                )) "document"
             from(
             select
             n.title "name",
@@ -1259,11 +1694,77 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string DOCUMENT_DOCUMENT = """
+        document_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title,
+                'Text', n.text,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id,
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'HasBeenPublished', n.has_been_published,
+                'DateTime', publication_date,
+                'DateTimeFrom', lower(publication_date_range),
+                'DateTimeTo', upper(publication_date_range),
+                'SourceUrl', source_url,
+                'DocumentType', document_type,
+                'BreadCrumElements', (SELECT document FROM document_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'Comments', (SELECT document FROM  comments_document),
+                'Documentables', (SELECT document FROM documentables_document)
+            ) document
+            FROM(
+                SELECT
+                    an.url_id,
+                    an.node_type_id,
+                    an.title,
+                    an.created_date_time,
+                    an.changed_date_time,
+                    stn.text,
+                    an.publisher_id,
+                    p.name publisher_name,
+                    an.has_been_published,
+                    stn.publication_date,
+                    stn.publication_date_range,
+                    stn.source_url,
+                    case 
+                        when dt.id is null then null
+                        else jsonb_build_object(
+                            'Id', dt.id,
+                            'Name', dt.name,
+                            'Path', dt.path
+                        )
+                    end document_type
+                FROM authenticated_node an
+                join document stn on stn.id = an.node_id
+                left join (
+                    select 
+                    dt.id,
+                    n.title name,
+                    case when tn.url_path is null then '/node/' || tn.url_id
+        	            else '/' || tn.url_path
+                    end path
+                    from document_type dt
+                    join node n on n.id = dt.id
+                    join tenant_node tn on tn.node_id = dt.id and tn.tenant_id = @tenant_id
+                ) dt on dt.id = stn.document_type_id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        )
+        """;
+
     const string PERSON_ORGANIZATION_RELATIONS_DOCUMENT = """
         person_organization_relations_document as(
             select
                 jsonb_agg(jsonb_build_object(
-        	        'Person', json_build_object(
+        	        'Person', jsonb_build_object(
         		        'Name', person_name,
         		        'Path', path
         	        ),
@@ -1328,13 +1829,13 @@ internal class FetchNodeService : IFetchNodeService
     const string ORGANIZATION_DOCUMENT = """
         organization_document AS (
             SELECT 
-                json_build_object(
+                jsonb_build_object(
                 'Id', n.url_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
-                'Authoring', json_build_object(
+                'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
@@ -1355,8 +1856,9 @@ internal class FetchNodeService : IFetchNodeService
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
                 'PartyCaseTypes', (SELECT document from party_cases_document),
-                'PersonOrganizationRelations', (SELECT document from person_organization_relations_document)
-            ) :: jsonb document
+                'PersonOrganizationRelations', (SELECT document from person_organization_relations_document),
+                'PartyPoliticalEntityRelations', (SELECT document from party_political_entity_relations_document)
+            ) document
             FROM (
                  SELECT
                     an.url_id, 
@@ -1384,13 +1886,13 @@ internal class FetchNodeService : IFetchNodeService
     const string BLOG_POST_DOCUMENT = """
         blog_post_document AS (
             SELECT 
-                json_build_object(
+                jsonb_build_object(
                 'Id', n.url_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Text', n.text,
                 'HasBeenPublished', n.has_been_published,
-                'Authoring', json_build_object(
+                'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
@@ -1423,24 +1925,24 @@ internal class FetchNodeService : IFetchNodeService
     const string ARTICLE_DOCUMENT = """
         article_document AS (
             SELECT 
-                json_build_object(
-                'Id', n.url_id,
-                'NodeTypeId', n.node_type_id,
-                'Title', n.title, 
-                'Text', n.text,
-                'HasBeenPublished', n.has_been_published,
-                'Authoring', json_build_object(
-                    'Id', n.publisher_id, 
-                    'Name', n.publisher_name,
-                    'CreatedDateTime', n.created_date_time,
-                    'ChangedDateTime', n.changed_date_time
-                ),
-                'HasBeenPublished', n.has_been_published,
-                'BreadCrumElements', (SELECT document FROM article_bread_crum_document),
-                'Tags', (SELECT document FROM tags_document),
-                'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
-                'Comments', (SELECT document FROM  comments_document)
-                    ) :: jsonb document
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Text', n.text,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM article_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
+                    'Comments', (SELECT document FROM  comments_document)
+                ) document
             FROM (
                 SELECT
                     an.url_id, 
@@ -1462,13 +1964,13 @@ internal class FetchNodeService : IFetchNodeService
     const string BASIC_NAMEABLE_DOCUMENT = """
         basic_nameable_document AS (
             SELECT 
-                json_build_object(
+                jsonb_build_object(
                     'Id', n.url_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
-                    'Authoring', json_build_object(
+                    'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
                         'CreatedDateTime', n.created_date_time,
@@ -1500,13 +2002,13 @@ internal class FetchNodeService : IFetchNodeService
     const string ABUSE_CASE_DOCUMENT = """
         abuse_case_document AS (
             SELECT 
-                json_build_object(
+                jsonb_build_object(
                     'Id', n.url_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
-                    'Authoring', json_build_object(
+                    'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
                         'CreatedDateTime', n.created_date_time,
@@ -1519,7 +2021,8 @@ internal class FetchNodeService : IFetchNodeService
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
-                    'SuperTopics', (SELECT document from supertopics_document)
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'CaseParties', (SELECT document from case_case_parties_document)
                 ) :: jsonb document
             FROM (
                 SELECT
@@ -1542,13 +2045,13 @@ internal class FetchNodeService : IFetchNodeService
     const string CHILD_TRAFFICKING_CASE_DOCUMENT = """
         child_trafficking_case_document AS (
             SELECT 
-                json_build_object(
+                jsonb_build_object(
                     'Id', n.url_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
-                    'Authoring', json_build_object(
+                    'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
                         'CreatedDateTime', n.created_date_time,
@@ -1561,7 +2064,8 @@ internal class FetchNodeService : IFetchNodeService
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
-                    'SuperTopics', (SELECT document from supertopics_document)
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'CaseParties', (SELECT document from case_case_parties_document)
                 ) :: jsonb document
             FROM (
                 SELECT
@@ -1586,6 +2090,7 @@ internal class FetchNodeService : IFetchNodeService
             SELECT
                 an.node_type_id,
                 case
+                    when an.node_type_id = 10 then (select document from document_document)
                     when an.node_type_id = 13 then (select document from basic_country_document)
                     when an.node_type_id = 23 then (select document from organization_document)
                     when an.node_type_id = 26 then (select document from abuse_case_document)
@@ -1593,7 +2098,7 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 35 then (select document from blog_post_document)
                     when an.node_type_id = 36 then (select document from article_document)
                     when an.node_type_id = 41 then (select document from basic_nameable_document)
-                end :: jsonb document
+                end document
             FROM authenticated_node an 
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
         ) 

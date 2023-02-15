@@ -1,0 +1,43 @@
+﻿@using PoundPupLegacy.ViewModel;
+@using PoundPupLegacy.Views.Shared;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Document
+@{
+    @if(Model.DocumentType is not null)
+    {
+        <div>
+            <label>Document type</label>
+            <a href="@Model.DocumentType.Path">@Model.DocumentType.Name</a>
+        </div>
+    }
+    @if(Model.SourceUrl is not null)
+    {
+        <div>
+            <label>Source:</label>
+            <a href="@Model.SourceUrl">@Model.SourceUrlHost</a>    
+        </div>
+    }
+    @if (Model.PublicationDate is not null)
+    {
+        <div>
+            <label>Publication date:</label>
+            @Model.PublicationDate
+        </div>
+    }
+    @if (Model.Documentables.Any())
+    {
+        <div>
+            <label>Relates to:</label>
+            @foreach (var documentable in Model.Documentables)
+            {
+                <div><a href="@documentable.Path">@documentable.Name</a></div>
+            }
+        </div>
+    }
+    <div class="large-text">
+        <div class="text">
+            @Html.Raw(Model.Text.Replace(@"href=""http://poundpuplegacy.org", @"href="""))
+        </div>
+    </div>
+
+}

@@ -6,17 +6,51 @@
 {
     <h3>Relations to other organizations</h3>
     <table style="width: 100%">
-        @foreach (var relation in Model)
+        <tr>
+            <th>
+                Organization
+            </th>
+            <th>
+                Relation Type
+            </th>
+            <th>
+                Organization
+            </th>
+            <th>
+                Country
+            </th>
+            <th>
+                Date from
+            </th>
+            <th>
+                Date to
+            </th>
+
+        </tr>
+        @foreach (var relation in Model.OrderBy(x => x.InterOrganizationalRelationType.Name).ThenBy(x => x.OrganizationTo.Name))
         {
             <tr>
                 <td>
-                    <partial name="_Link" model="@relation.OrganizationFrom" />
+                    <partial name="_Link" model="@relation.OrganizationTo" />
                 </td>
                 <td>
                     <partial name="_Link" model="@relation.InterOrganizationalRelationType" />
                 </td>
                 <td>
-                    <partial name="_Link" model="@relation.OrganizationTo" />
+                    <partial name="_Link" model="@relation.OrganizationFrom" />
+                </td>
+                <td>
+                    @if (relation.GeographicEntity is not null)
+                    {
+                        <partial name="_Link" model="@relation.GeographicEntity" />
+                    }
+                </td>
+
+                <td>
+                    @relation.DateFrom?.ToString("yyyy MMMM dd")
+                </td>
+                <td>
+                    @relation.DateTo?.ToString("yyyy MMMM dd")
                 </td>
             </tr>
         }

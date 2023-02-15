@@ -66,7 +66,17 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
 
-    public required Location[] Locations { get; init; }
+    private Location[] _locations = Array.Empty<Location>();
+    public required Location[] Locations { 
+        get => _locations; 
+        init
+        {
+            if(value is not null)
+            {
+                _locations = value;
+            }
+        }
+    }
 
     private Link[] subTopics = Array.Empty<Link>();
     public required Link[] SubTopics
@@ -129,5 +139,16 @@ public record Organization : Nameable, Documentable, Locatable
             }
         }
     }
-
+    private PartyPoliticalEntityRelation[] partyPoliticalEntityRelations = Array.Empty<PartyPoliticalEntityRelation>();
+    public required PartyPoliticalEntityRelation[] PartyPoliticalEntityRelations
+    {
+        get => partyPoliticalEntityRelations;
+        init
+        {
+            if (value is not null)
+            {
+                partyPoliticalEntityRelations = value;
+            }
+        }
+    }
 }

@@ -1,0 +1,36 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<CaseParties>
+
+@if (Model.Any())
+{
+    <div class="case-parties">
+        @foreach(var elem in Model){
+            <h3>@elem.PartyTypeName</h3>
+            <div class="parties">
+                <div class="persons">
+                    <label>Persons:</label> @elem.PersonsText 
+                    @if (elem.Persons.Any())
+                    {
+                        @foreach (var person in elem.Persons.SkipLast(1))
+                        {
+                            <span><a href="@person.Path">@person.Name</a>, </span>
+                        }
+                        <span><a href="@elem.Persons.Last().Path">@elem.Persons.Last().Name</a></span>
+                    }
+                </div>
+                <div class="organizations">
+                    <label>Organizations:</label> @elem.OrganizationsText
+                    @if (elem.Organizations.Any())
+                    {
+                        @foreach (var organization in elem.Organizations.SkipLast(1))
+                        {
+                            <span><a href="@organization.Path">@organization.Name</a>, </span>
+                        }
+                        <span><a href="@elem.Organizations.Last().Path">@elem.Organizations.Last().Name</a></span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -2,7 +2,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Organization
 
-<partial name="_OrganizationTypes" model="@Model.OrganizationTypes" />
+
 
 <div class="text">
     @Html.Raw(Model.Description.Replace(@"href=""http://poundpuplegacy.org", @"href="""))
@@ -13,38 +13,11 @@
 <div>
     @Model.EmailAddress
 </div>
+<partial name="_OrganizationTypes" model="@Model.OrganizationTypes" />
+<partial name="_PartyCaseType" model="@Model.PartyCaseTypes" />
 <partial name="_PersonOrganizationRelations" model="@Model.PersonOrganizationRelations" />
 <partial name="_InterOrganizationalRelations" model="@Model.InterOrganizationalRelations" />
+<partial name="_PartyPoliticalEntityRelations" model="@Model.PartyPoliticalEntityRelations" />
+<partial name="_Documents" model="@Model.Documents" />
+<partial name="_Locations" model="@Model.Locations" />
 
-@if (Model.PartyCaseTypes.Any())
-{
-    <div class="cases">
-        @foreach (var partyCaseType in Model.PartyCaseTypes)
-        {
-            <h3>
-                @partyCaseType.CaseTypeName
-            </h3>
-            <ul>
-                @foreach (var partyCase in partyCaseType.PartyCases)
-                {
-                    <h4>@partyCase.CasePartyTypeName</h4>
-                    @foreach (var @cace in partyCase.Cases)
-                    {
-                        <li><a href="@cace.Path">@cace.Name</a></li>
-                    }
-                }
-            </ul>
-        }
-    </div>
-}
-
-
-
-@if (Model.Documents is not null)
-{
-    <partial name="_Documents" model="@Model.Documents" />
-}
-@if (Model.Locations is not null)
-{
-    <partial name="_Locations" model="@Model.Locations" />
-}

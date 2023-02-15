@@ -6,7 +6,8 @@ public record InterOrganizationalRelation
     public Link OrganizationTo { get; set; }
     public Link InterOrganizationalRelationType { get; set; }
     public Link? GeographicEntity { get; set; }
-    public string? DateRange { get; set; }
+    public DateTime? DateFrom { get; set; }
+    public DateTime? DateTo { get; set; }
     public decimal? MoneyInvolved { get; set; }
     public int? NumberOfChildrenInvolved { get; set; }
     public string? Description { get; set; }

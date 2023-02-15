@@ -4,10 +4,11 @@
 
 @if (Model.Any())
 {
-    <ul>
+    <h3>Organization types</h3>
+    <div class="organization-types">
         @foreach (var link in Model)
         {
-            <li><partial name="_Link" model="@link" /></li>
+            <div><partial name="_Link" model="@link" /></div>
         }
-    </ul>
+    </div>
 }
