@@ -10,5 +10,6 @@ public interface Node
     public Link[] Tags { get;  }
     public Comment[] Comments { get; }
     public Link[] BreadCrumElements { get;  }
+    public File[] Files { get;  }
 
 }

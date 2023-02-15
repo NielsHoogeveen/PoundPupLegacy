@@ -23,6 +23,7 @@ internal abstract class Migrator
     protected readonly ActionIdReaderByPath _actionReaderByPath;
     protected readonly TenantNodeIdReaderByUrlId _tenantNodeIdByUrlIdReader;
     protected readonly TenantNodeReaderByUrlId _tenantNodeByUrlIdReader;
+    protected readonly FileIdReaderByTenantFileId _fileIdReaderByTenantFileId;
 
 
     private readonly Stopwatch stopwatch = new Stopwatch();
@@ -40,6 +41,7 @@ internal abstract class Migrator
         _actionReaderByPath = mySqlToPostgresConverter.ActionIdReaderByPath;
         _tenantNodeIdByUrlIdReader = mySqlToPostgresConverter.TenantNodeIdByUrlIdReader;
         _tenantNodeByUrlIdReader = mySqlToPostgresConverter.TenantNodeByUrlIdReader;
+        _fileIdReaderByTenantFileId = mySqlToPostgresConverter.FileIdReaderByTenantFileId;
     }
 
     public async Task Migrate()

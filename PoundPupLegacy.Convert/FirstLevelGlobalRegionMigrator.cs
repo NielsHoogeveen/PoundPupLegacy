@@ -95,7 +95,7 @@ internal sealed class FirstLevelGlobalRegionMigrator : PPLMigrator
                 NodeTypeId = 11,
                 VocabularyNames = vocabularyNames,
                 Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL, reader.GetInt32("file_id_tile_image")),
                 Name = name,
             };
         }

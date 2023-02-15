@@ -11,4 +11,5 @@ public sealed record File : Identifiable
     public required String MimeType { get; init; }
 
     public required int Size { get; init; }
+    public required List<TenantFile> TenantFiles { get; init; }
 }

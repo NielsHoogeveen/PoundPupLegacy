@@ -90,6 +90,11 @@
                 {
                     <partial name="_Document" model="@document" />
                 }
+                @if (Model.Files.Any())
+                {
+                    <partial name="_Files" model="@Model.Files" />
+                }
+
             </article>
             @if (Model.Tags.Any())
             {

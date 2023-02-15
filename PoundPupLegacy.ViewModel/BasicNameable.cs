@@ -17,4 +17,17 @@ public record BasicNameable : Nameable
     public Comment[] Comments { get; set; }
     public Link[] SubTopics { get; set; }
     public Link[] SuperTopics { get; set; }
+    private File[] _files = Array.Empty<File>();
+    public required File[] Files
+    {
+        get => _files;
+        init
+        {
+            if (value is not null)
+            {
+                _files = value;
+            }
+        }
+    }
+
 }

@@ -28,5 +28,18 @@ public record Discussion : SimpleTextNode
     }
 
     public required Link[] BreadCrumElements { get; init; }
+    private File[] _files = Array.Empty<File>();
+    public required File[] Files
+    {
+        get => _files;
+        init
+        {
+            if (value is not null)
+            {
+                _files = value;
+            }
+        }
+    }
+
 
 }

@@ -67,7 +67,7 @@ internal sealed class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<M
             WriteValue(file.Size, SIZE, _identityCommand);
             file.Id = await _identityCommand.ExecuteScalarAsync() switch
             {
-                int i => i,
+                long i => (int)i,
                 _ => throw new Exception("No id has been assigned when adding a file"),
             };
         }

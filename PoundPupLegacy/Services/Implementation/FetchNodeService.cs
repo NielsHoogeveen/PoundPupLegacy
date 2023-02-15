@@ -24,6 +24,7 @@ internal class FetchNodeService : IFetchNodeService
             var sql = $"""
             WITH 
             {AUTHENTICATED_NODE},
+            {FILES_DOCUMENT},
             {SEE_ALSO_DOCUMENT},
             {DOCUMENTABLES_DOCUMENT},
             {LOCATIONS_DOCUMENT},
@@ -100,6 +101,24 @@ internal class FetchNodeService : IFetchNodeService
             await _connection.CloseAsync();
         }
     }
+
+    const string FILES_DOCUMENT = """
+        files_document as(
+            select
+            jsonb_agg(
+                jsonb_build_object(
+                    'Name', f.name,
+                    'Path', f.path,
+                    'Size', f.size,
+                    'MimeType', f.mime_type
+                )
+            ) document
+            from node_file nf
+            join tenant_node tn on tn.node_id = nf.node_id
+            join "file" f on f.id = nf.file_id
+            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+        )
+        """;
 
     const string AUTHENTICATED_NODE = """
         authenticated_node as (
@@ -1624,6 +1643,29 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string ORGANIZATION_TYPES_DOCUMENT = """
+        organization_types_document AS (
+            select
+                jsonb_agg(jsonb_build_object(
+        	        'Name', "name",
+        	        'Path', "path"
+                )) "document"
+            from(
+            select
+            n.title "name",
+            case 
+        	    when tn2.url_path is null then '/node/' || tn2.url_id
+        	    else tn2.url_path
+            end path	
+            from organization_type ot
+            join node n on n.id = ot.id
+            join organization_organization_type oot on oot.organization_type_id = ot.id
+            join organization o on o.id = oot.organization_id
+            join tenant_node tn1 on tn1.node_id = o.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
+            join tenant_node tn2 on tn2.node_id = ot.id and tn2.tenant_id = @tenant_id 
+            ) x
+        )
+        """;
 
     const string BASIC_COUNTRY_DOCUMENT = """
         basic_country_document AS (
@@ -1649,8 +1691,9 @@ internal class FetchNodeService : IFetchNodeService
                 'OrganizationTypes', (SELECT document FROM organizations_of_country_document),
                 'SubdivisionTypes', (SELECT document FROM country_subdivisions_document),
                 'SubTopics', (SELECT document from subtopics_document),
-                'SuperTopics', (SELECT document from supertopics_document)
-            ) :: jsonb document
+                'SuperTopics', (SELECT document from supertopics_document),
+                'Files', (SELECT document FROM files_document)
+            ) document
             FROM (
                  SELECT
                     an.url_id, 
@@ -1670,29 +1713,6 @@ internal class FetchNodeService : IFetchNodeService
         ) 
         """;
 
-    const string ORGANIZATION_TYPES_DOCUMENT = """
-        organization_types_document AS (
-            select
-                jsonb_agg(jsonb_build_object(
-        	        'Name', "name",
-        	        'Path', "path"
-                )) "document"
-            from(
-            select
-            n.title "name",
-            case 
-        	    when tn2.url_path is null then '/node/' || tn2.url_id
-        	    else tn2.url_path
-            end path	
-            from organization_type ot
-            join node n on n.id = ot.id
-            join organization_organization_type oot on oot.organization_type_id = ot.id
-            join organization o on o.id = oot.organization_id
-            join tenant_node tn1 on tn1.node_id = o.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
-            join tenant_node tn2 on tn2.node_id = ot.id and tn2.tenant_id = @tenant_id 
-            ) x
-        )
-        """;
 
     const string DOCUMENT_DOCUMENT = """
         document_document AS (
@@ -1718,7 +1738,8 @@ internal class FetchNodeService : IFetchNodeService
                 'BreadCrumElements', (SELECT document FROM document_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'Comments', (SELECT document FROM  comments_document),
-                'Documentables', (SELECT document FROM documentables_document)
+                'Documentables', (SELECT document FROM documentables_document),
+                'Files', (SELECT document FROM files_document)
             ) document
             FROM(
                 SELECT
@@ -1857,7 +1878,8 @@ internal class FetchNodeService : IFetchNodeService
                 'SuperTopics', (SELECT document from supertopics_document),
                 'PartyCaseTypes', (SELECT document from party_cases_document),
                 'PersonOrganizationRelations', (SELECT document from person_organization_relations_document),
-                'PartyPoliticalEntityRelations', (SELECT document from party_political_entity_relations_document)
+                'PartyPoliticalEntityRelations', (SELECT document from party_political_entity_relations_document),
+                'Files', (SELECT document FROM files_document)
             ) document
             FROM (
                  SELECT
@@ -1902,8 +1924,9 @@ internal class FetchNodeService : IFetchNodeService
                 'BreadCrumElements', (SELECT document FROM blog_post_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
-                'Comments', (SELECT document FROM  comments_document)
-            ) :: jsonb document
+                'Comments', (SELECT document FROM  comments_document),
+                'Files', (SELECT document FROM files_document)
+            ) document
             FROM (
                 SELECT
                     an.url_id, 
@@ -1941,7 +1964,8 @@ internal class FetchNodeService : IFetchNodeService
                     'BreadCrumElements', (SELECT document FROM article_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
-                    'Comments', (SELECT document FROM  comments_document)
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Files', (SELECT document FROM files_document)
                 ) document
             FROM (
                 SELECT
@@ -1979,8 +2003,9 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM topics_bread_crum_document),
                     'SubTopics', (SELECT document from subtopics_document),
-                    'SuperTopics', (SELECT document from supertopics_document)
-                ) :: jsonb document
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
             FROM (
                 SELECT
                     an.url_id, 
@@ -2022,8 +2047,9 @@ internal class FetchNodeService : IFetchNodeService
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
                     'SuperTopics', (SELECT document from supertopics_document),
-                    'CaseParties', (SELECT document from case_case_parties_document)
-                ) :: jsonb document
+                    'CaseParties', (SELECT document from case_case_parties_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
             FROM (
                 SELECT
                     an.url_id, 
@@ -2065,8 +2091,9 @@ internal class FetchNodeService : IFetchNodeService
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
                     'SuperTopics', (SELECT document from supertopics_document),
-                    'CaseParties', (SELECT document from case_case_parties_document)
-                ) :: jsonb document
+                    'CaseParties', (SELECT document from case_case_parties_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
             FROM (
                 SELECT
                     an.url_id, 

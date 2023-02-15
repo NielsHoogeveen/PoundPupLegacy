@@ -130,7 +130,7 @@ internal sealed class ProfessionMigrator : PPLMigrator
                 },
                 NodeTypeId = 6,
                 Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : reader.GetInt32("file_id_tile_image"),
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL, reader.GetInt32("file_id_tile_image")),
                 VocabularyNames = vocabularyNames,
                 HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
             };
