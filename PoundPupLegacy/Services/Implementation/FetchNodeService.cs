@@ -28,7 +28,8 @@ internal class FetchNodeService : IFetchNodeService
             {SEE_ALSO_DOCUMENT},
             {DOCUMENTABLES_DOCUMENT},
             {LOCATIONS_DOCUMENT},
-            {PARTY_CASES_DOCUMENT},
+            {ORGANIZATION_CASES_DOCUMENT},
+            {PERSON_CASES_DOCUMENT},
             {CASE_CASE_PARTIES_DOCUMENT},
             {INTER_ORGANIZATIONAL_RELATION_DOCUMENT},
             {INTER_PERSONAL_RELATION_DOCUMENT},
@@ -415,8 +416,8 @@ internal class FetchNodeService : IFetchNodeService
         )	
         """;
 
-    const string PARTY_CASES_DOCUMENT = """
-        party_cases_document as (
+    const string ORGANIZATION_CASES_DOCUMENT = """
+        organization_cases_document as (
             select
             jsonb_agg(
         	    jsonb_build_object(
@@ -489,6 +490,91 @@ internal class FetchNodeService : IFetchNodeService
         		    join case_party_type cpt on cpt.id= ccp.case_party_type_id
         		    join case_parties_organization o on o.case_parties_id = cp.id
         		    join tenant_node tn2 on tn2.node_id = o.organization_id
+        		    join node_type nt on nt.id = n.node_type_id
+        		    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
+        		    where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+        	    )x 
+        	    where status <> -1
+        	    group by case_type_name, case_party_type_name
+            ) x
+            group by case_type_name
+            ) x        
+        )
+        """;
+    const string PERSON_CASES_DOCUMENT = """
+        person_cases_document as (
+            select
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'CaseTypeName', case_type_name,
+        		    'PartyCases', party_cases
+        	    )
+            ) document
+            from(
+            select
+            case_type_name,
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'CasePartyTypeName', case_party_type_name,
+        		    'Cases', cases
+        	    )
+            ) party_cases
+            from(
+        	    select
+        	    case_type_name,
+        	    case_party_type_name,
+        	    jsonb_agg(jsonb_build_object(
+        		    'Name', title,
+        		    'Path', path
+        	    )) cases
+        	    from(
+        		    select
+        			    nt.name case_type_name,
+        			    cpt.name case_party_type_name,
+        			    n.title,
+        			    case 
+        				    when tn.url_path is null then '/node/' || tn.url_id
+        				    else '/' || tn.url_path
+        			    end path,
+        			    case 
+        				    when tn.publication_status_id = 0 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 0
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    join user_group ug on ug.id = ugu.user_group_id
+        					    WHERE ugu.user_group_id = 
+        					    case
+        						    when tn.subgroup_id is null then tn.tenant_id 
+        						    else tn.subgroup_id 
+        					    end 
+        					    AND ugu.user_role_id = ug.administrator_role_id
+        					    AND ugu.user_id = @user_id
+        				    )
+        				    when tn.publication_status_id = 1 then 1
+        				    when tn.publication_status_id = 2 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 1
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    WHERE ugu.user_group_id = 
+        						    case
+        							    when tn.subgroup_id is null then tn.tenant_id 
+        							    else tn.subgroup_id 
+        						    end
+        						    AND ugu.user_id = @user_id
+        					    )
+        			    end status	
+        		    from case_parties cp
+        		    join case_case_parties ccp on ccp.case_parties_id = cp.id 
+        		    join node n on n.id = ccp.case_id
+        		    join case_party_type cpt on cpt.id= ccp.case_party_type_id
+        		    join case_parties_person o on o.case_parties_id = cp.id
+        		    join tenant_node tn2 on tn2.node_id = o.person_id
         		    join node_type nt on nt.id = n.node_type_id
         		    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
         		    where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
@@ -2125,7 +2211,7 @@ internal class FetchNodeService : IFetchNodeService
                 'InterOrganizationalRelations', (SELECT document FROM inter_organizational_relation_document),
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
-                'PartyCaseTypes', (SELECT document from party_cases_document),
+                'PartyCaseTypes', (SELECT document from organization_cases_document),
                 'PersonOrganizationRelations', (SELECT document from person_organization_relations_document),
                 'PartyPoliticalEntityRelations', (SELECT document from party_political_entity_relations_document),
                 'Files', (SELECT document FROM files_document)
@@ -2187,7 +2273,7 @@ internal class FetchNodeService : IFetchNodeService
                 'InterPersonalRelations', (SELECT document FROM inter_personal_relation_document),
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
-                'PartyCaseTypes', (SELECT document from party_cases_document),
+                'PartyCaseTypes', (SELECT document from person_cases_document),
                 'OrganizationPersonRelations', (SELECT document from organization_person_relations_document),
                 'PartyPoliticalEntityRelations', (SELECT document from party_political_entity_relations_document),
                 'Files', (SELECT document FROM files_document)
