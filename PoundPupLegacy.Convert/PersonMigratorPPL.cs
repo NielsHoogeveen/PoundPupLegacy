@@ -249,7 +249,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
                 VocabularyNames = vocabularyNames,
                 DateOfBirth = GetDateOfBirth(reader.GetInt32("id"), reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth")),
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
-                FileIdPortrait = reader.IsDBNull("file_id_portrait") ? null : reader.GetInt32("file_id_portrait"),
+                FileIdPortrait = reader.IsDBNull("file_id_portrait") ? null : await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL, reader.GetInt32("file_id_portrait")),
                 FirstName = null,
                 LastName = null,
                 MiddleName = null,

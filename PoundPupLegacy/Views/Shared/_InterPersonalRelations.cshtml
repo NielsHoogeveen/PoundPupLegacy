@@ -1,0 +1,49 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<InterPersonalRelation>
+
+@if (Model.Any())
+{
+    <h3>Relations to other persons</h3>
+    <table style="width: 100%">
+        <tr>
+            <th>
+                Person
+            </th>
+            <th>
+                Relation Type
+            </th>
+            <th>
+                Person
+            </th>
+            <th>
+                Date from
+            </th>
+            <th>
+                Date to
+            </th>
+
+        </tr>
+        @foreach (var relation in Model.OrderBy(x => x.InterPersonalRelationType.Name).ThenBy(x => x.PersonTo.Name))
+        {
+            <tr>
+                <td>
+                    <partial name="_Link" model="@relation.PersonTo" />
+                </td>
+                <td>
+                    <partial name="_Link" model="@relation.InterPersonalRelationType" />
+                </td>
+                <td>
+                    <partial name="_Link" model="@relation.PersonFrom" />
+                </td>
+                <td>
+                    @relation.DateFrom?.ToString("yyyy MMMM dd")
+                </td>
+                <td>
+                    @relation.DateTo?.ToString("yyyy MMMM dd")
+                </td>
+            </tr>
+        }
+    </table>
+}
+

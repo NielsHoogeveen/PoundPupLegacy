@@ -78,6 +78,10 @@
                 {
                     <partial name="_Organization" model="@organization" />
                 }
+                @if (Model is Person person)
+                {
+                    <partial name="_Person" model="@person" />
+                }
                 @if (Model is BasicNameable basicNameable)
                 {
                     <partial name="_BasicNameable" model="@basicNameable" />

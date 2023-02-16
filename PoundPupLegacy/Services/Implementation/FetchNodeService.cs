@@ -31,9 +31,12 @@ internal class FetchNodeService : IFetchNodeService
             {PARTY_CASES_DOCUMENT},
             {CASE_CASE_PARTIES_DOCUMENT},
             {INTER_ORGANIZATIONAL_RELATION_DOCUMENT},
+            {INTER_PERSONAL_RELATION_DOCUMENT},
             {PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT},
+            {PROFESSIONS_DOCUMENT},
             {ORGANIZATION_TYPES_DOCUMENT},
             {PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
+            {ORGANIZATION_PERSON_RELATIONS_DOCUMENT},
             {TAGS_DOCUMENT},
             {SUBTOPICS_DOCUMENT},
             {SUPERTOPICS_DOCUMENT},
@@ -57,6 +60,7 @@ internal class FetchNodeService : IFetchNodeService
             {CHILD_TRAFFICKING_CASE_DOCUMENT},
             {BASIC_NAMEABLE_DOCUMENT},
             {ORGANIZATION_DOCUMENT},
+            {PERSON_DOCUMENT},
             {BASIC_COUNTRY_DOCUMENT},
             {NODE_DOCUMENT}
             SELECT node_type_id, document from node_document
@@ -86,6 +90,7 @@ internal class FetchNodeService : IFetchNodeService
                 10 => reader.GetFieldValue<Document>(1),
                 13 => reader.GetFieldValue<BasicCountry>(1),
                 23 => reader.GetFieldValue<Organization>(1),
+                24 => reader.GetFieldValue<Person>(1),
                 26 => reader.GetFieldValue<AbuseCase>(1),
                 35 => reader.GetFieldValue<BlogPost>(1),
                 36 => reader.GetFieldValue<Article>(1),
@@ -1034,6 +1039,161 @@ internal class FetchNodeService : IFetchNodeService
             )x
         )
         """;
+    const string INTER_PERSONAL_RELATION_DOCUMENT = """
+        inter_personal_relation_document as(
+            select
+                jsonb_agg(jsonb_build_object(
+        	        'PersonFrom', person_from,
+        	        'PersonTo', person_to,
+        	        'InterPersonalRelationType', inter_personal_relation_type,
+        	        'DateFrom', lower(date_range),
+                    'DateTo', upper(date_range),
+        	        'Direction', direction
+                )) document
+            from(
+        	    select
+        	    jsonb_build_object(
+        		    'Name', person_name_from,
+        		    'Path', person_path_from
+        	    ) person_from,
+        	    jsonb_build_object(
+        		    'Name', person_name_to,
+        		    'Path', person_path_to
+        	    ) person_to,
+        	    jsonb_build_object(
+        		    'Name', inter_personal_relation_type_name,
+        		    'Path', inter_personal_relation_type_path
+        	    ) inter_personal_relation_type,
+        	    date_range,
+        	    direction
+        	    from(
+        		    select
+        		    person_name_from,
+        		    case 
+        			    when person_path_from is null then '/node/' || person_id_from
+        			    else '/' || person_path_from
+        		    end person_path_from,
+        		    person_name_to,
+        		    case 
+        			    when person_path_to is null then '/node/' || person_id_to
+        			    else '/' || person_path_to
+        		    end person_path_to,
+        		    inter_personal_relation_type_name,
+        		    case 
+        			    when inter_personal_relation_type_path is null then '/node/' || inter_personal_relation_type_id
+        			    else '/' || inter_personal_relation_type_path
+        		    end inter_personal_relation_type_path,
+        		    date_range,
+        		    direction
+        		    from(
+        			    select
+        			    distinct
+        			    tn1.url_id person_id_from,
+        			    tn1.url_path person_path_from,
+        			    n1.title person_name_from,
+        			    tn2.url_id person_id_to,
+        			    tn2.url_path person_path_to,
+        			    n2.title person_name_to,
+        			    tn3.url_id inter_personal_relation_type_id,
+        			    tn3.url_path inter_personal_relation_type_path,
+        			    n3.title inter_personal_relation_type_name,
+        			    r.date_range,
+        			    1 direction
+        			    from node n
+        			    join inter_personal_relation r on r.id = n.id
+        			    join inter_personal_relation_type rt on rt.id = r.inter_personal_relation_type_id
+        			    join node n3 on n3.id = rt.id
+        			    join node n1 on n1.id = r.person_id_from
+        			    join person o1 on o1.id = n1.id
+        			    join node n2 on n2.id = r.person_id_to
+        			    join person o2 on o2.id = n2.id
+        			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
+        			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    where rt.is_symmetric
+        			    union 
+        			    select
+        			    distinct
+        			    tn2.url_id person_id_to,
+        			    tn2.url_path person_path_to,
+        			    n2.title person_name_to,
+        			    tn1.url_id person_id_from,
+        			    tn1.url_path person_path_from,
+        			    n1.title person_name_from,
+        			    tn3.url_id inter_personal_relation_type_id,
+        			    tn3.url_path inter_personal_relation_type_path,
+        			    n3.title inter_personal_relation_type_name,
+        			    r.date_range,
+        			    1 direction
+        			    from node n
+        			    join inter_personal_relation r on r.id = n.id
+        			    join inter_personal_relation_type rt on rt.id = r.inter_personal_relation_type_id
+        			    join node n3 on n3.id = rt.id
+        			    join node n1 on n1.id = r.person_id_from
+        			    join person o1 on o1.id = n1.id
+        			    join node n2 on n2.id = r.person_id_to
+        			    join person o2 on o2.id = n2.id
+        			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id
+        			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    where rt.is_symmetric
+        			    union 
+        			    select
+        			    distinct
+        			    tn1.url_id person_id_from,
+        			    tn1.url_path person_path_from,
+        			    n1.title person_name_from,
+        			    tn2.url_id person_id_to,
+        			    tn2.url_path person_path_to,
+        			    n2.title person_name_to,
+        			    tn3.url_id inter_person_relational_type_id,
+        			    tn3.url_path inter_personal_relation_type_path,
+        			    n3.title inter_personal_relation_type_name,
+        			    r.date_range,
+        			    2 direction
+        			    from node n
+        			    join inter_personal_relation r on r.id = n.id
+        			    join inter_personal_relation_type rt on rt.id = r.inter_personal_relation_type_id
+        			    join node n3 on n3.id = rt.id
+        			    join node n1 on n1.id = r.person_id_from
+        			    join person o1 on o1.id = n1.id
+        			    join node n2 on n2.id = r.person_id_to
+        			    join person o2 on o2.id = n2.id
+        			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
+        			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id 
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    where not rt.is_symmetric
+        			    union 
+        			    select
+        			    distinct
+        			    tn1.url_id person_id_from,
+        			    tn1.url_path person_path_from,
+        			    n1.title person_name_from,
+        			    tn2.url_id person_id_to,
+        			    tn2.url_path person_path_to,
+        			    n2.title person_name_to,
+        			    tn3.url_id inter_person_relation_type_id,
+        			    tn3.url_path inter_person_relation_type_path,
+        			    n3.title inter_person_relation_type_name,
+        			    r.date_range,
+        			    3 direction
+        			    from node n
+        			    join inter_personal_relation r on r.id = n.id
+        			    join inter_personal_relation_type rt on rt.id = r.inter_personal_relation_type_id
+        			    join node n3 on n3.id = rt.id
+        			    join node n1 on n1.id = r.person_id_from
+        			    join person o1 on o1.id = n1.id
+        			    join node n2 on n2.id = r.person_id_to
+        			    join person o2 on o2.id = n2.id
+        			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id 
+        			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    where not rt.is_symmetric
+        		    ) x
+        	    ) x
+            )x
+        )
+        """;
 
     const string SEE_ALSO_DOCUMENT = """
         see_also_document AS(
@@ -1666,6 +1826,30 @@ internal class FetchNodeService : IFetchNodeService
             ) x
         )
         """;
+    const string PROFESSIONS_DOCUMENT = """
+        professions_document AS (
+            select
+                jsonb_agg(jsonb_build_object(
+        	        'Name', "name",
+        	        'Path', "path"
+                )) "document"
+            from(
+            select
+            n.title "name",
+            case 
+        	    when tn2.url_path is null then '/node/' || tn2.url_id
+        	    else tn2.url_path
+            end path	
+            from profession ot
+            join node n on n.id = ot.id
+            join professional_role oot on oot.profession_id = ot.id
+            join person o on o.id = oot.person_id
+            join tenant_node tn1 on tn1.node_id = o.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
+            join tenant_node tn2 on tn2.node_id = ot.id and tn2.tenant_id = @tenant_id 
+            ) x
+        )
+        """;
+
 
     const string BASIC_COUNTRY_DOCUMENT = """
         basic_country_document AS (
@@ -1846,6 +2030,71 @@ internal class FetchNodeService : IFetchNodeService
         	where x.status <> -1
         )
         """;
+    const string ORGANIZATION_PERSON_RELATIONS_DOCUMENT = """
+        organization_person_relations_document as(
+            select
+                jsonb_agg(jsonb_build_object(
+        	        'Organization', jsonb_build_object(
+        		        'Name', organization_name,
+        		        'Path', path
+        	        ),
+        	        'RelationTypeName', relation_type_name,
+        	        'DateFrom', lower(date_range),
+        	        'DateTo', upper(date_range)
+                )) document
+            from(
+                select
+        			n.title organization_name,
+        			n2.title relation_type_name,
+        			por.date_range,
+        			case 
+        				when tn.url_path is null then '/node/' || tn.url_id
+        				else '/' || tn.url_path
+        			end path,
+        			case 
+        				when tn.publication_status_id = 0 then (
+        					select
+        						case 
+        							when count(*) > 0 then 0
+        							else -1
+        						end status
+        					from user_group_user_role_user ugu
+        					join user_group ug on ug.id = ugu.user_group_id
+        					WHERE ugu.user_group_id = 
+        					case
+        						when tn.subgroup_id is null then tn.tenant_id 
+        						else tn.subgroup_id 
+        					end 
+        					AND ugu.user_role_id = ug.administrator_role_id
+        					AND ugu.user_id = @user_id
+        				)
+        				when tn.publication_status_id = 1 then 1
+        				when tn.publication_status_id = 2 then (
+        					select
+        						case 
+        							when count(*) > 0 then 1
+        							else -1
+        						end status
+        					from user_group_user_role_user ugu
+        					WHERE ugu.user_group_id = 
+        						case
+        							when tn.subgroup_id is null then tn.tenant_id 
+        							else tn.subgroup_id 
+        						end
+        						AND ugu.user_id = @user_id
+        					)
+        			end status	
+        		from  node n
+        		join organization pe  on pe.id = n.id
+        		join person_organization_relation por on por.organization_id = pe.Id
+        		join node n2 on n2.id = por.person_organization_relation_type_id
+        		join tenant_node tn2 on tn2.node_id = por.person_id
+        		join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
+        		where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+        	) x
+        	where x.status <> -1
+        )
+        """;
 
     const string ORGANIZATION_DOCUMENT = """
         organization_document AS (
@@ -1904,7 +2153,73 @@ internal class FetchNodeService : IFetchNodeService
         ) 
         """;
 
-
+    const string PERSON_DOCUMENT = """
+        person_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Description', n.description,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'HasBeenPublished', n.has_been_published,
+                'DateOfBirth', date_of_birth,
+                'DateOfDeath', date_of_death,
+                'FirstName', first_name,
+                'LastName', last_name,
+                'FullName', full_name,
+                'Suffix', suffix,
+                'NickName', nick_name,
+                'MiddleName', middle_name,
+                'PortraitFilePath', portrait_file_path,
+                'BreadCrumElements', (SELECT document FROM organization_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'Comments', (SELECT document FROM  comments_document),
+                'Documents', (SELECT document FROM documents_document),
+                'Professions', (SELECT document FROM professions_document),
+                'Locations', (SELECT document FROM locations_document),
+                'InterPersonalRelations', (SELECT document FROM inter_personal_relation_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document),
+                'PartyCaseTypes', (SELECT document from party_cases_document),
+                'OrganizationPersonRelations', (SELECT document from organization_person_relations_document),
+                'PartyPoliticalEntityRelations', (SELECT document from party_political_entity_relations_document),
+                'Files', (SELECT document FROM files_document)
+            ) document
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
+                    o.date_of_birth,
+                    o.date_of_death,
+                    o.first_name,
+                    o.middle_name,
+                    o.last_name,
+                    o.full_name,
+                    o.suffix,
+                    o.nick_name,
+                    f.path portrait_file_path
+                FROM authenticated_node an
+                join person o on o.id = an.node_id 
+                left join file f on f.id = o.file_id_portrait
+                join nameable nm on nm.id = an.node_id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
     const string BLOG_POST_DOCUMENT = """
         blog_post_document AS (
             SELECT 
@@ -2120,6 +2435,7 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 10 then (select document from document_document)
                     when an.node_type_id = 13 then (select document from basic_country_document)
                     when an.node_type_id = 23 then (select document from organization_document)
+                    when an.node_type_id = 24 then (select document from person_document)
                     when an.node_type_id = 26 then (select document from abuse_case_document)
                     when an.node_type_id = 27 then (select document from child_trafficking_case_document)
                     when an.node_type_id = 35 then (select document from blog_post_document)

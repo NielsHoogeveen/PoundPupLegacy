@@ -2,14 +2,14 @@
 
 public record InterOrganizationalRelation
 {
-    public Link OrganizationFrom { get; set; }
-    public Link OrganizationTo { get; set; }
-    public Link InterOrganizationalRelationType { get; set; }
-    public Link? GeographicEntity { get; set; }
-    public DateTime? DateFrom { get; set; }
-    public DateTime? DateTo { get; set; }
-    public decimal? MoneyInvolved { get; set; }
-    public int? NumberOfChildrenInvolved { get; set; }
-    public string? Description { get; set; }
-    public int Direction { get; set; }
+    public required Link OrganizationFrom { get; init; }
+    public required Link OrganizationTo { get; init; }
+    public required Link InterOrganizationalRelationType { get; init; }
+    public required Link? GeographicEntity { get; init; }
+    public required DateTime? DateFrom { get; init; }
+    public required DateTime? DateTo { get; init; }
+    public required decimal? MoneyInvolved { get; init; }
+    public required int? NumberOfChildrenInvolved { get; init; }
+    public required string? Description { get; init; }
+    public required int Direction { get; init; }
 }

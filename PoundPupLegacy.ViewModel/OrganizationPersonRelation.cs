@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record PersonOrganizationRelation
+public record OrganizationPersonRelation
 {
-    public required Link Person { get; init; }
+    public required Link Organization { get; init; }
     public required string RelationTypeName { get; init; }
 
     public required DateTime? DateFrom { get; init; }
