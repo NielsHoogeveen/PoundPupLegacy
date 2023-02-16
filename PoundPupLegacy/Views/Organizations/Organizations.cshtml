@@ -1,7 +1,7 @@
 ﻿@using PoundPupLegacy.Services;
 @using PoundPupLegacy.ViewModel;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model Organizations
+@model OrganizationSearch
 @inject ISiteDataService siteDataService
 <div class="articles">
     <div class="breadcrum">
@@ -41,7 +41,7 @@
             }
         </select>
         <select name="search_option">
-            @if (Model.SelectedSearchOption == SearchOption.Contains)
+            @if (Model.Organizations.SelectedSearchOption == SearchOption.Contains)
             {
                 <option value="contains" selected>contains</option>
             }
@@ -49,7 +49,7 @@
             {
                 <option value="contains">contains</option>
             }
-            @if (Model.SelectedSearchOption == SearchOption.IsEqualTo)
+            @if (Model.Organizations.SelectedSearchOption == SearchOption.IsEqualTo)
             {
                 <option value="is_equal_to" selected>is equal to</option>
             }
@@ -57,7 +57,7 @@
             {
                 <option value="is_equal_to">is equal to</option>
             }
-            @if (Model.SelectedSearchOption == SearchOption.StartsWith)
+            @if (Model.Organizations.SelectedSearchOption == SearchOption.StartsWith)
             {
                 <option value="starts_with" selected>starts with</option>
             }
@@ -65,7 +65,7 @@
             {
                 <option value="starts_with">starts with</option>
             }
-            @if (Model.SelectedSearchOption == SearchOption.EndsWith)
+            @if (Model.Organizations.SelectedSearchOption == SearchOption.EndsWith)
             {
 
                 <option value="ends_with" selected>ends with</option>
@@ -75,14 +75,23 @@
                 <option value="ends_with">ends with</option>
             }
         </select>
-        <input type="text" name="search" value="@Model.SearchTerm"/>
+        <input type="text" name="search" value="@Model.Organizations.SearchTerm"/>
         <input type="submit" value="Search" />
-        </form>
-    @foreach (var organization in Model.Entries)
+    </form>
+    @if (Model.Organizations.Entries.Any())
     {
-        <div>
-            <a href="@organization.Path">@organization.Title</a>
-        </div>
+        @foreach (var organization in Model.Organizations.Entries)
+        {
+            <div>
+                <a href="@organization.Path">@organization.Title</a>
+            </div>
+        }
+        <partial name="~/Views/Shared/_PagedList.cshtml" model="@Model.Organizations" />
+    }
+    else
+    {
+        <p>No organizations were found</p>
+    
     }
 </div>
 @{

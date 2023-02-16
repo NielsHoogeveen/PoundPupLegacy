@@ -72,6 +72,7 @@ internal sealed class NodeFileMigratorPPL : PPLMigrator
                     45656, 
                     74250
                 )
+                AND f.fid not in (3197, 3198)
                 """;
         using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

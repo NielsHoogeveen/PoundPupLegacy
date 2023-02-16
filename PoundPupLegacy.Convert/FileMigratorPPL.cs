@@ -31,6 +31,7 @@ internal sealed class FileMigratorPPL : PPLMigrator
                 f.filesize size
                 FROM `files` f
                 WHERE fileName NOT IN ('preview', 'thumbnail', '_original')
+                AND f.fid not in (3197, 3198)
                 """;
         using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

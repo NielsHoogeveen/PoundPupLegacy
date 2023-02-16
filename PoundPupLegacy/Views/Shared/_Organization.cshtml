@@ -7,12 +7,35 @@
 <div class="text">
     @Html.Raw(Model.Description.Replace(@"href=""http://poundpuplegacy.org", @"href="""))
 </div>
-<div>
+@if(Model.WebsiteUrl is not null)
+{
+    <div>
+    <label>Website: </label>
     @Model.WebsiteUrl
-</div>
-<div>
-    @Model.EmailAddress
-</div>
+    </div>
+    
+}
+@if (Model.EmailAddress is not null)
+{
+    <div>
+        <label>Email: </label>
+        @Model.EmailAddress
+    </div>
+}
+@if (Model.Established.HasValue)
+{
+    <div>
+        <label>Established: </label>
+        @Model.Established.Value.ToString("yyyy MMMM dd")
+    </div>
+}
+@if (Model.Terminated.HasValue)
+{
+    <div>
+    <label>Terminated: </label>
+        @Model.Terminated.Value.ToString("yyyy MMMM dd")
+    </div>
+}
 <partial name="_OrganizationTypes" model="@Model.OrganizationTypes" />
 <partial name="_PartyCaseType" model="@Model.PartyCaseTypes" />
 <partial name="_PersonOrganizationRelations" model="@Model.PersonOrganizationRelations" />

@@ -50,7 +50,7 @@ public class OrganizationsController : Controller
 
     public int? GetCountryId(string? country)
     {
-        if (country is null)
+        if (country is null || country == "0")
         {
             return null;
         }
@@ -62,7 +62,7 @@ public class OrganizationsController : Controller
     }
     public int? GetOrganizationTypeId(string? organizationType)
     {
-        if (organizationType is null)
+        if (organizationType is null || organizationType == "0")
         {
             return null;
         }
@@ -96,14 +96,14 @@ public class OrganizationsController : Controller
         var searchTerm = GetSearchTerm(query["search"]);
         var searchOption = GetSearchOption(query["search_option"]);
         int? countryId = GetCountryId(query["country"]);
-        int? organizationTypeId = GetCountryId(query["organization_type"]);
+        int? organizationTypeId = GetOrganizationTypeId(query["organization_type"]);
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
         var userId = _siteDataService.GetUserId();
         var tenantId = _siteDataService.GetTenantId();
-        var organizations = await _fetchOrganizationsService.FetchOrganizations(NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption, tenantId, userId);
-        organizations.PageNumber = pageNumber;
-        organizations.NumberOfPages = (organizations.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
-        organizations.QueryString = $"&search={searchTerm}";
+        var organizations = await _fetchOrganizationsService.FetchOrganizations(NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption, tenantId, userId, organizationTypeId, countryId);
+        organizations.Organizations.PageNumber = pageNumber;
+        organizations.Organizations.NumberOfPages = (organizations.Organizations.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
+        organizations.Organizations.QueryString = $"&search={searchTerm}";
         foreach (var country in organizations.Countries)
         {
             if (country.Id == countryId)
@@ -122,8 +122,8 @@ public class OrganizationsController : Controller
             }
             organizationType.Selected = false;
         }
-        organizations.SelectedSearchOption = searchOption;
-        organizations.SearchTerm = searchTerm;
+        organizations.Organizations.SelectedSearchOption = searchOption;
+        organizations.Organizations.SearchTerm = searchTerm;
         _logger.LogInformation($"Fetched organizations in {stopwatch.Elapsed.TotalMilliseconds} ms");
         return View("Organizations", organizations);
     }

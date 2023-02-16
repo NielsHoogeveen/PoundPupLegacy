@@ -84,7 +84,7 @@ public class Program
         app.UseStaticFiles();
         app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new PhysicalFileProvider("d:\\ppl\\files"),
+            FileProvider = new PhysicalFileProvider("\\\\wsl.localhost\\Ubuntu\\home\\niels\\files\\files"),
             RequestPath = "/files"
         });
 

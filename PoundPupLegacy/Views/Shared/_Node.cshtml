@@ -90,6 +90,34 @@
                 {
                     <partial name="_AbuseCase" model="@abuseCase" />
                 }
+                @if (Model is ChildTraffickingCase childTraffickingCase)
+                {
+                    <partial name="_ChildTraffickingCase" model="@childTraffickingCase" />
+                }
+                @if (Model is CoercedAdoptionCase coercedAdoptionCase)
+                {
+                    <partial name="_CoercedAdoptionCase" model="@coercedAdoptionCase" />
+                }
+                @if (Model is DeportationCase deportationCase)
+                {
+                    <partial name="_DeportationCase" model="@deportationCase" />
+                }
+                @if (Model is DisruptedPlacementCase disruptedPlacementCase)
+                {
+                    <partial name="_DisruptedPlacementCase" model="@disruptedPlacementCase" />
+                }
+                @if (Model is FathersRightsViolationCase fathersRightsViolationCase)
+                {
+                    <partial name="_FathersRightsViolationCase" model="@fathersRightsViolationCase" />
+                }
+                @if (Model is WrongfulMedicationCase wrongfulMedicationCase)
+                {
+                    <partial name="_WrongfulMedicationCase" model="@wrongfulMedicationCase" />
+                }
+                @if (Model is WrongfulRemovalCase wrongfulRemovalCase)
+                {
+                    <partial name="_WrongfulRemovalCase" model="@wrongfulRemovalCase" />
+                }
                 @if (Model is Document document)
                 {
                     <partial name="_Document" model="@document" />

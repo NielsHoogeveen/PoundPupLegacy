@@ -2,6 +2,7 @@
 using Npgsql;
 using PoundPupLegacy.Db.Readers;
 using System.Diagnostics;
+using System.IO;
 
 namespace PoundPupLegacy.Convert;
 
@@ -10,87 +11,88 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
     private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
     public async Task Convert()
     {
-        await TruncateDatabase();
-        await (new PublicationStatusMigrator(this)).Migrate();
-        await (new CaseRelationTypeMigrator(this)).Migrate();
-        await (new NodeTypeMigrator(this)).Migrate();
-        await (new ActionMigrator(this)).Migrate();
-        await (new UserMigrator(this)).Migrate();
-        await (new FileMigratorPPL(this)).Migrate();
-        await (new FileMigratorCPCT(this)).Migrate();
-        await (new VocabularyMigrator(this)).Migrate();
-        await (new SubdivisionTypeMigrator(this)).Migrate();
-        await (new BasicNameableMigrator(this)).Migrate();
-        await (new ChildPlacementTypeMigrator(this)).Migrate();
-        await (new OrganizationTypeMigrator(this)).Migrate();
-        await (new InterCountryRelationTypeMigrator(this)).Migrate();
-        await (new InterOrganizationalRelationTypeMigrator(this)).Migrate();
-        await (new InterPersonalRelationTypeMigrator(this)).Migrate();
-        await (new PartyPoliticalEntityRelationTypeMigrator(this)).Migrate();
-        await (new PersonOrganizationRelationTypeMigrator(this)).Migrate();
-        await (new TypeOfAbuseMigrator(this)).Migrate();
-        await (new TypeOfAbuserMigrator(this)).Migrate();
-        await (new FamilySizeMigrator(this)).Migrate();
-        await (new ProfessionMigrator(this)).Migrate();
-        await (new DenominationMigrator(this)).Migrate();
-        await (new HagueStatusMigrator(this)).Migrate();
-        await (new DocumentTypeMigrator(this)).Migrate();
-        await (new FirstLevelGlobalRegionMigrator(this)).Migrate();
-        await (new SecondLevelGlobalRegionMigrator(this)).Migrate();
-        await (new BasicCountryMigrator(this)).Migrate();
-        await (new BindingCountryMigrator(this)).Migrate();
-        await (new CountrySubdivisionTypeMigratorPartOne(this)).Migrate();
-        await (new BoundCountryMigrator(this)).Migrate();
-        await (new CountrySubdivisionTypeMigratorPartTwo(this)).Migrate();
-        await (new CountryAndFirstLevelSubDivisionMigrator(this)).Migrate();
-        await (new CountryAndFirstAndSecondLevelSubdivisionMigrator(this)).Migrate();
-        await (new CountrySubdivisionTypeMigratorPartThree(this)).Migrate();
-        await (new FirstAndBottomLevelSubdivisionMigrator(this)).Migrate();
-        await (new InformalIntermediateLevelSubdivisionMigrator(this)).Migrate();
-        await (new FormalIntermediateLevelSubdivisionMigrator(this)).Migrate();
-        await (new BasicSecondLevelSubdivisionMigrator(this)).Migrate();
-        await (new BlogPostMigrator(this)).Migrate();
-        await (new ArticleMigrator(this)).Migrate();
-        await (new DiscussionMigrator(this)).Migrate();
-        await (new AdoptionImportMigrator(this)).Migrate();
-        await (new DocumentMigratorPPL(this)).Migrate();
-        await (new OrganizationMigratorPPL(this)).Migrate();
-        await (new PersonMigratorPPL(this)).Migrate();
-        await (new AbuseCaseMigrator(this)).Migrate();
-        await (new ChildTraffickingCaseMigrator(this)).Migrate();
-        await (new CoercedAdoptionCaseMigrator(this)).Migrate();
-        await (new DisruptedPlacementCaseMigrator(this)).Migrate();
-        await (new DeportationCaseMigrator(this)).Migrate();
-        await (new FathersRightsViolationsCaseMigrator(this)).Migrate();
-        await (new WrongfulMedicationCaseMigrator(this)).Migrate();
-        await (new WrongfulRemovalCaseMigrator(this)).Migrate();
-        await (new LocationMigrator(this)).Migrate();
-        await (new PageMigrator(this)).Migrate();
-        await (new ReviewMigrator(this)).Migrate();
-        await (new ActMigrator(this)).Migrate();
-        await (new BillMigrator(this)).Migrate();
-        await (new NodeTermMigrator(this)).Migrate();
-        await (new MenuMigrator(this)).Migrate();
-        await (new DocumentableDocumentMigrator(this)).Migrate();
-        await (new CommentMigrator(this)).Migrate();
-        await (new TermHierarchyMigrator(this)).Migrate();
-        await (new UnitedStatesCongressionalMeetingMigrator(this)).Migrate();
-        await (new PartyPoliticalEntityRelationMigratorPPL(this)).Migrate();
-        await (new PersonOrganizationRelationMigratorPPL(this)).Migrate();
-        await (new InterOrganizationalRelationMigratorPPL(this)).Migrate();
-        await (new InterPersonalRelationMigratorPPL(this)).Migrate();
-        await (new MemberOfCongressMigrator(this)).Migrate();
-        await (new OrganizationMigratorCPCT(this)).Migrate();
-        await (new PersonMigratorCPCT(this)).Migrate();
-        await (new PersonOrganizationRelationMigratorCPCT(this)).Migrate();
-        await (new DocumentMigratorCPCT(this)).Migrate();
-        await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
-        await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
-        await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
-        await (new SearchableMigrator(this)).Migrate();
-        await (new CaseCaseRelationsMigrator(this)).Migrate();
-        await (new NodeFileMigratorPPL(this)).Migrate();
-        await (new NodeFileMigratorCPCT(this)).Migrate();
+        //await TruncateDatabase();
+        //await (new PublicationStatusMigrator(this)).Migrate();
+        //await (new CaseRelationTypeMigrator(this)).Migrate();
+        //await (new NodeTypeMigrator(this)).Migrate();
+        //await (new ActionMigrator(this)).Migrate();
+        //await (new UserMigrator(this)).Migrate();
+        //await (new FileMigratorPPL(this)).Migrate();
+        //await (new FileMigratorCPCT(this)).Migrate();
+        //await (new VocabularyMigrator(this)).Migrate();
+        //await (new SubdivisionTypeMigrator(this)).Migrate();
+        //await (new BasicNameableMigrator(this)).Migrate();
+        //await (new ChildPlacementTypeMigrator(this)).Migrate();
+        //await (new OrganizationTypeMigrator(this)).Migrate();
+        //await (new InterCountryRelationTypeMigrator(this)).Migrate();
+        //await (new InterOrganizationalRelationTypeMigrator(this)).Migrate();
+        //await (new InterPersonalRelationTypeMigrator(this)).Migrate();
+        //await (new PartyPoliticalEntityRelationTypeMigrator(this)).Migrate();
+        //await (new PersonOrganizationRelationTypeMigrator(this)).Migrate();
+        //await (new TypeOfAbuseMigrator(this)).Migrate();
+        //await (new TypeOfAbuserMigrator(this)).Migrate();
+        //await (new FamilySizeMigrator(this)).Migrate();
+        //await (new ProfessionMigrator(this)).Migrate();
+        //await (new DenominationMigrator(this)).Migrate();
+        //await (new HagueStatusMigrator(this)).Migrate();
+        //await (new DocumentTypeMigrator(this)).Migrate();
+        //await (new FirstLevelGlobalRegionMigrator(this)).Migrate();
+        //await (new SecondLevelGlobalRegionMigrator(this)).Migrate();
+        //await (new BasicCountryMigrator(this)).Migrate();
+        //await (new BindingCountryMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartOne(this)).Migrate();
+        //await (new BoundCountryMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartTwo(this)).Migrate();
+        //await (new CountryAndFirstLevelSubDivisionMigrator(this)).Migrate();
+        //await (new CountryAndFirstAndSecondLevelSubdivisionMigrator(this)).Migrate();
+        //await (new CountrySubdivisionTypeMigratorPartThree(this)).Migrate();
+        //await (new FirstAndBottomLevelSubdivisionMigrator(this)).Migrate();
+        //await (new InformalIntermediateLevelSubdivisionMigrator(this)).Migrate();
+        //await (new FormalIntermediateLevelSubdivisionMigrator(this)).Migrate();
+        //await (new BasicSecondLevelSubdivisionMigrator(this)).Migrate();
+        //await (new BlogPostMigrator(this)).Migrate();
+        //await (new ArticleMigrator(this)).Migrate();
+        //await (new DiscussionMigrator(this)).Migrate();
+        //await (new AdoptionImportMigrator(this)).Migrate();
+        //await (new DocumentMigratorPPL(this)).Migrate();
+        //await (new OrganizationMigratorPPL(this)).Migrate();
+        //await (new PersonMigratorPPL(this)).Migrate();
+        //await (new AbuseCaseMigrator(this)).Migrate();
+        //await (new ChildTraffickingCaseMigrator(this)).Migrate();
+        //await (new CoercedAdoptionCaseMigrator(this)).Migrate();
+        //await (new DisruptedPlacementCaseMigrator(this)).Migrate();
+        //await (new DeportationCaseMigrator(this)).Migrate();
+        //await (new FathersRightsViolationsCaseMigrator(this)).Migrate();
+        //await (new WrongfulMedicationCaseMigrator(this)).Migrate();
+        //await (new WrongfulRemovalCaseMigrator(this)).Migrate();
+        //await (new LocationMigrator(this)).Migrate();
+        //await (new PageMigrator(this)).Migrate();
+        //await (new ReviewMigrator(this)).Migrate();
+        //await (new ActMigrator(this)).Migrate();
+        //await (new BillMigrator(this)).Migrate();
+        //await (new NodeTermMigrator(this)).Migrate();
+        //await (new MenuMigrator(this)).Migrate();
+        //await (new DocumentableDocumentMigrator(this)).Migrate();
+        //await (new CommentMigrator(this)).Migrate();
+        //await (new TermHierarchyMigrator(this)).Migrate();
+        //await (new UnitedStatesCongressionalMeetingMigrator(this)).Migrate();
+        //await (new PartyPoliticalEntityRelationMigratorPPL(this)).Migrate();
+        //await (new PersonOrganizationRelationMigratorPPL(this)).Migrate();
+        //await (new InterOrganizationalRelationMigratorPPL(this)).Migrate();
+        //await (new InterPersonalRelationMigratorPPL(this)).Migrate();
+        //await (new MemberOfCongressMigrator(this)).Migrate();
+        //await (new OrganizationMigratorCPCT(this)).Migrate();
+        //await (new PersonMigratorCPCT(this)).Migrate();
+        //await (new PersonOrganizationRelationMigratorCPCT(this)).Migrate();
+        //await (new DocumentMigratorCPCT(this)).Migrate();
+        //await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
+        //await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
+        //await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
+        //await (new SearchableMigrator(this)).Migrate();
+        //await (new CaseCaseRelationsMigrator(this)).Migrate();
+        //await (new NodeFileMigratorPPL(this)).Migrate();
+        //await (new NodeFileMigratorCPCT(this)).Migrate();
+        await PrepareFiles();
     }
 
     internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=niels;database=ppl";
@@ -238,5 +240,105 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         await TermByNameableIdReader.DisposeAsync();
         await SubdivisionIdReader.DisposeAsync();
         await SubdivisionIdReaderByIso3166Code.DisposeAsync();
+    }
+
+    private async Task PrepareFiles()
+    {
+        var cpctDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\cpct");
+        var pplDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\ppl");
+        var combinedDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\files");
+        foreach (FileInfo file in combinedDirectory.GetFiles())
+        {
+            file.Delete();
+        }
+        foreach (DirectoryInfo dir in combinedDirectory.GetDirectories())
+        {
+            dir.Delete(true);
+        }
+        combinedDirectory.CreateSubdirectory("files");
+        var sql = """
+            select 
+            f.path,	
+            case 
+            	when tf1.tenant_file_id = tf6.tenant_file_id then  1
+            	when tf6.file_id = tf6.tenant_file_id and tf1.file_id <> tf1.tenant_file_id then 1
+            	when tf6.file_id <> tf6.tenant_file_id and tf1.file_id = tf1.tenant_file_id then 6
+            	else -1
+            end	tenant_id
+            from "file" f
+            left join tenant_file tf1 on tf1.file_id = f.id and tf1.tenant_id = 1
+            left join tenant_file tf6 on tf6.file_id = f.id and tf6.tenant_id = 6
+            """;
+        using var command = PostgresConnection.CreateCommand();
+        command.CommandType = System.Data.CommandType.Text;
+        command.CommandText = sql;
+
+        var reader = await command.ExecuteReaderAsync();
+        while (reader.Read())
+        {
+            var path = reader.GetString(0);
+            var tenant = reader.GetInt32(1);
+            var tagetPath = $"{combinedDirectory.FullName}\\{path.Replace("/", "\\")}";
+            Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
+            var sourcePath = tenant switch
+            {
+                1 => $"{pplDirectory.FullName}\\{path.Replace("/", "\\")}",
+                6 => $"{cpctDirectory.FullName}\\{path.Replace("/", "\\")}",
+                _ => throw new Exception($"Tenant {tenant} is unknown"),
+            };
+            if (File.Exists(sourcePath))
+            {
+                File.Copy(sourcePath, tagetPath);
+            }
+            else
+            {
+                Console.WriteLine($"file {sourcePath} not found");
+            }
+        }
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\flags")).GetFiles()) 
+        {
+            
+            var tagetPath = $"{combinedDirectory.FullName}\\files\\flags\\{file.Name}";
+            Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
+            File.Copy(file.FullName, tagetPath);
+        }
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\images")).GetFiles())
+        {
+
+            var tagetPath = $"{combinedDirectory.FullName}\\files\\images\\{file.Name}";
+            Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
+            File.Copy(file.FullName, tagetPath);
+        }
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\jcics")).GetFiles())
+        {
+
+            var tagetPath = $"{combinedDirectory.FullName}\\files\\jcics\\{file.Name}";
+            Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
+            File.Copy(file.FullName, tagetPath);
+        }
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\my_own_baby_pages")).GetFiles())
+        {
+
+            var tagetPath = $"{combinedDirectory.FullName}\\files\\my_own_baby_pages\\{file.Name}";
+            Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
+            File.Copy(file.FullName, tagetPath);
+        }
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\pictures")).GetFiles())
+        {
+
+            var tagetPath = $"{combinedDirectory.FullName}\\files\\pictures\\{file.Name}";
+            Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
+            File.Copy(file.FullName, tagetPath);
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName($"{combinedDirectory}\\files\\userimages\\Image")!);
+        CopyFilesRecursively(new DirectoryInfo($"{pplDirectory}\\files\\userimages\\Image"), new DirectoryInfo($"{combinedDirectory}\\files\\userimages\\Image"));
+    }
+
+    private static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
+    {
+        foreach (DirectoryInfo dir in source.GetDirectories())
+            CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
+        foreach (FileInfo file in source.GetFiles())
+            file.CopyTo(Path.Combine(target.FullName, file.Name));
     }
 }

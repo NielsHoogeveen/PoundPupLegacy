@@ -67,5 +67,5 @@ public interface PagedList
 public interface PagedList<T> : PagedList
     where T : ListEntry
 {
-    public T[] Entries { get; set; }
+    public T[] Entries { get; }
 }

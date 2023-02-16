@@ -259,7 +259,7 @@ article .text{
 }
 
 .comment-unpublished, .node-unpublished {
-    background-color: red;
+    background-color: #ddd;
 }
 .watermark {
     height: 0;

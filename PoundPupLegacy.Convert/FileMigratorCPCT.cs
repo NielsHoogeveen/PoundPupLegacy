@@ -32,6 +32,19 @@ internal sealed class FileMigratorCPCT : CPCTMigrator
                 FROM `files` f
                 WHERE fileName NOT IN ('preview', 'thumbnail', '_original')
                 and f.fid > 1185
+                and fid not in (
+                    1200,
+                    1214,
+                    1265,
+                    1419,
+                    1468,
+                    1586,
+                    1647,
+                    1867,
+                    3045,
+                    3507,
+                    3968
+                )
                 """;
         using var readCommand = MysqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -48,8 +61,8 @@ internal sealed class FileMigratorCPCT : CPCTMigrator
             yield return new File
             {
                 Id = null,
-                Path = reader.GetString("path"),
-                Name = reader.GetString("name"),
+                Path = GetPath(id, reader.GetString("path")),
+                Name = GetName(id, reader.GetString("name")),
                 MimeType = reader.GetString("mime_type"),
                 Size = reader.GetInt32("size"),
                 TenantFiles = new List<TenantFile>{
@@ -70,5 +83,23 @@ internal sealed class FileMigratorCPCT : CPCTMigrator
 
         }
         await reader.CloseAsync();
+    }
+    private string GetName(int id, string name)
+    {
+        return id switch
+        {
+            3913 => "Günther Verheugen 25-9-2017.pdf",
+            2084 => "Panţîru%2C_Maria-Cristina.pdf",
+            _ => name
+        };
+    }
+    private string GetPath(int id, string path)
+    {
+        return id switch
+        {
+            3913 => "files/Günther Verheugen 25-9-2017.pdf",
+            2084 => "files/Panţîru%2C_Maria-Cristina.pdf",
+            _ => path
+        };
     }
 }

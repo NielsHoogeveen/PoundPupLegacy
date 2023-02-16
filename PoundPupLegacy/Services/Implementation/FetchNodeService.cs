@@ -51,6 +51,12 @@ internal class FetchNodeService : IFetchNodeService
             {ARTICLE_BREADCRUM_DOCUMENT},
             {ABUSE_CASE_BREADCRUM_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT},
+            {COERCED_ADOPTION_CASE_BREADCRUM_DOCUMENT},
+            {DEPORTATION_CASE_BREADCRUM_DOCUMENT},
+            {DISRUPTED_PLACEMENT_CASE_BREADCRUM_DOCUMENT},
+            {FATHERS_RIGHTS_VIOLATION_CASE_BREADCRUM_DOCUMENT},
+            {WRONGFUL_MEDICATION_CASE_BREADCRUM_DOCUMENT},
+            {WRONGFUL_REMOVAL_CASE_BREADCRUM_DOCUMENT},
             {COUNTRY_BREADCRUM_DOCUMENT},
             {TOPICS_BREADCRUM_DOCUMENT},
             {ADOPTION_IMPORTS_DOCUMENT},
@@ -59,6 +65,12 @@ internal class FetchNodeService : IFetchNodeService
             {DOCUMENT_DOCUMENT},
             {ABUSE_CASE_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_DOCUMENT},
+            {COERCED_ADOPTION_CASE_DOCUMENT},
+            {DEPORTATION_CASE_DOCUMENT},
+            {DISRUPTED_PLACEMENT_CASE_DOCUMENT},
+            {FATHERS_RIGHTS_VIOLATION_CASE_DOCUMENT},
+            {WRONGFUL_MEDICATION_CASE_DOCUMENT},
+            {WRONGFUL_REMOVAL_CASE_DOCUMENT},
             {BASIC_NAMEABLE_DOCUMENT},
             {ORGANIZATION_DOCUMENT},
             {PERSON_DOCUMENT},
@@ -93,10 +105,17 @@ internal class FetchNodeService : IFetchNodeService
                 23 => reader.GetFieldValue<Organization>(1),
                 24 => reader.GetFieldValue<Person>(1),
                 26 => reader.GetFieldValue<AbuseCase>(1),
+                29 => reader.GetFieldValue<ChildTraffickingCase>(1),
+                30 => reader.GetFieldValue<CoercedAdoptionCase>(1),
+                31 => reader.GetFieldValue<DeportationCase>(1),
+                32 => reader.GetFieldValue<FathersRightsViolationCase>(1),
+                33 => reader.GetFieldValue<WrongfulMedicationCase>(1),
+                34 => reader.GetFieldValue<WrongfulRemovalCase>(1),
                 35 => reader.GetFieldValue<BlogPost>(1),
                 36 => reader.GetFieldValue<Article>(1),
                 37 => reader.GetFieldValue<Discussion>(1),
                 41 => reader.GetFieldValue<BasicNameable>(1),
+                44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
                 _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
             };
 
@@ -1753,6 +1772,198 @@ internal class FetchNodeService : IFetchNodeService
             ) bces
         )
         """;
+    const string COERCED_ADOPTION_CASE_BREADCRUM_DOCUMENT = """
+        coerced_adoption_case_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/coerced_adoption_cases', 
+                    'Coerced adoption cases', 
+                    2
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+    const string DEPORTATION_CASE_BREADCRUM_DOCUMENT = """
+        deportation_case_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/deportation_cases', 
+                    'Deportation cases', 
+                    2
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+    const string DISRUPTED_PLACEMENT_CASE_BREADCRUM_DOCUMENT = """
+        disrupted_placement_case_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/disrupted_placement_cases', 
+                    'Disrupted placememt cases', 
+                    2
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+    const string FATHERS_RIGHTS_VIOLATION_CASE_BREADCRUM_DOCUMENT = """
+        fathers_rights_violation_case_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/fathers_rights_violation_cases', 
+                    'Father''s rights violation cases', 
+                    2
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+    const string WRONGFUL_MEDICATION_CASE_BREADCRUM_DOCUMENT = """
+        wrongful_medication_case_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/wrongful_medication_cases', 
+                    'Wrongful medicatiion cases', 
+                    2
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+    const string WRONGFUL_REMOVAL_CASE_BREADCRUM_DOCUMENT = """
+        wrongful_removal_case_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/wrongful_removal_cases', 
+                    'Wrongful removal cases', 
+                    2
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
 
     const string COMMENTS_DOCUMENT = """
         comments_document AS (
@@ -2513,6 +2724,273 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+    const string COERCED_ADOPTION_CASE_DOCUMENT = """
+        coerced_adoption_case_document AS (
+            SELECT 
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM coerced_adoption_case_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Documents', (SELECT document FROM documents_document),
+                    'Locations', (SELECT document FROM locations_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'CaseParties', (SELECT document from case_case_parties_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join coerced_adoption_case ac on ac.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
+    const string DEPORTATION_CASE_DOCUMENT = """
+        deportation_case_document AS (
+            SELECT 
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM deportation_case_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Documents', (SELECT document FROM documents_document),
+                    'Locations', (SELECT document FROM locations_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'CaseParties', (SELECT document from case_case_parties_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join deportation_case ac on ac.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
+    const string DISRUPTED_PLACEMENT_CASE_DOCUMENT = """
+        disrupted_placement_case_document AS (
+            SELECT 
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM disrupted_placement_case_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Documents', (SELECT document FROM documents_document),
+                    'Locations', (SELECT document FROM locations_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'CaseParties', (SELECT document from case_case_parties_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join disrupted_placement_case ac on ac.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+    const string FATHERS_RIGHTS_VIOLATION_CASE_DOCUMENT = """
+        fathers_rights_violation_case_document AS (
+            SELECT 
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM fathers_rights_violation_case_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Documents', (SELECT document FROM documents_document),
+                    'Locations', (SELECT document FROM locations_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'CaseParties', (SELECT document from case_case_parties_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join fathers_rights_violation_case ac on ac.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+    const string WRONGFUL_MEDICATION_CASE_DOCUMENT = """
+        wrongful_medication_case_document AS (
+            SELECT 
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM wrongful_medication_case_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Documents', (SELECT document FROM documents_document),
+                    'Locations', (SELECT document FROM locations_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'CaseParties', (SELECT document from case_case_parties_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join wrongful_medication_case ac on ac.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+    const string WRONGFUL_REMOVAL_CASE_DOCUMENT = """
+        wrongful_removal_case_document AS (
+            SELECT 
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Description', n.description,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM wrongful_removal_case_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'Comments', (SELECT document FROM  comments_document),
+                    'Documents', (SELECT document FROM documents_document),
+                    'Locations', (SELECT document FROM locations_document),
+                    'SubTopics', (SELECT document from subtopics_document),
+                    'SuperTopics', (SELECT document from supertopics_document),
+                    'CaseParties', (SELECT document from case_case_parties_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    n.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join wrongful_removal_case ac on ac.id = an.node_id 
+                join nameable n on n.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
     const string NODE_DOCUMENT = """
         node_document AS (
             SELECT
@@ -2523,10 +3001,16 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 23 then (select document from organization_document)
                     when an.node_type_id = 24 then (select document from person_document)
                     when an.node_type_id = 26 then (select document from abuse_case_document)
-                    when an.node_type_id = 27 then (select document from child_trafficking_case_document)
+                    when an.node_type_id = 29 then (select document from child_trafficking_case_document)
+                    when an.node_type_id = 30 then (select document from coerced_adoption_case_document)
+                    when an.node_type_id = 31 then (select document from deportation_case_document)
+                    when an.node_type_id = 32 then (select document from fathers_rights_violation_case_document)
+                    when an.node_type_id = 33 then (select document from wrongful_medication_case_document)
+                    when an.node_type_id = 34 then (select document from wrongful_removal_case_document)
                     when an.node_type_id = 35 then (select document from blog_post_document)
                     when an.node_type_id = 36 then (select document from article_document)
                     when an.node_type_id = 41 then (select document from basic_nameable_document)
+                    when an.node_type_id = 44 then (select document from disrupted_placement_case_document)
                 end document
             FROM authenticated_node an 
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
