@@ -66,19 +66,20 @@ public record class Document : Node
         }
     }
 
-    private Comment[] comments = Array.Empty<Comment>();
-    public Comment[] Comments
+    private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
+    public CommentListItem[] CommentListItems
     {
-        get => comments;
+        get => commentListItems;
         init
         {
-            if(value is not null)
+            if (value is not null)
             {
-                comments = value;
+                commentListItems = value;
             }
         }
     }
 
+    public Comment[] Comments => this.GetComments();
     public required Link[] BreadCrumElements { get; init; }
 
     private File[] _files = Array.Empty<File>();

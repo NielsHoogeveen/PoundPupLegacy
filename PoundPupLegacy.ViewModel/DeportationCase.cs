@@ -23,19 +23,20 @@ public record DeportationCase : Case
         }
     }
 
-    private Comment[] comments = Array.Empty<Comment>();
-    public required Comment[] Comments
+    private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
+    public CommentListItem[] CommentListItems
     {
-        get => comments;
+        get => commentListItems;
         init
         {
             if (value is not null)
             {
-                comments = value;
+                commentListItems = value;
             }
         }
     }
-    public required Link[] BreadCrumElements { get; init; }
+
+    public Comment[] Comments => this.GetComments(); public required Link[] BreadCrumElements { get; init; }
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
     public required DocumentListItem[] Documents

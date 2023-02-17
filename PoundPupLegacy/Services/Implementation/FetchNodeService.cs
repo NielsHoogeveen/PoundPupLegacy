@@ -1982,12 +1982,11 @@ internal class FetchNodeService : IFetchNodeService
                         ) AS "Authoring",
         		        c.title AS "Title", 
         		        c.text AS "Text", 
-        		        f_comment_tree(c.id) AS "Comments"
+        		        c.comment_id_parent AS "CommentIdParent"
         	        FROM comment c
         	        JOIN publisher p on p.id = c.publisher_id
                     JOIN authenticated_node an on an.node_id = c.node_id
         	        WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
-        	        AND c.comment_id_parent is null
                 ) sub
         	) agg        
         )
@@ -2166,7 +2165,7 @@ internal class FetchNodeService : IFetchNodeService
                 'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
-                'Comments', (SELECT document FROM  comments_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
                 'AdoptionImports', (SELECT document FROM adoption_imports_document),
                 'Documents', (SELECT document from documents_document),
                 'OrganizationTypes', (SELECT document FROM organizations_of_country_document),
@@ -2218,7 +2217,7 @@ internal class FetchNodeService : IFetchNodeService
                 'DocumentType', document_type,
                 'BreadCrumElements', (SELECT document FROM document_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
-                'Comments', (SELECT document FROM  comments_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
                 'Documentables', (SELECT document FROM documentables_document),
                 'Files', (SELECT document FROM files_document)
             ) document
@@ -2415,7 +2414,7 @@ internal class FetchNodeService : IFetchNodeService
                 'Terminated', n.terminated,
                 'BreadCrumElements', (SELECT document FROM organization_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
-                'Comments', (SELECT document FROM  comments_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
                 'Documents', (SELECT document FROM documents_document),
                 'OrganizationTypes', (SELECT document FROM organization_types_document),
                 'Locations', (SELECT document FROM locations_document),
@@ -2477,7 +2476,7 @@ internal class FetchNodeService : IFetchNodeService
                 'PortraitFilePath', portrait_file_path,
                 'BreadCrumElements', (SELECT document FROM organization_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
-                'Comments', (SELECT document FROM  comments_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
                 'Documents', (SELECT document FROM documents_document),
                 'Professions', (SELECT document FROM professions_document),
                 'Locations', (SELECT document FROM locations_document),
@@ -2536,7 +2535,7 @@ internal class FetchNodeService : IFetchNodeService
                 'BreadCrumElements', (SELECT document FROM blog_post_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
-                'Comments', (SELECT document FROM  comments_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
                 'Files', (SELECT document FROM files_document)
             ) document
             FROM (
@@ -2576,7 +2575,7 @@ internal class FetchNodeService : IFetchNodeService
                     'BreadCrumElements', (SELECT document FROM article_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Files', (SELECT document FROM files_document)
                 ) document
             FROM (
@@ -2614,7 +2613,9 @@ internal class FetchNodeService : IFetchNodeService
                     ),
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM topics_bread_crum_document),
-                    'SubTopics', (SELECT document from subtopics_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
+                    'SubTopListItemics', (SELECT document from subtopics_document),
                     'SuperTopics', (SELECT document from supertopics_document),
                     'Files', (SELECT document FROM files_document)
                 ) document
@@ -2654,7 +2655,7 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM abuse_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
@@ -2698,7 +2699,7 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM child_trafficking_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
@@ -2742,7 +2743,7 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM coerced_adoption_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
@@ -2787,7 +2788,7 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM deportation_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
@@ -2832,7 +2833,7 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM disrupted_placement_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
@@ -2876,7 +2877,7 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM fathers_rights_violation_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
@@ -2920,7 +2921,7 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM wrongful_medication_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),
@@ -2964,7 +2965,7 @@ internal class FetchNodeService : IFetchNodeService
                     'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM wrongful_removal_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
-                    'Comments', (SELECT document FROM  comments_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),
                     'SubTopics', (SELECT document from subtopics_document),

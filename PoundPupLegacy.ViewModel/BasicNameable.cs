@@ -2,21 +2,67 @@
 
 public record BasicNameable : Nameable
 {
-    public int Id { get; set; }
-    public int NodeTypeId { get; set; }
-    public string Title { get; set; }
-    public string Text { get; set; }
-    public Authoring Authoring { get; set; }
+    public required int Id { get; init; }
+    public required int NodeTypeId { get; init; }
+    public required string Title { get; init; }
+    public required Authoring Authoring { get; init; }
 
-    public bool HasBeenPublished { get; set; }
+    public required bool HasBeenPublished { get; init; }
 
-    public Link[] BreadCrumElements { get; set; }
+    public required Link[] BreadCrumElements { get; init; }
 
-    public string Description { get; set; }
-    public Link[] Tags { get; set; }
-    public Comment[] Comments { get; set; }
-    public Link[] SubTopics { get; set; }
-    public Link[] SuperTopics { get; set; }
+    public required string Description { get; init; }
+    private Link[] tags = Array.Empty<Link>();
+    public required Link[] Tags
+    {
+        get => tags;
+        init
+        {
+            if (value is not null)
+            {
+                tags = value;
+            }
+
+        }
+    }
+    private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
+    public CommentListItem[] CommentListItems
+    {
+        get => commentListItems;
+        init
+        {
+            if (value is not null)
+            {
+                commentListItems = value;
+            }
+        }
+    }
+
+    public Comment[] Comments => this.GetComments(); private Link[] subTopics = Array.Empty<Link>();
+    public required Link[] SubTopics
+    {
+        get => subTopics;
+        init
+        {
+            if (value is not null)
+            {
+                subTopics = value;
+            }
+        }
+    }
+
+    private Link[] superTopics = Array.Empty<Link>();
+    public required Link[] SuperTopics
+    {
+        get => superTopics;
+        init
+        {
+            if (value is not null)
+            {
+                superTopics = value;
+            }
+        }
+    }
     private File[] _files = Array.Empty<File>();
     public required File[] Files
     {

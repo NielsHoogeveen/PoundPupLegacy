@@ -74,7 +74,7 @@ internal sealed class NodeTermMigrator : PPLMigrator
                     54123
                 )
                 AND (n3.nid IS NOT NULL OR n4.nid IS NOT NULL)
-                AND n.`type` NOT IN ('amazon_node', 'poll', 'video', 'amazon', 'website', 'image', 'award_poll', 'book_page', 'panel', 'viewnode')
+                AND n.`type` NOT IN ('amazon_node', 'poll', 'video', 'amazon', 'website', 'image', 'book_page', 'panel', 'viewnode')
                 AND n.uid <> 0
                 """;
         using var readCommand = MysqlConnection.CreateCommand();

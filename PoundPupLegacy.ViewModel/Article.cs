@@ -24,13 +24,20 @@ public record Article : SimpleTextNode
         init => seeAlsoBoxElements = value;
     }
 
-    private Comment[]? comments;
-    public required Comment[] Comments
+    private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
+    public CommentListItem[] CommentListItems
     {
-        get => comments is null ? Array.Empty<Comment>() : comments;
-        init => comments = value;
+        get => commentListItems;
+        init
+        {
+            if (value is not null)
+            {
+                commentListItems = value;
+            }
+        }
     }
 
+    public Comment[] Comments => this.GetComments();
     public required Link[] BreadCrumElements { get; init; }
     private File[] _files = Array.Empty<File>();
     public required File[] Files

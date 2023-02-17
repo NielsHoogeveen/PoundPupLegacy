@@ -83,6 +83,7 @@ internal sealed class NodeTypeMigrator : PPLMigrator
         yield return new BasicNodeType(50, "inter country relation type", "The type of relation two countries can have");
         yield return new BasicNodeType(51, "subdivision type", "The type of a subdivision of a country can have");
         yield return new BasicNodeType(52, "united states congressional meeting", "The two year period the United States congress comes together");
+        yield return new BasicNodeType(53, "poll", "Poll");
     }
 
 }

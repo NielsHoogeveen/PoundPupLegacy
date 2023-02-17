@@ -36,18 +36,20 @@ public record class BlogPost : SimpleTextNode
         }
     }
 
-    private Comment[] comments = Array.Empty<Comment>();
-    public Comment[] Comments
+    private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
+    public CommentListItem[] CommentListItems
     {
-        get => comments;
+        get => commentListItems;
         init
         {
             if(value is not null)
             {
-                comments = value;
+                commentListItems = value;
             }
         }
     }
+
+    public Comment[] Comments => this.GetComments();
 
     public required Link[] BreadCrumElements { get; init; }
 
