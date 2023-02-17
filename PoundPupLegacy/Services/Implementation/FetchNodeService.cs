@@ -28,6 +28,7 @@ internal class FetchNodeService : IFetchNodeService
             {SEE_ALSO_DOCUMENT},
             {DOCUMENTABLES_DOCUMENT},
             {LOCATIONS_DOCUMENT},
+            {POLL_OPTIONS_DOCUMENT},
             {ORGANIZATION_CASES_DOCUMENT},
             {PERSON_CASES_DOCUMENT},
             {CASE_CASE_PARTIES_DOCUMENT},
@@ -49,6 +50,7 @@ internal class FetchNodeService : IFetchNodeService
             {ORGANIZATION_BREADCRUM_DOCUMENT},
             {DOCUMENT_BREADCRUM_DOCUMENT},
             {ARTICLE_BREADCRUM_DOCUMENT},
+            {POLL_BREADCRUM_DOCUMENT},
             {ABUSE_CASE_BREADCRUM_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT},
             {COERCED_ADOPTION_CASE_BREADCRUM_DOCUMENT},
@@ -63,6 +65,7 @@ internal class FetchNodeService : IFetchNodeService
             {BLOG_POST_DOCUMENT},
             {ARTICLE_DOCUMENT},
             {DOCUMENT_DOCUMENT},
+            {POLL_DOCUMENT},
             {ABUSE_CASE_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_DOCUMENT},
             {COERCED_ADOPTION_CASE_DOCUMENT},
@@ -116,6 +119,7 @@ internal class FetchNodeService : IFetchNodeService
                 37 => reader.GetFieldValue<Discussion>(1),
                 41 => reader.GetFieldValue<BasicNameable>(1),
                 44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
+                53 => reader.GetFieldValue<Poll>(1),
                 _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
             };
 
@@ -220,6 +224,29 @@ internal class FetchNodeService : IFetchNodeService
                     WHERE tn.tenant_id = @tenant_id AND tn.url_id = @url_id
                 ) an
                 where an.status <> -1
+        )
+        """;
+    const string POLL_OPTIONS_DOCUMENT = """
+        poll_options_document as(
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'Text', text,
+        		        'NumberOfVotes', number_of_votes,
+        		        'Percentage', round(100 * (number_of_votes::numeric  / total), 0),
+                        'Delta', delta
+        	        )
+                ) document
+            from(
+        	    select 
+        	    po.text,
+        	    po.number_of_votes,
+        	    sum(number_of_votes) over() total,
+                po.delta
+        	    from poll_option po
+        	    join tenant_node tn on tn.node_id = po.poll_id
+        	    where tn.tenant_id = 1 and tn.url_id = 7874
+            ) x
         )
         """;
 
@@ -1964,7 +1991,38 @@ internal class FetchNodeService : IFetchNodeService
             ) bces
         )
         """;
-
+    const string POLL_BREADCRUM_DOCUMENT = """
+        poll_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/cases', 
+                    'Cases', 
+                    1
+                UNION
+                SELECT 
+                    '/polls', 
+                    'Polls', 
+                    2
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
     const string COMMENTS_DOCUMENT = """
         comments_document AS (
             SELECT jsonb_agg(tree) document
@@ -2556,6 +2614,54 @@ internal class FetchNodeService : IFetchNodeService
         ) 
         """;
 
+    const string POLL_DOCUMENT = """
+        poll_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Text', n.text,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'HasBeenPublished', n.has_been_published,
+                'Question', question,
+                'DateTimeClosure', date_time_closure,
+                'PollStatusId', poll_status_id,
+                'BreadCrumElements', (SELECT document FROM poll_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
+                'Files', (SELECT document FROM files_document),
+                'PollOptions', (SELECT document FROM poll_options_document)
+            ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    stn.text, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
+                    pl.question,
+                    pl.date_time_closure,
+                    pl.poll_status_id
+                FROM authenticated_node an
+                join simple_text_node stn on stn.id = an.node_id 
+                join poll pl on pl.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
     const string ARTICLE_DOCUMENT = """
         article_document AS (
             SELECT 
@@ -3012,6 +3118,7 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 36 then (select document from article_document)
                     when an.node_type_id = 41 then (select document from basic_nameable_document)
                     when an.node_type_id = 44 then (select document from disrupted_placement_case_document)
+                    when an.node_type_id = 53 then (select document from poll_document)
                 end document
             FROM authenticated_node an 
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id

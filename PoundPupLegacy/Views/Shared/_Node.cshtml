@@ -122,6 +122,10 @@
                 {
                     <partial name="_Document" model="@document" />
                 }
+                @if (Model is Poll poll)
+                {
+                    <partial name="_Poll" model="@poll" />
+                }
                 @if (Model.Files.Any())
                 {
                     <partial name="_Files" model="@Model.Files" />
