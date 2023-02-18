@@ -75,55 +75,61 @@ internal sealed class MenuMigrator : PPLMigrator
             Name = "Persons",
             Weight = 9,
         };
-
+        yield return new ActionMenuItem
+        {
+            Id = null,
+            ActionId = await _actionReaderByPath.ReadAsync("/polls"),
+            Name = "Polls",
+            Weight = 10,
+        };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(35),
             Name = "Create Blog",
-            Weight = 10,
+            Weight = 11,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(36),
             Name = "Create Article",
-            Weight = 11,
+            Weight = 12,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(37),
             Name = "Create Discussion",
-            Weight = 12,
+            Weight = 13,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(26),
             Name = "Create Abuse Case",
-            Weight = 13,
+            Weight = 14,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(29),
             Name = "Create Child Trafficking Case",
-            Weight = 14,
+            Weight = 15,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(23),
             Name = "Create Organization",
-            Weight = 15,
+            Weight = 16,
         };
         yield return new ActionMenuItem
         {
             Id = null,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(24),
             Name = "Create Person",
-            Weight = 16,
+            Weight = 17,
         };
     }
     private async IAsyncEnumerable<TenantNodeMenuItem> GetTenantNodeMenuItems()

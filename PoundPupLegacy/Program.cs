@@ -37,6 +37,7 @@ public class Program
         builder.Services.AddTransient<IFetchBlogService, FetchBlogService>();
         builder.Services.AddTransient<IFetchBlogsService, FetchBlogsService>();
         builder.Services.AddTransient<IFetchArticlesService, FetchArticlesService>();
+        builder.Services.AddTransient<IFetchPollsService, FetchPollsService>();
         builder.Services.AddTransient<IFetchOrganizationsService, FetchOrganizationsService>();
         builder.Services.AddTransient<IFetchCasesService, FetchCasesService>();
         builder.Services.AddTransient<IFetchCountriesService, FetchCountriesService>();

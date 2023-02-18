@@ -29,6 +29,7 @@ internal class FetchNodeService : IFetchNodeService
             {DOCUMENTABLES_DOCUMENT},
             {LOCATIONS_DOCUMENT},
             {POLL_OPTIONS_DOCUMENT},
+            {POLL_QUESTIONS_DOCUMENT},
             {ORGANIZATION_CASES_DOCUMENT},
             {PERSON_CASES_DOCUMENT},
             {CASE_CASE_PARTIES_DOCUMENT},
@@ -65,7 +66,8 @@ internal class FetchNodeService : IFetchNodeService
             {BLOG_POST_DOCUMENT},
             {ARTICLE_DOCUMENT},
             {DOCUMENT_DOCUMENT},
-            {POLL_DOCUMENT},
+            {SINGLE_QUESTION_POLL_DOCUMENT},
+            {MULTIPLE_QUESTION_POLL_DOCUMENT},
             {ABUSE_CASE_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_DOCUMENT},
             {COERCED_ADOPTION_CASE_DOCUMENT},
@@ -119,7 +121,8 @@ internal class FetchNodeService : IFetchNodeService
                 37 => reader.GetFieldValue<Discussion>(1),
                 41 => reader.GetFieldValue<BasicNameable>(1),
                 44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
-                53 => reader.GetFieldValue<Poll>(1),
+                53 => reader.GetFieldValue<SingleQuestionPoll>(1),
+                54 => reader.GetFieldValue<MultiQuestionPoll>(1),
                 _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
             };
 
@@ -244,8 +247,82 @@ internal class FetchNodeService : IFetchNodeService
         	    sum(number_of_votes) over() total,
                 po.delta
         	    from poll_option po
-        	    join tenant_node tn on tn.node_id = po.poll_id
-        	    where tn.tenant_id = 1 and tn.url_id = 7874
+                join poll_question pq on po.poll_question_id = pq.id
+        	    join tenant_node tn on tn.node_id = pq.id
+        	    where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            ) x
+        )
+        """;
+
+    const string POLL_QUESTIONS_DOCUMENT = """
+        poll_questions_document as(
+            select
+        	    json_agg(
+        		    json_build_object(
+        			    'Id', id,
+        			    'Text',  question_text,
+        			    'Authoring', jsonb_build_object(
+        				    'Id', publisher_id, 
+        				    'Name', publisher_name,
+        				    'CreatedDateTime', created_date_time,
+                            'ChangedDateTime', changed_date_time
+                        ),
+                        'NodeTypeId', node_type_id,
+                        'Title', title,
+                        'HasBeenPublished', true,
+        			    'PollOptions', poll_options
+        		    )
+        	    ) document
+            from(
+        	    select
+        		    id,
+        		    question_text,
+        		    node_type_id,
+                    title,
+        		    created_date_time,
+        		    changed_date_time,
+        		    publisher_id,
+        		    publisher_name,
+        		    jsonb_agg(
+        			    jsonb_build_object(
+        				    'Text', option_text,
+        				    'NumberOfVotes', number_of_votes,
+        				    'Percentage', round(100 * (number_of_votes::numeric  / total), 0),
+        				    'Delta', delta
+        			    )
+        		    ) poll_options
+        	    from(
+        		    select 
+        		    stn.id,
+        		    stn.text question_text,
+        		    n.node_type_id,
+                    n.title,
+        		    n.created_date_time,
+        		    n.changed_date_time,
+        		    p.id publisher_id,
+        		    p.name publisher_name,
+        		    po.text option_text,
+        		    po.number_of_votes,
+        		    sum(number_of_votes) over() total,
+        		    po.delta
+        		    from poll_option po
+        		    join poll_question pq on po.poll_question_id = pq.id
+        		    join simple_text_node stn on stn.id = pq.id
+        		    join node n on n.id = pq.id
+        		    join publisher p on p.id = n.publisher_id
+        		    join multi_question_poll_poll_question mqppq on mqppq.poll_question_id = pq.id
+        		    join tenant_node tn on tn.node_id = mqppq.multi_question_poll_id
+        		    where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+        	    ) x
+        	    group by 
+        		    id,
+                    title,
+        		    question_text,
+        		    node_type_id,
+        		    created_date_time,
+        		    changed_date_time,
+        		    publisher_id,
+        		    publisher_name
             ) x
         )
         """;
@@ -2614,8 +2691,8 @@ internal class FetchNodeService : IFetchNodeService
         ) 
         """;
 
-    const string POLL_DOCUMENT = """
-        poll_document AS (
+    const string SINGLE_QUESTION_POLL_DOCUMENT = """
+        single_question_poll_document AS (
             SELECT 
                 jsonb_build_object(
                 'Id', n.url_id,
@@ -2651,7 +2728,53 @@ internal class FetchNodeService : IFetchNodeService
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    pl.question,
+                    pq.question,
+                    pl.date_time_closure,
+                    pl.poll_status_id
+                FROM authenticated_node an
+                join simple_text_node stn on stn.id = an.node_id 
+                join poll pl on pl.id = an.node_id 
+                join poll_question pq on pq.id = pl.id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+    const string MULTIPLE_QUESTION_POLL_DOCUMENT = """
+        multi_question_poll_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Text', n.text,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'HasBeenPublished', n.has_been_published,
+                'DateTimeClosure', date_time_closure,
+                'PollStatusId', poll_status_id,
+                'BreadCrumElements', (SELECT document FROM poll_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
+                'Files', (SELECT document FROM files_document),
+                'PollQuestions', (SELECT document FROM poll_questions_document)
+            ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    stn.text, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
                     pl.date_time_closure,
                     pl.poll_status_id
                 FROM authenticated_node an
@@ -3118,7 +3241,8 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 36 then (select document from article_document)
                     when an.node_type_id = 41 then (select document from basic_nameable_document)
                     when an.node_type_id = 44 then (select document from disrupted_placement_case_document)
-                    when an.node_type_id = 53 then (select document from poll_document)
+                    when an.node_type_id = 53 then (select document from single_question_poll_document)
+                    when an.node_type_id = 54 then (select document from multi_question_poll_document)
                 end document
             FROM authenticated_node an 
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id

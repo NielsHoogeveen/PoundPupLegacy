@@ -285,6 +285,11 @@ internal sealed class UserMigrator : PPLMigrator
         yield return new AccessRolePrivilege
         {
             AccessRoleId = 12,
+            ActionId = await _actionReaderByPath.ReadAsync("/polls")
+        };
+        yield return new AccessRolePrivilege
+        {
+            AccessRoleId = 12,
             ActionId = await _actionReaderByPath.ReadAsync("/cases")
         };
         yield return new AccessRolePrivilege

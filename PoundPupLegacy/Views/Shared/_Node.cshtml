@@ -122,16 +122,20 @@
                 {
                     <partial name="_Document" model="@document" />
                 }
-                @if (Model is Poll poll)
+                @if (Model is SingleQuestionPoll singleQuestionPoll)
                 {
-                    <partial name="_Poll" model="@poll" />
+                    <partial name="_SingleQuestionPoll" model="@singleQuestionPoll" />
+                }
+                @if (Model is MultiQuestionPoll multiQuestionPoll)
+                {
+                    <partial name="_MultiQuestionPoll" model="@multiQuestionPoll" />
                 }
                 @if (Model.Files.Any())
                 {
                     <partial name="_Files" model="@Model.Files" />
                 }
-
             </article>
+
             @if (Model.Tags.Any())
             {
                 <div class="tags">

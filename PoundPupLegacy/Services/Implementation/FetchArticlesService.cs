@@ -7,11 +7,13 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal class FetchArticlesService : IFetchArticlesService
 {
-    NpgsqlConnection _connection;
+    private readonly NpgsqlConnection _connection;
+    private readonly ISiteDataService _siteDataService;
 
-    public FetchArticlesService(NpgsqlConnection connection)
+    public FetchArticlesService(NpgsqlConnection connection, ISiteDataService siteDataService)
     {
         _connection = connection;
+        _siteDataService = siteDataService;
     }
     const string FETCH_TERMS = """
          fetch_terms as (
@@ -215,7 +217,7 @@ internal class FetchArticlesService : IFetchArticlesService
         )
         """;
 
-    public async Task<Articles> GetArticles(List<int> selectedTerms, int startIndex, int length, int tenantId)
+    public async Task<Articles> GetArticles(List<int> selectedTerms, int startIndex, int length)
     {
         var termsList = string.Join(',', selectedTerms.Select(x => x.ToString()));
         try
@@ -244,7 +246,7 @@ internal class FetchArticlesService : IFetchArticlesService
             readCommand.Parameters.Add("length", NpgsqlDbType.Integer);
             readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
             readCommand.Parameters["length"].Value = length;
             readCommand.Parameters["start_index"].Value = startIndex;
             await using var reader = await readCommand.ExecuteReaderAsync();
@@ -258,7 +260,7 @@ internal class FetchArticlesService : IFetchArticlesService
         }
     }
 
-    public async Task<Articles> GetArticles(int startIndex, int length, int tenantId)
+    public async Task<Articles> GetArticles(int startIndex, int length)
     {
         try
         {
@@ -286,7 +288,7 @@ internal class FetchArticlesService : IFetchArticlesService
             readCommand.Parameters.Add("length", NpgsqlDbType.Integer);
             readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
             readCommand.Parameters["length"].Value = length;
             readCommand.Parameters["start_index"].Value = startIndex;
             await using var reader = await readCommand.ExecuteReaderAsync();

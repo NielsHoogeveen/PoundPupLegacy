@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
+using PoundPupLegacy.ViewModel;
 using System.Diagnostics;
 
 namespace PoundPupLegacy.Controllers;
@@ -7,7 +8,7 @@ namespace PoundPupLegacy.Controllers;
 [Route("search")]
 public class SearchController : Controller
 {
-    const int NUMBER_OF_ENTRIES = 25;
+    const int NUMBER_OF_ENTRIES = 10;
 
     private readonly IFetchSearchService _fetchSearchService;
     private readonly ILogger<SearchController> _logger;
@@ -46,11 +47,10 @@ public class SearchController : Controller
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var userId = _siteDataService.GetUserId();
-        var tenantId = _siteDataService.GetTenantId();
-        var search = await _fetchSearchService.FetchSearch(NUMBER_OF_ENTRIES, startIndex, tenantId, userId, searchValue!);
+        var search = await _fetchSearchService.FetchSearch(NUMBER_OF_ENTRIES, startIndex, searchValue!);
         search.PageNumber = pageNumber;
         search.NumberOfPages = (search.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
+        search.QueryString = $"&search={searchValue}";
         _logger.LogInformation($"Fetched search in {stopwatch.Elapsed.TotalMilliseconds} ms");
         return View("SearchResults", search);
     }

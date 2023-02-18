@@ -58,11 +58,12 @@ internal sealed class CommentMigrator : PPLMigrator
                 'quotations', 
                 'event', 
                 'usernode',
-                'panel',
+                
                 'viewnode',
                 'website'
             ) AND n.uid <> 0
             AND NOT (c.uid = 0 AND c.`status` = 1 AND c2.cid IS null)
+            AND NOT (n.`type` = 'panel' and n.nid <> 48445)
             ORDER BY c.cid
             """;
         using var readCommand = MysqlConnection.CreateCommand();

@@ -116,7 +116,7 @@ internal abstract class Migrator
 
         }
     }
-    protected string TextToTeaser(string text)
+    public static string TextToTeaser(string text)
     {
         var doc = Convert(text);
         var res = doc.DocumentNode.ChildNodes.Take(5).Aggregate("", (a, b) => a + b.OuterHtml.Replace(@"href=""http://poundpuplegacy.org", @"href="""));
@@ -127,7 +127,7 @@ internal abstract class Migrator
         return Convert(text).DocumentNode.InnerHtml;
     }
 
-    private HtmlDocument Convert(string text)
+    private static HtmlDocument Convert(string text)
     {
 
         if (!text.Contains("</") && !text.Contains("/>"))
@@ -136,7 +136,7 @@ internal abstract class Migrator
         }
         else
         {
-            text = text.Replace("/r", "").Replace("/n", "");
+            text = text.Replace("\r", "").Replace("\n", "");
         }
         var doc = new HtmlDocument();
         doc.LoadHtml(text);
@@ -152,7 +152,7 @@ internal abstract class Migrator
         return doc;
     }
 
-    private string FormatText(string text)
+    private static string FormatText(string text)
     {
         var stringBuilder = new StringBuilder();
         var i = 0;
@@ -197,7 +197,7 @@ internal abstract class Migrator
         return stringBuilder.ToString();
     }
 
-    private IEnumerable<HtmlNode> MakeParagraphs(HtmlDocument doc)
+    private static IEnumerable<HtmlNode> MakeParagraphs(HtmlDocument doc)
     {
         var element = doc.CreateElement("p");
         foreach (var elem in doc.DocumentNode.ChildNodes)

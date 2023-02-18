@@ -3,7 +3,6 @@
 internal sealed class PollWriter : DatabaseWriter<Poll>, IDatabaseWriter<Poll>
 {
     private const string ID = "id";
-    private const string QUESTION = "question";
     private const string DATE_TIME_CLOSURE = "date_time_closure";
     private const string POLL_STATUS_ID = "poll_status_id";
     public static async Task<DatabaseWriter<Poll>> CreateAsync(NpgsqlConnection connection)
@@ -15,10 +14,6 @@ internal sealed class PollWriter : DatabaseWriter<Poll>, IDatabaseWriter<Poll>
                 new ColumnDefinition{
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = QUESTION,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
                     Name = DATE_TIME_CLOSURE,
@@ -43,7 +38,6 @@ internal sealed class PollWriter : DatabaseWriter<Poll>, IDatabaseWriter<Poll>
         if (poll.Id is null)
             throw new NullReferenceException();
         WriteValue(poll.Id, ID);
-        WriteValue(poll.Question, QUESTION);
         WriteValue(poll.DateTimeClosure, DATE_TIME_CLOSURE);
         WriteValue(poll.PollStatusId, POLL_STATUS_ID);
         await _command.ExecuteNonQueryAsync();

@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record Organizations : PagedList<BasicListEntry>
+public record Polls : PagedList<PollListEntry>
 {
-    private BasicListEntry[] _entries = Array.Empty<BasicListEntry>();
-    public required BasicListEntry[] Entries { 
+    private PollListEntry[] _entries = Array.Empty<PollListEntry>();
+    public required PollListEntry[] Entries { 
         get => _entries;
         init
         {
@@ -18,8 +18,6 @@ public record Organizations : PagedList<BasicListEntry>
     public int PageNumber { get; set; }
     public int NumberOfPages { get; set; }
     public string QueryString { get; set; } = "";
-    public SearchOption SelectedSearchOption { get; set; }
-    public string? SearchTerm { get; set; }
-    public string Path => "organizations";
+    public string Path => "polls";
 
 }

@@ -2,7 +2,7 @@
 
 public record PollOption
 {
-    public required int? PollId { get; set; }
+    public required int? PollQuestionId { get; set; }
 
     public required int Delta { get; init; }
 

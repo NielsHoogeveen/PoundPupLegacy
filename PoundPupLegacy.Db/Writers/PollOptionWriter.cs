@@ -2,7 +2,7 @@
 
 internal sealed class PollOptionWriter : DatabaseWriter<PollOption>, IDatabaseWriter<PollOption>
 {
-    private const string POLL_ID = "poll_id";
+    private const string POLL_QUESTION_ID = "poll_question_id";
     private const string DELTA = "delta";
     private const string TEXT = "text";
     private const string NUMBER_OF_VOTES = "number_of_votes";
@@ -13,7 +13,7 @@ internal sealed class PollOptionWriter : DatabaseWriter<PollOption>, IDatabaseWr
             "poll_option",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = POLL_ID,
+                    Name = POLL_QUESTION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
@@ -40,9 +40,9 @@ internal sealed class PollOptionWriter : DatabaseWriter<PollOption>, IDatabaseWr
 
     internal override async Task WriteAsync(PollOption pollOption)
     {
-        if (pollOption.PollId is null)
+        if (pollOption.PollQuestionId is null)
             throw new NullReferenceException();
-        WriteValue(pollOption.PollId, POLL_ID);
+        WriteValue(pollOption.PollQuestionId, POLL_QUESTION_ID);
         WriteValue(pollOption.Delta, DELTA);
         WriteNullableValue(pollOption.Text, TEXT);
         WriteNullableValue(pollOption.NumberOfVotes, NUMBER_OF_VOTES);

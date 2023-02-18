@@ -3,7 +3,7 @@
 
 public record OrganizationSearch
 {
-    private Organizations organizations = new Organizations { Entries = Array.Empty<OrganizationListEntry>(), NumberOfEntries = 0 };
+    private Organizations organizations = new Organizations { Entries = Array.Empty<BasicListEntry>(), NumberOfEntries = 0 };
     public required Organizations Organizations { 
         get => organizations ;
         init 
