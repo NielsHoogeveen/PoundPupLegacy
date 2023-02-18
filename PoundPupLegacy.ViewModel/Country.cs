@@ -7,4 +7,6 @@ public interface Country : PoliticalEntity
     public OrganizationTypeWithOrganizations[] OrganizationTypes { get; }
 
     public SubdivisionType[] SubdivisionTypes { get; }
+
+    public string FlagPath { get; }
 }

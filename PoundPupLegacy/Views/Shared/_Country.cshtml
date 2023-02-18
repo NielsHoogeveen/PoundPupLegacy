@@ -1,6 +1,8 @@
 ﻿@using PoundPupLegacy.ViewModel;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Country
+
+<img src="@Model.FlagPath" style="width: auto;height:2em;margin-bottom:0.5em;border: solid 1px #aaa">
 @if(Model is TopLevelCountry topLevelCountry)
 {
     <div>

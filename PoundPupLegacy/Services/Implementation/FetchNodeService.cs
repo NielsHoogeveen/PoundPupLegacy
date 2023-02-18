@@ -2782,6 +2782,7 @@ internal class FetchNodeService : IFetchNodeService
                     'Path', n.binding_country_path,
                     'Name', n.binding_country_name
                 ),
+                'ISO3166_2_Code', iso_3166_2_code,
                 'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
@@ -2805,6 +2806,7 @@ internal class FetchNodeService : IFetchNodeService
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
+                    ics.iso_3166_2_code,
                     case 
                         when tn.url_path is null then '/node/' || tn.url_id
                         else '/' || tn.url_path
@@ -2812,6 +2814,7 @@ internal class FetchNodeService : IFetchNodeService
                     n.title binding_country_name
                 FROM authenticated_node an
                 join bound_country bc on bc.id = an.node_id 
+                join iso_coded_subdivision ics on ics.id = bc.id
                 join node n on n.id = bc.binding_country_id
                 join tenant_node tn on tn.node_id = bc.binding_country_id and tn.tenant_id = @tenant_id 
                 join nameable nm on nm.id = an.node_id

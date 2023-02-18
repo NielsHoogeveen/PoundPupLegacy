@@ -109,5 +109,5 @@ public record BindingCountry : TopLevelCountry
             }
         }
     }
-
+    public string FlagPath => $"/files/flags/gb.svg";
 }

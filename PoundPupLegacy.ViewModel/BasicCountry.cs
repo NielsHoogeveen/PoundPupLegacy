@@ -96,4 +96,6 @@ public record BasicCountry : TopLevelCountry
         }
     }
 
+    public string FlagPath => $"/files/flags/{ISO3166_1_Code.ToLower()}.svg";
+
 }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record BoundCountry : Country
+public record BoundCountry : Country, IsoCodedSubdivision
 {
     public required string Description { get; init; }
     public required int Id { get; init; }
@@ -8,7 +8,7 @@ public record BoundCountry : Country
     public required string Title { get; init; }
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
-    
+    public required string ISO3166_2_Code { get; init; }
     public required Link BindingCountry { get; init; }
 
     private Link[] tags = Array.Empty<Link>();
@@ -95,5 +95,5 @@ public record BoundCountry : Country
             }
         }
     }
-
+    public string FlagPath => $"/files/flags/{ISO3166_2_Code.ToLower()}.svg";
 }
