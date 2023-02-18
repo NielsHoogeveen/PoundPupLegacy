@@ -48,6 +48,7 @@ internal class FetchNodeService : IFetchNodeService
             {ORGANIZATIONS_OF_COUNTRY_DOCUMENT},
             {COUNTRY_SUBDIVISIONS_DOCUMENT},
             {BLOG_POST_BREADCRUM_DOCUMENT},
+            {PAGE_BREADCRUM_DOCUMENT},
             {ORGANIZATION_BREADCRUM_DOCUMENT},
             {DOCUMENT_BREADCRUM_DOCUMENT},
             {ARTICLE_BREADCRUM_DOCUMENT},
@@ -64,6 +65,7 @@ internal class FetchNodeService : IFetchNodeService
             {TOPICS_BREADCRUM_DOCUMENT},
             {ADOPTION_IMPORTS_DOCUMENT},
             {BLOG_POST_DOCUMENT},
+            {PAGE_DOCUMENT},
             {ARTICLE_DOCUMENT},
             {DOCUMENT_DOCUMENT},
             {SINGLE_QUESTION_POLL_DOCUMENT},
@@ -120,6 +122,7 @@ internal class FetchNodeService : IFetchNodeService
                 36 => reader.GetFieldValue<Article>(1),
                 37 => reader.GetFieldValue<Discussion>(1),
                 41 => reader.GetFieldValue<BasicNameable>(1),
+                42 => reader.GetFieldValue<Page>(1),
                 44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
                 53 => reader.GetFieldValue<SingleQuestionPoll>(1),
                 54 => reader.GetFieldValue<MultiQuestionPoll>(1),
@@ -1581,6 +1584,24 @@ internal class FetchNodeService : IFetchNodeService
             ) bces
         )
         """;
+
+    const string PAGE_BREADCRUM_DOCUMENT = """
+        page_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                ) 
+            ) document
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+            ) bces
+        )
+        """;
+
     const string ARTICLE_BREADCRUM_DOCUMENT = """
         article_bread_crum_document AS (
             SELECT jsonb_agg(
@@ -2824,6 +2845,45 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+    const string PAGE_DOCUMENT = """
+        page_document AS (
+            SELECT 
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Text', n.text,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM page_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    stn.text, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join simple_text_node stn on stn.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
 
     const string BASIC_NAMEABLE_DOCUMENT = """
         basic_nameable_document AS (
@@ -3240,6 +3300,7 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 35 then (select document from blog_post_document)
                     when an.node_type_id = 36 then (select document from article_document)
                     when an.node_type_id = 41 then (select document from basic_nameable_document)
+                    when an.node_type_id = 42 then (select document from page_document)
                     when an.node_type_id = 44 then (select document from disrupted_placement_case_document)
                     when an.node_type_id = 53 then (select document from single_question_poll_document)
                     when an.node_type_id = 54 then (select document from multi_question_poll_document)
