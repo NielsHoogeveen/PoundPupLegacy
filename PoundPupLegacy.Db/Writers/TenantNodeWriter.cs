@@ -60,7 +60,7 @@ internal sealed class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWr
         }
         WriteValue(tenantNode.TenantId, TENANT_ID);
         WriteValue(tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value : tenantNode.NodeId, URL_ID);
-        WriteNullableValue(tenantNode.UrlPath, URL_PATH);
+        WriteNullableValue(tenantNode.UrlPath?.Trim(), URL_PATH);
         WriteValue(tenantNode.NodeId, NODE_ID);
         WriteNullableValue(tenantNode.SubgroupId, SUBGROUP_ID);
         WriteValue(tenantNode.PublicationStatusId, PUBLICATION_STATUS_ID);

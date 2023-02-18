@@ -130,6 +130,10 @@
                 {
                     <partial name="_MultiQuestionPoll" model="@multiQuestionPoll" />
                 }
+                @if (Model is Subdivision subdivision)
+                {
+                    <partial name="_Subdivision" model="@subdivision" />
+                }
                 @if (Model.Files.Any())
                 {
                     <partial name="_Files" model="@Model.Files" />

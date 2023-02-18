@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record BasicCountry : TopLevelCountry
+public record BindingCountry : TopLevelCountry
 {
     public required string Description { get; init; }
     public required int Id { get; init; }
@@ -10,6 +10,20 @@ public record BasicCountry : TopLevelCountry
     public required bool HasBeenPublished { get; init; }
     public required string ISO3166_1_Code { get; init; }
     public required Link GlobalRegion { get; init; }
+
+    private Link[] boundCountries = Array.Empty<Link>();
+    public required Link[] BoundCountries
+    {
+        get => boundCountries;
+        init
+        {
+            if (value is not null)
+            {
+                boundCountries = value;
+            }
+
+        }
+    }
 
     private Link[] tags = Array.Empty<Link>();
     public required Link[] Tags

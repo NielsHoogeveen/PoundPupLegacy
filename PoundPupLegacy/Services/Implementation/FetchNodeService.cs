@@ -46,7 +46,9 @@ internal class FetchNodeService : IFetchNodeService
             {DOCUMENTS_DOCUMENT},
             {COMMENTS_DOCUMENT},
             {ORGANIZATIONS_OF_COUNTRY_DOCUMENT},
+            {ORGANIZATIONS_OF_SUBDIVISION_DOCUMENT},
             {COUNTRY_SUBDIVISIONS_DOCUMENT},
+            {SUBDIVISION_SUBDIVISIONS_DOCUMENT},
             {BLOG_POST_BREADCRUM_DOCUMENT},
             {PAGE_BREADCRUM_DOCUMENT},
             {ORGANIZATION_BREADCRUM_DOCUMENT},
@@ -61,6 +63,8 @@ internal class FetchNodeService : IFetchNodeService
             {FATHERS_RIGHTS_VIOLATION_CASE_BREADCRUM_DOCUMENT},
             {WRONGFUL_MEDICATION_CASE_BREADCRUM_DOCUMENT},
             {WRONGFUL_REMOVAL_CASE_BREADCRUM_DOCUMENT},
+            {SUBDIVISION_BREADCRUM_DOCUMENT},
+            {GLOBAL_REGION_BREADCRUM_DOCUMENT},
             {COUNTRY_BREADCRUM_DOCUMENT},
             {TOPICS_BREADCRUM_DOCUMENT},
             {ADOPTION_IMPORTS_DOCUMENT},
@@ -81,7 +85,12 @@ internal class FetchNodeService : IFetchNodeService
             {BASIC_NAMEABLE_DOCUMENT},
             {ORGANIZATION_DOCUMENT},
             {PERSON_DOCUMENT},
+            {INFORMAL_SUBDIVISION_DOCUMENT},
+            {FORMAL_SUBDIVISION_DOCUMENT},
             {BASIC_COUNTRY_DOCUMENT},
+            {COUNTRY_AND_SUBDIVISION_DOCUMENT},
+            {BINDING_COUNTRY_DOCUMENT},
+            {BOUND_COUNTRY_DOCUMENT},
             {NODE_DOCUMENT}
             SELECT node_type_id, document from node_document
             """;
@@ -109,6 +118,15 @@ internal class FetchNodeService : IFetchNodeService
             {
                 10 => reader.GetFieldValue<Document>(1),
                 13 => reader.GetFieldValue<BasicCountry>(1),
+                14 => reader.GetFieldValue<BoundCountry>(1),
+                15 => reader.GetFieldValue<CountryAndSubdivision>(1),
+                16 => reader.GetFieldValue<CountryAndSubdivision>(1),
+                17 => reader.GetFieldValue<FormalSubdivision>(1),
+                18 => reader.GetFieldValue<InformalSubdivision>(1),
+                19 => reader.GetFieldValue<FormalSubdivision>(1),
+                20 => reader.GetFieldValue<BindingCountry>(1),
+                21 => reader.GetFieldValue<CountryAndSubdivision>(1),
+                22 => reader.GetFieldValue<FormalSubdivision>(1),
                 23 => reader.GetFieldValue<Organization>(1),
                 24 => reader.GetFieldValue<Person>(1),
                 26 => reader.GetFieldValue<AbuseCase>(1),
@@ -1502,6 +1520,47 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string ORGANIZATIONS_OF_SUBDIVISION_DOCUMENT = """
+        organizations_of_subdivision_document as(
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+        	            'OrganizationTypeName', organization_type,
+        	            'Organizations', organizations
+                    )
+                ) document
+            from(
+                select
+        	        organization_type,
+        	        jsonb_agg(
+        	            jsonb_build_object(
+        		            'Name', organization_name,
+        		            'Path', "path"
+        	            )
+                    ) organizations
+                from(
+                    select
+                        n2.title organization_type,
+                        n.title organization_name,
+                        case 
+        	                when tn2.url_path is null then '/node/' || tn2.url_id
+        	                else '/' || tn2.url_path
+                        end "path"
+                    from node n
+                    join tenant_node tn2 on tn2.node_id = n.id and tn2.tenant_id = @tenant_id
+                    join organization o on o.id = n.id
+                    join organization_organization_type oot on oot.organization_id = o.id
+                    join organization_type ot on ot.id = oot.organization_type_id
+                    join node n2 on n2.id = ot.id
+                    join location_locatable ll on ll.locatable_id = n.id
+                    join "location" l on l.id = ll.location_id
+                    join tenant_node tn on tn.url_id = @url_id and tn.node_id = l.subdivision_id and tn.tenant_id = @tenant_id
+        	        ) x
+                group by x.organization_type
+            ) x
+        )
+        """;
+
     const string DOCUMENTS_DOCUMENT = """
         documents_document as(
             select
@@ -1749,6 +1808,45 @@ internal class FetchNodeService : IFetchNodeService
             ) x
         )
         """;
+    const string SUBDIVISION_SUBDIVISIONS_DOCUMENT = """
+        subdivision_subdivisions_document as (
+            select
+        	    jsonb_agg(jsonb_build_object(
+        		    'Name', subdivision_type_name,
+        		    'Subdivisions', subdivisions
+        	    )) document
+        	from(
+                select
+        	        subdivision_type_name,
+        	        jsonb_agg(jsonb_build_object(
+        		        'Name', subdivision_name,
+        		        'Path', case 
+        			        when url_path is null then '/node/' || url_id
+        			        else url_path
+        		        end
+        		        )) "subdivisions"
+                FROM(
+        	        select
+        		        distinct
+        		        n.title subdivision_type_name, 
+        		        s.name subdivision_name,
+        		        tn2.url_path,
+        		        tn2.url_id
+        	        from subdivision sd
+        	        join tenant_node tn on tn.node_id = sd.id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
+        	        join tenant t on t.id = tn.tenant_id
+        	        join basic_second_level_subdivision bsls on bsls.intermediate_level_subdivision_id = sd.id
+                    join subdivision s on s.id = bsls.id
+        	        join node n on n.id = s.subdivision_type_id
+        	        join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = @tenant_id
+        	        join term tp on tp.nameable_id = sd.id and tp.vocabulary_id = t.vocabulary_id_tagging
+        	        join term tc on tc.nameable_id = s.id and tc.vocabulary_id = t.vocabulary_id_tagging
+        	        join term_hierarchy th on th.term_id_parent = tp.id and th.term_id_child = tc.id
+                ) x
+                GROUP BY subdivision_type_name
+            ) x
+        )
+        """;
 
     const string COUNTRY_BREADCRUM_DOCUMENT = """
         country_bread_crum_document AS (
@@ -1774,6 +1872,70 @@ internal class FetchNodeService : IFetchNodeService
                     1
                 ) bce
                 ORDER BY bce."order"
+            ) bces
+        )
+        """;
+
+    const string SUBDIVISION_BREADCRUM_DOCUMENT = """
+        subdivision_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    
+                    '/countries', 
+                    'countries', 
+                    1
+                UNION
+                SELECT 
+                    case
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else tn.url_path
+                    end url,
+                    n.title, 
+                    2
+                    from subdivision s
+                    join country c on c.id = s.country_id
+                    join node n on n.id = c.id
+                    join tenant_node tn on tn.node_id = c.id and tn.tenant_id = 1 and tn.url_id = @url_id
+        
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+
+    const string GLOBAL_REGION_BREADCRUM_DOCUMENT = """
+        global_region_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                )
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                ) bce
             ) bces
         )
         """;
@@ -2302,6 +2464,123 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string INFORMAL_SUBDIVISION_DOCUMENT = """
+        informal_subdivision_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Description', n.description,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'Country', jsonb_build_object(
+                    'Path', n.country_path,
+                    'Name', n.country_name
+                ),
+                'HasBeenPublished', n.has_been_published,
+                'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
+                'Documents', (SELECT document from documents_document),
+                'OrganizationTypes', (SELECT document FROM organizations_of_subdivision_document),
+                'SubdivisionTypes', (SELECT document FROM subdivision_subdivisions_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document),
+                'Files', (SELECT document FROM files_document)
+            ) document
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end country_path,
+                    n.title country_name,
+                    n2.title subdivision_type_name
+                FROM authenticated_node an
+                join subdivision sd on sd.id = an.node_id 
+                join node n on n.id = sd.country_id
+                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
+                join node n2 on n2.id = sd.subdivision_type_id
+                join nameable nm on nm.id = an.node_id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+    const string FORMAL_SUBDIVISION_DOCUMENT = """
+        formal_subdivision_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Description', n.description,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'Country', jsonb_build_object(
+                    'Path', n.country_path,
+                    'Name', n.country_name
+                ),
+                'ISO3166_2_Code', iso_3166_2_code,
+                'HasBeenPublished', n.has_been_published,
+                'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
+                'Documents', (SELECT document from documents_document),
+                'OrganizationTypes', (SELECT document FROM organizations_of_subdivision_document),
+                'SubdivisionTypes', (SELECT document FROM subdivision_subdivisions_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document),
+                'Files', (SELECT document FROM files_document)
+            ) document
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
+                    ics.iso_3166_2_code,
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end country_path,
+                    n.title country_name,
+                    n2.title subdivision_type_name
+                FROM authenticated_node an
+                join subdivision sd on sd.id = an.node_id 
+                join iso_coded_subdivision ics on ics.id = sd.id
+                join node n on n.id = sd.country_id
+                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
+                join node n2 on n2.id = sd.subdivision_type_id
+                join nameable nm on nm.id = an.node_id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
 
     const string BASIC_COUNTRY_DOCUMENT = """
         basic_country_document AS (
@@ -2317,6 +2596,191 @@ internal class FetchNodeService : IFetchNodeService
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
                     'ChangedDateTime', n.changed_date_time
+                ),
+                'GlobalRegion', jsonb_build_object(
+                    'Path', n.global_region_path,
+                    'Name', n.global_region_name
+                ),
+                'ISO3166_1_Code', iso_3166_1_code,
+                'HasBeenPublished', n.has_been_published,
+                'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
+                'AdoptionImports', (SELECT document FROM adoption_imports_document),
+                'Documents', (SELECT document from documents_document),
+                'OrganizationTypes', (SELECT document FROM organizations_of_country_document),
+                'SubdivisionTypes', (SELECT document FROM country_subdivisions_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document),
+                'Files', (SELECT document FROM files_document)
+            ) document
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
+                    tlc.iso_3166_1_code,
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end global_region_path,
+                    n.title global_region_name
+                FROM authenticated_node an
+                join top_level_country tlc on tlc.id = an.node_id 
+                join node n on n.id = tlc.global_region_id
+                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
+                join nameable nm on nm.id = an.node_id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
+    const string COUNTRY_AND_SUBDIVISION_DOCUMENT = """
+        country_and_subdivision_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Description', n.description,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'GlobalRegion', jsonb_build_object(
+                    'Path', n.global_region_path,
+                    'Name', n.global_region_name
+                ),
+                'ISO3166_1_Code', iso_3166_1_code,
+                'ISO3166_2_Code', iso_3166_2_code,
+                'HasBeenPublished', n.has_been_published,
+                'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
+                'AdoptionImports', (SELECT document FROM adoption_imports_document),
+                'Documents', (SELECT document from documents_document),
+                'OrganizationTypes', (SELECT document FROM organizations_of_country_document),
+                'SubdivisionTypes', (SELECT document FROM country_subdivisions_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document),
+                'Files', (SELECT document FROM files_document)
+            ) document
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
+                    tlc.iso_3166_1_code,
+                    sd.iso_3166_2_code,
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end global_region_path,
+                    n.title global_region_name
+                FROM authenticated_node an
+                join top_level_country tlc on tlc.id = an.node_id 
+                join iso_coded_subdivision sd on sd.id = an.node_id 
+                join node n on n.id = tlc.global_region_id
+                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
+                join nameable nm on nm.id = an.node_id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
+    const string BINDING_COUNTRY_DOCUMENT = """
+        binding_country_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Description', n.description,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'GlobalRegion', jsonb_build_object(
+                    'Path', n.global_region_path,
+                    'Name', n.global_region_name
+                ),
+                'ISO3166_1_Code', iso_3166_1_code,
+                'HasBeenPublished', n.has_been_published,
+                'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
+                'AdoptionImports', (SELECT document FROM adoption_imports_document),
+                'Documents', (SELECT document from documents_document),
+                'OrganizationTypes', (SELECT document FROM organizations_of_country_document),
+                'SubdivisionTypes', (SELECT document FROM country_subdivisions_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document),
+                'Files', (SELECT document FROM files_document),
+                'BoundCountries', null
+            ) document
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published,
+                    tlc.iso_3166_1_code,
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end global_region_path,
+                    n.title global_region_name
+                FROM authenticated_node an
+                join top_level_country tlc on tlc.id = an.node_id 
+                join node n on n.id = tlc.global_region_id
+                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
+                join nameable nm on nm.id = an.node_id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
+    const string BOUND_COUNTRY_DOCUMENT = """
+        bound_country_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Description', n.description,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'BindingCountry', jsonb_build_object(
+                    'Path', n.binding_country_path,
+                    'Name', n.binding_country_name
                 ),
                 'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
@@ -2340,15 +2804,21 @@ internal class FetchNodeService : IFetchNodeService
                     nm.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    case 
+                        when tn.url_path is null then '/node/' || tn.url_id
+                        else '/' || tn.url_path
+                    end binding_country_path,
+                    n.title binding_country_name
                 FROM authenticated_node an
-                join top_level_country tlc on tlc.id = an.node_id 
+                join bound_country bc on bc.id = an.node_id 
+                join node n on n.id = bc.binding_country_id
+                join tenant_node tn on tn.node_id = bc.binding_country_id and tn.tenant_id = @tenant_id 
                 join nameable nm on nm.id = an.node_id
                 JOIN publisher p on p.id = an.publisher_id
             ) n
         ) 
         """;
-
 
     const string DOCUMENT_DOCUMENT = """
         document_document AS (
@@ -3288,6 +3758,15 @@ internal class FetchNodeService : IFetchNodeService
                 case
                     when an.node_type_id = 10 then (select document from document_document)
                     when an.node_type_id = 13 then (select document from basic_country_document)
+                    when an.node_type_id = 14 then (select document from bound_country_document)
+                    when an.node_type_id = 15 then (select document from country_and_subdivision_document)
+                    when an.node_type_id = 16 then (select document from country_and_subdivision_document)
+                    when an.node_type_id = 17 then (select document from formal_subdivision_document)
+                    when an.node_type_id = 18 then (select document from informal_subdivision_document)
+                    when an.node_type_id = 19 then (select document from formal_subdivision_document)
+                    when an.node_type_id = 20 then (select document from binding_country_document)
+                    when an.node_type_id = 21 then (select document from country_and_subdivision_document)
+                    when an.node_type_id = 22 then (select document from formal_subdivision_document)
                     when an.node_type_id = 23 then (select document from organization_document)
                     when an.node_type_id = 24 then (select document from person_document)
                     when an.node_type_id = 26 then (select document from abuse_case_document)

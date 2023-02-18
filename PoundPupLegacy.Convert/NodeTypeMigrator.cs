@@ -50,7 +50,7 @@ internal sealed class NodeTypeMigrator : PPLMigrator
         yield return new BasicNodeType(9, "document type", "Defines the type of a document");
         yield return new BasicNodeType(10, "document", "A text based document");
         yield return new BasicNodeType(11, "first level global region", "First level subdivision of the world");
-        yield return new BasicNodeType(12, "secomnd level global region", "Second level subdivision of the world");
+        yield return new BasicNodeType(12, "second level global region", "Second level subdivision of the world");
         yield return new BasicNodeType(13, "basic country", "Countries that don't contain other countries and that are not part of another country");
         yield return new BasicNodeType(14, "bound country", "Countries that are part of another country");
         yield return new BasicNodeType(15, "country and first and bottom level subdivision", "Countries that are also first level subdivisions of another country and that allows no further subdivision");

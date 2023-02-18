@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record BasicCountry : TopLevelCountry
+public record InformalSubdivision : Subdivision
 {
     public required string Description { get; init; }
     public required int Id { get; init; }
@@ -8,8 +8,7 @@ public record BasicCountry : TopLevelCountry
     public required string Title { get; init; }
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
-    public required string ISO3166_1_Code { get; init; }
-    public required Link GlobalRegion { get; init; }
+    public required Link Country { get; init; }
 
     private Link[] tags = Array.Empty<Link>();
     public required Link[] Tags
@@ -40,7 +39,6 @@ public record BasicCountry : TopLevelCountry
 
     public Comment[] Comments => this.GetComments(); public required Link[] BreadCrumElements { get; init; }
     
-    public required AdoptionImports AdoptionImports { get; init; }
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
     public required DocumentListItem[] Documents

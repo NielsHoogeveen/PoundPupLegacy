@@ -1,15 +1,11 @@
 ﻿@using PoundPupLegacy.ViewModel;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model Country
-@if(Model is TopLevelCountry topLevelCountry)
+@model Subdivision
+@if (Model is FormalSubdivision formalSubdivision)
 {
     <div>
         <label>ISO 3166-1 code</label>
-        @topLevelCountry.ISO3166_1_Code
-    </div>
-    <div>
-        <label>Region</label>
-        <a href="@topLevelCountry.GlobalRegion.Path">@topLevelCountry.GlobalRegion.Name</a>
+        @formalSubdivision.ISO3166_2_Code
     </div>
 }
 @if (Model.SubdivisionTypes is not null)
@@ -24,8 +20,3 @@
 {
     <partial name="_Documents" model="@Model.Documents" />
 }
-@if (Model.AdoptionImports is not null)
-{
-    <partial name="_AdoptionImports" model="@Model.AdoptionImports" />
-}
-

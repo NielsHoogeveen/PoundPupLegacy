@@ -1,8 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public interface Country : PoliticalEntity
+public interface Subdivision : PoliticalEntity
 {
-    public AdoptionImports AdoptionImports { get;  }
 
     public OrganizationTypeWithOrganizations[] OrganizationTypes { get; }
 

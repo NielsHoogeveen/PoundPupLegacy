@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record CountrySubdivisionType
+public record SubdivisionType
 {
     public string Name { get; set; }
 
