@@ -163,7 +163,7 @@ internal sealed class BillMigrator : PPLMigrator
                         UrlId = id
                     }
                 },
-                NodeTypeId = 36,
+                NodeTypeId = 56,
                 Description = reader.GetString("description"),
                 VocabularyNames = vocabularyNames,
                 FileIdTileImage = null,
@@ -316,7 +316,7 @@ internal sealed class BillMigrator : PPLMigrator
                         UrlId = id
                     }
                 },
-                NodeTypeId = 36,
+                NodeTypeId = 57,
                 Description = reader.GetString("description"),
                 VocabularyNames = vocabularyNames,
                 FileIdTileImage = null,

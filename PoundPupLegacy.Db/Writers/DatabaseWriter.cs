@@ -79,9 +79,13 @@ public abstract class DatabaseWriter<T> : DatabaseWriter, IAsyncDisposable
     internal abstract Task WriteAsync(T item);
     protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDateRange)
     {
+        WriteDateTimeRange(dateTimeRange, parameterDateRange, _command);
+    }
+    protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
+    {
         if (dateTimeRange is null)
         {
-            _command.Parameters[parameterDateRange].Value = DBNull.Value;
+            command.Parameters[parameterDateRange].Value = DBNull.Value;
         }
         else
         {
@@ -94,35 +98,40 @@ public abstract class DatabaseWriter<T> : DatabaseWriter, IAsyncDisposable
                 }
                 else
                 {
-                    _command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")}, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
+                    command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")}, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
                 }
 
             }
             else if (!dateTimeRange.Start.HasValue && dateTimeRange.End.HasValue)
             {
-                _command.Parameters[parameterDateRange].Value = $"(, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
+                command.Parameters[parameterDateRange].Value = $"(, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
 
             }
             else if (dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue)
             {
-                _command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")},)";
+                command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")},)";
 
             }
             else if (!dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue)
             {
-                _command.Parameters[parameterDateRange].Value = $"(,)";
+                command.Parameters[parameterDateRange].Value = $"(,)";
 
             }
         }
     }
 
 
+
     protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange)
+    {
+        WriteDateTimeRange(dateTimeRange, parameterDate, parameterDateRange, _command);
+    }
+    protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange, NpgsqlCommand command)
     {
         if (dateTimeRange is null)
         {
-            _command.Parameters[parameterDateRange].Value = DBNull.Value;
-            _command.Parameters[parameterDate].Value = DBNull.Value;
+            command.Parameters[parameterDateRange].Value = DBNull.Value;
+            command.Parameters[parameterDate].Value = DBNull.Value;
         }
         else
         {
@@ -130,37 +139,38 @@ public abstract class DatabaseWriter<T> : DatabaseWriter, IAsyncDisposable
             {
                 if (dateTimeRange.Start.Equals(dateTimeRange.End.Value))
                 {
-                    _command.Parameters[parameterDateRange].Value = DBNull.Value;
-                    _command.Parameters[parameterDate].Value = dateTimeRange.Start;
+                    command.Parameters[parameterDateRange].Value = DBNull.Value;
+                    command.Parameters[parameterDate].Value = dateTimeRange.Start;
 
                 }
                 else
                 {
-                    _command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")}, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
-                    _command.Parameters[parameterDate].Value = DBNull.Value;
+                    command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")}, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
+                    command.Parameters[parameterDate].Value = DBNull.Value;
                 }
 
             }
             else if (!dateTimeRange.Start.HasValue && dateTimeRange.End.HasValue)
             {
-                _command.Parameters[parameterDateRange].Value = $"(, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
-                _command.Parameters[parameterDate].Value = DBNull.Value;
+                command.Parameters[parameterDateRange].Value = $"(, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
+                command.Parameters[parameterDate].Value = DBNull.Value;
 
             }
             else if (dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue)
             {
-                _command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")},)";
-                _command.Parameters[parameterDate].Value = DBNull.Value;
+                command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")},)";
+                command.Parameters[parameterDate].Value = DBNull.Value;
 
             }
             else if (!dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue)
             {
-                _command.Parameters[parameterDateRange].Value = $"(,)";
-                _command.Parameters[parameterDate].Value = DBNull.Value;
+                command.Parameters[parameterDateRange].Value = $"(,)";
+                command.Parameters[parameterDate].Value = DBNull.Value;
 
             }
         }
     }
+
     protected void WriteNullableValue<T2>(T2? value, string parameter)
     {
         WriteNullableValue(value, parameter, _command);

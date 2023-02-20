@@ -1,4 +1,7 @@
-﻿namespace PoundPupLegacy.Db.Writers;
+﻿using PoundPupLegacy.Model;
+using System.Collections.Immutable;
+
+namespace PoundPupLegacy.Db.Writers;
 
 internal sealed class PersonOrganizationRelationWriter : DatabaseWriter<PersonOrganizationRelation>, IDatabaseWriter<PersonOrganizationRelation>
 {
@@ -13,14 +16,7 @@ internal sealed class PersonOrganizationRelationWriter : DatabaseWriter<PersonOr
     private const string DESCRIPTION = "description";
     public static async Task<DatabaseWriter<PersonOrganizationRelation>> CreateAsync(NpgsqlConnection connection)
     {
-        var command = await CreateInsertStatementAsync(
-            connection,
-            "person_organization_relation",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+        var columnDefinitions = new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = PERSON_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
@@ -49,26 +45,65 @@ internal sealed class PersonOrganizationRelationWriter : DatabaseWriter<PersonOr
                     Name = DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
-            }
+            };
+
+        var generateIdCommand = await CreateIdentityInsertStatementAsync(
+            connection,
+            "person_organization_relation",
+            columnDefinitions
         );
-        return new PersonOrganizationRelationWriter(command);
+
+        var command = await CreateInsertStatementAsync(
+            connection,
+            "person_organization_relation",
+            columnDefinitions.ToImmutableList().Add(new ColumnDefinition
+            {
+                Name = ID,
+                NpgsqlDbType = NpgsqlDbType.Integer
+            })
+        );
+        return new PersonOrganizationRelationWriter(command, generateIdCommand);
 
     }
-
-    internal PersonOrganizationRelationWriter(NpgsqlCommand command) : base(command)
+    private readonly NpgsqlCommand _generateIdCommand;
+    internal PersonOrganizationRelationWriter(NpgsqlCommand command, NpgsqlCommand generateIdCommand) : base(command)
     {
+        _generateIdCommand = generateIdCommand;
     }
 
+
+    private void DoWrites(PersonOrganizationRelation personOrganizationRelation, NpgsqlCommand command)
+    {
+        WriteValue(personOrganizationRelation.PersonId, PERSON_ID, command);
+        WriteValue(personOrganizationRelation.OrganizationId, ORGANIZATION_ID, command);
+        WriteNullableValue(personOrganizationRelation.GeographicalEntityId, GEOGRAPHICAL_ENTITY_ID, command);
+        WriteValue(personOrganizationRelation.PersonOrganizationRelationTypeId, PERSON_ORGANIZATION_RELATION_TYPE_ID, command);
+        WriteDateTimeRange(personOrganizationRelation.DateRange, DATE_RANGE, command);
+        WriteNullableValue(personOrganizationRelation.DocumentIdProof, DOCUMENT_ID_PROOF, command);
+        WriteNullableValue(personOrganizationRelation.Description, DESCRIPTION, command);
+    }
     internal override async Task WriteAsync(PersonOrganizationRelation personOrganizationRelation)
     {
-        WriteValue(personOrganizationRelation.Id, ID);
-        WriteValue(personOrganizationRelation.PersonId, PERSON_ID);
-        WriteValue(personOrganizationRelation.OrganizationId, ORGANIZATION_ID);
-        WriteNullableValue(personOrganizationRelation.GeographicalEntityId, GEOGRAPHICAL_ENTITY_ID);
-        WriteValue(personOrganizationRelation.PersonOrganizationRelationTypeId, PERSON_ORGANIZATION_RELATION_TYPE_ID);
-        WriteDateTimeRange(personOrganizationRelation.DateRange, DATE_RANGE);
-        WriteNullableValue(personOrganizationRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
-        WriteNullableValue(personOrganizationRelation.Description, DESCRIPTION);
-        await _command.ExecuteNonQueryAsync();
+        if (personOrganizationRelation.Id is null)
+        {
+            DoWrites(personOrganizationRelation, _generateIdCommand);
+            personOrganizationRelation.Id = await _command.ExecuteScalarAsync() switch
+            {
+                long i => (int)i,
+                _ => throw new Exception("Insert of senator senate bill action does not return an id.")
+            };
+        }
+        else
+        {
+            WriteValue(personOrganizationRelation.Id, ID);
+            DoWrites(personOrganizationRelation, _command);
+            await _command.ExecuteNonQueryAsync();
+        }
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await _generateIdCommand.DisposeAsync();
+        await base.DisposeAsync();
     }
 }

@@ -4,15 +4,15 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
+internal sealed class BillActionTypeMigrator : PPLMigrator
 {
     protected override string Name => "person organization relation types";
-    public PersonOrganizationRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    public BillActionTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
     protected override async Task MigrateImpl()
     {
-        await PersonOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(), _postgresConnection);
+        await BillActionTypeCreator.CreateAsync(ReadBillActionTypes(), _postgresConnection);
     }
-    private async IAsyncEnumerable<PersonOrganizationRelationType> ReadPersonOrganizationRelationTypes()
+    private async IAsyncEnumerable<BillActionType> ReadBillActionTypes()
     {
 
         var sql = $"""
@@ -30,7 +30,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 JOIN category c ON c.cid = n.nid AND c.cnid = 12663
-                WHERE n.nid not in (38509, 38312)
+                WHERE n.nid in (38509, 38312)
                 """;
 
         using var readCommand = MysqlConnection.CreateCommand();
@@ -56,7 +56,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
                 }
             };
 
-            yield return new PersonOrganizationRelationType
+            yield return new BillActionType
             {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
@@ -87,11 +87,10 @@ internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
                         UrlId = id < 33163 ? id : null
                     }
                 },
-                NodeTypeId = 4,
+                NodeTypeId = 58,
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL, reader.GetInt32("file_id_tile_image")),
                 VocabularyNames = vocabularyNames,
-                HasConcreteSubtype = false,
             };
 
         }

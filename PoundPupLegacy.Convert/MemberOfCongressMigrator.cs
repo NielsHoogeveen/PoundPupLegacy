@@ -296,13 +296,6 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
                 foreach (var (govTrackId, fullName, terms) in (await GetTerms(memberType).ToListAsync()).GroupBy(x => (x.Item1, x.Item2)).Select(x => (x.Key.Item1, x.Key.Item2, x.Select(y => y.Item3).ToList())))
                 {
-                    if (govTrackId == 300004)
-                    {
-                        foreach(var term in terms)
-                        {
-                            Console.WriteLine(term);
-                        }
-                    }
                     List<StoredTerm> storedTerms = new List<StoredTerm>();
                     command.Parameters["type_id"].Value = typeId;
                     command.Parameters["govtrack_id"].Value = govTrackId;
@@ -490,6 +483,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             412506 => 62396,
             412389 => 61830,
             400557 => 62323,
+            400556 => 39098,
             _ => null,
         };
         if (!id.HasValue)
@@ -552,7 +546,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
         repCommand.CommandType = CommandType.Text;
         repCommand.CommandTimeout = 300;
         repCommand.CommandText = "select n.id from profession p join node n on n.id = p.id where n.title = 'Representative'";
-        int repRoleId = (int)(await senCommand.ExecuteScalarAsync())!;
+        int repRoleId = (int)(await repCommand.ExecuteScalarAsync())!;
 
         using (var readCommand = _postgresConnection.CreateCommand())
         {
@@ -612,13 +606,14 @@ internal class MemberOfCongressMigrator : PPLMigrator
             foreach (var memberOfCongress in _membersOfCongress)
             {
                 var isSenator = memberOfCongress.terms.Any(x => x.type == "sen");
-                    var isRepresentative = memberOfCongress.terms.Any(x => x.type == "rep");
+                var isRepresentative = memberOfCongress.terms.Any(x => x.type == "rep");
 
-                    var professionalRoles = new List<ProfessionalRole>()
-                    {
+                if (memberOfCongress.id.govtrack == 400568)
+                {
+                    Console.WriteLine($"{memberOfCongress.name.official_full} isSenator {isSenator} isRepresentative {isRepresentative}");
+                }
 
-                    };
-                    
+                var professionalRoles = new List<ProfessionalRole>();
 
                 if (memberOfCongress.node_id.HasValue)
                 {
@@ -726,7 +721,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
         var jsonUtf8Bytes = await System.IO.File.ReadAllBytesAsync(fileName);
         foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes)!)
         {
-            if (member.terms.Any(x => x.start >= DateTime.Parse("1999-03-01")))
+            if (member.terms.Any(x => x.end >= DateTime.Parse("1999-01-03")))
             {
                 yield return member;
             }
@@ -735,7 +730,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
         var jsonUtf8Bytes2 = await System.IO.File.ReadAllBytesAsync(fileName2);
         foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes2)!)
         {
-            if (member.terms.Any(x => x.start >= DateTime.Parse("1999-03-01")))
+            if (member.terms.Any(x => x.end >= DateTime.Parse("1999-01-03")))
             {
                 yield return member;
             }

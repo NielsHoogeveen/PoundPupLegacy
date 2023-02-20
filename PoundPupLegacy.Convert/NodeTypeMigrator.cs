@@ -86,6 +86,9 @@ internal sealed class NodeTypeMigrator : PPLMigrator
         yield return new BasicNodeType(53, "single question poll", "Poll that asks a single question");
         yield return new BasicNodeType(54, "multi question poll", "Poll that asks a multiple questions");
         yield return new BasicNodeType(55, "poll question", "Poll question");
+        yield return new BasicNodeType(56, "house bill", "A bill that is introduced in the US house of representatives");
+        yield return new BasicNodeType(57, "senate bill", "A bill that is introduced in the US senate");
+        yield return new BasicNodeType(58, "bill action type", "The type of actions a person can take with respect to a bill");
     }
 
 }
