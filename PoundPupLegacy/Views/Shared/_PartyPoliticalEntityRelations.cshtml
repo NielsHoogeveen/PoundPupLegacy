@@ -3,7 +3,7 @@
 @model IEnumerable<PartyPoliticalEntityRelation>
 @if (Model.Any())
 {
-    <h3>Relations to countries</h3>
+    <h3>Relations to geographical entities</h3>
     <table class="political_entity_relations" style="width:100%">
         <tr>
             <th>Party</th>
@@ -11,7 +11,7 @@
             <th>Political Entity</th>
             <th>Date From</th>
             <th>Date To</th>
-        @foreach (var relation in Model)
+        @foreach (var relation in Model.OrderBy(x => x.DateFrom))
         {
           <tr>
                 <td>

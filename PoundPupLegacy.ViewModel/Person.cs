@@ -169,5 +169,16 @@ public record Person : Nameable, Documentable, Locatable
             }
         }
     }
-
+    private BillAction[] _billActions = Array.Empty<BillAction>();
+    public required BillAction[] BillActions
+    {
+        get => _billActions;
+        init
+        {
+            if (value is not null)
+            {
+                _billActions = value;
+            }
+        }
+    }
 }

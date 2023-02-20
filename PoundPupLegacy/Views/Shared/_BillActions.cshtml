@@ -1,0 +1,23 @@
+﻿@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<BillAction>
+@if (Model.Any())
+{
+    <h3>Bill actions</h3>
+    <table style="width:100%">
+        <tr>
+            <th>Action</th>
+            <th>Bill</th>
+            <th>Date</th>
+        </tr>
+        @foreach (var item in Model.OrderBy(x => x.Date))
+        {
+            <tr>
+                <td><a href="@item.BillActionType.Path">@item.BillActionType.Name</a></td>
+                <td><a href="@item.Bill.Path">@item.Bill.Name</a></td>
+                <td>@item.Date.ToString("yyyy MMMM dd")</td>
+            </tr>
+        }
+    </table>
+}
+

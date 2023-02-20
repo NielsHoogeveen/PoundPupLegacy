@@ -198,6 +198,9 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         _stopwatch.Restart();
         Console.Write("Cleaning database");
         var sql = """
+            TRUNCATE case_parties
+            RESTART IDENTITY
+            CASCADE;
             TRUNCATE poll_status
             RESTART IDENTITY
             CASCADE;

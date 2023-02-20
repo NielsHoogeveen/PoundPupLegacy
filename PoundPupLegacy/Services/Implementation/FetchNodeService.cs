@@ -41,6 +41,7 @@ internal class FetchNodeService : IFetchNodeService
             {PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {ORGANIZATION_PERSON_RELATIONS_DOCUMENT},
             {TAGS_DOCUMENT},
+            {BILL_ACTIONS_DOCUMENT},
             {SUBTOPICS_DOCUMENT},
             {SUPERTOPICS_DOCUMENT},
             {DOCUMENTS_DOCUMENT},
@@ -1848,6 +1849,77 @@ internal class FetchNodeService : IFetchNodeService
         )
         """;
 
+    const string BILL_ACTIONS_DOCUMENT = """
+        bill_actions_document as (
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'BillActionType', 
+                        jsonb_build_object(
+                            'Name', 
+                            bill_action_name, 
+                            'Path', 
+                            bill_action_path
+                        ),
+                        'Bill', 
+                        jsonb_build_object(
+                            'Name', 
+                            bill_name, 
+                            'Path', 
+                            bill_path
+                        ),
+                        'Date',
+                        date
+                    )
+                ) document
+            from(
+                select
+                    case 
+                        when tn2.url_path is null then '/node/' || tn2.url_id
+                        else '/' || tn2.url_path
+                    end  bill_action_path,
+                    n2.title bill_action_name,
+                    case 
+                        when tn3.url_path is null then '/node/' || tn3.url_id
+                        else '/' || tn3.url_path
+                    end bill_path,
+                    n3.title bill_name,
+                    ba.date
+                from node n
+                join tenant_node tn on tn.node_id = n.id
+                join professional_role pr on pr.person_id = n.id
+                join representative_house_bill_action ba on ba.representative_id = pr.id
+                join node n2 on n2.id = ba.bill_action_type_id
+                join node n3 on n3.id = ba.house_bill_id
+                join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
+                join tenant_node tn3 on tn3.node_id = n3.id and tn3.tenant_id = tn.tenant_id
+                where tn.url_id = @url_id and tn.tenant_id = @tenant_id
+                union
+                select
+                    case 
+                        when tn2.url_path is null then '/node/' || tn2.url_id
+                        else '/' || tn2.url_path
+                    end bill_action_path,
+                    n2.title bill_action_name,
+                    case 
+                        when tn3.url_path is null then '/node/' || tn3.url_id
+                        else '/' || tn3.url_path
+                    end bill_path,
+                    n3.title bill_name,
+                    ba.date
+                from node n
+                join tenant_node tn on tn.node_id = n.id
+                join professional_role pr on pr.person_id = n.id
+                join senator_senate_bill_action ba on ba.senator_id = pr.id
+                join node n2 on n2.id = ba.bill_action_type_id
+                join node n3 on n3.id = ba.senate_bill_id
+                join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
+                join tenant_node tn3 on tn3.node_id = n3.id and tn3.tenant_id = tn.tenant_id
+                where tn.url_id = @url_id and tn.tenant_id = @tenant_id
+            )x
+        )
+        """;
+
     const string COUNTRY_BREADCRUM_DOCUMENT = """
         country_bread_crum_document AS (
             SELECT jsonb_agg(
@@ -3115,7 +3187,8 @@ internal class FetchNodeService : IFetchNodeService
                 'PartyCaseTypes', (SELECT document from person_cases_document),
                 'OrganizationPersonRelations', (SELECT document from organization_person_relations_document),
                 'PartyPoliticalEntityRelations', (SELECT document from party_political_entity_relations_document),
-                'Files', (SELECT document FROM files_document)
+                'Files', (SELECT document FROM files_document),
+                'BillActions', (SELECT document from bill_actions_document)
             ) document
             FROM (
                  SELECT

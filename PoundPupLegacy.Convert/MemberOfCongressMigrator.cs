@@ -162,9 +162,10 @@ internal class MemberOfCongressMigrator : PPLMigrator
                 } 
             },
 
-        }).ToAsyncEnumerable();
-        await PartyPoliticalEntityRelationCreator.CreateAsync(add, _postgresConnection);
-        await UpdateTerms(lst.Where(x => x.NodeId.HasValue && !x.Delete).ToAsyncEnumerable());
+        }).ToList();
+        var updates = lst.Where(x => x.NodeId.HasValue && !x.Delete).ToList();
+        await PartyPoliticalEntityRelationCreator.CreateAsync(add.ToAsyncEnumerable(), _postgresConnection);
+        await UpdateTerms(updates.ToAsyncEnumerable());
     }
 
     private async Task UpdateTerms(IAsyncEnumerable<StoredTerm> terms)
@@ -187,7 +188,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
         await command.PrepareAsync();
         await foreach(var term in terms)
         {
-            command.Parameters["id"].Value = term.PersonId;
+            command.Parameters["id"].Value = term.NodeId;
             command.Parameters["date_range"].Value = term.EndDate is null ? $"[{term.StartDate.Year}-{term.StartDate.Month}-{term.StartDate.Day},)" : $"[{term.StartDate.Year}-{term.StartDate.Month}-{term.StartDate.Day},{term.EndDate.Value.Year}-{term.EndDate.Value.Month}-{term.EndDate.Value.Day})";
             command.Parameters["political_entity_id"].Value = term.PoliticalEntityId;
             await command.ExecuteNonQueryAsync();
@@ -268,8 +269,9 @@ internal class MemberOfCongressMigrator : PPLMigrator
                 join node n2 on n2.id = pper.party_political_entity_relation_type_id
                 join tenant_node tn on tn.node_id = n.id AND tn.tenant_id = 1
                 join iso_coded_subdivision ics on ics.id = pper.political_entity_id
+                join tenant_node tn2 on tn2.node_id = n2.id AND tn.tenant_id = 1
                 where p.govtrack_id = @govtrack_id
-                and tn.url_id = @type_id
+                and tn2.url_id = @type_id
                 order by lower(pper.date_range)
                 """;
             command.CommandType = CommandType.Text;
