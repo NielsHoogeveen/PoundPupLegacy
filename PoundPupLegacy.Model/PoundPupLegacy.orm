@@ -615,7 +615,6 @@
 					<orm:Role ref="_883C0CB2-7A06-4AC8-990D-C03CCE74D934" />
 					<orm:Role ref="_49B695A9-D043-4977-9BAB-F2BA50B0A270" />
 					<orm:Role ref="_F21AAF6E-3A16-4D67-BF84-4131888B14DF" />
-					<orm:SupertypeMetaRole ref="_AE4EA0B9-A838-4790-A51A-1D46D712E52E" />
 					<orm:SubtypeMetaRole ref="_9911B61A-5B3E-4875-B95F-8CE85DE5875B" />
 				</orm:PlayedRoles>
 			</orm:EntityType>
@@ -911,6 +910,7 @@
 					<orm:Role ref="_019712BF-8FA3-46B9-907F-8DCE88C6E467" />
 					<orm:SupertypeMetaRole ref="_EE65C3E0-4721-46D6-B20D-BE3DE6BC0F3D" />
 					<orm:SupertypeMetaRole ref="_2DFFC732-B7A7-441B-9F7D-5AB9CE6E9BEA" />
+					<orm:SupertypeMetaRole ref="_B02B1FAD-61BE-4B71-AF3D-1EA3D6E00FED" />
 				</orm:PlayedRoles>
 				<orm:PreferredIdentifier ref="_C3D61891-27D2-4FDC-AF94-F7C4FF3EFA49" />
 			</orm:EntityType>
@@ -975,7 +975,7 @@
 					<orm:SupertypeMetaRole ref="_1069C781-75F0-47FD-A0DC-87C7311CBFC1" />
 					<orm:SupertypeMetaRole ref="_EE24368E-70F8-4F6E-B542-4ABF9E4C2690" />
 					<orm:Role ref="_D435FA02-D785-4894-B993-2BAF95F7AF55" />
-					<orm:SubtypeMetaRole ref="_9B1430BC-085F-43AA-8D5F-141843052BAD" />
+					<orm:SubtypeMetaRole ref="_6327DFC7-B4BF-4431-9465-C781DAF05677" />
 				</orm:PlayedRoles>
 			</orm:EntityType>
 			<orm:ValueType id="_7353F88C-15A9-4927-B600-4A8316BB2AA2" Name="OrganizationType has concrete subtype" IsImplicitBooleanValue="true">
@@ -10484,21 +10484,6 @@
 				</orm:InternalConstraints>
 				<orm:ImpliedByObjectification ref="_298B9C16-DA91-47A5-8EFF-41358B7BB627" />
 			</orm:ImpliedFact>
-			<orm:SubtypeFact id="_BDF74C26-0AEB-4A91-BDB2-E239DCBCEFA9" _Name="MemberOfCongressIsASubtypeOfPartyPoliticalEntityRelation" PreferredIdentificationPath="true">
-				<orm:FactRoles>
-					<orm:SubtypeMetaRole id="_9B1430BC-085F-43AA-8D5F-141843052BAD" _IsMandatory="true" _Multiplicity="ZeroToOne" Name="">
-						<orm:RolePlayer ref="_993CBC46-69EE-4859-B668-5ED41CC26560" />
-					</orm:SubtypeMetaRole>
-					<orm:SupertypeMetaRole id="_AE4EA0B9-A838-4790-A51A-1D46D712E52E" _IsMandatory="false" _Multiplicity="ExactlyOne" Name="">
-						<orm:RolePlayer ref="_AD01C6E8-0522-4106-AADA-DA9EBC793F3B" />
-					</orm:SupertypeMetaRole>
-				</orm:FactRoles>
-				<orm:InternalConstraints>
-					<orm:MandatoryConstraint ref="_17B0072C-08EB-480A-AC03-42166B7F9179" />
-					<orm:UniquenessConstraint ref="_D2A1615B-766E-4546-8B59-E85A5EA266C1" />
-					<orm:UniquenessConstraint ref="_AD9D3E67-114F-45AA-890D-E35C5150AF95" />
-				</orm:InternalConstraints>
-			</orm:SubtypeFact>
 			<orm:Fact id="_524C2C7C-EEE3-41CB-ADE5-56C71EF4EF8B" _Name="PoliticalEntityRelationTypeHasConcreteSubtypes">
 				<orm:FactRoles>
 					<orm:Role id="_552F10D9-4F40-43BF-9C5E-F73D6770B14D" _IsMandatory="false" _Multiplicity="Unspecified" Name="">
@@ -13102,6 +13087,21 @@
 				</orm:InternalConstraints>
 				<orm:ImpliedByObjectification ref="_013B3AB8-C54E-4EF3-86BE-87C18ABB16D5" />
 			</orm:ImpliedFact>
+			<orm:SubtypeFact id="_40C517D9-00CD-4AF6-8EC7-D21EBADCFFA2" _Name="MemberOfCongressIsASubtypeOfProfessionalRole" PreferredIdentificationPath="true">
+				<orm:FactRoles>
+					<orm:SubtypeMetaRole id="_6327DFC7-B4BF-4431-9465-C781DAF05677" _IsMandatory="true" _Multiplicity="ZeroToOne" Name="">
+						<orm:RolePlayer ref="_993CBC46-69EE-4859-B668-5ED41CC26560" />
+					</orm:SubtypeMetaRole>
+					<orm:SupertypeMetaRole id="_B02B1FAD-61BE-4B71-AF3D-1EA3D6E00FED" _IsMandatory="false" _Multiplicity="ExactlyOne" Name="">
+						<orm:RolePlayer ref="_C5EB1515-E1AF-4781-9990-D6411D039DE5" />
+					</orm:SupertypeMetaRole>
+				</orm:FactRoles>
+				<orm:InternalConstraints>
+					<orm:MandatoryConstraint ref="_D9CB9BB6-48FF-449C-B19A-274391567145" />
+					<orm:UniquenessConstraint ref="_DA31EBA3-31BB-4CD1-96CD-2A1FD1561997" />
+					<orm:UniquenessConstraint ref="_905D3D09-8C39-4BB1-8EFE-D42EC6D874D5" />
+				</orm:InternalConstraints>
+			</orm:SubtypeFact>
 		</orm:Facts>
 		<orm:Constraints>
 			<orm:UniquenessConstraint id="_40491EAB-9849-43DB-AA72-C9EF2EE7B1C5" Name="InternalUniquenessConstraint1" IsInternal="true">
@@ -16877,21 +16877,6 @@
 					<orm:Role id="_F803CD5C-B672-4186-92DD-E207153AA54D" ref="_E1786AF9-F5C0-4946-A666-A1EA1FE1B0A2" />
 				</orm:RoleSequence>
 			</orm:UniquenessConstraint>
-			<orm:MandatoryConstraint id="_17B0072C-08EB-480A-AC03-42166B7F9179" Name="SimpleMandatoryConstraint245" IsSimple="true">
-				<orm:RoleSequence>
-					<orm:Role id="_EF76835A-3984-4E25-B6DB-7934E62A3DA5" ref="_9B1430BC-085F-43AA-8D5F-141843052BAD" />
-				</orm:RoleSequence>
-			</orm:MandatoryConstraint>
-			<orm:UniquenessConstraint id="_D2A1615B-766E-4546-8B59-E85A5EA266C1" Name="InternalUniquenessConstraint421" IsInternal="true">
-				<orm:RoleSequence>
-					<orm:Role id="_662BFB50-93C9-4DB4-B8E7-210E8C40DB57" ref="_9B1430BC-085F-43AA-8D5F-141843052BAD" />
-				</orm:RoleSequence>
-			</orm:UniquenessConstraint>
-			<orm:UniquenessConstraint id="_AD9D3E67-114F-45AA-890D-E35C5150AF95" Name="InternalUniquenessConstraint422" IsInternal="true">
-				<orm:RoleSequence>
-					<orm:Role id="_D75D84F5-F106-459B-A995-BF626406B0A9" ref="_AE4EA0B9-A838-4790-A51A-1D46D712E52E" />
-				</orm:RoleSequence>
-			</orm:UniquenessConstraint>
 			<orm:UniquenessConstraint id="_A2E158CB-C866-4FF4-BE11-55A35A1E9C0E" Name="InternalUniquenessConstraint288" IsInternal="true">
 				<orm:RoleSequence>
 					<orm:Role id="_735402A4-28B5-41F5-A3D1-6E21A6C4155F" ref="_552F10D9-4F40-43BF-9C5E-F73D6770B14D" />
@@ -18210,6 +18195,7 @@
 				<orm:RoleSequence>
 					<orm:Role id="_801B82C6-1610-4C72-B068-291C931744A6" ref="_44A887D1-B15B-402F-B815-6515DA2A7D8E" />
 				</orm:RoleSequence>
+				<orm:InherentForObjectType ref="_008699DA-D41A-4B2B-8DFE-9F596F3D9858" />
 			</orm:MandatoryConstraint>
 			<orm:UniquenessConstraint id="_3A3AE6AD-CC74-4B4E-ADCB-17B9063B42E8" Name="InternalUniquenessConstraint540" IsInternal="true">
 				<orm:RoleSequence>
@@ -18233,6 +18219,21 @@
 				<orm:RoleSequence>
 					<orm:Role id="_6CAAC92D-D218-483C-8449-C97DFE58962B" ref="_4A345113-953B-43F5-93EF-FCAD73AC4391" />
 					<orm:Role id="_0F425086-6F55-4BFE-84D4-6181EEDE2B99" ref="_B7AC4BE4-41CC-427E-8799-B853BFAD6F13" />
+				</orm:RoleSequence>
+			</orm:UniquenessConstraint>
+			<orm:MandatoryConstraint id="_D9CB9BB6-48FF-449C-B19A-274391567145" Name="SimpleMandatoryConstraint317" IsSimple="true">
+				<orm:RoleSequence>
+					<orm:Role id="_9C329C0A-EE11-4A04-B11F-1D756B3C063D" ref="_6327DFC7-B4BF-4431-9465-C781DAF05677" />
+				</orm:RoleSequence>
+			</orm:MandatoryConstraint>
+			<orm:UniquenessConstraint id="_DA31EBA3-31BB-4CD1-96CD-2A1FD1561997" Name="InternalUniquenessConstraint543" IsInternal="true">
+				<orm:RoleSequence>
+					<orm:Role id="_73F81C6E-967B-4CA4-B99F-E3D810648EB4" ref="_6327DFC7-B4BF-4431-9465-C781DAF05677" />
+				</orm:RoleSequence>
+			</orm:UniquenessConstraint>
+			<orm:UniquenessConstraint id="_905D3D09-8C39-4BB1-8EFE-D42EC6D874D5" Name="InternalUniquenessConstraint544" IsInternal="true">
+				<orm:RoleSequence>
+					<orm:Role id="_C8E42EB7-F9AE-45B0-9950-8103998041C6" ref="_B02B1FAD-61BE-4B71-AF3D-1EA3D6E00FED" />
 				</orm:RoleSequence>
 			</orm:UniquenessConstraint>
 			<orm:ExclusionConstraint id="_6A112236-3ECC-4ADA-8CDB-04C72059DB50" Name="ExclusiveOrConstraint1">
@@ -19705,18 +19706,6 @@ This is expressable in PostgreSQL using a date range data type and an exclusion 
 			<ormDiagram:ObjectTypeShape id="_9217F1F5-698A-4DF4-803D-D7CA4ABCAFD8" IsExpanded="true" AbsoluteBounds="5.7152778166346252, 3.1250000195577741, 1.5137556743621827, 0.22950302660465241">
 				<ormDiagram:Subject ref="_58616CE9-3E4A-4F2A-8374-E97CBA58C332" />
 			</ormDiagram:ObjectTypeShape>
-			<ormDiagram:ObjectTypeShape id="_8A631856-EF55-47E7-9C23-E2ABD5FB4938" IsExpanded="true" AbsoluteBounds="3.1388889122754335, 3.5625000265426934, 1.1400577974319459, 0.22950302660465241">
-				<ormDiagram:Subject ref="_993CBC46-69EE-4859-B668-5ED41CC26560" />
-			</ormDiagram:ObjectTypeShape>
-			<ormDiagram:ObjectTypeShape id="_DE85DF27-6931-4515-A4A5-314413C66A82" IsExpanded="true" AbsoluteBounds="4.2361111426725984, 4.5555555894970894, 0.91641836881637573, 0.22950302660465241">
-				<ormDiagram:Subject ref="_A692862B-80C2-4EC3-8EC8-43D9879B5745" />
-			</ormDiagram:ObjectTypeShape>
-			<ormDiagram:ObjectTypeShape id="_BE9B96EE-F79F-45B8-A06F-A0FB720DB639" IsExpanded="true" AbsoluteBounds="2.4513889071531594, 4.5972222564741969, 0.54618587613105773, 0.22950302660465241">
-				<ormDiagram:Subject ref="_124353A9-4BDA-4968-AED4-6CA21C87CC10" />
-			</ormDiagram:ObjectTypeShape>
-			<ormDiagram:ExternalConstraintShape id="_A62F3566-1A95-47AB-86C5-58AA9088BF70" IsExpanded="true" AbsoluteBounds="3.3611111361533403, 4.54166670050472, 0.16, 0.16">
-				<ormDiagram:Subject ref="_C783EF12-344F-4378-9DE7-EE1710516259" />
-			</ormDiagram:ExternalConstraintShape>
 			<ormDiagram:FactTypeShape id="_34D1AE81-3392-41BC-BFA9-B55FD38FB4EE" IsExpanded="true" AbsoluteBounds="7.5347222145646811, 3.1527777509763837, 0.22388888899236919, 0.17388888899236918">
 				<ormDiagram:RelativeShapes>
 					<ormDiagram:ReadingShape id="_0EA63061-0FFC-493E-B5C4-79C9615E6D4A" IsExpanded="true" AbsoluteBounds="7.5347222145646811, 3.3914181532710792, 1.0175418853759766, 0.1295030266046524">
@@ -20236,6 +20225,9 @@ This is expressable in PostgreSQL using a date range data type and an exclusion 
 				</ormDiagram:RelativeShapes>
 				<ormDiagram:Subject ref="_616B419D-AD71-42A3-8F8E-190A7B8DABC3" />
 			</ormDiagram:FactTypeShape>
+			<ormDiagram:ObjectTypeShape id="_F4159006-53B0-4E6B-9CF0-3C97F2479BDC" IsExpanded="true" AbsoluteBounds="3.5902778045274317, 3.4652778035961092, 1.1400577974319459, 0.22950302660465241">
+				<ormDiagram:Subject ref="_993CBC46-69EE-4859-B668-5ED41CC26560" />
+			</ormDiagram:ObjectTypeShape>
 		</ormDiagram:Shapes>
 		<ormDiagram:Subject ref="_9C742D19-7E3B-44BB-9530-4EB563F25697" />
 	</ormDiagram:ORMDiagram>
@@ -20904,6 +20896,9 @@ This is expressable in PostgreSQL using a date range data type and an exclusion 
 				</ormDiagram:RelativeShapes>
 				<ormDiagram:Subject ref="_3EC7C999-D812-4F87-809C-5943CB7E4CC5" />
 			</ormDiagram:FactTypeShape>
+			<ormDiagram:ExternalConstraintShape id="_6C2372E7-49AF-4F4A-994A-35E871B6E3AD" IsExpanded="true" AbsoluteBounds="4.9305555922910571, 1.868055569473654, 0.16, 0.16">
+				<ormDiagram:Subject ref="_C783EF12-344F-4378-9DE7-EE1710516259" />
+			</ormDiagram:ExternalConstraintShape>
 		</ormDiagram:Shapes>
 		<ormDiagram:Subject ref="_9C742D19-7E3B-44BB-9530-4EB563F25697" />
 	</ormDiagram:ORMDiagram>
@@ -21434,9 +21429,6 @@ This is expressable in PostgreSQL using a date range data type and an exclusion 
 				<ormDiagram:Subject ref="_A0BD00CD-7CD1-4CD8-8FC4-27D61F6161A9" />
 			</ormDiagram:FactTypeShape>
 		</ormDiagram:Shapes>
-		<ormDiagram:Subject ref="_9C742D19-7E3B-44BB-9530-4EB563F25697" />
-	</ormDiagram:ORMDiagram>
-	<ormDiagram:ORMDiagram id="_05D1D58D-DAD8-4264-AB69-CE42FA0132DA" IsCompleteView="true" Name="New Page" BaseFontName="Tahoma" BaseFontSize="0.0972222238779068">
 		<ormDiagram:Subject ref="_9C742D19-7E3B-44BB-9530-4EB563F25697" />
 	</ormDiagram:ORMDiagram>
 </ormRoot:ORM2>

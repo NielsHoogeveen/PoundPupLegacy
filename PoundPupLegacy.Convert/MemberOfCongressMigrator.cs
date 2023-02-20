@@ -99,6 +99,24 @@ public record TempTerm
     public string State { get; set; }
 }
 
+
+public record StoredTerm
+{
+    public required int GovtrackId { get; init; }
+    public required int PersonId { get; init; }
+
+    public required string PersonName { get; init; }
+    public required int? NodeId { get; init; }
+    public required DateTime StartDate { get; set; }
+    public required DateTime? EndDate { get; set; }
+    public required int RelationTypeId { get; init; }
+    public required string RelationTypeName { get; init; }
+    public int PoliticalEntityId { get; set; }
+    public required string PoliticalEntityCode { get; set; }
+    public required bool Delete { get; set; }
+    public required int? DocumentId { get; init; }
+}
+
 internal class MemberOfCongressMigrator : PPLMigrator
 {
 
@@ -112,12 +130,269 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        _membersOfCongress = await GetMembersOfCongress().ToListAsync();
+        _membersOfCongress = (await GetMembersOfCongress().ToListAsync()).OrderBy(x => x.id.govtrack).ToList();
+        var persons = await GetMembersOfCongressAsync().ToListAsync();
+        await PersonCreator.CreateAsync(persons.ToAsyncEnumerable(), _postgresConnection);
+        
+        var lst = await GetTermsToStore().ToListAsync();
+        var now = DateTime.Now;
+        var add = lst.Where(x => !x.NodeId.HasValue).ToList().Select(x => new PartyPoliticalEntityRelation
+        {
+            Id = null,
+            Title = $"{x.PersonName} {x.RelationTypeName} of {x.PoliticalEntityCode}",
+            CreatedDateTime = now,
+            ChangedDateTime = now,
+            PartyId = x.PersonId,
+            PoliticalEntityId = x.PoliticalEntityId,
+            PublisherId = 1,
+            OwnerId = Constants.PPL,
+            DocumentIdProof = null,
+            PartyPoliticalEntityRelationTypeId = x.RelationTypeId,
+            NodeTypeId = 49,
+            DateRange = new DateTimeRange(x.StartDate, x.EndDate),
+            TenantNodes = new List<TenantNode> { 
+                new TenantNode { 
+                    TenantId = Constants.PPL, 
+                    NodeId = null,
+                    PublicationStatusId = 1,
+                    SubgroupId = null,
+                    UrlId = null,
+                    UrlPath = null,
+                    Id = null,
+                } 
+            },
 
-        await PersonCreator.CreateAsync(GetMembersOfCongressAsync(), _postgresConnection);
+        }).ToAsyncEnumerable();
+        await PartyPoliticalEntityRelationCreator.CreateAsync(add, _postgresConnection);
+        await UpdateTerms(lst.Where(x => x.NodeId.HasValue && !x.Delete).ToAsyncEnumerable());
     }
 
-    private async IAsyncEnumerable<TempTerm> GetTerms()
+    private async Task UpdateTerms(IAsyncEnumerable<StoredTerm> terms)
+    {
+        using var command = _postgresConnection.CreateCommand();
+
+        var sql = """
+            update party_political_entity_relation
+            set
+            date_range = @date_range,
+            political_entity_id = @political_entity_id
+            where id = @id
+            """;
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = sql;
+        command.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("date_range", NpgsqlTypes.NpgsqlDbType.Unknown);
+        command.Parameters.Add("political_entity_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        await command.PrepareAsync();
+        await foreach(var term in terms)
+        {
+            command.Parameters["id"].Value = term.PersonId;
+            command.Parameters["date_range"].Value = term.EndDate is null ? $"[{term.StartDate.Year}-{term.StartDate.Month}-{term.StartDate.Day},)" : $"[{term.StartDate.Year}-{term.StartDate.Month}-{term.StartDate.Day},{term.EndDate.Value.Year}-{term.EndDate.Value.Month}-{term.EndDate.Value.Day})";
+            command.Parameters["political_entity_id"].Value = term.PoliticalEntityId;
+            await command.ExecuteNonQueryAsync();
+
+        }
+    }
+
+    private async IAsyncEnumerable<(string, int)> GetStates()
+    {
+        using (var command = _postgresConnection.CreateCommand())
+        {
+            var sql = """
+                select
+                s.id,
+                iso_3166_2_code
+                from iso_coded_subdivision ics
+                join subdivision s on s.id = ics.id
+                join country c on c.id = s.country_id
+                join tenant_node tn on tn.node_id = c.id
+                where tn.tenant_id = 1 and tn.url_id = 3805
+                """;
+            command.CommandType = CommandType.Text;
+            command.CommandTimeout = 300;
+            command.CommandText = sql;
+            await command.PrepareAsync();
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                yield return (reader.GetString(1), reader.GetInt32(0));
+            }
+            await reader.CloseAsync();
+        }
+
+    }
+
+    private async IAsyncEnumerable<StoredTerm> GetTermsToStore()
+    {
+
+        var typeNodeIdRepresentative = await _nodeIdReader.ReadAsync(Constants.PPL, 12660);
+        var typeNodeIdSenator = await _nodeIdReader.ReadAsync(Constants.PPL, 12662);
+        var states = await GetStates().ToListAsync();
+        using var readCommand = _postgresConnection.CreateCommand();
+
+        var sqlRead = "select id from person where govtrack_id = @govtrack_id";
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = sqlRead;
+        readCommand.Parameters.Add("govtrack_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        await readCommand.PrepareAsync();
+
+        async Task<int> GetPersonId(int govTrackId)
+        {
+            readCommand.Parameters["govtrack_id"].Value = govTrackId;
+            var res = await readCommand.ExecuteScalarAsync();
+            return (int)res!;
+        }
+
+        using (var command = _postgresConnection.CreateCommand())
+        {
+            var sql = """
+                select
+                    pper.id,
+                    p.govtrack_id,
+                    p.id person_id,
+                    n.title person_name,
+                    pper.political_entity_id,
+                    pper.party_id,
+                    pper.party_political_entity_relation_type_id,
+                    n2.title party_political_entity_relation_type_name,
+                    lower(pper.date_range) date_from,
+                    upper(pper.date_range) date_to,
+                    pper.document_id_proof,
+                    ics.iso_3166_2_code
+                from person p
+                join node n on n.id = p.id
+                join party_political_entity_relation pper on pper.party_id = p.id
+                join node n1 on n1.id = pper.id
+                join node n2 on n2.id = pper.party_political_entity_relation_type_id
+                join tenant_node tn on tn.node_id = n.id AND tn.tenant_id = 1
+                join iso_coded_subdivision ics on ics.id = pper.political_entity_id
+                where p.govtrack_id = @govtrack_id
+                and tn.url_id = @type_id
+                order by lower(pper.date_range)
+                """;
+            command.CommandType = CommandType.Text;
+            command.CommandTimeout = 300;
+            command.CommandText = sql;
+            command.Parameters.Add("type_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            command.Parameters.Add("govtrack_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            await command.PrepareAsync();
+
+            async IAsyncEnumerable<List<StoredTerm>> ProcessTerms(MemberType memberType)
+            {
+                int typeId = memberType switch
+                {
+                    MemberType.Representative => 12660,
+                    MemberType.Senator => 12662,
+                    _ => throw new Exception("Cannot reach")
+                };
+                int typeNodeId = memberType switch
+                {
+                    MemberType.Representative => typeNodeIdRepresentative,
+                    MemberType.Senator => typeNodeIdSenator,
+                    _ => throw new Exception("Cannot reach")
+                };
+
+                foreach (var (govTrackId, fullName, terms) in (await GetTerms(memberType).ToListAsync()).GroupBy(x => (x.Item1, x.Item2)).Select(x => (x.Key.Item1, x.Key.Item2, x.Select(y => y.Item3).ToList())))
+                {
+                    if (govTrackId == 300004)
+                    {
+                        foreach(var term in terms)
+                        {
+                            Console.WriteLine(term);
+                        }
+                    }
+                    List<StoredTerm> storedTerms = new List<StoredTerm>();
+                    command.Parameters["type_id"].Value = typeId;
+                    command.Parameters["govtrack_id"].Value = govTrackId;
+                    var reader = await command.ExecuteReaderAsync();
+                    while (reader.Read())
+                    {
+                        storedTerms.Add(new StoredTerm
+                        {
+                            PersonId = reader.GetInt32("person_id"),
+                            PersonName = reader.GetString("person_name"),
+                            GovtrackId = reader.GetInt32("govtrack_id"),
+                            Delete = false,
+                            NodeId = reader.GetInt32("id"),
+                            PoliticalEntityId = reader.GetInt32("political_entity_id"),
+                            PoliticalEntityCode = reader.GetString("iso_3166_2_code"),
+                            StartDate = reader.GetDateTime("date_from"),
+                            EndDate = reader.IsDBNull("date_to") ? null : reader.GetDateTime("date_to"),
+                            DocumentId = reader.IsDBNull("document_id_proof") ? null : reader.GetInt32("document_id_proof"),
+                            RelationTypeId = reader.GetInt32("party_political_entity_relation_type_id"),
+                            RelationTypeName = reader.GetString("party_political_entity_relation_type_name"),
+                        });
+                    }
+                    await reader.CloseAsync();
+                    foreach(var elem in storedTerms.Skip(terms.Count))
+                    {
+                        elem.Delete = true;
+                    }
+                    foreach(var (term, index) in terms.Select((x, i) => (x, i)))
+                    {
+                        var politicalEntityCode = $"US-{term.State}";
+                        var (stateName, stateId) = states.FirstOrDefault(x => x.Item1 == politicalEntityCode);
+                        if (stateName is null)
+                        {
+                            throw new NullReferenceException();
+                        }
+                        var startDate = term.StartDate.AddHours(12);
+                        var endDate = term.EndDate?.AddHours(11).AddMinutes(59).AddSeconds(59);
+
+                        if (index < storedTerms.Count)
+                        {
+                            var storedTerm = storedTerms[index];
+                            storedTerm.PoliticalEntityId = stateId;
+                            storedTerm.PoliticalEntityCode = politicalEntityCode;
+                            storedTerm.StartDate = startDate;
+                            storedTerm.EndDate = endDate;
+                        }
+                        else
+                        {
+                            storedTerms.Add(new StoredTerm
+                            {
+                                PersonId = await GetPersonId(govTrackId),
+                                GovtrackId = govTrackId,
+                                PoliticalEntityCode = politicalEntityCode,
+                                PoliticalEntityId = stateId,
+                                StartDate = startDate,
+                                EndDate = endDate,
+                                Delete = false,
+                                DocumentId = null,
+                                NodeId = null,
+                                RelationTypeId = typeNodeId,
+                                RelationTypeName = memberType switch
+                                {
+                                    MemberType.Senator => "senator of",
+                                    MemberType.Representative => "representative of"
+                                },
+                                PersonName = fullName
+                            }); 
+                        }
+                    }
+                    yield return storedTerms;
+                }
+            }
+            await foreach(var terms in ProcessTerms(MemberType.Representative))
+            {
+                foreach (var term in terms)
+                {
+                    yield return term;
+                }
+            }
+            await foreach (var terms in ProcessTerms(MemberType.Senator))
+            {
+                foreach (var term in terms)
+                {
+                    yield return term;
+                }
+            }
+        }
+    }
+
+    private async IAsyncEnumerable<(int, string, TempTerm)> GetTerms()
     {
         await foreach (var term in GetTerms(MemberType.Representative))
         {
@@ -130,66 +405,23 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
         }
     }
-    private async IAsyncEnumerable<TempTerm> GetTerms(MemberType memberType)
+    private async IAsyncEnumerable<(int, string, TempTerm)> GetTerms(MemberType memberType)
     {
         var t = memberType == MemberType.Representative ? "rep" : "sen";
-        foreach (var member in _membersOfCongress.Where(x => x.terms.Any(y => y.start >= DateTime.Parse("1999-01-03"))))
+        foreach (var member in _membersOfCongress)
         {
-            var terms = member.terms.Where(x => x.type == t).OrderBy(x => x.start);
-            TempTerm? tempTerm = null;
-            DateTime? endPrevious = null;
-            foreach (var term in terms)
+            foreach(var term in member.terms.Where(x => x.type == t).OrderBy(x => x.start))
             {
-                if (tempTerm is null)
+                yield return (member.id.govtrack, member.name.official_full, new TempTerm
                 {
-                    tempTerm = new TempTerm
-                    {
-                        Id = member.id.govtrack,
-                        StartDate = term.start,
-                        EndDate = null,
-                        MemberType = memberType,
-                        State = term.state,
-                    };
-                }
-                if (endPrevious is not null)
-                {
-                    if (term.start.Subtract(endPrevious.Value) < TimeSpan.FromDays(30))
-                    {
-                        if (term.end <= DateTime.Parse("2023-01-03"))
-                        {
-                            endPrevious = term.end;
-                        }
-                        else
-                        {
-                            endPrevious = null;
-                        }
-                    }
-                    else
-                    {
-                        tempTerm.EndDate = endPrevious;
-                        yield return tempTerm;
-                        tempTerm = new TempTerm
-                        {
-                            Id = member.id.govtrack,
-                            StartDate = term.start,
-                            EndDate = null,
-                            MemberType = memberType,
-                            State = term.state,
-                        };
-                        endPrevious = term.end;
-                    }
-                }
-                else if (term.end <= DateTime.Parse("2023-01-03"))
-                {
-                    endPrevious = term.end;
-                }
+                    Id = member.id.govtrack,
+                    StartDate = term.start,
+                    EndDate = term.end,
+                    MemberType = memberType,
+                    State = term.state,
+                });
+            }
 
-            }
-            if (tempTerm is not null)
-            {
-                tempTerm.EndDate = endPrevious;
-                yield return tempTerm;
-            }
         }
     }
 
@@ -287,17 +519,40 @@ internal class MemberOfCongressMigrator : PPLMigrator
             p.date_of_birth
             FROM node n
             join person p on p.id = n.id
-            where ((n.title like @first_name and n.title like @last_name) or n.title = @wikiname or n.title = @ballotpedia or n.title = @wikipedia2) and p.date_of_birth = @date_of_birth
-            and n.id in (
-                select
-                    p.party_id
-                from party_political_entity_relation p
-                join tenant_node tn on tn.node_id = p.party_political_entity_relation_type_id
-                where tn.url_id in (12660, 12662)
-            )
+            where 
+                (
+                    (
+                        (n.title like @first_name and n.title like @last_name) 
+                        or 
+                        n.title = @wikiname 
+                        or 
+                        n.title = @ballotpedia 
+                        or 
+                        n.title = @wikipedia2
+                    ) 
+                    and p.date_of_birth = @date_of_birth
+                    and 
+                    n.id in (
+                        select
+                            p.party_id
+                        from party_political_entity_relation p
+                        join tenant_node tn on tn.node_id = p.party_political_entity_relation_type_id
+                        where tn.url_id in (12660, 12662)
+                    )
+                )
             """;
 
+        using var senCommand = _postgresConnection.CreateCommand();
+        senCommand.CommandType = CommandType.Text;
+        senCommand.CommandTimeout = 300;
+        senCommand.CommandText = "select n.id from profession p join node n on n.id = p.id where n.title = 'Senator'";
+        int senatorRoleId = (int)(await senCommand.ExecuteScalarAsync())!;
 
+        using var repCommand = _postgresConnection.CreateCommand();
+        repCommand.CommandType = CommandType.Text;
+        repCommand.CommandTimeout = 300;
+        repCommand.CommandText = "select n.id from profession p join node n on n.id = p.id where n.title = 'Representative'";
+        int repRoleId = (int)(await senCommand.ExecuteScalarAsync())!;
 
         using (var readCommand = _postgresConnection.CreateCommand())
         {
@@ -329,9 +584,12 @@ internal class MemberOfCongressMigrator : PPLMigrator
                     readCommand.Parameters["ballotpedia"].Value = string.IsNullOrEmpty(memberOfCongress.id.ballotpedia) ? "" : memberOfCongress.id.ballotpedia;
                     readCommand.Parameters["date_of_birth"].Value = memberOfCongress.bio.birthday is null ? DBNull.Value : memberOfCongress.bio.birthday;
                     using var reader = await readCommand.ExecuteReaderAsync();
-                    while (await reader.ReadAsync())
+                    bool found = false;
+                    while (found == false && await reader.ReadAsync())
                     {
                         memberOfCongress.node_id = reader.GetInt32("id");
+                        found = true;
+                        break;
                     }
                 }
             }
@@ -353,8 +611,37 @@ internal class MemberOfCongressMigrator : PPLMigrator
             await updateCommand.PrepareAsync();
             foreach (var memberOfCongress in _membersOfCongress)
             {
+                var isSenator = memberOfCongress.terms.Any(x => x.type == "sen");
+                    var isRepresentative = memberOfCongress.terms.Any(x => x.type == "rep");
+
+                    var professionalRoles = new List<ProfessionalRole>()
+                    {
+
+                    };
+                    
+
                 if (memberOfCongress.node_id.HasValue)
                 {
+                    if (isSenator)
+                    {
+                        professionalRoles.Add(new Senator
+                        {
+                            Id = null,
+                            PersonId = memberOfCongress.node_id,
+                            DateTimeRange = null,
+                            ProfessionId = senatorRoleId,
+                        });
+                    }
+                    if (isRepresentative)
+                    {
+                        professionalRoles.Add(new Representative
+                        {
+                            Id = null,
+                            PersonId = memberOfCongress.node_id,
+                            DateTimeRange = null,
+                            ProfessionId = repRoleId,
+                        });
+                    }
                     updateCommand.Parameters["first_name"].Value = memberOfCongress.name.first is null ? DBNull.Value : memberOfCongress.name.first;
                     updateCommand.Parameters["last_name"].Value = memberOfCongress.name.last is null ? DBNull.Value : memberOfCongress.name.last;
                     updateCommand.Parameters["middle_name"].Value = memberOfCongress.name.middle is null ? DBNull.Value : memberOfCongress.name.middle;
@@ -364,9 +651,32 @@ internal class MemberOfCongressMigrator : PPLMigrator
                     updateCommand.Parameters["govtrack_id"].Value = memberOfCongress.id.govtrack;
                     updateCommand.Parameters["id"].Value = memberOfCongress.node_id;
                     await updateCommand.ExecuteNonQueryAsync();
+                    await ProfessionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable(), _postgresConnection);
                 }
-                else if (memberOfCongress.terms.Any(x => x.end > DateTime.Parse("1999-03-01")))
+                else
                 {
+
+                    if (isSenator)
+                    {
+                        professionalRoles.Add(new Senator
+                        {
+                            Id = null,
+                            PersonId = null,
+                            DateTimeRange = null,
+                            ProfessionId = senatorRoleId,
+                        });
+                    }
+                    if (isRepresentative)
+                    {
+                        professionalRoles.Add(new Representative
+                        {
+                            Id = null,
+                            PersonId = null,
+                            DateTimeRange = null,
+                            ProfessionId = repRoleId,
+                        });
+                    }
+
                     yield return new Person
                     {
                         Id = null,
@@ -401,6 +711,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                         FullName = memberOfCongress.name.official_full,
                         GovtrackId = memberOfCongress.id.govtrack,
                         Suffix = memberOfCongress.name.suffix,
+                        ProfessionalRoles = professionalRoles
                     };
                 }
             }
@@ -415,13 +726,19 @@ internal class MemberOfCongressMigrator : PPLMigrator
         var jsonUtf8Bytes = await System.IO.File.ReadAllBytesAsync(fileName);
         foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes)!)
         {
-            yield return member;
+            if (member.terms.Any(x => x.start >= DateTime.Parse("1999-03-01")))
+            {
+                yield return member;
+            }
         }
         string fileName2 = @"..\..\..\files\legislators-historical.json";
         var jsonUtf8Bytes2 = await System.IO.File.ReadAllBytesAsync(fileName2);
         foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes2)!)
         {
-            yield return member;
+            if (member.terms.Any(x => x.start >= DateTime.Parse("1999-03-01")))
+            {
+                yield return member;
+            }
         }
     }
 

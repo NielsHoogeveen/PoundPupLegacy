@@ -81,7 +81,7 @@ public abstract class DatabaseWriter<T> : DatabaseWriter, IAsyncDisposable
     {
         if (dateTimeRange is null)
         {
-            throw new ArgumentNullException(nameof(dateTimeRange));
+            _command.Parameters[parameterDateRange].Value = DBNull.Value;
         }
         else
         {

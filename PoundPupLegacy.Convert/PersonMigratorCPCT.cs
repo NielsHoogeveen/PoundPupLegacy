@@ -91,6 +91,7 @@ internal sealed class PersonMigratorCPCT : CPCTMigrator
                 FullName = null,
                 GovtrackId = null,
                 Suffix = null,
+                ProfessionalRoles = new List<ProfessionalRole>(),
             };
 
         }

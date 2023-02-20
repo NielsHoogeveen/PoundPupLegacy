@@ -22,4 +22,5 @@ public sealed record Person : Party
     public required string? FullName { get; init; }
     public required string? Suffix { get; init; }
     public required int? GovtrackId { get; init; }
+    public required List<ProfessionalRole> ProfessionalRoles { get; init; }
 }

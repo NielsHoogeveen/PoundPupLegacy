@@ -55,7 +55,6 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         //await (new BlogPostMigrator(this)).Migrate();
         //await (new ArticleMigrator(this)).Migrate();
         //await (new DiscussionMigrator(this)).Migrate();
-
         //await (new AdoptionImportMigrator(this)).Migrate();
         //await (new DocumentMigratorPPL(this)).Migrate();
         //await (new OrganizationMigratorPPL(this)).Migrate();
@@ -82,20 +81,20 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         //await (new PersonOrganizationRelationMigratorPPL(this)).Migrate();
         //await (new InterOrganizationalRelationMigratorPPL(this)).Migrate();
         //await (new InterPersonalRelationMigratorPPL(this)).Migrate();
-        //await (new MemberOfCongressMigrator(this)).Migrate();
-        //await (new OrganizationMigratorCPCT(this)).Migrate();
-        //await (new PersonMigratorCPCT(this)).Migrate();
-        //await (new PersonOrganizationRelationMigratorCPCT(this)).Migrate();
-        //await (new DocumentMigratorCPCT(this)).Migrate();
-        //await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
-        //await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
-        //await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
+        await (new MemberOfCongressMigrator(this)).Migrate();
+        await (new OrganizationMigratorCPCT(this)).Migrate();
+        await (new PersonMigratorCPCT(this)).Migrate();
+        await (new PersonOrganizationRelationMigratorCPCT(this)).Migrate();
+        await (new DocumentMigratorCPCT(this)).Migrate();
+        await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
+        await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
+        await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
         await (new SearchableMigrator(this)).Migrate();
-        //await (new CaseCaseRelationsMigrator(this)).Migrate();
-        //await (new NodeFileMigratorPPL(this)).Migrate();
-        //await (new NodeFileMigratorCPCT(this)).Migrate();
-        //await (new CommentMigrator(this)).Migrate();
-        //await PrepareFiles();
+        await (new CaseCaseRelationsMigrator(this)).Migrate();
+        await (new NodeFileMigratorPPL(this)).Migrate();
+        await (new NodeFileMigratorCPCT(this)).Migrate();
+        await (new CommentMigrator(this)).Migrate();
+        await PrepareFiles();
     }
 
     internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=niels;database=ppl";

@@ -32,6 +32,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
                 party_id,
                 political_entity_id,
                 case 
+                    when id = 61872 then  STR_TO_DATE(REPLACE('1994-01-15', '-00', '-01'),'%Y-%m-%d')
                 	when start_date > end_date then end_date
                 	ELSE start_date
                 end start_date,
@@ -40,7 +41,10 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
                 	when start_date > end_date then start_date
                 	ELSE end_date
                 end end_date,
-                nameable_id,
+                case 
+                    when id = 61872 then 12654
+                    else nameable_id
+                end nameable_id,
                 vocabulary_id,
                 document_id_proof
                 FROM(

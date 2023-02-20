@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Db.Readers;
+using System.Data;
 
 namespace PoundPupLegacy.Db;
 
@@ -35,6 +36,12 @@ public class PersonCreator : IEntityCreator<Person>
                 tenantNode.NodeId = person.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }
+
+            foreach (var role in person.ProfessionalRoles)
+            {
+                role.PersonId = person.Id;
+            }
+            await ProfessionalRoleCreator.CreateAsync(person.ProfessionalRoles.ToAsyncEnumerable(), connection);
 
         }
     }

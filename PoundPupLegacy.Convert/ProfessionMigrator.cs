@@ -1,6 +1,7 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert;
 
@@ -136,5 +137,100 @@ internal sealed class ProfessionMigrator : PPLMigrator
             };
         }
         reader.Close();
+        yield return new Profession
+        {
+            Id = null,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = "Senator",
+            OwnerId = Constants.OWNER_PARTIES,
+            TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+            NodeTypeId = 6,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    OwnerId = Constants.OWNER_PARTIES,
+                    Name = Constants.VOCABULARY_PROFESSION,
+                    TermName = "Senator",
+                    ParentNames = new List<string>(),
+                }
+            },
+            HasConcreteSubtype = true,
+
+        };
+        yield return new Profession
+        {
+            Id = null,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = "Representative",
+            OwnerId = Constants.OWNER_PARTIES,
+            TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+            NodeTypeId = 6,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    OwnerId = Constants.OWNER_PARTIES,
+                    Name = Constants.VOCABULARY_PROFESSION,
+                    TermName = "Representative",
+                    ParentNames = new List<string>(),
+                }
+            },
+            HasConcreteSubtype = true,
+
+        };
+
     }
 }
