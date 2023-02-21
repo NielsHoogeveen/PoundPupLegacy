@@ -41,17 +41,18 @@ header {
     grid-template-columns: 10em auto;
 }
 
-header .logo {
-    font-family: 'Raleway', sans-serif;
-    margin-left: 0.25em;
-    color: silver;
-    flex-grow: 0;
-    min-width: 10em;
-}
+    header .logo {
+        font-family: 'Raleway', sans-serif;
+        margin-left: 0.25em;
+        color: silver;
+        flex-grow: 0;
+        font-size: clamp(16px, 6vw, 36px);
+        font-weight: 400;
+    }
 
 header .logo .acronym {
-    font-size: clamp(16px, 4vw, 36px);
-    font-weight: 400;
+    
+   
 }
 
 header .logo .full-name {
@@ -83,7 +84,7 @@ header .subtitle {
     margin-top: 0.15em;
     margin-right: 1em;
 }
-@media screen and (min-width: 750px) {
+@media screen and (min-width: 880px) {
     header {
         flex-direction: row;
     }
@@ -132,11 +133,6 @@ footer h2 {
     flex-wrap: wrap;
     flex-direction: column;
     flex-grow: 1;
-}
-@media screen and (min-width: 450px) {
-    .main {
-        flex-direction: row;
-    }
 }
 nav {
     background-color: var(--nav-bg-color);
@@ -200,10 +196,17 @@ content {
     background-color: var(--content-bg-color);
     flex-grow: 1;
 }
+@media screen and (min-width: 880px) {
+    .main {
+        flex-direction: row;
+    }
+    content {
+        width: calc(50% - 10em);
+    }
+}
+
+
 .article-with-comments, .blog-list, .articles {
-    width: 100%;
-    color: black;
-    height: 100%;
 }
 .article-with-comments a, .blog-list a, .articles a {
     color: #002ea8;
