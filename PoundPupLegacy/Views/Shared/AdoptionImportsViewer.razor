@@ -1,0 +1,49 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if(Model is not null && Model.Imports is not null){
+<div class="section">
+    <h3>Adoption imports</h3>
+    <div class="adoption-imports">
+        <div class="adoption-import-countries">
+            <div class="country-from">&nbsp;</div>
+            @foreach (var (row, index) in Model.Imports.Select((row, index) => (row, index)))
+            {
+                var oddOrEven = index % 2 == 0 ? "even" : "odd";
+                var rowGroup = row.RowType == 2 ? "subtotal" : row.RowType == 3 ? "total" : "";
+                if (row.RowType == 3)
+                {
+                    <div class="country-from @oddOrEven @rowGroup">Total</div>
+                }
+                else
+                {
+                    <div class="country-from @oddOrEven @rowGroup">@row.CountryFrom &nbsp;</div>
+                }
+            }
+        </div>
+        <div class="adoption-import-numbers" style="grid-template-columns: repeat(@(Model.EndYear - Model.StartYear + 2), 1fr);">
+            @foreach (var year in Enumerable.Range(Model.StartYear, Model.EndYear - Model.StartYear + 1))
+            {
+                <div class="header-element">@year</div>
+            }
+            <div class="header-element header-element-total">total</div>
+            @foreach (var (row, index) in Model.Imports.Select((row, index) => (row, index)))
+            {
+                var oddOrEven = index % 2 == 0 ? "even" : "odd";
+                var rowGroup = row.RowType == 2 ? "subtotal" : row.RowType == 3 ? "total" : "";
+                @foreach (var elem in row.Values.OrderBy(x => x.Year))
+                {
+                    <div class="adoption-import-value year-@elem.Year @oddOrEven @rowGroup">
+                        @if (elem.NumberOfChildren != 0)
+                        {
+                            @elem.NumberOfChildren
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+}
+@code{
+    [Parameter]
+    public AdoptionImports? Model { get; set; }
+}

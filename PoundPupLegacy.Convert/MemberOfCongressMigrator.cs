@@ -150,16 +150,16 @@ internal class MemberOfCongressMigrator : PPLMigrator
             PartyPoliticalEntityRelationTypeId = x.RelationTypeId,
             NodeTypeId = 49,
             DateRange = new DateTimeRange(x.StartDate, x.EndDate),
-            TenantNodes = new List<TenantNode> { 
-                new TenantNode { 
-                    TenantId = Constants.PPL, 
+            TenantNodes = new List<TenantNode> {
+                new TenantNode {
+                    TenantId = Constants.PPL,
                     NodeId = null,
                     PublicationStatusId = 1,
                     SubgroupId = null,
                     UrlId = null,
                     UrlPath = null,
                     Id = null,
-                } 
+                }
             },
 
         }).ToList();
@@ -269,7 +269,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                 join node n2 on n2.id = pper.party_political_entity_relation_type_id
                 join tenant_node tn on tn.node_id = n.id AND tn.tenant_id = 1
                 join iso_coded_subdivision ics on ics.id = pper.political_entity_id
-                join tenant_node tn2 on tn2.node_id = n2.id AND tn.tenant_id = 1
+                join tenant_node tn2 on tn2.node_id = n2.id AND tn2.tenant_id = 1
                 where p.govtrack_id = @govtrack_id
                 and tn2.url_id = @type_id
                 order by lower(pper.date_range)

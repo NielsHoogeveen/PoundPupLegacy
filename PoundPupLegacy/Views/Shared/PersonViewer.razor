@@ -1,0 +1,82 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if(Model is not null){
+    @if(Model.PortraitFilePath != null)
+    {
+        <img src="@Model.PortraitFilePath" alt="@Model.FullName" />
+    }
+    @if(Model.FirstName is not null)
+    {
+        <div>
+            <label>First name: </label>
+            @Model.FirstName
+        </div>
+    }
+    @if(Model.MiddleName is not null)
+    {
+        <div>
+            <label>Middle name: </label>
+            @Model.MiddleName
+        </div>
+
+    }
+    @if(Model.LastName is not null)
+    {
+        <div>
+            <label>Last name: </label>
+            @Model.LastName
+        </div>
+    }
+    @if (Model.Suffix is not null)
+    {
+        <div>
+            <label>Suffix: </label>
+            @Model.Suffix
+        </div>
+
+    }
+    @if (Model.FullName is not null)
+    {
+        <div>
+            <label>Full name: </label>
+            @Model.FullName
+        </div>
+    }
+    @if(Model.Suffix is not null)
+    {
+        <div>
+            <label>Suffix: </label>
+            @Model.Suffix
+        </div>
+    }
+    @if (Model.DateOfBirth.HasValue)
+    {
+        <div>
+            <label>Date of birth: </label>
+            @Model.DateOfBirth.Value.ToString("yyyy MMMM dd")
+        </div>
+    }
+    @if(Model.DateOfDeath.HasValue)
+    {
+        <div>
+            <label>Date of death: </label>
+            @Model.DateOfDeath.Value.ToString("yyyy MMMM dd")
+        </div>
+    }
+    <div class="text">
+        @((MarkupString)Format(Model.Description))
+    </div>
+    <ProfessionsViewer Model="@Model.Professions" />
+    <PartyCaseTypeViewer Model="@Model.PartyCaseTypes" />
+    <OrganizationPersonRelationsViewer Model="@Model.OrganizationPersonRelations" />
+    <InterPersonalRelationsViewer Model="@Model.InterPersonalRelations" />
+    <PartyPoliticalEntityRelationsViewer Model="@Model.PartyPoliticalEntityRelations" />
+    <BillActionsViewer Model="@Model.BillActions" />
+    <DocumentsViewer Model="@Model.Documents" />
+    <LocationsViewer Model="@Model.Locations" />
+}
+@code{
+    [Parameter]
+    public Person? Model { get; set; }
+
+    private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
+}

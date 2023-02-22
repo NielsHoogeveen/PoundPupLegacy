@@ -1,0 +1,29 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null)
+{
+    @if (Model.Any())
+    {
+        <div class="section">
+            <h3>Documents</h3>
+            <table style="margin-bottom:1em;width:100%">
+                <tr>
+                    <th>Title</th>
+                    <th>Publication date</th>
+                </tr>
+                @foreach (var document in Model.OrderBy(x => x.SortOrder))
+                {
+                    <tr>
+                        <td><a href="@document.Path">@document.Title</a></td>
+                        <td>@document.PublicationDate</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+}
+@code {
+
+    [Parameter]
+    public IEnumerable<DocumentListItem>? Model { get; set; }
+
+}

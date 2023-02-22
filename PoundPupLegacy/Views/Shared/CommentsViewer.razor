@@ -1,0 +1,14 @@
+﻿@using PoundPupLegacy.ViewModel;
+
+@if(Model is not null && Model.Any()){
+    <div class="comments">
+        @foreach (var comment in @Model)
+        {
+            <CommentViewer Model="comment" />
+        }
+    </div>
+}
+@code{
+    [Parameter]
+    public IEnumerable<Comment>? Model { get; set; }
+}

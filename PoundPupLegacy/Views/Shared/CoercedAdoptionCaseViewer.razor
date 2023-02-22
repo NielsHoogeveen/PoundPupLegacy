@@ -1,0 +1,13 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null) {
+    @((MarkupString)Model.Description)
+
+    <CasePartiesViewer Model="Model.CaseParties" />
+    <DocumentsViewer Model="Model.Documents" />
+    <LocationsViewer Model="Model.Locations" />
+
+}
+@code {
+    [Parameter]
+    public CoercedAdoptionCase? Model { get; set; }
+}

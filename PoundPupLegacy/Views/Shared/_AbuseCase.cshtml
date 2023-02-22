@@ -1,8 +1,0 @@
-﻿@using PoundPupLegacy.ViewModel;
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model AbuseCase
-@Html.Raw(Model.Description)
-<partial name="_CaseParties" model="@Model.CaseParties" />
-<partial name="_Documents" model="@Model.Documents" />
-<partial name="_Locations" model="@Model.Locations" />
-

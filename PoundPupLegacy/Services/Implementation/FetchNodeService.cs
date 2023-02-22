@@ -117,6 +117,15 @@ internal class FetchNodeService : IFetchNodeService
             var txt = reader.GetString(1);
             Node node = node_type_id switch
             {
+                1 => reader.GetFieldValue<BasicNameable>(1),
+                2 => reader.GetFieldValue<BasicNameable>(1),
+                3 => reader.GetFieldValue<BasicNameable>(1),
+                4 => reader.GetFieldValue<BasicNameable>(1),
+                5 => reader.GetFieldValue<BasicNameable>(1),
+                6 => reader.GetFieldValue<BasicNameable>(1),
+                7 => reader.GetFieldValue<BasicNameable>(1),
+                8 => reader.GetFieldValue<BasicNameable>(1),
+                9 => reader.GetFieldValue<BasicNameable>(1),
                 10 => reader.GetFieldValue<Document>(1),
                 13 => reader.GetFieldValue<BasicCountry>(1),
                 14 => reader.GetFieldValue<BoundCountry>(1),
@@ -131,6 +140,8 @@ internal class FetchNodeService : IFetchNodeService
                 23 => reader.GetFieldValue<Organization>(1),
                 24 => reader.GetFieldValue<Person>(1),
                 26 => reader.GetFieldValue<AbuseCase>(1),
+                27 => reader.GetFieldValue<BasicNameable>(1),
+                28 => reader.GetFieldValue<BasicNameable>(1),
                 29 => reader.GetFieldValue<ChildTraffickingCase>(1),
                 30 => reader.GetFieldValue<CoercedAdoptionCase>(1),
                 31 => reader.GetFieldValue<DeportationCase>(1),
@@ -143,8 +154,11 @@ internal class FetchNodeService : IFetchNodeService
                 41 => reader.GetFieldValue<BasicNameable>(1),
                 42 => reader.GetFieldValue<Page>(1),
                 44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
+                50 => reader.GetFieldValue<BasicNameable>(1),
+                51 => reader.GetFieldValue<BasicNameable>(1),
                 53 => reader.GetFieldValue<SingleQuestionPoll>(1),
                 54 => reader.GetFieldValue<MultiQuestionPoll>(1),
+                58 => reader.GetFieldValue<BasicNameable>(1),
                 _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
             };
 
@@ -2372,7 +2386,10 @@ internal class FetchNodeService : IFetchNodeService
                         ) AS "Authoring",
         		        c.title AS "Title", 
         		        c.text AS "Text", 
-        		        c.comment_id_parent AS "CommentIdParent"
+                        case 
+                            when c.comment_id_parent is null then 0 
+                            else c.comment_id_parent 
+                        end "CommentIdParent"
         	        FROM comment c
         	        JOIN publisher p on p.id = c.publisher_id
                     JOIN authenticated_node an on an.node_id = c.node_id
@@ -3450,7 +3467,7 @@ internal class FetchNodeService : IFetchNodeService
                     'BreadCrumElements', (SELECT document FROM topics_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
-                    'SubTopListItemics', (SELECT document from subtopics_document),
+                    'SubTopics', (SELECT document from subtopics_document),
                     'SuperTopics', (SELECT document from supertopics_document),
                     'Files', (SELECT document FROM files_document)
                 ) document
@@ -3466,7 +3483,6 @@ internal class FetchNodeService : IFetchNodeService
                     p.name publisher_name,
                     an.has_been_published
                 FROM authenticated_node an
-                join basic_nameable bn on bn.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
             ) n
@@ -3832,6 +3848,15 @@ internal class FetchNodeService : IFetchNodeService
             SELECT
                 an.node_type_id,
                 case
+                    when an.node_type_id = 1 then (select document from basic_nameable_document)
+                    when an.node_type_id = 2 then (select document from basic_nameable_document)
+                    when an.node_type_id = 3 then (select document from basic_nameable_document)
+                    when an.node_type_id = 4 then (select document from basic_nameable_document)
+                    when an.node_type_id = 5 then (select document from basic_nameable_document)
+                    when an.node_type_id = 6 then (select document from basic_nameable_document)
+                    when an.node_type_id = 7 then (select document from basic_nameable_document)
+                    when an.node_type_id = 8 then (select document from basic_nameable_document)
+                    when an.node_type_id = 9 then (select document from basic_nameable_document)
                     when an.node_type_id = 10 then (select document from document_document)
                     when an.node_type_id = 13 then (select document from basic_country_document)
                     when an.node_type_id = 14 then (select document from bound_country_document)
@@ -3846,6 +3871,8 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 23 then (select document from organization_document)
                     when an.node_type_id = 24 then (select document from person_document)
                     when an.node_type_id = 26 then (select document from abuse_case_document)
+                    when an.node_type_id = 27 then (select document from basic_nameable_document)
+                    when an.node_type_id = 28 then (select document from basic_nameable_document)
                     when an.node_type_id = 29 then (select document from child_trafficking_case_document)
                     when an.node_type_id = 30 then (select document from coerced_adoption_case_document)
                     when an.node_type_id = 31 then (select document from deportation_case_document)
@@ -3854,11 +3881,16 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 34 then (select document from wrongful_removal_case_document)
                     when an.node_type_id = 35 then (select document from blog_post_document)
                     when an.node_type_id = 36 then (select document from article_document)
+                    when an.node_type_id = 39 then (select document from basic_nameable_document)
+                    when an.node_type_id = 40 then (select document from basic_nameable_document)
                     when an.node_type_id = 41 then (select document from basic_nameable_document)
                     when an.node_type_id = 42 then (select document from page_document)
                     when an.node_type_id = 44 then (select document from disrupted_placement_case_document)
+                    when an.node_type_id = 50 then (select document from basic_nameable_document)
+                    when an.node_type_id = 51 then (select document from basic_nameable_document)
                     when an.node_type_id = 53 then (select document from single_question_poll_document)
                     when an.node_type_id = 54 then (select document from multi_question_poll_document)
+                    when an.node_type_id = 58 then (select document from basic_nameable_document)
                 end document
             FROM authenticated_node an 
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id

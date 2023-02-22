@@ -1,0 +1,34 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null)
+{
+    <div class="large-text">
+        @*
+        @if (Model.SeeAlsoBoxElements.Any())
+        {
+            <div class="see-also-box">
+                <t2>See also</t2>
+                <ul>
+                    @foreach (var elem in Model.SeeAlsoBoxElements)
+                    {
+                        <li><a href="@elem.Path">@elem.Name</a></li>
+                    }
+                </ul>
+            </div>
+        }
+    *@
+        @if (Text is not null)
+        {
+            <div class="text">
+                @((MarkupString)Text)
+        </div>
+        }
+    </div>
+}
+@code {
+
+    [Parameter]
+    public SimpleTextNode? Model { get; set; }
+    
+    public string? Text => Model?.Text.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
+
+}

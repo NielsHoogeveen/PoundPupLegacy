@@ -1,0 +1,22 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null)
+{
+    @if (@Model.Id != 0)
+    {
+        <div class="author">
+            by <span class="name"><a href="/user/@Model.Id">@Model.Name</a></span>
+            on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
+        </div>
+    }
+    @if (Model.Id == 0)
+    {
+        <div class="author">
+            by <span class="name"><em>@Model.Name</em></span>
+            on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
+        </div>
+    }
+}
+@code{
+    [Parameter]
+    public Authoring? Model { get; set; }
+}

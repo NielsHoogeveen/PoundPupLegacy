@@ -1,0 +1,83 @@
+﻿@using PoundPupLegacy.ViewModel;
+
+@if (Model is not null){
+    
+    <BreadCrumElementViewer model="@Model.BreadCrumElements"/>
+    
+    @if (!Model.HasBeenPublished) {
+        <div class="watermark">Unpublished</div>
+    }
+    <article>
+        <div class="title">
+            <h1>@Model.Title</h1>
+        </div>
+        @if (Model is PoundPupLegacy.ViewModel.SimpleTextNode simpleTextNode) {
+            <AuthoringViewer Model="simpleTextNode.Authoring" />
+            <SimpleTextNodeViewer Model="simpleTextNode"/>
+        }
+        @if (Model is Country country) {
+            <CountryViewer Model="country" />
+        }
+        @if (Model is Organization organization) {
+            <OrganizationViewer Model="organization"/>
+        }
+        @if (Model is Person person) {
+            <PersonViewer Model="person"/>
+        }
+        @if (Model is BasicNameable basicNameable) {
+            <BasicNameableViewer Model="basicNameable"/>
+        }
+        @if (Model is AbuseCase abuseCase) {
+            <AbuseCaseViewer Model="abuseCase"/>
+        }
+        @if (Model is ChildTraffickingCase childTraffickingCase) {
+            <ChildTraffickingCaseViewer Model="childTraffickingCase"/>
+        }
+        @if (Model is CoercedAdoptionCase coercedAdoptionCase) {
+            <CoercedAdoptionCaseViewer Model="coercedAdoptionCase"/>
+        }
+        @if (Model is DeportationCase deportationCase) {
+            <DeportationCaseViewer Model="deportationCase"/>
+        }
+        @if (Model is DisruptedPlacementCase disruptedPlacementCase) {
+            <DisruptedPlacementCaseViewer Model="disruptedPlacementCase"/>
+        }
+        @if (Model is FathersRightsViolationCase fathersRightsViolationCase) {
+            <FathersRightsViolationCaseViewer Model="fathersRightsViolationCase" />
+        }
+        @if (Model is WrongfulMedicationCase wrongfulMedicationCase) {
+            <WrongfulMedicationCaseViewer Model="wrongfulMedicationCase"/>
+        }
+        @if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
+            <WrongfulRemovalCaseViewer Model="wrongfulRemovalCase" />
+        }
+        @if (Model is Document document) {
+            <DocumentViewer Model="document"/>
+        }
+        @if (Model is SingleQuestionPoll singleQuestionPoll) {
+            <SingleQuestionPollViewer Model="singleQuestionPoll"/>
+        }
+        @if (Model is MultiQuestionPoll multiQuestionPoll) {
+            <MultiQuestionPollViewer Model="multiQuestionPoll"/>
+        }
+        @if (Model is Subdivision subdivision) {
+            <SubdivisionViewer Model="subdivision"/>
+        }
+        @*
+        <FilesViewer Model="Model.Files"/>
+    *@
+    </article>
+    @*
+    @if (Model.Tags.Any()) {
+        <div class="tags">
+            @foreach (var tag in @Model.Tags) {
+                <span class="tag"><a href="@tag.Path">@tag.Name</a></span>
+            }
+        </div>
+    }
+    *@
+}
+@code{
+    [Parameter]
+    public Node? Model { get; set; }
+}

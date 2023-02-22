@@ -2,7 +2,16 @@
 
 public record OrganizationTypeWithOrganizations
 {
-    public string OrganizationTypeName { get; set; }
+    public required string OrganizationTypeName { get; init; }
 
-    public Link[] Organizations { get; set; }
+    private Link[] organizations = Array.Empty<Link>();
+    public required Link[] Organizations { 
+        get => organizations;
+        init 
+        { 
+            if(value is not null) {
+                organizations = value;
+            }
+        }
+    }
 }

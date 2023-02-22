@@ -1,0 +1,18 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null)
+{
+    @if (Model is FormalSubdivision formalSubdivision)
+    {
+        <div>
+            <label>ISO 3166-1 code</label>
+            @formalSubdivision.ISO3166_2_Code
+        </div>
+    }
+    <SubdivisionTypesViewer Model="Model.SubdivisionTypes" />
+    <OrganizationTypesWithOrganizationsViewer Model="Model.OrganizationTypes" />
+    <DocumentsViewer Model="Model.Documents" />
+}
+@code{
+    [Parameter]
+    public Subdivision? Model { get; set; }
+}

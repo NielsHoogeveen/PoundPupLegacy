@@ -1,0 +1,16 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null && Model.Any()){
+    <div class="poll-questions" style="margin-top:1em;">
+    @foreach(var question in Model)
+    {
+        <div class="poll-question" style="margin-bottom:1em;">
+            @((MarkupString) question.Text)
+            <PollOptionsViewer Model="@question.PollOptions" />
+        </div>
+    }
+    </div>
+}
+@code{
+    [Parameter]
+    public IEnumerable<PollQuestion>? Model { get; set; }
+}

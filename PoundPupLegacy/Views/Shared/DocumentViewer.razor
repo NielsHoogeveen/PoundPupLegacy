@@ -1,0 +1,47 @@
+﻿@using PoundPupLegacy.ViewModel;
+@using PoundPupLegacy.Views.Shared;
+@if(Model is not null){
+    @if(Model.DocumentType is not null)
+    {
+        <div>
+            <label>Document type</label>
+            <a href="@Model.DocumentType.Path">@Model.DocumentType.Name</a>
+        </div>
+    }
+    @if(Model.SourceUrl is not null)
+    {
+        <div>
+            <label>Source:</label>
+            <a href="@Model.SourceUrl">@Model.SourceUrlHost</a>    
+        </div>
+    }
+    @if (Model.PublicationDate is not null)
+    {
+        <div>
+            <label>Publication date:</label>
+            @Model.PublicationDate
+        </div>
+    }
+    @if (Model.Documentables.Any())
+    {
+        <div>
+            <label>Relates to:</label>
+            @foreach (var documentable in Model.Documentables)
+            {
+                <div><a href="@documentable.Path">@documentable.Name</a></div>
+            }
+        </div>
+    }
+    <div class="large-text">
+        <div class="text">
+            @((MarkupString)Format(Model.Text))
+        </div>
+    </div>
+
+}
+@code{
+    [Parameter]
+    public Document? Model { get; set; }
+
+    private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
+}

@@ -10,57 +10,47 @@ public record class BlogPost : SimpleTextNode
     public required bool HasBeenPublished { get; init; }
 
     private Link[] tags = Array.Empty<Link>();
-    public Link[] Tags
-    {
+    public Link[] Tags {
         get => tags;
-        init
-        {
-            if(value is not null)
-            {
+        init {
+            if (value is not null) {
                 tags = value;
             }
-            
+
         }
     }
 
     private Link[] seeAlsoBoxElements = Array.Empty<Link>();
-    public Link[] SeeAlsoBoxElements
-    {
+    public Link[] SeeAlsoBoxElements {
         get => seeAlsoBoxElements;
-        init 
-        {
-                if (value is not null)
-                {
-                    seeAlsoBoxElements = value;
-                }
-        }
-    }
-
-    private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems
-    {
-        get => commentListItems;
-        init
-        {
-            if(value is not null)
-            {
-                commentListItems = value;
+        init {
+            if (value is not null) {
+                seeAlsoBoxElements = value;
             }
         }
     }
 
-    public Comment[] Comments => this.GetComments();
+    private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
+    public CommentListItem[] CommentListItems {
+        get => commentListItems;
+        init {
+            if (value is not null) {
+                commentListItems = value;
+                comments = this.GetComments();
+            }
+        }
+    }
+
+    private Comment[] comments = Array.Empty<Comment>();
+    public Comment[] Comments => comments;
 
     public required Link[] BreadCrumElements { get; init; }
 
     private File[] _files = Array.Empty<File>();
-    public required File[] Files
-    {
+    public required File[] Files {
         get => _files;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _files = value;
             }
         }

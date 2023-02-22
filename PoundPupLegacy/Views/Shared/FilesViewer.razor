@@ -1,0 +1,17 @@
+﻿@using PoundPupLegacy.ViewModel;
+
+@if (Model is not null && Model.Any())
+{
+    <div class="files">
+        @foreach(var elem in Model)
+        {
+            <div class="file">
+                <a href="@elem.Path">@elem.Name</a> (@elem.Size Bytes)
+            </div>
+        }
+    </div>
+}
+@code{
+    [Parameter]
+    public IEnumerable<File>? Model { get; set; }
+}

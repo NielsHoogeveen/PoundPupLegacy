@@ -1,0 +1,21 @@
+﻿@using PoundPupLegacy.ViewModel;
+
+@if(Model is not null && Model.Any())
+{
+    @foreach(var option in Model.OrderBy(x => x.Delta))
+    {
+        <div style="width: 70%;margin-bottom:0.5em;">
+            <label>@option.Text</label>
+            <span style="display: grid; grid-template-columns: @option.Percentage% auto;background-color:lightgray">
+                <span style="background-color: dimgrey">&nbsp;</span>
+                <span class="vote_no_score">&nbsp;</span>
+            </span>
+            <div>@option.Percentage% <span>(@option.NumberOfVotes votes)</span></div>
+            
+        </div>
+    }
+}
+@code{
+    [Parameter]
+    public IEnumerable<PollOption>? Model{ get; set; }
+}

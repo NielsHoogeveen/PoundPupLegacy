@@ -1,0 +1,25 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null)
+{
+    <img src="@Model.FlagPath" style="width: auto;height:2em;margin-bottom:0.5em;border: solid 1px #aaa">
+    @if (Model is TopLevelCountry topLevelCountry)
+    {
+        <div>
+            <label>ISO 3166-1 code</label>
+            @topLevelCountry.ISO3166_1_Code
+        </div>  <div>
+            <label>Region</label>
+            <a href="@topLevelCountry.GlobalRegion.Path">@topLevelCountry.GlobalRegion.Name</a>
+        </div>
+    }
+
+    <SubdivisionTypesViewer Model="@Model.SubdivisionTypes" />
+    <OrganizationTypesWithOrganizationsViewer Model="@Model.OrganizationTypes" />
+    <DocumentsViewer Model="@Model.Documents" />
+    <AdoptionImportsViewer Model="@Model.AdoptionImports" />
+}
+@code{
+    [Parameter]
+    public Country? Model { get; set; }
+}
+

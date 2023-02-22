@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.ViewModel;
+
+@if (Model is not null)
+{
+    <SubTopicsViewer Model="Model.SubTopics" />
+    <SuperTopicsViewer Model="Model.SuperTopics" />
+}
+@code{
+    [Parameter]
+    public BasicNameable? Model { get; set; }
+}

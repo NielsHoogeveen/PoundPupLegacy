@@ -1,0 +1,18 @@
+﻿@using PoundPupLegacy.ViewModel
+
+@if(Model is not null)
+{
+
+    <div class="breadcrum">
+    @foreach (var element in @Model)
+    {
+        <span class="breadcrum-element">
+            <a href="@element.Path">@element.Name</a>
+        </span>
+    }
+    </div>
+}
+@code{
+    [Parameter]
+    public IEnumerable<Link>? Model { get; set; }
+}

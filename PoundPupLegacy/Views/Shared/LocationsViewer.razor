@@ -1,0 +1,45 @@
+﻿@using PoundPupLegacy.ViewModel;
+@inject IJSRuntime JSRuntime
+
+@if (Model is not null)
+{
+
+    @if (Model.Any())
+    {
+        @foreach (var location in Model)
+        {
+            <div class="address">
+                <h4>Adress</h4>
+                <div>@location.Street</div>
+                <div>@location.Addition</div>
+                <div>@location.PostalCode</div>
+                <div>@location.City</div>
+                @if (location.Subdivision is not null)
+                {
+                    <div><a href="@location.Subdivision.Path">@location.Subdivision.Name</a></div>
+                }
+                <div><a href="@location.Country.Path">@location.Country.Name</a></div>
+            </div>
+        }
+        @if (Model.Any(x => x.Latitude is not null && x.Longitude is not null))
+        {
+            <div id="map" style="height: 400px;width:700px;"></div>
+        }
+    }
+}
+@code{
+
+        [Parameter]
+        public IEnumerable<Location>? Model { get; set; }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Model is not null){
+            var locations = Model.Where(x => x.Latitude is not null && x.Longitude is not null).Select((location, index) => new object[] { location.Latitude!, location.Longitude!, index }).ToArray();
+            var centerLatitude = Model.Average(x => x.Latitude);
+            var centerLongitude = Model.Average(x => x.Longitude);
+            await JSRuntime.InvokeVoidAsync("initGoogleMaps", locations, centerLatitude, centerLongitude);
+        }
+    }
+}

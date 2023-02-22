@@ -1,0 +1,50 @@
+﻿@using PoundPupLegacy.ViewModel;
+
+
+@if(Model is not null && Text is not null){
+    <div class="text">
+        @((MarkupString)Text)
+    </div>
+    @if(Model.WebsiteUrl is not null)
+    {
+        <div>
+        <label>Website: </label>
+        @Model.WebsiteUrl
+        </div>
+    
+    }
+    @if (Model.EmailAddress is not null)
+    {
+        <div>
+            <label>Email: </label>
+            @Model.EmailAddress
+        </div>
+    }
+    @if (Model.Established.HasValue)
+    {
+        <div>
+            <label>Established: </label>
+            @Model.Established.Value.ToString("yyyy MMMM dd")
+        </div>
+    }
+    @if (Model.Terminated.HasValue)
+    {
+        <div>
+        <label>Terminated: </label>
+            @Model.Terminated.Value.ToString("yyyy MMMM dd")
+        </div>
+    }
+    <OrganizationTypesViewer Model="@Model.OrganizationTypes" />
+    <PartyCaseTypeViewer Model="@Model.PartyCaseTypes" />
+    <PersonOrganizationRelationsViewer Model="@Model.PersonOrganizationRelations" />
+    <InterOrganizationalRelationsViewer Model="@Model.InterOrganizationalRelations" />
+    <PartyPoliticalEntityRelationsViewer Model="@Model.PartyPoliticalEntityRelations" />
+    <DocumentsViewer Model="@Model.Documents" />
+    <LocationsViewer Model="@Model.Locations" />
+}
+@code{
+    [Parameter]
+    public Organization? Model { get; set; }
+
+    public string? Text => Model?.Description.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
+}

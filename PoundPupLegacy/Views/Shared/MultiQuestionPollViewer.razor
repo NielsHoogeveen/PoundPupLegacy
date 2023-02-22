@@ -1,0 +1,32 @@
+﻿@using PoundPupLegacy.ViewModel;
+
+@if (Model is not null) {
+    @if (Model.PollStatusId == 0)
+    {
+        <div>
+            <label>Status: </label>
+            Closed
+        </div>
+    }
+    @if (Model.PollStatusId == 1)
+    {
+        <div>
+            <label>Status: </label>
+            Open
+        </div>
+    }
+    @if (Model.DateTimeClosure > DateTime.Now)
+    {
+        <div>
+            <label>Closes: </label>
+            @Model.DateTimeClosure.Value.ToString("yyyy MMMM dd")
+        </div>
+    }
+
+    <PollQuestionsViewer Model="@Model.PollQuestions" />
+}
+
+@code{
+    [Parameter]
+    public MultiQuestionPoll? Model { get; set; }
+}

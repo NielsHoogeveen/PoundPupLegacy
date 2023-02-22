@@ -5,12 +5,9 @@ public static class NodeHelper
     public static Comment[] GetComments(this Node node)
     {
         var lst = new List<Comment>();
-        foreach (var elem in node.CommentListItems.OrderBy(x => x.Id))
-        {
-            if (elem.CommentIdParent is null)
-            {
-                lst.Add(new Comment
-                {
+        foreach (var elem in node.CommentListItems.OrderBy(x => x.Id)) {
+            if (elem.CommentIdParent == 0) {
+                lst.Add(new Comment {
                     Id = elem.Id,
                     Authoring = elem.Authoring,
                     NodeStatusId = elem.NodeStatusId,
@@ -19,14 +16,11 @@ public static class NodeHelper
                     Comments = new List<Comment>(),
                 });
             }
-            else
-            {
-                var parentElement = lst.FirstOrDefault (x => x.Id == elem.CommentIdParent.Value);
-                if (parentElement is not null)
-                {
+            else {
+                var parentElement = lst.FirstOrDefault(x => x.Id == elem.CommentIdParent);
+                if (parentElement is not null) {
                     var comments = parentElement.Comments.ToList();
-                    parentElement.Comments.Add(new Comment
-                    {
+                    parentElement.Comments.Add(new Comment {
                         Id = elem.Id,
                         Authoring = elem.Authoring,
                         NodeStatusId = elem.NodeStatusId,

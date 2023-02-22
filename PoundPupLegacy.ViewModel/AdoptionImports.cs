@@ -1,10 +1,23 @@
-﻿namespace PoundPupLegacy.ViewModel;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PoundPupLegacy.ViewModel;
 
 public record AdoptionImports
 {
-    public int StartYear { get; set; }
+    public required int StartYear { get; init; }
 
-    public int EndYear { get; set; }
+    public required int EndYear { get; init; }
 
-    public AdoptionImport[] Imports { get; set; }
+    private AdoptionImport[] imports = Array.Empty<AdoptionImport>();
+    public required AdoptionImport[] Imports 
+    { 
+        get => imports; 
+        init 
+        {
+            if(value is not null) 
+            {
+                imports = value;
+            }
+        }
+    }
 }

@@ -1,0 +1,16 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null && Model.Any())
+{
+    <ul>
+        @foreach (var topic in Model)
+        {
+            <li>
+                <a href="@topic.Path">@topic.Name</a>
+            </li>
+        }
+    </ul>
+}
+@code{
+    [Parameter]
+    public IEnumerable<Link>? Model { get; set; }
+}
