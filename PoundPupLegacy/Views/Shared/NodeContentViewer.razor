@@ -63,11 +63,8 @@
         @if (Model is Subdivision subdivision) {
             <SubdivisionViewer Model="subdivision"/>
         }
-        @*
         <FilesViewer Model="Model.Files"/>
-    *@
     </article>
-    @*
     @if (Model.Tags.Any()) {
         <div class="tags">
             @foreach (var tag in @Model.Tags) {
@@ -75,7 +72,6 @@
             }
         </div>
     }
-    *@
 }
 @code{
     [Parameter]

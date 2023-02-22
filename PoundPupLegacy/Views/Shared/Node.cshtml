@@ -6,10 +6,11 @@
 @inject ISiteDataService siteDataService
 @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated) 
 {
-        <component type="typeof(NodeViewerSignedIn)"
-               render-mode="Server" param-Model="@Model" />
+    <component type="typeof(NodeViewerSignedIn)"
+            render-mode="Server" param-Model="@Model" />
 }
-else {
+else 
+{
     <component type="typeof(NodeViewerNotSignedIn)"
            render-mode="ServerPrerendered" param-Model="@Model" />
 }
