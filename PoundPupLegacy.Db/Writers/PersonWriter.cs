@@ -12,6 +12,7 @@ internal sealed class PersonWriter : DatabaseWriter<Person>, IDatabaseWriter<Per
     private const string FULL_NAME = "full_name";
     private const string SUFFIX = "suffix";
     private const string GOVTRACK_ID = "govtrack_id";
+    private const string BIOGUIDE = "bioguide";
 
     public static async Task<DatabaseWriter<Person>> CreateAsync(NpgsqlConnection connection)
     {
@@ -59,6 +60,10 @@ internal sealed class PersonWriter : DatabaseWriter<Person>, IDatabaseWriter<Per
                     Name = SUFFIX,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
+                new ColumnDefinition{
+                    Name = BIOGUIDE,
+                    NpgsqlDbType = NpgsqlDbType.Varchar
+                },
 
             }
         );
@@ -85,6 +90,7 @@ internal sealed class PersonWriter : DatabaseWriter<Person>, IDatabaseWriter<Per
         WriteNullableValue(person.LastName, LAST_NAME);
         WriteNullableValue(person.Suffix, SUFFIX);
         WriteNullableValue(person.FullName, FULL_NAME);
+        WriteNullableValue(person.Bioguide, BIOGUIDE);
         await _command.ExecuteNonQueryAsync();
     }
 }

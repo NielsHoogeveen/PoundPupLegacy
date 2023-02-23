@@ -255,6 +255,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
                 MiddleName = null,
                 FullName = null,
                 GovtrackId = null,
+                Bioguide = null,
                 Suffix = null,
                 ProfessionalRoles = new List<ProfessionalRole>(),
             };

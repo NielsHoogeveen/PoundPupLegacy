@@ -1,0 +1,102 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null){
+    <style>
+        .state-representation {
+            background-color: #dddddd;
+            margin-bottom: 2em;
+            margin-right: 1em;
+            padding: 0.5em;
+            padding-left: 1em;
+            box-shadow: 10px 10px 5px #888888;
+        }
+        .state-representation h4 {
+            font-size: 150%;
+            font-weight: bold;
+            margin-top: 0.25em;
+            margin-bottom: 0.75em;
+            text-shadow: 1px 1px #ffffff;
+        }
+        .member-of-congress{
+            display: grid;
+            grid-template-columns: 1fr 4fr;
+            margin-bottom: 0.25em;
+            border-bottom: solid 1px #eeeeee;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        label{
+            font-weight:600;
+        }
+    </style>
+    <div class="article-with-comments">
+        <div class="breadcrum">
+            <span class="breadcrum-element">
+                <a href="/home">home</a>
+            </span>
+        </div>
+        <article>
+            <h2>@Model.MeetingName</h2>
+            <div>@Model.DateFrom.ToString("dd MMMM yyyy") - @Model.DateTo.ToString("dd MMMM yyyy")</div>
+            @foreach(var state in Model.States.OrderBy(x => x.State.Name)) 
+            {
+                <div class="state-representation">
+                    <h4><a hef="@state.State.Path">@state.State.Name</a></h4>
+                    @foreach(var member in state.Members.OrderBy(x => x.Name)) 
+                    {
+                        <div class="member-of-congress">
+                            <img src="@member.FilePathPortrait" style="height:220px;width:auto"/>
+                            <div>
+                                <label>Name</label>
+                                <div><a hef="@member.Path">@member.Name</a></div>
+                                @if (member.Bills.Any())
+                                {
+                                    <label>Bills sponsored</label>
+                                    @foreach (var bill in member.Bills)
+                                    {
+                                        <div><a hef="@bill.Path">@bill.Name</a></div>
+                                    }
+                                }
+                                @if (member.Letters.Any()) {
+                                    <label>Letters singed</label>
+                                    @foreach (var letter in member.Letters) {
+                                        <div><a hef="@letter.Path">@letter.Name</a></div>
+                                    }
+                                }
+                                @if (member.Terms.Any()) {
+                                    <label>Terms</label>   
+                                    <table>
+                                    @foreach(var term in member.Terms.OrderBy(x => x.DateFrom)) {
+                                       <tr>
+                                            <td>@term.MemberType</td>
+                                            <td><a hef="@term.State.Path">@term.State.Name</a></td>
+                                                <td>@term.DateFrom?.ToString("yyyy MMMM dd")</td>
+                                                <td>@term.DateTo?.ToString("yyyy MMMM dd")</td>
+                                       </tr>
+                                    }
+                                    </table>
+                                }
+                                @if (member.Parties.Any()) {
+                                    <label>Party affiliation</label>
+                                    <table>
+                                        @foreach (var party in member.Parties.OrderBy(x => x.DateFrom)) {
+                                            <tr>
+                                                <td><a hef="@party.Path">@party.Name</a></td>
+                                                <td>@party.DateFrom?.ToString("yyyy MMMM dd")</td>
+                                                <td>@party.DateTo?.ToString("yyyy MMMM dd")</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public CongressionalMeetingChamber? Model { get; set; }
+}

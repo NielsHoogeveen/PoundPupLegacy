@@ -15,8 +15,9 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator : PPLMigrator
 
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             var title = parts[0];
-            var startDate = DateTime.Parse(parts[1]);
-            var endDate = DateTime.Parse(parts[2]);
+            var startDate = DateTime.Parse(parts[1]).AddHours(12);
+            var endDate = DateTime.Parse(parts[2]).AddHours(12).AddMicroseconds(-1);
+            var number = int.Parse(parts[3]);
             yield return new UnitedStatesCongressionalMeeting
             {
                 Id = null,
@@ -51,7 +52,8 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator : PPLMigrator
                 },
                 PublisherId = 2,
                 Title = title,
-                DateRange = new DateTimeRange(startDate, endDate)
+                DateRange = new DateTimeRange(startDate, endDate),
+                Number = number
             };
         }
     }

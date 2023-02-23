@@ -14,4 +14,5 @@ public record UnitedStatesCongressionalMeeting : Nameable, Documentable
     public required string Description { get; init; }
     public required List<VocabularyName> VocabularyNames { get; init; }
     public required int? FileIdTileImage { get; init; }
+    public required int Number { get; init;}
 }

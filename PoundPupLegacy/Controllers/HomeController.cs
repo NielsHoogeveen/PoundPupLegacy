@@ -15,17 +15,20 @@ public class HomeController : Controller
     private readonly IAuthenticationService _authenticationService;
     private readonly ISiteDataService _siteDataService;
     private readonly INodeCacheService _nodeCacheService;
+    private readonly ICongressionalDataService _congressionalDataService;
 
     public HomeController(
         ILogger<HomeController> logger,
         IAuthenticationService authenticationService,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService)
+        INodeCacheService nodeCacheService,
+        ICongressionalDataService congressionalDataService)
     {
         _logger = logger;
         _authenticationService = authenticationService;
         _siteDataService = siteDataService;
         _nodeCacheService = nodeCacheService;
+        _congressionalDataService = congressionalDataService;
     }
 
     public IActionResult Index()
@@ -41,9 +44,17 @@ public class HomeController : Controller
         {
             return View("NotFound");
         }
+        
         stopwatch.Start();
 
-        var tenantId = _siteDataService.GetTenantId();
+        var congressionalMeetingChamber = await _congressionalDataService.GetCongressionalMeetingChamberResult();
+        if(congressionalMeetingChamber is not null) 
+        { 
+            return new ContentResult {
+                Content = congressionalMeetingChamber,
+                ContentType = "text/html"
+            };
+        }
         var urlId = _siteDataService.GetIdForUrlPath();
         if (urlId is null)
         {
@@ -55,18 +66,13 @@ public class HomeController : Controller
         return result;
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
     [HttpPost("logout")]
-    public async Task<IActionResult> OnGetAsync()
+    public async Task<IActionResult> Logout()
     {
         var referer = this.HttpContext.Request.Headers.Referer.ToString();
         var path = referer.Substring(referer.IndexOf("/", 10));

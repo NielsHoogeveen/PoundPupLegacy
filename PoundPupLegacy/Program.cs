@@ -50,6 +50,7 @@ public class Program
         builder.Services.AddTransient<IEditorService, EditorService>();
         builder.Services.AddTransient<ITextService, TextService>();
         builder.Services.AddTransient<ITopicSearchService, TopicSearchService>();
+        builder.Services.AddTransient<ICongressionalDataService, CongressionalDataService>();
         builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();

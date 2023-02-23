@@ -7,4 +7,5 @@ internal partial class Program
         await using var converter = await MySqlToPostgresConverter.GetInstance();
         await converter.Convert();
     }
+
 }

@@ -1,0 +1,59 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null){
+    <style>
+        .chamber{
+            background-color: #dddddd;
+            margin-bottom: 2em;
+            margin-right: 1em;
+            padding: 0.5em;
+            padding-left: 1em;
+            box-shadow: 10px 10px 5px #888888;
+            display: grid;
+            grid-template-columns: 1fr 4fr;
+        }
+        label{
+            font-weight: 400;
+        }
+        .meetings{
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+        }
+    </style>
+    <div class="article-with-comments">
+        <div class="breadcrum">
+            <span class="breadcrum-element">
+                <a href="/home">home</a></span>
+        </div>
+        <div class="chamber">
+            <div>
+                <label>Senate</label>
+                <br/>
+                <img src="@Model.Senate.ImagePath"/>
+            </div>
+            <div class="meetings">
+                @foreach(var meeting in Model.Senate.Meetings.OrderByDescending(x => x.DateFrom))
+                {
+                    <a href="@meeting.Path">@meeting.Name</a>
+                    <div>@meeting.DateFrom.ToString("yyyy MMMM dd") - @meeting.DateTo.ToString("yyyy MMMM dd")</div>
+                }
+            </div>
+        </div>
+        <div class="chamber">
+            <div>
+                <label>House of Representatives</label>
+                <br/>
+                <img src="@Model.House.ImagePath" />
+            </div>
+            <div class="meetings">
+                @foreach (var meeting in Model.House.Meetings.OrderByDescending(x => x.DateFrom)) {
+                    <a href="@meeting.Path">@meeting.Name</a>
+                    <div>@meeting.DateFrom.ToString("yyyy MMMM dd") - @meeting.DateTo.ToString("yyyy MMMM dd")</div>
+                }
+            </div>
+        </div>
+    </div>
+}
+@code{
+    [Parameter]
+    public UnitedStatesCongress? Model { get; set; }
+}

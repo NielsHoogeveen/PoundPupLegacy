@@ -1,6 +1,7 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace PoundPupLegacy.Convert;
@@ -130,14 +131,14 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
+
         _membersOfCongress = (await GetMembersOfCongress().ToListAsync()).OrderBy(x => x.id.govtrack).ToList();
         var persons = await GetMembersOfCongressAsync().ToListAsync();
         await PersonCreator.CreateAsync(persons.ToAsyncEnumerable(), _postgresConnection);
-        
+
         var lst = await GetTermsToStore().ToListAsync();
         var now = DateTime.Now;
-        var add = lst.Where(x => !x.NodeId.HasValue).ToList().Select(x => new PartyPoliticalEntityRelation
-        {
+        var add = lst.Where(x => !x.NodeId.HasValue).ToList().Select(x => new PartyPoliticalEntityRelation {
             Id = null,
             Title = $"{x.PersonName} {x.RelationTypeName} of {x.PoliticalEntityCode}",
             CreatedDateTime = now,
@@ -166,6 +167,11 @@ internal class MemberOfCongressMigrator : PPLMigrator
         var updates = lst.Where(x => x.NodeId.HasValue && !x.Delete).ToList();
         await PartyPoliticalEntityRelationCreator.CreateAsync(add.ToAsyncEnumerable(), _postgresConnection);
         await UpdateTerms(updates.ToAsyncEnumerable());
+        var files = await GetImageFiles().ToListAsync();
+        await FileCreator.CreateAsync(files.ToAsyncEnumerable(), _postgresConnection);
+        var nodeImages = await GetNodeFilesImage().ToListAsync();
+        await NodeFileCreator.CreateAsync(nodeImages.ToAsyncEnumerable(), _postgresConnection);
+        await UpdatePerson(nodeImages.ToAsyncEnumerable());
     }
 
     private async Task UpdateTerms(IAsyncEnumerable<StoredTerm> terms)
@@ -505,7 +511,8 @@ internal class MemberOfCongressMigrator : PPLMigrator
                 nick_name = @nick_name, 
                 suffix = @suffix, 
                 full_name = @full_name, 
-                govtrack_id = @govtrack_id
+                govtrack_id = @govtrack_id,
+                bioguide = @bioguide
                 WHERE id = @id
             """;
         const string readSql = """
@@ -603,6 +610,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             updateCommand.Parameters.Add("suffix", NpgsqlTypes.NpgsqlDbType.Varchar);
             updateCommand.Parameters.Add("nick_name", NpgsqlTypes.NpgsqlDbType.Varchar);
             updateCommand.Parameters.Add("govtrack_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            updateCommand.Parameters.Add("bioguide", NpgsqlTypes.NpgsqlDbType.Varchar);
             updateCommand.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
             await updateCommand.PrepareAsync();
             foreach (var memberOfCongress in _membersOfCongress)
@@ -646,6 +654,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                     updateCommand.Parameters["suffix"].Value = memberOfCongress.name.suffix is null ? DBNull.Value : memberOfCongress.name.suffix;
                     updateCommand.Parameters["nick_name"].Value = memberOfCongress.name.nickname is null ? DBNull.Value : memberOfCongress.name.nickname;
                     updateCommand.Parameters["govtrack_id"].Value = memberOfCongress.id.govtrack;
+                    updateCommand.Parameters["bioguide"].Value = memberOfCongress.id.bioguide;
                     updateCommand.Parameters["id"].Value = memberOfCongress.node_id;
                     await updateCommand.ExecuteNonQueryAsync();
                     await ProfessionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable(), _postgresConnection);
@@ -708,7 +717,8 @@ internal class MemberOfCongressMigrator : PPLMigrator
                         FullName = memberOfCongress.name.official_full,
                         GovtrackId = memberOfCongress.id.govtrack,
                         Suffix = memberOfCongress.name.suffix,
-                        ProfessionalRoles = professionalRoles
+                        ProfessionalRoles = professionalRoles,
+                        Bioguide = memberOfCongress.id.bioguide
                     };
                 }
             }
@@ -739,4 +749,128 @@ internal class MemberOfCongressMigrator : PPLMigrator
         }
     }
 
+    private async IAsyncEnumerable<Model.File> GetImageFiles()
+    {
+        using var command = _postgresConnection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = """
+            select
+            p.id,
+            p.bioguide
+            from person p
+            where p.file_id_portrait is null
+            and p.bioguide is not null
+            """;
+        using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
+            var personId = reader.GetInt32(0);
+            var bioguid = reader.GetString(1);
+            var fileNameSource = $"\\\\wsl.localhost\\Ubuntu\\home\\niels\\ppl\\files\\members_of_congress\\{reader.GetString(1)}.jpg";
+            var file = new FileInfo(fileNameSource);
+            if(file.Exists) 
+            {
+                yield return new Model.File {
+                    Id = null,
+                    Path = $"files/members_of_congress/{reader.GetString(1)}.jpg",
+                    Name = $"{reader.GetString(1)}.jpg",
+                    MimeType = "image/jpeg",
+                    Size = (int)file.Length,
+                    TenantFiles = new List<TenantFile>{
+                    new TenantFile
+                    {
+                        TenantId = Constants.PPL,
+                        FileId = null,
+                        TenantFileId = null
+                    },
+                    new TenantFile
+                    {
+                        TenantId = Constants.CPCT,
+                        FileId = null,
+                        TenantFileId = null
+                    }
+                }
+                };
+            }
+        }
+    }
+
+    private async Task UpdatePerson(IAsyncEnumerable<NodeFile> nodeFIles)
+    {
+        using var command = _postgresConnection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = """
+            update person
+            set file_id_portrait = @file_id_portrait
+            where id = @id
+            """;
+
+        command.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("file_id_portrait", NpgsqlTypes.NpgsqlDbType.Integer);
+        await command.PrepareAsync();
+        await foreach (var item in nodeFIles) {
+
+            command.Parameters["id"].Value = item.NodeId;
+            command.Parameters["file_id_portrait"].Value = item.FileId;
+            await command.ExecuteNonQueryAsync();
+        }
+    }
+
+    private async IAsyncEnumerable<NodeFile> GetNodeFilesImage()
+    {
+        using var command = _postgresConnection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = """
+            select
+            p.id person_id,
+            f.id file_id
+            from person p
+            join file f on f.path = 'files/members_of_congress/' || p.bioguide || '.jpg'
+            where p.file_id_portrait is null
+            and p.bioguide is not null
+            """;
+        using var reader = await command.ExecuteReaderAsync();
+
+        
+        while (await reader.ReadAsync()) {
+            yield return new NodeFile { FileId = reader.GetInt32(1), NodeId = reader.GetInt32(0) };
+        }
+    }
+
+    private async Task DownloadCongressionalImages()
+    {
+        using var httpClient = new HttpClient();
+        using var command = _postgresConnection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = """
+            select
+            'd:\images\congress\ || p.bioguide ||'.jpg',
+            from person p
+            where p.file_id_portrait is null
+            and p.bioguide is not null
+            """;
+        using var reader = await command.ExecuteReaderAsync();
+        while(reader.Read()) {
+            var uri = new Uri($"{reader.GetString(0)}");
+            var fileName = $"D:\\images\\congress\\{reader.GetString(1)}";
+            using (var response = await httpClient.GetAsync(uri)) {
+                if (response.IsSuccessStatusCode) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+                    var fileStream = System.IO.File.Create(fileName);
+
+                    await using var inputStream = await response.Content.ReadAsStreamAsync();
+                    inputStream.Seek(0, SeekOrigin.Begin);
+                    inputStream.CopyTo(fileStream);
+                    fileStream.Close();
+                }
+                else {
+                    Console.WriteLine($"Missing: {uri}, reponse {response.StatusCode}");
+                }
+            }
+            await Task.Delay(TimeSpan.FromMilliseconds(500));
+        }
+    }
 }

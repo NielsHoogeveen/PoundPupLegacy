@@ -1,10 +1,9 @@
-﻿namespace PoundPupLegacy.Db.Writers;
-
-internal sealed class UnitedStatesCongressionalMeetingWriter : DatabaseWriter<UnitedStatesCongressionalMeeting>, IDatabaseWriter<UnitedStatesCongressionalMeeting>
+﻿internal sealed class UnitedStatesCongressionalMeetingWriter : DatabaseWriter<UnitedStatesCongressionalMeeting>, IDatabaseWriter<UnitedStatesCongressionalMeeting>
 {
 
     private const string ID = "id";
     private const string DATE_RANGE = "date_range";
+    private const string NUMBER = "number";
     public static async Task<DatabaseWriter<UnitedStatesCongressionalMeeting>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
@@ -18,6 +17,10 @@ internal sealed class UnitedStatesCongressionalMeetingWriter : DatabaseWriter<Un
                 new ColumnDefinition{
                     Name = DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
+                },
+                new ColumnDefinition{
+                    Name = NUMBER,
+                    NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
@@ -34,6 +37,7 @@ internal sealed class UnitedStatesCongressionalMeetingWriter : DatabaseWriter<Un
             throw new NullReferenceException();
         WriteValue(unitedStatesCongressionalMeeting.Id, ID);
         WriteDateTimeRange(unitedStatesCongressionalMeeting.DateRange, DATE_RANGE);
+        WriteValue(unitedStatesCongressionalMeeting.Number, NUMBER);
         await _command.ExecuteNonQueryAsync();
     }
 

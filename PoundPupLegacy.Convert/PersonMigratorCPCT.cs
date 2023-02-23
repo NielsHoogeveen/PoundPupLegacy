@@ -90,6 +90,7 @@ internal sealed class PersonMigratorCPCT : CPCTMigrator
                 MiddleName = null,
                 FullName = null,
                 GovtrackId = null,
+                Bioguide = null,
                 Suffix = null,
                 ProfessionalRoles = new List<ProfessionalRole>(),
             };
