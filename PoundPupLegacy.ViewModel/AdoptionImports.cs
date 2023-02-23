@@ -9,13 +9,10 @@ public record AdoptionImports
     public required int EndYear { get; init; }
 
     private AdoptionImport[] imports = Array.Empty<AdoptionImport>();
-    public required AdoptionImport[] Imports 
-    { 
-        get => imports; 
-        init 
-        {
-            if(value is not null) 
-            {
+    public required AdoptionImport[] Imports {
+        get => imports;
+        init {
+            if (value is not null) {
                 imports = value;
             }
         }

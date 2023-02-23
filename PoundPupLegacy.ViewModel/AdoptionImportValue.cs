@@ -2,6 +2,6 @@
 
 public record AdoptionImportValue
 {
-    public int Year { get; set; }
-    public int? NumberOfChildren { get; set; }
+    public required int Year { get; init; }
+    public required int NumberOfChildren { get; init; }
 }

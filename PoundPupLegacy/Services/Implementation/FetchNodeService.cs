@@ -2401,108 +2401,123 @@ internal class FetchNodeService : IFetchNodeService
 
     const string ADOPTION_IMPORTS_DOCUMENT = """
         adoption_imports_document as(
-            select
-                jsonb_build_object(
-                    'StartYear', start_year,
-                    'EndYear', end_year,
-                    'Imports', jsonb_agg(
-                        jsonb_build_object(
-                           'CountryFrom', name,
-                            'RowType', row_type,
-                            'Values', y
-                        )
-                    )
-                ) document
-            from(
-                select
-        	        name,
-        	        row_type,
-        	        start_year,
-        	        end_year,
-        	        jsonb_agg(
-                        jsonb_build_object(
-            		        'Year', "year",
-            		        'NumberOfChildren', number_of_children
-            	        )
-                    ) y
-                from(
-        	        select
-        		        row_number() over () id,
-        		        case 
-        			        when sub is not null then 1
-        			        when origin is not null then 2
-        			        else 3
-        		        end row_type,
-        		        case 
-        			        when sub is not null then sub
-        			        when origin is not null then origin
-        			        else null
-        		        end name,
-        		        number_of_children,
-        		        case when "year" is null then 10000
-        		        else "year"
-        		        end "year",
-        		        min("year") over() start_year,
-        		        max("year") over() end_year
-        	        from(
+            select 
+                case 
+                    when document is null then jsonb_build_object(
+                        'StartYear', 2000,
+                        'EndYear', 2000,
+                        'Imports', null
+                     )
+                     else document
+                end document
+            from
+            (
+                select (select document from (
         		        select
-        		        distinct
-        		        t.*
+        			        jsonb_build_object(
+        				        'StartYear', start_year,
+        				        'EndYear', end_year,
+        				        'Imports', jsonb_agg(
+        					        jsonb_build_object(
+        					           'CountryFrom', name,
+        						        'RowType', row_type,
+        						        'Values', y
+        					        )
+        				        )
+        			        ) document
         		        from(
         			        select
-        			        * 
-        			        from
-        			        (
+        				        name,
+        				        row_type,
+        				        start_year,
+        				        end_year,
+        				        jsonb_agg(
+        					        jsonb_build_object(
+        						        'Year', "year",
+        						        'NumberOfChildren', number_of_children
+        					        )
+        				        ) y
+        			        from(
         				        select
-        					        *,
-        					        SUM(number_of_children_involved) over (partition by country_to, "year") toty,
-        					        SUM(number_of_children_involved) over (partition by country_to, region_from, "year") totry,
-        					        SUM(number_of_children_involved) over (partition by country_to, country_from, "year") totcy,
-        					        SUM(number_of_children_involved) over (partition by country_to) tot,
-        					        SUM(number_of_children_involved) over (partition by country_to, region_from) totr,
-        					        SUM(number_of_children_involved) over (partition by country_to, country_from) totc
+        					        row_number() over () id,
+        					        case 
+        						        when sub is not null then 1
+        						        when origin is not null then 2
+        						        else 3
+        					        end row_type,
+        					        case 
+        						        when sub is not null then sub
+        						        when origin is not null then origin
+        						        else null
+        					        end name,
+        					        number_of_children,
+        					        case when "year" is null then 10000
+        					        else "year"
+        					        end "year",
+        					        min("year") over() start_year,
+        					        max("year") over() end_year
         				        from(
         					        select
-        						        nto.title country_to,
-        						        rfm.title region_from,
-        						        nfm.title country_from,
-        						        case when 
-        							        icr.number_of_children_involved is null then 0
-        							        else icr.number_of_children_involved
-        						        end number_of_children_involved,
-        						        extract('year' from upper(cr.date_range)) "year"
-        					        from country_report cr
-                                    join node nto on nto.id = cr.country_id
-        					        join tenant_node tn on tn.node_id = nto.id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
-        					        join top_level_country cto on cto.id = nto.id
-        					        join top_level_country cfm on true 
-        					        join node rfm on rfm.id = cfm.global_region_id
-        					        join node nfm on nfm.id = cfm.id
-                                    join tenant_node tn2 on tn2.tenant_id = @tenant_id and tn2.url_id = 144
-        					        LEFT join inter_country_relation icr on icr.country_id_from = cto.id and cfm.id = icr.country_id_to and icr.date_range = cr.date_range and icr.inter_country_relation_type_id = tn2.node_id
-        					        WHERE tn.url_id = @url_id 
+        					        distinct
+        					        t.*
+        					        from(
+        						        select
+        						        * 
+        						        from
+        						        (
+        							        select
+        								        *,
+        								        SUM(number_of_children_involved) over (partition by country_to, "year") toty,
+        								        SUM(number_of_children_involved) over (partition by country_to, region_from, "year") totry,
+        								        SUM(number_of_children_involved) over (partition by country_to, country_from, "year") totcy,
+        								        SUM(number_of_children_involved) over (partition by country_to) tot,
+        								        SUM(number_of_children_involved) over (partition by country_to, region_from) totr,
+        								        SUM(number_of_children_involved) over (partition by country_to, country_from) totc
+        							        from(
+        								        select
+        									        nto.title country_to,
+        									        rfm.title region_from,
+        									        nfm.title country_from,
+        									        case when 
+        										        icr.number_of_children_involved is null then 0
+        										        else icr.number_of_children_involved
+        									        end number_of_children_involved,
+        									        extract('year' from upper(cr.date_range)) "year"
+        								        from country_report cr
+        								        join node nto on nto.id = cr.country_id
+        								        join tenant_node tn on tn.node_id = nto.id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
+        								        join top_level_country cto on cto.id = nto.id
+        								        join top_level_country cfm on true 
+        								        join node rfm on rfm.id = cfm.global_region_id
+        								        join node nfm on nfm.id = cfm.id
+        								        join tenant_node tn2 on tn2.tenant_id = 1 and tn2.url_id = 144
+        								        LEFT join inter_country_relation icr on icr.country_id_from = cto.id and cfm.id = icr.country_id_to and icr.date_range = cr.date_range and icr.inter_country_relation_type_id = tn2.node_id
+        								        WHERE tn.url_id = @url_id
 
-        				        ) a
-        			        ) a
-        			        where totc <> 0
-        			        ORDER BY country_to, region_from, country_from, "year"
-        		        ) c
-        		        cross join lateral(
-        			        values
-        			        (null, null, toty, c."year"),
-        			        (region_from, null, totry, c."year"),
-        			        (region_from, country_from, totcy, c."year"),
-        			        (null, null, tot, null),
-        			        (region_from, null, totr, null),
-        			        (region_from, country_from, totc, null)
-        		        ) as t(origin, sub, number_of_children, "year")
-        		        order by t.origin, t.sub, t."year"
+        							        ) a
+        						        ) a
+        						        where totc <> 0
+        						        ORDER BY country_to, region_from, country_from, "year"
+        					        ) c
+        					        cross join lateral(
+        						        values
+        						        (null, null, toty, c."year"),
+        						        (region_from, null, totry, c."year"),
+        						        (region_from, country_from, totcy, c."year"),
+        						        (null, null, tot, null),
+        						        (region_from, null, totr, null),
+        						        (region_from, country_from, totc, null)
+        					        ) as t(origin, sub, number_of_children, "year")
+        					        order by t.origin, t.sub, t."year"
+        				        ) x
+        			        ) imports
+        			        group by imports.name, row_type, start_year, end_year
+        			        order by min(id)
+        		        ) y
+        		        group by start_year, end_year
         	        ) x
-                ) imports
-                group by imports.name, row_type, start_year, end_year
-                order by min(id)
-            ) y
-            group by start_year, end_year
+        	    )
+            ) x
         )
         """;
 

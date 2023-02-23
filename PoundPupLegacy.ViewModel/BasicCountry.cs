@@ -54,7 +54,24 @@ public record BasicCountry : TopLevelCountry
             }
         }
     }
-    public required OrganizationTypeWithOrganizations[] OrganizationTypes { get; init; }
+    private OrganizationTypeWithOrganizations[] organizationTypes = Array.Empty<OrganizationTypeWithOrganizations>();
+    public required OrganizationTypeWithOrganizations[] OrganizationTypes {
+        get => organizationTypes;
+        init { 
+            if(value is not null) {
+                organizationTypes = value;
+            }
+        } 
+    }
+    private SubdivisionType[] subdivisionTypes = Array.Empty<SubdivisionType>();
+    public required SubdivisionType[] SubdivisionTypes {
+        get => subdivisionTypes;
+        init {
+            if (value is not null) {
+                subdivisionTypes = value;
+            }
+        }
+    }
 
     private Link[] subTopics = Array.Empty<Link>();
     public required Link[] SubTopics
@@ -81,7 +98,7 @@ public record BasicCountry : TopLevelCountry
             }
         }
     }
-    public required SubdivisionType[] SubdivisionTypes { get; init; }
+    
 
     private File[] _files = Array.Empty<File>();
     public required File[] Files

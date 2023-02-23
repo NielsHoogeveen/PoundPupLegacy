@@ -27,6 +27,9 @@ public class Program
         //{
         //    options.EnableForHttps = true;
         //});
+        builder.Services.AddSignalR(e => {
+            e.MaximumReceiveMessageSize = 102400000;
+        });
         builder.Services.AddSingleton<ISiteDataService, SiteDataService>();
         builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
         builder.Services.AddHttpContextAccessor();

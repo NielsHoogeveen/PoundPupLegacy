@@ -2,8 +2,17 @@
 
 public record AdoptionImport
 {
-    public string CountryFrom { get; set; }
+    public required string CountryFrom { get; init; }
 
-    public int RowType { get; set; }
-    public AdoptionImportValue[] Values { get; set; }
+    public required int RowType { get; init; }
+
+    private AdoptionImportValue[] values = Array.Empty<AdoptionImportValue>();
+    public required AdoptionImportValue[] Values {
+        get => values;
+        init {
+            if (values is not null) {
+                values = value;
+            }
+        }
+    }
 }

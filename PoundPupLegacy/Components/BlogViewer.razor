@@ -1,0 +1,35 @@
+﻿@using PoundPupLegacy.Services;
+@using PoundPupLegacy.ViewModel;
+@if (Model is not null)
+{
+    <div class="blog-list">
+        <div class="breadcrum">
+            <span class="breadcrum-element">
+                <a href="/blogs">blogs</a>
+            </span>
+        </div>
+        <article>
+            <h1>
+                @Model.Name
+            </h1>
+            <div class="blog-teasers">
+                @foreach (var entry in Model.BlogPostTeasers)
+                {
+
+                    <div class="blog-teaser">
+                        <h2>
+                            <a href="/node/@entry.Id">@entry.Title</a>
+                        </h2>
+                        <partial name="~/Views/Shared/_Authoring.cshtml" model="@entry.Authoring" />
+                        @((MarkupString)entry.Text)
+                    </div>
+                }
+            </div>
+            <partial name="~/Views/Shared/_PagedList.cshtml" model="@Model" />
+        </article>
+    </div>
+}
+@code{
+    [Parameter]
+    public Blog? Model { get; set; }
+}

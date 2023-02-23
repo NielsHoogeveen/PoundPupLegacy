@@ -1,13 +1,13 @@
 ﻿@using PoundPupLegacy.ViewModel;
 @using PoundPupLegacy.Services;
-@using PoundPupLegacy.Views.Shared;
+@using PoundPupLegacy.Components;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Node
 @inject ISiteDataService siteDataService
 @if (Context.User.Identity is not null && Context.User.Identity.IsAuthenticated) 
 {
     <component type="typeof(NodeViewerSignedIn)"
-            render-mode="Server" param-Model="@Model" />
+            render-mode="ServerPrerendered" param-Model="@Model" />
 }
 else 
 {

@@ -9,7 +9,7 @@ public record InterOrganizationalRelation
     public required DateTime? DateFrom { get; init; }
     public required DateTime? DateTo { get; init; }
     public required decimal? MoneyInvolved { get; init; }
-    public required int? NumberOfChildrenInvolved { get; init; }
+    public required int NumberOfChildrenInvolved { get; init; }
     public required string? Description { get; init; }
     public required int Direction { get; init; }
 }
