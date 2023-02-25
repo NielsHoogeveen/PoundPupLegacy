@@ -78,7 +78,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
                     FROM node n
                     JOIN content_type_adopt_positions p ON p.nid = n.nid AND p.vid = n.vid
                     JOIN node n2 ON n2.nid = p.field_industrialist_nid AND n2.nid not in (74250)
-                    JOIN node n3 ON n3.nid = p.field_industrial_organisation_nid AND n3.nid not in (11108)
+                    JOIN node n3 ON n3.nid = p.field_industrial_organisation_nid AND n3.nid not in (11108, 38419, 38421)
                     LEFT JOIN node n4 ON n4.nid = p.field_country_3_nid
                     JOIN category_node cn ON cn.nid = n.nid
                     JOIN category c ON c.cid = cn.cid AND c.cnid = 12663

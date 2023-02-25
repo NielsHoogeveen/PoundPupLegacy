@@ -344,10 +344,10 @@ public class CongressionalDataService: ICongressionalDataService
         					from person p
         					join tenant_node tn1 on tn1.node_id = p.id and tn1.tenant_id = 1
         					join person_organization_relation por on por.person_id = p.id
+                            JOIN united_states_political_party pp on pp.id = por.organization_id
         					join node n2 on n2.id = por.organization_id
         					join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = 1
-        					where tn2.url_id in (38419, 38421)
-        					and tn1.url_id = tn.url_id
+        					where tn1.url_id = tn.url_id
         				) x			
         			) parties,
         			(

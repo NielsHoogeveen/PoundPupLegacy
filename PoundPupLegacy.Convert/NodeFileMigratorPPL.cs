@@ -70,7 +70,8 @@ internal sealed class NodeFileMigratorPPL : PPLMigrator
                     22589,
                     54123,
                     45656, 
-                    74250
+                    74250,
+                    61670
                 )
                 AND f.fid not in (3197, 3198)
                 """;

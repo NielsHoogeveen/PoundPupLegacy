@@ -142,6 +142,9 @@ internal class MemberOfCongressMigrator : PPLMigrator
         var nodeImages = await GetNodeFilesImage().ToListAsync();
         await NodeFileCreator.CreateAsync(nodeImages.ToAsyncEnumerable(), _postgresConnection);
         await UpdatePerson(nodeImages.ToAsyncEnumerable());
+
+        var membership = await GetPartyMembership().ToListAsync();
+        await PersonOrganizationRelationCreator.CreateAsync(membership.ToAsyncEnumerable(), _postgresConnection);
     }
 
 
@@ -399,9 +402,9 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
                 var professionalRoles = new List<ProfessionalRole>();
 
-                int GetPoliticalPartyAffiliationId(Term term)
+                int GetPoliticalPartyAffiliationId(string party)
                 {
-                    return politicalPartyAffiliations!.First(x => x.Item1 == term.party.ToLower()).Item2;
+                    return politicalPartyAffiliations!.First(x => x.Item1 == party.ToLower()).Item2;
                 }
 
                 List<CongressionalTermPoliticalPartyAffiliation> GetPartyAffiliations(Term term)
@@ -427,7 +430,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                                     }
                                 },
                                 NodeTypeId = 64,
-                                PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term),
+                                PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term.party),
                                 CongressionalTermId = null,
                                 DateTimeRange = new DateTimeRange(term.start, term.end)
                             }
@@ -453,7 +456,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                                         }
                                     },
                             NodeTypeId = 64,
-                            PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term),
+                            PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(party_affiliations.party),
                             CongressionalTermId = null,
                             DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end)
                         }
@@ -859,5 +862,173 @@ internal class MemberOfCongressMigrator : PPLMigrator
             }
             await Task.Delay(TimeSpan.FromMilliseconds(500));
         }
+    }
+
+    private async IAsyncEnumerable<PersonOrganizationRelation> GetPartyMembership()
+    {
+
+        var sql = $"""
+                select
+                ppm.title,
+                ppm.person_id,
+                ppm.party_id organization_id,
+                tn.node_id person_organization_relation_type_id,
+                ppm.start_date,
+                ppm.end_date
+                from(
+                	select
+                		person_name || ' member of ' || party_name title,
+                		person_id,
+                		party_id,
+                		MIN(date_from) start_date,
+                		MAX(date_to) end_date
+                	from
+                	(
+                		select
+                			person_id,
+                			person_name,
+                			party_id,
+                			party_name,
+                			case 
+                				when has_previous = false then null
+                				when previous_is_of_same_party = true then null
+                				else lower(date_range)
+                			end date_from,
+                			case 
+                				when next_is_of_same_party = false and has_next = true then upper(date_range)
+                				else null
+                			end date_to
+                		from(
+                			select
+                				person_id,
+                				person_name,
+                				party_id,
+                				party_name,
+                				case 
+                					when id_previous is null then false
+                					else true
+                				end has_previous,
+                				case 
+                					when id_next is null then false
+                					else true
+                				end has_next,
+                				case
+                					when party_name_previous is null then false
+                					else party_name_previous = party_name
+                				end previous_is_of_same_party,
+                				case
+                					when party_name_next is null then false
+                					else party_name_next = party_name
+                				end next_is_of_same_party,
+                				date_range	
+
+                			from(
+                				select
+                				p.id person_id,
+                				n1.title person_name,
+                				n2.id party_id,
+                				n2.title party_name,
+                				lag(n2.title, 1) over(partition by
+                				p.id,
+                				p.full_name,
+                				t.name
+                				order by lower(ctppa.date_range)) party_name_previous,
+                				lead(n2.title, 1) over(partition by
+                				p.id,
+                				p.full_name,
+                				t.name
+                				order by lower(ctppa.date_range)) party_name_next,
+                				lag(ctppa.id, 1) over(partition by
+                				p.id
+                				order by lower(ctppa.date_range)) id_previous,
+                				lead(ctppa.id, 1) over(partition by
+                				p.id
+                				order by lower(ctppa.date_range)) id_next,
+                				ctppa.date_range
+                				from congressional_term_political_party_affiliation ctppa
+                				join united_states_political_party_affiliation usppa on usppa.id = ctppa.united_states_political_party_affiliation_id
+                				join term t on t.nameable_id = usppa.id
+                				join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = 1
+                				left join united_states_political_party uspp on uspp.id = usppa.united_states_political_party_id
+                				left join node n2 on n2.id = uspp.id
+                				join congressional_term ct on ct.id = ctppa.congressional_term_id
+                				left join senate_term st on st.id = ct.id
+                				left join house_term ht on ht.id = ct.id
+                				join professional_role pr on pr.id = 
+                					case 
+                						when st.senator_id is not null then st.senator_id
+                						when ht.representative_id is not null then ht.representative_id
+                					end  
+                				join person p on p.id = pr.person_id
+                				join node n1 on n1.id = p.id
+                				where tn3.url_id = 150
+                				ORDER BY lower(ctppa.date_range)
+                			) x
+                			where party_name is not null
+                		) x
+                	) x
+                	group by 
+                	person_id,
+                	person_name,
+                	party_id,
+                	party_name
+                ) ppm
+                join tenant_node tn on tn.tenant_id = 1 and tn.url_id = 12675
+                left join person_organization_relation por on por.person_id = ppm.person_id and por.organization_id = ppm.party_id and tn.node_id = por.person_organization_relation_type_id 
+                WHERE por.id is null
+                """;
+        using var readCommand = _postgresConnection.CreateCommand();
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = sql;
+
+        var reader = await readCommand.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync()) {
+
+
+            var now = DateTime.Now;
+            yield return new PersonOrganizationRelation {
+                Id = null,
+                PublisherId = 2,
+                CreatedDateTime = now,
+                ChangedDateTime = now,
+                Title = reader.GetString("title"),
+                OwnerId = Constants.OWNER_PARTIES,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+                NodeTypeId = 48,
+                PersonId = reader.GetInt32("person_id"),
+                OrganizationId = reader.GetInt32("organization_id"),
+                GeographicalEntityId = null,
+                PersonOrganizationRelationTypeId = reader.GetInt32("person_organization_relation_type_id"),
+                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
+
+                DocumentIdProof = null,
+                Description = null,
+            };
+        }
+        await reader.CloseAsync();
     }
 }
