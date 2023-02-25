@@ -75,7 +75,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
                 	JOIN node n4 ON n4.nid = cn.cid
                 	JOIN category c ON c.cid = n4.nid AND c.cnid = 12652
                 	LEFT JOIN content_field_proof fp ON fp.nid = n.nid AND fp.vid = n.vid
-                	WHERE n.nid not in (13792) and n2.nid not in (74250)
+                	WHERE n.nid not in (13792, 12660, 12662) and n2.nid not in (74250)
                 	GROUP BY n2.nid,
                 	n3.nid,
                 	p.field_from_date_value,

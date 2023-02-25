@@ -43,6 +43,11 @@ public class PersonCreator : IEntityCreator<Person>
             }
             await ProfessionalRoleCreator.CreateAsync(person.ProfessionalRoles.ToAsyncEnumerable(), connection);
 
+            foreach (var relation in person.PersonOrganizationRelations) {
+                relation.PersonId = person.Id;
+            }
+            await PersonOrganizationRelationCreator.CreateAsync(person.PersonOrganizationRelations.ToAsyncEnumerable(), connection);
+
         }
     }
 }

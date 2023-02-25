@@ -10,7 +10,7 @@ public record PersonOrganizationRelation : Node
     public required int? OwnerId { get; init; }
     public required int NodeTypeId { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
-    public required int PersonId { get; init; }
+    public required int? PersonId { get; set; }
     public required int OrganizationId { get; init; }
     public required int PersonOrganizationRelationTypeId { get; init; }
     public required DateTimeRange DateRange { get; init; }

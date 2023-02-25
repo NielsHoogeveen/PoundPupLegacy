@@ -1,6 +1,6 @@
-﻿@using PoundPupLegacy.ViewModel;
+﻿@using PoundPupLegacy.ViewModel
 @if (Model is not null){
-    <style>
+   <style>
         .chamber{
             background-color: #dddddd;
             margin-bottom: 2em;
@@ -20,6 +20,7 @@
         }
     </style>
     <div class="article-with-comments">
+    
         <div class="breadcrum">
             <span class="breadcrum-element">
                 <a href="/home">home</a></span>
@@ -51,7 +52,7 @@
                 }
             </div>
         </div>
-    </div>
+        </div>
 }
 @code{
     [Parameter]

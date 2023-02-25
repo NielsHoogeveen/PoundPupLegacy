@@ -19,7 +19,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
         await OrganizationCreator.CreateAsync(ReadOrganizations(), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<Organization> ReadOrganizations()
+    private async IAsyncEnumerable<BasicOrganization> ReadOrganizations()
     {
             
         var sql = $"""
@@ -226,7 +226,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
                 });
             }
 
-            yield return new Organization
+            yield return new BasicOrganization
             {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),

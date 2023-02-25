@@ -24,4 +24,5 @@ public sealed record Person : Party
     public required int? GovtrackId { get; init; }
     public required string? Bioguide { get; init; }
     public required List<ProfessionalRole> ProfessionalRoles { get; init; }
+    public required List<PersonOrganizationRelation> PersonOrganizationRelations { get; init; }
 }

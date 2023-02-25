@@ -27,6 +27,36 @@
         label{
             font-weight:600;
         }
+        .meeting{
+            margin-bottom:1em;
+        }
+        .state-representation h4 a{
+            color: black;
+        }
+
+        .member-of-congress table{
+            border: 0;
+        }
+
+        .member-of-congress table tr{
+                background-color: transparent;
+            border: 0;
+        }
+
+        .member-of-congress table tr:nth-of-type(2n+1) {
+            background-color: transparent;
+            border: 0;
+        }
+
+        .member-of-congress table td{
+            background-color: transparent;
+            border: 0;
+        }
+        .list-entries{
+            margin-left: 1em;
+            margin-bottom:1em;
+        }
+
     </style>
     <div class="article-with-comments">
         <div class="breadcrum">
@@ -34,58 +64,69 @@
                 <a href="/home">home</a>
             </span>
         </div>
+
         <article>
-            <h2>@Model.MeetingName</h2>
-            <div>@Model.DateFrom.ToString("dd MMMM yyyy") - @Model.DateTo.ToString("dd MMMM yyyy")</div>
+            <div class="meeting">
+                <h2>@Model.MeetingName</h2>
+                <div>@Model.DateFrom.ToString("d MMMM yyyy") - @Model.DateTo.ToString("d MMMM yyyy")</div>
+            </div>
             @foreach(var state in Model.States.OrderBy(x => x.State.Name)) 
             {
                 <div class="state-representation">
-                    <h4><a hef="@state.State.Path">@state.State.Name</a></h4>
+                    <h4><a href="@state.State.Path">@state.State.Name</a></h4>
                     @foreach(var member in state.Members.OrderBy(x => x.Name)) 
                     {
                         <div class="member-of-congress">
                             <img src="@member.FilePathPortrait" style="height:220px;width:auto"/>
                             <div>
                                 <label>Name</label>
-                                <div><a hef="@member.Path">@member.Name</a></div>
+                                <div class="list-entries"><a href="@member.Path">@member.Name</a></div>
                                 @if (member.Bills.Any())
                                 {
                                     <label>Bills sponsored</label>
+                                    <div class="list-entries">
                                     @foreach (var bill in member.Bills)
                                     {
-                                        <div><a hef="@bill.Path">@bill.Name</a></div>
+                                        <div><a href="@bill.Path">@bill.Name</a></div>
                                     }
+                                    </div>
                                 }
                                 @if (member.Letters.Any()) {
                                     <label>Letters singed</label>
-                                    @foreach (var letter in member.Letters) {
-                                        <div><a hef="@letter.Path">@letter.Name</a></div>
-                                    }
+                                    <div class="list-entries">
+                                        @foreach (var letter in member.Letters) {
+                                            <div><a href="@letter.Path">@letter.Name</a></div>
+                                        }
+                                    </div>
                                 }
                                 @if (member.Terms.Any()) {
-                                    <label>Terms</label>   
+                                    <label>Terms</label>
+                                    <div class="list-entries">
                                     <table>
                                     @foreach(var term in member.Terms.OrderBy(x => x.DateFrom)) {
                                        <tr>
                                             <td>@term.MemberType</td>
-                                            <td><a hef="@term.State.Path">@term.State.Name</a></td>
+                                            <td><a href="@term.State.Path">@term.State.Name</a></td>
                                                 <td>@term.DateFrom?.ToString("yyyy MMMM dd")</td>
                                                 <td>@term.DateTo?.ToString("yyyy MMMM dd")</td>
                                        </tr>
                                     }
                                     </table>
+                                    </div>
                                 }
                                 @if (member.Parties.Any()) {
                                     <label>Party affiliation</label>
+                                    <div class="list-entries">
                                     <table>
                                         @foreach (var party in member.Parties.OrderBy(x => x.DateFrom)) {
                                             <tr>
-                                                <td><a hef="@party.Path">@party.Name</a></td>
+                                                <td><a href="@party.Path">@party.Name</a></td>
                                                 <td>@party.DateFrom?.ToString("yyyy MMMM dd")</td>
                                                 <td>@party.DateTo?.ToString("yyyy MMMM dd")</td>
                                             </tr>
                                         }
                                     </table>
+                                    </div>
                                 }
                             </div>
                         </div>

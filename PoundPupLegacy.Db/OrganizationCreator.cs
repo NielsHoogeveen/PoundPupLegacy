@@ -14,6 +14,7 @@ public class OrganizationCreator : IEntityCreator<Organization>
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var partyWriter = await PartyWriter.CreateAsync(connection);
         await using var organizationWriter = await OrganizationWriter.CreateAsync(connection);
+        await using var unitedStatesPoliticalPartyWriter = await UnitedStatesPoliticalPartyWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
         await using var termReader = await TermReaderByName.CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
@@ -30,7 +31,11 @@ public class OrganizationCreator : IEntityCreator<Organization>
             await nameableWriter.WriteAsync(organization);
             await partyWriter.WriteAsync(organization);
             await organizationWriter.WriteAsync(organization);
+            if(organization is UnitedStatesPoliticalParty pp) {
+                await unitedStatesPoliticalPartyWriter.WriteAsync(pp);
+            }
             await EntityCreator.WriteTerms(organization, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            
             foreach (var tenantNode in organization.TenantNodes)
             {
                 tenantNode.NodeId = organization.Id;

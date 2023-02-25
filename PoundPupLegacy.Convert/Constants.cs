@@ -56,6 +56,47 @@ internal static class Constants
     internal const int ADOPTION_IMPORT = 144;
     internal const int ADOPTION_EXPORT = 145;
 
+    internal const int POPULAR_DEMOCRAT_PARTY = 146;
+    internal const int LIBERTARIAN_PARTY = 147;
+
+    internal const int POLITICAL_PARTY = 148;
+
+    internal const int SUBDIVISION_TYPE = 149;
+    internal const int UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE = 150;
+
+    internal const int DEMOCRAT = 151;
+    internal const int REPUBLICAN = 152;
+    internal const int INDEPENDENT = 153;
+    internal const int POPULAR_DEMOCRAT = 154;
+    internal const int LIBERTARIAN = 155;
+
+    internal const int CASE_PARTY_TYPE = 156;
+
+
+    internal const int HOMESTUDY_CASE_TYPE = 157;
+    internal const int PLACEMENT_CASE_TYPE = 158;
+    internal const int POSTPLACEMENT_CASE_TYPE = 159;
+    internal const int FACILITATION_CASE_TYPE = 160;
+    internal const int INSTITUTION_CASE_TYPE = 161;
+    internal const int THERAPY_CASE_TYPE = 162;
+    internal const int AUTHORITIES_CASE_TYPE = 163;
+
+    internal const string POLITICAL_PARTY_NAME = "Political party";
+
+    internal const string HOMESTUDY_CASE_TYPE_NAME = "homestudy";
+    internal const string PLACEMENT_CASE_TYPE_NAME = "placement";
+    internal const string POSTPLACEMENT_CASE_TYPE_NAME = "post placement";
+    internal const string FACILITATION_CASE_TYPE_NAME = "facilitation";
+    internal const string INSTITUTION_CASE_TYPE_NAME = "institution";
+    internal const string THERAPY_CASE_TYPE_NAME = "therapy";
+    internal const string AUTHORITIES_CASE_TYPE_NAME = "authorities";
+
+    internal const string DEMOCRAT_NAME = "democrat";
+    internal const string REPUBLICAN_NAME = "republican";
+    internal const string INDEPENDENT_NAME = "independent";
+    internal const string POPULAR_DEMOCRAT_NAME = "popular democrat";
+    internal const string LIBERTARIAN_NAME = "libertarian";
+
     internal const int ANTIGUA_AND_BARBUDA = 4073;
     internal const int PALESTINE = 4082;
     internal const int SAINT_HELENA_ETC = 4087;
@@ -68,6 +109,8 @@ internal static class Constants
     internal const int CURACAO = 4129;
     internal const int SINT_MAARTEN = 4130;
 
+    internal const int DEMOCRATIC_PARTY = 38421;
+    internal const int REPUBLICAN_PARTY = 38419;
 
     internal const int DOCUMENT_TYPES = 42416;
     internal const int ORGANIZATION_TYPE = 12622;
@@ -91,4 +134,6 @@ internal static class Constants
     internal const string VOCABULARY_DOCUMENT_TYPE = "Document type";
     internal const string VOCABULARY_TOPICS = "Topics";
     internal const string VOCABULARY_SUBDIVISION_TYPE = "Subdivision type";
+    internal const string VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE = "United States political party affiliation";
+    internal const string VOCABULARY_CASE_PARTY_TYPE = "Case party type";
 }

@@ -17,23 +17,6 @@ internal sealed class NodeTypeMigrator : PPLMigrator
         await CreateNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
         await DeleteNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
         await EditNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await CaseTypeCreator.CreateAsync(GetCaseTypes(), _postgresConnection);
-        await CreateNodeActionCreator.CreateAsync(GetCaseTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await DeleteNodeActionCreator.CreateAsync(GetCaseTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await EditNodeActionCreator.CreateAsync(GetCaseTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-
-    }
-    internal static async IAsyncEnumerable<CaseType> GetCaseTypes()
-    {
-        await Task.CompletedTask;
-        yield return new CaseType(26, "abuse case", "Abuse case of a child that has been placed by court", new List<int> { 1, 2, 3, 4, 5, 6});
-        yield return new CaseType(29, "child trafficking case", "Trafficking case of children to be adopted", new List<int> { 2, 4, 5 });
-        yield return new CaseType(30, "coerced adoption case", "Adoption that involved coercion", new List<int> { 2 });
-        yield return new CaseType(31, "deportation case", "Adoptees deported to country of origin", new List<int>());
-        yield return new CaseType(32, "father's rights violation case", "Adoptions where the rights of the biological father were violated", new List<int> { 2 });
-        yield return new CaseType(33, "wrongful medication case", "Child placement situation where wrongful medication is present", new List<int> { 7 });
-        yield return new CaseType(34, "wrongful removal case", "Children wrongfully removed from their family", new List<int> { 7 });
-        yield return new CaseType(44, "disrupted placement case", "A situation where the placement of a child was reverted", new List<int> { 2, 4 });
 
     }
     internal static async IAsyncEnumerable<BasicNodeType> GetNodeTypes()
@@ -89,6 +72,14 @@ internal sealed class NodeTypeMigrator : PPLMigrator
         yield return new BasicNodeType(56, "house bill", "A bill that is introduced in the US house of representatives");
         yield return new BasicNodeType(57, "senate bill", "A bill that is introduced in the US senate");
         yield return new BasicNodeType(58, "bill action type", "The type of actions a person can take with respect to a bill");
+        yield return new BasicNodeType(59, "senator", "Represents a United States senator");
+        yield return new BasicNodeType(60, "representative", "Represents a member of the United States House of Representatives");
+        yield return new BasicNodeType(61, "basic profession", "A profession");
+        yield return new BasicNodeType(62, "united states political party affilition", "Political party affiliations as used in the United States of America");
+        yield return new BasicNodeType(63, "united states political party", "Political party of the United States of America");
+        yield return new BasicNodeType(64, "congressional term political party affiliation", "The political party affiliation of a member of congresss during a term");
+        yield return new BasicNodeType(65, "senate term", "A term of a United States Senator");
+        yield return new BasicNodeType(66, "house term", "A term of a United States Representative");
     }
 
 }

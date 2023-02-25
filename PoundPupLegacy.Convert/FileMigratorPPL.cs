@@ -13,7 +13,7 @@ internal sealed class FileMigratorPPL : PPLMigrator
 
     }
 
-    protected override string Name => "files";
+    protected override string Name => "files (ppl)";
 
     protected override async Task MigrateImpl()
     {

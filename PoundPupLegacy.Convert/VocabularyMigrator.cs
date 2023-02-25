@@ -186,7 +186,56 @@ internal sealed class VocabularyMigrator : PPLMigrator
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = null
+                        UrlId = Constants.SUBDIVISION_TYPE
+                    }
+                },
+            NodeTypeId = 36,
+            Description = ""
+        };
+        yield return new Vocabulary {
+            Id = null,
+            Name = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
+            OwnerId = Constants.OWNER_PARTIES,
+            TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE
+                    }
+                },
+            NodeTypeId = 36,
+            Description = ""
+        };
+
+        yield return new Vocabulary {
+            Id = null,
+            Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = Constants.VOCABULARY_CASE_PARTY_TYPE,
+            OwnerId = Constants.OWNER_CASES,
+            TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.CASE_PARTY_TYPE
                     }
                 },
             NodeTypeId = 36,

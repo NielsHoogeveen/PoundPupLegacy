@@ -258,6 +258,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
                 Bioguide = null,
                 Suffix = null,
                 ProfessionalRoles = new List<ProfessionalRole>(),
+                PersonOrganizationRelations = new List<PersonOrganizationRelation>()
             };
 
         }

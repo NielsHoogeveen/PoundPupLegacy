@@ -4,7 +4,6 @@ internal sealed class CasePartyTypeWriter : DatabaseWriter<CasePartyType>, IData
 {
 
     private const string ID = "id";
-    private const string NAME = "name";
     public static async Task<DatabaseWriter<CasePartyType>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
@@ -14,10 +13,6 @@ internal sealed class CasePartyTypeWriter : DatabaseWriter<CasePartyType>, IData
                 new ColumnDefinition{
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
                 },
             }
         );
@@ -36,7 +31,6 @@ internal sealed class CasePartyTypeWriter : DatabaseWriter<CasePartyType>, IData
             throw new ArgumentNullException(nameof(casePartyType));
         }
         WriteValue(casePartyType.Id, ID);
-        WriteNullableValue(casePartyType.Name, NAME);
         await _command.ExecuteNonQueryAsync();
     }
 }

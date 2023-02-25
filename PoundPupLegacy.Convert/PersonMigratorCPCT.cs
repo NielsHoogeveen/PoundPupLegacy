@@ -93,6 +93,7 @@ internal sealed class PersonMigratorCPCT : CPCTMigrator
                 Bioguide = null,
                 Suffix = null,
                 ProfessionalRoles = new List<ProfessionalRole>(),
+                PersonOrganizationRelations = new List<PersonOrganizationRelation>()
             };
 
         }

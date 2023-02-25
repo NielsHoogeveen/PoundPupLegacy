@@ -1132,7 +1132,10 @@ internal class FetchNodeService : IFetchNodeService
         			    tn4.title  geographic_entity_name,
         			    r.date_range,
         			    r.money_involved,
-        			    r.number_of_children_involved,
+                        case 
+                            when r.number_of_children_involved is null then 0
+                            else r.number_of_children_involved
+                        end number_of_children_involved,
         			    r.description,
         			    1 direction
         			    from node n

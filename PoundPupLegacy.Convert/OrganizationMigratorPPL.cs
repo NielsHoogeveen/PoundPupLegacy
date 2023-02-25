@@ -14,7 +14,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
 
     private async IAsyncEnumerable<Organization> GetOrganizations()
     {
-        yield return new Organization
+        yield return new BasicOrganization
         {
             Id = null,
             PublisherId = 1,
@@ -62,7 +62,101 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 }
             }
         };
-        yield return new Organization
+        yield return new UnitedStatesPoliticalParty {
+            Id = null,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = "Popular Democratic Party",
+            OwnerId = Constants.OWNER_PARTIES,
+            TenantNodes = new List<TenantNode>
+            {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.POPULAR_DEMOCRAT_PARTY
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.POPULAR_DEMOCRAT_PARTY
+                    }
+                },
+            NodeTypeId = 63,
+            WebsiteURL = null,
+            EmailAddress = null,
+            Established = null,
+            Terminated = null,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>(),
+            OrganizationTypes = new List<OrganizationOrganizationType>
+            {
+                new OrganizationOrganizationType
+                {
+                    OrganizationId = null,
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, Constants.POLITICAL_PARTY)
+                }
+            }
+        };
+        yield return new UnitedStatesPoliticalParty {
+            Id = null,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = "Libertarian Party",
+            OwnerId = Constants.OWNER_PARTIES,
+            TenantNodes = new List<TenantNode>
+            {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.LIBERTARIAN_PARTY
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.LIBERTARIAN_PARTY
+                    }
+                },
+            NodeTypeId = 63,
+            WebsiteURL = null,
+            EmailAddress = null,
+            Established = null,
+            Terminated = null,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>(),
+            OrganizationTypes = new List<OrganizationOrganizationType>
+            {
+                new OrganizationOrganizationType
+                {
+                    OrganizationId = null,
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, Constants.POLITICAL_PARTY)
+                }
+            }
+        };
+        yield return new BasicOrganization
         {
             Id = null,
             PublisherId = 1,
@@ -93,7 +187,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                         UrlId = 17036
                     }
                 },
-            NodeTypeId = 23,
+            NodeTypeId = 63,
             WebsiteURL = null,
             EmailAddress = null,
             Established = null,
@@ -287,17 +381,16 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 });
             }
 
-
-            yield return new Organization
-            {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_PARTIES,
-                TenantNodes = new List<TenantNode>
-                {
+            if (id == Constants.DEMOCRATIC_PARTY || id == Constants.REPUBLICAN_PARTY) {
+                yield return new UnitedStatesPoliticalParty {
+                    Id = null,
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_PARTIES,
+                    TenantNodes = new List<TenantNode>
+                    {
                     new TenantNode
                     {
                         Id = null,
@@ -319,16 +412,67 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                         UrlId = id < 33163 ? id : null
                     }
                 },
-                NodeTypeId = reader.GetInt16("node_type_id"),
-                WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
-                EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
-                Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
-                Established = reader.IsDBNull("established") ? null : reader.GetDateTime("established"),
-                Terminated = reader.IsDBNull("terminated") ? null : reader.GetDateTime("terminated"),
-                FileIdTileImage = null,
-                VocabularyNames = vocabularyNames,
-                OrganizationTypes = organizationOrganizationTypes,
-            };
+                    NodeTypeId = 63,
+                    WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
+                    EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
+                    Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
+                    Established = reader.IsDBNull("established") ? null : reader.GetDateTime("established"),
+                    Terminated = reader.IsDBNull("terminated") ? null : reader.GetDateTime("terminated"),
+                    FileIdTileImage = null,
+                    VocabularyNames = vocabularyNames,
+                    OrganizationTypes = new List<OrganizationOrganizationType>
+                    {
+                        new OrganizationOrganizationType
+                        {
+                            OrganizationId = null,
+                            OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, Constants.POLITICAL_PARTY)
+                        }
+                    }
+
+                };
+            }
+            else {
+                yield return new BasicOrganization {
+                    Id = null,
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_PARTIES,
+                    TenantNodes = new List<TenantNode>
+                    {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = reader.GetInt32("node_status_id"),
+                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = id < 33163 ? id : null
+                    }
+                },
+                    NodeTypeId = reader.GetInt16("node_type_id"),
+                    WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
+                    EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
+                    Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
+                    Established = reader.IsDBNull("established") ? null : reader.GetDateTime("established"),
+                    Terminated = reader.IsDBNull("terminated") ? null : reader.GetDateTime("terminated"),
+                    FileIdTileImage = null,
+                    VocabularyNames = vocabularyNames,
+                    OrganizationTypes = organizationOrganizationTypes,
+                };
+            }
 
         }
         await reader.CloseAsync();

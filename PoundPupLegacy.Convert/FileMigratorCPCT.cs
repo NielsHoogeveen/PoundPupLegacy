@@ -13,7 +13,7 @@ internal sealed class FileMigratorCPCT : CPCTMigrator
 
     }
 
-    protected override string Name => "files";
+    protected override string Name => "files (cpct)";
 
     protected override async Task MigrateImpl()
     {

@@ -35,8 +35,8 @@ internal sealed class ProfessionalRoleWriter : DatabaseWriter<ProfessionalRole>,
 
     internal override async Task WriteAsync(ProfessionalRole professionalRole)
     {
-        if (professionalRole.Id is not null)
-            throw new Exception("Upon create of professional_role the id should be null");
+        if (professionalRole.Id is null)
+            throw new NullReferenceException(nameof(professionalRole.Id));
         WriteValue(professionalRole.PersonId, PERSON_ID);
         WriteValue(professionalRole.ProfessionId, PROFESSION_ID);
         WriteDateTimeRange(professionalRole.DateTimeRange, DATERANGE);

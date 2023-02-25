@@ -1,7 +1,6 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
-using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace PoundPupLegacy.Convert;
@@ -133,40 +132,11 @@ internal class MemberOfCongressMigrator : PPLMigrator
     {
 
         _membersOfCongress = (await GetMembersOfCongress().ToListAsync()).OrderBy(x => x.id.govtrack).ToList();
+
+        var parties = _membersOfCongress.SelectMany(x => x.terms.Select(y => y.party)).Distinct().ToList();
         var persons = await GetMembersOfCongressAsync().ToListAsync();
         await PersonCreator.CreateAsync(persons.ToAsyncEnumerable(), _postgresConnection);
 
-        var lst = await GetTermsToStore().ToListAsync();
-        var now = DateTime.Now;
-        var add = lst.Where(x => !x.NodeId.HasValue).ToList().Select(x => new PartyPoliticalEntityRelation {
-            Id = null,
-            Title = $"{x.PersonName} {x.RelationTypeName} of {x.PoliticalEntityCode}",
-            CreatedDateTime = now,
-            ChangedDateTime = now,
-            PartyId = x.PersonId,
-            PoliticalEntityId = x.PoliticalEntityId,
-            PublisherId = 1,
-            OwnerId = Constants.PPL,
-            DocumentIdProof = null,
-            PartyPoliticalEntityRelationTypeId = x.RelationTypeId,
-            NodeTypeId = 49,
-            DateRange = new DateTimeRange(x.StartDate, x.EndDate),
-            TenantNodes = new List<TenantNode> {
-                new TenantNode {
-                    TenantId = Constants.PPL,
-                    NodeId = null,
-                    PublicationStatusId = 1,
-                    SubgroupId = null,
-                    UrlId = null,
-                    UrlPath = null,
-                    Id = null,
-                }
-            },
-
-        }).ToList();
-        var updates = lst.Where(x => x.NodeId.HasValue && !x.Delete).ToList();
-        await PartyPoliticalEntityRelationCreator.CreateAsync(add.ToAsyncEnumerable(), _postgresConnection);
-        await UpdateTerms(updates.ToAsyncEnumerable());
         var files = await GetImageFiles().ToListAsync();
         await FileCreator.CreateAsync(files.ToAsyncEnumerable(), _postgresConnection);
         var nodeImages = await GetNodeFilesImage().ToListAsync();
@@ -174,42 +144,14 @@ internal class MemberOfCongressMigrator : PPLMigrator
         await UpdatePerson(nodeImages.ToAsyncEnumerable());
     }
 
-    private async Task UpdateTerms(IAsyncEnumerable<StoredTerm> terms)
-    {
-        using var command = _postgresConnection.CreateCommand();
-
-        var sql = """
-            update party_political_entity_relation
-            set
-            date_range = @date_range,
-            political_entity_id = @political_entity_id
-            where id = @id
-            """;
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-        command.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("date_range", NpgsqlTypes.NpgsqlDbType.Unknown);
-        command.Parameters.Add("political_entity_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        await foreach(var term in terms)
-        {
-            command.Parameters["id"].Value = term.NodeId;
-            command.Parameters["date_range"].Value = term.EndDate is null ? $"[{term.StartDate.Year}-{term.StartDate.Month}-{term.StartDate.Day},)" : $"[{term.StartDate.Year}-{term.StartDate.Month}-{term.StartDate.Day},{term.EndDate.Value.Year}-{term.EndDate.Value.Month}-{term.EndDate.Value.Day})";
-            command.Parameters["political_entity_id"].Value = term.PoliticalEntityId;
-            await command.ExecuteNonQueryAsync();
-
-        }
-    }
 
     private async IAsyncEnumerable<(string, int)> GetStates()
     {
-        using (var command = _postgresConnection.CreateCommand())
-        {
+        using (var command = _postgresConnection.CreateCommand()) {
             var sql = """
                 select
-                s.id,
-                iso_3166_2_code
+                    s.id,
+                    iso_3166_2_code
                 from iso_coded_subdivision ics
                 join subdivision s on s.id = ics.id
                 join country c on c.id = s.country_id
@@ -221,209 +163,36 @@ internal class MemberOfCongressMigrator : PPLMigrator
             command.CommandText = sql;
             await command.PrepareAsync();
             var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
+            while (await reader.ReadAsync()) {
                 yield return (reader.GetString(1), reader.GetInt32(0));
             }
             await reader.CloseAsync();
         }
 
     }
-
-    private async IAsyncEnumerable<StoredTerm> GetTermsToStore()
+    private async IAsyncEnumerable<(string, int)> GetPoliticalPartyAffiliations()
     {
-
-        var typeNodeIdRepresentative = await _nodeIdReader.ReadAsync(Constants.PPL, 12660);
-        var typeNodeIdSenator = await _nodeIdReader.ReadAsync(Constants.PPL, 12662);
-        var states = await GetStates().ToListAsync();
-        using var readCommand = _postgresConnection.CreateCommand();
-
-        var sqlRead = "select id from person where govtrack_id = @govtrack_id";
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = sqlRead;
-        readCommand.Parameters.Add("govtrack_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await readCommand.PrepareAsync();
-
-        async Task<int> GetPersonId(int govTrackId)
-        {
-            readCommand.Parameters["govtrack_id"].Value = govTrackId;
-            var res = await readCommand.ExecuteScalarAsync();
-            return (int)res!;
-        }
-
-        using (var command = _postgresConnection.CreateCommand())
-        {
+        using (var command = _postgresConnection.CreateCommand()) {
             var sql = """
-                select
-                    pper.id,
-                    p.govtrack_id,
-                    p.id person_id,
-                    n.title person_name,
-                    pper.political_entity_id,
-                    pper.party_id,
-                    pper.party_political_entity_relation_type_id,
-                    n2.title party_political_entity_relation_type_name,
-                    lower(pper.date_range) date_from,
-                    upper(pper.date_range) date_to,
-                    pper.document_id_proof,
-                    ics.iso_3166_2_code
-                from person p
-                join node n on n.id = p.id
-                join party_political_entity_relation pper on pper.party_id = p.id
-                join node n1 on n1.id = pper.id
-                join node n2 on n2.id = pper.party_political_entity_relation_type_id
-                join tenant_node tn on tn.node_id = n.id AND tn.tenant_id = 1
-                join iso_coded_subdivision ics on ics.id = pper.political_entity_id
-                join tenant_node tn2 on tn2.node_id = n2.id AND tn2.tenant_id = 1
-                where p.govtrack_id = @govtrack_id
-                and tn2.url_id = @type_id
-                order by lower(pper.date_range)
+                SELECT 
+                    usppa.id,
+                	t.name
+                FROM united_states_political_party_affiliation usppa
+                join term t on t.nameable_id =  usppa.id
+                join tenant_node tn on tn.node_id = t.vocabulary_id and tn.tenant_id = 1
+                where tn.url_id = 150
                 """;
             command.CommandType = CommandType.Text;
             command.CommandTimeout = 300;
             command.CommandText = sql;
-            command.Parameters.Add("type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            command.Parameters.Add("govtrack_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await command.PrepareAsync();
-
-            async IAsyncEnumerable<List<StoredTerm>> ProcessTerms(MemberType memberType)
-            {
-                int typeId = memberType switch
-                {
-                    MemberType.Representative => 12660,
-                    MemberType.Senator => 12662,
-                    _ => throw new Exception("Cannot reach")
-                };
-                int typeNodeId = memberType switch
-                {
-                    MemberType.Representative => typeNodeIdRepresentative,
-                    MemberType.Senator => typeNodeIdSenator,
-                    _ => throw new Exception("Cannot reach")
-                };
-
-                foreach (var (govTrackId, fullName, terms) in (await GetTerms(memberType).ToListAsync()).GroupBy(x => (x.Item1, x.Item2)).Select(x => (x.Key.Item1, x.Key.Item2, x.Select(y => y.Item3).ToList())))
-                {
-                    List<StoredTerm> storedTerms = new List<StoredTerm>();
-                    command.Parameters["type_id"].Value = typeId;
-                    command.Parameters["govtrack_id"].Value = govTrackId;
-                    var reader = await command.ExecuteReaderAsync();
-                    while (reader.Read())
-                    {
-                        storedTerms.Add(new StoredTerm
-                        {
-                            PersonId = reader.GetInt32("person_id"),
-                            PersonName = reader.GetString("person_name"),
-                            GovtrackId = reader.GetInt32("govtrack_id"),
-                            Delete = false,
-                            NodeId = reader.GetInt32("id"),
-                            PoliticalEntityId = reader.GetInt32("political_entity_id"),
-                            PoliticalEntityCode = reader.GetString("iso_3166_2_code"),
-                            StartDate = reader.GetDateTime("date_from"),
-                            EndDate = reader.IsDBNull("date_to") ? null : reader.GetDateTime("date_to"),
-                            DocumentId = reader.IsDBNull("document_id_proof") ? null : reader.GetInt32("document_id_proof"),
-                            RelationTypeId = reader.GetInt32("party_political_entity_relation_type_id"),
-                            RelationTypeName = reader.GetString("party_political_entity_relation_type_name"),
-                        });
-                    }
-                    await reader.CloseAsync();
-                    foreach(var elem in storedTerms.Skip(terms.Count))
-                    {
-                        elem.Delete = true;
-                    }
-                    foreach(var (term, index) in terms.Select((x, i) => (x, i)))
-                    {
-                        var politicalEntityCode = $"US-{term.State}";
-                        var (stateName, stateId) = states.FirstOrDefault(x => x.Item1 == politicalEntityCode);
-                        if (stateName is null)
-                        {
-                            throw new NullReferenceException();
-                        }
-                        var startDate = term.StartDate.AddHours(12);
-                        var endDate = term.EndDate?.AddHours(11).AddMinutes(59).AddSeconds(59);
-
-                        if (index < storedTerms.Count)
-                        {
-                            var storedTerm = storedTerms[index];
-                            storedTerm.PoliticalEntityId = stateId;
-                            storedTerm.PoliticalEntityCode = politicalEntityCode;
-                            storedTerm.StartDate = startDate;
-                            storedTerm.EndDate = endDate;
-                        }
-                        else
-                        {
-                            storedTerms.Add(new StoredTerm
-                            {
-                                PersonId = await GetPersonId(govTrackId),
-                                GovtrackId = govTrackId,
-                                PoliticalEntityCode = politicalEntityCode,
-                                PoliticalEntityId = stateId,
-                                StartDate = startDate,
-                                EndDate = endDate,
-                                Delete = false,
-                                DocumentId = null,
-                                NodeId = null,
-                                RelationTypeId = typeNodeId,
-                                RelationTypeName = memberType switch
-                                {
-                                    MemberType.Senator => "senator of",
-                                    MemberType.Representative => "representative of"
-                                },
-                                PersonName = fullName
-                            }); 
-                        }
-                    }
-                    yield return storedTerms;
-                }
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync()) {
+                yield return (reader.GetString(1), reader.GetInt32(0));
             }
-            await foreach(var terms in ProcessTerms(MemberType.Representative))
-            {
-                foreach (var term in terms)
-                {
-                    yield return term;
-                }
-            }
-            await foreach (var terms in ProcessTerms(MemberType.Senator))
-            {
-                foreach (var term in terms)
-                {
-                    yield return term;
-                }
-            }
+            await reader.CloseAsync();
         }
-    }
 
-    private async IAsyncEnumerable<(int, string, TempTerm)> GetTerms()
-    {
-        await foreach (var term in GetTerms(MemberType.Representative))
-        {
-            yield return term;
-
-        }
-        await foreach (var term in GetTerms(MemberType.Senator))
-        {
-            yield return term;
-
-        }
-    }
-    private async IAsyncEnumerable<(int, string, TempTerm)> GetTerms(MemberType memberType)
-    {
-        var t = memberType == MemberType.Representative ? "rep" : "sen";
-        foreach (var member in _membersOfCongress)
-        {
-            foreach(var term in member.terms.Where(x => x.type == t).OrderBy(x => x.start))
-            {
-                yield return (member.id.govtrack, member.name.official_full, new TempTerm
-                {
-                    Id = member.id.govtrack,
-                    StartDate = term.start,
-                    EndDate = term.end,
-                    MemberType = memberType,
-                    State = term.state,
-                });
-            }
-
-        }
     }
 
     private async Task<int?> FindIdByGovtackId(int govtrack)
@@ -503,6 +272,9 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
     private async IAsyncEnumerable<Person> GetMembersOfCongressAsync()
     {
+        var states = await GetStates().ToListAsync();
+        var politicalPartyAffiliations = await GetPoliticalPartyAffiliations().ToListAsync();
+
         const string updateSql = """
             UPDATE person SET 
                 first_name = @first_name, 
@@ -618,12 +390,148 @@ internal class MemberOfCongressMigrator : PPLMigrator
                 var isSenator = memberOfCongress.terms.Any(x => x.type == "sen");
                 var isRepresentative = memberOfCongress.terms.Any(x => x.type == "rep");
 
+                var name = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
+
                 if (memberOfCongress.id.govtrack == 400568)
                 {
                     Console.WriteLine($"{memberOfCongress.name.official_full} isSenator {isSenator} isRepresentative {isRepresentative}");
                 }
 
                 var professionalRoles = new List<ProfessionalRole>();
+
+                int GetPoliticalPartyAffiliationId(Term term)
+                {
+                    return politicalPartyAffiliations!.First(x => x.Item1 == term.party.ToLower()).Item2;
+                }
+
+                List<CongressionalTermPoliticalPartyAffiliation> GetPartyAffiliations(Term term)
+                {
+                    if (term.party_affiliations == null) {
+                        return new List<CongressionalTermPoliticalPartyAffiliation> {
+                            new CongressionalTermPoliticalPartyAffiliation {
+                                Id = null,
+                                PublisherId = 2,
+                                CreatedDateTime = DateTime.Now,
+                                ChangedDateTime = DateTime.Now,
+                                Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
+                                OwnerId = Constants.OWNER_PARTIES,
+                                TenantNodes = new List<TenantNode> {
+                                    new TenantNode {
+                                        Id = null,
+                                        TenantId = 1,
+                                        PublicationStatusId = 1,
+                                        UrlPath = null,
+                                        NodeId = null,
+                                        SubgroupId = null,
+                                        UrlId = null
+                                    }
+                                },
+                                NodeTypeId = 64,
+                                PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term),
+                                CongressionalTermId = null,
+                                DateTimeRange = new DateTimeRange(term.start, term.end)
+                            }
+                        };
+                    }
+                    return term.party_affiliations.Select(party_affiliations => new CongressionalTermPoliticalPartyAffiliation 
+                        {
+                            Id = null,
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
+                            OwnerId = Constants.OWNER_PARTIES,
+                            TenantNodes = new List<TenantNode> {
+                                        new TenantNode {
+                                            Id = null,
+                                            TenantId = 1,
+                                            PublicationStatusId = 1,
+                                            UrlPath = null,
+                                            NodeId = null,
+                                            SubgroupId = null,
+                                            UrlId = null
+                                        }
+                                    },
+                            NodeTypeId = 64,
+                            PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term),
+                            CongressionalTermId = null,
+                            DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end)
+                        }
+                    ).ToList();
+                }
+
+                int GetStateId(Term term)
+                {
+                    return states!.First(x => x.Item1 == $"US-{term.state}").Item2;
+                }
+
+                List<SenateTerm> GetSenateTerms()
+                {
+                    return memberOfCongress.terms.Where(x => x.type == "sen").Select(term => {
+                        var subdivisionId = GetStateId(term);
+                        var partyAffiliations = GetPartyAffiliations(term);
+                        var senateTerm = new SenateTerm {
+                            Id = null,
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = $"{name} is senator",
+                            OwnerId = Constants.OWNER_PARTIES,
+                            TenantNodes = new List<TenantNode> {
+                                new TenantNode {
+                                    Id = null,
+                                    TenantId = 1,
+                                    PublicationStatusId = 1,
+                                    UrlPath = null,
+                                    NodeId = null,
+                                    SubgroupId = null,
+                                    UrlId = null
+                                }
+                            },
+                            NodeTypeId = 65,
+                            SenatorId = null,
+                            DateTimeRange = new DateTimeRange(term.start, term.end),
+                            SubdivisionId = subdivisionId,
+                            PartyAffiliations = partyAffiliations
+                        };
+                        return senateTerm;
+                    }).ToList();
+                }
+                List<HouseTerm> GetHouseTerms()
+                {
+                    return memberOfCongress.terms.Where(x => x.type == "rep").Select(term => {
+                        var subdivisionId = GetStateId(term);
+                        var partyAffiliations = GetPartyAffiliations(term);
+
+                        var houseTerm = new HouseTerm {
+                            Id = null,
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = $"{name} is representative",
+                            OwnerId = Constants.OWNER_PARTIES,
+                            TenantNodes = new List<TenantNode> {
+                                    new TenantNode {
+                                        Id = null,
+                                        TenantId = 1,
+                                        PublicationStatusId = 1,
+                                        UrlPath = null,
+                                        NodeId = null,
+                                        SubgroupId = null,
+                                        UrlId = null
+                                    }
+                                },
+                            NodeTypeId = 65,
+                            RepresentativeId = null,
+                            District = term.district,
+                            DateTimeRange = new DateTimeRange(term.start, term.end),
+                            SubdivisionId = subdivisionId,
+                            PartyAffiliations = partyAffiliations
+                        };
+                        return houseTerm;
+                    }).ToList();
+
+                }
 
                 if (memberOfCongress.node_id.HasValue)
                 {
@@ -632,9 +540,27 @@ internal class MemberOfCongressMigrator : PPLMigrator
                         professionalRoles.Add(new Senator
                         {
                             Id = null,
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = $"{name} is senator",
+                            OwnerId = Constants.OWNER_PARTIES,
+                            TenantNodes = new List<TenantNode> {
+                                new TenantNode {
+                                    Id = null,
+                                    TenantId = 1,
+                                    PublicationStatusId = 1,
+                                    UrlPath = null,
+                                    NodeId = null,
+                                    SubgroupId = null,
+                                    UrlId = null
+                                }
+                            },
+                            NodeTypeId = 59,
                             PersonId = memberOfCongress.node_id,
                             DateTimeRange = null,
                             ProfessionId = senatorRoleId,
+                            SenateTerms = GetSenateTerms(),
                         });
                     }
                     if (isRepresentative)
@@ -642,9 +568,27 @@ internal class MemberOfCongressMigrator : PPLMigrator
                         professionalRoles.Add(new Representative
                         {
                             Id = null,
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = $"{name} is representative",
+                            OwnerId = Constants.OWNER_PARTIES,
+                            TenantNodes = new List<TenantNode> {
+                                new TenantNode {
+                                    Id = null,
+                                    TenantId = 1,
+                                    PublicationStatusId = 1,
+                                    UrlPath = null,
+                                    NodeId = null,
+                                    SubgroupId = null,
+                                    UrlId = null
+                                }
+                            },
+                            NodeTypeId = 60,
                             PersonId = memberOfCongress.node_id,
                             DateTimeRange = null,
                             ProfessionId = repRoleId,
+                            HouseTerms = GetHouseTerms(),
                         });
                     }
                     updateCommand.Parameters["first_name"].Value = memberOfCongress.name.first is null ? DBNull.Value : memberOfCongress.name.first;
@@ -661,15 +605,35 @@ internal class MemberOfCongressMigrator : PPLMigrator
                 }
                 else
                 {
-
+                    
                     if (isSenator)
                     {
+                        
+
                         professionalRoles.Add(new Senator
                         {
                             Id = null,
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = $"{name} is senator",
+                            OwnerId = Constants.OWNER_PARTIES,
+                            TenantNodes = new List<TenantNode> {
+                                new TenantNode {
+                                    Id = null,
+                                    TenantId = 1,
+                                    PublicationStatusId = 1,
+                                    UrlPath = null,
+                                    NodeId = null,
+                                    SubgroupId = null,
+                                    UrlId = null
+                                }
+                            },
+                            NodeTypeId = 59,
                             PersonId = null,
                             DateTimeRange = null,
                             ProfessionId = senatorRoleId,
+                            SenateTerms = GetSenateTerms(),
                         });
                     }
                     if (isRepresentative)
@@ -677,24 +641,46 @@ internal class MemberOfCongressMigrator : PPLMigrator
                         professionalRoles.Add(new Representative
                         {
                             Id = null,
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = $"{name} is representative",
+                            OwnerId = Constants.OWNER_PARTIES,
+                            TenantNodes = new List<TenantNode> {
+                                new TenantNode {
+                                    Id = null,
+                                    TenantId = 1,
+                                    PublicationStatusId = 1,
+                                    UrlPath = null,
+                                    NodeId = null,
+                                    SubgroupId = null,
+                                    UrlId = null
+                                }
+                            },
+                            NodeTypeId = 60,
                             PersonId = null,
                             DateTimeRange = null,
                             ProfessionId = repRoleId,
+                            HouseTerms = GetHouseTerms(),
                         });
                     }
 
-                    yield return new Person
-                    {
+                    var terms = memberOfCongress.terms.Select(x => (x.start, x.end, x.party)).GroupBy(x => x.party).ToList();
+
+                    var relations = new List<PersonOrganizationRelation>();
+                    if(terms.Count == 1) {
+
+                    }
+
+                    yield return new Person {
                         Id = null,
                         PublisherId = 2,
                         CreatedDateTime = DateTime.Now,
                         ChangedDateTime = DateTime.Now,
                         Title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full,
                         OwnerId = Constants.OWNER_PARTIES,
-                        TenantNodes = new List<TenantNode>
-                        {
-                            new TenantNode
-                            {
+                        TenantNodes = new List<TenantNode> {
+                            new TenantNode {
                                 Id = null,
                                 TenantId = 1,
                                 PublicationStatusId = 1,
@@ -718,7 +704,8 @@ internal class MemberOfCongressMigrator : PPLMigrator
                         GovtrackId = memberOfCongress.id.govtrack,
                         Suffix = memberOfCongress.name.suffix,
                         ProfessionalRoles = professionalRoles,
-                        Bioguide = memberOfCongress.id.bioguide
+                        Bioguide = memberOfCongress.id.bioguide,
+                        PersonOrganizationRelations = new List<PersonOrganizationRelation>()
                     };
                 }
             }

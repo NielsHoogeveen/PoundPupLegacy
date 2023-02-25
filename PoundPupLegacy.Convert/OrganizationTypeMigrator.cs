@@ -1,6 +1,7 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
+using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert;
 
@@ -152,5 +153,52 @@ internal sealed class OrganizationTypeMigrator : PPLMigrator
             };
         }
         reader.Close();
+
+        var now = DateTime.Now;
+        yield return new OrganizationType {
+            Id = null,
+            PublisherId = 2,
+            CreatedDateTime = now,
+            ChangedDateTime = now,
+            Title = Constants.POLITICAL_PARTY_NAME,
+            OwnerId = Constants.OWNER_PARTIES,
+            TenantNodes = new List<TenantNode>
+               {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.POLITICAL_PARTY
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.POLITICAL_PARTY
+                    }
+                },
+            NodeTypeId = 1,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    OwnerId = Constants.OWNER_PARTIES,
+                    Name = Constants.VOCABULARY_ORGANIZATION_TYPE,
+                    TermName = Constants.POLITICAL_PARTY_NAME,
+                    ParentNames = new List<string>(),
+                }
+            },
+            HasConcreteSubtype = true,
+        };
     }
 }

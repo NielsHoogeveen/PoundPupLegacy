@@ -74,6 +74,9 @@ internal sealed class PersonOrganizationRelationWriter : DatabaseWriter<PersonOr
 
     private void DoWrites(PersonOrganizationRelation personOrganizationRelation, NpgsqlCommand command)
     {
+        if(personOrganizationRelation.PersonId is null) {
+            throw new NullReferenceException(nameof(personOrganizationRelation.PersonId));
+        }
         WriteValue(personOrganizationRelation.PersonId, PERSON_ID, command);
         WriteValue(personOrganizationRelation.OrganizationId, ORGANIZATION_ID, command);
         WriteNullableValue(personOrganizationRelation.GeographicalEntityId, GEOGRAPHICAL_ENTITY_ID, command);
