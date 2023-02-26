@@ -51,6 +51,7 @@ internal class FetchNodeService : IFetchNodeService
             {COUNTRY_SUBDIVISIONS_DOCUMENT},
             {SUBDIVISION_SUBDIVISIONS_DOCUMENT},
             {BLOG_POST_BREADCRUM_DOCUMENT},
+            {DISCUSSION_BREADCRUM_DOCUMENT},
             {PAGE_BREADCRUM_DOCUMENT},
             {ORGANIZATION_BREADCRUM_DOCUMENT},
             {DOCUMENT_BREADCRUM_DOCUMENT},
@@ -71,6 +72,7 @@ internal class FetchNodeService : IFetchNodeService
             {ADOPTION_IMPORTS_DOCUMENT},
             {BLOG_POST_DOCUMENT},
             {PAGE_DOCUMENT},
+            {DISCUSSION_DOCUMENT},
             {ARTICLE_DOCUMENT},
             {DOCUMENT_DOCUMENT},
             {SINGLE_QUESTION_POLL_DOCUMENT},
@@ -114,8 +116,8 @@ internal class FetchNodeService : IFetchNodeService
                 return null;
             }
             var node_type_id = reader.GetInt32(0);
-            var txt = reader.GetString(1);
-            Node node = node_type_id switch
+            var text = reader.IsDBNull(1)? null: reader.GetString(1);
+            Node? node = node_type_id switch
             {
                 1 => reader.GetFieldValue<BasicNameable>(1),
                 2 => reader.GetFieldValue<BasicNameable>(1),
@@ -151,6 +153,8 @@ internal class FetchNodeService : IFetchNodeService
                 35 => reader.GetFieldValue<BlogPost>(1),
                 36 => reader.GetFieldValue<Article>(1),
                 37 => reader.GetFieldValue<Discussion>(1),
+                39 => reader.GetFieldValue<BasicNameable>(1),
+                40 => reader.GetFieldValue<BasicNameable>(1),
                 41 => reader.GetFieldValue<BasicNameable>(1),
                 42 => reader.GetFieldValue<Page>(1),
                 44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
@@ -159,7 +163,7 @@ internal class FetchNodeService : IFetchNodeService
                 53 => reader.GetFieldValue<SingleQuestionPoll>(1),
                 54 => reader.GetFieldValue<MultiQuestionPoll>(1),
                 58 => reader.GetFieldValue<BasicNameable>(1),
-                _ => throw new Exception($"Node {id} has Unsupported type {node_type_id}")
+                _ => null
             };
 
             return node!;
@@ -1090,7 +1094,10 @@ internal class FetchNodeService : IFetchNodeService
         	    end geographic_entity,
         	    date_range,
         	    money_involved,
-        	    number_of_children_involved,
+                case 
+                    when number_of_children_involved is null then 0
+                    else number_of_children_involved
+                end number_of_children_involved,
         	    description,
         	    direction
         	    from(
@@ -1118,7 +1125,10 @@ internal class FetchNodeService : IFetchNodeService
         		    end geographic_entity_path,
         		    date_range,
         		    money_involved,
-        		    number_of_children_involved,
+                    case 
+                        when number_of_children_involved is null then 0 
+                        else number_of_children_involved 
+                    end number_of_children_involved,
         		    description,
         		    direction
         		    from(
@@ -1662,6 +1672,29 @@ internal class FetchNodeService : IFetchNodeService
                 FROM authenticated_node an
                 JOIN publisher p on p.id = an.publisher_id
                 WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
+
+    const string DISCUSSION_BREADCRUM_DOCUMENT = """
+        discussion_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Name', "name"
+                ) 
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
                 ) bce
                 ORDER BY bce."order"
             ) bces
@@ -3432,6 +3465,47 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+    const string DISCUSSION_DOCUMENT = """
+        discussion_document AS (
+            SELECT 
+                jsonb_build_object(
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title, 
+                    'Text', n.text,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id, 
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'BreadCrumElements', (SELECT document FROM discussion_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
+                    'Files', (SELECT document FROM files_document)
+                ) document
+            FROM (
+                SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    stn.text, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join simple_text_node stn on stn.id = an.node_id 
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
+
+
     const string PAGE_DOCUMENT = """
         page_document AS (
             SELECT 
@@ -3905,6 +3979,7 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 34 then (select document from wrongful_removal_case_document)
                     when an.node_type_id = 35 then (select document from blog_post_document)
                     when an.node_type_id = 36 then (select document from article_document)
+                    when an.node_type_id = 37 then (select document from discussion_document)
                     when an.node_type_id = 39 then (select document from basic_nameable_document)
                     when an.node_type_id = 40 then (select document from basic_nameable_document)
                     when an.node_type_id = 41 then (select document from basic_nameable_document)

@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Readers;
 using PoundPupLegacy.Model;
 using System.Data;
 
@@ -40,6 +39,16 @@ internal sealed class UserMigrator : PPLMigrator
             Name = "Editor",
             UserGroupId = Constants.CPCT,
         };
+        yield return new AccessRole {
+            Id = 42,
+            Name = "Member",
+            UserGroupId = Constants.ADULT_AFTERMATH,
+        };
+        yield return new AccessRole {
+            Id = 43,
+            Name = "Editor",
+            UserGroupId = Constants.ADULT_AFTERMATH,
+        };
     }
     private static async IAsyncEnumerable<Tenant> GetTenants()
     {
@@ -71,8 +80,7 @@ internal sealed class UserMigrator : PPLMigrator
             Description = "",
             VocabularyIdTagging = null,
             AccessRoleNotLoggedIn = new AccessRole
-            {
-                Id = 13,
+            {                Id = 13,
                 Name = "Everyone",
                 UserGroupId = null,
             },
@@ -138,6 +146,18 @@ internal sealed class UserMigrator : PPLMigrator
         {
             CollectiveId = 72,
             UserId = 3
+        };
+    }
+
+    private static async IAsyncEnumerable<Subgroup> GetSubgroups()
+    {
+        await Task.CompletedTask;
+        yield return new Subgroup {
+            Id = Constants.ADULT_AFTERMATH,
+            Name = "Adult Aftermath",
+            Description = "Group for private discusssions",
+            TenantId = Constants.PPL,
+            AdministratorRole = new AdministratorRole { Id = 41, UserGroupId = null }
         };
     }
 
@@ -220,6 +240,7 @@ internal sealed class UserMigrator : PPLMigrator
         await SystemGroupCreator.CreateAsync(_postgresConnection);
         await TenantCreator.CreateAsync(GetTenants(), _postgresConnection);
         await ContentSharingGroupCreator.CreateAsync(GetContentSharingGroups(), _postgresConnection);
+        await SubgroupCreator.CreateAsync(GetSubgroups(), _postgresConnection);
         await AccessRoleCreator.CreateAsync(GetAccessRoles(), _postgresConnection);
         await UserCreator.CreateAsync(ReadUsers(), _postgresConnection);
         await CollectiveCreator.CreateAsync(GetCollectives(), _postgresConnection);
@@ -228,6 +249,7 @@ internal sealed class UserMigrator : PPLMigrator
         await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! }), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 12, UserId = (int)x.Id! }), _postgresConnection);
         await UserGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = 6, UserRoleId = 16, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
+        await UserGroupUserRoleUserCreator.CreateAsync(ReadAdultAftermathMembers(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<User> ReadUsers()
@@ -309,4 +331,35 @@ internal sealed class UserMigrator : PPLMigrator
         }
         await reader.CloseAsync();
     }
+
+    private async IAsyncEnumerable<UserGroupUserRoleUser> ReadAdultAftermathMembers()
+    {
+
+        using var readCommand = MysqlConnection.CreateCommand();
+        readCommand.CommandType = CommandType.Text;
+        readCommand.CommandTimeout = 300;
+        readCommand.CommandText = """
+                SELECT
+                og_uid.uid uid,
+                case 
+                	when og_uid.is_admin = 1 then 41
+                	ELSE 42
+                END access_role_id
+                FROM og
+                JOIN og_uid ON og_uid.nid = og.nid
+                WHERE og.nid = 17146
+                """;
+
+        var reader = await readCommand.ExecuteReaderAsync();
+
+        while (reader.Read()) {
+            yield return new UserGroupUserRoleUser {
+                UserGroupId = Constants.ADULT_AFTERMATH,
+                UserId = reader.GetInt32("uid"),
+                UserRoleId = reader.GetInt32("access_role_id")
+            };
+        }
+        await reader.CloseAsync();
+    }
+
 }

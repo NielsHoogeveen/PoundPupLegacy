@@ -100,10 +100,11 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         //await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
         //await (new SearchableMigrator(this)).Migrate();
         //await (new CaseCaseRelationsMigrator(this)).Migrate();
-        await (new NodeFileMigratorPPL(this)).Migrate();
-        await (new NodeFileMigratorCPCT(this)).Migrate();
-        await (new CommentMigrator(this)).Migrate();
-        await PrepareFiles();
+        //await (new NodeFileMigratorPPL(this)).Migrate();
+        //await (new NodeFileMigratorCPCT(this)).Migrate();
+        //await (new CommentMigrator(this)).Migrate();
+        await (new AdultAftermathMigrator(this)).Migrate();
+        //await PrepareFiles();
     }
 
     internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=niels;database=ppl";

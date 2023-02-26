@@ -8,6 +8,7 @@ internal static class Constants
     internal const int OWNER_CASES = 4;
     internal const int OWNER_DOCUMENTATION = 5;
     internal const int CPCT = 6;
+    internal const int ADULT_AFTERMATH = 7;
 
     internal const int COLORADO_ADOPTION_CENTER = 105;
     internal const int ADOPTION = 4145;
