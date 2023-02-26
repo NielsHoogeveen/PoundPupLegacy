@@ -11,8 +11,6 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        const string CONNECTSTRING = "Host=localhost;Username=postgres;Password=niels;Database=ppl;Include Error Detail=True";
-
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -35,7 +33,12 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddTransient((sp) => new NpgsqlConnection(CONNECTSTRING));
+        builder.Services.AddTransient((sp) => 
+        {
+            var configuration = sp.GetService<IConfiguration>()!;
+            var connectString = configuration["ConnectString"]!;
+            return new NpgsqlConnection(connectString);
+        });
         builder.Services.AddTransient<IFetchNodeService, FetchNodeService>();
         builder.Services.AddTransient<IFetchBlogService, FetchBlogService>();
         builder.Services.AddTransient<IFetchBlogsService, FetchBlogsService>();
@@ -88,9 +91,13 @@ public class Program
         });
         app.UseHttpsRedirection();
         app.UseStaticFiles();
+
+        var configuration = app.Services.GetService<IConfiguration>()!;
+        var filesPath = configuration["FilesLocation"]!;
         app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new PhysicalFileProvider("\\\\wsl.localhost\\Ubuntu\\home\\niels\\files\\files"),
+           
+            FileProvider = new PhysicalFileProvider(filesPath),
             RequestPath = "/files"
         });
 
