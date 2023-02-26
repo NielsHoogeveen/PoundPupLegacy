@@ -1,0 +1,19 @@
+﻿@using PoundPupLegacy.ViewModel;
+@using PoundPupLegacy.Services;
+@using PoundPupLegacy.Components;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model SubGroupPagedList
+@inject ISiteDataService siteDataService
+<table>
+    @foreach(var item in Model.Entries.OrderByDescending(x => x.Authoring.CreatedDateTime)) {
+        <tr>
+            <td>
+                <a href="@item.Path">@item.Title</a>
+            </td>
+        </tr>
+    }
+</table>
+@{
+    Layout = siteDataService.GetLayout();
+}
+

@@ -4,13 +4,13 @@ using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class LocationMigrator : PPLMigrator
+internal sealed class LocationMigratorPPL : PPLMigrator
 {
-    public LocationMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public LocationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
     {
     }
 
-    protected override string Name => "locations";
+    protected override string Name => "locations (ppl)";
     protected override async Task MigrateImpl()
     {
         await LocationCreator.CreateAsync(GetLocations(), _postgresConnection);
@@ -21,7 +21,7 @@ internal sealed class LocationMigrator : PPLMigrator
     {
         yield return new Location
         {
-            Id = 100001,
+            Id = 18,
             Street = "8010 S County Road 5 Suite 205",
             Additional = null,
             PostalCode = "80528",
@@ -30,7 +30,7 @@ internal sealed class LocationMigrator : PPLMigrator
             CountryId = await _nodeIdReader.ReadAsync(Constants.PPL, 3805),
             Latitude = decimal.Parse("40.47622551263952"),
             Longitude = decimal.Parse("-104.98063363798134"),
-            Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = 100001, LocatableId = await _nodeIdReader.ReadAsync(Constants.PPL, 105) } }
+            Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = 18, LocatableId = await _nodeIdReader.ReadAsync(Constants.PPL, 105) } }
         };
     }
     private static string? GetStreet(int id, string? street)

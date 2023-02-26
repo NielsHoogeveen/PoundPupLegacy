@@ -231,6 +231,11 @@ internal sealed class UserMigrator : PPLMigrator
             UserRoleId = 34,
             UserId = 1
         };
+        yield return new UserGroupUserRoleUser {
+            UserGroupId = Constants.ADULT_AFTERMATH,
+            UserRoleId = 41,
+            UserId = 1
+        };
     }
 
 

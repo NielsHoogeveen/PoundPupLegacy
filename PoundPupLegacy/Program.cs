@@ -51,6 +51,7 @@ public class Program
         builder.Services.AddTransient<ITextService, TextService>();
         builder.Services.AddTransient<ITopicSearchService, TopicSearchService>();
         builder.Services.AddTransient<ICongressionalDataService, CongressionalDataService>();
+        builder.Services.AddTransient<ISubgroupService, SubgroupService>();
         builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();

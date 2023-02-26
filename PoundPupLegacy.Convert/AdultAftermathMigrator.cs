@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
+﻿using System.Data;
 
 namespace PoundPupLegacy.Convert;
 internal sealed class AdultAftermathMigrator : PPLMigrator
@@ -47,18 +45,20 @@ internal sealed class AdultAftermathMigrator : PPLMigrator
 
         var sql = $"""
                 SELECT
-                n.nid,
-                case
-                	when STATUS = 0 then 2
-                	ELSE 1
-                END publication_status
-                FROM og
-                JOIN node_access na ON na.gid = og.nid
-                JOIN node n ON n.nid = na.nid
-                WHERE og.nid = 17146
-                AND n.`type` <> 'uprofile' AND n.`type` <> 'book_page'
-                and n.nid not in (48006, 49927, 50280, 35801)
-                and uid  <> 0
+                 n.nid,
+                 case
+                 	when STATUS = 0 then 0
+                 	when oa.is_public = true then 1
+                 	ELSE 2
+                 END publication_status
+                 FROM og
+                 JOIN node_access na ON na.gid = og.nid
+                 JOIN node n ON n.nid = na.nid
+                 JOIN og_ancestry oa ON oa.group_nid = og.nid AND oa.nid = n.nid
+                 WHERE og.nid = 17146
+                 AND n.`type` <> 'uprofile' AND n.`type` not in ('book_page', 'website', 'category_cat')
+                 and n.nid not in (48006, 49927, 50280)
+                 and uid  <> 0
                 """;
         using var command = MysqlConnection.CreateCommand();
         command.CommandType = CommandType.Text;

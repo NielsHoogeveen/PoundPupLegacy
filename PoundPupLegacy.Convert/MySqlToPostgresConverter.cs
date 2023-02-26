@@ -75,7 +75,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         //await (new FathersRightsViolationsCaseMigrator(this)).Migrate();
         //await (new WrongfulMedicationCaseMigrator(this)).Migrate();
         //await (new WrongfulRemovalCaseMigrator(this)).Migrate();
-        //await (new LocationMigrator(this)).Migrate();
+        //await (new LocationMigratorPPL(this)).Migrate();
         //await (new PageMigrator(this)).Migrate();
         //await (new ReviewMigrator(this)).Migrate();
         //await (new ActMigrator(this)).Migrate();
@@ -98,12 +98,13 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         //await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
         //await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
         //await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
+        await (new LocationMigratorCPCT(this)).Migrate();
         //await (new SearchableMigrator(this)).Migrate();
         //await (new CaseCaseRelationsMigrator(this)).Migrate();
         //await (new NodeFileMigratorPPL(this)).Migrate();
         //await (new NodeFileMigratorCPCT(this)).Migrate();
         //await (new CommentMigrator(this)).Migrate();
-        await (new AdultAftermathMigrator(this)).Migrate();
+        //await (new AdultAftermathMigrator(this)).Migrate();
         //await PrepareFiles();
     }
 
