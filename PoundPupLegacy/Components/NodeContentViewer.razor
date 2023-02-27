@@ -63,7 +63,10 @@
         @if (Model is Subdivision subdivision) {
             <SubdivisionViewer Model="subdivision"/>
         }
-        <FilesViewer Model="Model.Files"/>
+        @if (Model is GlobalRegion globalRegion) {
+            <GlobalRegionViewer Model="globalRegion" />
+        }
+        <FilesViewer Model="Model.Files" />
     </article>
     @if (Model.Tags.Any()) {
         <div class="tags">

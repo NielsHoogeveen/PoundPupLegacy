@@ -1,0 +1,13 @@
+﻿@using PoundPupLegacy.ViewModel;
+@if (Model is not null)
+{
+    
+    <SubTopicsViewer Model="@Model.SubTopics" />
+    <SuperTopicsViewer Model="@Model.SuperTopics" />
+    <DocumentsViewer Model="@Model.Documents" />
+}
+@code{
+    [Parameter]
+    public GlobalRegion? Model { get; set; }
+}
+

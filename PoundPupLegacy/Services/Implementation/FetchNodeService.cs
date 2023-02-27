@@ -91,6 +91,7 @@ internal class FetchNodeService : IFetchNodeService
             {INFORMAL_SUBDIVISION_DOCUMENT},
             {FORMAL_SUBDIVISION_DOCUMENT},
             {BASIC_COUNTRY_DOCUMENT},
+            {GLOBAL_REGION_DOCUMENT},
             {COUNTRY_AND_SUBDIVISION_DOCUMENT},
             {BINDING_COUNTRY_DOCUMENT},
             {BOUND_COUNTRY_DOCUMENT},
@@ -129,6 +130,8 @@ internal class FetchNodeService : IFetchNodeService
                 8 => reader.GetFieldValue<BasicNameable>(1),
                 9 => reader.GetFieldValue<BasicNameable>(1),
                 10 => reader.GetFieldValue<Document>(1),
+                11 => reader.GetFieldValue<GlobalRegion>(1),
+                12 => reader.GetFieldValue<GlobalRegion>(1),
                 13 => reader.GetFieldValue<BasicCountry>(1),
                 14 => reader.GetFieldValue<BoundCountry>(1),
                 15 => reader.GetFieldValue<CountryAndSubdivision>(1),
@@ -2727,6 +2730,49 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+    const string GLOBAL_REGION_DOCUMENT = """
+        global_region_document AS (
+            SELECT 
+                jsonb_build_object(
+                'Id', n.url_id,
+                'NodeTypeId', n.node_type_id,
+                'Title', n.title, 
+                'Description', n.description,
+                'HasBeenPublished', n.has_been_published,
+                'Authoring', jsonb_build_object(
+                    'Id', n.publisher_id, 
+                    'Name', n.publisher_name,
+                    'CreatedDateTime', n.created_date_time,
+                    'ChangedDateTime', n.changed_date_time
+                ),
+                'HasBeenPublished', n.has_been_published,
+                'BreadCrumElements', (SELECT document FROM global_region_bread_crum_document),
+                'Tags', (SELECT document FROM tags_document),
+                'CommentListItems', (SELECT document FROM  comments_document),
+                'Documents', (SELECT document from documents_document),
+                'SubTopics', (SELECT document from subtopics_document),
+                'SuperTopics', (SELECT document from supertopics_document),
+                'Files', (SELECT document FROM files_document)
+            ) document
+            FROM (
+                 SELECT
+                    an.url_id, 
+                    an.node_type_id,
+                    an.title, 
+                    an.created_date_time, 
+                    an.changed_date_time, 
+                    nm.description, 
+                    an.publisher_id, 
+                    p.name publisher_name,
+                    an.has_been_published
+                FROM authenticated_node an
+                join global_region tlc on tlc.id = an.node_id 
+                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
+                join nameable nm on nm.id = an.node_id
+                JOIN publisher p on p.id = an.publisher_id
+            ) n
+        ) 
+        """;
 
     const string BASIC_COUNTRY_DOCUMENT = """
         basic_country_document AS (
@@ -3956,6 +4002,8 @@ internal class FetchNodeService : IFetchNodeService
                     when an.node_type_id = 8 then (select document from basic_nameable_document)
                     when an.node_type_id = 9 then (select document from basic_nameable_document)
                     when an.node_type_id = 10 then (select document from document_document)
+                    when an.node_type_id = 11 then (select document from global_region_document)
+                    when an.node_type_id = 12 then (select document from global_region_document)
                     when an.node_type_id = 13 then (select document from basic_country_document)
                     when an.node_type_id = 14 then (select document from bound_country_document)
                     when an.node_type_id = 15 then (select document from country_and_subdivision_document)
