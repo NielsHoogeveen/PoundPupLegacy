@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using PoundPupLegacy.Models;
+using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.Services;
 using System.Diagnostics;
 using System.Security.Claims;

@@ -1,4 +1,4 @@
-namespace PoundPupLegacy.Models
+namespace PoundPupLegacy.ViewModel
 {
     public class ErrorViewModel
     {

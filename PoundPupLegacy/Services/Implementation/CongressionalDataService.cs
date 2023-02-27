@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Npgsql;
+﻿using Npgsql;
 using PoundPupLegacy.ViewModel;
 using System.Data;
 using System.Text.RegularExpressions;
 
 namespace PoundPupLegacy.Services.Implementation;
-public class CongressionalDataService: ICongressionalDataService 
+public partial class CongressionalDataService: ICongressionalDataService 
 {
 
     private enum ChamberType {
@@ -39,8 +38,7 @@ public class CongressionalDataService: ICongressionalDataService
         if(_httpContextAccessor.HttpContext is null)
             return null;
         var path = _httpContextAccessor.HttpContext.Request.Path;
-        Regex regex = new Regex(REGEX);
-        var match = regex.Match(path);
+        var match = MatchIfCongressionalMeetingChamber().Match(path);
         if (!match.Success) 
         {
             return null;
@@ -118,6 +116,12 @@ public class CongressionalDataService: ICongressionalDataService
 
 
     private const string REGEX = "united_states_(senate|house_of_representatives)_([0-9]+)(th|st|nd|rd)_congress";
+
+    [GeneratedRegex(
+        @"united_states_(senate|house_of_representatives)_([0-9]+)(th|st|nd|rd)_congress",
+        RegexOptions.CultureInvariant,
+        matchTimeoutMilliseconds: 1000)]
+    private static partial Regex MatchIfCongressionalMeetingChamber();
 
     private const string CONGRESS_SQL = """
         select
