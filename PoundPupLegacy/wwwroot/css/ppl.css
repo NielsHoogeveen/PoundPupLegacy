@@ -5,7 +5,8 @@
     --nav-border-color: #808080;
     --footer-bg-color: #2c2c2c;
     --breadcrum-bg-color: #9aaddf;
-    --term-bg-color: grey;
+    --term-bg-color: #d8e0f3;
+    --term-bg-color-selected: #c5d0ed;
     --watermark-color: #999;
 }
 
@@ -410,7 +411,7 @@ img {
 }
 
 .term-name:has(input:checked) {
-    background-color: white; 
+    background-color: var(--term-bg-color-selected); 
 }
 
 .term-name label{
