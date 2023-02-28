@@ -108,10 +108,10 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         await PrepareFiles();
     }
 
-    internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=niels;database=ppl";
-    internal const string ConnectionStringMariaDbCPCT = "server=localhost;userid=root;Password=niels;database=cpct";
+    internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=root;database=ppl";
+    internal const string ConnectionStringMariaDbCPCT = "server=localhost;userid=root;Password=root;database=cpct";
 
-    internal const string ConnectStringPostgresql = "Host=localhost;Username=postgres;Password=niels;Database=ppl;Include Error Detail=True";
+    internal const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
 
     public static async Task<MySqlToPostgresConverter> GetInstance()
     {
