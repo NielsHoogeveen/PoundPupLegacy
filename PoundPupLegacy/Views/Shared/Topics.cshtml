@@ -1,0 +1,69 @@
+﻿@using PoundPupLegacy.Services;
+@using PoundPupLegacy.ViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Topics
+@inject ISiteDataService siteDataService
+<div class="articles">
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/home">home</a>
+        </span>
+    </div>
+    <form>
+        <select name="search_option">
+            @if (Model.SelectedSearchOption == SearchOption.Contains)
+            {
+                <option value="contains" selected>contains</option>
+            }
+            else
+            {
+                <option value="contains">contains</option>
+            }
+            @if (Model.SelectedSearchOption == SearchOption.IsEqualTo)
+            {
+                <option value="is_equal_to" selected>is equal to</option>
+            }
+            else
+            {
+                <option value="is_equal_to">is equal to</option>
+            }
+            @if (Model.SelectedSearchOption == SearchOption.StartsWith)
+            {
+                <option value="starts_with" selected>starts with</option>
+            }
+            else
+            {
+                <option value="starts_with">starts with</option>
+            }
+            @if (Model.SelectedSearchOption == SearchOption.EndsWith)
+            {
+
+                <option value="ends_with" selected>ends with</option>
+            }
+            else
+            {
+                <option value="ends_with">ends with</option>
+            }
+        </select>
+        <input type="text" name="search" value="@Model.SearchTerm"/>
+        <input type="submit" value="Search" />
+    </form>
+    @if (Model.Entries.Any())
+    {
+        @foreach (var organization in Model.Entries)
+        {
+            <div>
+                <a href="@organization.Path">@organization.Title</a>
+            </div>
+        }
+        <partial name="~/Views/Shared/_PagedList.cshtml" model="@Model" />
+    }
+    else
+    {
+        <p>No organizations were found</p>
+    
+    }
+</div>
+@{
+    Layout = siteDataService.GetLayout();
+}

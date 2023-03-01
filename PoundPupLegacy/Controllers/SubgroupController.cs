@@ -4,12 +4,12 @@ using PoundPupLegacy.Services;
 namespace PoundPupLegacy.Controllers;
 
 [Route("subgroup")]
-public class SubgroupConroller : Controller
+public class SubgroupController : Controller
 {
     const int NUMBER_OF_ENTRIES = 150;
 
     private readonly ISubgroupService _subgroupService;
-    public SubgroupConroller(ISubgroupService subgroupService)
+    public SubgroupController(ISubgroupService subgroupService)
     {
         _subgroupService = subgroupService; 
     }
