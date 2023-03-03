@@ -87,6 +87,18 @@ internal class SiteDataService : ISiteDataService
         _data = data;
     }
 
+    public async Task RefreshTenants()
+    {
+        var data = new Data {
+            Tenants = await LoadTenantsAsync(),
+            UserMenus = _data.UserMenus,
+            UserTenantActions = _data.UserTenantActions,
+            UserTenantEditActions = _data.UserTenantEditActions,
+        };
+        _data = data;
+
+    }
+
     public string? GetUrlPathForId(int tenantId, int urlId)
     {
         var tenant = _data.Tenants.Find(x => x.Id == tenantId);
@@ -185,13 +197,13 @@ internal class SiteDataService : ISiteDataService
             using (var readCommand = _connection.CreateCommand())
             {
                 var sql = $"""
-            select
-            tn.tenant_id,
-            tn.url_id,
-            tn.url_path
-            from tenant_node tn 
-            where tn.url_path is not null
-            """;
+                    select
+                    tn.tenant_id,
+                    tn.url_id,
+                    tn.url_path
+                    from tenant_node tn 
+                    where tn.url_path is not null
+                    """;
                 readCommand.CommandType = CommandType.Text;
                 readCommand.CommandTimeout = 300;
                 readCommand.CommandText = sql;

@@ -30,6 +30,18 @@ internal sealed class AccessRolePrivilegeMigrator : PPLMigrator
             AccessRoleId = 4,
             ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(37)
         };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 42,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(35)
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 42,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(36)
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 42,
+            ActionId = await _createNodeActionIdReaderByNodeTypeId.ReadAsync(37)
+        };
 
         yield return new AccessRolePrivilege
         {

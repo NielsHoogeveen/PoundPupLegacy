@@ -2,10 +2,10 @@
 
 public interface Node
 {
-    public int NodeId { get; init; }
-
-    public int UrlId { get; init; }
-
-    public string Title { get; set; }
-    public List<Tag> Tags { get; init;  }
+    int NodeId { get; }
+    int UrlId { get; }
+    string Title { get; }
+    List<Tag> Tags { get;  }
+    List<Tenant> Tenants { get; }
+    List<TenantNode> TenantNodes { get; }
 }

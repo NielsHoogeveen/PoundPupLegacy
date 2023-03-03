@@ -1,0 +1,158 @@
+﻿@using PoundPupLegacy.EditModel;
+@using PoundPupLegacy.Services;
+@inject ILogger<TenantNodesEditor> logger;
+@inject NavigationManager navigationManager;
+
+@if (Node is not null)
+{
+    <div style="display: grid; grid-template-columns: 1fr 10fr 10fr 10fr 10fr;">
+    @foreach(var tenant in Node.Tenants) {
+        if(tenant.TenantNode is not null && !tenant.TenantNode.HasBeenDeleted)
+        {
+            <input type="checkbox" checked @onclick="() => Uncheck(tenant.Id)"/>
+            <div>@tenant.DomainName</div>
+            <div>
+                <input type="text" @bind-value="tenant.TenantNode!.UrlPath"/>
+            </div>
+            <div>
+                <select @onchange="(e) => OnSelectPublicationStatus(tenant.Id, e)">
+                @foreach(var option in new List<(int, string)> {(0, "unpublished"), (1, "published"), (2, "private") }) 
+                {
+                    @if(tenant.TenantNode.PublicationStatusId == option.Item1) 
+                    {
+                        <option selected value="@option.Item1">@option.Item2</option>
+                    }
+                    else
+                    {
+                        <option value="@option.Item1">@option.Item2</option>
+                    }
+                }
+                </select>
+            </div>
+            <div>
+                @if (tenant.Subgroups.Any()) 
+                {
+                    <select @onchange="(e) => OnSelectSubgroup(tenant.Id, e)">
+                    @if (tenant.AllowAccess) 
+                    {
+                        <option value=""></option>
+                    }
+                        
+                    @foreach(var subgroup in tenant.Subgroups) 
+                    {
+                        @if(subgroup.Id == tenant.TenantNode!.SubgroupId) 
+                        {
+                            <option selected value="@subgroup.Id">@subgroup.Name</option>
+                        }else
+                        {
+                            <option value="@subgroup.Id">@subgroup.Name</option>
+                        }
+                    }
+                    </select>
+                }
+            </div>
+        }
+        else 
+        {
+            <input type="checkbox" @onclick="() => Check(tenant.Id)" />
+            <div>@tenant.DomainName</div>
+            <div></div>
+            <div></div>
+            <div></div>
+        }
+    }
+    </div>
+}
+@code {
+
+        [Parameter]
+        public Node Node { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        foreach(var tenant in Node!.Tenants) 
+        {
+            var tenantNode = Node.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+            tenant.TenantNode = tenantNode;
+        }
+    }
+
+    private void Uncheck(int tenantId)
+    {
+        if(Node is not null)
+        {
+            var tenant = Node.Tenants.First(x => x.Id == tenantId);
+            if(tenant.TenantNode is null) {
+                throw new NullReferenceException("Tenant Node should not be null");
+            }
+            if (tenant.TenantNode.Id.HasValue) {
+                tenant.TenantNode.HasBeenDeleted = true;
+            }
+            else {
+                tenant.TenantNode = null;
+            }
+            StateHasChanged();
+        }
+
+    }
+    private void Check(int tenantId)
+    {
+        if (Node is not null) {
+            var tenant = Node.Tenants.First(x => x.Id == tenantId);
+            if (tenant.TenantNode is not null && tenant.TenantNode.Id.HasValue) {
+                tenant.TenantNode.HasBeenDeleted = false;
+            }
+            else {
+                tenant.TenantNode = new TenantNode {
+                    Id = null,
+                    TenantId = tenantId,
+                    HasBeenDeleted = false,
+                    NodeId = Node.NodeId,
+                    UrlId = Node.NodeId,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    SubgroupId = null
+                };
+            }
+            StateHasChanged();
+        }
+
+    }
+    private void SetSubgroup(int tenantId, int? subgroupId)
+    {
+        if (Node is not null)
+        {
+            var tenant = Node.Tenants.First(x => x.Id == tenantId);
+            if(tenant.TenantNode is not null) {
+                tenant.TenantNode.SubgroupId = subgroupId;
+            }
+            StateHasChanged();
+        }
+    }
+    private void SetPublicationStatus(int tenantId, int publicationStatusId)
+    {
+        if (Node is not null) {
+            var tenant = Node.Tenants.First(x => x.Id == tenantId);
+            if (tenant.TenantNode is not null) {
+                tenant.TenantNode.PublicationStatusId = publicationStatusId;
+            }
+            StateHasChanged();
+        }
+    }
+    void OnSelectSubgroup(int tenantId, ChangeEventArgs e)
+    {
+        if(int.TryParse(e.Value!.ToString(), out int subgroupId)){
+            SetSubgroup(tenantId, subgroupId);
+        }
+        else {
+            SetSubgroup(tenantId, null);
+        }
+
+    }
+    void OnSelectPublicationStatus(int tenantId, ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value!.ToString(), out int publicationStatusId)) {
+            SetPublicationStatus(tenantId, publicationStatusId);
+        }
+    }
+}

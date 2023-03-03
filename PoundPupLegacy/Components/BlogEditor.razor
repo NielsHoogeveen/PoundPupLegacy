@@ -32,27 +32,110 @@
             UrlToPostImage=@url>
         </CKEditor>
         <Tags Elems="@blogPost.Tags" NodeId="@blogPost.NodeId"/>
+        <TenantNodesEditor  Node="@blogPost" />
         <button type="submit">Submit</button>
     </EditForm>
 }
 @code {
-    BlogPost? blogPost;
+        BlogPost? blogPost;
 
 
-    [Parameter]
-    public int Id { get; set; }
+        [Parameter]
+        public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         blogPost = await editorService.GetBlogPost(Id);
+        foreach(var tenant in blogPost!.Tenants) 
+        {
+            var tenantNode = blogPost.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+            tenant.TenantNode = tenantNode;
+        }
     }
 
     private async Task HandleSubmit()
     {
         logger.LogInformation(blogPost!.ToString());
         await editorService.Save(blogPost);
-        await JSRuntime.InvokeVoidAsync("location.reload");
-
+        await JSRuntime.InvokeVoidAsync("reloadNode", blogPost.UrlId);
     }
 
+    private void Uncheck(int tenantId)
+    {
+        if(blogPost is not null)
+        {
+            var tenant = blogPost.Tenants.First(x => x.Id == tenantId);
+            if(tenant.TenantNode is null) {
+                throw new NullReferenceException("Tenant node should not be null");
+            }
+            if (tenant.TenantNode.Id.HasValue) {
+                tenant.TenantNode.HasBeenDeleted = true;
+            }
+            else {
+                tenant.TenantNode = null;
+            }
+            StateHasChanged();
+        }
+
+    }
+    private void Check(int tenantId)
+    {
+        if (blogPost is not null) {
+            var tenant = blogPost.Tenants.First(x => x.Id == tenantId);
+            if (tenant.TenantNode is not null && tenant.TenantNode.Id.HasValue) {
+                tenant.TenantNode.HasBeenDeleted = false;
+            }
+            else {
+                tenant.TenantNode = new TenantNode {
+                    Id = null,
+                    TenantId = tenantId,
+                    HasBeenDeleted = false,
+                    NodeId = blogPost.NodeId,
+                    UrlId = blogPost.NodeId,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    SubgroupId = null
+                };
+            }
+            StateHasChanged();
+        }
+
+    }
+    private void SetSubgroup(int tenantId, int? subgroupId)
+    {
+        if (blogPost is not null)
+        {
+            var tenant = blogPost.Tenants.First(x => x.Id == tenantId);
+            if(tenant.TenantNode is not null) {
+                tenant.TenantNode.SubgroupId = subgroupId;
+            }
+            StateHasChanged();
+        }
+    }
+    private void SetPublicationStatus(int tenantId, int publicationStatusId)
+    {
+        if (blogPost is not null) {
+            var tenant = blogPost.Tenants.First(x => x.Id == tenantId);
+            if (tenant.TenantNode is not null) {
+                tenant.TenantNode.PublicationStatusId = publicationStatusId;
+            }
+            StateHasChanged();
+        }
+    }
+    void OnSelectSubgroup(int tenantId, ChangeEventArgs e)
+    {
+        if(int.TryParse(e.Value!.ToString(), out int subgroupId)){
+            SetSubgroup(tenantId, subgroupId);
+        }
+        else {
+            SetSubgroup(tenantId, null);
+        }
+
+    }
+    void OnSelectPublicationStatus(int tenantId, ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value!.ToString(), out int publicationStatusId)) {
+            SetPublicationStatus(tenantId, publicationStatusId);
+        }
+    }
 }

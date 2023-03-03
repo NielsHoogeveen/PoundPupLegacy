@@ -29,5 +29,7 @@
 function initMap() {
 
 }
-
+function reloadNode(id) {
+    window.location = '/node/' + id;
+}
 

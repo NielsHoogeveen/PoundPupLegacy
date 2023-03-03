@@ -13,5 +13,5 @@ public interface ISiteDataService
     int? GetIdForUrlPath();
     IEnumerable<Link> GetMenuItemsForUser();
     string GetLayout();
-
+    Task RefreshTenants();
 }
