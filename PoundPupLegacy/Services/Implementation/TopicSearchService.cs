@@ -1,6 +1,6 @@
 ﻿using Npgsql;
-using System.Data;
 using PoundPupLegacy.EditModel;
+using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -23,8 +23,7 @@ public class TopicSearchService : ITopicSearchService
         await semaphore.WaitAsync(TimeSpan.FromMilliseconds(100));
         await _connection.OpenAsync();
         List<Tag> tags = new();
-        try
-        {
+        try {
             var sql = """
                 select
                 distinct
@@ -56,21 +55,18 @@ public class TopicSearchService : ITopicSearchService
             readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
             readCommand.Parameters["search_string"].Value = $"%{str}%";
             await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                tags.Add(new Tag 
-                { 
-                    Name = reader.GetString(1), 
-                    NodeId = nodeId, 
-                    TermId = reader.GetInt32(0), 
-                    HasBeenDeleted = false, 
+            while (await reader.ReadAsync()) {
+                tags.Add(new Tag {
+                    Name = reader.GetString(1),
+                    NodeId = nodeId,
+                    TermId = reader.GetInt32(0),
+                    HasBeenDeleted = false,
                     IsStored = false,
                 });
             }
             return tags;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
             semaphore.Release();
         }

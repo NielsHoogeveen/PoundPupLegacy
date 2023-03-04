@@ -83,8 +83,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : CPCTMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
 
             var id = reader.GetInt32("id");
@@ -105,10 +104,8 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : CPCTMigrator
                     UrlId = id
                 }
             };
-            if (organizationFromPublicationStatusId == 1 && organizationToPublicationStatusId == 1)
-            {
-                tenantNodes.Add(new TenantNode
-                {
+            if (organizationFromPublicationStatusId == 1 && organizationToPublicationStatusId == 1) {
+                tenantNodes.Add(new TenantNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -119,8 +116,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : CPCTMigrator
                 });
             }
 
-            yield return new InterOrganizationalRelation
-            {
+            yield return new InterOrganizationalRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

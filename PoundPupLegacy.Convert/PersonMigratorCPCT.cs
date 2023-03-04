@@ -41,14 +41,12 @@ internal sealed class PersonMigratorCPCT : CPCTMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
 
 
-            yield return new Person
-            {
+            yield return new Person {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

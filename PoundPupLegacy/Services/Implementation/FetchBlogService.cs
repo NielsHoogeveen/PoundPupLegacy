@@ -20,8 +20,7 @@ internal class FetchBlogService : IFetchBlogService
 
     public async Task<Blog> FetchBlog(int publisherId, int startIndex, int length)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             WITH 
@@ -57,8 +56,7 @@ internal class FetchBlogService : IFetchBlogService
             await reader.ReadAsync();
             var blog = reader.GetFieldValue<Blog>(0);
             var c = _renderer.GetFromView("/Pages/_ExcecutiveCompensations.cshtml", new List<ExecutiveCompensation>());
-            var entries = blog.BlogPostTeasers.Select(x => new BlogPostTeaser
-            {
+            var entries = blog.BlogPostTeasers.Select(x => new BlogPostTeaser {
                 Id = x.Id,
                 Authoring = x.Authoring,
                 Title = x.Title,
@@ -68,15 +66,13 @@ internal class FetchBlogService : IFetchBlogService
             blog.BlogPostTeasers = entries.ToList();
             return blog!;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }
     private static string MakeName(string name)
     {
-        if (name.EndsWith("s"))
-        {
+        if (name.EndsWith("s")) {
             return $"{name}' blog";
         }
         return $"{name}'s blog";

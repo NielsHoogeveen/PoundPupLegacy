@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public class BasicPollQuestion: PollQuestion
+public class BasicPollQuestion : PollQuestion
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

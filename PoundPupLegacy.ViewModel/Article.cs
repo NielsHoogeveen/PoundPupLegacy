@@ -11,27 +11,22 @@ public record Article : SimpleTextNode
     public required bool HasBeenPublished { get; init; }
 
     private Link[]? tags;
-    public required Link[] Tags
-    {
+    public required Link[] Tags {
         get => tags is null ? Array.Empty<Link>() : tags;
         init => tags = value;
     }
 
     private Link[]? seeAlsoBoxElements;
-    public required Link[] SeeAlsoBoxElements
-    {
+    public required Link[] SeeAlsoBoxElements {
         get => seeAlsoBoxElements is null ? Array.Empty<Link>() : seeAlsoBoxElements;
         init => seeAlsoBoxElements = value;
     }
 
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems
-    {
+    public CommentListItem[] CommentListItems {
         get => commentListItems;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 commentListItems = value;
             }
         }
@@ -40,13 +35,10 @@ public record Article : SimpleTextNode
     public Comment[] Comments => this.GetComments();
     public required Link[] BreadCrumElements { get; init; }
     private File[] _files = Array.Empty<File>();
-    public required File[] Files
-    {
+    public required File[] Files {
         get => _files;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _files = value;
             }
         }

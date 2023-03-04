@@ -19,8 +19,7 @@ public class SenateBillCreator : IEntityCreator<SenateBill>
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
 
-        await foreach (var senateBill in senateBills)
-        {
+        await foreach (var senateBill in senateBills) {
             await nodeWriter.WriteAsync(senateBill);
             await searchableWriter.WriteAsync(senateBill);
             await nameableWriter.WriteAsync(senateBill);
@@ -29,8 +28,7 @@ public class SenateBillCreator : IEntityCreator<SenateBill>
             await senateBillWriter.WriteAsync(senateBill);
             await EntityCreator.WriteTerms(senateBill, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
 
-            foreach (var tenantNode in senateBill.TenantNodes)
-            {
+            foreach (var tenantNode in senateBill.TenantNodes) {
                 tenantNode.NodeId = senateBill.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

@@ -21,8 +21,7 @@ public class DeportationCaseCreator : IEntityCreator<DeportationCase>
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
 
-        await foreach (var deportationCase in deportationCases)
-        {
+        await foreach (var deportationCase in deportationCases) {
             await nodeWriter.WriteAsync(deportationCase);
             await searchableWriter.WriteAsync(deportationCase);
             await documentableWriter.WriteAsync(deportationCase);
@@ -31,8 +30,7 @@ public class DeportationCaseCreator : IEntityCreator<DeportationCase>
             await caseWriter.WriteAsync(deportationCase);
             await deportationCaseWriter.WriteAsync(deportationCase);
             await EntityCreator.WriteTerms(deportationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in deportationCase.TenantNodes)
-            {
+            foreach (var tenantNode in deportationCase.TenantNodes) {
                 tenantNode.NodeId = deportationCase.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

@@ -40,12 +40,10 @@ internal sealed class BlogPostMigrator : PPLMigrator
 
 
         var reader = await readCommand.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var text = ReplacePHPCode(id, reader.GetString("text"));
-            var discussion = new BlogPost
-            {
+            var discussion = new BlogPost {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
@@ -79,22 +77,19 @@ internal sealed class BlogPostMigrator : PPLMigrator
 
     private static string ReplacePHPCode(int id, string text)
     {
-        List<string> codeSections = id switch
-        {
+        List<string> codeSections = id switch {
             38035 => new List<string> { "ExecutiveCompensations" },
             38888 => new List<string> { "CongressionalSupport" },
             41136 => new List<string> { "HagueFacilitation" },
             45514 => new List<string> { "AbuseTotal", "AbusePerCountry", "AbuseMap", "AbusePerState", },
             _ => new List<string>()
         };
-        if (codeSections.Count == 0)
-        {
+        if (codeSections.Count == 0) {
             return text;
         }
         var end = 0;
         List<string> parts = new List<string>();
-        foreach (var (codeSection, index) in codeSections.Select((c, i) => (c, i)))
-        {
+        foreach (var (codeSection, index) in codeSections.Select((c, i) => (c, i))) {
             var rem = text.Substring(end);
             var start = text.IndexOf("<?php", end);
             var p = text.Substring(end, start - end);

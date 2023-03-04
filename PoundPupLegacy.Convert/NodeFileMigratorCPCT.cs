@@ -1,6 +1,6 @@
 ﻿using PoundPupLegacy.Db;
-using System.Data;
 using PoundPupLegacy.Model;
+using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
@@ -37,11 +37,9 @@ internal sealed class NodeFileMigratorCPCT : CPCTMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
-            yield return new NodeFile
-            {
+            yield return new NodeFile {
                 NodeId = await _nodeIdReader.ReadAsync(Constants.CPCT, reader.GetInt32("nid")),
                 FileId = await GetFileId(reader.GetInt32("fid")),
             };
@@ -52,8 +50,7 @@ internal sealed class NodeFileMigratorCPCT : CPCTMigrator
 
     private async Task<int> GetFileId(int fid)
     {
-        (int tenantId, int fileId) = fid switch
-        {
+        (int tenantId, int fileId) = fid switch {
             1200 => (Constants.PPL, 1293),
             1214 => (Constants.PPL, 1242),
             1265 => (Constants.PPL, 1793),

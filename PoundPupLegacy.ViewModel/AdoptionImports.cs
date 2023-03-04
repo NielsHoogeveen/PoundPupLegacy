@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PoundPupLegacy.ViewModel;
+﻿namespace PoundPupLegacy.ViewModel;
 
 public record AdoptionImports
 {

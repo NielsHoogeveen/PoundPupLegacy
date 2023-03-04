@@ -31,8 +31,7 @@ public sealed class FileIdReaderByTenantFileId : DatabaseUpdater<Term>, IDatabas
         _command.Parameters["tenant_file_id"].Value = TenantFileId;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
             var id = reader.GetInt32("file_id");
             await reader.CloseAsync();

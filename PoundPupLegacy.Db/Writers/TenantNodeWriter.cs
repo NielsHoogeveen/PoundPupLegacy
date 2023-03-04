@@ -54,8 +54,7 @@ internal sealed class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWr
 
     internal override async Task WriteAsync(TenantNode tenantNode)
     {
-        if (tenantNode.Id != null)
-        {
+        if (tenantNode.Id != null) {
             throw new Exception($"Id of tenant node needs to be null");
         }
         WriteValue(tenantNode.TenantId, TENANT_ID);
@@ -64,8 +63,7 @@ internal sealed class TenantNodeWriter : DatabaseWriter<TenantNode>, IDatabaseWr
         WriteValue(tenantNode.NodeId, NODE_ID);
         WriteNullableValue(tenantNode.SubgroupId, SUBGROUP_ID);
         WriteValue(tenantNode.PublicationStatusId, PUBLICATION_STATUS_ID);
-        tenantNode.Id = await _command.ExecuteScalarAsync() switch
-        {
+        tenantNode.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("No id was generated for tenant node")
         };

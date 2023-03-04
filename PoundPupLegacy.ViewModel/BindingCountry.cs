@@ -12,13 +12,10 @@ public record BindingCountry : TopLevelCountry
     public required Link GlobalRegion { get; init; }
 
     private Link[] boundCountries = Array.Empty<Link>();
-    public required Link[] BoundCountries
-    {
+    public required Link[] BoundCountries {
         get => boundCountries;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 boundCountries = value;
             }
 
@@ -26,13 +23,10 @@ public record BindingCountry : TopLevelCountry
     }
 
     private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags
-    {
+    public required Link[] Tags {
         get => tags;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 tags = value;
             }
 
@@ -40,56 +34,44 @@ public record BindingCountry : TopLevelCountry
     }
 
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems
-    {
+    public CommentListItem[] CommentListItems {
         get => commentListItems;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 commentListItems = value;
             }
         }
     }
 
     public Comment[] Comments => this.GetComments(); public required Link[] BreadCrumElements { get; init; }
-    
+
     public required AdoptionImports AdoptionImports { get; init; }
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
-    public required DocumentListItem[] Documents
-    {
+    public required DocumentListItem[] Documents {
         get => documents;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 documents = value;
             }
         }
     }
 
     private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics
-    {
+    public required Link[] SubTopics {
         get => subTopics;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 subTopics = value;
             }
         }
     }
 
     private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics
-    {
+    public required Link[] SuperTopics {
         get => superTopics;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 superTopics = value;
             }
         }
@@ -113,13 +95,10 @@ public record BindingCountry : TopLevelCountry
         }
     }
     private File[] _files = Array.Empty<File>();
-    public required File[] Files
-    {
+    public required File[] Files {
         get => _files;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _files = value;
             }
         }

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace PoundPupLegacy.Controllers;
 
@@ -8,11 +6,10 @@ namespace PoundPupLegacy.Controllers;
 public class ImageController : Controller
 {
     [HttpPost("upload")]
-    public  async Task<IActionResult> Upload()
+    public async Task<IActionResult> Upload()
     {
         await Task.CompletedTask;
-        return new ContentResult
-        {
+        return new ContentResult {
             Content = @$"{{""url"": ""https://{HttpContext.Request.Host}/files/userimages/image/abondened-child.png""}}",
             ContentType = "text/json"
         };

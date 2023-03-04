@@ -18,44 +18,38 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
 
     private static string? GetStreet(int id, string? street)
     {
-        return id switch
-        {
+        return id switch {
             _ => street
         };
     }
     private static string? GetAdditional(int id, string? additional)
     {
-        return id switch
-        {
+        return id switch {
             _ => additional
         };
     }
     private static string? GetPostalCode(int id, string? postalCode)
     {
-        return id switch
-        {
+        return id switch {
             _ => postalCode
         };
     }
 
     private static decimal? GetLatitude(int id, decimal? longitude)
     {
-        return id switch
-        {
+        return id switch {
             _ => longitude
         };
     }
     private static decimal? GetLongitude(int id, decimal? lattitude)
     {
-        return id switch
-        {
+        return id switch {
             _ => lattitude
         };
     }
     private static string? GetCity(int id, string? city)
     {
-        return id switch
-        {
+        return id switch {
             2914 => "Den Haag",
             2916 => "Den Haag",
             2924 => "Den Haag",
@@ -82,18 +76,15 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
 
     private async Task<int?> GetSubdivisionId(int id, int? stateId, int? countryId, string? code)
     {
-        if (countryId is null)
-        {
+        if (countryId is null) {
             return null;
         }
 
         var res = await GetSubdivisionId(id, stateId);
-        if (res != null)
-        {
+        if (res != null) {
             return res;
         }
-        var stateCode = code switch
-        {
+        var stateCode = code switch {
             "HK-HWC" => null,
             "HK-HCW" => null,
             "HK-KYT" => null,
@@ -121,8 +112,7 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
             "VN-HC" => "VN-SG",
             _ => code
         };
-        if (stateCode == null)
-        {
+        if (stateCode == null) {
             return null;
         }
         return await _subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
@@ -131,10 +121,8 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
 
     private async Task<int?> GetSubdivisionId(int id, int? stateId)
     {
-        if (stateId == null)
-        {
-            var stateCode = id switch
-            {
+        if (stateId == null) {
+            var stateCode = id switch {
                 2941 => "AU-QLD",
                 2954 => "AU-NSW",
                 2856 => "RU-SPE",
@@ -259,41 +247,33 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
                 2803 => "CA-BC",
                 _ => null
             };
-            if (stateCode == null)
-            {
+            if (stateCode == null) {
                 return null;
             }
             return await _subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
         }
-        else
-        {
-            var ret = id switch
-            {
+        else {
+            var ret = id switch {
                 _ => stateId
             };
-            if (ret == null)
-            {
+            if (ret == null) {
                 return null;
             }
-            else
-            {
+            else {
                 return await _nodeIdReader.ReadAsync(Constants.PPL, (int)ret);
             }
         }
     }
     private async Task<int?> GetCountryId(int id, int? countryId)
     {
-        var ret = id switch
-        {
+        var ret = id switch {
             2945 => 4017,
             _ => countryId
         };
-        if (ret == null)
-        {
+        if (ret == null) {
             return null;
         }
-        else
-        {
+        else {
             return await _nodeIdReader.ReadAsync(Constants.PPL, (int)ret!);
         }
     }
@@ -338,8 +318,7 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var renamedId = id + 4175 - 2790;
             int? subDivisionId = reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id");
@@ -347,8 +326,7 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
             int? countryId = reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id");
             var (urlId, tenantId) = GetUrlIdAndTenant(reader.GetInt32("node_id"));
             var locatableId = await _nodeIdReader.ReadAsync(tenantId, urlId);
-            yield return new Location
-            {
+            yield return new Location {
                 Id = renamedId,
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),

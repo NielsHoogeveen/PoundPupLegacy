@@ -3,17 +3,15 @@
 public record Organizations : PagedList<BasicListEntry>
 {
     private BasicListEntry[] _entries = Array.Empty<BasicListEntry>();
-    public required BasicListEntry[] Entries { 
+    public required BasicListEntry[] Entries {
         get => _entries;
-        init
-        {
-            if(value is not null)
-            {
+        init {
+            if (value is not null) {
                 _entries = value;
             }
-        } 
+        }
     }
-    
+
     public int NumberOfEntries { get; set; }
     public int PageNumber { get; set; }
     public int NumberOfPages { get; set; }

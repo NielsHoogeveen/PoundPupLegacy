@@ -31,8 +31,7 @@ internal sealed class DeleteNodeActionWriter : DatabaseWriter<DeleteNodeAction>,
 
     internal override async Task WriteAsync(DeleteNodeAction deleteNodeAccessPrivilege)
     {
-        if (!deleteNodeAccessPrivilege.Id.HasValue)
-        {
+        if (!deleteNodeAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();
         }
         WriteValue(deleteNodeAccessPrivilege.Id.Value, ID);

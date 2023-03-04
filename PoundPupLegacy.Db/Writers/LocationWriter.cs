@@ -55,8 +55,7 @@ internal sealed class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter
         var commandWithId = await CreateInsertStatementAsync(
             connection,
             "location",
-            columnDefitions.ToImmutableList().Prepend(new ColumnDefinition
-            {
+            columnDefitions.ToImmutableList().Prepend(new ColumnDefinition {
                 Name = ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
@@ -80,8 +79,7 @@ internal sealed class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter
 
     internal override async Task WriteAsync(Location location)
     {
-        if (location.Id is null)
-        {
+        if (location.Id is null) {
             WriteNullableValue(location.Street, STREET, _identityCommand);
             WriteNullableValue(location.Additional, ADDITIONAL, _identityCommand);
             WriteNullableValue(location.City, CITY, _identityCommand);
@@ -92,8 +90,7 @@ internal sealed class LocationWriter : DatabaseWriter<Location>, IDatabaseWriter
             WriteNullableValue(location.Longitude, LONGITUDE, _identityCommand);
             location.Id = await _command.ExecuteNonQueryAsync();
         }
-        else
-        {
+        else {
             WriteValue(location.Id, ID);
             WriteNullableValue(location.Street, STREET);
             WriteNullableValue(location.Additional, ADDITIONAL);

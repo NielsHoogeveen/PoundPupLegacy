@@ -22,8 +22,7 @@ public class InformalIntermediateLevelSubdivisionCreator : IEntityCreator<Inform
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var subdivision in subdivisions)
-        {
+        await foreach (var subdivision in subdivisions) {
             await nodeWriter.WriteAsync(subdivision);
             await searchableWriter.WriteAsync(subdivision);
             await documentableWriter.WriteAsync(subdivision);
@@ -34,8 +33,7 @@ public class InformalIntermediateLevelSubdivisionCreator : IEntityCreator<Inform
             await intermediateLevelSubdivisionWriter.WriteAsync(subdivision);
             await formalIntermediateLevelSubdivisionWriter.WriteAsync(subdivision);
             await EntityCreator.WriteTerms(subdivision, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in subdivision.TenantNodes)
-            {
+            foreach (var tenantNode in subdivision.TenantNodes) {
                 tenantNode.NodeId = subdivision.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

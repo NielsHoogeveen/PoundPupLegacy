@@ -14,8 +14,7 @@ public class ContentSharingGroupCreator : IEntityCreator<ContentSharingGroup>
         await using var administratorRoleWriter = await AdministratorRoleWriter.CreateAsync(connection);
 
 
-        await foreach (var contentSharingGroup in contentSharingGroups)
-        {
+        await foreach (var contentSharingGroup in contentSharingGroups) {
             await userGroupWriter.WriteAsync(contentSharingGroup);
             await ownerWriter.WriteAsync(contentSharingGroup);
             await contentSharingGroupWriter.WriteAsync(contentSharingGroup);

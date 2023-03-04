@@ -28,8 +28,7 @@ public class NodeController : Controller
         stopwatch.Start();
         var tenantId = _siteDataService.GetTenantId();
         var urlPath = _siteDataService.GetUrlPathForId(tenantId, id);
-        if (urlPath is not null)
-        {
+        if (urlPath is not null) {
             return Redirect($"/{urlPath}");
         }
         var result = await _nodeCacheService.GetResult(id);

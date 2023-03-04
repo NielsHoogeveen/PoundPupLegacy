@@ -136,15 +136,13 @@ internal sealed class TermHierarchyMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var nodeIdChild = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id_child"));
             var nodeIdParent = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id_parent"));
             var termIdChild = await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, nodeIdChild);
             var termIdParent = await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, nodeIdParent);
 
-            yield return new TermHierarchy
-            {
+            yield return new TermHierarchy {
 
                 TermIdChild = termIdChild.Id!.Value,
                 TermIdPartent = termIdParent.Id!.Value,

@@ -40,8 +40,7 @@ internal sealed class BillActionTypeMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
@@ -56,8 +55,7 @@ internal sealed class BillActionTypeMigrator : PPLMigrator
                 }
             };
 
-            yield return new BillActionType
-            {
+            yield return new BillActionType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

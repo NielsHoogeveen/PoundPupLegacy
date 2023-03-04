@@ -11,14 +11,12 @@ public class BlogPostCreator : IEntityCreator<BlogPost>
         await using var blogPostWriter = await BlogPostWriter.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var blogPost in blogPosts)
-        {
+        await foreach (var blogPost in blogPosts) {
             await nodeWriter.WriteAsync(blogPost);
             await searchableWriter.WriteAsync(blogPost);
             await simpleTextNodeWriter.WriteAsync(blogPost);
             await blogPostWriter.WriteAsync(blogPost);
-            foreach (var tenantNode in blogPost.TenantNodes)
-            {
+            foreach (var tenantNode in blogPost.TenantNodes) {
                 tenantNode.NodeId = blogPost.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

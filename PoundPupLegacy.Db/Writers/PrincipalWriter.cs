@@ -19,8 +19,7 @@ public class PrincipalWriter : DatabaseWriter<Principal>, IDatabaseWriter<Princi
             connection,
             "principal",
             columnDefinitions.ToImmutableList().Add(
-                new ColumnDefinition
-                {
+                new ColumnDefinition {
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
@@ -37,15 +36,12 @@ public class PrincipalWriter : DatabaseWriter<Principal>, IDatabaseWriter<Princi
 
     internal override async Task WriteAsync(Principal principal)
     {
-        if (principal.Id is not null)
-        {
+        if (principal.Id is not null) {
             WriteValue(principal.Id, ID);
             await _command.ExecuteNonQueryAsync();
         }
-        else
-        {
-            principal.Id = await _command.ExecuteScalarAsync() switch
-            {
+        else {
+            principal.Id = await _command.ExecuteScalarAsync() switch {
                 int i => i,
                 _ => throw new Exception("Insert of principal does not return an id.")
             };

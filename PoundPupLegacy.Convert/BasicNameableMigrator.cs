@@ -90,8 +90,7 @@ internal sealed class BasicNameableMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName>
@@ -105,8 +104,7 @@ internal sealed class BasicNameableMigrator : PPLMigrator
                     }
                 };
 
-            yield return new BasicNameable
-            {
+            yield return new BasicNameable {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

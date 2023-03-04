@@ -7,8 +7,7 @@ public class PollStatusCreator : IEntityCreator<PollStatus>
 
         await using var pollStatusWriter = await PollStatusWriter.CreateAsync(connection);
 
-        await foreach (var pollStatus in pollStatuss)
-        {
+        await foreach (var pollStatus in pollStatuss) {
             await pollStatusWriter.WriteAsync(pollStatus);
         }
     }

@@ -31,14 +31,12 @@ internal sealed class CasePartiesWriter : DatabaseWriter<CaseParties>, IDatabase
 
     internal override async Task WriteAsync(CaseParties caseParties)
     {
-        if(caseParties.Id.HasValue)
-        {
+        if (caseParties.Id.HasValue) {
             throw new Exception($"case parties id should be null upon creation");
         }
         WriteNullableValue(caseParties.Organizations, ORGANIZATIONS);
         WriteNullableValue(caseParties.Persons, PERSONS);
-        caseParties.Id = await _command.ExecuteScalarAsync() switch
-        {
+        caseParties.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("Insert of case parties does not return an id.")
         };

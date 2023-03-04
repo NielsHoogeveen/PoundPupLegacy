@@ -15,26 +15,22 @@ internal sealed class UserMigrator : PPLMigrator
     private static async IAsyncEnumerable<AccessRole> GetAccessRoles()
     {
         await Task.CompletedTask;
-        yield return new AccessRole
-        {
+        yield return new AccessRole {
             Id = 4,
             Name = "Member",
             UserGroupId = Constants.PPL,
         };
-        yield return new AccessRole
-        {
+        yield return new AccessRole {
             Id = 11,
             Name = "Editor",
             UserGroupId = Constants.PPL,
         };
-        yield return new AccessRole
-        {
+        yield return new AccessRole {
             Id = 16,
             Name = "Member",
             UserGroupId = Constants.CPCT,
         };
-        yield return new AccessRole
-        {
+        yield return new AccessRole {
             Id = 18,
             Name = "Editor",
             UserGroupId = Constants.CPCT,
@@ -53,39 +49,34 @@ internal sealed class UserMigrator : PPLMigrator
     private static async IAsyncEnumerable<Tenant> GetTenants()
     {
         await Task.CompletedTask;
-        yield return new Tenant
-        {
+        yield return new Tenant {
             Id = Constants.PPL,
             DomainName = "poundpuplegacy.org",
             Name = "Pound Pup Legacy",
             Description = "",
             VocabularyIdTagging = null,
-            AccessRoleNotLoggedIn = new AccessRole
-            {
+            AccessRoleNotLoggedIn = new AccessRole {
                 Id = 12,
                 Name = "Everyone",
                 UserGroupId = null,
             },
-            AdministratorRole = new AdministratorRole
-            {
+            AdministratorRole = new AdministratorRole {
                 Id = 6,
                 UserGroupId = null,
             }
         };
-        yield return new Tenant
-        {
+        yield return new Tenant {
             Id = Constants.CPCT,
             DomainName = "cpctresearch.info",
             Name = "CPCT Research",
             Description = "",
             VocabularyIdTagging = null,
-            AccessRoleNotLoggedIn = new AccessRole
-            {                Id = 13,
+            AccessRoleNotLoggedIn = new AccessRole {
+                Id = 13,
                 Name = "Everyone",
                 UserGroupId = null,
             },
-            AdministratorRole = new AdministratorRole
-            {
+            AdministratorRole = new AdministratorRole {
                 Id = 19,
                 UserGroupId = null,
             }
@@ -95,29 +86,25 @@ internal sealed class UserMigrator : PPLMigrator
     private static async IAsyncEnumerable<ContentSharingGroup> GetContentSharingGroups()
     {
         await Task.CompletedTask;
-        yield return new ContentSharingGroup
-        {
+        yield return new ContentSharingGroup {
             Id = Constants.OWNER_GEOGRAPHY,
             Name = "Geographical Entities",
             Description = "",
             AdministratorRole = new AdministratorRole { Id = 29, UserGroupId = null }
         };
-        yield return new ContentSharingGroup
-        {
+        yield return new ContentSharingGroup {
             Id = Constants.OWNER_PARTIES,
             Name = "Parties",
             Description = "",
             AdministratorRole = new AdministratorRole { Id = 31, UserGroupId = null }
         };
-        yield return new ContentSharingGroup
-        {
+        yield return new ContentSharingGroup {
             Id = Constants.OWNER_CASES,
             Name = "Cases",
             Description = "",
             AdministratorRole = new AdministratorRole { Id = 33, UserGroupId = null }
         };
-        yield return new ContentSharingGroup
-        {
+        yield return new ContentSharingGroup {
             Id = Constants.OWNER_DOCUMENTATION,
             Name = "Documentation",
             Description = "",
@@ -128,8 +115,7 @@ internal sealed class UserMigrator : PPLMigrator
     private static async IAsyncEnumerable<Collective> GetCollectives()
     {
         await Task.CompletedTask;
-        yield return new Collective
-        {
+        yield return new Collective {
             Id = 72,
             Name = "Kerry and Niels"
         };
@@ -137,13 +123,11 @@ internal sealed class UserMigrator : PPLMigrator
     private static async IAsyncEnumerable<CollectiveUser> GetCollectiveUsers()
     {
         await Task.CompletedTask;
-        yield return new CollectiveUser
-        {
+        yield return new CollectiveUser {
             CollectiveId = 72,
             UserId = 2
         };
-        yield return new CollectiveUser
-        {
+        yield return new CollectiveUser {
             CollectiveId = 72,
             UserId = 3
         };
@@ -164,69 +148,58 @@ internal sealed class UserMigrator : PPLMigrator
     private static async IAsyncEnumerable<UserGroupUserRoleUser> GetUserGroupUserRoleUsers()
     {
         await Task.CompletedTask;
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = 0,
             UserRoleId = 21,
             UserId = 1
         };
 
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.PPL,
             UserRoleId = 6,
             UserId = 1
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.PPL,
             UserRoleId = 6,
             UserId = 3
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.PPL,
             UserRoleId = 11,
             UserId = 2
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.CPCT,
             UserRoleId = 19,
             UserId = 1
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.CPCT,
             UserRoleId = 19,
             UserId = 131
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.CPCT,
             UserRoleId = 18,
             UserId = 2
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.OWNER_GEOGRAPHY,
             UserRoleId = 29,
             UserId = 1
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.OWNER_PARTIES,
             UserRoleId = 31,
             UserId = 1
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.OWNER_CASES,
             UserRoleId = 33,
             UserId = 1
         };
-        yield return new UserGroupUserRoleUser
-        {
+        yield return new UserGroupUserRoleUser {
             UserGroupId = Constants.OWNER_DOCUMENTATION,
             UserRoleId = 34,
             UserId = 1
@@ -314,14 +287,12 @@ internal sealed class UserMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (reader.Read())
-        {
+        while (reader.Read()) {
             var aboutMe = reader.IsDBNull("about_me") ? null : reader.GetString("about_me") == "" ? null : reader.GetString("about_me");
             var animalWithing = reader.IsDBNull("animal_within") ? null : reader.GetString("animal_within") == "" ? null : reader.GetString("animal_within");
             var relationToChildPlacement = reader.IsDBNull("relation_to_child_placement") ? "Other" : reader.GetString("relation_to_child_placement");
             var avatar = reader.IsDBNull("avatar") ? null : reader.GetString("avatar") == "" ? null : reader.GetString("avatar");
-            yield return new User
-            {
+            yield return new User {
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("name"),
                 CreatedDateTime = reader.GetDateTime("created"),

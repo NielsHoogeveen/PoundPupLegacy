@@ -31,8 +31,7 @@ public class CountryAndFirstAndSecondLevelSubdivisionCreator : IEntityCreator<Co
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
 
-        await foreach (var country in countries)
-        {
+        await foreach (var country in countries) {
             await nodeWriter.WriteAsync(country);
             await searchableWriter.WriteAsync(country);
             await documentableWriter.WriteAsync(country);
@@ -51,8 +50,7 @@ public class CountryAndFirstAndSecondLevelSubdivisionCreator : IEntityCreator<Co
             await firstAndSecondLevelSubdivisionWriter.WriteAsync(country);
             await countryAndFirstAndSecondLevelSubdivisionWriter.WriteAsync(country);
             await EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in country.TenantNodes)
-            {
+            foreach (var tenantNode in country.TenantNodes) {
                 tenantNode.NodeId = country.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

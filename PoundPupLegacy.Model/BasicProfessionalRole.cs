@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record BasicProfessionalRole: ProfessionalRole
+public record BasicProfessionalRole : ProfessionalRole
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

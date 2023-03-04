@@ -1,7 +1,6 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
-using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert;
 
@@ -71,8 +70,7 @@ internal sealed class ProfessionMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
@@ -87,10 +85,8 @@ internal sealed class ProfessionMigrator : PPLMigrator
                     ParentNames = new List<string>(),
                 }
             };
-            if (topicName != null)
-            {
-                vocabularyNames.Add(new VocabularyName
-                {
+            if (topicName != null) {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -98,8 +94,7 @@ internal sealed class ProfessionMigrator : PPLMigrator
                 });
             }
 
-            yield return new Profession
-            {
+            yield return new Profession {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -137,8 +132,7 @@ internal sealed class ProfessionMigrator : PPLMigrator
             };
         }
         reader.Close();
-        yield return new Profession
-        {
+        yield return new Profession {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -184,8 +178,7 @@ internal sealed class ProfessionMigrator : PPLMigrator
             HasConcreteSubtype = true,
 
         };
-        yield return new Profession
-        {
+        yield return new Profession {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,

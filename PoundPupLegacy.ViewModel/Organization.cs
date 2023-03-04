@@ -9,26 +9,20 @@ public record Organization : Nameable, Documentable, Locatable
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
     private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags
-    {
+    public required Link[] Tags {
         get => tags;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 tags = value;
             }
 
         }
     }
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems
-    {
+    public CommentListItem[] CommentListItems {
         get => commentListItems;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 commentListItems = value;
             }
         }
@@ -38,13 +32,10 @@ public record Organization : Nameable, Documentable, Locatable
     public required Link[] BreadCrumElements { get; init; }
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
-    public required DocumentListItem[] Documents
-    {
+    public required DocumentListItem[] Documents {
         get => documents;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 documents = value;
             }
         }
@@ -55,111 +46,85 @@ public record Organization : Nameable, Documentable, Locatable
     public required DateTime? Established { get; init; }
     public required DateTime? Terminated { get; init; }
     private Link[] organizationTypes = Array.Empty<Link>();
-    public required Link[] OrganizationTypes
-    {
+    public required Link[] OrganizationTypes {
         get => organizationTypes;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 organizationTypes = value;
             }
         }
     }
 
     private Location[] _locations = Array.Empty<Location>();
-    public required Location[] Locations { 
-        get => _locations; 
-        init
-        {
-            if(value is not null)
-            {
+    public required Location[] Locations {
+        get => _locations;
+        init {
+            if (value is not null) {
                 _locations = value;
             }
         }
     }
 
     private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics
-    {
+    public required Link[] SubTopics {
         get => subTopics;
-        init
-        {
-            if (value is not null)
-            {
-                subTopics= value;
+        init {
+            if (value is not null) {
+                subTopics = value;
             }
         }
     }
 
     private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics
-    {
+    public required Link[] SuperTopics {
         get => superTopics;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 superTopics = value;
             }
         }
     }
     private InterOrganizationalRelation[] interOrganizationalRelations = Array.Empty<InterOrganizationalRelation>();
-    public required InterOrganizationalRelation[] InterOrganizationalRelations
-    {
+    public required InterOrganizationalRelation[] InterOrganizationalRelations {
         get => interOrganizationalRelations;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 interOrganizationalRelations = value;
             }
         }
     }
     private PartyCaseType[] partyCaseTypes = Array.Empty<PartyCaseType>();
-    public required PartyCaseType[] PartyCaseTypes
-    {
+    public required PartyCaseType[] PartyCaseTypes {
         get => partyCaseTypes;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 partyCaseTypes = value;
             }
         }
     }
     private PersonOrganizationRelation[] personOrganizationRelations = Array.Empty<PersonOrganizationRelation>();
-    public required PersonOrganizationRelation[] PersonOrganizationRelations
-    {
+    public required PersonOrganizationRelation[] PersonOrganizationRelations {
         get => personOrganizationRelations;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 personOrganizationRelations = value;
             }
         }
     }
     private PartyPoliticalEntityRelation[] partyPoliticalEntityRelations = Array.Empty<PartyPoliticalEntityRelation>();
-    public required PartyPoliticalEntityRelation[] PartyPoliticalEntityRelations
-    {
+    public required PartyPoliticalEntityRelation[] PartyPoliticalEntityRelations {
         get => partyPoliticalEntityRelations;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 partyPoliticalEntityRelations = value;
             }
         }
     }
     private File[] _files = Array.Empty<File>();
-    public required File[] Files
-    {
+    public required File[] Files {
         get => _files;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _files = value;
             }
         }

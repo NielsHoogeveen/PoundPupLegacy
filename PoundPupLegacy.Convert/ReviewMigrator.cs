@@ -41,11 +41,9 @@ internal sealed class ReviewMigrator : PPLMigrator
         var reader = await readCommand.ExecuteReaderAsync();
 
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            yield return new BlogPost
-            {
+            yield return new BlogPost {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

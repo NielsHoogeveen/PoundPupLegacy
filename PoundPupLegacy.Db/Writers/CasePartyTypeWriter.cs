@@ -26,8 +26,7 @@ internal sealed class CasePartyTypeWriter : DatabaseWriter<CasePartyType>, IData
 
     internal override async Task WriteAsync(CasePartyType casePartyType)
     {
-        if(casePartyType.Id is null)
-        {
+        if (casePartyType.Id is null) {
             throw new ArgumentNullException(nameof(casePartyType));
         }
         WriteValue(casePartyType.Id, ID);

@@ -19,8 +19,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
 
     private async IAsyncEnumerable<Location> GetLocations()
     {
-        yield return new Location
-        {
+        yield return new Location {
             Id = 18,
             Street = "8010 S County Road 5 Suite 205",
             Additional = null,
@@ -35,8 +34,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
     }
     private static string? GetStreet(int id, string? street)
     {
-        return id switch
-        {
+        return id switch {
             1420 => "1511 Fredericksburg Rd",
             1137 => "38 Place du Commerce",
             2641 => "1a avenida “A” 2-44",
@@ -54,8 +52,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
     }
     private static string? GetAdditional(int id, string? additional)
     {
-        return id switch
-        {
+        return id switch {
             1137 => "porte # 11-616",
             2366 => "Villa Hermosa neighborhood",
             735 => "Colonia Centro, Centro, Cuauhtémoc",
@@ -68,8 +65,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
     }
     private static string? GetPostalCode(int id, string? postalCode)
     {
-        return id switch
-        {
+        return id switch {
             1420 => "78201",
             1137 => "H3E 1T8",
             735 => "06000",
@@ -81,8 +77,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
 
     private static decimal? GetLatitude(int id, decimal? longitude)
     {
-        return id switch
-        {
+        return id switch {
             1420 => decimal.Parse("29.474257243949754"),
             2699 => decimal.Parse("9.905252"),
             735 => decimal.Parse("19.433611"),
@@ -93,8 +88,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
     }
     private static decimal? GetLongitude(int id, decimal? lattitude)
     {
-        return id switch
-        {
+        return id switch {
             1420 => decimal.Parse("-98.51049867541713"),
             2699 => decimal.Parse("-84.620304"),
             735 => decimal.Parse("-99.144167"),
@@ -105,8 +99,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
     }
     private static string? GetCity(int id, string? city)
     {
-        return id switch
-        {
+        return id switch {
             2527 => null,
             231 => "Morristown",
             3937 => "Westville",
@@ -299,18 +292,15 @@ internal sealed class LocationMigratorPPL : PPLMigrator
 
     private async Task<int?> GetSubdivisionId(int id, int? stateId, int? countryId, string? code)
     {
-        if (countryId is null)
-        {
+        if (countryId is null) {
             return null;
         }
 
         var res = await GetSubdivisionId(id, stateId);
-        if (res != null)
-        {
+        if (res != null) {
             return res;
         }
-        var stateCode = code switch
-        {
+        var stateCode = code switch {
             "HK-HWC" => null,
             "HK-HCW" => null,
             "HK-KYT" => null,
@@ -338,8 +328,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             "VN-HC" => "VN-SG",
             _ => code
         };
-        if (stateCode == null)
-        {
+        if (stateCode == null) {
             return null;
         }
         return await _subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
@@ -348,10 +337,8 @@ internal sealed class LocationMigratorPPL : PPLMigrator
 
     private async Task<int?> GetSubdivisionId(int id, int? stateId)
     {
-        if (stateId == null)
-        {
-            var stateCode = id switch
-            {
+        if (stateId == null) {
+            var stateCode = id switch {
                 1071 => "DO-01",
                 4170 => "DO-30",
                 1479 => "CO-DC",
@@ -1261,16 +1248,13 @@ internal sealed class LocationMigratorPPL : PPLMigrator
                 816 => "CH-VD",
                 _ => null
             };
-            if (stateCode == null)
-            {
+            if (stateCode == null) {
                 return null;
             }
             return await _subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
         }
-        else
-        {
-            var ret = id switch
-            {
+        else {
+            var ret = id switch {
                 262 => 2954,
                 1065 => 2954,
                 296 => 2967,
@@ -1283,20 +1267,17 @@ internal sealed class LocationMigratorPPL : PPLMigrator
                 2527 => null,
                 _ => stateId
             };
-            if (ret == null)
-            {
+            if (ret == null) {
                 return null;
             }
-            else
-            {
+            else {
                 return await _nodeIdReader.ReadAsync(Constants.PPL, (int)ret);
             }
         }
     }
     private async Task<int?> GetCountryId(int id, int? countryId)
     {
-        var ret = id switch
-        {
+        var ret = id switch {
             664 => 4048,
             1428 => 3909,
             2019 => 3904,
@@ -1305,12 +1286,10 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             2262 => 3996,
             _ => countryId
         };
-        if (ret == null)
-        {
+        if (ret == null) {
             return null;
         }
-        else
-        {
+        else {
             return await _nodeIdReader.ReadAsync(Constants.PPL, (int)ret!);
         }
     }
@@ -1354,15 +1333,13 @@ internal sealed class LocationMigratorPPL : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             int? subDivisionId = reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id");
             string? code = reader.IsDBNull("subdivision_code") ? null : reader.GetString("subdivision_code").Replace("UK-", "GB-");
             int? countryId = reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id");
             var locatableId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id"));
-            yield return new Location
-            {
+            yield return new Location {
                 Id = id,
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),

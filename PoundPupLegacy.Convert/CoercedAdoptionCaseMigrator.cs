@@ -98,14 +98,12 @@ internal sealed class CoercedAdoptionCaseMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName>();
 
-            if (!reader.IsDBNull("topic_name"))
-            {
+            if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");
                 var topicParentNames = reader.IsDBNull("topic_parent_names") ?
                     new List<string>() : reader.GetString("topic_parent_names")
@@ -113,8 +111,7 @@ internal sealed class CoercedAdoptionCaseMigrator : PPLMigrator
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
 
-                vocabularyNames.Add(new VocabularyName
-                {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -122,8 +119,7 @@ internal sealed class CoercedAdoptionCaseMigrator : PPLMigrator
                 });
             }
 
-            var country = new CoercedAdoptionCase
-            {
+            var country = new CoercedAdoptionCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

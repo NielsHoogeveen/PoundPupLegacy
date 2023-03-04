@@ -11,7 +11,7 @@ public class SubgroupController : Controller
     private readonly ISubgroupService _subgroupService;
     public SubgroupController(ISubgroupService subgroupService)
     {
-        _subgroupService = subgroupService; 
+        _subgroupService = subgroupService;
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> Index(int id)
@@ -27,9 +27,9 @@ public class SubgroupController : Controller
         }
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
         var page = await _subgroupService.GetSubGroupPagedList(id, NUMBER_OF_ENTRIES, startIndex);
-        if(page == null) {
+        if (page == null) {
             return NotFound();
-       }
+        }
         return View("Subgroup", page);
     }
 }

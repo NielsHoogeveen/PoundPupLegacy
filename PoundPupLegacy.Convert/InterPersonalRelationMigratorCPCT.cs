@@ -73,8 +73,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : CPCTMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
 
             var id = reader.GetInt32("id");
@@ -96,10 +95,8 @@ internal sealed class InterPersonalRelationMigratorCPCT : CPCTMigrator
                     UrlId = id
                 }
             };
-            if (personFromPublicationStatusId == 1 && personToPublicationStatusId == 1)
-            {
-                tenantNodes.Add(new TenantNode
-                {
+            if (personFromPublicationStatusId == 1 && personToPublicationStatusId == 1) {
+                tenantNodes.Add(new TenantNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -109,8 +106,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : CPCTMigrator
                     UrlId = null
                 });
             }
-            yield return new InterPersonalRelation
-            {
+            yield return new InterPersonalRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

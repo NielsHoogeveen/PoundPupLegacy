@@ -97,10 +97,8 @@ internal sealed class SubdivisionTypeMigrator : PPLMigrator
             "Urban municipality",
         };
 
-        foreach (var name in names)
-        {
-            yield return new SubdivisionType
-            {
+        foreach (var name in names) {
+            yield return new SubdivisionType {
                 Id = null,
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,

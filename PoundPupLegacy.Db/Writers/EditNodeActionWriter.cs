@@ -31,8 +31,7 @@ internal sealed class EditNodeActionWriter : DatabaseWriter<EditNodeAction>, IDa
 
     internal override async Task WriteAsync(EditNodeAction editNodeAccessPrivilege)
     {
-        if (!editNodeAccessPrivilege.Id.HasValue)
-        {
+        if (!editNodeAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();
         }
         WriteValue(editNodeAccessPrivilege.Id.Value, ID);

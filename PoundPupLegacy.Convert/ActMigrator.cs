@@ -20,8 +20,7 @@ internal sealed class ActMigrator : PPLMigrator
 
     private DateTime? GetEnactmentDate(int id)
     {
-        return id switch
-        {
+        return id switch {
             39091 => DateTime.Parse("2000-10-06"),
             _ => null
         };
@@ -106,15 +105,13 @@ internal sealed class ActMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
             var vocabularyNames = new List<VocabularyName>();
 
             var id = reader.GetInt32("id");
 
-            if (!reader.IsDBNull("topic_name"))
-            {
+            if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");
                 var topicParentNames = reader.IsDBNull("topic_parent_names") ?
                     new List<string>() : reader.GetString("topic_parent_names")
@@ -122,8 +119,7 @@ internal sealed class ActMigrator : PPLMigrator
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
 
-                vocabularyNames.Add(new VocabularyName
-                {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -131,8 +127,7 @@ internal sealed class ActMigrator : PPLMigrator
                 });
             }
 
-            yield return new Act
-            {
+            yield return new Act {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

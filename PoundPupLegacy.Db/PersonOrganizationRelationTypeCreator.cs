@@ -17,15 +17,13 @@ public class PersonOrganizationRelationTypeCreator : IEntityCreator<PersonOrgani
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var personOrganizationRelationType in personOrganizationRelationTypes)
-        {
+        await foreach (var personOrganizationRelationType in personOrganizationRelationTypes) {
             await nodeWriter.WriteAsync(personOrganizationRelationType);
             await searchableWriter.WriteAsync(personOrganizationRelationType);
             await nameableWriter.WriteAsync(personOrganizationRelationType);
             await personOrganizationRelationTypeWriter.WriteAsync(personOrganizationRelationType);
             await EntityCreator.WriteTerms(personOrganizationRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in personOrganizationRelationType.TenantNodes)
-            {
+            foreach (var tenantNode in personOrganizationRelationType.TenantNodes) {
                 tenantNode.NodeId = personOrganizationRelationType.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

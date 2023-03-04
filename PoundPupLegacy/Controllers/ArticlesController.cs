@@ -27,13 +27,10 @@ public class ArticlesController : Controller
 
     private IEnumerable<int> GetTermIds(IEnumerable<string> values)
     {
-        foreach (var term in values)
-        {
-            if (term.StartsWith(TERM_NAME_PREFIX))
-            {
+        foreach (var term in values) {
+            if (term.StartsWith(TERM_NAME_PREFIX)) {
                 var remainder = term.Substring(TERM_NAME_PREFIX.Length);
-                if (int.TryParse(remainder, out int termId))
-                {
+                if (int.TryParse(remainder, out int termId)) {
                     yield return termId;
                 }
             }
@@ -43,18 +40,15 @@ public class ArticlesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess())
-        {
+        if (!_siteDataService.HasAccess()) {
             return NotFound();
         }
         var pageNumber = 1;
 
         var query = this.HttpContext.Request.Query;
         var pageValue = query["page"];
-        if (!string.IsNullOrEmpty(pageValue))
-        {
-            if (int.TryParse(pageValue, out int providedPageNumber))
-            {
+        if (!string.IsNullOrEmpty(pageValue)) {
+            if (int.TryParse(pageValue, out int providedPageNumber)) {
                 pageNumber = providedPageNumber;
             }
         }

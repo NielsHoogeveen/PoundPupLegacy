@@ -14,13 +14,10 @@ public record class SingleQuestionPoll : Poll, PollQuestion
     public required DateTime? DateTimeClosure { get; init; }
 
     private PollOption[] pollOptions = Array.Empty<PollOption>();
-    public PollOption[] PollOptions
-    {
+    public PollOption[] PollOptions {
         get => pollOptions;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 pollOptions = value;
             }
 
@@ -28,40 +25,31 @@ public record class SingleQuestionPoll : Poll, PollQuestion
     }
 
     private Link[] tags = Array.Empty<Link>();
-    public Link[] Tags
-    {
+    public Link[] Tags {
         get => tags;
-        init
-        {
-            if(value is not null)
-            {
+        init {
+            if (value is not null) {
                 tags = value;
             }
-            
+
         }
     }
 
     private Link[] seeAlsoBoxElements = Array.Empty<Link>();
-    public Link[] SeeAlsoBoxElements
-    {
+    public Link[] SeeAlsoBoxElements {
         get => seeAlsoBoxElements;
-        init 
-        {
-                if (value is not null)
-                {
-                    seeAlsoBoxElements = value;
-                }
+        init {
+            if (value is not null) {
+                seeAlsoBoxElements = value;
+            }
         }
     }
 
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems
-    {
+    public CommentListItem[] CommentListItems {
         get => commentListItems;
-        init
-        {
-            if(value is not null)
-            {
+        init {
+            if (value is not null) {
                 commentListItems = value;
             }
         }
@@ -72,13 +60,10 @@ public record class SingleQuestionPoll : Poll, PollQuestion
     public required Link[] BreadCrumElements { get; init; }
 
     private File[] _files = Array.Empty<File>();
-    public required File[] Files
-    {
+    public required File[] Files {
         get => _files;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _files = value;
             }
         }

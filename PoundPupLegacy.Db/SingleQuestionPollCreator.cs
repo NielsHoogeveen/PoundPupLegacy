@@ -15,26 +15,22 @@ public class SingleQuestionPollCreator : IEntityCreator<SingleQuestionPoll>
         await using var pollOptionWriter = await PollOptionWriter.CreateAsync(connection);
         await using var pollVoteWriter = await PollVoteWriter.CreateAsync(connection);
 
-        await foreach (var poll in polls)
-        {
+        await foreach (var poll in polls) {
             await nodeWriter.WriteAsync(poll);
             await searchableWriter.WriteAsync(poll);
             await simpleTextNodeWriter.WriteAsync(poll);
             await pollWriter.WriteAsync(poll);
             await pollQuestionWriter.WriteAsync(poll);
             await singleQuestionPollWriter.WriteAsync(poll);
-            foreach (var tenantNode in poll.TenantNodes)
-            {
+            foreach (var tenantNode in poll.TenantNodes) {
                 tenantNode.NodeId = poll.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }
-            foreach(var pollOption in poll.PollOptions)
-            {
+            foreach (var pollOption in poll.PollOptions) {
                 pollOption.PollQuestionId = poll.Id;
                 await pollOptionWriter.WriteAsync(pollOption);
             }
-            foreach (var pollVote in poll.PollVotes)
-            {
+            foreach (var pollVote in poll.PollVotes) {
                 pollVote.PollId = poll.Id;
                 await pollVoteWriter.WriteAsync(pollVote);
             }

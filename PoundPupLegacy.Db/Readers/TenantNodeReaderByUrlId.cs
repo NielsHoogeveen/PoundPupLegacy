@@ -41,11 +41,9 @@ public sealed class TenantNodeReaderByUrlId : DatabaseUpdater<Term>, IDatabaseRe
         _command.Parameters["url_id"].Value = urlId;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
-            var tenantNode = new TenantNode
-            {
+            var tenantNode = new TenantNode {
                 Id = reader.GetInt32("id"),
                 TenantId = reader.GetInt32("tenant_id"),
                 UrlId = reader.GetInt32("url_id"),
@@ -57,8 +55,7 @@ public sealed class TenantNodeReaderByUrlId : DatabaseUpdater<Term>, IDatabaseRe
             await reader.CloseAsync();
             return tenantNode;
         }
-        else
-        {
+        else {
             await reader.CloseAsync();
             return null;
         }

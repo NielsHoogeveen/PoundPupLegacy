@@ -12,14 +12,12 @@ public class DiscussionCreator : IEntityCreator<Discussion>
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
 
-        await foreach (var discussion in discussions)
-        {
+        await foreach (var discussion in discussions) {
             await nodeWriter.WriteAsync(discussion);
             await searchableWriter.WriteAsync(discussion);
             await simpleTextNodeWriter.WriteAsync(discussion);
             await discussionWriter.WriteAsync(discussion);
-            foreach (var tenantNode in discussion.TenantNodes)
-            {
+            foreach (var tenantNode in discussion.TenantNodes) {
                 tenantNode.NodeId = discussion.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

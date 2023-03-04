@@ -1,7 +1,7 @@
 ﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Model;
 using System.Data;
 using File = PoundPupLegacy.Model.File;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;
 
@@ -54,12 +54,10 @@ internal sealed class FileMigratorCPCT : CPCTMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            
-            yield return new File
-            {
+
+            yield return new File {
                 Id = null,
                 Path = GetPath(id, reader.GetString("path")),
                 Name = GetName(id, reader.GetString("name")),
@@ -86,8 +84,7 @@ internal sealed class FileMigratorCPCT : CPCTMigrator
     }
     private string GetName(int id, string name)
     {
-        return id switch
-        {
+        return id switch {
             3913 => "Günther Verheugen 25-9-2017.pdf",
             2084 => "Panţîru%2C_Maria-Cristina.pdf",
             _ => name
@@ -95,8 +92,7 @@ internal sealed class FileMigratorCPCT : CPCTMigrator
     }
     private string GetPath(int id, string path)
     {
-        return id switch
-        {
+        return id switch {
             3913 => "files/Günther Verheugen 25-9-2017.pdf",
             2084 => "files/Panţîru%2C_Maria-Cristina.pdf",
             _ => path

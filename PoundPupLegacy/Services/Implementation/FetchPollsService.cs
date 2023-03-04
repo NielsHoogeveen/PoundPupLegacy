@@ -19,8 +19,7 @@ internal class FetchPollsService : IFetchPollsService
     public async Task<Polls> GetPolls(int limit, int offset)
     {
         await _connection.OpenAsync();
-        try
-        {
+        try {
             var sql = $"""
                 select
                     jsonb_build_object(
@@ -120,8 +119,7 @@ internal class FetchPollsService : IFetchPollsService
             var organizations = reader.GetFieldValue<Polls>(0);
             return organizations;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

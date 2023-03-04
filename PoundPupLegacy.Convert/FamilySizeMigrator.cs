@@ -13,8 +13,7 @@ internal sealed class FamilySizeMigrator : PPLMigrator
     private static async IAsyncEnumerable<FamilySize> GetFamilySizes()
     {
         await Task.CompletedTask;
-        yield return new FamilySize
-        {
+        yield return new FamilySize {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -58,8 +57,7 @@ internal sealed class FamilySizeMigrator : PPLMigrator
                     },
                 },
         };
-        yield return new FamilySize
-        {
+        yield return new FamilySize {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -103,8 +101,7 @@ internal sealed class FamilySizeMigrator : PPLMigrator
                     },
                 },
         };
-        yield return new FamilySize
-        {
+        yield return new FamilySize {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -148,8 +145,7 @@ internal sealed class FamilySizeMigrator : PPLMigrator
                     },
                 },
         };
-        yield return new FamilySize
-        {
+        yield return new FamilySize {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,

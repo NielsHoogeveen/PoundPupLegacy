@@ -17,15 +17,13 @@ public class DenominationCreator : IEntityCreator<Denomination>
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var denomination in denominations)
-        {
+        await foreach (var denomination in denominations) {
             await nodeWriter.WriteAsync(denomination);
             await searchableWriter.WriteAsync(denomination);
             await nameableWriter.WriteAsync(denomination);
             await denominationWriter.WriteAsync(denomination);
             await EntityCreator.WriteTerms(denomination, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in denomination.TenantNodes)
-            {
+            foreach (var tenantNode in denomination.TenantNodes) {
                 tenantNode.NodeId = denomination.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

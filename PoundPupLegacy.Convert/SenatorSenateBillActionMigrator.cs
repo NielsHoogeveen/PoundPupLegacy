@@ -57,8 +57,7 @@ internal sealed class SenatorSenateBillActionMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
 
             var id = reader.GetInt32("id");
@@ -67,8 +66,7 @@ internal sealed class SenatorSenateBillActionMigrator : PPLMigrator
             int billId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("bill_id"));
             int billActionTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
 
-            yield return new SenatorSenateBillAction
-            {
+            yield return new SenatorSenateBillAction {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

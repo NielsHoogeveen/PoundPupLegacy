@@ -19,8 +19,7 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
 
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(IEnumerable<int> documentableIds)
     {
-        foreach (var urlId in documentableIds)
-        {
+        foreach (var urlId in documentableIds) {
             yield return await GetNodeId(urlId);
         }
     }
@@ -85,8 +84,7 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
         var reader = await readCommand.ExecuteReaderAsync();
 
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") ? null : reader.GetString("publication_date"));
             var id = reader.GetInt32("id");
             var text = reader.GetString("text");
@@ -117,10 +115,8 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
                     }
                 };
 
-            if (documentable.All(x => x.Item2 == 1) && !text.ToLower().Contains("arun dohle") && !text.ToLower().Contains("roelie post") && !text.ToLower().Contains("againstchildtrafficking.org"))
-            {
-                tenantNodes.Add(new TenantNode
-                {
+            if (documentable.All(x => x.Item2 == 1) && !text.ToLower().Contains("arun dohle") && !text.ToLower().Contains("roelie post") && !text.ToLower().Contains("againstchildtrafficking.org")) {
+                tenantNodes.Add(new TenantNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -131,8 +127,7 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
                 });
             }
 
-            yield return new Document
-            {
+            yield return new Document {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

@@ -48,8 +48,7 @@ internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var parentRegionName = reader.GetString("first_level_global_region_name");
@@ -65,8 +64,7 @@ internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
                 }
             };
 
-            yield return new SecondLevelGlobalRegion
-            {
+            yield return new SecondLevelGlobalRegion {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

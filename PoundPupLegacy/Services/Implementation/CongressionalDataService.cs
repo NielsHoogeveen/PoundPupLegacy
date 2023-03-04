@@ -4,15 +4,16 @@ using System.Data;
 using System.Text.RegularExpressions;
 
 namespace PoundPupLegacy.Services.Implementation;
-public partial class CongressionalDataService: ICongressionalDataService 
+public partial class CongressionalDataService : ICongressionalDataService
 {
 
-    private enum ChamberType {
+    private enum ChamberType
+    {
         House = 12660,
-        Senate = 12662        
+        Senate = 12662
     }
 
-    private record ChamberTypeAndMeetingNumber 
+    private record ChamberTypeAndMeetingNumber
     {
         public required ChamberType ChamberType { get; init; }
         public required int Number { get; init; }
@@ -23,33 +24,30 @@ public partial class CongressionalDataService: ICongressionalDataService
     private readonly ILogger<CongressionalDataService> _logger;
     private readonly IRazorViewToStringService _razorViewToStringService;
     public CongressionalDataService(
-        NpgsqlConnection connection, 
-        ILogger<CongressionalDataService> logger, 
+        NpgsqlConnection connection,
+        ILogger<CongressionalDataService> logger,
         IHttpContextAccessor httpContextAccessor,
-        IRazorViewToStringService razorViewToStringService) 
+        IRazorViewToStringService razorViewToStringService)
     {
         _httpContextAccessor = httpContextAccessor;
         _connection = connection;
         _logger = logger;
         _razorViewToStringService = razorViewToStringService;
     }
-    private ChamberTypeAndMeetingNumber? GetChamberTypeAndMeetingNumber() 
+    private ChamberTypeAndMeetingNumber? GetChamberTypeAndMeetingNumber()
     {
-        if(_httpContextAccessor.HttpContext is null)
+        if (_httpContextAccessor.HttpContext is null)
             return null;
         var path = _httpContextAccessor.HttpContext.Request.Path;
         var match = MatchIfCongressionalMeetingChamber().Match(path);
-        if (!match.Success) 
-        {
+        if (!match.Success) {
             return null;
 
         }
-        if(match.Groups.Count != 4) 
-        {
+        if (match.Groups.Count != 4) {
             return null;
         }
-        var chamberType = match.Groups[1].Value switch 
-        { 
+        var chamberType = match.Groups[1].Value switch {
             "senate" => ChamberType.Senate,
             "house_of_representatives" => ChamberType.House,
             _ => throw new Exception("Cannot reach")
@@ -58,11 +56,12 @@ public partial class CongressionalDataService: ICongressionalDataService
         return new ChamberTypeAndMeetingNumber {
             ChamberType = chamberType,
             Number = number
-        };  
+        };
 
     }
 
-    public async Task<string?> GetCongressionalMeetingChamberResult() {
+    public async Task<string?> GetCongressionalMeetingChamberResult()
+    {
         var congressionalMeetingChamber = GetChamberTypeAndMeetingNumber();
         if (congressionalMeetingChamber is null) {
             return null;
@@ -79,8 +78,7 @@ public partial class CongressionalDataService: ICongressionalDataService
             command.Parameters["meeting_number"].Value = congressionalMeetingChamber.Number;
             command.Parameters["chamber_type"].Value = (int)congressionalMeetingChamber.ChamberType;
             var reader = await command.ExecuteReaderAsync();
-            if (!reader.HasRows) 
-            {
+            if (!reader.HasRows) {
                 return null;
             }
             await reader.ReadAsync();

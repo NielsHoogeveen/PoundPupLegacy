@@ -22,8 +22,7 @@ public class BindingCountryCreator : IEntityCreator<BindingCountry>
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var country in countries)
-        {
+        await foreach (var country in countries) {
             await nodeWriter.WriteAsync(country);
             await searchableWriter.WriteAsync(country);
             await documentableWriter.WriteAsync(country);
@@ -34,8 +33,7 @@ public class BindingCountryCreator : IEntityCreator<BindingCountry>
             await topLevelCountryWriter.WriteAsync(country);
             await bindingCountryWriter.WriteAsync(country);
             await EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in country.TenantNodes)
-            {
+            foreach (var tenantNode in country.TenantNodes) {
                 tenantNode.NodeId = country.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

@@ -1,9 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db.Readers;
-using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace PoundPupLegacy.Convert;
 
@@ -266,12 +264,10 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         var cpctDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\cpct");
         var pplDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\ppl");
         var combinedDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\files");
-        foreach (FileInfo file in combinedDirectory.GetFiles())
-        {
+        foreach (FileInfo file in combinedDirectory.GetFiles()) {
             file.Delete();
         }
-        foreach (DirectoryInfo dir in combinedDirectory.GetDirectories())
-        {
+        foreach (DirectoryInfo dir in combinedDirectory.GetDirectories()) {
             dir.Delete(true);
         }
         combinedDirectory.CreateSubdirectory("files");
@@ -293,57 +289,48 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         command.CommandText = sql;
 
         var reader = await command.ExecuteReaderAsync();
-        while (reader.Read())
-        {
+        while (reader.Read()) {
             var path = reader.GetString(0);
             var tenant = reader.GetInt32(1);
             var tagetPath = $"{combinedDirectory.FullName}\\{path.Replace("/", "\\")}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
-            var sourcePath = tenant switch
-            {
+            var sourcePath = tenant switch {
                 1 => $"{pplDirectory.FullName}\\{path.Replace("/", "\\")}",
                 6 => $"{cpctDirectory.FullName}\\{path.Replace("/", "\\")}",
                 _ => throw new Exception($"Tenant {tenant} is unknown"),
             };
-            if (File.Exists(sourcePath))
-            {
+            if (File.Exists(sourcePath)) {
                 File.Copy(sourcePath, tagetPath);
             }
-            else
-            {
+            else {
                 Console.WriteLine($"file {sourcePath} not found");
             }
         }
-        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\flags")).GetFiles()) 
-        {
-            
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\flags")).GetFiles()) {
+
             var tagetPath = $"{combinedDirectory.FullName}\\files\\flags\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
             File.Copy(file.FullName, tagetPath);
         }
-        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\images")).GetFiles())
-        {
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\images")).GetFiles()) {
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\images\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
             File.Copy(file.FullName, tagetPath);
         }
-        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\jcics")).GetFiles())
-        {
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\jcics")).GetFiles()) {
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\jcics\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
             File.Copy(file.FullName, tagetPath);
         }
-        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\my_own_baby_pages")).GetFiles())
-        {
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\my_own_baby_pages")).GetFiles()) {
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\my_own_baby_pages\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
             File.Copy(file.FullName, tagetPath);
         }
-        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\pictures")).GetFiles())
-        {
+        foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\pictures")).GetFiles()) {
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\pictures\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);

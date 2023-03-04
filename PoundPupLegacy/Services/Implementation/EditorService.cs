@@ -220,8 +220,7 @@ public class EditorService : IEditorService
 
     public async Task<BlogPost?> GetBlogPost(int id)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             {CTE}
@@ -269,16 +268,14 @@ public class EditorService : IEditorService
             readCommand.Parameters["node_type_id"].Value = 35;
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
-            if (!reader.HasRows)
-            {
+            if (!reader.HasRows) {
                 return null;
             }
             var text = reader.GetString(0); ;
             var blogPost = reader.GetFieldValue<BlogPost>(0);
             return blogPost;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }
@@ -375,13 +372,12 @@ public class EditorService : IEditorService
                 }
             }
         }
-        
+
     }
 
     private async Task Store(List<Tag> tags)
     {
-        using (var command = _connection.CreateCommand())
-        {
+        using (var command = _connection.CreateCommand()) {
             var sql = $"""
                     delete from node_term
                     where node_id = @node_id and term_id = @term_id;
@@ -392,16 +388,14 @@ public class EditorService : IEditorService
             command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
             command.Parameters.Add("term_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await command.PrepareAsync();
-            foreach (var tag in tags.Where(x => x.HasBeenDeleted))
-            {
+            foreach (var tag in tags.Where(x => x.HasBeenDeleted)) {
                 command.Parameters["node_id"].Value = tag.NodeId;
                 command.Parameters["term_id"].Value = tag.TermId;
                 var u = await command.ExecuteNonQueryAsync();
             }
 
         }
-        using (var command = _connection.CreateCommand())
-        {
+        using (var command = _connection.CreateCommand()) {
             var sql = $"""
                     insert into node_term (node_id, term_id) VALUES(@node_id, @term_id)
                     """;
@@ -411,8 +405,7 @@ public class EditorService : IEditorService
             command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
             command.Parameters.Add("term_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await command.PrepareAsync();
-            foreach (var tag in tags.Where(x => !x.IsStored))
-            {
+            foreach (var tag in tags.Where(x => !x.IsStored)) {
                 command.Parameters["node_id"].Value = tag.NodeId;
                 command.Parameters["term_id"].Value = tag.TermId;
                 var u = await command.ExecuteNonQueryAsync();
@@ -423,8 +416,7 @@ public class EditorService : IEditorService
 
     public async Task Store(SimpleTextNode node)
     {
-        using (var command = _connection.CreateCommand())
-        {
+        using (var command = _connection.CreateCommand()) {
             var sql = $"""
                     update node set title=@title
                     where id = @node_id;
@@ -454,8 +446,7 @@ public class EditorService : IEditorService
         await _connection.OpenAsync();
         var tx = await _connection.BeginTransactionAsync();
         _logger.LogInformation($"Started transaction in {sp.ElapsedMilliseconds}");
-        try
-        {
+        try {
             await Store(post);
             _logger.LogInformation($"Stored blogpost after {sp.ElapsedMilliseconds}");
             await Store(post.Tags);
@@ -469,13 +460,11 @@ public class EditorService : IEditorService
             await _siteDateService.RefreshTenants();
             _logger.LogInformation($"Refreshed tenant data after {sp.ElapsedMilliseconds}");
         }
-        catch (Exception)
-        {
+        catch (Exception) {
             tx.Rollback();
             throw;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
 

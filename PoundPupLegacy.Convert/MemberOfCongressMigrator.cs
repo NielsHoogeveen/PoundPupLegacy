@@ -200,8 +200,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
     private async Task<int?> FindIdByGovtackId(int govtrack)
     {
-        int? id = govtrack switch
-        {
+        int? id = govtrack switch {
             412236 => 60496,
             412434 => 62239,
             400199 => 38347,
@@ -266,8 +265,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             400556 => 39098,
             _ => null,
         };
-        if (!id.HasValue)
-        {
+        if (!id.HasValue) {
             return null;
         }
         return await _nodeIdReader.ReadAsync(Constants.PPL, id.Value);
@@ -332,8 +330,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
         repCommand.CommandText = "select n.id from profession p join node n on n.id = p.id where n.title = 'Representative'";
         int repRoleId = (int)(await repCommand.ExecuteScalarAsync())!;
 
-        using (var readCommand = _postgresConnection.CreateCommand())
-        {
+        using (var readCommand = _postgresConnection.CreateCommand()) {
             readCommand.CommandType = CommandType.Text;
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = readSql;
@@ -346,15 +343,12 @@ internal class MemberOfCongressMigrator : PPLMigrator
             await readCommand.PrepareAsync();
 
 
-            foreach (var memberOfCongress in _membersOfCongress)
-            {
+            foreach (var memberOfCongress in _membersOfCongress) {
                 var id = await FindIdByGovtackId(memberOfCongress.id.govtrack);
-                if (id.HasValue)
-                {
+                if (id.HasValue) {
                     memberOfCongress.node_id = id.Value;
                 }
-                else
-                {
+                else {
                     readCommand.Parameters["first_name"].Value = $"%{memberOfCongress.name.first}%";
                     readCommand.Parameters["last_name"].Value = $"%{memberOfCongress.name.last}%";
                     readCommand.Parameters["wikiname"].Value = string.IsNullOrEmpty(memberOfCongress.id.wikipedia) ? "" : memberOfCongress.id.wikipedia;
@@ -363,8 +357,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                     readCommand.Parameters["date_of_birth"].Value = memberOfCongress.bio.birthday is null ? DBNull.Value : memberOfCongress.bio.birthday;
                     using var reader = await readCommand.ExecuteReaderAsync();
                     bool found = false;
-                    while (found == false && await reader.ReadAsync())
-                    {
+                    while (found == false && await reader.ReadAsync()) {
                         memberOfCongress.node_id = reader.GetInt32("id");
                         found = true;
                         break;
@@ -372,8 +365,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                 }
             }
         }
-        using (var updateCommand = _postgresConnection.CreateCommand())
-        {
+        using (var updateCommand = _postgresConnection.CreateCommand()) {
             updateCommand.CommandTimeout = 300;
             updateCommand.CommandType = CommandType.Text;
             updateCommand.CommandTimeout = 300;
@@ -388,15 +380,13 @@ internal class MemberOfCongressMigrator : PPLMigrator
             updateCommand.Parameters.Add("bioguide", NpgsqlTypes.NpgsqlDbType.Varchar);
             updateCommand.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
             await updateCommand.PrepareAsync();
-            foreach (var memberOfCongress in _membersOfCongress)
-            {
+            foreach (var memberOfCongress in _membersOfCongress) {
                 var isSenator = memberOfCongress.terms.Any(x => x.type == "sen");
                 var isRepresentative = memberOfCongress.terms.Any(x => x.type == "rep");
 
                 var name = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
 
-                if (memberOfCongress.id.govtrack == 400568)
-                {
+                if (memberOfCongress.id.govtrack == 400568) {
                     Console.WriteLine($"{memberOfCongress.name.official_full} isSenator {isSenator} isRepresentative {isRepresentative}");
                 }
 
@@ -436,15 +426,14 @@ internal class MemberOfCongressMigrator : PPLMigrator
                             }
                         };
                     }
-                    return term.party_affiliations.Select(party_affiliations => new CongressionalTermPoliticalPartyAffiliation 
-                        {
-                            Id = null,
-                            PublisherId = 2,
-                            CreatedDateTime = DateTime.Now,
-                            ChangedDateTime = DateTime.Now,
-                            Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
-                            OwnerId = Constants.OWNER_PARTIES,
-                            TenantNodes = new List<TenantNode> {
+                    return term.party_affiliations.Select(party_affiliations => new CongressionalTermPoliticalPartyAffiliation {
+                        Id = null,
+                        PublisherId = 2,
+                        CreatedDateTime = DateTime.Now,
+                        ChangedDateTime = DateTime.Now,
+                        Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
+                        OwnerId = Constants.OWNER_PARTIES,
+                        TenantNodes = new List<TenantNode> {
                                         new TenantNode {
                                             Id = null,
                                             TenantId = 1,
@@ -455,11 +444,11 @@ internal class MemberOfCongressMigrator : PPLMigrator
                                             UrlId = null
                                         }
                                     },
-                            NodeTypeId = 64,
-                            PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(party_affiliations.party),
-                            CongressionalTermId = null,
-                            DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end)
-                        }
+                        NodeTypeId = 64,
+                        PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(party_affiliations.party),
+                        CongressionalTermId = null,
+                        DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end)
+                    }
                     ).ToList();
                 }
 
@@ -536,12 +525,9 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
                 }
 
-                if (memberOfCongress.node_id.HasValue)
-                {
-                    if (isSenator)
-                    {
-                        professionalRoles.Add(new Senator
-                        {
+                if (memberOfCongress.node_id.HasValue) {
+                    if (isSenator) {
+                        professionalRoles.Add(new Senator {
                             Id = null,
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
@@ -566,10 +552,8 @@ internal class MemberOfCongressMigrator : PPLMigrator
                             SenateTerms = GetSenateTerms(),
                         });
                     }
-                    if (isRepresentative)
-                    {
-                        professionalRoles.Add(new Representative
-                        {
+                    if (isRepresentative) {
+                        professionalRoles.Add(new Representative {
                             Id = null,
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
@@ -606,15 +590,12 @@ internal class MemberOfCongressMigrator : PPLMigrator
                     await updateCommand.ExecuteNonQueryAsync();
                     await ProfessionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable(), _postgresConnection);
                 }
-                else
-                {
-                    
-                    if (isSenator)
-                    {
-                        
+                else {
 
-                        professionalRoles.Add(new Senator
-                        {
+                    if (isSenator) {
+
+
+                        professionalRoles.Add(new Senator {
                             Id = null,
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
@@ -639,10 +620,8 @@ internal class MemberOfCongressMigrator : PPLMigrator
                             SenateTerms = GetSenateTerms(),
                         });
                     }
-                    if (isRepresentative)
-                    {
-                        professionalRoles.Add(new Representative
-                        {
+                    if (isRepresentative) {
+                        professionalRoles.Add(new Representative {
                             Id = null,
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
@@ -671,7 +650,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                     var terms = memberOfCongress.terms.Select(x => (x.start, x.end, x.party)).GroupBy(x => x.party).ToList();
 
                     var relations = new List<PersonOrganizationRelation>();
-                    if(terms.Count == 1) {
+                    if (terms.Count == 1) {
 
                     }
 
@@ -721,19 +700,15 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
         string fileName = @"..\..\..\files\legislators-current.json";
         var jsonUtf8Bytes = await System.IO.File.ReadAllBytesAsync(fileName);
-        foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes)!)
-        {
-            if (member.terms.Any(x => x.end >= DateTime.Parse("1999-01-03")))
-            {
+        foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes)!) {
+            if (member.terms.Any(x => x.end >= DateTime.Parse("1999-01-03"))) {
                 yield return member;
             }
         }
         string fileName2 = @"..\..\..\files\legislators-historical.json";
         var jsonUtf8Bytes2 = await System.IO.File.ReadAllBytesAsync(fileName2);
-        foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes2)!)
-        {
-            if (member.terms.Any(x => x.end >= DateTime.Parse("1999-01-03")))
-            {
+        foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes2)!) {
+            if (member.terms.Any(x => x.end >= DateTime.Parse("1999-01-03"))) {
                 yield return member;
             }
         }
@@ -758,8 +733,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             var bioguid = reader.GetString(1);
             var fileNameSource = $"\\\\wsl.localhost\\Ubuntu\\home\\niels\\ppl\\files\\members_of_congress\\{reader.GetString(1)}.jpg";
             var file = new FileInfo(fileNameSource);
-            if(file.Exists) 
-            {
+            if (file.Exists) {
                 yield return new Model.File {
                     Id = null,
                     Path = $"files/members_of_congress/{reader.GetString(1)}.jpg",
@@ -823,7 +797,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             """;
         using var reader = await command.ExecuteReaderAsync();
 
-        
+
         while (await reader.ReadAsync()) {
             yield return new NodeFile { FileId = reader.GetInt32(1), NodeId = reader.GetInt32(0) };
         }
@@ -843,7 +817,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             and p.bioguide is not null
             """;
         using var reader = await command.ExecuteReaderAsync();
-        while(reader.Read()) {
+        while (reader.Read()) {
             var uri = new Uri($"{reader.GetString(0)}");
             var fileName = $"D:\\images\\congress\\{reader.GetString(1)}";
             using (var response = await httpClient.GetAsync(uri)) {

@@ -3,16 +3,18 @@ using PoundPupLegacy.Services;
 
 namespace PoundPupLegacy.Controllers;
 [Route("united_states_congress")]
-public class UnitedStatesCongressController : Controller {
+public class UnitedStatesCongressController : Controller
+{
 
     private readonly ICongressionalDataService _congressionalDataService;
-    public UnitedStatesCongressController(ICongressionalDataService congressionalDataService) 
-    { 
+    public UnitedStatesCongressController(ICongressionalDataService congressionalDataService)
+    {
         _congressionalDataService = congressionalDataService;
     }
-    public async Task<IActionResult> Index() {
+    public async Task<IActionResult> Index()
+    {
         var html = await _congressionalDataService.GetUnitedStatesCongress();
-        if(html is null) {
+        if (html is null) {
             return NotFound();
         }
         return new ContentResult {

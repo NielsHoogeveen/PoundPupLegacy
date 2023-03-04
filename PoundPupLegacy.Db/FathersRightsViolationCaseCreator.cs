@@ -20,8 +20,7 @@ public class FathersRightsViolationCaseCreator : IEntityCreator<FathersRightsVio
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var fathersRightsViolationCase in fathersRightsViolationCases)
-        {
+        await foreach (var fathersRightsViolationCase in fathersRightsViolationCases) {
             await nodeWriter.WriteAsync(fathersRightsViolationCase);
             await searchableWriter.WriteAsync(fathersRightsViolationCase);
             await documentableWriter.WriteAsync(fathersRightsViolationCase);
@@ -30,8 +29,7 @@ public class FathersRightsViolationCaseCreator : IEntityCreator<FathersRightsVio
             await caseWriter.WriteAsync(fathersRightsViolationCase);
             await fathersRightsViolationCaseWriter.WriteAsync(fathersRightsViolationCase);
             await EntityCreator.WriteTerms(fathersRightsViolationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in fathersRightsViolationCase.TenantNodes)
-            {
+            foreach (var tenantNode in fathersRightsViolationCase.TenantNodes) {
                 tenantNode.NodeId = fathersRightsViolationCase.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

@@ -17,8 +17,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
     private static async IAsyncEnumerable<Vocabulary> GetVocabularies()
     {
         await Task.CompletedTask;
-        yield return new Vocabulary
-        {
+        yield return new Vocabulary {
             Id = null,
             Name = Constants.VOCABULARY_CHILD_PLACEMENT_TYPE,
             PublisherId = 1,
@@ -42,8 +41,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
             NodeTypeId = 36,
             Description = ""
         };
-        yield return new Vocabulary
-        {
+        yield return new Vocabulary {
             Id = null,
             Name = Constants.VOCABULARY_TYPE_OF_ABUSE,
             PublisherId = 1,
@@ -67,8 +65,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
             NodeTypeId = 36,
             Description = ""
         };
-        yield return new Vocabulary
-        {
+        yield return new Vocabulary {
             Id = null,
             Name = Constants.VOCABULARY_TYPE_OF_ABUSER,
             PublisherId = 1,
@@ -92,8 +89,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
             NodeTypeId = 36,
             Description = ""
         };
-        yield return new Vocabulary
-        {
+        yield return new Vocabulary {
             Id = null,
             Name = Constants.VOCABULARY_FAMILY_SIZE,
             PublisherId = 1,
@@ -117,8 +113,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
             NodeTypeId = 36,
             Description = ""
         };
-        yield return new Vocabulary
-        {
+        yield return new Vocabulary {
             Id = null,
             Name = Constants.VOCABULARY_BILL_ACTION,
             PublisherId = 1,
@@ -142,8 +137,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
             NodeTypeId = 36,
             Description = ""
         };
-        yield return new Vocabulary
-        {
+        yield return new Vocabulary {
             Id = null,
             Name = Constants.VOCABULARY_ORGANIZATION_ACT_RELATION_TYPE,
             PublisherId = 1,
@@ -167,8 +161,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
             NodeTypeId = 36,
             Description = ""
         };
-        yield return new Vocabulary
-        {
+        yield return new Vocabulary {
             Id = null,
             Name = Constants.VOCABULARY_SUBDIVISION_TYPE,
             PublisherId = 1,
@@ -245,8 +238,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
 
     private static string GetVocabularyName(int id, string name)
     {
-        return id switch
-        {
+        return id switch {
             3797 => Constants.VOCABULARY_GEOGRAPHICAL_ENTITY,
             4126 => Constants.VOCABULARY_TOPICS,
             12622 => Constants.VOCABULARY_ORGANIZATION_TYPE,
@@ -263,8 +255,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
     }
     private static int GetOwner(int id)
     {
-        return id switch
-        {
+        return id switch {
             3797 => Constants.OWNER_GEOGRAPHY,
             12622 => Constants.OWNER_PARTIES,
             12637 => Constants.OWNER_PARTIES,
@@ -310,12 +301,10 @@ internal sealed class VocabularyMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("name");
-            yield return new Vocabulary
-            {
+            yield return new Vocabulary {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

@@ -18,8 +18,7 @@ internal class FetchNodeService : IFetchNodeService
 
     public async Task<Node?> FetchNode(int id)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             WITH 
@@ -112,14 +111,12 @@ internal class FetchNodeService : IFetchNodeService
             readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId();
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
-            if (!reader.HasRows)
-            {
+            if (!reader.HasRows) {
                 return null;
             }
             var node_type_id = reader.GetInt32(0);
-            var text = reader.IsDBNull(1)? null: reader.GetString(1);
-            Node? node = node_type_id switch
-            {
+            var text = reader.IsDBNull(1) ? null : reader.GetString(1);
+            Node? node = node_type_id switch {
                 1 => reader.GetFieldValue<BasicNameable>(1),
                 2 => reader.GetFieldValue<BasicNameable>(1),
                 3 => reader.GetFieldValue<BasicNameable>(1),
@@ -171,8 +168,7 @@ internal class FetchNodeService : IFetchNodeService
 
             return node!;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

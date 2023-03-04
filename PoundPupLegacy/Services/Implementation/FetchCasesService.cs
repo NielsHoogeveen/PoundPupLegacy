@@ -15,8 +15,7 @@ internal class FetchCasesService : IFetchCasesService
 
     private string SqlPartForCaseType(CaseType caseType)
     {
-        return caseType switch
-        {
+        return caseType switch {
             CaseType.Abuse => "join abuse_case ac on ac.id = n.id",
             CaseType.ChildTrafficking => "join child_trafficking_case ac on ac.id = n.id",
             CaseType.Deportation => "join deportation_case ac on ac.id = n.id",
@@ -32,8 +31,7 @@ internal class FetchCasesService : IFetchCasesService
 
     public async Task<Cases> FetchCases(int limit, int offset, int tenantId, int userId, CaseType caseType)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             select
@@ -136,24 +134,20 @@ internal class FetchCasesService : IFetchCasesService
             readCommand.Parameters["limit"].Value = limit;
             readCommand.Parameters["offset"].Value = offset;
             await using var reader = await readCommand.ExecuteReaderAsync();
-            if (reader.HasRows)
-            {
+            if (reader.HasRows) {
                 await reader.ReadAsync();
                 var organizations = reader.GetFieldValue<Cases>(0);
                 return organizations!;
             }
-            else
-            {
+            else {
 
-                return new Cases
-                {
+                return new Cases {
                     CaseListEntries = new CaseListEntry[] { },
                     NumberOfEntries = 0,
                 };
             }
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

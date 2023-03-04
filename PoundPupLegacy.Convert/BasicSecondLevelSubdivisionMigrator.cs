@@ -18,16 +18,14 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
 
         var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
 
-        await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\BasicSecondLevelSubdivisionsInInformalPrimarySubdivision.csv").Skip(1))
-        {
+        await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\BasicSecondLevelSubdivisionsInInformalPrimarySubdivision.csv").Skip(1)) {
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
             var subdivisionId = await _subdivisionIdReader.ReadAsync(countryId, parts[11]);
             var topicName = (await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, subdivisionId)).Name;
-            yield return new BasicSecondLevelSubdivision
-            {
+            yield return new BasicSecondLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
@@ -87,16 +85,14 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
 
         var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
 
-        await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\BasicSecondLevelSubdivisions.csv").Skip(1))
-        {
+        await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\BasicSecondLevelSubdivisions.csv").Skip(1)) {
 
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
             var subdivisionId = await _subdivisionIdReaderByIso3166Code.ReadAsync(parts[11]);
             var topicName = (await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, subdivisionId)).Name;
-            yield return new BasicSecondLevelSubdivision
-            {
+            yield return new BasicSecondLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
@@ -195,8 +191,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var title = $"{reader.GetString("title").Replace(" (state)", "")} (state of the USA)";
             var subdivisioName = $"{reader.GetString("subdivision_name")} (region of the USA)";
@@ -210,8 +205,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
                     ParentNames = new List<string>{ subdivisioName },
                 }
             };
-            yield return new BasicSecondLevelSubdivision
-            {
+            yield return new BasicSecondLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

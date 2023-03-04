@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface ProfessionalRole: Documentable
+public interface ProfessionalRole : Documentable
 {
     int? PersonId { get; set; }
     DateTimeRange? DateTimeRange { get; }

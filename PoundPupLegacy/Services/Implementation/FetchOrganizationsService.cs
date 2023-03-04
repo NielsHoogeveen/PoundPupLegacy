@@ -14,17 +14,15 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
     {
         _connection = connection;
         _siteDataService = siteDataService;
-       
+
     }
 
     private string GetPattern(string searchTerm, SearchOption searchOption)
     {
-        if (string.IsNullOrEmpty(searchTerm))
-        {
+        if (string.IsNullOrEmpty(searchTerm)) {
             return "%";
         }
-        return searchOption switch
-        {
+        return searchOption switch {
             SearchOption.IsEqualTo => searchTerm,
             SearchOption.Contains => $"%{searchTerm}%",
             SearchOption.StartsWith => $"{searchTerm}%",
@@ -36,10 +34,8 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
     public async Task<OrganizationSearch> FetchOrganizations(int limit, int offset, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
     {
         await _connection.OpenAsync();
-        try
-        {
-            var filter = (organizationTypeId, countryId) switch
-            {
+        try {
+            var filter = (organizationTypeId, countryId) switch {
                 (null, null) => "",
                 (null, int) => "AND ll.url_id=@country_id",
                 (int, null) => "AND oot.organization_type_id=@organization_type_id",
@@ -183,12 +179,10 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
             readCommand.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("pattern", NpgsqlTypes.NpgsqlDbType.Varchar);
-            if (organizationTypeId.HasValue)
-            {
+            if (organizationTypeId.HasValue) {
                 readCommand.Parameters.Add("organization_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
             }
-            if (countryId.HasValue)
-            {
+            if (countryId.HasValue) {
                 readCommand.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
             }
             await readCommand.PrepareAsync();
@@ -197,12 +191,10 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
             readCommand.Parameters["limit"].Value = limit;
             readCommand.Parameters["offset"].Value = offset;
             readCommand.Parameters["pattern"].Value = GetPattern(searchTerm, searchOption);
-            if (organizationTypeId.HasValue)
-            {
+            if (organizationTypeId.HasValue) {
                 readCommand.Parameters["organization_type_id"].Value = organizationTypeId.Value;
             }
-            if (countryId.HasValue)
-            {
+            if (countryId.HasValue) {
                 readCommand.Parameters["country_id"].Value = countryId.Value;
             }
             await using var reader = await readCommand.ExecuteReaderAsync();
@@ -210,8 +202,7 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
             var organizations = reader.GetFieldValue<OrganizationSearch>(0);
             return organizations;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

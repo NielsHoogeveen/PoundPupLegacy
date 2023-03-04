@@ -29,8 +29,7 @@ public sealed class EditActionIdReaderByNodeTypeId : DatabaseUpdater<Term>, IDat
         _command.Parameters["node_type_id"].Value = nodeTypeId;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
             var id = reader.GetInt32("id");
             await reader.CloseAsync();

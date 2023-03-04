@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.Services;
+using PoundPupLegacy.ViewModel;
 using System.Diagnostics;
 using System.Security.Claims;
 using IAuthenticationService = PoundPupLegacy.Services.IAuthenticationService;
@@ -40,24 +40,21 @@ public class HomeController : Controller
     public async Task<IActionResult> AllElse()
     {
         var stopwatch = new Stopwatch();
-        if (Request.Path == "/NotFound")
-        {
+        if (Request.Path == "/NotFound") {
             return View("NotFound");
         }
-        
+
         stopwatch.Start();
 
         var congressionalMeetingChamber = await _congressionalDataService.GetCongressionalMeetingChamberResult();
-        if(congressionalMeetingChamber is not null) 
-        { 
+        if (congressionalMeetingChamber is not null) {
             return new ContentResult {
                 Content = congressionalMeetingChamber,
                 ContentType = "text/html"
             };
         }
         var urlId = _siteDataService.GetIdForUrlPath();
-        if (urlId is null)
-        {
+        if (urlId is null) {
             return NotFound();
         }
         var id = urlId.Value;
@@ -89,13 +86,11 @@ public class HomeController : Controller
         var referer = this.HttpContext.Request.Headers.Referer.ToString();
         var path = referer.Substring(referer.IndexOf("/", 10));
         var claimsIdentity = await _authenticationService.Login(user, password);
-        if (claimsIdentity == null)
-        {
+        if (claimsIdentity == null) {
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return new RedirectResult(path);
         }
-        var authProperties = new AuthenticationProperties
-        {
+        var authProperties = new AuthenticationProperties {
             IsPersistent = true,
         };
 

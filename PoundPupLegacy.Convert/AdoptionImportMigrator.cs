@@ -36,32 +36,24 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
     }
     private async IAsyncEnumerable<AdoptionImports> AdoptionImportCsvFiles()
     {
-        foreach (var f in new DirectoryInfo(@"..\..\..\files\imports").EnumerateFiles().Where(x => x.Extension == ".csv"))
-        {
+        foreach (var f in new DirectoryInfo(@"..\..\..\files\imports").EnumerateFiles().Where(x => x.Extension == ".csv")) {
             Console.WriteLine($"Processing file {f.Name}");
-            if (int.TryParse(f.Name.Substring(0, f.Name.Length - 4), out var countryIdTo))
-            {
+            if (int.TryParse(f.Name.Substring(0, f.Name.Length - 4), out var countryIdTo)) {
 
                 var years = new List<int>();
-                await foreach (string line in System.IO.File.ReadLinesAsync(f.FullName))
-                {
-                    if (!years.Any())
-                    {
+                await foreach (string line in System.IO.File.ReadLinesAsync(f.FullName)) {
+                    if (!years.Any()) {
                         years.AddRange(line.Split(';').Skip(2).Select(x => int.Parse(x)));
                         continue;
                     }
                     var parts = line.Split(new char[] { ';' });
-                    for (int i = 2; i < parts.Length; i++)
-                    {
+                    for (int i = 2; i < parts.Length; i++) {
 
-                        if (!string.IsNullOrEmpty(parts[i]))
-                        {
+                        if (!string.IsNullOrEmpty(parts[i])) {
                             var amount = int.Parse(parts[i]);
-                            if (!string.IsNullOrEmpty(parts[0]))
-                            {
+                            if (!string.IsNullOrEmpty(parts[0])) {
                                 var countryFromId = int.Parse(parts[0]);
-                                yield return new SpecificAdoptionImports
-                                {
+                                yield return new SpecificAdoptionImports {
                                     CountryIdFrom = countryFromId,
                                     Amount = amount,
                                     CountryIdTo = countryIdTo,
@@ -69,10 +61,8 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                                 };
 
                             }
-                            else
-                            {
-                                yield return new NonSpecificAdoptionImports
-                                {
+                            else {
+                                yield return new NonSpecificAdoptionImports {
                                     Amount = amount,
                                     CountryIdTo = countryIdTo,
                                     Year = years[i - 2]
@@ -129,8 +119,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
         var title = $"Adoption exports from {nodeFrom.Title} to {nodeTo.Title} in {year}";
 
-        return new InterCountryRelation
-        {
+        return new InterCountryRelation {
             //The relation is about imports so the relation from is the receiving party
             //and relation to is the sending party
             //even though the children go from the sending party to the receiving party
@@ -274,8 +263,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var year = reader.GetInt32("year");
 
             yield return await GetInterCountryRelation(
@@ -291,8 +279,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
     private static DateTimeRange GetDateTimeRange(int countryId, int year)
     {
-        return countryId switch
-        {
+        return countryId switch {
             3805 => new DateTimeRange(DateTime.Parse($"{year - 1}-10-01"), DateTime.Parse($"{year}-09-30")),
             4038 => new DateTimeRange(DateTime.Parse($"{year - 1}-07-01"), DateTime.Parse($"{year}-06-30")),
             _ => new DateTimeRange(DateTime.Parse($"{year}-01-01"), DateTime.Parse($"{year}-12-31")),

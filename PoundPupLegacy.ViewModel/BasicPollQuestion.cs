@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record BasicPollQuestion: PollQuestion
+public record BasicPollQuestion : PollQuestion
 {
     public required int Id { get; init; }
     public required int NodeTypeId { get; init; }
@@ -10,18 +10,15 @@ public record BasicPollQuestion: PollQuestion
     public required bool HasBeenPublished { get; init; }
 
     private PollOption[] pollOptions = Array.Empty<PollOption>();
-    public PollOption[] PollOptions
-    {
+    public PollOption[] PollOptions {
         get => pollOptions;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 pollOptions = value;
             }
 
         }
-   }
+    }
 
     public Link[] SeeAlsoBoxElements => Array.Empty<Link>();
 

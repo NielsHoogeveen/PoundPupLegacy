@@ -43,13 +43,11 @@ internal sealed class FathersRightsViolationsCaseMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var country = new FathersRightsViolationCase
-            {
+            var country = new FathersRightsViolationCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

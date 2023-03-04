@@ -17,8 +17,7 @@ internal class FetchSearchService : IFetchSearchService
 
     public async Task<SearchResult> FetchSearch(int limit, int offset, string searchString)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
              with 
@@ -180,21 +179,17 @@ internal class FetchSearchService : IFetchSearchService
             readCommand.Parameters["offset"].Value = offset;
             readCommand.Parameters["search_string"].Value = searchString;
             await using var reader = await readCommand.ExecuteReaderAsync();
-            if (reader.HasRows)
-            {
+            if (reader.HasRows) {
                 await reader.ReadAsync();
                 var organizations = reader.GetFieldValue<SearchResult>(0);
                 return organizations!;
             }
-            else
-            {
-                return new SearchResult
-                {
+            else {
+                return new SearchResult {
                 };
             }
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

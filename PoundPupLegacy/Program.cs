@@ -14,8 +14,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options =>
-            {
+            .AddCookie(options => {
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.SlidingExpiration = true;
                 options.AccessDeniedPath = "/Forbidden/";
@@ -33,8 +32,7 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddTransient((sp) => 
-        {
+        builder.Services.AddTransient((sp) => {
             var configuration = sp.GetService<IConfiguration>()!;
             var connectString = configuration["ConnectString"]!;
             return new NpgsqlConnection(connectString);
@@ -66,15 +64,13 @@ public class Program
         //    app.UseResponseCompression();
         //}
 
-        if (!app.Environment.IsDevelopment())
-        {
+        if (!app.Environment.IsDevelopment()) {
             app.UseExceptionHandler("/Home/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
 
         }
-        var cookiePolicyOptions = new CookiePolicyOptions
-        {
+        var cookiePolicyOptions = new CookiePolicyOptions {
             MinimumSameSitePolicy = SameSiteMode.Strict,
         };
 
@@ -82,11 +78,9 @@ public class Program
 
         app.UseCookiePolicy(cookiePolicyOptions);
 
-        app.Use(async (context, next) =>
-        {
+        app.Use(async (context, next) => {
             await next();
-            if (context.Response.StatusCode == 404)
-            {
+            if (context.Response.StatusCode == 404) {
                 context.Request.Path = "/NotFound";
                 await next();
             }
@@ -96,9 +90,8 @@ public class Program
 
         var configuration = app.Services.GetService<IConfiguration>()!;
         var filesPath = configuration["FilesLocation"]!;
-        app.UseStaticFiles(new StaticFileOptions
-        {
-           
+        app.UseStaticFiles(new StaticFileOptions {
+
             FileProvider = new PhysicalFileProvider(filesPath),
             RequestPath = "/files"
         });
@@ -123,8 +116,7 @@ public class Program
         app.MapBlazorHub();
 
         var res = app.Services.GetService<ISiteDataService>();
-        if (res != null)
-        {
+        if (res != null) {
             await res.InitializeAsync();
         }
 

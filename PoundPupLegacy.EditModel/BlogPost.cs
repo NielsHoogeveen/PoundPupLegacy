@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record BlogPost: SimpleTextNode
+public record BlogPost : SimpleTextNode
 {
     public required int NodeId { get; init; }
 
@@ -12,14 +12,12 @@ public record BlogPost: SimpleTextNode
 
     private List<Tag> tags = new();
 
-    public List<Tag> Tags { 
+    public List<Tag> Tags {
         get => tags;
-        init 
-        { 
-            if(value is not null)
-            {
+        init {
+            if (value is not null) {
                 tags = value;
-            } 
+            }
         }
     }
     private List<TenantNode> tenantNodes = new();

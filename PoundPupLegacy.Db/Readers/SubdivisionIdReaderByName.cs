@@ -30,16 +30,14 @@ public sealed class SubdivisionIdReaderByName : DatabaseUpdater<int>, IDatabaseR
 
     public async Task<int> ReadAsync(int countryId, string name)
     {
-        if (name is null)
-        {
+        if (name is null) {
             throw new ArgumentNullException(nameof(name));
         }
         _command.Parameters["country_id"].Value = countryId;
         _command.Parameters["name"].Value = name;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
             var result = reader.GetInt32("id");
             await reader.CloseAsync();

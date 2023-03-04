@@ -9,17 +9,17 @@ public record MemberOfCongress
     public required string FilePathPortrait { get; init; }
 
 
-    private Link[] letters  = Array.Empty<Link>();
+    private Link[] letters = Array.Empty<Link>();
     public required Link[] Letters {
         get => letters;
         init {
-            if(value is not null) {
+            if (value is not null) {
                 letters = value;
             }
         }
     }
     private Link[] bills = Array.Empty<Link>();
-    public required Link[] Bills{
+    public required Link[] Bills {
         get => bills;
         init {
             if (value is not null) {
@@ -28,7 +28,7 @@ public record MemberOfCongress
         }
     }
     private PartyMembership[] parties = Array.Empty<PartyMembership>();
-    public required PartyMembership[] Parties{
+    public required PartyMembership[] Parties {
         get => parties;
         init {
             if (value is not null) {
@@ -36,7 +36,7 @@ public record MemberOfCongress
             }
         }
     }
-    private CongressionalTerm[]terms = Array.Empty<CongressionalTerm>();
+    private CongressionalTerm[] terms = Array.Empty<CongressionalTerm>();
     public required CongressionalTerm[] Terms {
         get => terms;
         init {

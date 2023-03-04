@@ -20,8 +20,7 @@ public class AbuseCaseCreator : IEntityCreator<AbuseCase>
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var abuseCase in abuseCases)
-        {
+        await foreach (var abuseCase in abuseCases) {
             await nodeWriter.WriteAsync(abuseCase);
             await searchableWriter.WriteAsync(abuseCase);
             await documentableWriter.WriteAsync(abuseCase);
@@ -30,8 +29,7 @@ public class AbuseCaseCreator : IEntityCreator<AbuseCase>
             await caseWriter.WriteAsync(abuseCase);
             await abuseCaseWriter.WriteAsync(abuseCase);
             await EntityCreator.WriteTerms(abuseCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in abuseCase.TenantNodes)
-            {
+            foreach (var tenantNode in abuseCase.TenantNodes) {
                 tenantNode.NodeId = abuseCase.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

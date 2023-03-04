@@ -104,8 +104,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
 
             var id = reader.GetInt32("id");
@@ -115,8 +114,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
             int? geographicalEntityId = reader.IsDBNull("geographical_entity_id") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("geographical_entity_id"));
             int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
 
-            yield return new PersonOrganizationRelation
-            {
+            yield return new PersonOrganizationRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

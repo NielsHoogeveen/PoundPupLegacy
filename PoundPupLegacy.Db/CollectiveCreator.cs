@@ -10,8 +10,7 @@ public class CollectiveCreator : IEntityCreator<Collective>
         await using var publisherWriter = await PublisherWriter.CreateAsync(connection);
         await using var userWriter = await CollectiveWriter.CreateAsync(connection);
 
-        await foreach (var collective in collectives)
-        {
+        await foreach (var collective in collectives) {
             await principalWriter.WriteAsync(collective);
             await publisherWriter.WriteAsync(collective);
             await userWriter.WriteAsync(collective);

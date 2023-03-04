@@ -1,11 +1,10 @@
-﻿using PoundPupLegacy.ViewModel;
-using System.Data.Common;
+﻿using Npgsql;
+using PoundPupLegacy.ViewModel;
 using System.Data;
-using Npgsql;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public record SubgroupService: ISubgroupService
+public record SubgroupService : ISubgroupService
 {
     private readonly NpgsqlConnection _connection;
     private readonly ISiteDataService _siteDataService;
@@ -151,7 +150,7 @@ public record SubgroupService: ISubgroupService
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             var subgroupPagedList = reader.GetFieldValue<SubGroupPagedList>(0);
-            
+
             return subgroupPagedList;
         }
         finally {

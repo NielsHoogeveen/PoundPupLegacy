@@ -1,7 +1,6 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using System.Data;
-using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert;
 
@@ -87,8 +86,7 @@ internal sealed class OrganizationTypeMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
@@ -103,10 +101,8 @@ internal sealed class OrganizationTypeMigrator : PPLMigrator
                     ParentNames = new List<string>(),
                 }
             };
-            if (topicName != null)
-            {
-                vocabularyNames.Add(new VocabularyName
-                {
+            if (topicName != null) {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -114,8 +110,7 @@ internal sealed class OrganizationTypeMigrator : PPLMigrator
                 });
             }
 
-            yield return new OrganizationType
-            {
+            yield return new OrganizationType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

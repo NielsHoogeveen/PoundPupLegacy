@@ -7,8 +7,7 @@ public class UserGroupUserRoleUserCreator : IEntityCreator<Model.UserGroupUserRo
 
         await using var userGroupUserRoleUserWriter = await UserGroupUserRoleUserWriter.CreateAsync(connection);
 
-        await foreach (var userGroupUserRoleUser in userGroupUserRoleUsers)
-        {
+        await foreach (var userGroupUserRoleUser in userGroupUserRoleUsers) {
             await userGroupUserRoleUserWriter.WriteAsync(userGroupUserRoleUser);
         }
     }

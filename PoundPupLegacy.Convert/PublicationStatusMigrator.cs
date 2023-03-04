@@ -11,18 +11,15 @@ internal sealed class PublicationStatusMigrator : PPLMigrator
     private static async IAsyncEnumerable<PublicationStatus> GetNodeStatuses()
     {
         await Task.CompletedTask;
-        yield return new PublicationStatus
-        {
+        yield return new PublicationStatus {
             Id = 0,
             Name = "Not Published",
         };
-        yield return new PublicationStatus
-        {
+        yield return new PublicationStatus {
             Id = 1,
             Name = "Published publically",
         };
-        yield return new PublicationStatus
-        {
+        yield return new PublicationStatus {
             Id = 2,
             Name = "Published privately",
         };

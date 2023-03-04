@@ -33,8 +33,7 @@ internal class SiteDataService : ISiteDataService
         public required List<Tenant> Tenants { get; init; }
 
     }
-    private Data _data = new Data
-    {
+    private Data _data = new Data {
         Tenants = new List<Tenant>(),
         UserMenus = new Dictionary<(int, int), List<MenuItem>>(),
         UserTenantActions = new HashSet<UserTenantAction>(),
@@ -55,13 +54,11 @@ internal class SiteDataService : ISiteDataService
     public int GetUserId()
     {
         var cp = _httpContextAccessor.HttpContext!.User;
-        if (cp == null)
-        {
+        if (cp == null) {
             return 0;
         }
         var useIdText = cp.Claims.FirstOrDefault(x => x.Type == "user_id");
-        if (useIdText == null)
-        {
+        if (useIdText == null) {
             return 0;
 
         }
@@ -77,12 +74,11 @@ internal class SiteDataService : ISiteDataService
     public async Task InitializeAsync()
     {
         _logger.LogInformation("Loading site data");
-        var data = new Data
-        {
+        var data = new Data {
             Tenants = await LoadTenantsAsync(),
             UserMenus = await LoadUserMenusAsync(),
             UserTenantActions = await LoadUserTenantActionsAsync(),
-            UserTenantEditActions= await LoadUserTenantEditActionsAsync(),
+            UserTenantEditActions = await LoadUserTenantEditActionsAsync(),
         };
         _data = data;
     }
@@ -102,12 +98,10 @@ internal class SiteDataService : ISiteDataService
     public string? GetUrlPathForId(int tenantId, int urlId)
     {
         var tenant = _data.Tenants.Find(x => x.Id == tenantId);
-        if (tenant is null)
-        {
+        if (tenant is null) {
             throw new NullReferenceException("Tenant should not be null");
         }
-        if (tenant.IdToUrl.TryGetValue(urlId, out var urlPath))
-        {
+        if (tenant.IdToUrl.TryGetValue(urlId, out var urlPath)) {
             return urlPath;
         }
         return null;
@@ -117,8 +111,7 @@ internal class SiteDataService : ISiteDataService
     {
         var context = _httpContextAccessor.HttpContext!;
         return _data.UserTenantActions.Contains(
-            new UserTenantAction
-            {
+            new UserTenantAction {
                 UserId = GetUserId(),
                 TenantId = GetTenantId(),
                 Action = context.Request.Path
@@ -130,13 +123,11 @@ internal class SiteDataService : ISiteDataService
     {
         var context = _httpContextAccessor.HttpContext!;
         var domainName = context.Request.Host.Value;
-        if (domainName == "localhost:7141")
-        {
+        if (domainName == "localhost:7141") {
             return 1;
         }
         var tenant = _data.Tenants.Find(x => x.DomainName == domainName);
-        if (tenant is not null)
-        {
+        if (tenant is not null) {
             return tenant.Id;
         }
         return 1;
@@ -149,12 +140,10 @@ internal class SiteDataService : ISiteDataService
         var tenantId = GetTenantId();
         var urlPath = context.Request.Path.Value!.Substring(1);
         var tenant = _data.Tenants.Find(x => x.Id == tenantId);
-        if (tenant is null)
-        {
+        if (tenant is null) {
             throw new NullReferenceException("Tenant should not be null");
         }
-        if (tenant.UrlToId.TryGetValue(urlPath, out var urlId))
-        {
+        if (tenant.UrlToId.TryGetValue(urlPath, out var urlId)) {
             return urlId;
         }
         return null;
@@ -165,11 +154,9 @@ internal class SiteDataService : ISiteDataService
         var tenants = new List<Tenant>();
         var sw = Stopwatch.StartNew();
 
-        try
-        {
+        try {
             await _connection.OpenAsync();
-            using (var readCommand = _connection.CreateCommand())
-            {
+            using (var readCommand = _connection.CreateCommand()) {
                 var sql = $"""
             select
             t.id,
@@ -181,12 +168,10 @@ internal class SiteDataService : ISiteDataService
                 readCommand.CommandText = sql;
                 await readCommand.PrepareAsync();
                 await using var reader = await readCommand.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
+                while (await reader.ReadAsync()) {
                     var tenantId = reader.GetInt32(0);
                     var domainName = reader.GetString(1);
-                    tenants.Add(new Tenant
-                    {
+                    tenants.Add(new Tenant {
                         Id = tenantId,
                         DomainName = domainName,
                         IdToUrl = new Dictionary<int, string>(),
@@ -194,8 +179,7 @@ internal class SiteDataService : ISiteDataService
                     });
                 }
             }
-            using (var readCommand = _connection.CreateCommand())
-            {
+            using (var readCommand = _connection.CreateCommand()) {
                 var sql = $"""
                     select
                     tn.tenant_id,
@@ -209,11 +193,9 @@ internal class SiteDataService : ISiteDataService
                 readCommand.CommandText = sql;
                 await readCommand.PrepareAsync();
                 await using var reader = await readCommand.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
+                while (await reader.ReadAsync()) {
                     var tenant = tenants.Find(x => x.Id == reader.GetInt32(0));
-                    if (tenant is null)
-                    {
+                    if (tenant is null) {
                         throw new NullReferenceException("Tenant should not be null");
                     }
                     tenant.UrlToId.Add(reader.GetString(2), reader.GetInt32(1));
@@ -224,8 +206,7 @@ internal class SiteDataService : ISiteDataService
             _logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
             return tenants;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
 
@@ -235,8 +216,7 @@ internal class SiteDataService : ISiteDataService
     {
         var sw = Stopwatch.StartNew();
         var userMenus = new Dictionary<(int, int), List<MenuItem>>();
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             with 
@@ -343,8 +323,7 @@ internal class SiteDataService : ISiteDataService
             readCommand.CommandText = sql;
             await readCommand.PrepareAsync();
             await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
+            while (await reader.ReadAsync()) {
                 var user_id = reader.GetInt32(0);
                 var tenant_id = reader.GetInt32(1);
                 var menuItems = reader.GetFieldValue<List<Link>>(2);
@@ -353,8 +332,7 @@ internal class SiteDataService : ISiteDataService
             _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
             return userMenus;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }
@@ -362,8 +340,7 @@ internal class SiteDataService : ISiteDataService
     {
         var sw = Stopwatch.StartNew();
         var userTenantActions = new HashSet<UserTenantEditAction>();
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = """
             select
@@ -407,15 +384,13 @@ internal class SiteDataService : ISiteDataService
             readCommand.CommandText = sql;
             await readCommand.PrepareAsync();
             await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
+            while (await reader.ReadAsync()) {
                 var userId = reader.GetInt32(0);
                 var tenantId = reader.GetInt32(1);
                 var nodeTypeId = reader.GetInt32(2);
 
                 userTenantActions.Add(
-                     new UserTenantEditAction
-                     {
+                     new UserTenantEditAction {
                          UserId = userId,
                          TenantId = tenantId,
                          NodeTypeId = nodeTypeId,
@@ -425,8 +400,7 @@ internal class SiteDataService : ISiteDataService
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
             return userTenantActions;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }
@@ -434,8 +408,7 @@ internal class SiteDataService : ISiteDataService
     {
         var sw = Stopwatch.StartNew();
         var userTenantActions = new HashSet<UserTenantAction>();
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = """
             select
@@ -465,15 +438,13 @@ internal class SiteDataService : ISiteDataService
             readCommand.CommandText = sql;
             await readCommand.PrepareAsync();
             await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
+            while (await reader.ReadAsync()) {
                 var userId = reader.GetInt32(0);
                 var tenantId = reader.GetInt32(1);
                 var action = reader.GetFieldValue<string>(2);
 
                 userTenantActions.Add(
-                     new UserTenantAction
-                     {
+                     new UserTenantAction {
                          UserId = userId,
                          TenantId = tenantId,
                          Action = action,
@@ -483,8 +454,7 @@ internal class SiteDataService : ISiteDataService
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
             return userTenantActions;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }
@@ -492,12 +462,10 @@ internal class SiteDataService : ISiteDataService
     public IEnumerable<Link> GetMenuItemsForUser()
     {
         var context = _httpContextAccessor.HttpContext!;
-        if (_data.UserMenus.TryGetValue((GetUserId(), GetTenantId()), out var lst))
-        {
+        if (_data.UserMenus.TryGetValue((GetUserId(), GetTenantId()), out var lst)) {
             return lst;
         }
-        else
-        {
+        else {
             return new List<Link>();
         }
     }
@@ -507,8 +475,7 @@ internal class SiteDataService : ISiteDataService
         var tenantId = GetTenantId();
         var signedIn = GetUserId() != 0;
 
-        return (tenantId, signedIn) switch
-        {
+        return (tenantId, signedIn) switch {
             (1, false) => "_LayoutPPL",
             (1, true) => "_LayoutPPL",
             (6, false) => "_LayoutCPCT",
@@ -519,12 +486,10 @@ internal class SiteDataService : ISiteDataService
 
     public bool CanEdit(Node node)
     {
-        if (node.Authoring.Id == GetUserId())
-        {
+        if (node.Authoring.Id == GetUserId()) {
             return true;
         }
-        if (_data.UserTenantEditActions.Contains(new UserTenantEditAction { UserId = GetUserId(), TenantId = GetTenantId(), NodeTypeId = node.NodeTypeId })) 
-        {
+        if (_data.UserTenantEditActions.Contains(new UserTenantEditAction { UserId = GetUserId(), TenantId = GetTenantId(), NodeTypeId = node.NodeTypeId })) {
             return true;
         }
         return false;

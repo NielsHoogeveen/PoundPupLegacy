@@ -220,8 +220,7 @@ internal class FetchArticlesService : IFetchArticlesService
     public async Task<Articles> GetArticles(List<int> selectedTerms, int startIndex, int length)
     {
         var termsList = string.Join(',', selectedTerms.Select(x => x.ToString()));
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             WITH
@@ -254,16 +253,14 @@ internal class FetchArticlesService : IFetchArticlesService
             var articles = reader.GetFieldValue<Articles>(0);
             return articles;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }
 
     public async Task<Articles> GetArticles(int startIndex, int length)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             WITH
@@ -294,11 +291,10 @@ internal class FetchArticlesService : IFetchArticlesService
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             var articles = reader.GetFieldValue<Articles>(0);
-            
+
             return articles;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

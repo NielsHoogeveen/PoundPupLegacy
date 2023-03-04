@@ -13,8 +13,7 @@ public class TenantCreator : IEntityCreator<Tenant>
         await using var accessRoleWriter = await AccessRoleWriter.CreateAsync(connection);
         await using var administratorRoleWriter = await AdministratorRoleWriter.CreateAsync(connection);
 
-        await foreach (var tenant in tenants)
-        {
+        await foreach (var tenant in tenants) {
             await userGroupWriter.WriteAsync(tenant);
             await ownerWriter.WriteAsync(tenant);
             await tenantWriter.WriteAsync(tenant);

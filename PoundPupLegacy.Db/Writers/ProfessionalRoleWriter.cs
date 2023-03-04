@@ -40,8 +40,7 @@ internal sealed class ProfessionalRoleWriter : DatabaseWriter<ProfessionalRole>,
         WriteValue(professionalRole.PersonId, PERSON_ID);
         WriteValue(professionalRole.ProfessionId, PROFESSION_ID);
         WriteDateTimeRange(professionalRole.DateTimeRange, DATERANGE);
-        professionalRole.Id = await _command.ExecuteScalarAsync() switch
-        {
+        professionalRole.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("Insert of professional role does not return an id.")
         };

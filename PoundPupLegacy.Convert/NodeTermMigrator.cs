@@ -85,16 +85,14 @@ internal sealed class NodeTermMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var nodeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id"));
             var nameableId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
 
 
             var term = await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, nameableId);
 
-            yield return new NodeTerm
-            {
+            yield return new NodeTerm {
                 NodeId = nodeId,
                 TermId = (int)term.Id!,
             };

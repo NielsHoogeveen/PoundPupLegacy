@@ -16,29 +16,24 @@ public static class PagedListExtensions
 
     private static int GetStartPage(this PagedList pl)
     {
-        if (pl.PageNumber <= 4)
-        {
+        if (pl.PageNumber <= 4) {
             return 1;
         }
-        if (pl.PageNumber > pl.NumberOfPages - 4 && pl.NumberOfPages < 9)
-        {
+        if (pl.PageNumber > pl.NumberOfPages - 4 && pl.NumberOfPages < 9) {
             return pl.NumberOfPages;
 
         }
-        if (pl.PageNumber > pl.NumberOfPages - 4)
-        {
+        if (pl.PageNumber > pl.NumberOfPages - 4) {
             return pl.NumberOfPages - 9;
         }
         return pl.PageNumber - 4;
     }
     private static int GetEndPage(this PagedList pl)
     {
-        if (pl.NumberOfPages - pl.PageNumber < 5)
-        {
+        if (pl.NumberOfPages - pl.PageNumber < 5) {
             return pl.NumberOfPages + 1;
         }
-        if (pl.PageNumber < 6)
-        {
+        if (pl.PageNumber < 6) {
             return Math.Min(10, pl.NumberOfPages);
         }
         return pl.PageNumber + 5;
@@ -46,8 +41,7 @@ public static class PagedListExtensions
     }
     public static string GetQueryString(this PagedList pl, int pageNumbeer)
     {
-        if (string.IsNullOrEmpty(pl.QueryString))
-        {
+        if (string.IsNullOrEmpty(pl.QueryString)) {
             return $"page={pageNumbeer}";
         }
         return $"{pl.QueryString}&page={pageNumbeer}";

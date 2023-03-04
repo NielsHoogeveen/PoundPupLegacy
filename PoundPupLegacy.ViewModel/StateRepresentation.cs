@@ -1,6 +1,6 @@
 ﻿
 namespace PoundPupLegacy.ViewModel;
-public record StateRepresentation 
+public record StateRepresentation
 {
     public required Link State { get; set; }
 
@@ -8,8 +8,7 @@ public record StateRepresentation
     public required MemberOfCongress[] Members {
         get => members;
         init {
-            if(value is not null) 
-            {
+            if (value is not null) {
                 members = value;
             }
         }

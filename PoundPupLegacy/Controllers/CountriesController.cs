@@ -23,8 +23,7 @@ public class CountriesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess())
-        {
+        if (!_siteDataService.HasAccess()) {
             return NotFound();
         }
         var stopwatch = new Stopwatch();

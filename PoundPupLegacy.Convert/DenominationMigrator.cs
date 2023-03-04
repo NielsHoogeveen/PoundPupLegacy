@@ -64,8 +64,7 @@ internal sealed class DenominationMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
@@ -80,10 +79,8 @@ internal sealed class DenominationMigrator : PPLMigrator
                     ParentNames = new List<string>(),
                 }
             };
-            if (topicName != null)
-            {
-                vocabularyNames.Add(new VocabularyName
-                {
+            if (topicName != null) {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -91,8 +88,7 @@ internal sealed class DenominationMigrator : PPLMigrator
                 });
             }
 
-            yield return new Denomination
-            {
+            yield return new Denomination {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

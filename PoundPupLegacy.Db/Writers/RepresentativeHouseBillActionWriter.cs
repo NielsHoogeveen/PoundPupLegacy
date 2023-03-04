@@ -40,8 +40,7 @@ internal sealed class RepresentativeHouseBillActionWriter : DatabaseWriter<Repre
         var command = await CreateInsertStatementAsync(
             connection,
             "representative_house_bill_action",
-            columnDefinitions.ToImmutableList().Add(new ColumnDefinition
-            {
+            columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
                 Name = ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
@@ -68,17 +67,14 @@ internal sealed class RepresentativeHouseBillActionWriter : DatabaseWriter<Repre
 
     internal override async Task WriteAsync(RepresentativeHouseBillAction representativeHouseBillAction)
     {
-        if (representativeHouseBillAction.Id is null)
-        {
+        if (representativeHouseBillAction.Id is null) {
             DoWrites(representativeHouseBillAction, _generateIdCommand);
-            representativeHouseBillAction.Id = await _command.ExecuteScalarAsync() switch
-            {
+            representativeHouseBillAction.Id = await _command.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception("Insert of representative house bill action does not return an id.")
             };
         }
-        else
-        {
+        else {
             WriteValue(representativeHouseBillAction.Id, ID);
             DoWrites(representativeHouseBillAction, _command);
             await _command.ExecuteNonQueryAsync();

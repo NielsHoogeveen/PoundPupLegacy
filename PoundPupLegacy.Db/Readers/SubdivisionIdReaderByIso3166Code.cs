@@ -28,15 +28,13 @@ public sealed class SubdivisionIdReaderByIso3166Code : DatabaseUpdater<int>, IDa
 
     public async Task<int> ReadAsync(string code)
     {
-        if (code is null)
-        {
+        if (code is null) {
             throw new ArgumentNullException(nameof(code));
         }
         _command.Parameters["iso_3166_2_code"].Value = code;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
             var result = reader.GetInt32("id");
             await reader.CloseAsync();

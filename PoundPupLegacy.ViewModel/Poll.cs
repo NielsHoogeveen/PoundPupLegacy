@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public interface Poll: Node
+public interface Poll : Node
 {
 }

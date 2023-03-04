@@ -15,8 +15,7 @@ public class BlogsController : Controller
     }
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess())
-        {
+        if (!_siteDataService.HasAccess()) {
             return NotFound();
         }
         var model = await _fetchBlogsService.FetchBlogs();

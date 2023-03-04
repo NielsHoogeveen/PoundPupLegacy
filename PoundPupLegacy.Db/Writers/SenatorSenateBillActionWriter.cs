@@ -40,8 +40,7 @@ internal sealed class SenatorSenateBillActionWriter : DatabaseWriter<SenatorSena
         var command = await CreateInsertStatementAsync(
             connection,
             "senator_senate_bill_action",
-            columnDefinitions.ToImmutableList().Add(new ColumnDefinition
-            {
+            columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
                 Name = ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
@@ -68,17 +67,14 @@ internal sealed class SenatorSenateBillActionWriter : DatabaseWriter<SenatorSena
 
     internal override async Task WriteAsync(SenatorSenateBillAction senatorSenateBillAction)
     {
-        if (senatorSenateBillAction.Id is null)
-        {
+        if (senatorSenateBillAction.Id is null) {
             DoWrites(senatorSenateBillAction, _generateIdCommand);
-            senatorSenateBillAction.Id = await _command.ExecuteScalarAsync() switch
-            {
+            senatorSenateBillAction.Id = await _command.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception("Insert of senator senate bill action does not return an id.")
             };
         }
-        else
-        {
+        else {
             WriteValue(senatorSenateBillAction.Id, ID);
             DoWrites(senatorSenateBillAction, _command);
             await _command.ExecuteNonQueryAsync();

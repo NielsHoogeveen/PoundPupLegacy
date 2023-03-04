@@ -26,8 +26,7 @@ public class PersonsController : Controller
 
     public SearchOption GetSearchOption(string? term)
     {
-        return term switch
-        {
+        return term switch {
             null => SearchOption.Contains,
             "contains" => SearchOption.Contains,
             "starts_with" => SearchOption.StartsWith,
@@ -39,8 +38,7 @@ public class PersonsController : Controller
 
     public string GetSearchTerm(string? term)
     {
-        if (term is null)
-        {
+        if (term is null) {
             return "";
         }
         return term;
@@ -50,18 +48,15 @@ public class PersonsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess())
-        {
+        if (!_siteDataService.HasAccess()) {
             return NotFound();
         }
         var pageNumber = 1;
 
         var query = this.HttpContext.Request.Query;
         var pageValue = query["page"];
-        if (!string.IsNullOrEmpty(pageValue))
-        {
-            if (int.TryParse(pageValue, out int providedPageNumber))
-            {
+        if (!string.IsNullOrEmpty(pageValue)) {
+            if (int.TryParse(pageValue, out int providedPageNumber)) {
                 pageNumber = providedPageNumber;
             }
         }

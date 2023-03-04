@@ -1,6 +1,5 @@
 ﻿using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
-using System;
 using System.Data;
 
 namespace PoundPupLegacy.Convert;
@@ -21,7 +20,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
 
     private async IAsyncEnumerable<BasicOrganization> ReadOrganizations()
     {
-            
+
         var sql = $"""
             SELECT
                 n.nid id,
@@ -178,8 +177,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
         var reader = await readCommand.ExecuteReaderAsync();
         var miscellaneous = await _nodeIdReader.ReadAsync(Constants.PPL, 12634);
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var vocabularyNames = new List<VocabularyName>();
 
 
@@ -189,8 +187,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
                             .Where(x => !string.IsNullOrEmpty(x))
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
-            foreach (var typeId in typeIds)
-            {
+            foreach (var typeId in typeIds) {
                 var organizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, typeId);
                 organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
             }
@@ -211,11 +208,9 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
                         UrlId = id
                     }
             };
-            
-            if (!organizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(miscellaneous))
-            {
-                tenantNodes.Add(new TenantNode
-                {
+
+            if (!organizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(miscellaneous)) {
+                tenantNodes.Add(new TenantNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -226,8 +221,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
                 });
             }
 
-            yield return new BasicOrganization
-            {
+            yield return new BasicOrganization {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

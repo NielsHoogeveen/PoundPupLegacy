@@ -77,8 +77,7 @@ internal sealed class TypeOfAbuserMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
@@ -94,16 +93,13 @@ internal sealed class TypeOfAbuserMigrator : PPLMigrator
                     ParentNames = new List<string>(),
                 }
             };
-            if (topicName != null)
-            {
+            if (topicName != null) {
                 var lst = new List<string>();
-                if (parentTopicName != null)
-                {
+                if (parentTopicName != null) {
                     lst.Add(parentTopicName);
                 }
 
-                vocabularyNames.Add(new VocabularyName
-                {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -111,8 +107,7 @@ internal sealed class TypeOfAbuserMigrator : PPLMigrator
                 });
             }
 
-            yield return new TypeOfAbuser
-            {
+            yield return new TypeOfAbuser {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

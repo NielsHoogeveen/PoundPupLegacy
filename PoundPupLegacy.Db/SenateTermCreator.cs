@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Db;
+﻿namespace PoundPupLegacy.Db;
 
 public class SenateTermCreator : IEntityCreator<SenateTerm>
 {
@@ -14,8 +12,7 @@ public class SenateTermCreator : IEntityCreator<SenateTerm>
         await using var senateTermWriter = await SenateTermWriter.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var senateTerm in senateTerms)
-        {
+        await foreach (var senateTerm in senateTerms) {
             await nodeWriter.WriteAsync(senateTerm);
             await searchableWriter.WriteAsync(senateTerm);
             await documentableWriter.WriteAsync(senateTerm);
@@ -26,8 +23,7 @@ public class SenateTermCreator : IEntityCreator<SenateTerm>
             }
             await CongressionalTermPoliticalPartyAffiliationCreator.CreateAsync(senateTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
 
-            foreach (var tenantNode in senateTerm.TenantNodes)
-            {
+            foreach (var tenantNode in senateTerm.TenantNodes) {
                 tenantNode.NodeId = senateTerm.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

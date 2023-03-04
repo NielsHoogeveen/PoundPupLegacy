@@ -117,15 +117,13 @@ internal sealed class BillMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
             var vocabularyNames = new List<VocabularyName>();
 
             var id = reader.GetInt32("id");
 
-            if (!reader.IsDBNull("topic_name"))
-            {
+            if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");
                 var topicParentNames = reader.IsDBNull("topic_parent_names") ?
                     new List<string>() : reader.GetString("topic_parent_names")
@@ -133,8 +131,7 @@ internal sealed class BillMigrator : PPLMigrator
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
 
-                vocabularyNames.Add(new VocabularyName
-                {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -142,8 +139,7 @@ internal sealed class BillMigrator : PPLMigrator
                 });
             }
 
-            yield return new HouseBill
-            {
+            yield return new HouseBill {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
@@ -270,15 +266,13 @@ internal sealed class BillMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
             var vocabularyNames = new List<VocabularyName>();
 
             var id = reader.GetInt32("id");
 
-            if (!reader.IsDBNull("topic_name"))
-            {
+            if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");
                 var topicParentNames = reader.IsDBNull("topic_parent_names") ?
                     new List<string>() : reader.GetString("topic_parent_names")
@@ -286,8 +280,7 @@ internal sealed class BillMigrator : PPLMigrator
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
 
-                vocabularyNames.Add(new VocabularyName
-                {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -295,8 +288,7 @@ internal sealed class BillMigrator : PPLMigrator
                 });
             }
 
-            yield return new SenateBill
-            {
+            yield return new SenateBill {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

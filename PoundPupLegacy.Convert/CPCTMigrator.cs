@@ -14,16 +14,13 @@ internal abstract class CPCTMigrator : Migrator
     protected async Task<(int, int)> GetNodeId(int urlId)
     {
         var (id, ownerId) = GetUrlIdAndTenant(urlId);
-        if (urlId >= 33162 && ownerId == Constants.CPCT)
-        {
+        if (urlId >= 33162 && ownerId == Constants.CPCT) {
             var nodeId = await _nodeIdReader.ReadAsync(Constants.CPCT, id);
             var node = await _tenantNodeByUrlIdReader.ReadAsync(Constants.PPL, id);
-            if (node is not null)
-            {
+            if (node is not null) {
                 return (nodeId, node.PublicationStatusId);
             }
-            else
-            {
+            else {
                 return (nodeId, 0);
             }
 
@@ -35,8 +32,7 @@ internal abstract class CPCTMigrator : Migrator
 
     protected (int, int) GetUrlIdAndTenant(int urlId)
     {
-        return urlId switch
-        {
+        return urlId switch {
             10793 => (6138, Constants.PPL),
             34880 => (35760, Constants.PPL),
             35725 => (37560, Constants.PPL),

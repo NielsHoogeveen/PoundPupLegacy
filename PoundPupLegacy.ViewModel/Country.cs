@@ -2,7 +2,7 @@
 
 public interface Country : PoliticalEntity
 {
-    public AdoptionImports AdoptionImports { get;  }
+    public AdoptionImports AdoptionImports { get; }
 
     public OrganizationTypeWithOrganizations[] OrganizationTypes { get; }
 

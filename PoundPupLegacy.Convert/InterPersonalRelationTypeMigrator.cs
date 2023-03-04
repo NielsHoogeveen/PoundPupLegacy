@@ -46,8 +46,7 @@ internal sealed class InterPersonalRelationTypeMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
@@ -61,8 +60,7 @@ internal sealed class InterPersonalRelationTypeMigrator : PPLMigrator
                     ParentNames = new List<string>(),
                 }
             };
-            yield return new InterPersonalRelationType
-            {
+            yield return new InterPersonalRelationType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

@@ -12,9 +12,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
 
     private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations()
     {
-        
-        yield return new UnitedStatesPoliticalPartyAffliation
-        {
+
+        yield return new UnitedStatesPoliticalPartyAffliation {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -58,11 +57,10 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                     },
                 },
             UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(Constants.PPL, Constants.DEMOCRATIC_PARTY)
-            
+
         };
-        
-        yield return new UnitedStatesPoliticalPartyAffliation
-        {
+
+        yield return new UnitedStatesPoliticalPartyAffliation {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -245,7 +243,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        
+
         await UnitedStatesPoliticalPartyAffliationCreator.CreateAsync(GetUnitedStatesPoliticalPartyAffliations(), _postgresConnection);
     }
 }

@@ -1,7 +1,7 @@
-﻿using Xunit;
-using Bunit;
-using PoundPupLegacy.ViewModel;
+﻿using Bunit;
 using PoundPupLegacy.Components;
+using PoundPupLegacy.ViewModel;
+using Xunit;
 namespace PoundPupLegacy.Test;
 
 public class AuthoringViewerTest
@@ -16,7 +16,8 @@ public class AuthoringViewerTest
     };
 
     [Fact]
-    public void AuthoringViewRendersDateTimeInddMMMMyyyy() {
+    public void AuthoringViewRendersDateTimeInddMMMMyyyy()
+    {
         var ctx = new TestContext();
         var now = DateTime.Now;
         var param = ComponentParameter.CreateParameter("Model", authoring);
@@ -31,7 +32,7 @@ public class AuthoringViewerTest
         var now = DateTime.Now;
         var param = ComponentParameter.CreateParameter("Model", authoring);
         var aut = ctx.RenderComponent<AuthoringViewer>(param);
-        
+
         var elem = aut.Find("span.name a");
         Assert.Single(elem.Attributes);
         var attr = elem.Attributes[0];
@@ -53,7 +54,7 @@ public class AuthoringViewerTest
         AngleSharp.Html.Dom.IHtmlDivElement parentDiv = (parent as AngleSharp.Html.Dom.IHtmlDivElement)!;
         Assert.Equal("author", parentDiv.ClassName);
     }
-    
+
 
 }
 

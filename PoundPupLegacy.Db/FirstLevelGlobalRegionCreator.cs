@@ -20,8 +20,7 @@ public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegi
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var node in nodes)
-        {
+        await foreach (var node in nodes) {
             await nodeWriter.WriteAsync(node);
             await searchableWriter.WriteAsync(node);
             await documentableWriter.WriteAsync(node);
@@ -30,8 +29,7 @@ public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegi
             await globalRegionWriter.WriteAsync(node);
             await firstLevelGlobalRegionWriter.WriteAsync(node);
             await EntityCreator.WriteTerms(node, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in node.TenantNodes)
-            {
+            foreach (var tenantNode in node.TenantNodes) {
                 tenantNode.NodeId = node.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

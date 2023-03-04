@@ -18,8 +18,7 @@ internal class FetchCountriesService : IFetchCountriesService
 
     public async Task<FirstLevelRegionListEntry[]> FetchCountries()
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
                         select
@@ -124,19 +123,16 @@ internal class FetchCountriesService : IFetchCountriesService
             await readCommand.PrepareAsync();
             readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
             await using var reader = await readCommand.ExecuteReaderAsync();
-            if (reader.HasRows)
-            {
+            if (reader.HasRows) {
                 await reader.ReadAsync();
                 var organizations = reader.GetFieldValue<FirstLevelRegionListEntry[]>(0);
                 return organizations!;
             }
-            else
-            {
+            else {
                 return new FirstLevelRegionListEntry[] { };
             }
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

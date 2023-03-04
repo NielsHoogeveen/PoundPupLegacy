@@ -38,11 +38,9 @@ public sealed class TermReaderByNameableId : DatabaseUpdater<Term>, IDatabaseRea
         _command.Parameters["nameable_id"].Value = nameableId;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
-            var term = new Term
-            {
+            var term = new Term {
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("name"),
                 VocabularyId = ownerId,

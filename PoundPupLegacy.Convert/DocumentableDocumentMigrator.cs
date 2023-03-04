@@ -51,11 +51,9 @@ internal sealed class DocumentableDocumentMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
-            yield return new DocumentableDocument
-            {
+            yield return new DocumentableDocument {
                 DocumentableId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("documentable_id")),
                 DocumentId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("document_id")),
             };

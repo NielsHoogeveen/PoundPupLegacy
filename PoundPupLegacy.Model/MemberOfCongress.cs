@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
 
-public interface MemberOfCongress: ProfessionalRole
+public interface MemberOfCongress : ProfessionalRole
 {
 }

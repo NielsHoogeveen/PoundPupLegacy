@@ -18,8 +18,7 @@ internal class FetchBlogsService : IFetchBlogsService
 
     public async Task<List<BlogListEntry>> FetchBlogs()
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             select 
@@ -64,8 +63,7 @@ internal class FetchBlogsService : IFetchBlogsService
 
             return blogs!;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

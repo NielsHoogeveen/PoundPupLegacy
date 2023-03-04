@@ -39,19 +39,16 @@ internal abstract class CountrySubdivisionTypeMigrator : PPLMigrator
 
         var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
 
-        await foreach (string line in System.IO.File.ReadLinesAsync(@$"..\..\..\files\{FileName}").Skip(1))
-        {
+        await foreach (string line in System.IO.File.ReadLinesAsync(@$"..\..\..\files\{FileName}").Skip(1)) {
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int id = int.Parse(parts[0]);
             var name = parts[1];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[0]));
             var subdivisionType = await termReader.ReadAsync(vocabularyId, name);
-            if (subdivisionType is null)
-            {
+            if (subdivisionType is null) {
                 Console.WriteLine(name);
             }
-            yield return new CountrySubdivisionType
-            {
+            yield return new CountrySubdivisionType {
                 CountryId = countryId,
                 SubdivisionTypeId = subdivisionType!.NameableId,
             };

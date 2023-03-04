@@ -5,8 +5,7 @@ internal abstract class CountryMigrator : PPLMigrator
     public CountryMigrator(MySqlToPostgresConverter converter) : base(converter) { }
     protected static string GetISO3166Code2ForCountry(int id)
     {
-        return id switch
-        {
+        return id switch {
             3891 => "NL-AW",
             3914 => "US-PR",
             3920 => "US-VI",
@@ -34,8 +33,7 @@ internal abstract class CountryMigrator : PPLMigrator
     }
     protected static int GetSupervisingCountryId(int id)
     {
-        return id switch
-        {
+        return id switch {
             3891 => 4023,
             3914 => 3805,
             3920 => 3805,

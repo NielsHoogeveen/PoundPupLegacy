@@ -43,12 +43,10 @@ internal sealed class WrongfulMedicationCaseMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
-            var country = new WrongfulMedicationCase
-            {
+            var country = new WrongfulMedicationCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

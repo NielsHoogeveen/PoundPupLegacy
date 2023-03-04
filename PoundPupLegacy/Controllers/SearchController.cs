@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.ViewModel;
 using System.Diagnostics;
 
 namespace PoundPupLegacy.Controllers;
@@ -28,8 +27,7 @@ public class SearchController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess())
-        {
+        if (!_siteDataService.HasAccess()) {
             return NotFound();
         }
         var pageNumber = 1;
@@ -37,10 +35,8 @@ public class SearchController : Controller
         var query = this.HttpContext.Request.Query;
         var searchValue = query["search"];
         var pageValue = query["page"];
-        if (!string.IsNullOrEmpty(pageValue))
-        {
-            if (int.TryParse(pageValue, out int providedPageNumber))
-            {
+        if (!string.IsNullOrEmpty(pageValue)) {
+            if (int.TryParse(pageValue, out int providedPageNumber)) {
                 pageNumber = providedPageNumber;
             }
         }

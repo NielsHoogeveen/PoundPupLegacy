@@ -14,8 +14,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
 
     private async IAsyncEnumerable<Organization> GetOrganizations()
     {
-        yield return new BasicOrganization
-        {
+        yield return new BasicOrganization {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -156,8 +155,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 }
             }
         };
-        yield return new BasicOrganization
-        {
+        yield return new BasicOrganization {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -320,8 +318,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var vocabularyNames = new List<VocabularyName>();
 
 
@@ -331,16 +328,14 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                             .Where(x => !string.IsNullOrEmpty(x))
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
-            foreach (var typeId in typeIds)
-            {
+            foreach (var typeId in typeIds) {
                 var organizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, typeId);
                 organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
             }
 
             var id = reader.GetInt32("id");
 
-            if (!reader.IsDBNull("topic_name"))
-            {
+            if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");
                 var topicParentNames = reader.IsDBNull("topic_parent_names") ?
                     new List<string>() : reader.GetString("topic_parent_names")
@@ -372,8 +367,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                     .Select(x => x.Replace("Missouri", "Missouri (state of the USA)"))
                     .ToList();
 
-                vocabularyNames.Add(new VocabularyName
-                {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,

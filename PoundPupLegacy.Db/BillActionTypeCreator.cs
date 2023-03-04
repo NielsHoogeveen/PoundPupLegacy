@@ -17,15 +17,13 @@ public class BillActionTypeCreator : IEntityCreator<BillActionType>
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var billActionType in billActionTypes)
-        {
+        await foreach (var billActionType in billActionTypes) {
             await nodeWriter.WriteAsync(billActionType);
             await searchableWriter.WriteAsync(billActionType);
             await nameableWriter.WriteAsync(billActionType);
             await billActionTypeWriter.WriteAsync(billActionType);
             await EntityCreator.WriteTerms(billActionType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in billActionType.TenantNodes)
-            {
+            foreach (var tenantNode in billActionType.TenantNodes) {
                 tenantNode.NodeId = billActionType.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

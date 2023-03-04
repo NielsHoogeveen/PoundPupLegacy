@@ -3,7 +3,7 @@
 public record Tenant
 {
     private Subgroup[] subgroups = Array.Empty<Subgroup>();
-    public required Subgroup[] Subgroups { 
+    public required Subgroup[] Subgroups {
         get => subgroups;
         init {
             if (value is not null) {

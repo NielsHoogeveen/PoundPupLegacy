@@ -9,13 +9,11 @@ public class InterPersonalRelationCreator : IEntityCreator<InterPersonalRelation
         await using var interPersonalRelationWriter = await InterPersonalRelationWriter.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var interPersonalRelation in interPersonalRelations)
-        {
+        await foreach (var interPersonalRelation in interPersonalRelations) {
             await nodeWriter.WriteAsync(interPersonalRelation);
             await interPersonalRelationWriter.WriteAsync(interPersonalRelation);
 
-            foreach (var tenantNode in interPersonalRelation.TenantNodes)
-            {
+            foreach (var tenantNode in interPersonalRelation.TenantNodes) {
                 tenantNode.NodeId = interPersonalRelation.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

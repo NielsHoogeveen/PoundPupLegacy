@@ -31,8 +31,7 @@ public sealed class VocabularyIdReaderByOwnerAndName : DatabaseUpdater<Term>, ID
         _command.Parameters["name"].Value = name;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
             var id = reader.GetInt32("id");
             await reader.CloseAsync();

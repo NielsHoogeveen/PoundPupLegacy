@@ -68,8 +68,7 @@ internal sealed class ChildPlacementTypeMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
@@ -84,15 +83,12 @@ internal sealed class ChildPlacementTypeMigrator : PPLMigrator
                     ParentNames = new List<string>(),
                 }
             };
-            if (topicName != null)
-            {
+            if (topicName != null) {
                 var parentNames = new List<string>();
-                if (parentTopicName != null)
-                {
+                if (parentTopicName != null) {
                     parentNames.Add(parentTopicName);
                 }
-                vocabularyNames.Add(new VocabularyName
-                {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -100,8 +96,7 @@ internal sealed class ChildPlacementTypeMigrator : PPLMigrator
                 });
             }
 
-            yield return new ChildPlacementType
-            {
+            yield return new ChildPlacementType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -133,7 +128,7 @@ internal sealed class ChildPlacementTypeMigrator : PPLMigrator
                 },
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL,reader.GetInt32("file_id_tile_image")),
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL, reader.GetInt32("file_id_tile_image")),
                 VocabularyNames = vocabularyNames,
             };
 

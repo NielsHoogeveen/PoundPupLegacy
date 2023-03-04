@@ -23,16 +23,13 @@ internal class RazorViewToStringService : IRazorViewToStringService
 
         var context = _httpContextAccessor.HttpContext!;
         var viewResult = _viewEngine.GetView("", viewName, false);
-        if (viewResult.Success == false)
-        {
+        if (viewResult.Success == false) {
             throw new Exception($"view {viewName} could not be found");
         }
         using var writer = new StringWriter();
-        var c = new ActionContext
-        {
+        var c = new ActionContext {
             HttpContext = context,
-            ActionDescriptor = new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor
-            {
+            ActionDescriptor = new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor {
 
             },
             RouteData = new RouteData()
@@ -43,8 +40,7 @@ internal class RazorViewToStringService : IRazorViewToStringService
             viewResult.View,
             new ViewDataDictionary<T>(
                         metadataProvider: new EmptyModelMetadataProvider(),
-                        modelState: new ModelStateDictionary())
-            {
+                        modelState: new ModelStateDictionary()) {
                 Model = model
             },
             fact.GetTempData(context),

@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public interface Organization :Party
+public interface Organization : Party
 {
     string? WebsiteURL { get; }
-    string? EmailAddress { get;  }
+    string? EmailAddress { get; }
     string Description { get; }
     DateTime? Established { get; }
     DateTime? Terminated { get; }

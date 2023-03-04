@@ -8,16 +8,14 @@ public class FileCreator : IEntityCreator<Model.File>
         await using var fileWriter = await FileWriter.CreateAsync(connection);
         await using var tenantFileWriter = await TenantFileWriter.CreateAsync(connection);
 
-        await foreach (var file in files)
-        {
+        await foreach (var file in files) {
             await fileWriter.WriteAsync(file);
-            foreach(var tenantFile in file.TenantFiles) 
-            {
+            foreach (var tenantFile in file.TenantFiles) {
                 tenantFile.FileId = file.Id;
                 tenantFile.TenantFileId ??= file.Id;
                 await tenantFileWriter.WriteAsync(tenantFile);
             }
-            
+
         }
     }
 }

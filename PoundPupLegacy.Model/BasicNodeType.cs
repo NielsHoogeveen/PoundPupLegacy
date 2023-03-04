@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public sealed record BasicNodeType: NodeType
+public sealed record BasicNodeType : NodeType
 {
     public int? Id { get; set; }
     public string Name { get; }

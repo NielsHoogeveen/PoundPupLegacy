@@ -26,15 +26,13 @@ public sealed class ActionIdReaderByPath : DatabaseUpdater<Term>, IDatabaseReade
 
     public async Task<int> ReadAsync(string path)
     {
-        if (path is null)
-        {
+        if (path is null) {
             throw new ArgumentNullException(nameof(path));
         }
         _command.Parameters["path"].Value = path;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
             var id = reader.GetInt32("id");
             await reader.CloseAsync();

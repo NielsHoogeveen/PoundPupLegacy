@@ -13,8 +13,7 @@ public class SubgroupCreator : IEntityCreator<Subgroup>
         await using var administratorRoleWriter = await AdministratorRoleWriter.CreateAsync(connection);
 
 
-        await foreach (var subgroup in subgroups)
-        {
+        await foreach (var subgroup in subgroups) {
             await userGroupWriter.WriteAsync(subgroup);
             await subgroupWriter.WriteAsync(subgroup);
 

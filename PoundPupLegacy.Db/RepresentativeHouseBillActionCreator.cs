@@ -9,13 +9,11 @@ public class RepresentativeHouseBillActionCreator : IEntityCreator<Representativ
         await using var representativeHouseBillActionWriter = await RepresentativeHouseBillActionWriter.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var representativeHouseBillAction in representativeHouseBillActions)
-        {
+        await foreach (var representativeHouseBillAction in representativeHouseBillActions) {
             await nodeWriter.WriteAsync(representativeHouseBillAction);
             await representativeHouseBillActionWriter.WriteAsync(representativeHouseBillAction);
 
-            foreach (var tenantNode in representativeHouseBillAction.TenantNodes)
-            {
+            foreach (var tenantNode in representativeHouseBillAction.TenantNodes) {
                 tenantNode.NodeId = representativeHouseBillAction.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

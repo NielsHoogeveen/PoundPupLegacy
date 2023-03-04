@@ -21,10 +21,8 @@ public class BlogController : Controller
     {
         var pageNumber = 1;
         var pageValue = HttpContext.Request.Query["page"];
-        if (!string.IsNullOrEmpty(pageValue))
-        {
-            if (int.TryParse(pageValue, out int providedPageNumber))
-            {
+        if (!string.IsNullOrEmpty(pageValue)) {
+            if (int.TryParse(pageValue, out int providedPageNumber)) {
                 pageNumber = providedPageNumber;
             }
         }

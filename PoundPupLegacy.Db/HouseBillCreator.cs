@@ -19,8 +19,7 @@ public class HouseBillCreator : IEntityCreator<HouseBill>
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
 
-        await foreach (var houseBill in houseBills)
-        {
+        await foreach (var houseBill in houseBills) {
             await nodeWriter.WriteAsync(houseBill);
             await searchableWriter.WriteAsync(houseBill);
             await nameableWriter.WriteAsync(houseBill);
@@ -29,8 +28,7 @@ public class HouseBillCreator : IEntityCreator<HouseBill>
             await houseBillWriter.WriteAsync(houseBill);
             await EntityCreator.WriteTerms(houseBill, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
 
-            foreach (var tenantNode in houseBill.TenantNodes)
-            {
+            foreach (var tenantNode in houseBill.TenantNodes) {
                 tenantNode.NodeId = houseBill.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

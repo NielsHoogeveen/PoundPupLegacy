@@ -32,7 +32,7 @@ internal sealed class AdultAftermathMigrator : PPLMigrator
         command.Parameters.Add("publication_status_id", NpgsqlTypes.NpgsqlDbType.Integer);
         command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
         await command.PrepareAsync();
-        foreach(var (node_id, publication_status_id) in entries) {
+        foreach (var (node_id, publication_status_id) in entries) {
             command.Parameters["node_id"].Value = node_id;
             command.Parameters["publication_status_id"].Value = publication_status_id;
             command.ExecuteNonQuery();
@@ -68,8 +68,7 @@ internal sealed class AdultAftermathMigrator : PPLMigrator
 
         var reader = await command.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32(0));
             yield return (id, reader.GetInt32(1));
 

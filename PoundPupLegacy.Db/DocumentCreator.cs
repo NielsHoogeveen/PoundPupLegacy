@@ -11,18 +11,15 @@ public class DocumentCreator : IEntityCreator<Document>
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
         await using var documentableDocumentWriter = await DocumentableDocumentWriter.CreateAsync(connection);
 
-        await foreach (var document in documents)
-        {
+        await foreach (var document in documents) {
             await nodeWriter.WriteAsync(document);
             await searchableWriter.WriteAsync(document);
             await documentWriter.WriteAsync(document);
-            foreach (var tenantNode in document.TenantNodes)
-            {
+            foreach (var tenantNode in document.TenantNodes) {
                 tenantNode.NodeId = document.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }
-            foreach (var documentable in document.Documentables)
-            {
+            foreach (var documentable in document.Documentables) {
                 await documentableDocumentWriter.WriteAsync(new DocumentableDocument { DocumentableId = documentable, DocumentId = document.Id!.Value });
             }
         }

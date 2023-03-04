@@ -85,8 +85,7 @@ internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
 
             var id = reader.GetInt32("id");
@@ -95,8 +94,7 @@ internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
             int organizationIdTo = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("person_id_to"));
             int interPersonalRelationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
 
-            yield return new InterPersonalRelation
-            {
+            yield return new InterPersonalRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

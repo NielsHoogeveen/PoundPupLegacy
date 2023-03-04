@@ -8,10 +8,8 @@
             where T : Identifiable
         {
             var columnDefinitions = new List<ColumnDefinition>();
-            if (insertIdentity)
-            {
-                columnDefinitions.Add(new ColumnDefinition
-                {
+            if (insertIdentity) {
+                columnDefinitions.Add(new ColumnDefinition {
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 });
@@ -46,19 +44,16 @@
 
         internal override async Task WriteAsync(T identifiable)
         {
-            if (_identityInsert)
-            {
+            if (_identityInsert) {
                 if (identifiable.Id is null)
                     throw new NullReferenceException($"Id for {_tableName} should not be null");
                 WriteValue(identifiable.Id, ID);
                 await _command.ExecuteNonQueryAsync();
             }
-            else
-            {
+            else {
                 if (identifiable.Id is not null)
                     throw new Exception($"Id for {_tableName} should be set to null");
-                identifiable.Id = await _command.ExecuteScalarAsync() switch
-                {
+                identifiable.Id = await _command.ExecuteScalarAsync() switch {
                     long i => (int)i,
                     _ => throw new Exception($"No id has been assigned when adding a {_tableName}"),
                 };

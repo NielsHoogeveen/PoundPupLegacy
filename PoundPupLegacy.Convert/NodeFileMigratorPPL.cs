@@ -1,6 +1,6 @@
 ﻿using PoundPupLegacy.Db;
-using System.Data;
 using PoundPupLegacy.Model;
+using System.Data;
 
 namespace PoundPupLegacy.Convert;
 
@@ -83,11 +83,9 @@ internal sealed class NodeFileMigratorPPL : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
-            yield return new NodeFile
-            {
+            yield return new NodeFile {
                 NodeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nid")),
                 FileId = await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL, reader.GetInt32("fid")),
             };

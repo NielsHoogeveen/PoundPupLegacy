@@ -42,16 +42,14 @@ internal sealed class SubdivisionWriter : DatabaseWriter<Subdivision>, IDatabase
     {
         if (subdivision.Id is null)
             throw new NullReferenceException();
-        try
-        {
+        try {
             WriteValue(subdivision.Id, ID);
             WriteValue(subdivision.Name.Trim(), NAME);
             WriteValue(subdivision.CountryId, COUNTRY_ID);
             WriteValue(subdivision.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
             await _command.ExecuteNonQueryAsync();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Console.WriteLine(ex.ToString());
         }
     }

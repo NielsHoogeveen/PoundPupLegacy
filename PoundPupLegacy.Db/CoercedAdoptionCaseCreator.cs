@@ -20,8 +20,7 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var coercedAdoptionCase in coercedAdoptionCases)
-        {
+        await foreach (var coercedAdoptionCase in coercedAdoptionCases) {
             await nodeWriter.WriteAsync(coercedAdoptionCase);
             await searchableWriter.WriteAsync(coercedAdoptionCase);
             await documentableWriter.WriteAsync(coercedAdoptionCase);
@@ -30,8 +29,7 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
             await caseWriter.WriteAsync(coercedAdoptionCase);
             await coercedAdoptionCaseWriter.WriteAsync(coercedAdoptionCase);
             await EntityCreator.WriteTerms(coercedAdoptionCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in coercedAdoptionCase.TenantNodes)
-            {
+            foreach (var tenantNode in coercedAdoptionCase.TenantNodes) {
                 tenantNode.NodeId = coercedAdoptionCase.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

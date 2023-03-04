@@ -38,20 +38,16 @@ internal class NodeCacheService : INodeCacheService
     public async Task<IActionResult> GetResult(int nodeId)
     {
         var tenantNode = new TenantNode { NodeId = nodeId, TenantId = _siteDataService.GetTenantId() };
-        if (_configuration["NodeCaching"] != "on")
-        {
+        if (_configuration["NodeCaching"] != "on") {
             return await AssembleNewResponse(nodeId, tenantNode, false);
         }
-        if (_nodeCache.TryGetValue(tenantNode, out var html))
-        {
-            return new ContentResult
-            {
+        if (_nodeCache.TryGetValue(tenantNode, out var html)) {
+            return new ContentResult {
                 Content = html,
                 ContentType = "text/html"
             };
         }
-        else
-        {
+        else {
             return await AssembleNewResponse(nodeId, tenantNode, true);
         }
     }
@@ -59,8 +55,7 @@ internal class NodeCacheService : INodeCacheService
     private async Task<string?> GetNodeString(int id)
     {
         var node = await _fetchNodeService.FetchNode(id);
-        if (node == null)
-        {
+        if (node == null) {
             return null;
         }
         var html = await _razorViewToStringService.GetFromView("/Views/Shared/Node.cshtml", node);
@@ -70,21 +65,17 @@ internal class NodeCacheService : INodeCacheService
     private async Task<IActionResult> AssembleNewResponse(int nodeId, TenantNode tenantNode, bool storeInDictionary)
     {
         var nodeString = await GetNodeString(nodeId);
-        if (nodeString != null)
-        {
-            if (storeInDictionary)
-            {
+        if (nodeString != null) {
+            if (storeInDictionary) {
                 _nodeCache[tenantNode] = nodeString;
             }
 
-            return new ContentResult
-            {
+            return new ContentResult {
                 Content = nodeString,
                 ContentType = "text/html"
             };
         }
-        else
-        {
+        else {
             return new NotFoundResult();
         }
     }

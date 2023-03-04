@@ -17,15 +17,13 @@ public class PartyPoliticalEntityRelationTypeCreator : IEntityCreator<PartyPolit
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var politicalEntityRelationType in politicalEntityRelationTypes)
-        {
+        await foreach (var politicalEntityRelationType in politicalEntityRelationTypes) {
             await nodeWriter.WriteAsync(politicalEntityRelationType);
             await searchableWriter.WriteAsync(politicalEntityRelationType);
             await nameableWriter.WriteAsync(politicalEntityRelationType);
             await politicalEntityRelationTypeWriter.WriteAsync(politicalEntityRelationType);
             await EntityCreator.WriteTerms(politicalEntityRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in politicalEntityRelationType.TenantNodes)
-            {
+            foreach (var tenantNode in politicalEntityRelationType.TenantNodes) {
                 tenantNode.NodeId = politicalEntityRelationType.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

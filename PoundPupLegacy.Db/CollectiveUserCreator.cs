@@ -7,8 +7,7 @@ public class CollectiveUserCreator : IEntityCreator<Model.CollectiveUser>
 
         await using var collectiveUserWriter = await CollectiveUserWriter.CreateAsync(connection);
 
-        await foreach (var collectiveUser in collectiveUsers)
-        {
+        await foreach (var collectiveUser in collectiveUsers) {
             await collectiveUserWriter.WriteAsync(collectiveUser);
         }
     }

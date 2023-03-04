@@ -15,8 +15,7 @@ namespace PoundPupLegacy.Db.Test
             connection.Open();
             var writerAssembly = Assembly.GetAssembly(typeof(UserCreator));
             var types = writerAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseWriter)) && !x.IsInterface && !x.IsAbstract);
-            foreach (var type in types)
-            {
+            foreach (var type in types) {
                 var m = type.GetMethod("Create", new Type[] { typeof(NpgsqlConnection) });
                 var w = m!.Invoke(null, new object[] { connection }) as IDisposable;
                 w!.Dispose();

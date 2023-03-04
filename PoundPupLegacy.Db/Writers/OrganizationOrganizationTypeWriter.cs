@@ -31,8 +31,7 @@ internal sealed class OrganizationOrganizationTypeWriter : DatabaseWriter<Organi
 
     internal override async Task WriteAsync(OrganizationOrganizationType organizationOrganizationType)
     {
-        if (organizationOrganizationType.OrganizationId is null)
-        {
+        if (organizationOrganizationType.OrganizationId is null) {
             throw new NullReferenceException(nameof(organizationOrganizationType.OrganizationTypeId));
         }
         WriteValue(organizationOrganizationType.OrganizationId, ORGANIZATION_ID);

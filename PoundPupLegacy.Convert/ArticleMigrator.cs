@@ -41,10 +41,8 @@ internal sealed class ArticleMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
-            yield return new Article
-            {
+        while (await reader.ReadAsync()) {
+            yield return new Article {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

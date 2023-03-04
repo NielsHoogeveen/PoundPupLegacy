@@ -7,8 +7,7 @@ public class DocumentableDocumentCreator : IEntityCreator<DocumentableDocument>
 
         await using var documentableDocumentWriter = await DocumentableDocumentWriter.CreateAsync(connection);
 
-        await foreach (var documentableDocument in documentableDocuments)
-        {
+        await foreach (var documentableDocument in documentableDocuments) {
             await documentableDocumentWriter.WriteAsync(documentableDocument);
         }
 

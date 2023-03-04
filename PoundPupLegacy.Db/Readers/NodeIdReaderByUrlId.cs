@@ -32,8 +32,7 @@ public sealed class NodeIdReaderByUrlId : DatabaseUpdater<Term>, IDatabaseReader
         _command.Parameters["url_id"].Value = urlId;
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
             var term = reader.GetInt32("node_id");
             await reader.CloseAsync();

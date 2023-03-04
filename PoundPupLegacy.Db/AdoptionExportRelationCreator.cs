@@ -7,8 +7,7 @@ public class AdoptionExportRelationCreator : IEntityCreator<AdoptionExportRelati
 
         await using var nodeTypeWriter = await AdoptionExportRelationWriter.CreateAsync(connection);
 
-        await foreach (var nodeType in nodeTypes)
-        {
+        await foreach (var nodeType in nodeTypes) {
             await nodeTypeWriter.WriteAsync(nodeType);
         }
     }

@@ -4,7 +4,7 @@ internal sealed class PollQuestionWriter : DatabaseWriter<PollQuestion>, IDataba
 {
     private const string ID = "id";
     private const string QUESTION = "question";
-    
+
     public static async Task<DatabaseWriter<PollQuestion>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(

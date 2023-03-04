@@ -18,8 +18,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
 
         var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
 
-        await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\direct_subdivisions.csv").Skip(1))
-        {
+        await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\direct_subdivisions.csv").Skip(1)) {
 
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             var title = parts[8];
@@ -28,8 +27,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
 
             var countryName = (await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, countryId)).Name;
-            yield return new FirstAndBottomLevelSubdivision
-            {
+            yield return new FirstAndBottomLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
@@ -83,8 +81,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
 
     private static string GetISO3166Code2(int id, string code)
     {
-        return id switch
-        {
+        return id switch {
             11568 => "GB-NBL",
             11577 => "GB-IOW",
             11598 => "GB-LIV",
@@ -184,85 +181,64 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
     private static string GetSubdivisionTitle(int id, string name, string code)
     {
         var adjustedName = GetSubdivisionName(id, name, code);
-        if (code.StartsWith("AU"))
-        {
-            if (id == 58386 || id == 58393)
-            {
+        if (code.StartsWith("AU")) {
+            if (id == 58386 || id == 58393) {
                 return $"{adjustedName} (Australian territory)";
             }
             return $"{adjustedName} (Australian state)";
         }
-        if (code.StartsWith("CA"))
-        {
-            if (id == 57988 || id == 57989 || id == 57990)
-            {
+        if (code.StartsWith("CA")) {
+            if (id == 57988 || id == 57989 || id == 57990) {
                 return $"{adjustedName} (Canadian territory)";
             }
             return $"{adjustedName} (Canadian state)";
         }
-        if (code.StartsWith("CN"))
-        {
-            if (id == 58079)
-            {
+        if (code.StartsWith("CN")) {
+            if (id == 58079) {
                 return "Nei Mongol (Chinese autonomous region)";
             }
-            if (id == 58067)
-            {
+            if (id == 58067) {
                 return "Guangxi Zhuang (Chinese autonomous region)";
             }
-            if (id == 58094)
-            {
+            if (id == 58094) {
                 return "Xizang (Chinese autonomous region)";
             }
-            if (id == 58094)
-            {
+            if (id == 58094) {
                 return "Ningxia Hui (Chinese autonomous region)";
             }
-            if (id == 58102)
-            {
+            if (id == 58102) {
                 return "Xinjiang Uyghur (Chinese autonomous region)";
             }
-            if (name.ToLower().Contains(" province"))
-            {
+            if (name.ToLower().Contains(" province")) {
                 return $"{adjustedName} (Chinese province)";
             }
-            if (name.ToLower().Contains(" municipality"))
-            {
+            if (name.ToLower().Contains(" municipality")) {
                 return $"{adjustedName} (Chinese municipality)";
             }
         }
-        if (code.StartsWith("IN"))
-        {
+        if (code.StartsWith("IN")) {
             return $"{adjustedName} (Indian state)";
         }
-        if (code.StartsWith("RU"))
-        {
-            if (code == "RU-YEV")
-            {
+        if (code.StartsWith("RU")) {
+            if (code == "RU-YEV") {
                 return $"{adjustedName} (Russian autonomous region)";
             }
-            if (code == "RU-CHU" || code == "RU-KHM" || code == "RU-NEN" || code == "RU-YAN")
-            {
+            if (code == "RU-CHU" || code == "RU-KHM" || code == "RU-NEN" || code == "RU-YAN") {
                 return $"{adjustedName} (Russian autonomous district)";
             }
-            if (name.ToLower().Contains(" oblast") || name.ToLower().Contains(" krai"))
-            {
+            if (name.ToLower().Contains(" oblast") || name.ToLower().Contains(" krai")) {
                 return $"{adjustedName} (Russian administrative territory)";
             }
-            if (name.ToLower().Contains(" republic"))
-            {
+            if (name.ToLower().Contains(" republic")) {
                 return $"{adjustedName} (Russian republic)";
             }
 
         }
-        if (code.StartsWith("VN"))
-        {
-            if (id == 45218 || id == 45320 || id == 45209 || id == 45270)
-            {
+        if (code.StartsWith("VN")) {
+            if (id == 45218 || id == 45320 || id == 45209 || id == 45270) {
                 return $"{adjustedName} (Vietnamese municipality)";
             }
-            else
-            {
+            else {
                 return $"{adjustedName} (Vietnamese province)";
             }
         }
@@ -270,32 +246,25 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
     }
     private static string GetSubdivisionName(int id, string name, string code)
     {
-        if (code.StartsWith("CN"))
-        {
-            if (id == 58079)
-            {
+        if (code.StartsWith("CN")) {
+            if (id == 58079) {
                 return "Nei Mongol";
             }
-            if (id == 58067)
-            {
+            if (id == 58067) {
                 return "Guangxi Zhuang";
             }
-            if (id == 58094)
-            {
+            if (id == 58094) {
                 return "Xizang";
             }
-            if (id == 58094)
-            {
+            if (id == 58094) {
                 return "Ningxia Hui";
             }
-            if (id == 58102)
-            {
+            if (id == 58102) {
                 return "Xinjiang Uyghur";
             }
             return name.Replace(" Province", "").Replace(" province", "").Replace(" municipality", "").Replace(" Municipality", "");
         }
-        return id switch
-        {
+        return id switch {
             11830 => "West Berkshire",
             11831 => "Cheshire West and Chester",
             11815 => "Cheshire East",
@@ -426,8 +395,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
         var reader = await readCommand.ExecuteReaderAsync();
 
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var isoCode = reader.IsDBNull("iso_3166_2_code") ? GetISO3166Code2(reader.GetInt32("id"), "") :
                                 GetISO3166Code2(reader.GetInt32("id"), reader.GetString("iso_3166_2_code"));
             var id = reader.GetInt32("id");
@@ -446,8 +414,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
                 }
             };
 
-            yield return new FirstAndBottomLevelSubdivision
-            {
+            yield return new FirstAndBottomLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

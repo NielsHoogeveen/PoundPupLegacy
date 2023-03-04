@@ -1,5 +1,4 @@
-﻿using PoundPupLegacy.Model;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.Db.Writers;
 
@@ -56,8 +55,7 @@ internal sealed class PersonOrganizationRelationWriter : DatabaseWriter<PersonOr
         var command = await CreateInsertStatementAsync(
             connection,
             "person_organization_relation",
-            columnDefinitions.ToImmutableList().Add(new ColumnDefinition
-            {
+            columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
                 Name = ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
@@ -74,7 +72,7 @@ internal sealed class PersonOrganizationRelationWriter : DatabaseWriter<PersonOr
 
     private void DoWrites(PersonOrganizationRelation personOrganizationRelation, NpgsqlCommand command)
     {
-        if(personOrganizationRelation.PersonId is null) {
+        if (personOrganizationRelation.PersonId is null) {
             throw new NullReferenceException(nameof(personOrganizationRelation.PersonId));
         }
         WriteValue(personOrganizationRelation.PersonId, PERSON_ID, command);
@@ -87,17 +85,14 @@ internal sealed class PersonOrganizationRelationWriter : DatabaseWriter<PersonOr
     }
     internal override async Task WriteAsync(PersonOrganizationRelation personOrganizationRelation)
     {
-        if (personOrganizationRelation.Id is null)
-        {
+        if (personOrganizationRelation.Id is null) {
             DoWrites(personOrganizationRelation, _generateIdCommand);
-            personOrganizationRelation.Id = await _command.ExecuteScalarAsync() switch
-            {
+            personOrganizationRelation.Id = await _command.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception("Insert of senator senate bill action does not return an id.")
             };
         }
-        else
-        {
+        else {
             WriteValue(personOrganizationRelation.Id, ID);
             DoWrites(personOrganizationRelation, _command);
             await _command.ExecuteNonQueryAsync();

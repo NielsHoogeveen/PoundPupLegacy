@@ -1,6 +1,4 @@
-﻿using Action = PoundPupLegacy.Model.Action;
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 public class UnitedStatesPoliticalPartyWriter : IDatabaseWriter<UnitedStatesPoliticalParty>
 {
     public static async Task<DatabaseWriter<UnitedStatesPoliticalParty>> CreateAsync(NpgsqlConnection connection)

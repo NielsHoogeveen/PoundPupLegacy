@@ -56,8 +56,7 @@ public class CommentWriter : DatabaseWriter<Comment>, IDatabaseWriter<Comment>
             connection,
             "comment",
             columnDefinitions.ToImmutableList().Prepend(
-                new ColumnDefinition
-                {
+                new ColumnDefinition {
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
@@ -79,8 +78,7 @@ public class CommentWriter : DatabaseWriter<Comment>, IDatabaseWriter<Comment>
 
     internal override async Task WriteAsync(Comment node)
     {
-        if (node.Id is null)
-        {
+        if (node.Id is null) {
             WriteValue(node.NodeId, NODE_ID, _identityCommand);
             WriteNullableValue(node.CommentIdParent, COMMENT_ID_PARENT, _identityCommand);
             WriteValue(node.PublisherId, PUBLISHER_ID, _identityCommand);
@@ -89,14 +87,12 @@ public class CommentWriter : DatabaseWriter<Comment>, IDatabaseWriter<Comment>
             WriteValue(node.CreatedDateTime, CREATED_DATE_TIME, _identityCommand);
             WriteValue(node.Title, TITLE, _identityCommand);
             WriteValue(node.Text, TEXT, _identityCommand);
-            node.Id = await _identityCommand.ExecuteScalarAsync() switch
-            {
+            node.Id = await _identityCommand.ExecuteScalarAsync() switch {
                 int i => i,
                 _ => throw new Exception("Insert of node does not return an id.")
             };
         }
-        else
-        {
+        else {
             WriteValue(node.Id, ID);
             WriteValue(node.NodeId, NODE_ID);
             WriteNullableValue(node.CommentIdParent, COMMENT_ID_PARENT);

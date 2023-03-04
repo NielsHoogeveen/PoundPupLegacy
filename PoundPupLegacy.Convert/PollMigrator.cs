@@ -65,26 +65,23 @@ internal sealed class PollMigrator : PPLMigrator
         SingleQuestionPoll? currentPoll = null;
         int? currentDelta = null;
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            if(currentPoll is not null && currentPoll.TenantNodes.First().UrlId != id)
-            {
+            if (currentPoll is not null && currentPoll.TenantNodes.First().UrlId != id) {
                 yield return currentPoll;
                 currentPoll = null;
                 currentDelta = null;
             }
-            currentPoll ??= new SingleQuestionPoll
-                {
-                    Id = null,
-                    PublisherId = reader.GetInt32("user_id"),
-                    CreatedDateTime = reader.GetDateTime("created_date_time"),
-                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                    Title = name,
-                    OwnerId = Constants.OWNER_CASES,
-                    TenantNodes = new List<TenantNode>
+            currentPoll ??= new SingleQuestionPoll {
+                Id = null,
+                PublisherId = reader.GetInt32("user_id"),
+                CreatedDateTime = reader.GetDateTime("created_date_time"),
+                ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                Title = name,
+                OwnerId = Constants.OWNER_CASES,
+                TenantNodes = new List<TenantNode>
                     {
                         new TenantNode
                         {
@@ -97,37 +94,34 @@ internal sealed class PollMigrator : PPLMigrator
                             UrlId = id
                         }
                     },
-                    Text = TextToHtml(reader.GetString("text")),
-                    Teaser = TextToHtml(reader.GetString("text")),
-                    DateTimeClosure = DateTime.Now.AddYears(-5),
-                    PollStatusId = 0,
-                    Question = reader.GetString("question"),
-                    NodeTypeId = 53,
-                    PollVotes = new List<PollVote>(),
-                    PollOptions = new List<PollOption>()
-                };
+                Text = TextToHtml(reader.GetString("text")),
+                Teaser = TextToHtml(reader.GetString("text")),
+                DateTimeClosure = DateTime.Now.AddYears(-5),
+                PollStatusId = 0,
+                Question = reader.GetString("question"),
+                NodeTypeId = 53,
+                PollVotes = new List<PollVote>(),
+                PollOptions = new List<PollOption>()
+            };
             var delta = reader.GetInt32("delta");
-            if (currentDelta is null || currentDelta != delta)
-            {
+            if (currentDelta is null || currentDelta != delta) {
                 currentDelta = delta;
-                var opition = new PollOption 
-                { 
+                var opition = new PollOption {
                     PollQuestionId = null,
-                    Delta = delta, 
+                    Delta = delta,
                     Text = reader.GetString("option_text"),
                     NumberOfVotes = reader.GetInt32("number_of_votes")
-                }; 
-                currentPoll.PollOptions.Add(opition);            
+                };
+                currentPoll.PollOptions.Add(opition);
             }
-            currentPoll.PollVotes.Add(new PollVote { 
+            currentPoll.PollVotes.Add(new PollVote {
                 PollId = null,
-                Delta = delta, 
-                UserId = reader.IsDBNull("user_id_vote") ? null : reader.GetInt32("user_id_vote"), 
+                Delta = delta,
+                UserId = reader.IsDBNull("user_id_vote") ? null : reader.GetInt32("user_id_vote"),
                 IpAddress = reader.IsDBNull("ip_address") ? null : reader.GetString("ip_address")
             });
         }
-        if (currentPoll is not null)
-        {
+        if (currentPoll is not null) {
             yield return currentPoll;
         }
         await reader.CloseAsync();
@@ -135,9 +129,8 @@ internal sealed class PollMigrator : PPLMigrator
     private async IAsyncEnumerable<MultiQuestionPoll> ReadMultiQuestionPolls()
     {
         MultiQuestionPoll? multiQuestionPoll = null;
-        
-        using (var readCommand = MysqlConnection.CreateCommand())
-        {
+
+        using (var readCommand = MysqlConnection.CreateCommand()) {
             var sql = $"""
                 SELECT
                 distinct
@@ -166,8 +159,7 @@ internal sealed class PollMigrator : PPLMigrator
             var name = reader.GetString("title");
 
 
-            multiQuestionPoll = new MultiQuestionPoll
-            {
+            multiQuestionPoll = new MultiQuestionPoll {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -197,9 +189,8 @@ internal sealed class PollMigrator : PPLMigrator
             await reader.CloseAsync();
         }
 
-        if(multiQuestionPoll is not null) {
-            using (var readCommand = MysqlConnection.CreateCommand())
-            {
+        if (multiQuestionPoll is not null) {
+            using (var readCommand = MysqlConnection.CreateCommand()) {
                 var sql = $"""
                 SELECT
                 distinct
@@ -245,19 +236,16 @@ internal sealed class PollMigrator : PPLMigrator
                 BasicPollQuestion? currentQuestion = null;
                 int? currentDelta = null;
 
-                while (await reader.ReadAsync())
-                {
+                while (await reader.ReadAsync()) {
                     var id = reader.GetInt32("id");
                     var name = reader.GetString("title");
 
-                    if (currentQuestion is not null && currentQuestion.TenantNodes.First().UrlId != id)
-                    {
+                    if (currentQuestion is not null && currentQuestion.TenantNodes.First().UrlId != id) {
                         multiQuestionPoll.PollQuestions.Add(currentQuestion);
                         currentQuestion = null;
                         currentDelta = null;
                     }
-                    currentQuestion ??= new BasicPollQuestion
-                    {
+                    currentQuestion ??= new BasicPollQuestion {
                         Id = null,
                         PublisherId = reader.GetInt32("user_id"),
                         CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -285,11 +273,9 @@ internal sealed class PollMigrator : PPLMigrator
                         PollOptions = new List<PollOption>()
                     };
                     var delta = reader.GetInt32("delta");
-                    if (currentDelta is null || currentDelta != delta)
-                    {
+                    if (currentDelta is null || currentDelta != delta) {
                         currentDelta = delta;
-                        var opition = new PollOption
-                        {
+                        var opition = new PollOption {
                             PollQuestionId = null,
                             Delta = delta,
                             Text = reader.GetString("option_text"),
@@ -297,21 +283,19 @@ internal sealed class PollMigrator : PPLMigrator
                         };
                         currentQuestion.PollOptions.Add(opition);
                     }
-                    currentQuestion.PollVotes.Add(new PollVote
-                    {
+                    currentQuestion.PollVotes.Add(new PollVote {
                         PollId = null,
                         Delta = delta,
                         UserId = reader.IsDBNull("user_id_vote") ? null : reader.GetInt32("user_id_vote"),
                         IpAddress = reader.IsDBNull("ip_address") ? null : reader.GetString("ip_address")
                     });
                 }
-                if (currentQuestion is not null)
-                {
+                if (currentQuestion is not null) {
                     multiQuestionPoll.PollQuestions.Add(currentQuestion);
                 }
                 await reader.CloseAsync();
                 yield return multiQuestionPoll;
             }
-       }
+        }
     }
 }

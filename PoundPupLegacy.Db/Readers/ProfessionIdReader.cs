@@ -42,8 +42,7 @@ public sealed class ProfessionIdReader : DatabaseUpdater<Term>, IDatabaseReader<
 
     private string GetProfessionName(ProfessionType type)
     {
-        return type switch
-        {
+        return type switch {
             ProfessionType.Senator => "Senator",
             ProfessionType.Lawyer => "Lawyer",
             ProfessionType.Representative => "Representative",
@@ -59,8 +58,7 @@ public sealed class ProfessionIdReader : DatabaseUpdater<Term>, IDatabaseReader<
         _command.Parameters["profession_name"].Value = GetProfessionName(professionType);
 
         var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows)
-        {
+        if (reader.HasRows) {
             await reader.ReadAsync();
             var id = reader.GetInt32("id");
             await reader.CloseAsync();

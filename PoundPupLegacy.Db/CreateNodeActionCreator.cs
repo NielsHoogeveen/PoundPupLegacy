@@ -8,8 +8,7 @@ public class CreateNodeActionCreator : IEntityCreator<CreateNodeAction>
         await using var actionWriter = await ActionWriter.CreateAsync(connection);
         await using var createNodeActionWriter = await CreateNodeActionWriter.CreateAsync(connection);
 
-        await foreach (var action in actions)
-        {
+        await foreach (var action in actions) {
             await actionWriter.WriteAsync(action);
             await createNodeActionWriter.WriteAsync(action);
         }

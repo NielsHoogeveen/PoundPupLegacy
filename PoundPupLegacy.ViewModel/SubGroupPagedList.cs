@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record  SubGroupPagedList : PagedList<SubgroupListEntry>
+public record SubGroupPagedList : PagedList<SubgroupListEntry>
 {
     public required SubgroupListEntry[] Entries { get; init; }
 

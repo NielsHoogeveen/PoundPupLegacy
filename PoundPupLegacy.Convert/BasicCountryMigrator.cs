@@ -12,8 +12,7 @@ internal sealed class BasicCountryMigrator : PPLMigrator
 
     public static int GetHagueStatus(string name)
     {
-        return name switch
-        {
+        return name switch {
             "Albania" => 41215,
             "Andorra" => 41214,
             "Armenia" => 41214,
@@ -128,8 +127,7 @@ internal sealed class BasicCountryMigrator : PPLMigrator
 
     private async IAsyncEnumerable<BasicCountry> GetBasicCountries()
     {
-        yield return new BasicCountry
-        {
+        yield return new BasicCountry {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -174,8 +172,7 @@ internal sealed class BasicCountryMigrator : PPLMigrator
             MarriageRequirements = null,
             OtherRequirements = null,
         };
-        yield return new BasicCountry
-        {
+        yield return new BasicCountry {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -220,8 +217,7 @@ internal sealed class BasicCountryMigrator : PPLMigrator
             MarriageRequirements = null,
             OtherRequirements = null,
         };
-        yield return new BasicCountry
-        {
+        yield return new BasicCountry {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -267,8 +263,7 @@ internal sealed class BasicCountryMigrator : PPLMigrator
             OtherRequirements = null,
 
         };
-        yield return new BasicCountry
-        {
+        yield return new BasicCountry {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -421,8 +416,7 @@ internal sealed class BasicCountryMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetInt32("id") == 3839 ? "Côte d'Ivoire" :
                         reader.GetInt32("id") == 3999 ? "Bosnia and Herzegovina" :
@@ -443,8 +437,7 @@ internal sealed class BasicCountryMigrator : PPLMigrator
                     ParentNames = new List<string>{ regionName },
                 }
             };
-            var country = new BasicCountry
-            {
+            var country = new BasicCountry {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

@@ -116,15 +116,13 @@ internal sealed class AbuseCaseMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
             var vocabularyNames = new List<VocabularyName>();
 
-            if (!reader.IsDBNull("topic_name"))
-            {
+            if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");
                 var topicParentNames = reader.IsDBNull("topic_parent_names") ?
                     new List<string>() : reader.GetString("topic_parent_names")
@@ -132,8 +130,7 @@ internal sealed class AbuseCaseMigrator : PPLMigrator
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
 
-                vocabularyNames.Add(new VocabularyName
-                {
+                vocabularyNames.Add(new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -142,8 +139,7 @@ internal sealed class AbuseCaseMigrator : PPLMigrator
             }
 
 
-            var country = new AbuseCase
-            {
+            var country = new AbuseCase {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

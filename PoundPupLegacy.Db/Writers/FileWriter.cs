@@ -36,8 +36,7 @@ internal sealed class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<M
             connection,
             "file",
             collumnDefinitions.ToImmutableList().Prepend(
-                new ColumnDefinition
-                {
+                new ColumnDefinition {
                     Name = ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
@@ -59,20 +58,17 @@ internal sealed class FileWriter : DatabaseWriter<Model.File>, IDatabaseWriter<M
 
     internal override async Task WriteAsync(Model.File file)
     {
-        if (file.Id is null)
-        {
+        if (file.Id is null) {
             WriteValue(file.Path, PATH, _identityCommand);
             WriteValue(file.Name, NAME, _identityCommand);
             WriteValue(file.MimeType, MIME_TYPE, _identityCommand);
             WriteValue(file.Size, SIZE, _identityCommand);
-            file.Id = await _identityCommand.ExecuteScalarAsync() switch
-            {
+            file.Id = await _identityCommand.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception("No id has been assigned when adding a file"),
             };
         }
-        else
-        {
+        else {
             WriteValue(file.Id, ID);
             WriteValue(file.Path, PATH);
             WriteValue(file.Name, NAME);

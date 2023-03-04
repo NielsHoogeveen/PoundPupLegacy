@@ -20,8 +20,7 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var wrongfulMedicationCase in wrongfulMedicationCases)
-        {
+        await foreach (var wrongfulMedicationCase in wrongfulMedicationCases) {
             await nodeWriter.WriteAsync(wrongfulMedicationCase);
             await searchableWriter.WriteAsync(wrongfulMedicationCase);
             await documentableWriter.WriteAsync(wrongfulMedicationCase);
@@ -30,8 +29,7 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
             await caseWriter.WriteAsync(wrongfulMedicationCase);
             await wrongfulMedicationCaseWriter.WriteAsync(wrongfulMedicationCase);
             await EntityCreator.WriteTerms(wrongfulMedicationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in wrongfulMedicationCase.TenantNodes)
-            {
+            foreach (var tenantNode in wrongfulMedicationCase.TenantNodes) {
                 tenantNode.NodeId = wrongfulMedicationCase.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

@@ -36,10 +36,8 @@ public class PollsController : Controller
 
         var query = this.HttpContext.Request.Query;
         var pageValue = query["page"];
-        if (!string.IsNullOrEmpty(pageValue))
-        {
-            if (int.TryParse(pageValue, out int providedPageNumber))
-            {
+        if (!string.IsNullOrEmpty(pageValue)) {
+            if (int.TryParse(pageValue, out int providedPageNumber)) {
                 pageNumber = providedPageNumber;
             }
         }

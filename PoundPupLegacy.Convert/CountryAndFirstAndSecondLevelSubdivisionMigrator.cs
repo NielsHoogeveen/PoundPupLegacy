@@ -19,8 +19,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
         var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
         var subdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Overseas collectivity"))!.NameableId;
 
-        yield return new CountryAndFirstAndSecondLevelSubdivision
-        {
+        yield return new CountryAndFirstAndSecondLevelSubdivision {
             Id = null,
             Title = "Saint Barthélemy",
             Name = "Saint Barthélemy",
@@ -78,8 +77,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
         };
-        yield return new CountryAndFirstAndSecondLevelSubdivision
-        {
+        yield return new CountryAndFirstAndSecondLevelSubdivision {
             Id = null,
             Title = "Saint Martin",
             Name = "Saint Martin",
@@ -137,8 +135,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
         };
-        yield return new CountryAndFirstAndSecondLevelSubdivision
-        {
+        yield return new CountryAndFirstAndSecondLevelSubdivision {
             Id = null,
             Title = "French Southern Territories",
             Name = "French Southern Territories",
@@ -250,8 +247,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
         var reader = await readCommand.ExecuteReaderAsync();
 
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetInt32("id") == 3879 ? "Réunion" :
                         reader.GetString("title");
@@ -268,8 +264,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             };
 
 
-            yield return new CountryAndFirstAndSecondLevelSubdivision
-            {
+            yield return new CountryAndFirstAndSecondLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

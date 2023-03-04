@@ -18,16 +18,14 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : PPLMigrator
 
         var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
 
-        await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\InformalIntermediateLevelSubdivisions.csv").Skip(1))
-        {
+        await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\InformalIntermediateLevelSubdivisions.csv").Skip(1)) {
 
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
             var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
             var countryName = (await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, countryId)).Name;
-            yield return new InformalIntermediateLevelSubdivision
-            {
+            yield return new InformalIntermediateLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
@@ -112,8 +110,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
             var id = reader.GetInt32("id");
             var title = $"{reader.GetString("title")} (region of the USA)";
@@ -128,8 +125,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : PPLMigrator
                 }
             };
 
-            yield return new InformalIntermediateLevelSubdivision
-            {
+            yield return new InformalIntermediateLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

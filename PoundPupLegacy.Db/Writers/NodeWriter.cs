@@ -53,8 +53,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
 
     internal override async Task WriteAsync(Node node)
     {
-        if (node.Id is not null)
-        {
+        if (node.Id is not null) {
             throw new Exception("Node id must be null upon creation");
         }
         WriteValue(node.PublisherId, PUBLISHER_ID);
@@ -63,8 +62,7 @@ public class NodeWriter : DatabaseWriter<Node>, IDatabaseWriter<Node>
         WriteValue(node.Title.Trim(), TITLE);
         WriteValue(node.NodeTypeId, NODE_TYPE_ID);
         WriteNullableValue(node.OwnerId, OWNER_ID);
-        node.Id = await _command.ExecuteScalarAsync() switch
-        {
+        node.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("Insert of node does not return an id.")
         };

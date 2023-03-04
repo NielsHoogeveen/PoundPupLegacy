@@ -7,8 +7,7 @@ public class PublicationStatusCreator : IEntityCreator<PublicationStatus>
 
         await using var publicationStatusWriter = await PublicationStatusWriter.CreateAsync(connection);
 
-        await foreach (var publicationStatus in publicationStatuses)
-        {
+        await foreach (var publicationStatus in publicationStatuses) {
             await publicationStatusWriter.WriteAsync(publicationStatus);
         }
     }

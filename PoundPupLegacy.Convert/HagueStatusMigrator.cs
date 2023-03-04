@@ -40,8 +40,7 @@ internal sealed class HagueStatusMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName>
@@ -55,8 +54,7 @@ internal sealed class HagueStatusMigrator : PPLMigrator
                     }
                 };
 
-            yield return new HagueStatus
-            {
+            yield return new HagueStatus {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

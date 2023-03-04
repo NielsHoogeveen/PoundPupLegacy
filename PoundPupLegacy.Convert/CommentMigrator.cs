@@ -19,8 +19,7 @@ internal sealed class CommentMigrator : PPLMigrator
     }
     private static int GetUid(int uid)
     {
-        return uid switch
-        {
+        return uid switch {
             965 => 954,
             1233 => 1196,
             1655 => 1531,
@@ -74,10 +73,8 @@ internal sealed class CommentMigrator : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
-            var discussion = new Comment
-            {
+        while (await reader.ReadAsync()) {
+            var discussion = new Comment {
                 Id = reader.GetInt32("id"),
                 NodeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id")),
                 CommentIdParent = reader.GetInt32("comment_id_parent") == 0 ? null : reader.GetInt32("comment_id_parent"),

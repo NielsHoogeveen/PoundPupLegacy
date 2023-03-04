@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record SingleQuestionPoll: PollQuestion, Poll
+public record SingleQuestionPoll : PollQuestion, Poll
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

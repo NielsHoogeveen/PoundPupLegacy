@@ -39,8 +39,7 @@ internal sealed class TermWriter : DatabaseWriter<Term>, IDatabaseWriter<Term>
         WriteValue(term.Name.Trim(), NAME);
         WriteValue(term.NameableId, NAMEABLE_ID);
         var retval = await _command.ExecuteScalarAsync();
-        term.Id = retval switch
-        {
+        term.Id = retval switch {
             int i => i,
             long i => (int)i,
             _ => throw new Exception($"Id could not be set for term {term.Name} in vocabulary {term.VocabularyId}")

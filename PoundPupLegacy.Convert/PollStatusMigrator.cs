@@ -11,13 +11,11 @@ internal sealed class PollStatusMigrator : PPLMigrator
     private static async IAsyncEnumerable<PollStatus> GetNodeStatuses()
     {
         await Task.CompletedTask;
-        yield return new PollStatus
-        {
+        yield return new PollStatus {
             Id = 0,
             Name = "Closed",
         };
-        yield return new PollStatus
-        {
+        yield return new PollStatus {
             Id = 1,
             Name = "Open",
         };

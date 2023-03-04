@@ -32,8 +32,7 @@ public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<Term>, I
         _command.Parameters["vocabulary_id"].Value = vocabularyId;
 
         var count = await _command.ExecuteNonQueryAsync();
-        if (count != 1)
-        {
+        if (count != 1) {
             throw new Exception($"Unexpected {count} rows were updated setting vocaburaly {vocabularyId} for tenant {tenantId}");
         }
     }

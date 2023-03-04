@@ -7,8 +7,7 @@ public class CommentCreator : IEntityCreator<Comment>
 
         await using var commentWriter = await CommentWriter.CreateAsync(connection);
 
-        await foreach (var comment in comments)
-        {
+        await foreach (var comment in comments) {
             await commentWriter.WriteAsync(comment);
         }
     }

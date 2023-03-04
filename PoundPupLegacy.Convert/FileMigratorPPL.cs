@@ -1,7 +1,7 @@
 ﻿using PoundPupLegacy.Db;
+using PoundPupLegacy.Model;
 using System.Data;
 using File = PoundPupLegacy.Model.File;
-using PoundPupLegacy.Model;
 
 namespace PoundPupLegacy.Convert;
 
@@ -41,12 +41,10 @@ internal sealed class FileMigratorPPL : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            
-            yield return new Model.File
-            {
+
+            yield return new Model.File {
                 Id = null,
                 Path = reader.GetString("path"),
                 Name = reader.GetString("name"),

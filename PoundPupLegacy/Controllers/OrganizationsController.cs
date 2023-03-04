@@ -28,8 +28,7 @@ public class OrganizationsController : Controller
 
     public SearchOption GetSearchOption(string? term)
     {
-        return term switch
-        {
+        return term switch {
             null => SearchOption.Contains,
             "contains" => SearchOption.Contains,
             "starts_with" => SearchOption.StartsWith,
@@ -41,8 +40,7 @@ public class OrganizationsController : Controller
 
     public string GetSearchTerm(string? term)
     {
-        if (term is null)
-        {
+        if (term is null) {
             return "";
         }
         return term;
@@ -50,24 +48,20 @@ public class OrganizationsController : Controller
 
     public int? GetCountryId(string? country)
     {
-        if (country is null || country == "0")
-        {
+        if (country is null || country == "0") {
             return null;
         }
-        if (int.TryParse(country, out var countryId))
-        {
+        if (int.TryParse(country, out var countryId)) {
             return countryId;
         }
         return null;
     }
     public int? GetOrganizationTypeId(string? organizationType)
     {
-        if (organizationType is null || organizationType == "0")
-        {
+        if (organizationType is null || organizationType == "0") {
             return null;
         }
-        if (int.TryParse(organizationType, out var organizationTypeId))
-        {
+        if (int.TryParse(organizationType, out var organizationTypeId)) {
             return organizationTypeId;
         }
         return null;
@@ -76,18 +70,15 @@ public class OrganizationsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess())
-        {
+        if (!_siteDataService.HasAccess()) {
             return NotFound();
         }
         var pageNumber = 1;
 
         var query = this.HttpContext.Request.Query;
         var pageValue = query["page"];
-        if (!string.IsNullOrEmpty(pageValue))
-        {
-            if (int.TryParse(pageValue, out int providedPageNumber))
-            {
+        if (!string.IsNullOrEmpty(pageValue)) {
+            if (int.TryParse(pageValue, out int providedPageNumber)) {
                 pageNumber = providedPageNumber;
             }
         }
@@ -102,19 +93,15 @@ public class OrganizationsController : Controller
         organizations.Organizations.PageNumber = pageNumber;
         organizations.Organizations.NumberOfPages = (organizations.Organizations.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         organizations.Organizations.QueryString = $"&search={searchTerm}";
-        foreach (var country in organizations.Countries)
-        {
-            if (country.Id == countryId)
-            {
+        foreach (var country in organizations.Countries) {
+            if (country.Id == countryId) {
                 country.Selected = true;
                 continue;
             }
             country.Selected = false;
         }
-        foreach (var organizationType in organizations.OrganizationTypes)
-        {
-            if (organizationType.Id == organizationTypeId)
-            {
+        foreach (var organizationType in organizations.OrganizationTypes) {
+            if (organizationType.Id == organizationTypeId) {
                 organizationType.Selected = true;
                 continue;
             }

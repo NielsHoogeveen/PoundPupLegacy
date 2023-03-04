@@ -1,6 +1,4 @@
-﻿using System.Text.Encodings.Web;
-
-namespace PoundPupLegacy.ViewModel;
+﻿namespace PoundPupLegacy.ViewModel;
 
 public record class Document : Node
 {
@@ -12,54 +10,43 @@ public record class Document : Node
     public required DateTime? DateTimeFrom { get; init; }
     public required DateTime? DateTimeTo { get; init; }
     public required Link? DocumentType { get; init; }
-    public string? PublicationDate { 
-        get
-        {
-            if(DateTime.HasValue)
-            {
+    public string? PublicationDate {
+        get {
+            if (DateTime.HasValue) {
                 return DateTime.Value.ToString("yyyy MMMM dd");
             }
-            if(DateTimeFrom.HasValue && DateTimeTo.HasValue)
-            {
-                if(DateTimeFrom.Value.Month == DateTimeTo.Value.Month)
-                {
+            if (DateTimeFrom.HasValue && DateTimeTo.HasValue) {
+                if (DateTimeFrom.Value.Month == DateTimeTo.Value.Month) {
                     return DateTimeFrom.Value.ToString("yyyy MMMM");
                 }
-                else
-                {
+                else {
                     return DateTimeFrom.Value.ToString("yyyy");
                 }
             }
             return null;
-        }    
+        }
     }
 
     public required string? SourceUrl { get; init; }
-    public string? SourceUrlHost => SourceUrl is null? null: new Uri(SourceUrl).Host;
+    public string? SourceUrlHost => SourceUrl is null ? null : new Uri(SourceUrl).Host;
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
 
     private Link[] tags = Array.Empty<Link>();
-    public Link[] Tags
-    {
+    public Link[] Tags {
         get => tags;
-        init
-        {
-            if(value is not null)
-            {
+        init {
+            if (value is not null) {
                 tags = value;
             }
-            
+
         }
     }
     private Link[] documentables = Array.Empty<Link>();
-    public Link[] Documentables
-    {
+    public Link[] Documentables {
         get => documentables;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 documentables = value;
             }
 
@@ -67,13 +54,10 @@ public record class Document : Node
     }
 
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems
-    {
+    public CommentListItem[] CommentListItems {
         get => commentListItems;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 commentListItems = value;
             }
         }
@@ -83,13 +67,10 @@ public record class Document : Node
     public required Link[] BreadCrumElements { get; init; }
 
     private File[] _files = Array.Empty<File>();
-    public required File[] Files
-    {
+    public required File[] Files {
         get => _files;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _files = value;
             }
         }

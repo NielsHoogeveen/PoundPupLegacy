@@ -18,8 +18,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
     }
     private static DateTime? GetDateOfDeath(int id, DateTime? dateTime)
     {
-        return id switch
-        {
+        return id switch {
             60412 => DateTime.Parse("2022-03-18"),
             10329 => DateTime.Parse("2018-08-25"),
             _ => dateTime
@@ -27,8 +26,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
     }
     private static DateTime? GetDateOfBirth(int id, DateTime? dateTime)
     {
-        return id switch
-        {
+        return id switch {
             10342 => DateTime.Parse("1958-01-26"),
             10732 => DateTime.Parse("1954-05-29"),
             10743 => DateTime.Parse("1941-07-18"),
@@ -194,17 +192,14 @@ internal sealed class PersonMigratorPPL : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
             var vocabularyNames = new List<VocabularyName>();
-            if (topicName is not null)
-            {
+            if (topicName is not null) {
                 vocabularyNames.Add(
-                new VocabularyName
-                {
+                new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
@@ -212,8 +207,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
                 });
             };
 
-            yield return new Person
-            {
+            yield return new Person {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

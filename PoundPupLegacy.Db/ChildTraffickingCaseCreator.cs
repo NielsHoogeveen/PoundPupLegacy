@@ -20,8 +20,7 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var childTraffickingCase in childTraffickingCases)
-        {
+        await foreach (var childTraffickingCase in childTraffickingCases) {
             await nodeWriter.WriteAsync(childTraffickingCase);
             await searchableWriter.WriteAsync(childTraffickingCase);
             await documentableWriter.WriteAsync(childTraffickingCase);
@@ -30,8 +29,7 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
             await caseWriter.WriteAsync(childTraffickingCase);
             await childTraffickingCaseWriter.WriteAsync(childTraffickingCase);
             await EntityCreator.WriteTerms(childTraffickingCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in childTraffickingCase.TenantNodes)
-            {
+            foreach (var tenantNode in childTraffickingCase.TenantNodes) {
                 tenantNode.NodeId = childTraffickingCase.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

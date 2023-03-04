@@ -82,8 +82,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
 
             var id = reader.GetInt32("id");
@@ -105,10 +104,8 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
                     UrlId = id
                 }
             };
-            if (partyPublicationStatusId == 1)
-            {
-                tenantNodes.Add(new TenantNode
-                {
+            if (partyPublicationStatusId == 1) {
+                tenantNodes.Add(new TenantNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -118,8 +115,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
                     UrlId = null
                 });
             }
-            yield return new PartyPoliticalEntityRelation
-            {
+            yield return new PartyPoliticalEntityRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

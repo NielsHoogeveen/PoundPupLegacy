@@ -18,8 +18,7 @@ public class ActCreator : IEntityCreator<Act>
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
 
-        await foreach (var act in acts)
-        {
+        await foreach (var act in acts) {
             await nodeWriter.WriteAsync(act);
             await searchableWriter.WriteAsync(act);
             await nameableWriter.WriteAsync(act);
@@ -27,8 +26,7 @@ public class ActCreator : IEntityCreator<Act>
             await actWriter.WriteAsync(act);
             await EntityCreator.WriteTerms(act, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
 
-            foreach (var tenantNode in act.TenantNodes)
-            {
+            foreach (var tenantNode in act.TenantNodes) {
                 tenantNode.NodeId = act.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public record CaseParties: Identifiable
+public record CaseParties : Identifiable
 {
     public required int? Id { get; set; }
 

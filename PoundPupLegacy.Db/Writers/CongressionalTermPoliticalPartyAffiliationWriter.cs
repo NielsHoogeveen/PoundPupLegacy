@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace PoundPupLegacy.Db.Writers;
+﻿namespace PoundPupLegacy.Db.Writers;
 
 internal sealed class CongressionalTermPoliticalPartyAffiliationWriter : DatabaseWriter<CongressionalTermPoliticalPartyAffiliation>, IDatabaseWriter<CongressionalTermPoliticalPartyAffiliation>
 {

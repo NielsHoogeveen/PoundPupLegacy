@@ -16,8 +16,7 @@ internal class AuthenticationService : IAuthenticationService
 
     public async Task<ClaimsIdentity?> Login(string userName, string password)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             var sql = $"""
             select 
@@ -37,8 +36,7 @@ internal class AuthenticationService : IAuthenticationService
             readCommand.Parameters["name"].Value = userName.ToLower();
             readCommand.Parameters["password"].Value = CreateMD5(password);
             await using var reader = await readCommand.ExecuteReaderAsync();
-            if (reader.Read())
-            {
+            if (reader.Read()) {
                 var id = reader.GetInt32(0);
                 var identity = new GenericIdentity(userName);
                 var claims = new List<Claim> { new Claim("user_id", $"{id}") };
@@ -48,16 +46,14 @@ internal class AuthenticationService : IAuthenticationService
             }
             return null;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }
 
     private static string CreateMD5(string input)
     {
-        using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
-        {
+        using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
             byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
             byte[] hashBytes = md5.ComputeHash(inputBytes);
 

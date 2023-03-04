@@ -27,8 +27,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
         var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
 
 
-        yield return new CountryAndFirstAndBottomLevelSubdivision
-        {
+        yield return new CountryAndFirstAndBottomLevelSubdivision {
             Id = null,
             Title = "Åland",
             Name = "Åland",
@@ -86,8 +85,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             OtherRequirements = null,
             SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Autonomous region"))!.NameableId,
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision
-        {
+        yield return new CountryAndFirstAndBottomLevelSubdivision {
             Id = null,
             Title = "Curaçao",
             Name = "Curaçao",
@@ -145,8 +143,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             OtherRequirements = null,
             SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Country"))!.NameableId,
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision
-        {
+        yield return new CountryAndFirstAndBottomLevelSubdivision {
             Id = null,
             Title = "Sint Maarten",
             Name = "Sint Maarten",
@@ -204,8 +201,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             OtherRequirements = null,
             SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Country"))!.NameableId,
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision
-        {
+        yield return new CountryAndFirstAndBottomLevelSubdivision {
             Id = null,
             Title = "United States Minor Outlying Islands",
             Name = "United States Minor Outlying Islands",
@@ -321,8 +317,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetInt32("id") == 3879 ? "Réunion" :
                         reader.GetString("title");
@@ -340,8 +335,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             };
 
 
-            yield return new CountryAndFirstAndBottomLevelSubdivision
-            {
+            yield return new CountryAndFirstAndBottomLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

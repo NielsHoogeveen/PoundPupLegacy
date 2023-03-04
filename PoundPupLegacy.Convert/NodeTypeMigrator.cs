@@ -57,7 +57,7 @@ internal sealed class NodeTypeMigrator : PPLMigrator
         yield return new BasicNodeType(41, "basic nameable", "Can be used as a term without having additional data");
         yield return new BasicNodeType(42, "page", "A simpe text node");
         yield return new BasicNodeType(43, "review", "A book review");
-        
+
         yield return new BasicNodeType(45, "inter country relation", "A relation between two countries");
         yield return new BasicNodeType(46, "inter personal relation", "A relation between two persons");
         yield return new BasicNodeType(47, "inter organizational relation", "A relation between two organizations");

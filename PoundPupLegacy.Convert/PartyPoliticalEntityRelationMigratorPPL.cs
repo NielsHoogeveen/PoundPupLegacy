@@ -91,8 +91,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())
-        {
+        while (await reader.ReadAsync()) {
 
 
             var id = reader.GetInt32("id");
@@ -101,8 +100,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
             int politicalEntityId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("political_entity_id"));
             int partyPpoliticalEntityTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
 
-            yield return new PartyPoliticalEntityRelation
-            {
+            yield return new PartyPoliticalEntityRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

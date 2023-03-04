@@ -20,8 +20,7 @@ public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCa
         await using var vocabularyIdReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
-        await foreach (var disruptedPlacementCase in disruptedPlacementCases)
-        {
+        await foreach (var disruptedPlacementCase in disruptedPlacementCases) {
             await nodeWriter.WriteAsync(disruptedPlacementCase);
             await searchableWriter.WriteAsync(disruptedPlacementCase);
             await documentableWriter.WriteAsync(disruptedPlacementCase);
@@ -30,8 +29,7 @@ public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCa
             await caseWriter.WriteAsync(disruptedPlacementCase);
             await disruptedPlacementCaseWriter.WriteAsync(disruptedPlacementCase);
             await EntityCreator.WriteTerms(disruptedPlacementCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in disruptedPlacementCase.TenantNodes)
-            {
+            foreach (var tenantNode in disruptedPlacementCase.TenantNodes) {
                 tenantNode.NodeId = disruptedPlacementCase.Id;
                 await tenantNodeWriter.WriteAsync(tenantNode);
             }
