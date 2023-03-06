@@ -3015,28 +3015,28 @@ internal class FetchNodeService : IFetchNodeService
         document_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
-                'NodeTypeId', n.node_type_id,
-                'Title', n.title,
-                'Text', n.text,
-                'HasBeenPublished', n.has_been_published,
-                'Authoring', jsonb_build_object(
-                    'Id', n.publisher_id,
-                    'Name', n.publisher_name,
-                    'CreatedDateTime', n.created_date_time,
-                    'ChangedDateTime', n.changed_date_time
-                ),
-                'HasBeenPublished', n.has_been_published,
-                'DateTime', publication_date,
-                'DateTimeFrom', lower(publication_date_range),
-                'DateTimeTo', upper(publication_date_range),
-                'SourceUrl', source_url,
-                'DocumentType', document_type,
-                'BreadCrumElements', (SELECT document FROM document_bread_crum_document),
-                'Tags', (SELECT document FROM tags_document),
-                'CommentListItems', (SELECT document FROM  comments_document),
-                'Documentables', (SELECT document FROM documentables_document),
-                'Files', (SELECT document FROM files_document)
+                    'Id', n.url_id,
+                    'NodeTypeId', n.node_type_id,
+                    'Title', n.title,
+                    'Text', n.text,
+                    'HasBeenPublished', n.has_been_published,
+                    'Authoring', jsonb_build_object(
+                        'Id', n.publisher_id,
+                        'Name', n.publisher_name,
+                        'CreatedDateTime', n.created_date_time,
+                        'ChangedDateTime', n.changed_date_time
+                    ),
+                    'HasBeenPublished', n.has_been_published,
+                    'DateTime', publication_date,
+                    'DateTimeFrom', lower(publication_date_range),
+                    'DateTimeTo', upper(publication_date_range),
+                    'SourceUrl', source_url,
+                    'DocumentType', document_type,
+                    'BreadCrumElements', (SELECT document FROM document_bread_crum_document),
+                    'Tags', (SELECT document FROM tags_document),
+                    'CommentListItems', (SELECT document FROM  comments_document),
+                    'Documentables', (SELECT document FROM documentables_document),
+                    'Files', (SELECT document FROM files_document)
             ) document
             FROM(
                 SELECT

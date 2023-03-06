@@ -55,6 +55,8 @@ public class Program
         builder.Services.AddTransient<ISubgroupService, SubgroupService>();
         builder.Services.AddTransient<ITopicService, TopicService>();
         builder.Services.AddTransient<IPersonService, PersonService>();
+        builder.Services.AddTransient<IDocumentableDocumentsSearchService, DocumentableDocumentsSearchService>();
+        
         builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();

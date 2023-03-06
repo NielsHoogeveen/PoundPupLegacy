@@ -1,15 +1,32 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record BlogPost : SimpleTextNode
+public record Document: Node
 {
-    public  int? NodeId { get; init; }
-
-    public  int? UrlId { get; init; }
+    public int? NodeId { get; init; }
+    public int? UrlId { get; init; }
 
     public required string Title { get; set; }
 
+    public string? SourceUrl { get; set; }
     public required string Text { get; set; }
 
+    public int? DocumentTypeId { get; set; }
+
+    public DateTime? PublicationDateFrom { get; set; }
+
+    public DateTime? PublicationDateTo { get; set; }
+    public DateTime? PublicationDate { get; set; }
+
+    public List<DocumentableDocument> documentableDocuments = new();
+    public required List<DocumentableDocument> DocumentableDocuments {
+        get => documentableDocuments;
+        init {
+            if (value is not null) {
+                documentableDocuments = value;
+            }
+        }
+    }
+    public required DocumentType[] DocumentTypes { get; init; }
     private List<Tag> tags = new();
 
     public List<Tag> Tags {

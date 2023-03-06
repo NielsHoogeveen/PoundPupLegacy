@@ -65,9 +65,15 @@
                 @if (Model is BlogPost)
                 {
                     
-                    <BlogEditor Id="Model.Id" />
+                    <BlogPostEditor Id="Model.Id" />
                     
                 }
+                @if (Model is Document) {
+
+                    <DocumentEditor Id="Model.Id" />
+
+                }
+
                 </article>
             </div>
         }

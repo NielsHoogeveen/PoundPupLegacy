@@ -29,13 +29,12 @@
 }
 @code{
 
-        [Parameter]
-        public IEnumerable<Location>? Model { get; set; }
-
+    [Parameter]
+    public IEnumerable<Location>? Model { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Model is not null){
+        if (Model is not null && Model.Any()){
             var locations = Model.Where(x => x.Latitude is not null && x.Longitude is not null).Select((location, index) => new object[] { location.Latitude!, location.Longitude!, index }).ToArray();
             var centerLatitude = Model.Average(x => x.Latitude);
             var centerLongitude = Model.Average(x => x.Longitude);

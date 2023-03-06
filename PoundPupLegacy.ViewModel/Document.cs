@@ -1,15 +1,15 @@
 ﻿namespace PoundPupLegacy.ViewModel;
 
-public record class Document : Node
+public record Document : Node
 {
     public required int Id { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Title { get; init; }
     public required string Text { get; init; }
-    public required DateTime? DateTime { get; init; }
-    public required DateTime? DateTimeFrom { get; init; }
-    public required DateTime? DateTimeTo { get; init; }
-    public required Link? DocumentType { get; init; }
+    public DateTime? DateTime { get; init; }
+    public DateTime? DateTimeFrom { get; init; }
+    public DateTime? DateTimeTo { get; init; }
+    public Link? DocumentType {get; init;}
     public string? PublicationDate {
         get {
             if (DateTime.HasValue) {
@@ -27,7 +27,7 @@ public record class Document : Node
         }
     }
 
-    public required string? SourceUrl { get; init; }
+    public string? SourceUrl { get; init; }
     public string? SourceUrlHost => SourceUrl is null ? null : new Uri(SourceUrl).Host;
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
@@ -67,6 +67,11 @@ public record class Document : Node
     public required Link[] BreadCrumElements { get; init; }
 
     private File[] _files = Array.Empty<File>();
+
+    public Document()
+    {
+    }
+
     public required File[] Files {
         get => _files;
         init {

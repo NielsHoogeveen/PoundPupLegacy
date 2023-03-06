@@ -1,8 +1,9 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public sealed record Tenant : Owner
+public sealed record Tenant : Owner, PublishingUserGroup
 {
     public required int? Id { get; set; }
+    public required int PublicationStatusIdDefault { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required string DomainName { get; init; }

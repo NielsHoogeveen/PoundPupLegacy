@@ -63,7 +63,8 @@ internal sealed class UserMigrator : PPLMigrator
             AdministratorRole = new AdministratorRole {
                 Id = 6,
                 UserGroupId = null,
-            }
+            },
+            PublicationStatusIdDefault = 1
         };
         yield return new Tenant {
             Id = Constants.CPCT,
@@ -79,7 +80,8 @@ internal sealed class UserMigrator : PPLMigrator
             AdministratorRole = new AdministratorRole {
                 Id = 19,
                 UserGroupId = null,
-            }
+            },
+            PublicationStatusIdDefault = 2
         };
     }
 
@@ -141,7 +143,8 @@ internal sealed class UserMigrator : PPLMigrator
             Name = "Adult Aftermath",
             Description = "Group for private discusssions",
             TenantId = Constants.PPL,
-            AdministratorRole = new AdministratorRole { Id = 41, UserGroupId = null }
+            AdministratorRole = new AdministratorRole { Id = 41, UserGroupId = null },
+            PublicationStatusIdDefault = 2
         };
     }
 

@@ -7,6 +7,7 @@ public class TenantCreator : IEntityCreator<Tenant>
 
         await using var userGroupWriter = await UserGroupWriter.CreateAsync(connection);
         await using var ownerWriter = await OwnerWriter.CreateAsync(connection);
+        await using var publishingUserGroupWriter = await PublishingUserGroupWriter.CreateAsync(connection);
         await using var tenantWriter = await TenantWriter.CreateAsync(connection);
         await using var principalWriter = await PrincipalWriter.CreateAsync(connection);
         await using var userRoleWriter = await UserRoleWriter.CreateAsync(connection);
@@ -16,6 +17,7 @@ public class TenantCreator : IEntityCreator<Tenant>
         await foreach (var tenant in tenants) {
             await userGroupWriter.WriteAsync(tenant);
             await ownerWriter.WriteAsync(tenant);
+            await publishingUserGroupWriter.WriteAsync(tenant);
             await tenantWriter.WriteAsync(tenant);
 
             var accessRole = tenant.AccessRoleNotLoggedIn;

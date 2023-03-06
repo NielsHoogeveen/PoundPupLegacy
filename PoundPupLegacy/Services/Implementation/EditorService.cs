@@ -2,6 +2,7 @@
 using PoundPupLegacy.EditModel;
 using System.Data;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -26,10 +27,80 @@ public class EditorService : IEditorService
         _logger = logger;
     }
 
-    const string CTE = $"""
+    const string CTE_EDIT = $"""
         WITH
         {TENANT_NODES_DOCUMENT},
+        {TENANTS_DOCUMENT},
+        {DOCUMENTABLE_DOCUMENTS_DOCUMENT},
+        {DOCUMENT_DOCUMENTABLES_DOCUMENT},
+        {DOCUMENT_TYPES_DOCUMENT}
+        """;
+
+    const string CTE_CREATE = $"""
+        WITH
         {TENANTS_DOCUMENT}
+        """;
+
+
+    const string DOCUMENT_TYPES_DOCUMENT = """
+        document_types_document as (
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'Id',
+        		        n.id,
+        		        'Name',
+        		        n.title
+        	        )
+                ) document
+            from document_type dt
+            join term t on t.nameable_id = dt.id
+            join tenant_node tn on tn.node_id = t.vocabulary_id
+            join node n on n.id = dt.id 
+            where tn.url_id = 42416 and tn.tenant_id = 1
+        )
+        """;
+
+    const string DOCUMENTABLE_DOCUMENTS_DOCUMENT = """
+        documentable_documents_document as (
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'DocumentId',
+        		        dd.document_id,
+        		        'DocumentableId',
+        		        dd.documentable_id,
+        		        'Title',
+        		        n.title
+        	        )
+                ) document
+            from documentable_document dd
+            join document d on d.id = dd.document_id
+            join node n on n.id = d.id
+            join tenant_node tn on tn.node_id = dd.documentable_id
+            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+        )
+        """;
+
+    const string DOCUMENT_DOCUMENTABLES_DOCUMENT = """
+        document_documentables_document as (
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'DocumentId',
+        		        dd.document_id,
+        		        'DocumentableId',
+        		        dd.documentable_id,
+        		        'Title',
+        		        n.title
+        	        )
+                ) document
+            from documentable_document dd
+            join documentable d on d.id = dd.documentable_id
+            join node n on n.id = d.id
+            join tenant_node tn on tn.node_id = dd.document_id
+            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+        )
         """;
 
     const string TENANT_NODES_DOCUMENT = """
@@ -218,12 +289,48 @@ public class EditorService : IEditorService
         )
         """;
 
-    public async Task<BlogPost?> GetBlogPost(int id)
-    {
-        try {
-            await _connection.OpenAsync();
-            var sql = $"""
-            {CTE}
+    const string DOCUMENT_DOCUMENT = $"""
+        {CTE_EDIT}
+        select
+            jsonb_build_object(
+        	    'NodeId',
+        	    d.id,
+                'UrlId',
+                tn.url_id,
+        	    'Title',
+        	    n.title,
+        	    'SourceUrl',
+        	    d.source_url,
+        	    'Text',
+        	    d.text,
+        	    'DocumentTypeId',
+                case 
+                    when d.document_type_id is null then 0
+                    else d.document_type_id
+                end,
+        	    'PublicationDateFrom',
+        	    lower(publication_date_range),
+        	    'PublicationDateTo',
+        	    upper(publication_date_range),
+        	    'PublicationDate',
+        	    publication_date,
+                'DocumentableDocuments',
+                (select document from document_documentables_document),
+                'DocumentTypes',
+                (select document from document_types_document),
+                'TenantNodes',
+                (select document from tenant_nodes_document),
+                'Tenants',
+                (select document from tenants_document)
+            ) document
+        from document d
+        join node n on n.id = d.id
+        join tenant_node tn on tn.node_id = d.id
+        where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+        """;
+
+    const string BLOG_POST_DOCUMENT = $"""
+            {CTE_EDIT}
             select
                 jsonb_build_object(
                     'NodeId', n.id,
@@ -253,7 +360,60 @@ public class EditorService : IEditorService
             join simple_text_node stn on stn.id = n.id
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id
-            """;
+        """;
+    const string NEW_BLOG_POST_DOCUMENT = $"""
+            {CTE_CREATE}
+            select
+                jsonb_build_object(
+                    'NodeId', 
+                    null,
+                    'UrlId', 
+                    null,
+                    'Title', 
+                    '',
+                    'Text', 
+                    '',
+            		'Tags', null,
+                    'TenantNodes',
+                    null,
+                    'Tenants',
+                    (select document from tenants_document)
+                ) document
+        """;
+    public async Task<BlogPost?> GetNewBlogPost()
+    {
+        try {
+            await _connection.OpenAsync();
+            var sql = NEW_BLOG_POST_DOCUMENT;
+
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
+            readCommand.Parameters["node_type_id"].Value = 35;
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            if (!reader.HasRows) {
+                return null;
+            }
+            var text = reader.GetString(0); ;
+            var blogPost = reader.GetFieldValue<BlogPost>(0);
+            return blogPost;
+        }
+        finally {
+            await _connection.CloseAsync();
+        }
+
+    }
+    public async Task<BlogPost?> GetBlogPost(int id)
+    {
+        try {
+            await _connection.OpenAsync();
+            var sql = BLOG_POST_DOCUMENT;
 
             using var readCommand = _connection.CreateCommand();
             readCommand.CommandType = CommandType.Text;
@@ -274,6 +434,36 @@ public class EditorService : IEditorService
             var text = reader.GetString(0); ;
             var blogPost = reader.GetFieldValue<BlogPost>(0);
             return blogPost;
+        }
+        finally {
+            await _connection.CloseAsync();
+        }
+    }
+    public async Task<Document?> GetDocument(int id)
+    {
+        try {
+            await _connection.OpenAsync();
+            var sql = DOCUMENT_DOCUMENT;
+
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            await readCommand.PrepareAsync();
+            readCommand.Parameters["url_id"].Value = id;
+            readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
+            readCommand.Parameters["node_type_id"].Value = 10;
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            if (!reader.HasRows) {
+                return null;
+            }
+            var text = reader.GetString(0); ;
+            var document = reader.GetFieldValue<Document>(0);
+            return document;
         }
         finally {
             await _connection.CloseAsync();
@@ -413,8 +603,7 @@ public class EditorService : IEditorService
         }
 
     }
-
-    public async Task Store(SimpleTextNode node)
+    private async Task Store(SimpleTextNode node)
     {
         using (var command = _connection.CreateCommand()) {
             var sql = $"""
@@ -455,7 +644,9 @@ public class EditorService : IEditorService
             _logger.LogInformation($"Stored tenant nodes {sp.ElapsedMilliseconds}");
             tx.Commit();
             _logger.LogInformation($"Committed after {sp.ElapsedMilliseconds}");
-            _nodeCacheService.Remove(post.UrlId);
+            if (post.UrlId.HasValue) {
+                _nodeCacheService.Remove(post.UrlId.Value);
+            }
             _logger.LogInformation($"Removed from cache after {sp.ElapsedMilliseconds}");
             await _siteDateService.RefreshTenants();
             _logger.LogInformation($"Refreshed tenant data after {sp.ElapsedMilliseconds}");
@@ -469,4 +660,9 @@ public class EditorService : IEditorService
         }
 
     }
+    public async Task Save(Document document)
+    {
+        await Task.CompletedTask;
+    }
+
 }
