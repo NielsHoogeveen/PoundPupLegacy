@@ -152,15 +152,32 @@ internal sealed class AccessRolePrivilegeMigrator : PPLMigrator
             AccessRoleId = 16,
             ActionId = await _actionReaderByPath.ReadAsync("/search")
         };
-        await using var editActionReader = await EditActionIdReaderByNodeTypeId.CreateAsync(_postgresConnection);
         await foreach (var nodeType in NodeTypeMigrator.GetNodeTypes()) {
             yield return new AccessRolePrivilege {
                 AccessRoleId = 11,
-                ActionId = await editActionReader.ReadAsync(nodeType.Id!.Value)
+                ActionId = await _editNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id!.Value)
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 18,
-                ActionId = await editActionReader.ReadAsync(nodeType.Id!.Value)
+                ActionId = await _editNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id!.Value)
+            };
+            yield return new AccessRolePrivilege {
+                AccessRoleId = 43,
+                ActionId = await _editNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id!.Value)
+            };
+        }
+        await foreach (var nodeType in NodeTypeMigrator.GetNodeTypes().Where(x => x.AuthorSpecific)) {
+            yield return new AccessRolePrivilege {
+                AccessRoleId = 4,
+                ActionId = await _editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id!.Value)
+            };
+            yield return new AccessRolePrivilege {
+                AccessRoleId = 16,
+                ActionId = await _editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id!.Value)
+            };
+            yield return new AccessRolePrivilege {
+                AccessRoleId = 42,
+                ActionId = await _editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(nodeType.Id!.Value)
             };
         }
     }

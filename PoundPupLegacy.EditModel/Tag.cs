@@ -2,7 +2,7 @@
 
 public record Tag
 {
-    public required int NodeId { get; init; }
+    public required int? NodeId { get; set; }
 
     public required int TermId { get; init; }
 

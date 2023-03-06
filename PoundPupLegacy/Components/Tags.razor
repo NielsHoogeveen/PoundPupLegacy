@@ -2,7 +2,7 @@
 @using PoundPupLegacy.Services;
 @inject ITopicSearchService topicSearchService
 
-@if(Elems is not null && NodeId is not null)
+@if(Elems is not null)
 {
     <style>
         #tag-search{
@@ -128,9 +128,9 @@
     {
         termOptions.Clear();
         var str = args.Value?.ToString() ?? string.Empty;
-        if (!string.IsNullOrEmpty(str) && NodeId is not null)
+        if (!string.IsNullOrEmpty(str))
         {
-            termOptions = await topicSearchService.GetTerms(NodeId.Value, str);
+            termOptions = await topicSearchService.GetTerms(NodeId, str);
         }
         StateHasChanged();
     }

@@ -6,6 +6,7 @@ public sealed record CaseType : NodeType
     public string Name { get; }
     public string Description { get; }
     public List<int> CaseRelationTypeIds { get; }
+    public bool AuthorSpecific => false;
 
     public CaseType(int id, string name, string description, List<int> caseRelationTypeIds)
     {

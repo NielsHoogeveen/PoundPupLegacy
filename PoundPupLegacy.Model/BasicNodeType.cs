@@ -6,10 +6,13 @@ public sealed record BasicNodeType : NodeType
     public string Name { get; }
     public string Description { get; }
 
-    public BasicNodeType(int id, string name, string description)
+    public bool AuthorSpecific { get; }
+
+    public BasicNodeType(int id, string name, string description, bool authorSpecific)
     {
         Id = id;
         Name = name;
         Description = description;
+        AuthorSpecific = authorSpecific;
     }
 }

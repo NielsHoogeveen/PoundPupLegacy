@@ -1,8 +1,8 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Db;
 using PoundPupLegacy.EditModel;
 using System.Data;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -639,6 +639,38 @@ public class EditorService : IEditorService
         }
     }
 
+    public async Task StoreNew(BlogPost post)
+    {
+        var now = DateTime.Now;
+        var blogPost = new Model.BlogPost {
+            Id = null,
+            Title = post.Title,
+            Text = _textService.FormatText(post.Text),
+            Teaser = _textService.FormatTeaser(post.Text),
+            ChangedDateTime = now,
+            CreatedDateTime = now,
+            NodeTypeId = 35,
+            OwnerId = _siteDateService.GetTenantId(),
+            PublisherId = _siteDateService.GetUserId(),
+            TenantNodes = post.Tenants.Where(t => t.HasTenantNode).Select(tn =>  new Model.TenantNode {
+                Id = null,
+                PublicationStatusId = tn.TenantNode!.PublicationStatusId,
+                TenantId = tn.TenantNode!.TenantId,
+                NodeId = null,
+                UrlId = null,
+                UrlPath = tn.TenantNode!.UrlPath,
+                SubgroupId = tn.TenantNode!.SubgroupId,
+            }).ToList(),
+        };
+        var blogPosts = new List<Model.BlogPost> {blogPost};
+        await BlogPostCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
+        foreach(var topic in post.Tags) {
+            topic.NodeId = blogPost.Id;
+        }
+        post.UrlId = blogPost.Id;
+        await Store(post.Tags);
+    }
+
     public async Task Save(BlogPost post)
     {
         var sp = new Stopwatch();
@@ -647,12 +679,18 @@ public class EditorService : IEditorService
         var tx = await _connection.BeginTransactionAsync();
         _logger.LogInformation($"Started transaction in {sp.ElapsedMilliseconds}");
         try {
-            await Store(post);
-            _logger.LogInformation($"Stored blogpost after {sp.ElapsedMilliseconds}");
-            await Store(post.Tags);
-            _logger.LogInformation($"Stored tags after {sp.ElapsedMilliseconds}");
-            await Store(post.Tenants.Where(x => x.TenantNode is not null).Select(x => x.TenantNode!).ToList());
-            _logger.LogInformation($"Stored tenant nodes {sp.ElapsedMilliseconds}");
+            if (post.NodeId.HasValue) {
+                await Store(post);
+                _logger.LogInformation($"Stored blogpost after {sp.ElapsedMilliseconds}");
+                await Store(post.Tags);
+                _logger.LogInformation($"Stored tags after {sp.ElapsedMilliseconds}");
+                await Store(post.Tenants.Where(x => x.TenantNode is not null).Select(x => x.TenantNode!).ToList());
+                _logger.LogInformation($"Stored tenant nodes {sp.ElapsedMilliseconds}");
+            }
+            else {
+                await StoreNew(post);
+                _logger.LogInformation($"Stored new blogpost after {sp.ElapsedMilliseconds}");
+            }
             tx.Commit();
             _logger.LogInformation($"Committed after {sp.ElapsedMilliseconds}");
             if (post.UrlId.HasValue) {

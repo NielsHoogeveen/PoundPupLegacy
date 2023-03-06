@@ -21,12 +21,19 @@ internal class SiteDataService : ISiteDataService
         public required int TenantId { get; init; }
         public required int NodeTypeId { get; init; }
     }
+    private record UserTenantEditOwnAction
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required int NodeTypeId { get; init; }
+    }
 
     private record Data
     {
         public required HashSet<UserTenantAction> UserTenantActions { get; init; }
 
         public required HashSet<UserTenantEditAction> UserTenantEditActions { get; init; }
+        public required HashSet<UserTenantEditOwnAction> UserTenantEditOwnActions { get; init; }
 
         public required Dictionary<(int, int), List<MenuItem>> UserMenus { get; init; }
 
@@ -37,7 +44,8 @@ internal class SiteDataService : ISiteDataService
         Tenants = new List<Tenant>(),
         UserMenus = new Dictionary<(int, int), List<MenuItem>>(),
         UserTenantActions = new HashSet<UserTenantAction>(),
-        UserTenantEditActions = new HashSet<UserTenantEditAction>()
+        UserTenantEditActions = new HashSet<UserTenantEditAction>(),
+        UserTenantEditOwnActions = new HashSet<UserTenantEditOwnAction>()
     };
 
     private readonly NpgsqlConnection _connection;
@@ -79,6 +87,7 @@ internal class SiteDataService : ISiteDataService
             UserMenus = await LoadUserMenusAsync(),
             UserTenantActions = await LoadUserTenantActionsAsync(),
             UserTenantEditActions = await LoadUserTenantEditActionsAsync(),
+            UserTenantEditOwnActions = await LoadUserTenantEditOwnActionsAsync(),
         };
         _data = data;
     }
@@ -90,6 +99,7 @@ internal class SiteDataService : ISiteDataService
             UserMenus = _data.UserMenus,
             UserTenantActions = _data.UserTenantActions,
             UserTenantEditActions = _data.UserTenantEditActions,
+            UserTenantEditOwnActions = _data.UserTenantEditOwnActions,
         };
         _data = data;
 
@@ -404,6 +414,74 @@ internal class SiteDataService : ISiteDataService
             await _connection.CloseAsync();
         }
     }
+    private async Task<HashSet<UserTenantEditOwnAction>> LoadUserTenantEditOwnActionsAsync()
+    {
+        var sw = Stopwatch.StartNew();
+        var userTenantActions = new HashSet<UserTenantEditOwnAction>();
+        try {
+            await _connection.OpenAsync();
+            var sql = """
+            select
+            distinct
+            *
+            from(
+            select
+            distinct
+            ugur.user_id,
+            t.id tenant_id,
+            ba.node_type_id
+            from edit_own_node_action ba
+            join access_role_privilege arp on arp.action_id = ba.id
+            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+            join tenant t on t.id = ugur.user_group_id
+            union
+            select
+            distinct
+            0,
+            t.id tenant_id,
+            ba.node_type_id
+            from edit_own_node_action ba
+            join access_role_privilege arp on arp.action_id = ba.id
+            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+            join tenant t on t.id = ugur.user_group_id
+            where arp.access_role_id = t.access_role_id_not_logged_in
+            union
+            select
+            uguru.user_id,
+            tn.id tenant_id,
+            ba.node_type_id
+            from edit_own_node_action ba
+            join tenant tn on 1=1
+            join user_group ug on ug.id = tn.id
+            join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
+            ) x
+            """;
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            await readCommand.PrepareAsync();
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            while (await reader.ReadAsync()) {
+                var userId = reader.GetInt32(0);
+                var tenantId = reader.GetInt32(1);
+                var nodeTypeId = reader.GetInt32(2);
+
+                userTenantActions.Add(
+                     new UserTenantEditOwnAction {
+                         UserId = userId,
+                         TenantId = tenantId,
+                         NodeTypeId = nodeTypeId,
+                     }
+                );
+            }
+            _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
+            return userTenantActions;
+        }
+        finally {
+            await _connection.CloseAsync();
+        }
+    }
     private async Task<HashSet<UserTenantAction>> LoadUserTenantActionsAsync()
     {
         var sw = Stopwatch.StartNew();
@@ -486,11 +564,13 @@ internal class SiteDataService : ISiteDataService
 
     public bool CanEdit(Node node)
     {
-        if (node.Authoring.Id == GetUserId()) {
-            return true;
-        }
         if (_data.UserTenantEditActions.Contains(new UserTenantEditAction { UserId = GetUserId(), TenantId = GetTenantId(), NodeTypeId = node.NodeTypeId })) {
             return true;
+        }
+        if (node.Authoring.Id == GetUserId()) {
+            if (_data.UserTenantEditOwnActions.Contains(new UserTenantEditOwnAction { UserId = GetUserId(), TenantId = GetTenantId(), NodeTypeId = node.NodeTypeId })) {
+                return true;
+            }
         }
         return false;
     }

@@ -1,15 +1,15 @@
 ﻿namespace PoundPupLegacy.Db.Writers;
 
-internal sealed class EditNodeActionWriter : DatabaseWriter<EditNodeAction>, IDatabaseWriter<EditNodeAction>
+internal sealed class EditOwnNodeActionWriter : DatabaseWriter<EditOwnNodeAction>, IDatabaseWriter<EditOwnNodeAction>
 {
 
     private const string ID = "id";
     private const string NODE_TYPE_ID = "node_type_id";
-    public static async Task<DatabaseWriter<EditNodeAction>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseWriter<EditOwnNodeAction>> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateInsertStatementAsync(
             connection,
-            "edit_node_action",
+            "edit_own_node_action",
             new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = ID,
@@ -21,21 +21,21 @@ internal sealed class EditNodeActionWriter : DatabaseWriter<EditNodeAction>, IDa
                 },
             }
         );
-        return new EditNodeActionWriter(command);
+        return new EditOwnNodeActionWriter(command);
 
     }
 
-    internal EditNodeActionWriter(NpgsqlCommand command) : base(command)
+    internal EditOwnNodeActionWriter(NpgsqlCommand command) : base(command)
     {
     }
 
-    internal override async Task WriteAsync(EditNodeAction editNodeAction)
+    internal override async Task WriteAsync(EditOwnNodeAction editOwnNodeAction)
     {
-        if (!editNodeAction.Id.HasValue) {
+        if (!editOwnNodeAction.Id.HasValue) {
             throw new NullReferenceException();
         }
-        WriteValue(editNodeAction.Id.Value, ID);
-        WriteNullableValue(editNodeAction.NodeTypeId, NODE_TYPE_ID);
+        WriteValue(editOwnNodeAction.Id.Value, ID);
+        WriteNullableValue(editOwnNodeAction.NodeTypeId, NODE_TYPE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

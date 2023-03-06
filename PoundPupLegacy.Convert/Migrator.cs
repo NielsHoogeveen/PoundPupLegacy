@@ -20,6 +20,7 @@ internal abstract class Migrator
     protected readonly CreateNodeActionIdReaderByNodeTypeId _createNodeActionIdReaderByNodeTypeId;
     protected readonly DeleteNodeActionIdReaderByNodeTypeId _deleteNodeActionIdReaderByNodeTypeId;
     protected readonly EditNodeActionIdReaderByNodeTypeId _editNodeActionIdReaderByNodeTypeId;
+    protected readonly EditOwnNodeActionIdReaderByNodeTypeId _editOwnNodeActionIdReaderByNodeTypeId;
     protected readonly ActionIdReaderByPath _actionReaderByPath;
     protected readonly TenantNodeIdReaderByUrlId _tenantNodeIdByUrlIdReader;
     protected readonly TenantNodeReaderByUrlId _tenantNodeByUrlIdReader;
@@ -38,6 +39,7 @@ internal abstract class Migrator
         _createNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.CreateNodeActionIdReaderByNodeTypeId;
         _deleteNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.DeleteNodeActionIdReaderByNodeTypeId;
         _editNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.EditNodeActionIdReaderByNodeTypeId;
+        _editOwnNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.EditOwnNodeActionIdReaderByNodeTypeId;
         _actionReaderByPath = mySqlToPostgresConverter.ActionIdReaderByPath;
         _tenantNodeIdByUrlIdReader = mySqlToPostgresConverter.TenantNodeIdByUrlIdReader;
         _tenantNodeByUrlIdReader = mySqlToPostgresConverter.TenantNodeByUrlIdReader;

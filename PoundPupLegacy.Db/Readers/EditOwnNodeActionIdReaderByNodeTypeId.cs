@@ -2,12 +2,12 @@
 
 namespace PoundPupLegacy.Db.Readers;
 
-public sealed class EditActionIdReaderByNodeTypeId : DatabaseUpdater<Term>, IDatabaseReader<EditActionIdReaderByNodeTypeId>
+public sealed class EditOwnNodeActionIdReaderByNodeTypeId : DatabaseUpdater<Term>, IDatabaseReader<EditOwnNodeActionIdReaderByNodeTypeId>
 {
-    public static async Task<EditActionIdReaderByNodeTypeId> CreateAsync(NpgsqlConnection connection)
+    public static async Task<EditOwnNodeActionIdReaderByNodeTypeId> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
-            SELECT id FROM edit_node_action WHERE node_type_id = @node_type_id
+            SELECT id FROM edit_own_node_action WHERE node_type_id = @node_type_id
             """;
 
         var command = connection.CreateCommand();
@@ -18,11 +18,11 @@ public sealed class EditActionIdReaderByNodeTypeId : DatabaseUpdater<Term>, IDat
         command.Parameters.Add("node_type_id", NpgsqlDbType.Integer);
         await command.PrepareAsync();
 
-        return new EditActionIdReaderByNodeTypeId(command);
+        return new EditOwnNodeActionIdReaderByNodeTypeId(command);
 
     }
 
-    internal EditActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
+    internal EditOwnNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
 
     public async Task<int> ReadAsync(int nodeTypeId)
     {
@@ -36,6 +36,6 @@ public sealed class EditActionIdReaderByNodeTypeId : DatabaseUpdater<Term>, IDat
             return id;
         }
         await reader.CloseAsync();
-        throw new Exception($"edit action for node type {nodeTypeId} cannot be found");
+        throw new Exception($"edit own node action cannot be found for node type  {nodeTypeId}");
     }
 }

@@ -129,6 +129,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         var createNodeActionIdReaderByNodeTypeId = await CreateNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
         var deleteNodeActionIdReaderByNodeTypeId = await DeleteNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
         var editNodeActionIdReaderByNodeTypeId = await EditNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
+        var editOwnNodeActionIdReaderByNodeTypeId = await EditOwnNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
         var actionIdReaderByPath = await ActionIdReaderByPath.CreateAsync(postgresConnection);
         var tenantNodeIdReaderByUrlId = await TenantNodeIdReaderByUrlId.CreateAsync(postgresConnection);
         var tenantNodeReaderByUrlId = await TenantNodeReaderByUrlId.CreateAsync(postgresConnection);
@@ -146,6 +147,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
             createNodeActionIdReaderByNodeTypeId,
             deleteNodeActionIdReaderByNodeTypeId,
             editNodeActionIdReaderByNodeTypeId,
+            editOwnNodeActionIdReaderByNodeTypeId,
             actionIdReaderByPath,
             tenantNodeIdReaderByUrlId,
             tenantNodeReaderByUrlId,
@@ -161,6 +163,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
     internal CreateNodeActionIdReaderByNodeTypeId CreateNodeActionIdReaderByNodeTypeId { get; }
     internal DeleteNodeActionIdReaderByNodeTypeId DeleteNodeActionIdReaderByNodeTypeId { get; }
     internal EditNodeActionIdReaderByNodeTypeId EditNodeActionIdReaderByNodeTypeId { get; }
+    internal EditOwnNodeActionIdReaderByNodeTypeId EditOwnNodeActionIdReaderByNodeTypeId { get; }
     internal ActionIdReaderByPath ActionIdReaderByPath { get; }
     internal TenantNodeIdReaderByUrlId TenantNodeIdByUrlIdReader { get; }
     internal TenantNodeReaderByUrlId TenantNodeByUrlIdReader { get; }
@@ -177,6 +180,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         CreateNodeActionIdReaderByNodeTypeId createNodeActionIdReaderByNodeTypeId,
         DeleteNodeActionIdReaderByNodeTypeId deleteNodeActionIdReaderByNodeTypeId,
         EditNodeActionIdReaderByNodeTypeId editNodeActionIdReaderByNodeTypeId,
+        EditOwnNodeActionIdReaderByNodeTypeId editOwnNodeActionIdReaderByNodeTypeId,
         ActionIdReaderByPath actionIdReaderByPath,
         TenantNodeIdReaderByUrlId tenantNodeIdReaderByUrlId,
         TenantNodeReaderByUrlId tenantNodeReaderByUrlId,
@@ -193,6 +197,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         CreateNodeActionIdReaderByNodeTypeId = createNodeActionIdReaderByNodeTypeId;
         DeleteNodeActionIdReaderByNodeTypeId = deleteNodeActionIdReaderByNodeTypeId;
         EditNodeActionIdReaderByNodeTypeId = editNodeActionIdReaderByNodeTypeId;
+        EditOwnNodeActionIdReaderByNodeTypeId = editOwnNodeActionIdReaderByNodeTypeId;
         ActionIdReaderByPath = actionIdReaderByPath;
         TenantNodeIdByUrlIdReader = tenantNodeIdReaderByUrlId;
         TenantNodeByUrlIdReader = tenantNodeReaderByUrlId;

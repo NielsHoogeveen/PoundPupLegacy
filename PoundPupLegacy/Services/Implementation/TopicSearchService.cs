@@ -18,7 +18,7 @@ public class TopicSearchService : ITopicSearchService
         _connection = connection;
         _logger = logger;
     }
-    public async Task<List<Tag>> GetTerms(int nodeId, string str)
+    public async Task<List<Tag>> GetTerms(int? nodeId, string str)
     {
         await semaphore.WaitAsync(TimeSpan.FromMilliseconds(100));
         await _connection.OpenAsync();
