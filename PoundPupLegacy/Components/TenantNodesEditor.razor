@@ -65,8 +65,8 @@
 }
 @code {
 
-        [Parameter]
-        public Node Node { get; set; }
+    [Parameter]
+    public Node Node { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,7 +109,7 @@
                     HasBeenDeleted = false,
                     NodeId = Node.NodeId,
                     UrlId = Node.NodeId,
-                    PublicationStatusId = 1,
+                    PublicationStatusId = tenant.PublicationStatusIdDefault,
                     UrlPath = null,
                     SubgroupId = null
                 };
@@ -125,6 +125,14 @@
             var tenant = Node.Tenants.First(x => x.Id == tenantId);
             if(tenant.TenantNode is not null) {
                 tenant.TenantNode.SubgroupId = subgroupId;
+                if (subgroupId.HasValue) {
+                    var subgroup = tenant.Subgroups.First(x => x.Id == subgroupId.Value);
+                    tenant.TenantNode.PublicationStatusId = subgroup.PublicationStatusIdDefault;
+                }
+                else {
+                    tenant.TenantNode.PublicationStatusId = tenant.PublicationStatusIdDefault;
+                }
+
             }
             StateHasChanged();
         }

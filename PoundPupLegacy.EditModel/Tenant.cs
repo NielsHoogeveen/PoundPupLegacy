@@ -15,6 +15,8 @@ public record Tenant
     public required int Id { get; init; }
     public required string DomainName { get; init; }
 
+    public required int PublicationStatusIdDefault { get; init; }
+
     public required bool AllowAccess { get; init; }
 
     public TenantNode? TenantNode { get; set; }

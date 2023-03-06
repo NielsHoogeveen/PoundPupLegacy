@@ -178,6 +178,8 @@ public class EditorService : IEditorService
         		        domain_name,
         		        'AllowAccess',
         		        allow_access,
+                        'PublicationStatusIdDefault',
+                        tenant_publication_status_id_default,
         		        'Subgroups',
         		        case 
         			        when subgroups = '[null]' then null
@@ -190,6 +192,7 @@ public class EditorService : IEditorService
                     id,
                     domain_name,
                     allow_access,
+                    tenant_publication_status_id_default,
                     jsonb_agg(
         	            case when subgroup_id is null then null
         	            else 
@@ -197,7 +200,9 @@ public class EditorService : IEditorService
         		            'Id',
         		            subgroup_id,
         		            'Name',
-        		            subgroup_name
+        		            subgroup_name,
+                            'PublicationStatusIdDefault',
+                            subgroup_publication_status_id_default
         	            )
         	            end
                     ) subgroups
@@ -206,7 +211,9 @@ public class EditorService : IEditorService
         		        distinct
                         t.id,
                         t.domain_name,
+                        pug.publication_status_id_default tenant_publication_status_id_default,
         		        s.name subgroup_name,
+                        s.publication_status_id_default subgroup_publication_status_id_default,
         		        s.id subgroup_id,
                         (
                 	        select
@@ -236,16 +243,19 @@ public class EditorService : IEditorService
                 	        ) x
                         ) allow_access
                     from tenant t
+                    join publishing_user_group pug on pug.id = t.id
                     left join(
                         select
                 	        name,
                 	        id,
-                	        tenant_id
+                	        tenant_id,
+                            publication_status_id_default
                         from(
                 	        select
                 		        distinct
                 		        ug.name,
                 		        s.id,
+                                pug.publication_status_id_default,
                 		        s.tenant_id,
                 		        (
                 			        select
@@ -275,6 +285,7 @@ public class EditorService : IEditorService
                 			        ) x
                 		        ) allow_access
                 	        from subgroup s 
+                            join publishing_user_group pug on pug.id = s.id
                 	        join user_group ug on ug.id = s.id
                         ) x
                         where allow_access =  true
@@ -284,7 +295,7 @@ public class EditorService : IEditorService
                     where uguru.user_id = @user_id
                 ) x
                 group by
-                id, domain_name, allow_access
+                id, domain_name, allow_access,tenant_publication_status_id_default
         	) x
         )
         """;
