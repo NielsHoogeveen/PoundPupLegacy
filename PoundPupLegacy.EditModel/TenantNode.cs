@@ -9,5 +9,7 @@ public record TenantNode
     public int? NodeId { get; init; }
     public int? SubgroupId { get; set; }
     public required int PublicationStatusId { get; set; }
+    public required bool HasBeenStored { get; init; }
     public bool HasBeenDeleted { get; set; } = false;
+    public bool CanBeUnchecked { get; set; } = true;
 }

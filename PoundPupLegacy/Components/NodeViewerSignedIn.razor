@@ -64,16 +64,20 @@
                 <article>
                 @if (Model is BlogPost)
                 {
-                    
                     <BlogPostEditor Id="Model.Id" />
-                    
                 }
-                @if (Model is Document) {
-
+                @if (Model is Article) 
+                {
+                    <ArticleEditor Id="Model.Id" />
+                }
+                @if (Model is Discussion) 
+                {
+                    <DiscussionEditor Id="Model.Id" />
+                }
+                @if (Model is Document) 
+                {
                     <DocumentEditor Id="Model.Id" />
-
                 }
-
                 </article>
             </div>
         }

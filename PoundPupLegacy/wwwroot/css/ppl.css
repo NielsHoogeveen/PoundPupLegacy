@@ -338,7 +338,7 @@ article .text{
 }
 
 .breadcrum-element::after {
-    content: '>';
+    content: ' > ';
 }
 .breadcrum-element:last-of-type::after {
     content: '';

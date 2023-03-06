@@ -2,6 +2,7 @@
 @using PoundPupLegacy.Services;
 @inject ILogger<TenantNodesEditor> logger;
 @inject NavigationManager navigationManager;
+@inject ISiteDataService siteDataService;
 
 @if (Node is not null)
 {
@@ -9,7 +10,13 @@
     @foreach(var tenant in Node.Tenants) {
         if(tenant.TenantNode is not null && !tenant.TenantNode.HasBeenDeleted)
         {
-            <input type="checkbox" checked @onclick="() => Uncheck(tenant.Id)"/>
+            if (tenant.TenantNode.CanBeUnchecked)
+            {
+                <input type="checkbox" name="tenant-@tenant.Id" checked @onclick="() => Uncheck(tenant.Id)" />
+            }
+            else {
+                <input type="checkbox" name="tenant-@tenant.Id" checked  disabled/>
+            }
             <div>@tenant.DomainName</div>
             <div>
                 <input type="text" @bind-value="tenant.TenantNode!.UrlPath"/>
@@ -54,7 +61,7 @@
         }
         else 
         {
-            <input type="checkbox" @onclick="() => Check(tenant.Id)" />
+            <input type="checkbox" name="tenant-@tenant.Id" @onclick="() => Check(tenant.Id)" />
             <div>@tenant.DomainName</div>
             <div></div>
             <div></div>
@@ -66,14 +73,36 @@
 @code {
 
     [Parameter]
-    public Node Node { get; set; }
+    public Node? Node { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        foreach(var tenant in Node!.Tenants) 
+        if (Node is not null)
         {
-            var tenantNode = Node.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
-            tenant.TenantNode = tenantNode;
+            if (Node.NodeId is not null)
+            {
+                foreach (var tenant in Node!.Tenants)
+                {
+                    var tenantNode = Node.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+                    tenant.TenantNode = tenantNode;
+                }
+            }
+            else {
+                var tenantId = siteDataService.GetTenantId();
+                var tenant = Node.Tenants.First(x => x.Id == tenantId );
+                tenant.TenantNode = new TenantNode {
+                        Id = null,
+                        TenantId = tenantId,
+                        HasBeenDeleted = false,
+                        NodeId = Node.NodeId,
+                        UrlId = Node.NodeId,
+                        PublicationStatusId = tenant.PublicationStatusIdDefault,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        CanBeUnchecked = false,
+                        HasBeenStored = false
+                    };
+            }
         }
     }
 
@@ -111,7 +140,9 @@
                     UrlId = Node.NodeId,
                     PublicationStatusId = tenant.PublicationStatusIdDefault,
                     UrlPath = null,
-                    SubgroupId = null
+                    SubgroupId = null,
+                    CanBeUnchecked = true,
+                    HasBeenStored = false
                 };
             }
             StateHasChanged();

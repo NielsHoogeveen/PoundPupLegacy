@@ -1,0 +1,61 @@
+﻿@using PoundPupLegacy.EditModel;
+@using PoundPupLegacy.Services;
+@inject IHttpContextAccessor httpContextAccessor;
+@inject IEditorService editorService;
+@inject ILogger<ArticleEditor> logger;
+@inject NavigationManager navigationManager;
+@inject IJSRuntime JSRuntime
+
+@{
+    var url = $"https://{httpContextAccessor.HttpContext!.Request.Host.Value}/image/upload";
+}
+
+@if (article is not null)
+{
+    <style>
+        .title-editor {
+            width: 100%;
+            font-size: 2em;
+            font-weight: bold;
+            border: none;
+            border-bottom: 1px solid black;
+            padding: 0.5em;
+            margin-bottom: 1em;
+        }
+    </style>
+    <EditForm Model="@article" OnSubmit="@HandleSubmit">
+        <InputText class="title-editor" id="name" @bind-Value="article.Title" />
+        <CKEditor Id="#editor"
+              @bind-Value=@article.Text
+            UrlToPostImage=@url>
+        </CKEditor>
+        <Tags Elems="@article.Tags" NodeId="@article.NodeId"/>
+        <TenantNodesEditor  Node="@article" />
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+@code {
+    Article? article;
+
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        article = await editorService.GetArticle(Id);
+        foreach(var tenant in article!.Tenants) 
+        {
+            var tenantNode = article.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+            tenant.TenantNode = tenantNode;
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        logger.LogInformation(article!.ToString());
+        await editorService.Save(article);
+        await JSRuntime.InvokeVoidAsync("reloadNode", article.UrlId);
+    }
+
+}

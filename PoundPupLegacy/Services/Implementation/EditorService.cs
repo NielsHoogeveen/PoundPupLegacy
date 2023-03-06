@@ -121,7 +121,11 @@ public class EditorService : IEditorService
                     'SubgroupId',
                     subgroup_id,
                     'PublicationStatusId',
-                    publication_status_id
+                    publication_status_id,
+                    'HasBeenStored',
+                    true,
+                    'CanBeUnchecked',
+                    false
                 )
             ) document
         from(
@@ -340,7 +344,7 @@ public class EditorService : IEditorService
         where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         """;
 
-    const string BLOG_POST_DOCUMENT = $"""
+    const string SIMPLE_TEXT_NODE_DOCUMENT = $"""
             {CTE_EDIT}
             select
                 jsonb_build_object(
@@ -367,10 +371,9 @@ public class EditorService : IEditorService
                     (select document from tenants_document)
                 ) document
             from node n
-            join blog_post b on b.id = n.id
             join simple_text_node stn on stn.id = n.id
             join tenant_node tn on tn.node_id = n.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
     const string NEW_BLOG_POST_DOCUMENT = $"""
             {CTE_CREATE}
@@ -391,7 +394,22 @@ public class EditorService : IEditorService
                     (select document from tenants_document)
                 ) document
         """;
+
     public async Task<BlogPost?> GetNewBlogPost()
+    {
+        return await GetNewSimpleTextNode<BlogPost>(35);
+    }
+    public async Task<Article?> GetNewArticle()
+    {
+        return await GetNewSimpleTextNode<Article>(36);
+    }
+    public async Task<Discussion?> GetNewDiscussion()
+    {
+        return await GetNewSimpleTextNode<Discussion>(37);
+    }
+
+    public async Task<T?> GetNewSimpleTextNode<T>(int nodeTypeId)
+        where T: class, SimpleTextNode
     {
         try {
             await _connection.OpenAsync();
@@ -403,47 +421,64 @@ public class EditorService : IEditorService
             readCommand.CommandText = sql;
             readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
             readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
-            readCommand.Parameters["node_type_id"].Value = 35;
+            readCommand.Parameters["node_type_id"].Value = nodeTypeId;
+            readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId();
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             if (!reader.HasRows) {
                 return null;
             }
             var text = reader.GetString(0); ;
-            var blogPost = reader.GetFieldValue<BlogPost>(0);
-            return blogPost;
+            var node = reader.GetFieldValue<T>(0);
+            return node;
         }
         finally {
             await _connection.CloseAsync();
         }
-
     }
+
     public async Task<BlogPost?> GetBlogPost(int id)
+    {
+        return await GetSimpleTextNode<BlogPost>(id, 35);
+    }
+    public async Task<Article?> GetArticle(int id)
+    {
+        return await GetSimpleTextNode<Article>(id, 36);
+    }
+    public async Task<Discussion?> GetDiscussion(int id)
+    {
+        return await GetSimpleTextNode<Discussion>(id, 37);
+    }
+    public async Task<T?> GetSimpleTextNode<T>(int id, int nodeTypeId)
+        where T: class, SimpleTextNode
     {
         try {
             await _connection.OpenAsync();
-            var sql = BLOG_POST_DOCUMENT;
+            var sql = SIMPLE_TEXT_NODE_DOCUMENT;
 
             using var readCommand = _connection.CreateCommand();
             readCommand.CommandType = CommandType.Text;
             readCommand.CommandTimeout = 300;
             readCommand.CommandText = sql;
             readCommand.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["url_id"].Value = id;
+            readCommand.Parameters["url_id"].Value = id; 
+            readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId();
             readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
-            readCommand.Parameters["node_type_id"].Value = 35;
+            readCommand.Parameters["node_type_id"].Value = nodeTypeId;
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             if (!reader.HasRows) {
                 return null;
             }
             var text = reader.GetString(0); ;
-            var blogPost = reader.GetFieldValue<BlogPost>(0);
+            var blogPost = reader.GetFieldValue<T>(0);
             return blogPost;
         }
         finally {
@@ -639,20 +674,34 @@ public class EditorService : IEditorService
         }
     }
 
-    public async Task StoreNew(BlogPost post)
+    private async Task StoreNew(SimpleTextNode stn)
+    {
+        switch(stn)  {
+            case BlogPost bp: 
+                await StoreNewBlogPost(bp);
+                break;
+            case Article a:
+                await StoreNewArticle(a);
+                break;
+            case Discussion d:
+                await StoreNewDiscussion(d);
+                break;
+        };
+    }
+    private async Task StoreNewBlogPost(BlogPost blogPost)
     {
         var now = DateTime.Now;
-        var blogPost = new Model.BlogPost {
+        var nodeToStore = new Model.BlogPost {
             Id = null,
-            Title = post.Title,
-            Text = _textService.FormatText(post.Text),
-            Teaser = _textService.FormatTeaser(post.Text),
+            Title = blogPost.Title,
+            Text = _textService.FormatText(blogPost.Text),
+            Teaser = _textService.FormatTeaser(blogPost.Text),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = 35,
             OwnerId = _siteDateService.GetTenantId(),
             PublisherId = _siteDateService.GetUserId(),
-            TenantNodes = post.Tenants.Where(t => t.HasTenantNode).Select(tn =>  new Model.TenantNode {
+            TenantNodes = blogPost.Tenants.Where(t => t.HasTenantNode).Select(tn =>  new Model.TenantNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -662,16 +711,78 @@ public class EditorService : IEditorService
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
         };
-        var blogPosts = new List<Model.BlogPost> {blogPost};
+        var blogPosts = new List<Model.BlogPost> {nodeToStore};
         await BlogPostCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
-        foreach(var topic in post.Tags) {
-            topic.NodeId = blogPost.Id;
+        foreach(var topic in blogPost.Tags) {
+            topic.NodeId = nodeToStore.Id;
         }
-        post.UrlId = blogPost.Id;
-        await Store(post.Tags);
+        blogPost.UrlId = nodeToStore.Id;
+        await Store(blogPost.Tags);
+    }
+    private async Task StoreNewArticle(Article article)
+    {
+        var now = DateTime.Now;
+        var nodeToStore = new Model.Article {
+            Id = null,
+            Title = article.Title,
+            Text = _textService.FormatText(article.Text),
+            Teaser = _textService.FormatTeaser(article.Text),
+            ChangedDateTime = now,
+            CreatedDateTime = now,
+            NodeTypeId = 36,
+            OwnerId = _siteDateService.GetTenantId(),
+            PublisherId = _siteDateService.GetUserId(),
+            TenantNodes = article.Tenants.Where(t => t.HasTenantNode).Select(tn => new Model.TenantNode {
+                Id = null,
+                PublicationStatusId = tn.TenantNode!.PublicationStatusId,
+                TenantId = tn.TenantNode!.TenantId,
+                NodeId = null,
+                UrlId = null,
+                UrlPath = tn.TenantNode!.UrlPath,
+                SubgroupId = tn.TenantNode!.SubgroupId,
+            }).ToList(),
+        };
+        var blogPosts = new List<Model.Article> { nodeToStore };
+        await ArticleCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
+        foreach (var topic in article.Tags) {
+            topic.NodeId = nodeToStore.Id;
+        }
+        article.UrlId = nodeToStore.Id;
+        await Store(article.Tags);
+    }
+    private async Task StoreNewDiscussion(Discussion discussion)
+    {
+        var now = DateTime.Now;
+        var nodeToStore = new Model.Discussion {
+            Id = null,
+            Title = discussion.Title,
+            Text = _textService.FormatText(discussion.Text),
+            Teaser = _textService.FormatTeaser(discussion.Text),
+            ChangedDateTime = now,
+            CreatedDateTime = now,
+            NodeTypeId = 37,
+            OwnerId = _siteDateService.GetTenantId(),
+            PublisherId = _siteDateService.GetUserId(),
+            TenantNodes = discussion.Tenants.Where(t => t.HasTenantNode).Select(tn => new Model.TenantNode {
+                Id = null,
+                PublicationStatusId = tn.TenantNode!.PublicationStatusId,
+                TenantId = tn.TenantNode!.TenantId,
+                NodeId = null,
+                UrlId = null,
+                UrlPath = tn.TenantNode!.UrlPath,
+                SubgroupId = tn.TenantNode!.SubgroupId,
+            }).ToList(),
+        };
+        var blogPosts = new List<Model.Discussion> { nodeToStore };
+        await DiscussionCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
+        foreach (var topic in discussion.Tags) {
+            topic.NodeId = nodeToStore.Id;
+        }
+        discussion.UrlId = nodeToStore.Id;
+        await Store(discussion.Tags);
     }
 
-    public async Task Save(BlogPost post)
+    public async Task Save(SimpleTextNode post)
     {
         var sp = new Stopwatch();
         sp.Start();

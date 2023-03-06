@@ -1,0 +1,52 @@
+﻿@using PoundPupLegacy.EditModel;
+@using PoundPupLegacy.Services;
+@inject IHttpContextAccessor httpContextAccessor;
+@inject IEditorService editorService;
+@inject ILogger<DiscussionCreator> logger;
+@inject NavigationManager navigationManager;
+@inject IJSRuntime JSRuntime
+
+@{
+    var url = $"https://{httpContextAccessor.HttpContext!.Request.Host.Value}/image/upload";
+}
+
+@if (discussion is not null)
+{
+    <style>
+        .title-editor {
+            width: 100%;
+            font-size: 2em;
+            font-weight: bold;
+            border: none;
+            border-bottom: 1px solid black;
+            padding: 0.5em;
+            margin-bottom: 1em;
+        }
+    </style>
+    <EditForm Model="@discussion" OnSubmit="@HandleSubmit">
+        <InputText class="title-editor" id="name" @bind-Value="discussion.Title" />
+        <CKEditor Id="#editor"
+              @bind-Value=@discussion.Text
+            UrlToPostImage=@url>
+        </CKEditor>
+        <Tags Elems="@discussion.Tags" NodeId="@discussion.NodeId"/>
+        <TenantNodesEditor  Node="@discussion" />
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+@code {
+    Discussion? discussion;
+
+    protected override async Task OnInitializedAsync()
+    {
+        discussion = await editorService.GetNewDiscussion();
+    }
+
+    private async Task HandleSubmit()
+    {
+        logger.LogInformation(discussion!.ToString());
+        await editorService.Save(discussion);
+        await JSRuntime.InvokeVoidAsync("reloadNode", discussion.UrlId);
+    }
+
+}
