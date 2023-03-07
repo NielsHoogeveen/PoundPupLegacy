@@ -57,4 +57,15 @@ public record Document: Node
             }
         }
     }
+    private List<File> files = new();
+
+    public List<File> Files {
+        get => files;
+        init {
+            if (value is not null) {
+                files = value;
+            }
+        }
+    }
+
 }

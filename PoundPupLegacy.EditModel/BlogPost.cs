@@ -40,4 +40,14 @@ public record BlogPost : SimpleTextNode
             }
         }
     }
+    private List<File> files = new();
+
+    public required List<File> Files { 
+        get => files; 
+        init { 
+            if (value is not null) { 
+                files = value;
+            }
+        }
+    }
 }

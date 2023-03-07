@@ -8,4 +8,5 @@ public interface Node
     List<Tag> Tags { get; }
     List<Tenant> Tenants { get; }
     List<TenantNode> TenantNodes { get; }
+    List<File> Files { get; }
 }

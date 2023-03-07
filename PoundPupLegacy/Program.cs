@@ -56,7 +56,8 @@ public class Program
         builder.Services.AddTransient<ITopicService, TopicService>();
         builder.Services.AddTransient<IPersonService, PersonService>();
         builder.Services.AddTransient<IDocumentableDocumentsSearchService, DocumentableDocumentsSearchService>();
-        
+        builder.Services.AddTransient<IAttachmentService, AttachmentService>();
+
         builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();

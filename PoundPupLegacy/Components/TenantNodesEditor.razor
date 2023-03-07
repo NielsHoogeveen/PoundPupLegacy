@@ -77,6 +77,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await Task.CompletedTask;
         if (Node is not null)
         {
             if (Node.NodeId is not null)

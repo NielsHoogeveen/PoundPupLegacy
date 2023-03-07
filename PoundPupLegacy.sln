@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Test", "Poun
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.EditModel", "PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj", "{C1038565-4372-433A-B003-F26CF23576B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.MetaModel", "PoundPupLegacy.MetaModel\PoundPupLegacy.MetaModel.csproj", "{FD8E1FB3-DA73-4AC3-AB4D-42395D1A8F2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.MetaModel", "PoundPupLegacy.MetaModel\PoundPupLegacy.MetaModel.csproj", "{FD8E1FB3-DA73-4AC3-AB4D-42395D1A8F2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

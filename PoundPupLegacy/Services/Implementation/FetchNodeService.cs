@@ -178,8 +178,8 @@ internal class FetchNodeService : IFetchNodeService
             select
             jsonb_agg(
                 jsonb_build_object(
+                    'Id', f.id,
                     'Name', f.name,
-                    'Path', f.path,
                     'Size', f.size,
                     'MimeType', f.mime_type
                 )
@@ -3325,7 +3325,7 @@ internal class FetchNodeService : IFetchNodeService
                     o.full_name,
                     o.suffix,
                     o.nick_name,
-                    f.path portrait_file_path
+                    '/attachment/' || f.id portrait_file_path
                 FROM authenticated_node an
                 join person o on o.id = an.node_id 
                 left join file f on f.id = o.file_id_portrait

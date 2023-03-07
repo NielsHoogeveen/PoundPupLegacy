@@ -2,11 +2,13 @@
 
 @if (Model is not null && Model.Any())
 {
+    
     <div class="files">
+        <h4>Attachments</h4>
         @foreach(var elem in Model)
         {
             <div class="file">
-                <a href="@elem.Path">@elem.Name</a> (@elem.Size Bytes)
+                <a href="/attachment/@elem.Id">@elem.Name</a> (@elem.Size Bytes)
             </div>
         }
     </div>

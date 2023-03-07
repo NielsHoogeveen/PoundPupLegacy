@@ -31,8 +31,10 @@
         </CKEditor>
         <Tags Elems="@blogPost.Tags" NodeId="@blogPost.NodeId"/>
         <TenantNodesEditor  Node="@blogPost" />
+        <AttachmentEditor Files="blogPost.Files" />
         <button type="submit">Submit</button>
     </EditForm>
+    
 }
 @code {
     BlogPost? blogPost;

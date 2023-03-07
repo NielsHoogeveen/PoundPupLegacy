@@ -33,7 +33,8 @@ public class EditorService : IEditorService
         {TENANTS_DOCUMENT},
         {DOCUMENTABLE_DOCUMENTS_DOCUMENT},
         {DOCUMENT_DOCUMENTABLES_DOCUMENT},
-        {DOCUMENT_TYPES_DOCUMENT}
+        {DOCUMENT_TYPES_DOCUMENT},
+        {ATTACHMENTS_DOCUMENT}
         """;
 
     const string CTE_CREATE = $"""
@@ -58,6 +59,32 @@ public class EditorService : IEditorService
             join tenant_node tn on tn.node_id = t.vocabulary_id
             join node n on n.id = dt.id 
             where tn.url_id = 42416 and tn.tenant_id = 1
+        )
+        """;
+
+    const string ATTACHMENTS_DOCUMENT = """
+        attachments_document as (
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'Id',
+        		        f.id,
+                        'Name',
+                        f.name,
+        		        'Path',
+                        f.path,
+                        'Size',
+                        f.size,
+                        'MimeType',
+                        f.mime_type,
+                        'HasBeenStored',
+                        true
+        	        )
+                ) document
+            from file f
+            join node_file nf on nf.file_id = f.id
+            join tenant_node tn on tn.node_id = nf.node_id
+            where tn.url_id = @url_id and tn.tenant_id = @tenant_id
         )
         """;
 
@@ -171,6 +198,7 @@ public class EditorService : IEditorService
         where allow_access = true
         )
         """;
+
     const string TENANTS_DOCUMENT = """
         tenants_document as(
             select
@@ -336,7 +364,9 @@ public class EditorService : IEditorService
                 'TenantNodes',
                 (select document from tenant_nodes_document),
                 'Tenants',
-                (select document from tenants_document)
+                (select document from tenants_document),
+                'Files',
+                (select document from attachments_document)
             ) document
         from document d
         join node n on n.id = d.id
@@ -368,7 +398,9 @@ public class EditorService : IEditorService
                     'TenantNodes',
                     (select document from tenant_nodes_document),
                     'Tenants',
-                    (select document from tenants_document)
+                    (select document from tenants_document),
+                    'Files',
+                    (select document from attachments_document)
                 ) document
             from node n
             join simple_text_node stn on stn.id = n.id
