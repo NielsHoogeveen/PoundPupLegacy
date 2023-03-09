@@ -29,6 +29,9 @@
     [Parameter]
     public List<EditModel.File>? Files { get; set; }
 
+    [Parameter]
+    public int? NodeId { get; set; }
+
     private string ErrorMessage = "";
 
     private int maxNumberOfFiles = 100;
@@ -61,6 +64,7 @@
                             MimeType = file.ContentType,
                             Path = path,
                             HasBeenStored = false,
+                            NodeId = NodeId,
                         });
                 }
                 catch (Exception ex)

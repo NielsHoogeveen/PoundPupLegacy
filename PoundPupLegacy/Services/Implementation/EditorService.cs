@@ -77,6 +77,8 @@ public class EditorService : IEditorService
                         f.size,
                         'MimeType',
                         f.mime_type,
+                        'NodeId',
+                        nf.node_id,
                         'HasBeenStored',
                         true
         	        )
@@ -548,6 +550,71 @@ public class EditorService : IEditorService
         }
     }
 
+    private async Task Store(List<EditModel.File> attachments)
+    {
+        if(attachments.Any(x => x.HasBeenDeleted)) {
+            var command = _connection.CreateCommand();
+            var sql = $"""
+                delete from node_file
+                where file_id = @file_id and node_id = @node_id;
+                delete from tenant_file
+                where file_id in (
+                    select 
+                    id 
+                    from file f
+                    left join node_file nf on nf.file_id = f.id
+                    where nf.file_id is null
+                    and f.id = @file_id
+                );
+                delete from file
+                where id in (
+                    select 
+                    id 
+                    from file f
+                    left join node_file nf on nf.file_id = f.id
+                    where nf.file_id is null
+                    and f.id = @file_id
+                );
+                """;
+            command.CommandType = CommandType.Text;
+            command.CommandTimeout = 300;
+            command.CommandText = sql;
+            command.Parameters.Add("file_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
+            await command.PrepareAsync();
+            foreach (var attachment in attachments.Where(x => x.HasBeenDeleted)) {
+                command.Parameters["file_id"].Value = attachment.Id;
+                command.Parameters["node_id"].Value = attachment.NodeId;
+                await command.ExecuteNonQueryAsync();
+            }
+        }
+        if (attachments.Any(x => x.Id is null)) {
+            using (var command = _connection.CreateCommand()) {
+                var sql = $"""
+                    insert into file (name, size, mime_type, path) VALUES(@name, @size, @mime_type, @path);
+                    insert into node_file (node_id, file_id) VALUES(@node_id, lastval());
+                    """;
+                command.CommandType = CommandType.Text;
+                command.CommandTimeout = 300;
+                command.CommandText = sql;
+                command.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);
+                command.Parameters.Add("size", NpgsqlTypes.NpgsqlDbType.Integer);
+                command.Parameters.Add("mime_type", NpgsqlTypes.NpgsqlDbType.Varchar);
+                command.Parameters.Add("path", NpgsqlTypes.NpgsqlDbType.Varchar);
+                command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
+                await command.PrepareAsync();
+                foreach (var attachment in attachments.Where(x => !x.HasBeenStored)) {
+                    command.Parameters["name"].Value = attachment.Name;
+                    command.Parameters["size"].Value = attachment.Size;
+                    command.Parameters["mime_type"].Value = attachment.MimeType;
+                    command.Parameters["path"].Value = attachment.Path;
+                    command.Parameters["node_id"].Value = attachment.NodeId;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+    }
+
     private async Task Store(List<TenantNode> tenantNodes)
     {
         if (tenantNodes.Any(x => x.HasBeenDeleted)) {
@@ -824,11 +891,13 @@ public class EditorService : IEditorService
         try {
             if (post.NodeId.HasValue) {
                 await Store(post);
-                _logger.LogInformation($"Stored blogpost after {sp.ElapsedMilliseconds}");
+                _logger.LogInformation($"Stored simple text node after {sp.ElapsedMilliseconds}");
                 await Store(post.Tags);
                 _logger.LogInformation($"Stored tags after {sp.ElapsedMilliseconds}");
                 await Store(post.Tenants.Where(x => x.TenantNode is not null).Select(x => x.TenantNode!).ToList());
-                _logger.LogInformation($"Stored tenant nodes {sp.ElapsedMilliseconds}");
+                _logger.LogInformation($"Stored tenant nodes after {sp.ElapsedMilliseconds}");
+                await Store(post.Files);
+                _logger.LogInformation($"Stored tenant attachments after {sp.ElapsedMilliseconds}");
             }
             else {
                 await StoreNew(post);

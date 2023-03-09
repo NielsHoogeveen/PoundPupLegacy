@@ -8,5 +8,7 @@ public record File
     public required long Size { get; init; }
     public required string MimeType { get; init; }
     public required bool HasBeenStored { get; init; }
+    public required int? NodeId { get; init; }
     public bool HasBeenDeleted { get; set; } = false;
+    
 }

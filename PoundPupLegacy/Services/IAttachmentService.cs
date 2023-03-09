@@ -16,4 +16,5 @@ public interface IAttachmentService
     Task<OneOf<FileReturn,None, Error<string>>> GetFileStream(int id);
 
     Task<string?> StoreFile(IBrowserFile file);
+    Task<int?> StoreFile(IFormFile file);
 }
