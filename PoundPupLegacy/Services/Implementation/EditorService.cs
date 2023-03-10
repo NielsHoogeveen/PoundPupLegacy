@@ -409,7 +409,7 @@ public class EditorService : IEditorService
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
-    const string NEW_BLOG_POST_DOCUMENT = $"""
+    const string NEW_SIMPLE_TEXT_DOCUMENT = $"""
             {CTE_CREATE}
             select
                 jsonb_build_object(
@@ -425,7 +425,9 @@ public class EditorService : IEditorService
                     'TenantNodes',
                     null,
                     'Tenants',
-                    (select document from tenants_document)
+                    (select document from tenants_document),
+                    'Files',
+                    null
                 ) document
         """;
 
@@ -447,7 +449,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            var sql = NEW_BLOG_POST_DOCUMENT;
+            var sql = NEW_SIMPLE_TEXT_DOCUMENT;
 
             using var readCommand = _connection.CreateCommand();
             readCommand.CommandType = CommandType.Text;
@@ -786,6 +788,15 @@ public class EditorService : IEditorService
                 await StoreNewDiscussion(d);
                 break;
         };
+        foreach (var topic in stn.Tags) {
+            topic.NodeId = stn.UrlId;
+        }
+        await Store(stn.Tags);
+        foreach (var file in stn.Files) {
+            file.NodeId = stn.UrlId;
+        }
+        await Store(stn.Files);
+
     }
     private async Task StoreNewBlogPost(BlogPost blogPost)
     {
@@ -812,11 +823,7 @@ public class EditorService : IEditorService
         };
         var blogPosts = new List<Model.BlogPost> {nodeToStore};
         await BlogPostCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
-        foreach(var topic in blogPost.Tags) {
-            topic.NodeId = nodeToStore.Id;
-        }
         blogPost.UrlId = nodeToStore.Id;
-        await Store(blogPost.Tags);
     }
     private async Task StoreNewArticle(Article article)
     {
@@ -843,11 +850,7 @@ public class EditorService : IEditorService
         };
         var blogPosts = new List<Model.Article> { nodeToStore };
         await ArticleCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
-        foreach (var topic in article.Tags) {
-            topic.NodeId = nodeToStore.Id;
-        }
         article.UrlId = nodeToStore.Id;
-        await Store(article.Tags);
     }
     private async Task StoreNewDiscussion(Discussion discussion)
     {
@@ -874,11 +877,7 @@ public class EditorService : IEditorService
         };
         var blogPosts = new List<Model.Discussion> { nodeToStore };
         await DiscussionCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
-        foreach (var topic in discussion.Tags) {
-            topic.NodeId = nodeToStore.Id;
-        }
         discussion.UrlId = nodeToStore.Id;
-        await Store(discussion.Tags);
     }
 
     public async Task Save(SimpleTextNode post)
