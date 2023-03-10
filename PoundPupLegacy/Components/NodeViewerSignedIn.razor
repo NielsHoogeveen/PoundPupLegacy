@@ -64,7 +64,7 @@
                 <article>
                 @if (Model is BlogPost)
                 {
-                    <BlogPostEditor Id="Model.Id" />
+                    <OrganizationEditor Id="Model.Id" />
                 }
                 @if (Model is Article) 
                 {
@@ -77,6 +77,9 @@
                 @if (Model is Document) 
                 {
                     <DocumentEditor Id="Model.Id" />
+                }
+                @if (Model is Organization) {
+                    <OrganizationEditor Id="Model.Id" />
                 }
                 </article>
             </div>

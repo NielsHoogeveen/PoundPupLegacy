@@ -41,15 +41,15 @@ public record Person : Nameable, Documentable, Locatable
         }
     }
 
-    public required DateTime? DateOfBirth { get; init; }
-    public required DateTime? DateOfDeath { get; init; }
-    public required string? PortraitFilePath { get; init; }
-    public required string? FirstName { get; init; }
-    public required string? MiddleName { get; init; }
-    public required string? LastName { get; init; }
-    public required string? FullName { get; init; }
-    public required string? Suffix { get; init; }
-    public required string? NickName { get; init; }
+    public DateTime? DateOfBirth { get; init; }
+    public DateTime? DateOfDeath { get; init; }
+    public string? PortraitFilePath { get; init; }
+    public string? FirstName { get; init; }
+    public string? MiddleName { get; init; }
+    public string? LastName { get; init; }
+    public string? FullName { get; init; }
+    public string? Suffix { get; init; }
+    public string? NickName { get; init; }
     private Link[] professions = Array.Empty<Link>();
     public required Link[] Professions {
         get => professions;

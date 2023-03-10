@@ -8,8 +8,9 @@ public record Organization : Nameable, Documentable, Locatable
     public required string Title { get; init; }
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
+
     private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags {
+    public Link[] Tags {
         get => tags;
         init {
             if (value is not null) {
@@ -41,12 +42,13 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
 
-    public required string? WebsiteUrl { get; init; }
-    public required string? EmailAddress { get; init; }
-    public required DateTime? Established { get; init; }
-    public required DateTime? Terminated { get; init; }
+    public string? WebsiteUrl { get; init; }
+    public string? EmailAddress { get; init; }
+    public DateTime? Established { get; init; }
+    public DateTime? Terminated { get; init; }
+
     private Link[] organizationTypes = Array.Empty<Link>();
-    public required Link[] OrganizationTypes {
+    public Link[] OrganizationTypes {
         get => organizationTypes;
         init {
             if (value is not null) {
@@ -56,7 +58,7 @@ public record Organization : Nameable, Documentable, Locatable
     }
 
     private Location[] _locations = Array.Empty<Location>();
-    public required Location[] Locations {
+    public Location[] Locations {
         get => _locations;
         init {
             if (value is not null) {
@@ -66,7 +68,7 @@ public record Organization : Nameable, Documentable, Locatable
     }
 
     private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics {
+    public Link[] SubTopics {
         get => subTopics;
         init {
             if (value is not null) {
@@ -76,7 +78,7 @@ public record Organization : Nameable, Documentable, Locatable
     }
 
     private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics {
+    public Link[] SuperTopics {
         get => superTopics;
         init {
             if (value is not null) {
@@ -85,7 +87,7 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
     private InterOrganizationalRelation[] interOrganizationalRelations = Array.Empty<InterOrganizationalRelation>();
-    public required InterOrganizationalRelation[] InterOrganizationalRelations {
+    public InterOrganizationalRelation[] InterOrganizationalRelations {
         get => interOrganizationalRelations;
         init {
             if (value is not null) {
@@ -94,7 +96,7 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
     private PartyCaseType[] partyCaseTypes = Array.Empty<PartyCaseType>();
-    public required PartyCaseType[] PartyCaseTypes {
+    public PartyCaseType[] PartyCaseTypes {
         get => partyCaseTypes;
         init {
             if (value is not null) {
@@ -103,7 +105,7 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
     private PersonOrganizationRelation[] personOrganizationRelations = Array.Empty<PersonOrganizationRelation>();
-    public required PersonOrganizationRelation[] PersonOrganizationRelations {
+    public PersonOrganizationRelation[] PersonOrganizationRelations {
         get => personOrganizationRelations;
         init {
             if (value is not null) {
@@ -112,7 +114,7 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
     private PartyPoliticalEntityRelation[] partyPoliticalEntityRelations = Array.Empty<PartyPoliticalEntityRelation>();
-    public required PartyPoliticalEntityRelation[] PartyPoliticalEntityRelations {
+    public PartyPoliticalEntityRelation[] PartyPoliticalEntityRelations {
         get => partyPoliticalEntityRelations;
         init {
             if (value is not null) {

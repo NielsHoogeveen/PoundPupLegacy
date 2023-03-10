@@ -3,8 +3,8 @@
 public record CaseParties
 {
     public required string PartyTypeName { get; init; }
-    public required string? OrganizationsText { get; init; }
-    public required string? PersonsText { get; init; }
+    public string? OrganizationsText { get; init; }
+    public string? PersonsText { get; init; }
 
     private Link[] _persons = Array.Empty<Link>();
     public required Link[] Persons {

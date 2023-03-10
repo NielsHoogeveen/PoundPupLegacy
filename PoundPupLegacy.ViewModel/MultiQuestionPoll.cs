@@ -9,7 +9,7 @@ public record class MultiQuestionPoll : Poll, SimpleTextNode
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
     public required int PollStatusId { get; init; }
-    public required DateTime? DateTimeClosure { get; init; }
+    public DateTime? DateTimeClosure { get; init; }
 
     private BasicPollQuestion[] pollQuestions = Array.Empty<BasicPollQuestion>();
     public BasicPollQuestion[] PollQuestions {

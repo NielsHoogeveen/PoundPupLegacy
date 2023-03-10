@@ -4,6 +4,6 @@ public record PartyMembership
 {
     public required string Name { get; init; }
     public required string Path { get; init; }
-    public required DateTime? DateFrom { get; init; }
-    public required DateTime? DateTo { get; init; }
+    public DateTime? DateFrom { get; init; }
+    public DateTime? DateTo { get; init; }
 }

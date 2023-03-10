@@ -1,0 +1,63 @@
+﻿@using PoundPupLegacy.EditModel;
+@using PoundPupLegacy.Services;
+@inject IHttpContextAccessor httpContextAccessor;
+@inject IEditorService editorService;
+@inject ILogger<OrganizationEditor> logger;
+@inject NavigationManager navigationManager;
+@inject IJSRuntime JSRuntime
+
+@{
+    var url = $"https://{httpContextAccessor.HttpContext!.Request.Host.Value}/image/upload";
+}
+
+@if (organization is not null)
+{
+    <style>
+        .title-editor {
+            width: 100%;
+            font-size: 2em;
+            font-weight: bold;
+            border: none;
+            border-bottom: 1px solid black;
+            padding: 0.5em;
+            margin-bottom: 1em;
+        }
+    </style>
+    <EditForm Model="@organization" OnSubmit="@HandleSubmit">
+        <InputText class="title-editor" id="name" @bind-Value="organization.Title" />
+        <CKEditor Id="#editor"
+              @bind-Value=@organization.Description
+            UrlToPostImage=@url>
+        </CKEditor>
+        <Tags Elems="@organization.Tags" NodeId="@organization.NodeId"/>
+        <TenantNodesEditor  Node="@organization" />
+        <AttachmentEditor Files="organization.Files" NodeId="organization.NodeId"/>
+        <button type="submit">Submit</button>
+    </EditForm>
+    
+}
+@code {
+    Organization? organization;
+
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        organization = await editorService.GetOrganization(Id);
+        foreach(var tenant in organization!.Tenants) 
+        {
+            var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+            tenant.TenantNode = tenantNode;
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        logger.LogInformation(organization!.ToString());
+        await editorService.Save(organization);
+        await JSRuntime.InvokeVoidAsync("reloadNode", organization.UrlId);
+    }
+
+}

@@ -34,7 +34,10 @@ public class EditorService : IEditorService
         {DOCUMENTABLE_DOCUMENTS_DOCUMENT},
         {DOCUMENT_DOCUMENTABLES_DOCUMENT},
         {DOCUMENT_TYPES_DOCUMENT},
-        {ATTACHMENTS_DOCUMENT}
+        {ATTACHMENTS_DOCUMENT},
+        {ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT},
+        {ORGANIZATION_TYPES_DOCUMENT},
+        {LOCATIONS_DOCUMENT}
         """;
 
     const string CTE_CREATE = $"""
@@ -409,6 +412,146 @@ public class EditorService : IEditorService
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
+
+    const string ORGANIZATION_TYPES_DOCUMENT = """
+        organization_types_document as (
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Id',
+                        ot.id,
+                        'Name',
+                        t.name
+                    )
+                ) document
+            from organization_type ot
+            join term t on t.nameable_id = ot.id
+            join tenant_node tn on tn.node_id = t.vocabulary_id
+            where tn.tenant_id = 1 and tn.url_id = 12622
+        )
+        """;
+
+    const string ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT = """
+        organization_organization_types_document as (
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'OrganizationId',
+        		        oot.organization_id,
+        		        'OrganizationTypeId',
+        		        oot.organization_type_id,
+                        'Name',
+                        t.name,
+        		        'HasBeenStored',
+        		        true,
+        		        'HasBeenDeleted',
+        		        false
+        	        )
+                ) document
+            from organization_organization_type oot
+            join tenant_node tn on tn.node_id = oot.organization_id
+            join term t on t.nameable_id = oot.organization_type_id
+            join tenant_node tn2 on tn2.node_id = t.vocabulary_id
+            where tn2.tenant_id = 1 and tn2.url_id = 12622
+            and tn.tenant_id = @tenant_id and tn.url_id = @url_id
+        )
+        """;
+    const string LOCATIONS_DOCUMENT = """
+        locations_document as(
+            select
+                jsonb_agg(jsonb_build_object(
+        			'Id', "id",
+        			'Street', street,
+        			'Additional', additional,
+        			'City', city,
+        			'PostalCode', postal_code,
+        			'Subdivision', subdivision,
+        			'Country', country,
+                    'Latitude', latitude,
+                    'Longitude', longitude
+        		)) document
+            from(
+                select 
+                l.id,
+                l.street,
+                l.additional,
+                l.city,
+                l.postal_code,
+                jsonb_build_object(
+                	'Path', case when tn2.url_path is null then '/node/' || tn2.url_id else '/' || tn2.url_path end,
+                	'Name', s.name
+                ) subdivision,
+                jsonb_build_object(
+                	'Path', case when tn3.url_path is null then '/node/' || tn3.url_id else '/' || tn3.url_path end,
+                	'Name', nc.title
+                ) country,
+                l.latitude,
+                l.longitude
+                from "location" l
+                join location_locatable ll on ll.location_id = l.id
+                join node nc on nc.id = l.country_id
+                join subdivision s on s.id = l.subdivision_id
+                join tenant_node tn on tn.node_id = ll.locatable_id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = @tenant_id
+                join tenant_node tn3 on tn3.node_id = nc.id and tn3.tenant_id = @tenant_id
+            )x
+        )
+        """;
+
+    const string ORGANIZATION_DOCUMENT = $"""
+            {CTE_EDIT}
+            select
+                jsonb_build_object(
+                    'NodeId', 
+                    n.id,
+                    'UrlId', 
+                    tn.url_id,
+                    'Title' , 
+                    n.title,
+                    'Description', 
+                    o.description,
+                    'WebSiteUrl',
+                    o.website_url,
+                    'EmailAddress',
+                    o.email_address,
+                    'Established',
+                    o.established,
+                    'Terminated',
+                    o.terminated,
+                    'OrganizationOrganizationTypes',
+                    (select document from organization_organization_types_document),
+                    'OrganizationTypes',
+                    (select document from organization_types_document),
+            		'Tags', (
+            			select 
+            			jsonb_agg(jsonb_build_object(
+            				'NodeId', tn.node_id,
+            				'TermId', t.id,
+            				'Name', t.name
+            			))
+            			from node_term nt
+            			join tenant tt on tt.id = @tenant_id
+            			join term t on t.id = nt.term_id and t.vocabulary_id = tt.vocabulary_id_tagging
+            			join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
+            			where nt.node_id = n.id
+            		),
+                    'TenantNodes',
+                    (select document from tenant_nodes_document),
+                    'Tenants',
+                    (select document from tenants_document),
+                    'Files',
+                    (select document from attachments_document),
+                    'Locations',
+                    (select document from locations_document),
+                    'Documents',
+                    (select document from documentable_documents_document)
+                ) document
+            from node n
+            join organization o on o.id = n.id
+            join tenant_node tn on tn.node_id = n.id
+            where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
+        """;
+
     const string NEW_SIMPLE_TEXT_DOCUMENT = $"""
             {CTE_CREATE}
             select
@@ -478,22 +621,31 @@ public class EditorService : IEditorService
 
     public async Task<BlogPost?> GetBlogPost(int id)
     {
-        return await GetSimpleTextNode<BlogPost>(id, 35);
+        return await GetNodeForEdit<BlogPost>(id, 35, SIMPLE_TEXT_NODE_DOCUMENT);
     }
     public async Task<Article?> GetArticle(int id)
     {
-        return await GetSimpleTextNode<Article>(id, 36);
+        return await GetNodeForEdit<Article>(id, 36, SIMPLE_TEXT_NODE_DOCUMENT);
     }
     public async Task<Discussion?> GetDiscussion(int id)
     {
-        return await GetSimpleTextNode<Discussion>(id, 37);
+        return await GetNodeForEdit<Discussion>(id, 37, SIMPLE_TEXT_NODE_DOCUMENT);
     }
-    public async Task<T?> GetSimpleTextNode<T>(int id, int nodeTypeId)
-        where T: class, SimpleTextNode
+    public async Task<Document?> GetDocument(int id)
+    {
+        return await GetNodeForEdit<Document>(id, 10, DOCUMENT_DOCUMENT);
+    }
+    public async Task<Organization?> GetOrganization(int id)
+    {
+        var res  = await GetNodeForEdit<Organization>(id, 23, ORGANIZATION_DOCUMENT);
+        return res;
+    }
+
+    private async Task<T?> GetNodeForEdit<T>(int id, int nodeTypeId, string sql)
+        where T: class, Node
     {
         try {
             await _connection.OpenAsync();
-            var sql = SIMPLE_TEXT_NODE_DOCUMENT;
 
             using var readCommand = _connection.CreateCommand();
             readCommand.CommandType = CommandType.Text;
@@ -516,36 +668,6 @@ public class EditorService : IEditorService
             var text = reader.GetString(0); ;
             var blogPost = reader.GetFieldValue<T>(0);
             return blogPost;
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
-    }
-    public async Task<Document?> GetDocument(int id)
-    {
-        try {
-            await _connection.OpenAsync();
-            var sql = DOCUMENT_DOCUMENT;
-
-            using var readCommand = _connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            readCommand.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            await readCommand.PrepareAsync();
-            readCommand.Parameters["url_id"].Value = id;
-            readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
-            readCommand.Parameters["node_type_id"].Value = 10;
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            await reader.ReadAsync();
-            if (!reader.HasRows) {
-                return null;
-            }
-            var text = reader.GetString(0); ;
-            var document = reader.GetFieldValue<Document>(0);
-            return document;
         }
         finally {
             await _connection.CloseAsync();
@@ -921,6 +1043,10 @@ public class EditorService : IEditorService
 
     }
     public async Task Save(Document document)
+    {
+        await Task.CompletedTask;
+    }
+    public async Task Save(Organization organization)
     {
         await Task.CompletedTask;
     }

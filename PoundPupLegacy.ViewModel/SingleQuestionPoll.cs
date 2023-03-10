@@ -11,7 +11,7 @@ public record class SingleQuestionPoll : Poll, PollQuestion
     public required int PollStatusId { get; init; }
     public required string Question { get; init; }
 
-    public required DateTime? DateTimeClosure { get; init; }
+    public DateTime? DateTimeClosure { get; init; }
 
     private PollOption[] pollOptions = Array.Empty<PollOption>();
     public PollOption[] PollOptions {
