@@ -7,23 +7,17 @@ namespace PoundPupLegacy.Services.Implementation;
 public class DocumentableDocumentsSearchService: IDocumentableDocumentsSearchService
 {
 
-    private readonly ISiteDataService _siteDataService;
     private readonly NpgsqlConnection _connection;
-    private readonly ILogger<DocumentableDocumentsSearchService> _logger;
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
 
     public DocumentableDocumentsSearchService(
-        NpgsqlConnection connection, 
-        ILogger<DocumentableDocumentsSearchService> logger, 
-        ISiteDataService siteDataService)
+        NpgsqlConnection connection)
     {
-        _siteDataService = siteDataService;
         _connection = connection;
-        _logger = logger;
     }
 
-    public async Task<List<DocumentableDocument>> GetDocumentableDocuments(int nodeId, string str)
+    public async Task<List<DocumentableDocument>> GetDocumentableDocuments(int nodeId, int userId, int tenantId, string str)
     {
         await semaphore.WaitAsync(TimeSpan.FromMilliseconds(100));
         await _connection.OpenAsync();
@@ -86,8 +80,8 @@ public class DocumentableDocumentsSearchService: IDocumentableDocumentsSearchSer
             readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("search_string", NpgsqlTypes.NpgsqlDbType.Varchar);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["user_id"].Value = _siteDataService.GetUserId();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
+            readCommand.Parameters["user_id"].Value = userId;
+            readCommand.Parameters["tenant_id"].Value = tenantId;
             readCommand.Parameters["search_string"].Value = $"%{str}%";
             await using var reader = await readCommand.ExecuteReaderAsync();
             while (await reader.ReadAsync()) {

@@ -30,7 +30,7 @@
             UrlToPostImage=@url>
         </CKEditor>
         <Tags Elems="@discussion.Tags" NodeId="@discussion.NodeId"/>
-        <TenantNodesEditor  Node="@discussion" />
+        <TenantNodesEditor Node="@discussion" TenantId="@TenantId" />
         <AttachmentEditor Files="discussion.Files" NodeId="discussion.NodeId"/>
         <button type="submit">Submit</button>
     </EditForm>
@@ -43,9 +43,15 @@
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int TenantId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        discussion = await editorService.GetDiscussion(Id);
+        discussion = await editorService.GetDiscussion(Id, UserId, TenantId);
         foreach(var tenant in discussion!.Tenants) 
         {
             var tenantNode = discussion.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);

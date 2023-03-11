@@ -28,8 +28,8 @@
               @bind-Value=@document.Text
               UrlToPostImage=@url>
         </CKEditor>
-        <TenantNodesEditor Node="@document" />
-        <DocumentDocumentables Elems="document.DocumentableDocuments" NodeId="document.NodeId"/>
+        <TenantNodesEditor Node="@document" TenantId="@TenantId" />
+        <DocumentDocumentables Elems="document.DocumentableDocuments" NodeId="document.NodeId" TenantId="TenantId" UserId="UserId"/>
         <AttachmentEditor Files="document.Files" />
         <button type="submit">Submit</button>
     </EditForm>
@@ -41,9 +41,15 @@
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int TenantId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        document = await editorService.GetDocument(Id);
+        document = await editorService.GetDocument(Id, UserId, TenantId);
         foreach (var tenant in document!.Tenants) {
             var tenantNode = document.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
             tenant.TenantNode = tenantNode;

@@ -8,17 +8,24 @@ public class BlogsController : Controller
 {
     private readonly IFetchBlogsService _fetchBlogsService;
     private readonly ISiteDataService _siteDataService;
-    public BlogsController(IFetchBlogsService fetchBlogsService, ISiteDataService siteDataService)
+    private readonly IUserService _userService;
+    public BlogsController(
+        IFetchBlogsService fetchBlogsService, 
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _fetchBlogsService = fetchBlogsService;
         _siteDataService = siteDataService;
+        _userService = userService;
     }
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess()) {
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        if (!_siteDataService.HasAccess(userId, tenantId)) {
             return NotFound();
         }
-        var model = await _fetchBlogsService.FetchBlogs();
+        var model = await _fetchBlogsService.FetchBlogs(tenantId);
         return View("Blogs", model);
     }
 }

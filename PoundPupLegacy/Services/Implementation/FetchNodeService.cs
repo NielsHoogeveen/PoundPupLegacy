@@ -7,16 +7,12 @@ namespace PoundPupLegacy.Services.Implementation;
 internal class FetchNodeService : IFetchNodeService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly ISiteDataService _siteDateService;
-    public FetchNodeService(
-        NpgsqlConnection connection,
-        ISiteDataService siteDataService)
+    public FetchNodeService(NpgsqlConnection connection)
     {
         _connection = connection;
-        _siteDateService = siteDataService;
     }
 
-    public async Task<Node?> FetchNode(int id)
+    public async Task<Node?> FetchNode(int id, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
@@ -107,8 +103,8 @@ internal class FetchNodeService : IFetchNodeService
             readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
             readCommand.Parameters["url_id"].Value = id;
-            readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
-            readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["user_id"].Value = userId;
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             if (!reader.HasRows) {

@@ -75,6 +75,9 @@
     [Parameter]
     public Node? Node { get; set; }
 
+    [Parameter]
+    public int TenantId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await Task.CompletedTask;
@@ -89,11 +92,10 @@
                 }
             }
             else {
-                var tenantId = siteDataService.GetTenantId();
-                var tenant = Node.Tenants.First(x => x.Id == tenantId );
+                var tenant = Node.Tenants.First(x => x.Id == TenantId );
                 tenant.TenantNode = new TenantNode {
                         Id = null,
-                        TenantId = tenantId,
+                        TenantId = TenantId,
                         HasBeenDeleted = false,
                         NodeId = Node.NodeId,
                         UrlId = Node.NodeId,

@@ -9,12 +9,16 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
 {
     private readonly NpgsqlConnection _connection;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
-    public FetchOrganizationsService(NpgsqlConnection connection, ISiteDataService siteDataService)
+    public FetchOrganizationsService(
+        NpgsqlConnection connection, 
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _connection = connection;
         _siteDataService = siteDataService;
-
+        _userService = userService;
     }
 
     private string GetPattern(string searchTerm, SearchOption searchOption)
@@ -31,7 +35,7 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
         };
     }
 
-    public async Task<OrganizationSearch> FetchOrganizations(int limit, int offset, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
+    public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
     {
         await _connection.OpenAsync();
         try {
@@ -186,8 +190,8 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
                 readCommand.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
             }
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
-            readCommand.Parameters["user_id"].Value = _siteDataService.GetUserId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["user_id"].Value = userId;
             readCommand.Parameters["limit"].Value = limit;
             readCommand.Parameters["offset"].Value = offset;
             readCommand.Parameters["pattern"].Value = GetPattern(searchTerm, searchOption);

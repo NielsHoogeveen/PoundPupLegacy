@@ -9,9 +9,13 @@ public class SubgroupController : Controller
     const int NUMBER_OF_ENTRIES = 150;
 
     private readonly ISubgroupService _subgroupService;
-    public SubgroupController(ISubgroupService subgroupService)
+    private readonly IUserService _userService;
+    public SubgroupController(
+        ISubgroupService subgroupService,
+        IUserService userService)
     {
         _subgroupService = subgroupService;
+        _userService = userService;
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> Index(int id)
@@ -26,7 +30,8 @@ public class SubgroupController : Controller
             }
         }
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var page = await _subgroupService.GetSubGroupPagedList(id, NUMBER_OF_ENTRIES, startIndex);
+        var userId = _userService.GetUserId(HttpContext.User);
+        var page = await _subgroupService.GetSubGroupPagedList(userId, id, NUMBER_OF_ENTRIES, startIndex);
         if (page == null) {
             return NotFound();
         }

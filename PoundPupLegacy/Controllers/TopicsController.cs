@@ -13,15 +13,18 @@ public class TopicsController : Controller
     private readonly ITopicService _topicService;
     private readonly ILogger<TopicsController> _logger;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
     public TopicsController(
         ILogger<TopicsController> logger,
         ITopicService topicService,
-        ISiteDataService siteDataService)
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _topicService = topicService;
         _siteDataService = siteDataService;
         _logger = logger;
+        _userService = userService;
     }
 
     public SearchOption GetSearchOption(string? term)
@@ -48,7 +51,9 @@ public class TopicsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess()) {
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        if (!_siteDataService.HasAccess(userId, tenantId)) {
             return NotFound();
         }
         var pageNumber = 1;
@@ -65,7 +70,7 @@ public class TopicsController : Controller
         var searchTerm = GetSearchTerm(query["search"]);
         var searchOption = GetSearchOption(query["search_option"]);
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var topics = await _topicService.FetchTopics(NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption);
+        var topics = await _topicService.FetchTopics(userId, tenantId, NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption);
         topics.PageNumber = pageNumber;
         topics.NumberOfPages = (topics.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         topics.QueryString = $"&search={searchTerm}";

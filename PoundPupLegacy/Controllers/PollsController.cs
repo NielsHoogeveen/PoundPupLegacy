@@ -14,15 +14,18 @@ public class PollsController : Controller
     private readonly IFetchPollsService _fetchPollsService;
     private readonly ILogger<PollsController> _logger;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
     public PollsController(
         ILogger<PollsController> logger,
         IFetchPollsService fetchPollsService,
-        ISiteDataService siteDataService)
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _fetchPollsService = fetchPollsService;
         _siteDataService = siteDataService;
         _logger = logger;
+        _userService = userService;
     }
 
     [HttpGet]
@@ -44,7 +47,9 @@ public class PollsController : Controller
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var articles = await _fetchPollsService.GetPolls(NUMBER_OF_ENTRIES, startIndex);
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        var articles = await _fetchPollsService.GetPolls(userId, tenantId, NUMBER_OF_ENTRIES, startIndex);
         articles.PageNumber = pageNumber;
         articles.NumberOfPages = (articles.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         articles.QueryString = "";

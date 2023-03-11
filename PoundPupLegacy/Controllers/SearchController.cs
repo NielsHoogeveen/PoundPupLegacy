@@ -12,22 +12,27 @@ public class SearchController : Controller
     private readonly IFetchSearchService _fetchSearchService;
     private readonly ILogger<SearchController> _logger;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
     public SearchController(
         ILogger<SearchController> logger,
         IFetchSearchService fetchSearchService,
-        ISiteDataService siteDataService)
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _fetchSearchService = fetchSearchService;
         _siteDataService = siteDataService;
         _logger = logger;
+        _userService = userService;
     }
 
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess()) {
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        if (!_siteDataService.HasAccess(userId, tenantId)) {
             return NotFound();
         }
         var pageNumber = 1;
@@ -43,7 +48,7 @@ public class SearchController : Controller
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var search = await _fetchSearchService.FetchSearch(NUMBER_OF_ENTRIES, startIndex, searchValue!);
+        var search = await _fetchSearchService.FetchSearch(userId, tenantId, NUMBER_OF_ENTRIES, startIndex, searchValue!);
         search.PageNumber = pageNumber;
         search.NumberOfPages = (search.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         search.QueryString = $"&search={searchValue}";

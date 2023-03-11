@@ -4,6 +4,8 @@ public interface Node
 {
     int? NodeId { get; }
     int? UrlId { get; set; }
+    int PublisherId { get; set; }
+    int OwnerId { get; set; }
     string Title { get; }
     List<Tag> Tags { get; }
     List<Tenant> Tenants { get; }

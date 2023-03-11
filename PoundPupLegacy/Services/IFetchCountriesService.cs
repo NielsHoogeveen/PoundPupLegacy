@@ -4,5 +4,5 @@ namespace PoundPupLegacy.Services;
 
 public interface IFetchCountriesService
 {
-    Task<FirstLevelRegionListEntry[]> FetchCountries();
+    Task<FirstLevelRegionListEntry[]> FetchCountries(int tenantId);
 }

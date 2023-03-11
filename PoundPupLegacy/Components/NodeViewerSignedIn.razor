@@ -1,6 +1,7 @@
 ﻿@using PoundPupLegacy.ViewModel
 @using PoundPupLegacy.Services
 @inject ISiteDataService siteDataService
+@inject IUserService userService
 @if(Model is not null)
 {
     var ModelClassName = Model.HasBeenPublished ? "node" : "node node-unpublished";
@@ -8,7 +9,7 @@
     <div class="article-with-comments @ModelClassName">
 
 
-        @if (siteDataService.CanEdit(Model))
+        @if (siteDataService.CanEdit(Model, UserId, TenantId))
         {
             <style>
                 input.tab-button {
@@ -58,28 +59,28 @@
             <NodeContentViewer Model="Model" />
         </div>
     
-        @if (siteDataService.CanEdit(Model))
+        @if (siteDataService.CanEdit(Model, UserId, TenantId))
         {
             <div class="tab content2">
                 <article>
                 @if (Model is BlogPost)
                 {
-                    <OrganizationEditor Id="Model.Id" />
+                    <BlogPostEditor Id="Model.Id" UserId="UserId" TenantId="TenantId"/>
                 }
                 @if (Model is Article) 
                 {
-                    <ArticleEditor Id="Model.Id" />
+                    <ArticleEditor Id="Model.Id" UserId="UserId" TenantId="TenantId" />
                 }
                 @if (Model is Discussion) 
                 {
-                    <DiscussionEditor Id="Model.Id" />
+                    <DiscussionEditor Id="Model.Id" UserId="UserId" TenantId="TenantId" />
                 }
                 @if (Model is Document) 
                 {
-                    <DocumentEditor Id="Model.Id" />
+                    <DocumentEditor Id="Model.Id" UserId="UserId" TenantId="TenantId" />
                 }
                 @if (Model is Organization) {
-                    <OrganizationEditor Id="Model.Id" />
+                   <OrganizationEditor Id="Model.Id" UserId="UserId" TenantId="TenantId" />
                 }
                 </article>
             </div>
@@ -91,4 +92,11 @@
 @code{
     [Parameter]
     public Node? Model { get; set; }
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int TenantId { get; set; }
+
 }

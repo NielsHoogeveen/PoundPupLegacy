@@ -10,11 +10,12 @@ public class PersonService : IPersonService
     private readonly NpgsqlConnection _connection;
     private readonly ISiteDataService _siteDataService;
 
-    public PersonService(NpgsqlConnection connection, ISiteDataService siteDataService)
+    public PersonService(
+        NpgsqlConnection connection, 
+        ISiteDataService siteDataService)
     {
         _connection = connection;
         _siteDataService = siteDataService;
-
     }
     private string GetPattern(string searchTerm, SearchOption searchOption)
     {
@@ -30,7 +31,7 @@ public class PersonService : IPersonService
         };
     }
 
-    public async Task<Persons> FetchPersons(int limit, int offset, string searchTerm, SearchOption searchOption)
+    public async Task<Persons> FetchPersons(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
     {
         await _connection.OpenAsync();
         try {
@@ -123,8 +124,8 @@ public class PersonService : IPersonService
             readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("pattern", NpgsqlTypes.NpgsqlDbType.Varchar);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
-            readCommand.Parameters["user_id"].Value = _siteDataService.GetUserId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["user_id"].Value = userId;
             readCommand.Parameters["limit"].Value = limit;
             readCommand.Parameters["offset"].Value = offset;
             readCommand.Parameters["pattern"].Value = GetPattern(searchTerm, searchOption);

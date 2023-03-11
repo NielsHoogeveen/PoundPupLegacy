@@ -13,15 +13,18 @@ public class PersonsController : Controller
     private readonly IPersonService _personService;
     private readonly ILogger<PersonsController> _logger;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
     public PersonsController(
         ILogger<PersonsController> logger,
         IPersonService personService,
-        ISiteDataService siteDataService)
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _personService = personService;
         _siteDataService = siteDataService;
         _logger = logger;
+        _userService = userService;
     }
 
     public SearchOption GetSearchOption(string? term)
@@ -48,7 +51,9 @@ public class PersonsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess()) {
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        if (!_siteDataService.HasAccess(userId, tenantId)) {
             return NotFound();
         }
         var pageNumber = 1;
@@ -65,7 +70,7 @@ public class PersonsController : Controller
         var searchTerm = GetSearchTerm(query["search"]);
         var searchOption = GetSearchOption(query["search_option"]);
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var persons = await _personService.FetchPersons(NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption);
+        var persons = await _personService.FetchPersons(userId, tenantId, NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption);
         persons.PageNumber = pageNumber;
         persons.NumberOfPages = (persons.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         persons.QueryString = $"&search={searchTerm}";

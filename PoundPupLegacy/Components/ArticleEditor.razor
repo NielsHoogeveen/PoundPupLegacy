@@ -29,7 +29,7 @@
               @bind-Value=@article.Text
             UrlToPostImage=@url>
         </CKEditor>
-        <Tags Elems="@article.Tags" NodeId="@article.NodeId"/>
+        <Tags Elems="@article.Tags" NodeId="@article.NodeId" TenantId="@TenantId" />
         <TenantNodesEditor  Node="@article" />
         <AttachmentEditor Files="article.Files" NodeId="article.NodeId"/>
         <button type="submit">Submit</button>
@@ -43,9 +43,15 @@
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int TenantId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        article = await editorService.GetArticle(Id);
+        article = await editorService.GetArticle(Id, UserId, TenantId);
         foreach(var tenant in article!.Tenants) 
         {
             var tenantNode = article.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);

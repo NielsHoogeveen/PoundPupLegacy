@@ -16,19 +16,22 @@ public class HomeController : Controller
     private readonly ISiteDataService _siteDataService;
     private readonly INodeCacheService _nodeCacheService;
     private readonly ICongressionalDataService _congressionalDataService;
+    private readonly IUserService _userService;
 
     public HomeController(
         ILogger<HomeController> logger,
         IAuthenticationService authenticationService,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
-        ICongressionalDataService congressionalDataService)
+        ICongressionalDataService congressionalDataService,
+        IUserService userService)
     {
         _logger = logger;
         _authenticationService = authenticationService;
         _siteDataService = siteDataService;
         _nodeCacheService = nodeCacheService;
         _congressionalDataService = congressionalDataService;
+        _userService = userService;
     }
 
     public IActionResult Index()
@@ -53,12 +56,14 @@ public class HomeController : Controller
                 ContentType = "text/html"
             };
         }
-        var urlId = _siteDataService.GetIdForUrlPath();
+        var urlId = _siteDataService.GetIdForUrlPath(Request);
         if (urlId is null) {
             return NotFound();
         }
         var id = urlId.Value;
-        var result = await _nodeCacheService.GetResult(id);
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        var result = await _nodeCacheService.GetResult(id, userId, tenantId);
         _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
         return result;
     }

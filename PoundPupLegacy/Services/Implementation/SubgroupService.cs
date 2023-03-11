@@ -7,16 +7,14 @@ namespace PoundPupLegacy.Services.Implementation;
 public record SubgroupService : ISubgroupService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly ISiteDataService _siteDataService;
-    public SubgroupService(NpgsqlConnection connection, ISiteDataService siteDataService)
+    public SubgroupService(
+        NpgsqlConnection connection)
     {
         _connection = connection;
-        _siteDataService = siteDataService;
     }
 
-    public async Task<SubGroupPagedList?> GetSubGroupPagedList(int subgroupId, int limit, int offset)
+    public async Task<SubGroupPagedList?> GetSubGroupPagedList(int userId, int subgroupId, int limit, int offset)
     {
-        var userId = _siteDataService.GetUserId();
         await _connection.OpenAsync();
         try {
             var sql = $"""

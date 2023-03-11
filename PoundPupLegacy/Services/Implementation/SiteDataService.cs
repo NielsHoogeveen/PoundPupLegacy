@@ -52,26 +52,14 @@ internal class SiteDataService : ISiteDataService
     private readonly ILogger<SiteDataService> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SiteDataService(NpgsqlConnection connection, ILogger<SiteDataService> logger, IHttpContextAccessor httpContextAccessor)
+    public SiteDataService(
+        NpgsqlConnection connection, 
+        ILogger<SiteDataService> logger, 
+        IHttpContextAccessor httpContextAccessor)
     {
         _connection = connection;
         _logger = logger;
         _httpContextAccessor = httpContextAccessor;
-    }
-
-    public int GetUserId()
-    {
-        var cp = _httpContextAccessor.HttpContext!.User;
-        if (cp == null) {
-            return 0;
-        }
-        var useIdText = cp.Claims.FirstOrDefault(x => x.Type == "user_id");
-        if (useIdText == null) {
-            return 0;
-
-        }
-        return int.Parse(useIdText.Value);
-
     }
 
     /*
@@ -117,22 +105,21 @@ internal class SiteDataService : ISiteDataService
         return null;
     }
 
-    public bool HasAccess()
+    public bool HasAccess(int userId, int tenantId)
     {
         var context = _httpContextAccessor.HttpContext!;
         return _data.UserTenantActions.Contains(
             new UserTenantAction {
-                UserId = GetUserId(),
-                TenantId = GetTenantId(),
+                UserId = userId,
+                TenantId = tenantId,
                 Action = context.Request.Path
             }
         );
     }
 
-    public int GetTenantId()
+    public int GetTenantId(HttpRequest httpRequest)
     {
-        var context = _httpContextAccessor.HttpContext!;
-        var domainName = context.Request.Host.Value;
+        var domainName = httpRequest.Host.Value;
         if (domainName == "localhost:7141") {
             return 1;
         }
@@ -143,12 +130,10 @@ internal class SiteDataService : ISiteDataService
         return 1;
     }
 
-    public int? GetIdForUrlPath()
+    public int? GetIdForUrlPath(HttpRequest httpRequest)
     {
-
-        var context = _httpContextAccessor.HttpContext!;
-        var tenantId = GetTenantId();
-        var urlPath = context.Request.Path.Value!.Substring(1);
+        var tenantId = GetTenantId(httpRequest);
+        var urlPath = httpRequest.Path.Value!.Substring(1);
         var tenant = _data.Tenants.Find(x => x.Id == tenantId);
         if (tenant is null) {
             throw new NullReferenceException("Tenant should not be null");
@@ -537,10 +522,10 @@ internal class SiteDataService : ISiteDataService
         }
     }
 
-    public IEnumerable<Link> GetMenuItemsForUser()
+    public IEnumerable<Link> GetMenuItemsForUser(int userId, int tenantId)
     {
         var context = _httpContextAccessor.HttpContext!;
-        if (_data.UserMenus.TryGetValue((GetUserId(), GetTenantId()), out var lst)) {
+        if (_data.UserMenus.TryGetValue((userId, tenantId), out var lst)) {
             return lst;
         }
         else {
@@ -548,10 +533,9 @@ internal class SiteDataService : ISiteDataService
         }
     }
 
-    public string GetLayout()
+    public string GetLayout(int userId, int tenantId)
     {
-        var tenantId = GetTenantId();
-        var signedIn = GetUserId() != 0;
+        var signedIn = userId != 0;
 
         return (tenantId, signedIn) switch {
             (1, false) => "_LayoutPPL",
@@ -562,13 +546,13 @@ internal class SiteDataService : ISiteDataService
         };
     }
 
-    public bool CanEdit(Node node)
+    public bool CanEdit(Node node, int userId, int tenantId)
     {
-        if (_data.UserTenantEditActions.Contains(new UserTenantEditAction { UserId = GetUserId(), TenantId = GetTenantId(), NodeTypeId = node.NodeTypeId })) {
+        if (_data.UserTenantEditActions.Contains(new UserTenantEditAction { UserId = userId, TenantId = tenantId, NodeTypeId = node.NodeTypeId })) {
             return true;
         }
-        if (node.Authoring.Id == GetUserId()) {
-            if (_data.UserTenantEditOwnActions.Contains(new UserTenantEditOwnAction { UserId = GetUserId(), TenantId = GetTenantId(), NodeTypeId = node.NodeTypeId })) {
+        if (node.Authoring.Id == userId) {
+            if (_data.UserTenantEditOwnActions.Contains(new UserTenantEditOwnAction { UserId = userId, TenantId = tenantId, NodeTypeId = node.NodeTypeId })) {
                 return true;
             }
         }

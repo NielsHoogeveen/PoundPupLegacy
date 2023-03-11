@@ -5,17 +5,14 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal class NodeCacheService : INodeCacheService
 {
-    private readonly ISiteDataService _siteDataService;
     private readonly IConfiguration _configuration;
     private readonly IFetchNodeService _fetchNodeService;
     private readonly IRazorViewToStringService _razorViewToStringService;
     public NodeCacheService(
-        ISiteDataService siteDataService,
         IConfiguration configuration,
         IFetchNodeService fetchNodeService,
         IRazorViewToStringService razorViewToStringService)
     {
-        _siteDataService = siteDataService;
         _configuration = configuration;
         _fetchNodeService = fetchNodeService;
         _razorViewToStringService = razorViewToStringService;
@@ -29,17 +26,17 @@ internal class NodeCacheService : INodeCacheService
     }
     private readonly ConcurrentDictionary<TenantNode, string> _nodeCache = new ConcurrentDictionary<TenantNode, string>();
 
-    public void Remove(int nodeId)
+    public void Remove(int nodeId, int tenantId)
     {
-        var tenantNode = new TenantNode { NodeId = nodeId, TenantId = _siteDataService.GetTenantId() };
+        var tenantNode = new TenantNode { NodeId = nodeId, TenantId = tenantId };
         _nodeCache.TryRemove(tenantNode, out _);
     }
 
-    public async Task<IActionResult> GetResult(int nodeId)
+    public async Task<IActionResult> GetResult(int nodeId, int userId, int tenantId)
     {
-        var tenantNode = new TenantNode { NodeId = nodeId, TenantId = _siteDataService.GetTenantId() };
+        var tenantNode = new TenantNode { NodeId = nodeId, TenantId = tenantId };
         if (_configuration["NodeCaching"] != "on") {
-            return await AssembleNewResponse(nodeId, tenantNode, false);
+            return await AssembleNewResponse(nodeId, userId, tenantId, tenantNode, false);
         }
         if (_nodeCache.TryGetValue(tenantNode, out var html)) {
             return new ContentResult {
@@ -48,13 +45,13 @@ internal class NodeCacheService : INodeCacheService
             };
         }
         else {
-            return await AssembleNewResponse(nodeId, tenantNode, true);
+            return await AssembleNewResponse(nodeId, userId, tenantId, tenantNode, true);
         }
     }
 
-    private async Task<string?> GetNodeString(int id)
+    private async Task<string?> GetNodeString(int id, int userId, int tenantId)
     {
-        var node = await _fetchNodeService.FetchNode(id);
+        var node = await _fetchNodeService.FetchNode(id, userId, tenantId);
         if (node == null) {
             return null;
         }
@@ -62,9 +59,9 @@ internal class NodeCacheService : INodeCacheService
         return html;
     }
 
-    private async Task<IActionResult> AssembleNewResponse(int nodeId, TenantNode tenantNode, bool storeInDictionary)
+    private async Task<IActionResult> AssembleNewResponse(int nodeId, int userId, int tenantId, TenantNode tenantNode, bool storeInDictionary)
     {
-        var nodeString = await GetNodeString(nodeId);
+        var nodeString = await GetNodeString(nodeId, userId, tenantId);
         if (nodeString != null) {
             if (storeInDictionary) {
                 _nodeCache[tenantNode] = nodeString;

@@ -8,13 +8,11 @@ namespace PoundPupLegacy.Services.Implementation;
 public class TopicService : ITopicService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly ISiteDataService _siteDataService;
 
-    public TopicService(NpgsqlConnection connection, ISiteDataService siteDataService)
+    public TopicService(
+        NpgsqlConnection connection)
     {
         _connection = connection;
-        _siteDataService = siteDataService;
-
     }
     private string GetPattern(string searchTerm, SearchOption searchOption)
     {
@@ -30,7 +28,7 @@ public class TopicService : ITopicService
         };
     }
 
-    public async Task<Topics> FetchTopics(int limit, int offset, string searchTerm, SearchOption searchOption)
+    public async Task<Topics> FetchTopics(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
     {
         await _connection.OpenAsync();
         try {
@@ -124,8 +122,8 @@ public class TopicService : ITopicService
             readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("pattern", NpgsqlTypes.NpgsqlDbType.Varchar);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
-            readCommand.Parameters["user_id"].Value = _siteDataService.GetUserId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["user_id"].Value = userId;
             readCommand.Parameters["limit"].Value = limit;
             readCommand.Parameters["offset"].Value = offset;
             readCommand.Parameters["pattern"].Value = GetPattern(searchTerm, searchOption);

@@ -9,16 +9,14 @@ internal class FetchBlogService : IFetchBlogService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IRazorViewToStringService _renderer;
-    private readonly ISiteDataService _siteDataService;
 
-    public FetchBlogService(NpgsqlConnection connection, IRazorViewToStringService renderer, ISiteDataService siteDataService)
+    public FetchBlogService(NpgsqlConnection connection, IRazorViewToStringService renderer)
     {
         _connection = connection;
         _renderer = renderer;
-        _siteDataService = siteDataService;
     }
 
-    public async Task<Blog> FetchBlog(int publisherId, int startIndex, int length)
+    public async Task<Blog> FetchBlog(int publisherId, int tenantId, int startIndex, int length)
     {
         try {
             await _connection.OpenAsync();
@@ -49,7 +47,7 @@ internal class FetchBlogService : IFetchBlogService
             readCommand.Parameters.Add("start_index", NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
             readCommand.Parameters["publisher_id"].Value = publisherId;
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
             readCommand.Parameters["length"].Value = length;
             readCommand.Parameters["start_index"].Value = startIndex;
             await using var reader = await readCommand.ExecuteReaderAsync();

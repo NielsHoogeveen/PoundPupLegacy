@@ -3,6 +3,12 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Cases
 @inject ISiteDataService siteDataService
+@inject IUserService userService
+@{
+    var userId = userService.GetUserId(Context.User);
+    var tenantId = siteDataService.GetTenantId(Context.Request);
+}
+
 <div class="article-with-comments">
 
     <div class="breadcrum">
@@ -38,5 +44,5 @@
     </article>
 </div>
 @{
-    Layout = siteDataService.GetLayout();
+    Layout = siteDataService.GetLayout(userId, tenantId);
 }

@@ -4,6 +4,7 @@ using Npgsql;
 using PoundPupLegacy.Middleware;
 using PoundPupLegacy.Services;
 using PoundPupLegacy.Services.Implementation;
+using Quartz;
 
 namespace PoundPupLegacy;
 
@@ -24,6 +25,16 @@ public class Program
         //{
         //    options.EnableForHttps = true;
         //});
+
+        builder.Services.AddLogging(loggingBuilder => {
+            loggingBuilder.AddApplicationInsights(
+                        configureTelemetryConfiguration: (config) => config.ConnectionString = "InstrumentationKey=61d8fcaa-1c19-44ec-b880-4fb84d08ee5a;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/",
+                        configureApplicationInsightsLoggerOptions: (options) => { }
+                    );
+            //loggingBuilder.AddConfiguration(builder.Configuration.GetSection("Logging"));
+            //loggingBuilder.AddConsole();
+            //loggingBuilder.AddDebug();
+        });
         builder.Services.AddSignalR(e => {
             e.MaximumReceiveMessageSize = 102400000;
         });
@@ -57,10 +68,25 @@ public class Program
         builder.Services.AddTransient<IPersonService, PersonService>();
         builder.Services.AddTransient<IDocumentableDocumentsSearchService, DocumentableDocumentsSearchService>();
         builder.Services.AddTransient<IAttachmentService, AttachmentService>();
-
+        builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddHttpContextAccessor();
 
+        builder.Services.AddQuartz(q =>
+        {
+            // base Quartz scheduler, job and trigger configuration
+        });
+
+        // ASP.NET Core hosting
+        builder.Services.AddQuartzServer(options =>
+        {
+            // when shutting down we want jobs to complete gracefully
+            options.WaitForJobsToComplete = true;
+        });
+
+        builder.Services.AddApplicationInsightsTelemetry();
+
         var app = builder.Build();
+
 
         //if (!app.Environment.IsDevelopment())
         //{

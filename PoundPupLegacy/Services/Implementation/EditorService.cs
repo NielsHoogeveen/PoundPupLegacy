@@ -13,18 +13,21 @@ public class EditorService : IEditorService
     private readonly INodeCacheService _nodeCacheService;
     private readonly ITextService _textService;
     private readonly ILogger<EditorService> _logger;
+    private readonly IUserService _userService;
     public EditorService(
     NpgsqlConnection connection,
     ISiteDataService siteDataService,
     INodeCacheService nodeCacheService,
     ITextService textService,
-    ILogger<EditorService> logger)
+    ILogger<EditorService> logger,
+    IUserService userService)
     {
         _connection = connection;
         _siteDateService = siteDataService;
         _nodeCacheService = nodeCacheService;
         _textService = textService;
         _logger = logger;
+        _userService = userService;
     }
 
     const string CTE_EDIT = $"""
@@ -345,7 +348,11 @@ public class EditorService : IEditorService
         	    d.id,
                 'UrlId',
                 tn.url_id,
-        	    'Title',
+                'PublisherId', 
+                n.publisher_id,
+                'OwnerId', 
+                n.owner_id,
+                'Title',
         	    n.title,
         	    'SourceUrl',
         	    d.source_url,
@@ -383,10 +390,18 @@ public class EditorService : IEditorService
             {CTE_EDIT}
             select
                 jsonb_build_object(
-                    'NodeId', n.id,
-                    'UrlId', tn.url_id,
-                    'Title' , n.title,
-                    'Text', stn.text,
+                    'NodeId', 
+                    n.id,
+                    'UrlId', 
+                    tn.url_id,
+                    'PublisherId', 
+                    n.publisher_id,
+                    'OwnerId', 
+                    n.owner_id,
+                    'Title', 
+                    n.title,
+                    'Text', 
+                    stn.text,
             		'Tags', (
             			select 
             			jsonb_agg(jsonb_build_object(
@@ -506,6 +521,10 @@ public class EditorService : IEditorService
                     n.id,
                     'UrlId', 
                     tn.url_id,
+                    'PublisherId', 
+                    n.publisher_id,
+                    'OwnerId', 
+                    n.owner_id,
                     'Title' , 
                     n.title,
                     'Description', 
@@ -574,20 +593,20 @@ public class EditorService : IEditorService
                 ) document
         """;
 
-    public async Task<BlogPost?> GetNewBlogPost()
+    public async Task<BlogPost?> GetNewBlogPost(int userId, int tenantId)
     {
-        return await GetNewSimpleTextNode<BlogPost>(35);
+        return await GetNewSimpleTextNode<BlogPost>(35, userId, tenantId);
     }
-    public async Task<Article?> GetNewArticle()
+    public async Task<Article?> GetNewArticle(int userId, int tenantId)
     {
-        return await GetNewSimpleTextNode<Article>(36);
+        return await GetNewSimpleTextNode<Article>(36, userId, tenantId);
     }
-    public async Task<Discussion?> GetNewDiscussion()
+    public async Task<Discussion?> GetNewDiscussion(int userId, int tenantId)
     {
-        return await GetNewSimpleTextNode<Discussion>(37);
+        return await GetNewSimpleTextNode<Discussion>(37, userId, tenantId);
     }
 
-    public async Task<T?> GetNewSimpleTextNode<T>(int nodeTypeId)
+    public async Task<T?> GetNewSimpleTextNode<T>(int nodeTypeId, int userId, int tenantId)
         where T: class, SimpleTextNode
     {
         try {
@@ -602,9 +621,9 @@ public class EditorService : IEditorService
             readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
             readCommand.Parameters["node_type_id"].Value = nodeTypeId;
-            readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId();
+            readCommand.Parameters["user_id"].Value = userId;
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             if (!reader.HasRows) {
@@ -619,29 +638,29 @@ public class EditorService : IEditorService
         }
     }
 
-    public async Task<BlogPost?> GetBlogPost(int id)
+    public async Task<BlogPost?> GetBlogPost(int id, int userId, int tenantId)
     {
-        return await GetNodeForEdit<BlogPost>(id, 35, SIMPLE_TEXT_NODE_DOCUMENT);
+        return await GetNodeForEdit<BlogPost>(id, userId, tenantId, 35, SIMPLE_TEXT_NODE_DOCUMENT);
     }
-    public async Task<Article?> GetArticle(int id)
+    public async Task<Article?> GetArticle(int id, int userId, int tenantId)
     {
-        return await GetNodeForEdit<Article>(id, 36, SIMPLE_TEXT_NODE_DOCUMENT);
+        return await GetNodeForEdit<Article>(id, userId, tenantId, 36, SIMPLE_TEXT_NODE_DOCUMENT);
     }
-    public async Task<Discussion?> GetDiscussion(int id)
+    public async Task<Discussion?> GetDiscussion(int id, int userId, int tenantId)
     {
-        return await GetNodeForEdit<Discussion>(id, 37, SIMPLE_TEXT_NODE_DOCUMENT);
+        return await GetNodeForEdit<Discussion>(id, userId, tenantId, 37, SIMPLE_TEXT_NODE_DOCUMENT);
     }
-    public async Task<Document?> GetDocument(int id)
+    public async Task<Document?> GetDocument(int id, int userId, int tenantId)
     {
-        return await GetNodeForEdit<Document>(id, 10, DOCUMENT_DOCUMENT);
+        return await GetNodeForEdit<Document>(id, userId, tenantId, 10, DOCUMENT_DOCUMENT);
     }
-    public async Task<Organization?> GetOrganization(int id)
+    public async Task<Organization?> GetOrganization(int id, int userId, int tenantId)
     {
-        var res  = await GetNodeForEdit<Organization>(id, 23, ORGANIZATION_DOCUMENT);
+        var res  = await GetNodeForEdit<Organization>(id, userId, tenantId, 23, ORGANIZATION_DOCUMENT);
         return res;
     }
 
-    private async Task<T?> GetNodeForEdit<T>(int id, int nodeTypeId, string sql)
+    private async Task<T?> GetNodeForEdit<T>(int id, int userId, int tenantId, int nodeTypeId, string sql)
         where T: class, Node
     {
         try {
@@ -657,8 +676,8 @@ public class EditorService : IEditorService
             readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
             readCommand.Parameters["url_id"].Value = id; 
-            readCommand.Parameters["user_id"].Value = _siteDateService.GetUserId();
-            readCommand.Parameters["tenant_id"].Value = _siteDateService.GetTenantId();
+            readCommand.Parameters["user_id"].Value = userId;
+            readCommand.Parameters["tenant_id"].Value = tenantId;
             readCommand.Parameters["node_type_id"].Value = nodeTypeId;
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
@@ -931,8 +950,8 @@ public class EditorService : IEditorService
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = 35,
-            OwnerId = _siteDateService.GetTenantId(),
-            PublisherId = _siteDateService.GetUserId(),
+            OwnerId = blogPost.OwnerId,
+            PublisherId = blogPost.PublisherId,
             TenantNodes = blogPost.Tenants.Where(t => t.HasTenantNode).Select(tn =>  new Model.TenantNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
@@ -958,8 +977,8 @@ public class EditorService : IEditorService
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = 36,
-            OwnerId = _siteDateService.GetTenantId(),
-            PublisherId = _siteDateService.GetUserId(),
+            OwnerId = article.OwnerId,
+            PublisherId = article.PublisherId,
             TenantNodes = article.Tenants.Where(t => t.HasTenantNode).Select(tn => new Model.TenantNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
@@ -985,8 +1004,8 @@ public class EditorService : IEditorService
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = 37,
-            OwnerId = _siteDateService.GetTenantId(),
-            PublisherId = _siteDateService.GetUserId(),
+            OwnerId = discussion.OwnerId,
+            PublisherId = discussion.PublisherId,
             TenantNodes = discussion.Tenants.Where(t => t.HasTenantNode).Select(tn => new Model.TenantNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
@@ -1027,7 +1046,7 @@ public class EditorService : IEditorService
             tx.Commit();
             _logger.LogInformation($"Committed after {sp.ElapsedMilliseconds}");
             if (post.UrlId.HasValue) {
-                _nodeCacheService.Remove(post.UrlId.Value);
+                _nodeCacheService.Remove(post.UrlId.Value, post.OwnerId);
             }
             _logger.LogInformation($"Removed from cache after {sp.ElapsedMilliseconds}");
             await _siteDateService.RefreshTenants();

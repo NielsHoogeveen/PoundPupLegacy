@@ -12,22 +12,27 @@ public class AbuseCasesController : Controller
     private readonly IFetchCasesService _fetchCasesService;
     private readonly ILogger<AbuseCasesController> _logger;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
     public AbuseCasesController(
         ILogger<AbuseCasesController> logger,
         IFetchCasesService fetchCasesService,
-        ISiteDataService siteDataService)
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _fetchCasesService = fetchCasesService;
         _siteDataService = siteDataService;
         _logger = logger;
+        _userService = userService;
     }
 
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess()) {
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        if (!_siteDataService.HasAccess(userId, tenantId)) {
             return NotFound();
         }
         var pageNumber = 1;
@@ -42,8 +47,6 @@ public class AbuseCasesController : Controller
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var userId = _siteDataService.GetUserId();
-        var tenantId = _siteDataService.GetTenantId();
         var cases = await _fetchCasesService.FetchCases(NUMBER_OF_ENTRIES, startIndex, tenantId, userId, ViewModel.CaseType.Abuse);
         cases.PageNumber = pageNumber;
         cases.NumberOfPages = (cases.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;

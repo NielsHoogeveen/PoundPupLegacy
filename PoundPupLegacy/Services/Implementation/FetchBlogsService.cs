@@ -8,15 +8,13 @@ namespace PoundPupLegacy.Services.Implementation;
 internal class FetchBlogsService : IFetchBlogsService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly ISiteDataService _siteDataService;
 
-    public FetchBlogsService(NpgsqlConnection connection, ISiteDataService siteDataService)
+    public FetchBlogsService(NpgsqlConnection connection)
     {
         _connection = connection;
-        _siteDataService = siteDataService;
     }
 
-    public async Task<List<BlogListEntry>> FetchBlogs()
+    public async Task<List<BlogListEntry>> FetchBlogs(int tenantId)
     {
         try {
             await _connection.OpenAsync();
@@ -56,7 +54,7 @@ internal class FetchBlogsService : IFetchBlogsService
             readCommand.CommandText = sql;
             readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
             await using var reader = await readCommand.ExecuteReaderAsync();
             await reader.ReadAsync();
             var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);

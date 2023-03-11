@@ -1,13 +1,12 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
-@inject IHttpContextAccessor httpContextAccessor;
 @inject IEditorService editorService;
 @inject ILogger<BlogPostEditor> logger;
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
 
 @{
-    var url = $"https://{httpContextAccessor.HttpContext!.Request.Host.Value}/image/upload";
+    
 }
 
 @if (blogPost is not null)
@@ -29,8 +28,8 @@
               @bind-Value=@blogPost.Text
             UrlToPostImage=@url>
         </CKEditor>
-        <Tags Elems="@blogPost.Tags" NodeId="@blogPost.NodeId"/>
-        <TenantNodesEditor  Node="@blogPost" />
+        <Tags Elems="@blogPost.Tags" NodeId="@blogPost.NodeId" TenantId="@TenantId" />
+        <TenantNodesEditor Node="@blogPost" TenantId="@TenantId" />
         <AttachmentEditor Files="blogPost.Files" NodeId="blogPost.NodeId"/>
         <button type="submit">Submit</button>
     </EditForm>
@@ -39,13 +38,21 @@
 @code {
     BlogPost? blogPost;
 
+    string url = "";
 
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int TenantId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        blogPost = await editorService.GetBlogPost(Id);
+        url = $"{navigationManager.BaseUri}image/upload";
+        blogPost = await editorService.GetBlogPost(Id, UserId, TenantId);
         foreach(var tenant in blogPost!.Tenants) 
         {
             var tenantNode = blogPost.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);

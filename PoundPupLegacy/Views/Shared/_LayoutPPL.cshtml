@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <base href="~/" />
@@ -21,6 +22,7 @@
         <script src="/js/editor.js"></script>
         <script src="_framework/blazor.server.js"></script>
     }
+    @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
 <body>
 

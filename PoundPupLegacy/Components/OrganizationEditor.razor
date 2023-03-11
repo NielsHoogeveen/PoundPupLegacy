@@ -29,8 +29,8 @@
               @bind-Value=@organization.Description
             UrlToPostImage=@url>
         </CKEditor>
-        <Tags Elems="@organization.Tags" NodeId="@organization.NodeId"/>
-        <TenantNodesEditor  Node="@organization" />
+        <Tags Elems="@organization.Tags" NodeId="@organization.NodeId" TenantId="@TenantId" />
+        <TenantNodesEditor Node="@organization" TenantId="@TenantId" />
         <AttachmentEditor Files="organization.Files" NodeId="organization.NodeId"/>
         <button type="submit">Submit</button>
     </EditForm>
@@ -43,9 +43,15 @@
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int TenantId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        organization = await editorService.GetOrganization(Id);
+        organization = await editorService.GetOrganization(Id, UserId, TenantId);
         foreach(var tenant in organization!.Tenants) 
         {
             var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);

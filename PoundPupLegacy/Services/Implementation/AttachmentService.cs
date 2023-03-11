@@ -11,17 +11,14 @@ public class AttachmentService : IAttachmentService
 {
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<AttachmentService> _logger;
-    private readonly ISiteDataService _siteDataService;
     private readonly IConfiguration _configuration;
 
     public AttachmentService(
         NpgsqlConnection connection,
-        ISiteDataService siteDataService,
         IConfiguration configuration,
         ILogger<AttachmentService> logger)
     {
         _connection = connection;
-        _siteDataService = siteDataService;
         _logger = logger;
         _configuration = configuration;
     }
@@ -90,7 +87,7 @@ public class AttachmentService : IAttachmentService
         }
     }
 
-    public async Task<OneOf<FileReturn, None, Error<string>>> GetFileStream(int id)
+    public async Task<OneOf<FileReturn, None, Error<string>>> GetFileStream(int id, int userId, int tenantId)
     {
         await _connection.OpenAsync();
         try {
@@ -184,8 +181,8 @@ public class AttachmentService : IAttachmentService
             command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await command.PrepareAsync();
             command.Parameters["file_id"].Value = id;
-            command.Parameters["user_id"].Value = _siteDataService.GetUserId();
-            command.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
+            command.Parameters["user_id"].Value = userId;
+            command.Parameters["tenant_id"].Value = tenantId;
             var reader = await command.ExecuteReaderAsync();
             if (!reader.HasRows) {
                 _logger.LogError($"No file found for id {id}");

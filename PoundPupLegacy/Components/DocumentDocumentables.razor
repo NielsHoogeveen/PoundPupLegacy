@@ -98,6 +98,11 @@
     [Parameter]
     public int? NodeId { get; set; }
 
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int TenantId { get; set; }
 
     List<DocumentableDocument> options = new();
 
@@ -130,7 +135,7 @@
         var str = args.Value?.ToString() ?? string.Empty;
         if (!string.IsNullOrEmpty(str) && NodeId is not null)
         {
-            options = await searchService.GetDocumentableDocuments(NodeId.Value, str);
+            options = await searchService.GetDocumentableDocuments(NodeId.Value, UserId, TenantId, str);
         }
         StateHasChanged();
     }

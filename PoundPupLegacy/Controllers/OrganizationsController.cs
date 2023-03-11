@@ -15,15 +15,18 @@ public class OrganizationsController : Controller
     private readonly IFetchOrganizationsService _fetchOrganizationsService;
     private readonly ILogger<OrganizationsController> _logger;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
     public OrganizationsController(
         ILogger<OrganizationsController> logger,
         IFetchOrganizationsService fetchOrganizationsService,
-        ISiteDataService siteDataService)
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _fetchOrganizationsService = fetchOrganizationsService;
         _siteDataService = siteDataService;
         _logger = logger;
+        _userService = userService;
     }
 
     public SearchOption GetSearchOption(string? term)
@@ -70,7 +73,9 @@ public class OrganizationsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess()) {
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        if (!_siteDataService.HasAccess(userId, tenantId)) {
             return NotFound();
         }
         var pageNumber = 1;
@@ -89,7 +94,7 @@ public class OrganizationsController : Controller
         int? countryId = GetCountryId(query["country"]);
         int? organizationTypeId = GetOrganizationTypeId(query["organization_type"]);
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var organizations = await _fetchOrganizationsService.FetchOrganizations(NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption, organizationTypeId, countryId);
+        var organizations = await _fetchOrganizationsService.FetchOrganizations(userId, tenantId, NUMBER_OF_ENTRIES, startIndex, searchTerm, searchOption, organizationTypeId, countryId);
         organizations.Organizations.PageNumber = pageNumber;
         organizations.Organizations.NumberOfPages = (organizations.Organizations.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         organizations.Organizations.QueryString = $"&search={searchTerm}";

@@ -8,15 +8,20 @@ internal class FetchPollsService : IFetchPollsService
 {
     private readonly NpgsqlConnection _connection;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
-    public FetchPollsService(NpgsqlConnection connection, ISiteDataService siteDataService)
+    public FetchPollsService(
+        NpgsqlConnection connection, 
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _connection = connection;
         _siteDataService = siteDataService;
+        _userService = userService;
     }
 
 
-    public async Task<Polls> GetPolls(int limit, int offset)
+    public async Task<Polls> GetPolls(int userId, int tenantId, int limit, int offset)
     {
         await _connection.OpenAsync();
         try {
@@ -110,8 +115,8 @@ internal class FetchPollsService : IFetchPollsService
             readCommand.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
-            readCommand.Parameters["user_id"].Value = _siteDataService.GetUserId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["user_id"].Value = userId;
             readCommand.Parameters["limit"].Value = limit;
             readCommand.Parameters["offset"].Value = offset;
             await using var reader = await readCommand.ExecuteReaderAsync();

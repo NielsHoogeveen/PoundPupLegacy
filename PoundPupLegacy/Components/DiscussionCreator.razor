@@ -29,8 +29,8 @@
               @bind-Value=@discussion.Text
             UrlToPostImage=@url>
         </CKEditor>
-        <Tags Elems="@discussion.Tags" NodeId="@discussion.NodeId"/>
-        <TenantNodesEditor  Node="@discussion" />
+        <Tags Elems="@discussion.Tags" NodeId="@discussion.NodeId" TenantId="@TenantId" />
+        <TenantNodesEditor Node="@discussion" TenantId="@TenantId" />
         <AttachmentEditor Files="discussion.Files" NodeId="null"/>
         <button type="submit">Submit</button>
     </EditForm>
@@ -38,9 +38,15 @@
 @code {
     Discussion? discussion;
 
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int TenantId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        discussion = await editorService.GetNewDiscussion();
+        discussion = await editorService.GetNewDiscussion(UserId, TenantId);
     }
 
     private async Task HandleSubmit()

@@ -39,6 +39,9 @@
     [Parameter]
     public int? NodeId { get; set; }
 
+    [Parameter]
+    public int TenantId { get; set; }
+
 
     List<Tag> termOptions = new();
 
@@ -71,7 +74,7 @@
         var str = args.Value?.ToString() ?? string.Empty;
         if (!string.IsNullOrEmpty(str))
         {
-            termOptions = await topicSearchService.GetTerms(NodeId, str);
+            termOptions = await topicSearchService.GetTerms(NodeId, TenantId, str);
         }
         StateHasChanged();
     }

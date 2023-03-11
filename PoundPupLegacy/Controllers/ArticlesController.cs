@@ -14,15 +14,18 @@ public class ArticlesController : Controller
     private readonly IFetchArticlesService _fetchArticlesService;
     private readonly ILogger<ArticlesController> _logger;
     private readonly ISiteDataService _siteDataService;
+    private readonly IUserService _userService;
 
     public ArticlesController(
         ILogger<ArticlesController> logger,
         IFetchArticlesService fetchArticlesService,
-        ISiteDataService siteDataService)
+        ISiteDataService siteDataService,
+        IUserService userService)
     {
         _fetchArticlesService = fetchArticlesService;
         _siteDataService = siteDataService;
         _logger = logger;
+        _userService = userService;
     }
 
     private IEnumerable<int> GetTermIds(IEnumerable<string> values)
@@ -40,7 +43,9 @@ public class ArticlesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        if (!_siteDataService.HasAccess()) {
+        var userId = _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId(Request);
+        if (!_siteDataService.HasAccess(userId, tenantId)) {
             return NotFound();
         }
         var pageNumber = 1;
@@ -56,7 +61,7 @@ public class ArticlesController : Controller
         stopwatch.Start();
         var termIds = query == null ? new List<int>() : GetTermIds(query.Keys).ToList();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var articles = termIds.Any() ? await _fetchArticlesService.GetArticles(termIds, startIndex, NUMBER_OF_ENTRIES) : await _fetchArticlesService.GetArticles((pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES);
+        var articles = termIds.Any() ? await _fetchArticlesService.GetArticles(tenantId, termIds, startIndex, NUMBER_OF_ENTRIES) : await _fetchArticlesService.GetArticles(tenantId, (pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES);
         articles.PageNumber = pageNumber;
         articles.NumberOfPages = (articles.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         articles.QueryString = string.Join("&", termIds.Select(x => $"{TERM_NAME_PREFIX}{x}"));

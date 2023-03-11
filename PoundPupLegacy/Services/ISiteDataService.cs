@@ -4,14 +4,13 @@ namespace PoundPupLegacy.Services;
 
 public interface ISiteDataService
 {
-    int GetUserId();
     Task InitializeAsync();
     string? GetUrlPathForId(int tenantId, int urlId);
-    bool HasAccess();
-    bool CanEdit(Node node);
-    int GetTenantId();
-    int? GetIdForUrlPath();
-    IEnumerable<Link> GetMenuItemsForUser();
-    string GetLayout();
+    bool HasAccess(int userId, int tenantId);
+    bool CanEdit(Node node, int userId, int tenantId);
+    int GetTenantId(HttpRequest httpRequest);
+    int? GetIdForUrlPath(HttpRequest httpRequest);
+    IEnumerable<Link> GetMenuItemsForUser(int userId, int tenantId);
+    string GetLayout(int userId, int tenantId);
     Task RefreshTenants();
 }

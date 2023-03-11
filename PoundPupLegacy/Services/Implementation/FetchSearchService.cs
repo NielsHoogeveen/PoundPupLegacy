@@ -9,13 +9,15 @@ internal class FetchSearchService : IFetchSearchService
     private readonly NpgsqlConnection _connection;
     private readonly ISiteDataService _siteDataService;
 
-    public FetchSearchService(NpgsqlConnection connection, ISiteDataService siteDataService)
+    public FetchSearchService(
+        NpgsqlConnection connection, 
+        ISiteDataService siteDataService)
     {
         _connection = connection;
         _siteDataService = siteDataService;
     }
 
-    public async Task<SearchResult> FetchSearch(int limit, int offset, string searchString)
+    public async Task<SearchResult> FetchSearch(int userId, int tenantId, int limit, int offset, string searchString)
     {
         try {
             await _connection.OpenAsync();
@@ -173,8 +175,8 @@ internal class FetchSearchService : IFetchSearchService
             readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("search_string", NpgsqlTypes.NpgsqlDbType.Varchar);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = _siteDataService.GetTenantId();
-            readCommand.Parameters["user_id"].Value = _siteDataService.GetUserId();
+            readCommand.Parameters["tenant_id"].Value = tenantId;
+            readCommand.Parameters["user_id"].Value = userId;
             readCommand.Parameters["limit"].Value = limit;
             readCommand.Parameters["offset"].Value = offset;
             readCommand.Parameters["search_string"].Value = searchString;

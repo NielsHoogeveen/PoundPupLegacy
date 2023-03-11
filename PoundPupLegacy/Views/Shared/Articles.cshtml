@@ -3,6 +3,11 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Articles
 @inject ISiteDataService siteDataService
+@inject IUserService userService
+@{
+    var userId = userService.GetUserId(Context.User);
+    var tenantId = siteDataService.GetTenantId(Context.Request);
+}
 @{
     <div class="articles">
         <div class="breadcrum">
@@ -75,5 +80,5 @@
     </script>
 }
 @{
-    Layout = siteDataService.GetLayout();
+    Layout = siteDataService.GetLayout(userId, tenantId);
 }

@@ -4,5 +4,5 @@ namespace PoundPupLegacy.Services;
 
 public interface ISubgroupService
 {
-    Task<SubGroupPagedList?> GetSubGroupPagedList(int subgroupId, int limit, int offset);
+    Task<SubGroupPagedList?> GetSubGroupPagedList(int userId, int subgroupId, int limit, int offset);
 }

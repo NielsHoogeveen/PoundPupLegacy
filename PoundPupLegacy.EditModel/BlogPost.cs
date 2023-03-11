@@ -6,6 +6,8 @@ public record BlogPost : SimpleTextNode
 
     public  int? UrlId { get; set; }
 
+    public required int PublisherId { get; set; }
+    public required int OwnerId { get; set; }
     public required string Title { get; set; }
 
     public required string Text { get; set; }

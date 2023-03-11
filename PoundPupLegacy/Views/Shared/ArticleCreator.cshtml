@@ -2,9 +2,14 @@
 @using PoundPupLegacy.Components;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject ISiteDataService siteDataService
+@inject IUserService userService
+@{
+    var userId = userService.GetUserId(Context.User);
+    var tenantId = siteDataService.GetTenantId(Context.Request);
+}
 <component type="typeof(ArticleCreator)"
-           render-mode="ServerPrerendered"/>
+           render-mode="ServerPrerendered" param-UserId="@userId" param-TenantId="@tenantId"/>
 
 @{
-    Layout = siteDataService.GetLayout();
+    Layout = siteDataService.GetLayout(userId, tenantId);
 }

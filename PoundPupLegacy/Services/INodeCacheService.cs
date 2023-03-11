@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Services;
 
 public interface INodeCacheService
 {
-    public Task<IActionResult> GetResult(int nodeId);
+    public Task<IActionResult> GetResult(int nodeId, int userId, int tenantId);
 
-    void Remove(int nodeId);
+    void Remove(int nodeId, int tenantId);
 }
