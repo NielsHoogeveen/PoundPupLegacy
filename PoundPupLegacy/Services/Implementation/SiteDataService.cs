@@ -53,8 +53,8 @@ internal class SiteDataService : ISiteDataService
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public SiteDataService(
-        NpgsqlConnection connection, 
-        ILogger<SiteDataService> logger, 
+        NpgsqlConnection connection,
+        ILogger<SiteDataService> logger,
         IHttpContextAccessor httpContextAccessor)
     {
         _connection = connection;

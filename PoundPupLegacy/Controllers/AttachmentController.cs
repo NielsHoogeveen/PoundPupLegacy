@@ -10,7 +10,7 @@ public class AttachmentController : Controller
     private readonly IUserService _userService;
     private readonly ISiteDataService _siteDataService;
     public AttachmentController(
-        IAttachmentService attachmentService, 
+        IAttachmentService attachmentService,
         ISiteDataService siteDataService,
         IUserService userService)
     {

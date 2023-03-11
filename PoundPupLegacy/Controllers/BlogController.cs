@@ -13,7 +13,7 @@ public class BlogController : Controller
     private readonly ISiteDataService _siteDataService;
 
     public BlogController(
-        ILogger<BlogController> logger, 
+        ILogger<BlogController> logger,
         IFetchBlogService fetchBlogService,
         ISiteDataService siteDataService)
     {
@@ -24,7 +24,7 @@ public class BlogController : Controller
     [HttpGet("{id}")]
     public async Task<IActionResult> GetBlog(int id)
     {
-        
+
         var tenantId = _siteDataService.GetTenantId(Request);
         var pageNumber = 1;
         var pageValue = HttpContext.Request.Query["page"];

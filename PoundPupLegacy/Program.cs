@@ -71,14 +71,12 @@ public class Program
         builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddHttpContextAccessor();
 
-        builder.Services.AddQuartz(q =>
-        {
+        builder.Services.AddQuartz(q => {
             // base Quartz scheduler, job and trigger configuration
         });
 
         // ASP.NET Core hosting
-        builder.Services.AddQuartzServer(options =>
-        {
+        builder.Services.AddQuartzServer(options => {
             // when shutting down we want jobs to complete gracefully
             options.WaitForJobsToComplete = true;
         });

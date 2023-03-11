@@ -8,7 +8,7 @@ public record PartyPoliticalEntityRelation
 
     public required Link PartyPoliticalEntityRelationType { get; init; }
 
-    public  DateTime? DateFrom { get; init; }
+    public DateTime? DateFrom { get; init; }
 
     public DateTime? DateTo { get; init; }
 

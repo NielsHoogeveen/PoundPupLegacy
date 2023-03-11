@@ -332,7 +332,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
             command.Parameters.Add("path", NpgsqlTypes.NpgsqlDbType.Varchar);
             command.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
             await command.PrepareAsync();
-            foreach(var (id, path) in filePaths) {
+            foreach (var (id, path) in filePaths) {
                 command.Parameters["id"].Value = id;
                 command.Parameters["path"].Value = path;
                 command.ExecuteNonQuery();

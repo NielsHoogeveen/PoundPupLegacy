@@ -13,7 +13,7 @@ public record FileReturn
 
 public interface IAttachmentService
 {
-    Task<OneOf<FileReturn,None, Error<string>>> GetFileStream(int id, int userId, int tenantId);
+    Task<OneOf<FileReturn, None, Error<string>>> GetFileStream(int id, int userId, int tenantId);
 
     Task<string?> StoreFile(IBrowserFile file);
     Task<int?> StoreFile(IFormFile file);

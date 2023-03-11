@@ -2,7 +2,7 @@
 
 public record Location
 {
-    public int? Int { get; set; } 
+    public int? Int { get; set; }
     public string? Street { get; set; }
     public string? Addition { get; set; }
     public string? City { get; set; }

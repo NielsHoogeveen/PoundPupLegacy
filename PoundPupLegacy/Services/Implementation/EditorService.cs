@@ -611,7 +611,7 @@ public class EditorService : IEditorService
     }
 
     public async Task<T?> GetNewSimpleTextNode<T>(int nodeTypeId, int userId, int tenantId)
-        where T: class, SimpleTextNode
+        where T : class, SimpleTextNode
     {
         try {
             await _connection.OpenAsync();
@@ -660,12 +660,12 @@ public class EditorService : IEditorService
     }
     public async Task<Organization?> GetOrganization(int id, int userId, int tenantId)
     {
-        var res  = await GetNodeForEdit<Organization>(id, userId, tenantId, 23, ORGANIZATION_DOCUMENT);
+        var res = await GetNodeForEdit<Organization>(id, userId, tenantId, 23, ORGANIZATION_DOCUMENT);
         return res;
     }
 
     private async Task<T?> GetNodeForEdit<T>(int id, int userId, int tenantId, int nodeTypeId, string sql)
-        where T: class, Node
+        where T : class, Node
     {
         try {
             await _connection.OpenAsync();
@@ -679,7 +679,7 @@ public class EditorService : IEditorService
             readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["url_id"].Value = id; 
+            readCommand.Parameters["url_id"].Value = id;
             readCommand.Parameters["user_id"].Value = userId;
             readCommand.Parameters["tenant_id"].Value = tenantId;
             readCommand.Parameters["node_type_id"].Value = nodeTypeId;
@@ -699,7 +699,7 @@ public class EditorService : IEditorService
 
     private async Task Store(List<EditModel.File> attachments)
     {
-        if(attachments.Any(x => x.HasBeenDeleted)) {
+        if (attachments.Any(x => x.HasBeenDeleted)) {
             var command = _connection.CreateCommand();
             var sql = $"""
                 delete from node_file
@@ -922,8 +922,8 @@ public class EditorService : IEditorService
 
     private async Task StoreNew(SimpleTextNode stn)
     {
-        switch(stn)  {
-            case BlogPost bp: 
+        switch (stn) {
+            case BlogPost bp:
                 await StoreNewBlogPost(bp);
                 break;
             case Article a:
@@ -956,7 +956,7 @@ public class EditorService : IEditorService
             NodeTypeId = 35,
             OwnerId = blogPost.OwnerId,
             PublisherId = blogPost.PublisherId,
-            TenantNodes = blogPost.Tenants.Where(t => t.HasTenantNode).Select(tn =>  new Model.TenantNode {
+            TenantNodes = blogPost.Tenants.Where(t => t.HasTenantNode).Select(tn => new Model.TenantNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -966,7 +966,7 @@ public class EditorService : IEditorService
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
         };
-        var blogPosts = new List<Model.BlogPost> {nodeToStore};
+        var blogPosts = new List<Model.BlogPost> { nodeToStore };
         await BlogPostCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
         blogPost.UrlId = nodeToStore.Id;
     }

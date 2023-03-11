@@ -11,7 +11,7 @@ public class PersonService : IPersonService
     private readonly ISiteDataService _siteDataService;
 
     public PersonService(
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         ISiteDataService siteDataService)
     {
         _connection = connection;

@@ -2,9 +2,9 @@
 
 public record Discussion : SimpleTextNode
 {
-    public  int? NodeId { get; init; }
+    public int? NodeId { get; init; }
 
-    public  int? UrlId { get; set; }
+    public int? UrlId { get; set; }
 
     public required string Title { get; set; }
 

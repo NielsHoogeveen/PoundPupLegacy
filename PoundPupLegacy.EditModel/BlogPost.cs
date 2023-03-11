@@ -2,9 +2,9 @@
 
 public record BlogPost : SimpleTextNode
 {
-    public  int? NodeId { get; init; }
+    public int? NodeId { get; init; }
 
-    public  int? UrlId { get; set; }
+    public int? UrlId { get; set; }
 
     public required int PublisherId { get; set; }
     public required int OwnerId { get; set; }
@@ -44,10 +44,10 @@ public record BlogPost : SimpleTextNode
     }
     private List<File> files = new();
 
-    public required List<File> Files { 
-        get => files; 
-        init { 
-            if (value is not null) { 
+    public required List<File> Files {
+        get => files;
+        init {
+            if (value is not null) {
                 files = value;
             }
         }

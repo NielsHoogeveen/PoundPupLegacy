@@ -9,7 +9,7 @@ public record Document : Node
     public DateTime? DateTime { get; init; }
     public DateTime? DateTimeFrom { get; init; }
     public DateTime? DateTimeTo { get; init; }
-    public Link? DocumentType {get; init;}
+    public Link? DocumentType { get; init; }
     public string? PublicationDate {
         get {
             if (DateTime.HasValue) {

@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class UserService: IUserService
+public class UserService : IUserService
 {
     public int GetUserId(ClaimsPrincipal claimsPrincipal)
     {
-        
+
         if (claimsPrincipal == null) {
             return 0;
         }

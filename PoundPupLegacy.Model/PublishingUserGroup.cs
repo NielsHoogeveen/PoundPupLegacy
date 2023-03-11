@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.Model;
 
-public  interface PublishingUserGroup: UserGroup
+public interface PublishingUserGroup : UserGroup
 {
     int PublicationStatusIdDefault { get; }
 }

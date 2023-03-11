@@ -26,7 +26,7 @@ public class ImageController : Controller
         }
         var file = files[0];
         var res = await _attachmentService.StoreFile(file);
-        if(res is null) {
+        if (res is null) {
             return BadRequest();
         }
         return new ContentResult {

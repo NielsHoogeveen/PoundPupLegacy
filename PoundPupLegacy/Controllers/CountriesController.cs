@@ -14,8 +14,8 @@ public class CountriesController : Controller
     private readonly IUserService _userService;
 
     public CountriesController(
-        ILogger<CountriesController> logger, 
-        IFetchCountriesService fetchCountriesService, 
+        ILogger<CountriesController> logger,
+        IFetchCountriesService fetchCountriesService,
         ISiteDataService siteDataService,
         IUserService userService)
     {

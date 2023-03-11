@@ -12,7 +12,7 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
     private readonly IUserService _userService;
 
     public FetchOrganizationsService(
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         ISiteDataService siteDataService,
         IUserService userService)
     {

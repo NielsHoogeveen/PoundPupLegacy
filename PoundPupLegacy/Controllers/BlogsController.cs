@@ -10,7 +10,7 @@ public class BlogsController : Controller
     private readonly ISiteDataService _siteDataService;
     private readonly IUserService _userService;
     public BlogsController(
-        IFetchBlogsService fetchBlogsService, 
+        IFetchBlogsService fetchBlogsService,
         ISiteDataService siteDataService,
         IUserService userService)
     {

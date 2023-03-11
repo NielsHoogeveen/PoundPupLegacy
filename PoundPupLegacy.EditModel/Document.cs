@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record Document: Node
+public record Document : Node
 {
     public int? NodeId { get; init; }
     public int? UrlId { get; set; }

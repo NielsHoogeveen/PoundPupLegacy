@@ -52,8 +52,8 @@ public class AttachmentService : IAttachmentService
                 };
                 await FileCreator.CreateAsync(new List<Model.File> { fm }.ToAsyncEnumerable(), _connection);
                 return fm.Id;
-            }finally
-            { 
+            }
+            finally {
                 await _connection.CloseAsync();
             }
         }
@@ -70,11 +70,11 @@ public class AttachmentService : IAttachmentService
             return null;
         }
         var maxFileSizeString = _configuration["MaxFileSize"];
-        if(maxFileSizeString is null) {
+        if (maxFileSizeString is null) {
             _logger.LogError("Max file size is not defined in appsettings.json");
             return null;
         }
-        if(int.TryParse(maxFileSizeString, out int maxFileSize)) {
+        if (int.TryParse(maxFileSizeString, out int maxFileSize)) {
             var fileName = Guid.NewGuid().ToString();
             var fullName = attachmentsLocation + "\\" + fileName;
             await using FileStream fs = new(fullName, FileMode.Create);
@@ -190,7 +190,7 @@ public class AttachmentService : IAttachmentService
             }
             await reader.ReadAsync();
             var attachementsLocation = _configuration["AttachmentsLocation"];
-            if(attachementsLocation is null) {
+            if (attachementsLocation is null) {
                 _logger.LogError("AttachmentsLocation is not defined in appsettings.json");
                 return new None();
             }
@@ -199,11 +199,11 @@ public class AttachmentService : IAttachmentService
             await reader.CloseAsync();
             return ret;
         }
-        catch(Exception e) {
+        catch (Exception e) {
             return new Error<string>(e.Message);
         }
-        finally { 
-            await _connection.CloseAsync(); 
+        finally {
+            await _connection.CloseAsync();
         }
     }
 }

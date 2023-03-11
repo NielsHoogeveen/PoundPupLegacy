@@ -10,7 +10,7 @@ internal class FetchSearchService : IFetchSearchService
     private readonly ISiteDataService _siteDataService;
 
     public FetchSearchService(
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         ISiteDataService siteDataService)
     {
         _connection = connection;

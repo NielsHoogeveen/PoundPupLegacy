@@ -13,9 +13,9 @@ public class UserMenuMiddleware
     }
 
     public async Task InvokeAsync(
-        HttpContext httpContext, 
+        HttpContext httpContext,
         IUserService userService,
-        ISiteDataService siteDataService, 
+        ISiteDataService siteDataService,
         IRazorViewToStringService razorViewToStringService,
         AuthenticationStateProvider authenticationStateProvider)
     {

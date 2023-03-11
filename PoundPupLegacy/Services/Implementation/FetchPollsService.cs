@@ -11,7 +11,7 @@ internal class FetchPollsService : IFetchPollsService
     private readonly IUserService _userService;
 
     public FetchPollsService(
-        NpgsqlConnection connection, 
+        NpgsqlConnection connection,
         ISiteDataService siteDataService,
         IUserService userService)
     {

@@ -10,5 +10,5 @@ public record File
     public required bool HasBeenStored { get; init; }
     public required int? NodeId { get; set; }
     public bool HasBeenDeleted { get; set; } = false;
-    
+
 }

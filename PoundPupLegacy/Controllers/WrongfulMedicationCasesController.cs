@@ -17,7 +17,7 @@ public class WrongfulMedicationCasesController : Controller
     public WrongfulMedicationCasesController(
         ILogger<WrongfulMedicationCasesController> logger,
         IFetchCasesService fetchCasesService,
-        ISiteDataService siteDataService, 
+        ISiteDataService siteDataService,
         IUserService userService)
     {
         _fetchCasesService = fetchCasesService;
