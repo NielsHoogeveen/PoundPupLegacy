@@ -13,7 +13,7 @@ public class UnitedStatesCongressController : Controller
     }
     public async Task<IActionResult> Index()
     {
-        var html = await _congressionalDataService.GetUnitedStatesCongress();
+        var html = await _congressionalDataService.GetUnitedStatesCongress(HttpContext);
         if (html is null) {
             return NotFound();
         }

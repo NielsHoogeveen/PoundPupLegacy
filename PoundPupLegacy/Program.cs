@@ -40,7 +40,6 @@ public class Program
         });
         builder.Services.AddSingleton<ISiteDataService, SiteDataService>();
         builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
-        builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddTransient((sp) => {
@@ -69,7 +68,6 @@ public class Program
         builder.Services.AddTransient<IDocumentableDocumentsSearchService, DocumentableDocumentsSearchService>();
         builder.Services.AddTransient<IAttachmentService, AttachmentService>();
         builder.Services.AddTransient<IUserService, UserService>();
-        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddQuartz(q => {
             // base Quartz scheduler, job and trigger configuration

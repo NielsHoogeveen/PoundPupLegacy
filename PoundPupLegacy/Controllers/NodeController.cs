@@ -35,7 +35,7 @@ public class NodeController : Controller
             return Redirect($"/{urlPath}");
         }
         var userId = _userService.GetUserId(HttpContext.User);
-        var result = await _nodeCacheService.GetResult(id, userId, tenantId);
+        var result = await _nodeCacheService.GetResult(id, userId, tenantId, HttpContext);
         _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
         return result;
     }

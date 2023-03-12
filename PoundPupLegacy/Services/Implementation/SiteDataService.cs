@@ -50,16 +50,13 @@ internal class SiteDataService : ISiteDataService
 
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<SiteDataService> _logger;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public SiteDataService(
         NpgsqlConnection connection,
-        ILogger<SiteDataService> logger,
-        IHttpContextAccessor httpContextAccessor)
+        ILogger<SiteDataService> logger)
     {
         _connection = connection;
         _logger = logger;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     /*
@@ -105,14 +102,13 @@ internal class SiteDataService : ISiteDataService
         return null;
     }
 
-    public bool HasAccess(int userId, int tenantId)
+    public bool HasAccess(int userId, int tenantId, HttpRequest request)
     {
-        var context = _httpContextAccessor.HttpContext!;
         return _data.UserTenantActions.Contains(
             new UserTenantAction {
                 UserId = userId,
                 TenantId = tenantId,
-                Action = context.Request.Path
+                Action = request.Path
             }
         );
     }
@@ -524,7 +520,6 @@ internal class SiteDataService : ISiteDataService
 
     public IEnumerable<Link> GetMenuItemsForUser(int userId, int tenantId)
     {
-        var context = _httpContextAccessor.HttpContext!;
         if (_data.UserMenus.TryGetValue((userId, tenantId), out var lst)) {
             return lst;
         }

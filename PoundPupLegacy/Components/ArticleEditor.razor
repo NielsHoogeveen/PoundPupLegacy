@@ -1,14 +1,10 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
-@inject IHttpContextAccessor httpContextAccessor;
 @inject IEditorService editorService;
 @inject ILogger<ArticleEditor> logger;
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
 
-@{
-    var url = $"https://{httpContextAccessor.HttpContext!.Request.Host.Value}/image/upload";
-}
 
 @if (article is not null)
 {
@@ -39,6 +35,7 @@
 @code {
     Article? article;
 
+    string url = "";
 
     [Parameter]
     public int Id { get; set; }
@@ -51,6 +48,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        url = $"{navigationManager.BaseUri}image/upload";
         article = await editorService.GetArticle(Id, UserId, TenantId);
         foreach(var tenant in article!.Tenants) 
         {

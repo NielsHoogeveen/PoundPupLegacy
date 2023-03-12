@@ -10,18 +10,15 @@ internal class RazorViewToStringService : IRazorViewToStringService
 {
     private readonly ITempDataProvider _tempDataProvider;
     private readonly IRazorViewEngine _viewEngine;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public RazorViewToStringService(IRazorViewEngine viewEngine, ITempDataProvider tempDataProvider, IHttpContextAccessor httpContextAccessor)
+    public RazorViewToStringService(IRazorViewEngine viewEngine, ITempDataProvider tempDataProvider)
     {
         _tempDataProvider = tempDataProvider;
         _viewEngine = viewEngine;
-        _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<string> GetFromView<T>(string viewName, T model)
+    public async Task<string> GetFromView<T>(string viewName, T model, HttpContext context)
     {
 
-        var context = _httpContextAccessor.HttpContext!;
         var viewResult = _viewEngine.GetView("", viewName, false);
         if (viewResult.Success == false) {
             throw new Exception($"view {viewName} could not be found");

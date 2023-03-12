@@ -45,7 +45,7 @@ public class ArticlesController : Controller
     {
         var userId = _userService.GetUserId(HttpContext.User);
         var tenantId = _siteDataService.GetTenantId(Request);
-        if (!_siteDataService.HasAccess(userId, tenantId)) {
+        if (!_siteDataService.HasAccess(userId, tenantId, Request)) {
             return NotFound();
         }
         var pageNumber = 1;

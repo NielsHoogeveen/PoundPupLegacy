@@ -2,6 +2,6 @@
 public interface ICongressionalDataService
 {
 
-    Task<string?> GetCongressionalMeetingChamberResult();
-    Task<string?> GetUnitedStatesCongress();
+    Task<string?> GetCongressionalMeetingChamberResult(HttpContext context);
+    Task<string?> GetUnitedStatesCongress(HttpContext context);
 }

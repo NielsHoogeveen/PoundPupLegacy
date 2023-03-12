@@ -49,7 +49,7 @@ public class HomeController : Controller
 
         stopwatch.Start();
 
-        var congressionalMeetingChamber = await _congressionalDataService.GetCongressionalMeetingChamberResult();
+        var congressionalMeetingChamber = await _congressionalDataService.GetCongressionalMeetingChamberResult(HttpContext);
         if (congressionalMeetingChamber is not null) {
             return new ContentResult {
                 Content = congressionalMeetingChamber,
@@ -63,7 +63,7 @@ public class HomeController : Controller
         var id = urlId.Value;
         var userId = _userService.GetUserId(HttpContext.User);
         var tenantId = _siteDataService.GetTenantId(Request);
-        var result = await _nodeCacheService.GetResult(id, userId, tenantId);
+        var result = await _nodeCacheService.GetResult(id, userId, tenantId, HttpContext);
         _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
         return result;
     }

@@ -1,14 +1,9 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
-@inject IHttpContextAccessor httpContextAccessor;
 @inject IEditorService editorService;
 @inject ILogger<OrganizationEditor> logger;
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
-
-@{
-    var url = $"https://{httpContextAccessor.HttpContext!.Request.Host.Value}/image/upload";
-}
 
 @if (organization is not null)
 {
@@ -39,6 +34,7 @@
 @code {
     Organization? organization;
 
+    string url = "";
 
     [Parameter]
     public int Id { get; set; }
@@ -51,11 +47,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        organization = await editorService.GetOrganization(Id, UserId, TenantId);
-        foreach(var tenant in organization!.Tenants) 
+        
+        url = $"{navigationManager.BaseUri}image/upload";
+        if (organization is null)
         {
-            var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
-            tenant.TenantNode = tenantNode;
+            organization = await editorService.GetOrganization(Id, UserId, TenantId);
+            foreach (var tenant in organization!.Tenants)
+            {
+                var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+                tenant.TenantNode = tenantNode;
+            }
         }
     }
 

@@ -32,11 +32,11 @@ internal class NodeCacheService : INodeCacheService
         _nodeCache.TryRemove(tenantNode, out _);
     }
 
-    public async Task<IActionResult> GetResult(int nodeId, int userId, int tenantId)
+    public async Task<IActionResult> GetResult(int nodeId, int userId, int tenantId, HttpContext context)
     {
         var tenantNode = new TenantNode { NodeId = nodeId, TenantId = tenantId };
         if (_configuration["NodeCaching"] != "on") {
-            return await AssembleNewResponse(nodeId, userId, tenantId, tenantNode, false);
+            return await AssembleNewResponse(nodeId, userId, tenantId, context, tenantNode, false);
         }
         if (_nodeCache.TryGetValue(tenantNode, out var html)) {
             return new ContentResult {
@@ -45,23 +45,23 @@ internal class NodeCacheService : INodeCacheService
             };
         }
         else {
-            return await AssembleNewResponse(nodeId, userId, tenantId, tenantNode, true);
+            return await AssembleNewResponse(nodeId, userId, tenantId, context, tenantNode, true);
         }
     }
 
-    private async Task<string?> GetNodeString(int id, int userId, int tenantId)
+    private async Task<string?> GetNodeString(int id, int userId, int tenantId, HttpContext context)
     {
         var node = await _fetchNodeService.FetchNode(id, userId, tenantId);
         if (node == null) {
             return null;
         }
-        var html = await _razorViewToStringService.GetFromView("/Views/Shared/Node.cshtml", node);
+        var html = await _razorViewToStringService.GetFromView("/Views/Shared/Node.cshtml", node, context);
         return html;
     }
 
-    private async Task<IActionResult> AssembleNewResponse(int nodeId, int userId, int tenantId, TenantNode tenantNode, bool storeInDictionary)
+    private async Task<IActionResult> AssembleNewResponse(int nodeId, int userId, int tenantId, HttpContext context, TenantNode tenantNode, bool storeInDictionary)
     {
-        var nodeString = await GetNodeString(nodeId, userId, tenantId);
+        var nodeString = await GetNodeString(nodeId, userId, tenantId, context);
         if (nodeString != null) {
             if (storeInDictionary) {
                 _nodeCache[tenantNode] = nodeString;

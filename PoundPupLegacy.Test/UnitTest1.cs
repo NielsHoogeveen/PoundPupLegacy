@@ -13,9 +13,9 @@ public class UnitTest1
         Regex regex = new Regex(REGEX);
         var match = regex.Match(URL_PATH);
         Assert.True(match.Success);
-        Assert.Equal(match.Groups.Count, 4);
-        Assert.Equal(match.Groups[1].Value, "senate");
-        Assert.Equal(match.Groups[2].Value, "114");
+        Assert.Equal(4, match.Groups.Count);
+        Assert.Equal("senate", match.Groups[1].Value);
+        Assert.Equal("114", match.Groups[2].Value);
 
     }
 

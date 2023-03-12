@@ -1,14 +1,9 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
-@inject IHttpContextAccessor httpContextAccessor;
 @inject IEditorService editorService;
 @inject ILogger<DiscussionCreator> logger;
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
-
-@{
-    var url = $"https://{httpContextAccessor.HttpContext!.Request.Host.Value}/image/upload";
-}
 
 @if (discussion is not null)
 {
@@ -38,6 +33,8 @@
 @code {
     Discussion? discussion;
 
+    string url = "";
+
     [Parameter]
     public int UserId { get; set; }
 
@@ -46,6 +43,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        url = $"{navigationManager.BaseUri}image/upload";
         discussion = await editorService.GetNewDiscussion(UserId, TenantId);
     }
 
