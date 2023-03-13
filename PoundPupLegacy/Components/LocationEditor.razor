@@ -1,0 +1,41 @@
+﻿@using PoundPupLegacy.EditModel
+@if (Location is not null) {
+    <input type="text" value="@Location.Street"/>
+    <input type="text" value="@Location.Addition" />
+    <input type="text" value="@Location.PostalCode" />
+    <input type="text" value="@Location.City" />
+    <select>
+        <option></option>
+        @foreach(var subdivision in Location.Subdivisions) {
+            @if(subdivision.Id == Location.SubdivisionId) {
+                <option selected value="@subdivision.Id">@subdivision.Name</option>
+            }else{
+                <option value="@subdivision.Id">@subdivision.Name</option>
+            }
+        }
+    </select>
+    <select>
+        @foreach(var country in Countries) {
+            @if (country.Id == Location.CountryId) {
+                <option selected value="@country.Id">@country.Name</option>
+            }
+            else {
+                <option value="@country.Id">@country.Name</option>
+            }
+        }
+    </select>
+}
+
+@code {
+
+    [Parameter]
+    public Location? Location { get; set; }
+
+    [Parameter]
+    public List<CountryListItem> Countries { get; set; } = new List<CountryListItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+}

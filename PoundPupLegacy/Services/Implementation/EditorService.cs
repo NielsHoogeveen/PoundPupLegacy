@@ -13,21 +13,18 @@ public class EditorService : IEditorService
     private readonly INodeCacheService _nodeCacheService;
     private readonly ITextService _textService;
     private readonly ILogger<EditorService> _logger;
-    private readonly IUserService _userService;
     public EditorService(
     NpgsqlConnection connection,
     ISiteDataService siteDataService,
     INodeCacheService nodeCacheService,
     ITextService textService,
-    ILogger<EditorService> logger,
-    IUserService userService)
+    ILogger<EditorService> logger)
     {
         _connection = connection;
         _siteDateService = siteDataService;
         _nodeCacheService = nodeCacheService;
         _textService = textService;
         _logger = logger;
-        _userService = userService;
     }
 
     const string CTE_EDIT = $"""
@@ -40,7 +37,9 @@ public class EditorService : IEditorService
         {ATTACHMENTS_DOCUMENT},
         {ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT},
         {ORGANIZATION_TYPES_DOCUMENT},
-        {LOCATIONS_DOCUMENT}
+        {SUBDIVISIONS_DOCUMENT},
+        {LOCATIONS_DOCUMENT},
+        {COUNTRIES_DOCUMENT}
         """;
 
     const string CTE_CREATE = $"""
@@ -93,6 +92,27 @@ public class EditorService : IEditorService
             join node_file nf on nf.file_id = f.id
             join tenant_node tn on tn.node_id = nf.node_id
             where tn.url_id = @url_id and tn.tenant_id = @tenant_id
+        )
+        """;
+
+    const string SUBDIVISIONS_DOCUMENT = """
+        subdivisions_document as(
+            select
+            c.country_id,
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'Id',
+        		    c.id,
+        		    'Name',
+        		    t.name
+        	    )
+            ) document
+            from subdivision c
+            join bottom_level_subdivision b on b.id = c.id
+            join term t on t.nameable_id = c.id
+            join tenant_node tn on tn.node_id = t.vocabulary_id
+            where tn.tenant_id = 1 and tn.url_id = 4126
+            group by c.country_id
         )
         """;
 
@@ -480,10 +500,13 @@ public class EditorService : IEditorService
         			'Additional', additional,
         			'City', city,
         			'PostalCode', postal_code,
-        			'Subdivision', subdivision,
-        			'Country', country,
+        			'SubdivisionId', subdivision_id,
+                    'SubdivusionName', subdivision_name,
+        			'CountryId', country_id,
+                    'CountryName', country_name,
                     'Latitude', latitude,
-                    'Longitude', longitude
+                    'Longitude', longitude,
+                    'Subdivisions', subdivisions
         		)) document
             from(
                 select 
@@ -492,24 +515,39 @@ public class EditorService : IEditorService
                 l.additional,
                 l.city,
                 l.postal_code,
-                jsonb_build_object(
-                	'Path', case when tn2.url_path is null then '/node/' || tn2.url_id else '/' || tn2.url_path end,
-                	'Name', s.name
-                ) subdivision,
-                jsonb_build_object(
-                	'Path', case when tn3.url_path is null then '/node/' || tn3.url_id else '/' || tn3.url_path end,
-                	'Name', nc.title
-                ) country,
+                l.subdivision_id,
+                s.name subdivision_name,
+                l.country_id,
+                nc.title country_name,
                 l.latitude,
-                l.longitude
+                l.longitude,
+                (select document from subdivisions_document where country_id = l.country_id) subdivisions
                 from "location" l
                 join location_locatable ll on ll.location_id = l.id
                 join node nc on nc.id = l.country_id
-                join subdivision s on s.id = l.subdivision_id
+                left join subdivision s on s.id = l.subdivision_id
                 join tenant_node tn on tn.node_id = ll.locatable_id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
-                join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = @tenant_id
+                left join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = @tenant_id
                 join tenant_node tn3 on tn3.node_id = nc.id and tn3.tenant_id = @tenant_id
             )x
+        )
+        """;
+
+    const string COUNTRIES_DOCUMENT = $"""
+        countries_document as(
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'Id',
+        		        c.id,
+        		        'Name',
+        		        t.name
+        	        )
+                ) document
+            from country c
+            join term t on t.nameable_id = c.id
+            join tenant_node tn on tn.node_id = t.vocabulary_id
+            where tn.tenant_id = 1 and tn.url_id = 4126
         )
         """;
 
@@ -562,8 +600,12 @@ public class EditorService : IEditorService
                     (select document from attachments_document),
                     'Locations',
                     (select document from locations_document),
+                    'Countries',
+                    (select document from countries_document),
                     'Documents',
-                    (select document from documentable_documents_document)
+                    (select document from documentable_documents_document),
+                    'Countries',
+                    (select document from countries_document)
                 ) document
             from node n
             join organization o on o.id = n.id
@@ -596,6 +638,33 @@ public class EditorService : IEditorService
                     null
                 ) document
         """;
+
+    public async Task<IEnumerable<SubdivisionListItem>> GetSubdivisions(int countryId)
+    {
+        try {
+            await _connection.OpenAsync();
+            var sql = SUBDIVISIONS_DOCUMENT;
+
+            using var readCommand = _connection.CreateCommand();
+            readCommand.CommandType = CommandType.Text;
+            readCommand.CommandTimeout = 300;
+            readCommand.CommandText = sql;
+            readCommand.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
+           await readCommand.PrepareAsync();
+            readCommand.Parameters["country_id"].Value = countryId;
+            await using var reader = await readCommand.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            if (!reader.HasRows) {
+                return new List<SubdivisionListItem>();
+            }
+            var text = reader.GetString(0); ;
+            var subdivisions = reader.GetFieldValue<List<SubdivisionListItem>>(0);
+            return subdivisions;
+        }
+        finally {
+            await _connection.CloseAsync();
+        }
+    }
 
     public async Task<BlogPost?> GetNewBlogPost(int userId, int tenantId)
     {

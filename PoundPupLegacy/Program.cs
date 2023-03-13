@@ -68,6 +68,7 @@ public class Program
         builder.Services.AddTransient<IDocumentableDocumentsSearchService, DocumentableDocumentsSearchService>();
         builder.Services.AddTransient<IAttachmentService, AttachmentService>();
         builder.Services.AddTransient<IUserService, UserService>();
+        builder.Services.AddTransient<ILocationService, LocationService>();
 
         builder.Services.AddQuartz(q => {
             // base Quartz scheduler, job and trigger configuration

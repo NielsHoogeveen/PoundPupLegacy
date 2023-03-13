@@ -1,0 +1,18 @@
+﻿@using PoundPupLegacy.EditModel
+@if (Locatable is not null && Locatable.Locations.Any()) {
+    <h4>Locations</h4>
+    @foreach(var location in Locatable.Locations) {
+        <LocationEditor Location="@location" Countries="@Locatable.Countries" />
+    }
+}
+
+@code {
+
+    [Parameter]
+    public Locatable? Locatable { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+}

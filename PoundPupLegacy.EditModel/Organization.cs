@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record Organization : Node
+public record Organization : Nameable, Locatable, Documentable
 {
 
     public int? NodeId { get; init; }
@@ -103,4 +103,16 @@ public record Organization : Node
             }
         }
     }
+    private List<CountryListItem> countries = new();
+
+    public List<CountryListItem> Countries {
+        get => countries;
+        init {
+            if (value is not null) {
+                countries = value;
+            }
+        }
+    }
+
+
 }

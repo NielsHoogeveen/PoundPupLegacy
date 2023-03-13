@@ -4,6 +4,7 @@
 @inject ILogger<OrganizationEditor> logger;
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
+@inject ILocationService locationService;
 
 @if (organization is not null)
 {
@@ -24,9 +25,25 @@
               @bind-Value=@organization.Description
             UrlToPostImage=@url>
         </CKEditor>
+        <div class="organization-organization-types">
+
+        @foreach(var organizationOrganizationType in organization.OrganizationOrganizationTypes) {
+            <select>
+                @foreach(var organizationType in organization.OrganizationTypes){
+                    @if (organizationType.Id == organizationOrganizationType.OrganizationTypeId) {
+                        <option selected value="@organizationType.Id">@organizationType.Name</option>
+                    }
+                    else {
+                        <option value="@organizationType.Id">@organizationType.Name</option>
+                    }
+                }
+            </select>
+        }
+        </div>
         <Tags Elems="@organization.Tags" NodeId="@organization.NodeId" TenantId="@TenantId" />
         <TenantNodesEditor Node="@organization" TenantId="@TenantId" />
         <AttachmentEditor Files="organization.Files" NodeId="organization.NodeId"/>
+        <LocationsEditor Locatable="organization"/>
         <button type="submit">Submit</button>
     </EditForm>
     
@@ -47,7 +64,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        
+
         url = $"{navigationManager.BaseUri}image/upload";
         if (organization is null)
         {
@@ -62,7 +79,9 @@
 
     private async Task HandleSubmit()
     {
-        logger.LogInformation(organization!.ToString());
+        foreach(var location in organization.Locations) {
+            await locationService.ProcessLocationAsync(location);
+        }
         await editorService.Save(organization);
         await JSRuntime.InvokeVoidAsync("reloadNode", organization.UrlId);
     }
