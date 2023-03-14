@@ -36,10 +36,10 @@
     [Parameter]
     public List<Tag>? Elems { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "NodeId")]
     public int? NodeId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "TenantId")]
     public int TenantId { get; set; }
 
 

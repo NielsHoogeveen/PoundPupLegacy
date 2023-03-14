@@ -19,6 +19,11 @@
             margin-bottom: 1em;
         }
     </style>
+    <ModalDialog>
+        <DialogContent>
+            Hello World!
+        </DialogContent>
+    </ModalDialog>
     <EditForm Model="@organization" OnSubmit="@HandleSubmit">
         <InputText class="title-editor" id="name" @bind-Value="organization.Title" />
         <CKEditor Id="#editor"
@@ -40,9 +45,9 @@
             </select>
         }
         </div>
-        <Tags Elems="@organization.Tags" NodeId="@organization.NodeId" TenantId="@TenantId" />
-        <TenantNodesEditor Node="@organization" TenantId="@TenantId" />
-        <AttachmentEditor Files="organization.Files" NodeId="organization.NodeId"/>
+        <Tags Elems="@organization.Tags"/>
+        <TenantNodesEditor Node="@organization" />
+        <AttachmentEditor Files="organization.Files"/>
         <LocationsEditor Locatable="organization"/>
         <button type="submit">Submit</button>
     </EditForm>
@@ -53,13 +58,13 @@
 
     string url = "";
 
-    [Parameter]
-    public int Id { get; set; }
+    [CascadingParameter(Name = "UrlId")]
+    public int UrlId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "UserId")]
     public int UserId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "TenantId")]
     public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -68,7 +73,7 @@
         url = $"{navigationManager.BaseUri}image/upload";
         if (organization is null)
         {
-            organization = await editorService.GetOrganization(Id, UserId, TenantId);
+            organization = await editorService.GetOrganization(UrlId, UserId, TenantId);
             foreach (var tenant in organization!.Tenants)
             {
                 var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);

@@ -38,7 +38,8 @@ public static class NodeHelper
 
 public interface Node
 {
-    public int Id { get; }
+    public int UrlId { get; }
+    public int NodeId { get; }
     public int NodeTypeId { get; }
     public string Title { get; }
     public Authoring Authoring { get; }

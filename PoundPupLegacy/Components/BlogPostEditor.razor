@@ -5,10 +5,6 @@
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
 
-@{
-    
-}
-
 @if (blogPost is not null)
 {
     <style>
@@ -28,9 +24,9 @@
               @bind-Value=@blogPost.Text
             UrlToPostImage=@url>
         </CKEditor>
-        <Tags Elems="@blogPost.Tags" NodeId="@blogPost.NodeId" TenantId="@TenantId" />
-        <TenantNodesEditor Node="@blogPost" TenantId="@TenantId" />
-        <AttachmentEditor Files="blogPost.Files" NodeId="blogPost.NodeId"/>
+        <Tags Elems="@blogPost.Tags"/>
+        <TenantNodesEditor Node="@blogPost" />
+        <AttachmentEditor Files="blogPost.Files"/>
         <button type="submit">Submit</button>
     </EditForm>
     
@@ -40,19 +36,19 @@
 
     string url = "";
 
-    [Parameter]
-    public int Id { get; set; }
+    [CascadingParameter(Name = "UrlId")]
+    public int UrlId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "UserId")]
     public int UserId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "TenantId")]
     public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         url = $"{navigationManager.BaseUri}image/upload";
-        blogPost = await editorService.GetBlogPost(Id, UserId, TenantId);
+        blogPost = await editorService.GetBlogPost(UrlId, UserId, TenantId);
         foreach(var tenant in blogPost!.Tenants) 
         {
             var tenantNode = blogPost.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);

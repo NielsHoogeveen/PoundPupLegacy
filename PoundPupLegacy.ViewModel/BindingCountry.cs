@@ -2,8 +2,9 @@
 
 public record BindingCountry : TopLevelCountry
 {
+    public required int NodeId { get; init; }
     public required string Description { get; init; }
-    public required int Id { get; init; }
+    public required int UrlId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Title { get; init; }
     public required Authoring Authoring { get; init; }

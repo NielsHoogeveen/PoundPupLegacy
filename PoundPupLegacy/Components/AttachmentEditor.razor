@@ -29,7 +29,7 @@
     [Parameter]
     public List<EditModel.File>? Files { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "NodeId")]
     public int? NodeId { get; set; }
 
     private string ErrorMessage = "";

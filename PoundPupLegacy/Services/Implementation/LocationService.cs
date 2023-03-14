@@ -75,19 +75,19 @@ public class LocationService: ILocationService
     {
         HttpClient client = new HttpClient();
         var addressBuilder = new StringBuilder();
-        if (location.Street is not null) {
+        if(location.Street is not null) {
             addressBuilder.Append(location.Street.Replace(" ", "%20"));
             addressBuilder.Append("%20");
         }
-        if (location.City is not null) {
+        if(location.City is not null) {
             addressBuilder.Append(location.City.Replace(" ", "%20"));
             addressBuilder.Append("%20");
         }
-        if (location.PostalCode is not null) {
+        if(location.PostalCode is not null) {
             addressBuilder.Append(location.PostalCode.Replace(" ", "%20"));
             addressBuilder.Append("%20");
         }
-        if (location.SubdivisionName is not null) {
+        if(location.SubdivisionName is not null) {
             addressBuilder.Append(location.SubdivisionName.Replace(" ", "%20"));
             addressBuilder.Append("%20");
         }
@@ -99,12 +99,12 @@ public class LocationService: ILocationService
         if (response.IsSuccessStatusCode) {
             var content = response.Content;
             var json = await content.ReadFromJsonAsync<Root>();
-            if (json is not null && json.results.Count > 0) {
+            if(json is not null && json.results.Count > 0) {
                 var result = json.results[0];
                 location.Lattitude = new decimal(result.geometry.location.lat);
                 location.Longitude = new decimal(result.geometry.location.lng);
             }
         }
-
+        
     }
 }

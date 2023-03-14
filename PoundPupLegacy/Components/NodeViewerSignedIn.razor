@@ -63,25 +63,33 @@
         {
             <div class="tab content2">
                 <article>
-                @if (Model is BlogPost)
-                {
-                    <BlogPostEditor Id="Model.Id" UserId="UserId" TenantId="TenantId"/>
-                }
-                @if (Model is Article) 
-                {
-                    <ArticleEditor Id="Model.Id" UserId="UserId" TenantId="TenantId" />
-                }
-                @if (Model is Discussion) 
-                {
-                    <DiscussionEditor Id="Model.Id" UserId="UserId" TenantId="TenantId" />
-                }
-                @if (Model is Document) 
-                {
-                    <DocumentEditor Id="Model.Id" UserId="UserId" TenantId="TenantId" />
-                }
-                @if (Model is Organization) {
-                   <OrganizationEditor Id="Model.Id" UserId="UserId" TenantId="TenantId" />
-                }
+                   <CascadingValue Value="@Model.NodeId" Name="NodeId">
+                       <CascadingValue Value="@Model.UrlId" Name="UrlId">
+                            <CascadingValue Value="@UserId" Name="UserId">
+                                <CascadingValue Value="@TenantId" Name="TenantId">
+                                @if (Model is BlogPost)
+                                {
+                                    <BlogPostEditor/>
+                                }
+                                @if (Model is Article) 
+                                {
+                                    <ArticleEditor/>
+                                }
+                                @if (Model is Discussion) 
+                                {
+                                    <DiscussionEditor/>
+                                }
+                                @if (Model is Document) 
+                                {
+                                    <DocumentEditor/>
+                                }
+                                @if (Model is Organization) {
+                                   <OrganizationEditor/>
+                                }
+                                </CascadingValue>
+                            </CascadingValue>
+                        </CascadingValue>
+                    </CascadingValue>
                 </article>
             </div>
         }

@@ -75,7 +75,7 @@
     [Parameter]
     public Node? Node { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "TenantId")]
     public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()

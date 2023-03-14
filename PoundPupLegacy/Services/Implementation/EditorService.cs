@@ -711,29 +711,29 @@ public class EditorService : IEditorService
         }
     }
 
-    public async Task<BlogPost?> GetBlogPost(int id, int userId, int tenantId)
+    public async Task<BlogPost?> GetBlogPost(int urlId, int userId, int tenantId)
     {
-        return await GetNodeForEdit<BlogPost>(id, userId, tenantId, 35, SIMPLE_TEXT_NODE_DOCUMENT);
+        return await GetNodeForEdit<BlogPost>(urlId, userId, tenantId, 35, SIMPLE_TEXT_NODE_DOCUMENT);
     }
-    public async Task<Article?> GetArticle(int id, int userId, int tenantId)
+    public async Task<Article?> GetArticle(int urlId, int userId, int tenantId)
     {
-        return await GetNodeForEdit<Article>(id, userId, tenantId, 36, SIMPLE_TEXT_NODE_DOCUMENT);
+        return await GetNodeForEdit<Article>(urlId, userId, tenantId, 36, SIMPLE_TEXT_NODE_DOCUMENT);
     }
-    public async Task<Discussion?> GetDiscussion(int id, int userId, int tenantId)
+    public async Task<Discussion?> GetDiscussion(int urlId, int userId, int tenantId)
     {
-        return await GetNodeForEdit<Discussion>(id, userId, tenantId, 37, SIMPLE_TEXT_NODE_DOCUMENT);
+        return await GetNodeForEdit<Discussion>(urlId, userId, tenantId, 37, SIMPLE_TEXT_NODE_DOCUMENT);
     }
-    public async Task<Document?> GetDocument(int id, int userId, int tenantId)
+    public async Task<Document?> GetDocument(int urlId, int userId, int tenantId)
     {
-        return await GetNodeForEdit<Document>(id, userId, tenantId, 10, DOCUMENT_DOCUMENT);
+        return await GetNodeForEdit<Document>(urlId, userId, tenantId, 10, DOCUMENT_DOCUMENT);
     }
-    public async Task<Organization?> GetOrganization(int id, int userId, int tenantId)
+    public async Task<Organization?> GetOrganization(int urlId, int userId, int tenantId)
     {
-        var res = await GetNodeForEdit<Organization>(id, userId, tenantId, 23, ORGANIZATION_DOCUMENT);
+        var res = await GetNodeForEdit<Organization>(urlId, userId, tenantId, 23, ORGANIZATION_DOCUMENT);
         return res;
     }
 
-    private async Task<T?> GetNodeForEdit<T>(int id, int userId, int tenantId, int nodeTypeId, string sql)
+    private async Task<T?> GetNodeForEdit<T>(int url, int userId, int tenantId, int nodeTypeId, string sql)
         where T : class, Node
     {
         try {
@@ -748,7 +748,7 @@ public class EditorService : IEditorService
             readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
             readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
             await readCommand.PrepareAsync();
-            readCommand.Parameters["url_id"].Value = id;
+            readCommand.Parameters["url_id"].Value = url;
             readCommand.Parameters["user_id"].Value = userId;
             readCommand.Parameters["tenant_id"].Value = tenantId;
             readCommand.Parameters["node_type_id"].Value = nodeTypeId;

@@ -2609,7 +2609,8 @@ internal class FetchNodeService : IFetchNodeService
         informal_subdivision_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -2638,6 +2639,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                  SELECT
                     an.url_id, 
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -2662,11 +2664,13 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+
     const string FORMAL_SUBDIVISION_DOCUMENT = """
         formal_subdivision_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -2695,7 +2699,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -2726,7 +2731,8 @@ internal class FetchNodeService : IFetchNodeService
         global_region_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -2748,7 +2754,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -2770,7 +2777,8 @@ internal class FetchNodeService : IFetchNodeService
         basic_country_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -2800,7 +2808,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -2829,7 +2838,8 @@ internal class FetchNodeService : IFetchNodeService
         country_and_subdivision_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -2860,7 +2870,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -2891,7 +2902,8 @@ internal class FetchNodeService : IFetchNodeService
         binding_country_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -2922,7 +2934,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -2951,7 +2964,8 @@ internal class FetchNodeService : IFetchNodeService
         bound_country_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -2981,7 +2995,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3011,7 +3026,8 @@ internal class FetchNodeService : IFetchNodeService
         document_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title,
                     'Text', n.text,
@@ -3036,7 +3052,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM(
                 SELECT
-                    an.url_id,
+                    an.url_id, 
+                    an.node_id,
                     an.node_type_id,
                     an.title,
                     an.created_date_time,
@@ -3209,7 +3226,8 @@ internal class FetchNodeService : IFetchNodeService
         organization_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -3241,7 +3259,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3266,7 +3285,8 @@ internal class FetchNodeService : IFetchNodeService
         person_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Description', n.description,
@@ -3304,7 +3324,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3330,11 +3351,13 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+
     const string BLOG_POST_DOCUMENT = """
         blog_post_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Text', n.text,
@@ -3354,7 +3377,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3374,7 +3398,8 @@ internal class FetchNodeService : IFetchNodeService
         single_question_poll_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Text', n.text,
@@ -3398,7 +3423,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3422,7 +3448,8 @@ internal class FetchNodeService : IFetchNodeService
         multi_question_poll_document AS (
             SELECT 
                 jsonb_build_object(
-                'Id', n.url_id,
+                'UrlId', n.url_id,
+                'NodeId', n.node_id,
                 'NodeTypeId', n.node_type_id,
                 'Title', n.title, 
                 'Text', n.text,
@@ -3445,7 +3472,8 @@ internal class FetchNodeService : IFetchNodeService
             ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3468,7 +3496,8 @@ internal class FetchNodeService : IFetchNodeService
         article_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Text', n.text,
@@ -3488,7 +3517,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3503,11 +3533,13 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+
     const string DISCUSSION_DOCUMENT = """
         discussion_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Text', n.text,
@@ -3527,7 +3559,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3548,7 +3581,8 @@ internal class FetchNodeService : IFetchNodeService
         page_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Text', n.text,
@@ -3568,7 +3602,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3588,7 +3623,8 @@ internal class FetchNodeService : IFetchNodeService
         basic_nameable_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3609,7 +3645,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3628,7 +3665,8 @@ internal class FetchNodeService : IFetchNodeService
         abuse_case_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3652,7 +3690,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3668,11 +3707,13 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+
     const string CHILD_TRAFFICKING_CASE_DOCUMENT = """
         child_trafficking_case_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3696,7 +3737,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3712,11 +3754,13 @@ internal class FetchNodeService : IFetchNodeService
             ) n
         ) 
         """;
+
     const string COERCED_ADOPTION_CASE_DOCUMENT = """
         coerced_adoption_case_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3740,7 +3784,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3761,7 +3806,8 @@ internal class FetchNodeService : IFetchNodeService
         deportation_case_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3785,7 +3831,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3806,7 +3853,8 @@ internal class FetchNodeService : IFetchNodeService
         disrupted_placement_case_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3830,7 +3878,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3850,7 +3899,8 @@ internal class FetchNodeService : IFetchNodeService
         fathers_rights_violation_case_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3874,7 +3924,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3894,7 +3945,8 @@ internal class FetchNodeService : IFetchNodeService
         wrongful_medication_case_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3918,7 +3970,8 @@ internal class FetchNodeService : IFetchNodeService
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
+                    an.url_id,  
+                    an.node_id,
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 
@@ -3938,7 +3991,8 @@ internal class FetchNodeService : IFetchNodeService
         wrongful_removal_case_document AS (
             SELECT 
                 jsonb_build_object(
-                    'Id', n.url_id,
+                    'UrlId', n.url_id,
+                    'NodeId', n.node_id,
                     'NodeTypeId', n.node_type_id,
                     'Title', n.title, 
                     'Description', n.description,
@@ -3963,6 +4017,7 @@ internal class FetchNodeService : IFetchNodeService
             FROM (
                 SELECT
                     an.url_id, 
+                    an.node_id, 
                     an.node_type_id,
                     an.title, 
                     an.created_date_time, 

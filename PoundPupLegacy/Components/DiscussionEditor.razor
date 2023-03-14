@@ -24,9 +24,9 @@
               @bind-Value=@discussion.Text
             UrlToPostImage=@url>
         </CKEditor>
-        <Tags Elems="@discussion.Tags" NodeId="@discussion.NodeId"/>
-        <TenantNodesEditor Node="@discussion" TenantId="@TenantId" />
-        <AttachmentEditor Files="discussion.Files" NodeId="discussion.NodeId"/>
+        <Tags Elems="@discussion.Tags"/>
+        <TenantNodesEditor Node="@discussion"/>
+        <AttachmentEditor Files="discussion.Files"/>
         <button type="submit">Submit</button>
     </EditForm>
     
@@ -36,19 +36,19 @@
 
     string url = "";
 
-    [Parameter]
-    public int Id { get; set; }
+    [CascadingParameter(Name = "UrlId")]
+    public int UrlId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "UserId")]
     public int UserId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "TenantId")]
     public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         url = $"{navigationManager.BaseUri}image/upload";
-        discussion = await editorService.GetDiscussion(Id, UserId, TenantId);
+        discussion = await editorService.GetDiscussion(UrlId, UserId, TenantId);
         foreach(var tenant in discussion!.Tenants) 
         {
             var tenantNode = discussion.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);

@@ -5,11 +5,11 @@ namespace PoundPupLegacy.Services;
 public interface IEditorService
 {
     Task<IEnumerable<SubdivisionListItem>> GetSubdivisions(int countryId);
-    Task<Document?> GetDocument(int id, int userId, int tenantId);
-    Task<BlogPost?> GetBlogPost(int id, int userId, int tenantId);
-    Task<Article?> GetArticle(int id, int userId, int tenantId);
-    Task<Discussion?> GetDiscussion(int id, int userId, int tenantId);
-    Task<Organization?> GetOrganization(int id, int userId, int tenantId);
+    Task<Document?> GetDocument(int urlId, int userId, int tenantId);
+    Task<BlogPost?> GetBlogPost(int urlId, int userId, int tenantId);
+    Task<Article?> GetArticle(int urlId, int userId, int tenantId);
+    Task<Discussion?> GetDiscussion(int urlId, int userId, int tenantId);
+    Task<Organization?> GetOrganization(int urlId, int userId, int tenantId);
     Task<BlogPost?> GetNewBlogPost(int userId, int tenantId);
     Task<Article?> GetNewArticle(int userId, int tenantId);
     Task<Discussion?> GetNewDiscussion(int userId, int tenantId);
