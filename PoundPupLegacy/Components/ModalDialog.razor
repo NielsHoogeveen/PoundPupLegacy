@@ -4,14 +4,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">This is the title</h4>
-                    <button type="button" class="close">&times;</button>
+                    <h4 class="modal-title">@Title</h4>
+                    <button type="button" class="btn-close">&times;</button>
                 </div>
                 <div class="modal-body">
                     @DialogContent
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">OK</button>
+                    <button type="button" class="btn">Cancel</button>
                 </div>
             </div>
         </div>
@@ -20,4 +21,7 @@
 @code {
     [Parameter]
     public RenderFragment? DialogContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
 }

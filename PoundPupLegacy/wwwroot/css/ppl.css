@@ -549,10 +549,10 @@ tr:nth-of-type(2n+1){
     border-bottom: 1px solid grey;
 }
 
-    .close:hover {
-        font-size: 90%;
-        font-weight: normal;
-    }
+.close:hover {
+    font-size: 90%;
+    font-weight: normal;
+}
 
 .tag-elements div:nth-last-child(-n + 2) {
     border-bottom: 0;
@@ -575,7 +575,9 @@ tr:nth-of-type(2n+1){
 .modal-dialog {
     position: relative;
     width: auto;
-    margin: 40em;
+    margin-left: 4em;
+    margin-right: 4em;
+    margin-top: 4em;
 }
 
 
@@ -600,9 +602,10 @@ tr:nth-of-type(2n+1){
     flex-direction: column;
     width: 100%;
     pointer-events: auto;
-    background-color: #999;
+    background-color: #ccc;
     background-clip: padding-box;
-    border: solid 2px orange;
+    border: solid 2px #2121c1;
+    border-radius: 10px;
 }
 
 .modal-header {
@@ -610,16 +613,24 @@ tr:nth-of-type(2n+1){
     flex-shrink: 0;
     align-items: center;
     justify-content: space-between;
-    border-bottom: solid thin red;
+    background-color: #514e4e;
+    color: #cbcaca;
 }
-.btn-close
-{
-    padding: 0.25em;
-    margin: 0,25em;
-}
+
+    .modal-header button.btn-close {
+        background-color: darkred;
+        color: white;
+        border: 0;
+        margin: 0;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+
 .modal-title {
+    margin-left: 0.25em;
     margin-bottom: 0;
-    line-height: 100$;
+    margin-top: 0.15em;
+    line-height: 16px;
 }
 
 .modal-body {
@@ -631,8 +642,7 @@ tr:nth-of-type(2n+1){
     flex-shrink: 0;
     flex-wrap: wrap;
     align-items: center;
-    background-color: #444;
-    border-top: solid thin green;
+    background-color: #ccc;
     margin: 0.25em;
 }
 
