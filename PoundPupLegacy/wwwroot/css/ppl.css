@@ -571,6 +571,10 @@ tr:nth-of-type(2n+1){
     overflow-y: auto;
 }
 
+.modal.open{
+    z-index: 1000;
+    display: block;
+}
 
 .modal-dialog {
     position: relative;
@@ -617,14 +621,14 @@ tr:nth-of-type(2n+1){
     color: #cbcaca;
 }
 
-    .modal-header button.btn-close {
-        background-color: darkred;
-        color: white;
-        border: 0;
-        margin: 0;
-        padding-left: 0.5em;
-        padding-right: 0.5em;
-    }
+.modal-header button.btn-close {
+    background-color: darkred;
+    color: white;
+    border: 0;
+    margin: 0;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
 
 .modal-title {
     margin-left: 0.25em;

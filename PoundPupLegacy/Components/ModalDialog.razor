@@ -1,6 +1,9 @@
-﻿@if (DialogContent is not null)
+﻿@inject IJSRuntime JSRuntime
+
+@if (DialogContent is not null)
 {
-    <div class="modal fade show" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    
+    <div class="@className" id="@Id" aria-modal="true" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -11,8 +14,8 @@
                     @DialogContent
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">OK</button>
-                    <button type="button" class="btn">Cancel</button>
+                    <button class="btn btn-primary" @onclick="HandleOk">OK</button>
+                    <button class="btn">Cancel</button>
                 </div>
             </div>
         </div>
@@ -23,5 +26,41 @@
     public RenderFragment? DialogContent { get; set; }
 
     [Parameter]
+    public string? Id { get; set; } 
+
+    [Parameter]
     public string? Title { get; set; }
+
+    [Parameter]
+    public Action? OnOk { get; set; }
+
+    private string className => displayState == DisplayState.Open ? "modal open" : "modal";
+
+    private DisplayState displayState = DisplayState.Closed;
+
+    private enum DisplayState { Open, Closed }
+
+    public void Show()
+    {
+        displayState = DisplayState.Open;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        displayState = DisplayState.Closed;
+        StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+    public void HandleOk()
+    {
+        if(OnOk is not null) {
+            OnOk();
+        }
+        Close();
+    }
 }
