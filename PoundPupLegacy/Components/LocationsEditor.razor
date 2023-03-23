@@ -1,18 +1,56 @@
 ﻿@using PoundPupLegacy.EditModel
 @if (Locatable is not null && Locatable.Locations.Any()) {
-    <h4>Locations</h4>
-    @foreach(var location in Locatable.Locations) {
-        <LocationEditor Location="@location" Countries="@Locatable.Countries" />
+    @if (showLocationEditorDialog)
+    {
+        <ModalDialog Title="Add location" @ref="@locationDialog" Id="location-dialog" OnOk="OnOkLocationDialog" OnCancel="OnCancelLocationDialog">
+            <DialogContent>
+                <LocationEditorDialog @ref="@locationEditorDialog" />
+            </DialogContent>
+        </ModalDialog>
     }
+
+    <div class="locations editor-section">
+        <h4>Locations</h4>
+        @foreach(var location in Locatable.Locations) {
+            <LocationEditor Location="@location" Countries="@Locatable.Countries" />
+        }
+        <button type="button" @onclick="OpenLocationDialog">Add location</button>
+    </div>
 }
 
 @code {
 
     [Parameter]
     public Locatable? Locatable { get; set; }
+    ModalDialog? locationDialog;
+
+    LocationEditorDialog? locationEditorDialog;
+
+    private bool showLocationEditorDialog = false;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+    }
+    private void OpenLocationDialog()
+    {
+        showLocationEditorDialog = true;
+    }
+    private void OnOkLocationDialog()
+    {
+        if (locationEditorDialog is not null) {
+            Locatable!.Locations.Add(locationEditorDialog.GetLocation());
+            locationEditorDialog = null;
+            showLocationEditorDialog = false;
+        }
+        StateHasChanged();
+    }
+    private void OnCancelLocationDialog()
+    {
+        if (locationEditorDialog is not null) {
+            locationEditorDialog = null;
+            showLocationEditorDialog = false;
+        }
+        StateHasChanged();
     }
 }

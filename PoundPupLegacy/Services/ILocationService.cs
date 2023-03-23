@@ -4,5 +4,7 @@ namespace PoundPupLegacy.Services;
 
 public interface ILocationService
 {
-    Task ProcessLocationAsync(Location location);
+    Task<Location> ValidateLocationAsync(Location location);
+    IAsyncEnumerable<SubdivisionListItem> SubdivisionsOfCountry(int countryId);
+    IAsyncEnumerable<CountryListItem> Countries();
 }

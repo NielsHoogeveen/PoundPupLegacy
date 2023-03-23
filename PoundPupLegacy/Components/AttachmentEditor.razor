@@ -13,16 +13,20 @@
 </style>
 @if (Files is not null)
 {
-    <div class="files">
-    @foreach(var (file, index) in Files.Where(x => !x.HasBeenDeleted).Select((x,y) => (x,y)) ) {
-        <div>@file.Name</div>
-        <div>@file.MimeType</div>
-        <div>@file.Size</div>
-        <div class="close" @onclick="() => SetAttachmentToDeleted(index)">&times;</div>
-    }
+    <div class="editor-section">
+        <h4> Attachments</h4>
+        <div class="files" style="margin-bottom:1em;">
+        @foreach(var (file, index) in Files.Where(x => !x.HasBeenDeleted).Select((x,y) => (x,y)) ) {
+            <div>@file.Name</div>
+            <div>@file.MimeType</div>
+            <div>@file.Size</div>
+            <div class="close" @onclick="() => SetAttachmentToDeleted(index)">&times;</div>
+        }
+        </div>
+        <label class="file-upload" for="file-upload">Upload files</label>
+        <InputFile OnChange="@LoadFiles" multiple id="file-upload"/>
+        <div class="error">@((MarkupString)ErrorMessage)</div>
     </div>
-    <InputFile OnChange="@LoadFiles" multiple />
-    <div class="error">@((MarkupString)ErrorMessage)</div>
 }
 
 @code {

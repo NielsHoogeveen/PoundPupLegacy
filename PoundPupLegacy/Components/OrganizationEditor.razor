@@ -19,12 +19,7 @@
             margin-bottom: 1em;
         }
     </style>
-    <ModalDialog Title="Add location" @ref="@locationDialog" Id="location-dialog" OnOk="OnCloseLocationDialog">
-        <DialogContent>
-            <LocationEditorDialog/>
-        </DialogContent>
-    </ModalDialog>
-    <EditForm Model="@organization" OnSubmit="@HandleSubmit">
+    <EditForm Model="@organization" OnSubmit="@HandleSubmit" class="edit-form">
         <InputText class="title-editor" id="name" @bind-Value="organization.Title" />
         <CKEditor Id="#editor"
               @bind-Value=@organization.Description
@@ -45,13 +40,12 @@
             </select>
         }
         </div>
-        <button type="button" @onclick="OpenLocationDialog">Add location</button>
         <Tags Elems="@organization.Tags"/>
         <TenantNodesEditor Node="@organization" />
         <AttachmentEditor Files="organization.Files"/>
         <LocationsEditor Locatable="organization"/>
         
-        <button type="submit">Submit</button>
+        <button type="submit" style="display: block;">Submit</button>
     </EditForm>
     
 }
@@ -60,7 +54,6 @@
 
     string url = "";
 
-    ModalDialog locationDialog;
 
     [CascadingParameter(Name = "UrlId")]
     public int UrlId { get; set; }
@@ -92,18 +85,10 @@
             return;
         foreach (var location in organization.Locations)
         {
-            await locationService.ProcessLocationAsync(location);
+            await locationService.ValidateLocationAsync(location);
         }
         await editorService.Save(organization);
         await JSRuntime.InvokeVoidAsync("reloadNode", organization.UrlId);
-    }
-
-    private void OpenLocationDialog()
-    {
-        locationDialog.Show();
-    }
-    private void OnCloseLocationDialog()
-    {
     }
 
 }

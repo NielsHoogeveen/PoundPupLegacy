@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Npgsql;
 using PoundPupLegacy.Db.Readers;
+using System.Data;
 using System.Diagnostics;
 
 namespace PoundPupLegacy.Convert;
@@ -10,99 +11,100 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
     private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
     public async Task Convert()
     {
-        //await TruncateDatabase();
-        //await (new PollStatusMigrator(this)).Migrate();
-        //await (new PublicationStatusMigrator(this)).Migrate();
-        //await (new NodeTypeMigrator(this)).Migrate();
-        //await (new ActionMigrator(this)).Migrate();
-        //await (new UserMigrator(this)).Migrate();
-        //await (new PollMigrator(this)).Migrate();
-        //await (new FileMigratorPPL(this)).Migrate();
-        //await (new FileMigratorCPCT(this)).Migrate();
-        //await (new VocabularyMigrator(this)).Migrate();
-        //await (new CasePartyTypeMigrator(this)).Migrate();
-        //await (new CaseTypeMigrator(this)).Migrate();
-        //await (new AccessRolePrivilegeMigrator(this)).Migrate();
-        //await (new SubdivisionTypeMigrator(this)).Migrate();
-        //await (new BasicNameableMigrator(this)).Migrate();
-        //await (new ChildPlacementTypeMigrator(this)).Migrate();
-        //await (new OrganizationTypeMigrator(this)).Migrate();
-        //await (new InterCountryRelationTypeMigrator(this)).Migrate();
-        //await (new InterOrganizationalRelationTypeMigrator(this)).Migrate();
-        //await (new InterPersonalRelationTypeMigrator(this)).Migrate();
-        //await (new PartyPoliticalEntityRelationTypeMigrator(this)).Migrate();
-        //await (new PersonOrganizationRelationTypeMigrator(this)).Migrate();
-        //await (new BillActionTypeMigrator(this)).Migrate();
-        //await (new TypeOfAbuseMigrator(this)).Migrate();
-        //await (new TypeOfAbuserMigrator(this)).Migrate();
-        //await (new FamilySizeMigrator(this)).Migrate();
-        //await (new ProfessionMigrator(this)).Migrate();
-        //await (new DenominationMigrator(this)).Migrate();
-        //await (new HagueStatusMigrator(this)).Migrate();
-        //await (new DocumentTypeMigrator(this)).Migrate();
+        await TruncateDatabase();
+        await (new PollStatusMigrator(this)).Migrate();
+        await (new PublicationStatusMigrator(this)).Migrate();
+        await (new NodeTypeMigrator(this)).Migrate();
+        await (new ActionMigrator(this)).Migrate();
+        await (new UserMigrator(this)).Migrate();
+        await (new PollMigrator(this)).Migrate();
+        await (new FileMigratorPPL(this)).Migrate();
+        await (new FileMigratorCPCT(this)).Migrate();
+        await (new VocabularyMigrator(this)).Migrate();
+        await (new CasePartyTypeMigrator(this)).Migrate();
+        await (new CaseTypeMigrator(this)).Migrate();
+        await (new AccessRolePrivilegeMigrator(this)).Migrate();
+        await (new SubdivisionTypeMigrator(this)).Migrate();
+        await (new BasicNameableMigrator(this)).Migrate();
+        await (new ChildPlacementTypeMigrator(this)).Migrate();
+        await (new OrganizationTypeMigrator(this)).Migrate();
+        await (new InterCountryRelationTypeMigrator(this)).Migrate();
+        await (new InterOrganizationalRelationTypeMigrator(this)).Migrate();
+        await (new InterPersonalRelationTypeMigrator(this)).Migrate();
+        await (new PartyPoliticalEntityRelationTypeMigrator(this)).Migrate();
+        await (new PersonOrganizationRelationTypeMigrator(this)).Migrate();
+        await (new BillActionTypeMigrator(this)).Migrate();
+        await (new TypeOfAbuseMigrator(this)).Migrate();
+        await (new TypeOfAbuserMigrator(this)).Migrate();
+        await (new FamilySizeMigrator(this)).Migrate();
+        await (new ProfessionMigrator(this)).Migrate();
+        await (new DenominationMigrator(this)).Migrate();
+        await (new HagueStatusMigrator(this)).Migrate();
+        await (new DocumentTypeMigrator(this)).Migrate();
 
-        //await (new UnitedStatesCongressionalMeetingMigrator(this)).Migrate();
+        await (new UnitedStatesCongressionalMeetingMigrator(this)).Migrate();
 
-        //await (new FirstLevelGlobalRegionMigrator(this)).Migrate();
-        //await (new SecondLevelGlobalRegionMigrator(this)).Migrate();
-        //await (new BasicCountryMigrator(this)).Migrate();
-        //await (new BindingCountryMigrator(this)).Migrate();
-        //await (new CountrySubdivisionTypeMigratorPartOne(this)).Migrate();
-        //await (new BoundCountryMigrator(this)).Migrate();
-        //await (new CountrySubdivisionTypeMigratorPartTwo(this)).Migrate();
-        //await (new CountryAndFirstLevelSubDivisionMigrator(this)).Migrate();
-        //await (new CountryAndFirstAndSecondLevelSubdivisionMigrator(this)).Migrate();
-        //await (new CountrySubdivisionTypeMigratorPartThree(this)).Migrate();
-        //await (new FirstAndBottomLevelSubdivisionMigrator(this)).Migrate();
-        //await (new InformalIntermediateLevelSubdivisionMigrator(this)).Migrate();
-        //await (new FormalIntermediateLevelSubdivisionMigrator(this)).Migrate();
-        //await (new BasicSecondLevelSubdivisionMigrator(this)).Migrate();
-        //await (new BlogPostMigrator(this)).Migrate();
-        //await (new ArticleMigrator(this)).Migrate();
-        //await (new DiscussionMigrator(this)).Migrate();
-        //await (new AdoptionImportMigrator(this)).Migrate();
-        //await (new DocumentMigratorPPL(this)).Migrate();
-        //await (new OrganizationMigratorPPL(this)).Migrate();
-        //await (new UnitedStatesPoliticalPartyAffliationMigrator(this)).Migrate();
-        //await (new PersonMigratorPPL(this)).Migrate();
-        //await (new AbuseCaseMigrator(this)).Migrate();
-        //await (new ChildTraffickingCaseMigrator(this)).Migrate();
-        //await (new CoercedAdoptionCaseMigrator(this)).Migrate();
-        //await (new DisruptedPlacementCaseMigrator(this)).Migrate();
-        //await (new DeportationCaseMigrator(this)).Migrate();
-        //await (new FathersRightsViolationsCaseMigrator(this)).Migrate();
-        //await (new WrongfulMedicationCaseMigrator(this)).Migrate();
-        //await (new WrongfulRemovalCaseMigrator(this)).Migrate();
-        //await (new LocationMigratorPPL(this)).Migrate();
-        //await (new PageMigrator(this)).Migrate();
-        //await (new ReviewMigrator(this)).Migrate();
-        //await (new ActMigrator(this)).Migrate();
-        //await (new BillMigrator(this)).Migrate();
-        //await (new NodeTermMigrator(this)).Migrate();
-        //await (new MenuMigrator(this)).Migrate();
-        //await (new DocumentableDocumentMigrator(this)).Migrate();
-        //await (new TermHierarchyMigrator(this)).Migrate();
-        //await (new PartyPoliticalEntityRelationMigratorPPL(this)).Migrate();
-        //await (new PersonOrganizationRelationMigratorPPL(this)).Migrate();
-        //await (new InterOrganizationalRelationMigratorPPL(this)).Migrate();
-        //await (new InterPersonalRelationMigratorPPL(this)).Migrate();
-        //await (new MemberOfCongressMigrator(this)).Migrate();
-        //await (new RepresentativeHouseBillActionMigrator(this)).Migrate();
-        //await (new SenatorSenateBillActionMigrator(this)).Migrate();
-        //await (new OrganizationMigratorCPCT(this)).Migrate();
-        //await (new PersonMigratorCPCT(this)).Migrate();
-        //await (new PersonOrganizationRelationMigratorCPCT(this)).Migrate();
-        //await (new DocumentMigratorCPCT(this)).Migrate();
-        //await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
-        //await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
-        //await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
-        //await (new LocationMigratorCPCT(this)).Migrate();
-        //await (new SearchableMigrator(this)).Migrate();
-        //await (new CaseCaseRelationsMigrator(this)).Migrate();
-        //await (new NodeFileMigratorPPL(this)).Migrate();
-        //await (new NodeFileMigratorCPCT(this)).Migrate();
-        //await (new CommentMigrator(this)).Migrate();
-        //await (new AdultAftermathMigrator(this)).Migrate();
+        await (new FirstLevelGlobalRegionMigrator(this)).Migrate();
+        await (new SecondLevelGlobalRegionMigrator(this)).Migrate();
+        await (new BasicCountryMigrator(this)).Migrate();
+        await (new BindingCountryMigrator(this)).Migrate();
+        await AddTenantDefaultCountry();
+        await (new CountrySubdivisionTypeMigratorPartOne(this)).Migrate();
+        await (new BoundCountryMigrator(this)).Migrate();
+        await (new CountrySubdivisionTypeMigratorPartTwo(this)).Migrate();
+        await (new CountryAndFirstLevelSubDivisionMigrator(this)).Migrate();
+        await (new CountryAndFirstAndSecondLevelSubdivisionMigrator(this)).Migrate();
+        await (new CountrySubdivisionTypeMigratorPartThree(this)).Migrate();
+        await (new FirstAndBottomLevelSubdivisionMigrator(this)).Migrate();
+        await (new InformalIntermediateLevelSubdivisionMigrator(this)).Migrate();
+        await (new FormalIntermediateLevelSubdivisionMigrator(this)).Migrate();
+        await (new BasicSecondLevelSubdivisionMigrator(this)).Migrate();
+        await (new BlogPostMigrator(this)).Migrate();
+        await (new ArticleMigrator(this)).Migrate();
+        await (new DiscussionMigrator(this)).Migrate();
+        await (new AdoptionImportMigrator(this)).Migrate();
+        await (new DocumentMigratorPPL(this)).Migrate();
+        await (new OrganizationMigratorPPL(this)).Migrate();
+        await (new UnitedStatesPoliticalPartyAffliationMigrator(this)).Migrate();
+        await (new PersonMigratorPPL(this)).Migrate();
+        await (new AbuseCaseMigrator(this)).Migrate();
+        await (new ChildTraffickingCaseMigrator(this)).Migrate();
+        await (new CoercedAdoptionCaseMigrator(this)).Migrate();
+        await (new DisruptedPlacementCaseMigrator(this)).Migrate();
+        await (new DeportationCaseMigrator(this)).Migrate();
+        await (new FathersRightsViolationsCaseMigrator(this)).Migrate();
+        await (new WrongfulMedicationCaseMigrator(this)).Migrate();
+        await (new WrongfulRemovalCaseMigrator(this)).Migrate();
+        await (new LocationMigratorPPL(this)).Migrate();
+        await (new PageMigrator(this)).Migrate();
+        await (new ReviewMigrator(this)).Migrate();
+        await (new ActMigrator(this)).Migrate();
+        await (new BillMigrator(this)).Migrate();
+        await (new NodeTermMigrator(this)).Migrate();
+        await (new MenuMigrator(this)).Migrate();
+        await (new DocumentableDocumentMigrator(this)).Migrate();
+        await (new TermHierarchyMigrator(this)).Migrate();
+        await (new PartyPoliticalEntityRelationMigratorPPL(this)).Migrate();
+        await (new PersonOrganizationRelationMigratorPPL(this)).Migrate();
+        await (new InterOrganizationalRelationMigratorPPL(this)).Migrate();
+        await (new InterPersonalRelationMigratorPPL(this)).Migrate();
+        await (new MemberOfCongressMigrator(this)).Migrate();
+        await (new RepresentativeHouseBillActionMigrator(this)).Migrate();
+        await (new SenatorSenateBillActionMigrator(this)).Migrate();
+        await (new OrganizationMigratorCPCT(this)).Migrate();
+        await (new PersonMigratorCPCT(this)).Migrate();
+        await (new PersonOrganizationRelationMigratorCPCT(this)).Migrate();
+        await (new DocumentMigratorCPCT(this)).Migrate();
+        await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
+        await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
+        await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
+        await (new LocationMigratorCPCT(this)).Migrate();
+        await (new SearchableMigrator(this)).Migrate();
+        await (new CaseCaseRelationsMigrator(this)).Migrate();
+        await (new NodeFileMigratorPPL(this)).Migrate();
+        await (new NodeFileMigratorCPCT(this)).Migrate();
+        await (new CommentMigrator(this)).Migrate();
+        await (new AdultAftermathMigrator(this)).Migrate();
         await PrepareFiles();
     }
 
@@ -379,5 +381,35 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
             CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
         foreach (FileInfo file in source.GetFiles())
             file.CopyTo(Path.Combine(target.FullName, file.Name));
+    }
+
+    private async Task AddTenantDefaultCountry()
+    {
+        using (var command = PostgresConnection.CreateCommand()) {
+            command.CommandType = System.Data.CommandType.Text;
+            command.CommandText = """
+            update tenant
+                set country_id_default = subquery.country_id
+                from(
+                    select
+                    6 tenant_id,
+                    c.id country_id
+                    from country c
+                    join tenant_node tn on tn.tenant_id = 1 and tn.node_id = c.id
+                    where tn.url_id = 4023
+                    union
+                    select
+                    1 tenant_id,
+                    c.id country_id
+                    from country c
+                    join node n on c.id = n.id and n.title ilike 'United State%'
+                    join tenant_node tn on tn.tenant_id = 1 and tn.node_id = c.id
+                    where tn.url_id = 3805
+            	) subquery
+            	where tenant.id = subquery.tenant_id;
+            alter table tenant alter column country_id_default SET NOT NULL;	
+            """;
+            await command.ExecuteNonQueryAsync();
+        }
     }
 }

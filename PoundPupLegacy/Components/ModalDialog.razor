@@ -2,20 +2,20 @@
 
 @if (DialogContent is not null)
 {
-    
-    <div class="@className" id="@Id" aria-modal="true" role="dialog">
-        <div class="modal-dialog">
+
+    <div class="modal open" id="@Id" aria-modal="true" role="dialog" @onclick="Cancel">
+        <div class="modal-dialog" @onclick:preventDefault="true" @onclick:stopPropagation="true">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">@Title</h4>
-                    <button type="button" class="btn-close">&times;</button>
+                    <button type="button" class="btn-close" @onclick="Cancel">&times;</button>
                 </div>
                 <div class="modal-body">
                     @DialogContent
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" @onclick="HandleOk">OK</button>
-                    <button class="btn">Cancel</button>
+                    <button class="btn btn-primary" @onclick="Ok">OK</button>
+                    <button class="btn" @onclick="Cancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -34,33 +34,32 @@
     [Parameter]
     public Action? OnOk { get; set; }
 
-    private string className => displayState == DisplayState.Open ? "modal open" : "modal";
+    [Parameter]
+    public Action? OnCancel { get; set; }
+
+    private string className => displayState == DisplayState.Open ? "" : "modal";
 
     private DisplayState displayState = DisplayState.Closed;
 
     private enum DisplayState { Open, Closed }
 
-    public void Show()
-    {
-        displayState = DisplayState.Open;
-        StateHasChanged();
-    }
-
-    public void Close()
-    {
-        displayState = DisplayState.Closed;
-        StateHasChanged();
-    }
 
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
     }
-    public void HandleOk()
+    public void Cancel()
+    {
+        if (OnCancel is not null) {
+            OnCancel();
+        }
+
+    }
+
+    public void Ok()
     {
         if(OnOk is not null) {
             OnOk();
         }
-        Close();
     }
 }

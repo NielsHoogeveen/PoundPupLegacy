@@ -23,7 +23,7 @@
         }
         @if (Model.Any(x => x.Latitude is not null && x.Longitude is not null))
         {
-            <div id="map" style="height: 400px;width:700px;"></div>
+            <div id="location-viewer-map" style="height: 400px;width:700px;"></div>
         }
     }
 }
@@ -38,7 +38,7 @@
             var locations = Model.Where(x => x.Latitude is not null && x.Longitude is not null).Select((location, index) => new object[] { location.Latitude!, location.Longitude!, index }).ToArray();
             var centerLatitude = Model.Average(x => x.Latitude);
             var centerLongitude = Model.Average(x => x.Longitude);
-            await JSRuntime.InvokeVoidAsync("initGoogleMaps", locations, centerLatitude, centerLongitude);
+            await JSRuntime.InvokeVoidAsync("initGoogleMaps", "location-viewer-map", locations, centerLatitude, centerLongitude);
         }
     }
 }

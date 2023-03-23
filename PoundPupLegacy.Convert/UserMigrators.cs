@@ -64,7 +64,8 @@ internal sealed class UserMigrator : PPLMigrator
                 Id = 6,
                 UserGroupId = null,
             },
-            PublicationStatusIdDefault = 1
+            PublicationStatusIdDefault = 1,
+            CountryIdDefault = null,
         };
         yield return new Tenant {
             Id = Constants.CPCT,
@@ -81,7 +82,8 @@ internal sealed class UserMigrator : PPLMigrator
                 Id = 19,
                 UserGroupId = null,
             },
-            PublicationStatusIdDefault = 2
+            PublicationStatusIdDefault = 2,
+            CountryIdDefault = null,
         };
     }
 

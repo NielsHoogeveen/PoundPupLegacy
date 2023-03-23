@@ -1,29 +1,14 @@
 ﻿@using PoundPupLegacy.EditModel
 @if (Location is not null) {
-    <input type="text" value="@Location.Street"/>
-    <input type="text" value="@Location.Addition" />
-    <input type="text" value="@Location.PostalCode" />
-    <input type="text" value="@Location.City" />
-    <select>
-        <option></option>
-        @foreach(var subdivision in Location.Subdivisions) {
-            @if(subdivision.Id == Location.SubdivisionId) {
-                <option selected value="@subdivision.Id">@subdivision.Name</option>
-            }else{
-                <option value="@subdivision.Id">@subdivision.Name</option>
-            }
-        }
-    </select>
-    <select>
-        @foreach(var country in Countries) {
-            @if (country.Id == Location.CountryId) {
-                <option selected value="@country.Id">@country.Name</option>
-            }
-            else {
-                <option value="@country.Id">@country.Name</option>
-            }
-        }
-    </select>
+    <div class="location" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr 3em">
+        <div>@Location.Street</div>
+        <div>@Location.Addition</div>
+        <div>@Location.PostalCode</div>
+        <div>@Location.City</div>
+        <div>@Location.SubdivisionName</div>
+        <div>@Location.CountryName</div>
+        <div><button>Edit</button></div>
+    </div>
 }
 
 @code {

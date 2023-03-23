@@ -4,6 +4,7 @@ namespace PoundPupLegacy.Services;
 
 public interface ISiteDataService
 {
+    (int, string) GetDefaultCountry(int tenantId);
     Task InitializeAsync();
     string? GetUrlPathForId(int tenantId, int urlId);
     bool HasAccess(int userId, int tenantId, HttpRequest request);

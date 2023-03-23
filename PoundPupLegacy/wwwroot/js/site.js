@@ -1,6 +1,9 @@
-﻿function initGoogleMaps(locations, centerLatitude, centerLongitude) {
+﻿function initGoogleMaps(id, locations, centerLatitude, centerLongitude) {
 
-        const map = new google.maps.Map(document.getElementById("map"), {
+        var elem = document.getElementById(id);
+        if (elem == null)
+            return;
+        const map = new google.maps.Map(elem, {
             zoom: 10,
             center: new google.maps.LatLng(centerLatitude, centerLongitude),
             mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -8,7 +11,6 @@
         const infowindow = new google.maps.InfoWindow();
 
         var marker, i;
-
 
         for (i = 0; i < locations.length; i++) {
             console.log(locations[i][0]);

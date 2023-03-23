@@ -1,5 +1,287 @@
-﻿<h3>LocationEditorDialog</h3>
+﻿@using OneOf;
+@using OneOf.Types;
+@using PoundPupLegacy.EditModel
+@using PoundPupLegacy.Services
+@inject ISiteDataService SiteDataService
+@inject ILocationService LocationService
+@inject IJSRuntime JSRuntime
+<style>
+    .label-value{
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+    }
+</style>
+    <div style="display: grid;grid-template-columns: 1fr 10em 1fr;">
+        <div>
+            <div class="label-value">
+                <label for="location-street">Street</label>
+                <span>
+                    <input id="location-street" type="text" @onchange="ChangeStreet" value="@location.Street"/>
+                </span>
+            </div>
+            <div class="label-value">
+                <label for="location-addition">Additional</label>
+                <span>
+                    <input id="location-addition" type="text" @onchange="ChangeAddition" value="@location.Addition" />
+                </span>
+            </div>
+            <div class="label-value">
+                <label>Postal code</label>
+                <span>
+                    <input type="text" @onchange="ChangePostalCode" value="@location.PostalCode" />
+                </span>
+            </div>
+            <div class="label-value">
+                <label>City</label>
+                <span>
+                    <input type="text" @onchange="ChangeCity" value="@location.City" />
+                </span>
+            </div>
+
+            @if(subdivisions.Any())
+            {
+                <div class="label-value">
+                    <label>Subdivision</label>
+                    <span>
+                        <select @onchange="SelectSubdivision">
+                            <option></option>
+                            @foreach (var subdivision in subdivisions) {
+                                @if (subdivision.Id == location.SubdivisionId) {
+                                    <option selected value="@subdivision.Id">@subdivision.Name</option>
+                                }
+                                else {
+                                    <option value="@subdivision.Id">@subdivision.Name</option>
+                                }
+                            }
+                        </select>
+                    </span>
+                </div>
+            }
+            <div class="label-value">
+                <label>Country</label>
+                <span>
+                    <select @onchange="SelectCountry">
+                        @foreach (var country in countries) {
+                            @if (country.Id == location.CountryId) {
+                                <option selected value="@country.Id">@country.Name</option>
+                            }
+                            else {
+                                <option value="@country.Id">@country.Name</option>
+                            }
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div>
+        @if (canValidate)
+        {
+            <button @onclick="Validate" style="display: block">Validate</button>
+        }
+        else 
+        {
+            <button disabled style="display: block">Validate</button>
+        }
+        @if (canAccept) {
+            <button @onclick="Accept" style="display: block; margin-top: 1em;">Accept</button>
+        }
+        else {
+            <button disabled style="display: block;margin-top: 1em;">Accept</button>
+        }
+    </div>
+        <div>
+        @if (validatedLocation is not null)
+        {
+            <div>
+                @validatedLocation.Street?.ToString()
+            </div>
+            <div>
+                @location.Addition?.ToString()
+            </div>
+            <div>
+                @validatedLocation.PostalCode?.ToString()
+            </div>
+            <div>
+                @validatedLocation.City?.ToString()
+            </div>
+            @if (validatedLocation.Latitude.HasValue && validatedLocation.Longitude.HasValue) 
+            { 
+                <div id="location-dialog-map" style="height: 200px;width:100%;"></div>
+            }
+        }
+        </div>
+    </div>
 
 @code {
+    [CascadingParameter(Name="TenantId")]
+    public int TenantId { get; set; }
 
+    private static Location NewLocation()
+    {
+        return new Location {
+                Street = null,
+                Addition = null,
+                PostalCode = null,
+                Latitude = null,
+                Longitude = null,
+                City = null,
+                CountryName = "",
+                SubdivisionName = null,
+                Subdivisions = new(),
+                SubdivisionId = null,
+                CountryId = 0
+            };
+    }
+
+    private Location location = NewLocation();
+
+    private Location? validatedLocation = null;
+
+    private List<SubdivisionListItem> subdivisions = new();
+
+    private List<CountryListItem> countries = new();
+
+    private bool canValidate = false;
+
+    private bool canAccept = false;
+
+    public async Task InitializeAsync()
+    {
+        validatedLocation = NewLocation();
+        canValidate = false;
+        canAccept = false;
+        location = NewLocation();
+        countries.Clear();
+        await foreach (var country in LocationService.Countries()) {
+            countries.Add(country);
+        };
+        (location.CountryId, location.CountryName) = SiteDataService.GetDefaultCountry(TenantId);
+        subdivisions.Clear();
+        await foreach (var subdivision in LocationService.SubdivisionsOfCountry(location.CountryId)) {
+            subdivisions.Add(subdivision);
+        };
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await InitializeAsync();
+    }
+    private void SelectSubdivision(ChangeEventArgs e)
+    {
+        if(e.Value != null && int.TryParse(e.Value.ToString(), out int subdivisionId)){
+            location.SubdivisionId = subdivisionId;
+            location.SubdivisionName = subdivisions.First(x => x.Id == subdivisionId).Name;
+        }
+        SetCanValidate();
+    }
+    private async Task SelectCountry(ChangeEventArgs e)
+    {
+        if (e.Value != null && int.TryParse(e.Value.ToString(), out int countryId)) {
+            location = NewLocation();
+            validatedLocation = null;
+            location.CountryId = countryId;
+            location.CountryName = countries.First(x => x.Id == countryId).Name;
+            await foreach (var subdivision in LocationService.SubdivisionsOfCountry(location.CountryId)) {
+                subdivisions.Add(subdivision);
+            };
+            StateHasChanged();
+        }
+    }
+
+    private void SetCanValidate()
+    {
+        if (location.SubdivisionId.HasValue && location.City is not null && location.Street is not null) {
+            canValidate = true;
+        }
+        else {
+            validatedLocation = NewLocation();
+            canValidate = false;
+        }
+
+    }
+
+    private void Accept()
+    {
+        if(validatedLocation is not null)
+        {
+            location = validatedLocation;
+        }
+    }
+
+    private void ChangeStreet(ChangeEventArgs e)
+    {
+        if(e.Value is not null) {
+            if(e.Value.ToString()!.Length > 0) {
+                location.Street = e.Value.ToString();
+            }
+            else {
+                location.Street = null;
+            }
+        }
+        SetCanValidate();
+    }
+    private void ChangeAddition(ChangeEventArgs e)
+    {
+        if (e.Value is not null) {
+            if (e.Value.ToString()!.Length > 0) {
+                location.Addition = e.Value.ToString();
+            }
+            else {
+                location.Addition = null;
+            }
+        }
+    }
+    private void ChangePostalCode(ChangeEventArgs e)
+    {
+        if (e.Value is not null) {
+            if (e.Value.ToString()!.Length > 0) {
+                location.PostalCode = e.Value.ToString();
+            }
+            else {
+                location.PostalCode = null;
+            }
+        }
+    }
+    private void ChangeCity(ChangeEventArgs e)
+    {
+        if (e.Value is not null) {
+            if (e.Value.ToString()!.Length > 0) {
+                location.City = e.Value.ToString();
+            }
+            else {
+                location.City = null;
+            }
+        }
+        SetCanValidate();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (validatedLocation is not null)
+        {
+            var model = new List<Location> { validatedLocation };
+            var locations = model.Where(x => x.Latitude is not null && x.Longitude is not null).Select((location, index) => new object[] { location.Latitude!, location.Longitude!, index }).ToArray();
+            var centerLatitude = model.Average(x => x.Latitude);
+            var centerLongitude = model.Average(x => x.Longitude);
+            await JSRuntime.InvokeVoidAsync("initGoogleMaps", "location-dialog-map", locations, centerLatitude, centerLongitude);
+        }
+
+    }
+    public async Task Validate()
+    {
+        validatedLocation = await LocationService.ValidateLocationAsync(location);
+        if(validatedLocation is not null) {
+            canAccept = true;
+            StateHasChanged();
+        }
+    }
+
+    public Location GetLocation()
+    {
+        return location;
+    }
 }
+

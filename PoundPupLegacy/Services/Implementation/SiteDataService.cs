@@ -76,7 +76,12 @@ internal class SiteDataService : ISiteDataService
         };
         _data = data;
     }
+    public (int, string) GetDefaultCountry(int tenantId)
+    {
+        var tenant = _data.Tenants.First(x => x.Id == tenantId);
+        return (tenant.CountryIdDefault, tenant.CountryNameDefault);
 
+    }
     public async Task RefreshTenants()
     {
         var data = new Data {
@@ -151,8 +156,11 @@ internal class SiteDataService : ISiteDataService
                 var sql = $"""
             select
             t.id,
-            t.domain_name
+            t.domain_name,
+            t.country_id_default,
+            n.title country_name
             from tenant t
+            join node n on n.id = t.country_id_default
             """;
                 readCommand.CommandType = CommandType.Text;
                 readCommand.CommandTimeout = 300;
@@ -162,11 +170,16 @@ internal class SiteDataService : ISiteDataService
                 while (await reader.ReadAsync()) {
                     var tenantId = reader.GetInt32(0);
                     var domainName = reader.GetString(1);
+                    var countryIdDefault = reader.GetInt32(2);
+                    var countryNameDefault = reader.GetString(3);
                     tenants.Add(new Tenant {
                         Id = tenantId,
                         DomainName = domainName,
+                        CountryIdDefault = countryIdDefault,
+                        CountryNameDefault = countryNameDefault,
                         IdToUrl = new Dictionary<int, string>(),
                         UrlToId = new Dictionary<string, int>()
+
                     });
                 }
             }

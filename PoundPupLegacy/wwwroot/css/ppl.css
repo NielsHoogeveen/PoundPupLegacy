@@ -1,4 +1,8 @@
-﻿:root {
+﻿*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+:root {
     --header-bg-color: linear-gradient(180deg, #2c2c2c 0%, #2c2c2c 100%);
     --content-bg-color: white;
     --nav-bg-color: #444;
@@ -177,9 +181,6 @@ nav form input[type=text], nav form input[type=password] {
     padding: 0.15em;
     border-radius: 2px;
     margin-left: 0.15em;
-}
-input[type=text]{
-    background-color: silver;
 }
 
 input:-webkit-autofill,
@@ -574,6 +575,7 @@ tr:nth-of-type(2n+1){
 .modal.open{
     z-index: 1000;
     display: block;
+    background-color: rgba(0,0,0,0.4);
 }
 
 .modal-dialog {
@@ -606,7 +608,7 @@ tr:nth-of-type(2n+1){
     flex-direction: column;
     width: 100%;
     pointer-events: auto;
-    background-color: #ccc;
+    background-color: #edeff5;
     background-clip: padding-box;
     border: solid 2px #2121c1;
     border-radius: 10px;
@@ -617,8 +619,8 @@ tr:nth-of-type(2n+1){
     flex-shrink: 0;
     align-items: center;
     justify-content: space-between;
-    background-color: #514e4e;
-    color: #cbcaca;
+    background-color: #838383;
+    color: #ffffff;
 }
 
 .modal-header button.btn-close {
@@ -632,21 +634,86 @@ tr:nth-of-type(2n+1){
 
 .modal-title {
     margin-left: 0.25em;
-    margin-bottom: 0;
-    margin-top: 0.15em;
+    margin-bottom: 0.25em;
+    margin-top: 0.25em;
     line-height: 16px;
 }
 
 .modal-body {
     position: relative;
-    padding: 0.25em;
+    padding: 0.5em 0.25em;
 }
 .modal-footer {
     display: flex;
     flex-shrink: 0;
     flex-wrap: wrap;
     align-items: center;
-    background-color: #ccc;
+    background-color: #edeff5;
     margin: 0.25em;
 }
+.modal-footer button {
+    margin: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: #6290fa;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
+.modal-footer button:hover {
+    background-color: #8eaffc;
+}
+
+.label-value{
+    margin-bottom: 0.5em;
+}
+.label-value label{
+    font-weight: 200;
+    vertical-align:central;
+}
+
+input[type=text], select {
+    border-radius: 3px;
+    border: 0;
+    outline: solid 2px #bed1fd;
+    background-color: white;
+    padding: 0.25em 0.15em 0.25em 0.15em;
+    font-size: 90%;
+}
+input[type=text]:focus, select:focus {
+    outline-color: #b3ebfc;
+}
+.edit-form input, .edit-form select {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.edit-form button {
+    margin: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: #6290fa;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+input[type=file] {
+ display: none;
+}
+.file-upload {
+    display: block;
+    width: 8em;
+    padding: 0.5em 1em;
+    font-size:90%;
+    margin-top: 1em;
+    margin-bottom:0.25em;
+    border: 0;
+    background-color: #6290fa;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.editor-section{
+    border-bottom: solid 1px #838383;
+}
