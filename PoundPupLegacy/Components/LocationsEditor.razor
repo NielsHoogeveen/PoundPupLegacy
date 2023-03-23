@@ -1,10 +1,13 @@
 ﻿@using PoundPupLegacy.EditModel
+@using PoundPupLegacy.Services
+@inject ISiteDataService SiteDataService
+
 @if (Locatable is not null && Locatable.Locations.Any()) {
-    @if (showLocationEditorDialog)
+    @if (locationToEdit is not null)
     {
-        <ModalDialog Title="Add location" @ref="@locationDialog" Id="location-dialog" OnOk="OnOkLocationDialog" OnCancel="OnCancelLocationDialog">
+        <ModalDialog Title="Add location" Id="location-dialog" OnOk="OnOkLocationDialog" OnCancel="OnCancelLocationDialog">
             <DialogContent>
-                <LocationEditorDialog @ref="@locationEditorDialog" />
+                <LocationEditorDialog Location="locationToEdit" />
             </DialogContent>
         </ModalDialog>
     }
@@ -12,9 +15,19 @@
     <div class="locations editor-section">
         <h4>Locations</h4>
         @foreach(var location in Locatable.Locations) {
-            <LocationEditor Location="@location" Countries="@Locatable.Countries" />
+            @if (location is not null) {
+                <div class="location" style="display:grid;grid-template-columns:3fr 3fr 1fr 2fr 2fr 3fr 3em">
+                    <div>@location.Street</div>
+                    <div>@location.Addition</div>
+                    <div>@location.PostalCode</div>
+                    <div>@location.City</div>
+                    <div>@location.SubdivisionName</div>
+                    <div>@location.CountryName</div>
+                    <div><button type="button" @onclick="() => EditLocation(location)">Edit</button></div>
+                </div>
+            }
         }
-        <button type="button" @onclick="OpenLocationDialog">Add location</button>
+        <button type="button" @onclick="AddLocation">Add location</button>
     </div>
 }
 
@@ -22,35 +35,54 @@
 
     [Parameter]
     public Locatable? Locatable { get; set; }
-    ModalDialog? locationDialog;
 
-    LocationEditorDialog? locationEditorDialog;
+    [CascadingParameter(Name = "TenantId")]
+    public int TenantId { get; set; }
 
-    private bool showLocationEditorDialog = false;
+    private Location? locationToEdit = null;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
     }
-    private void OpenLocationDialog()
+    private void AddLocation()
     {
-        showLocationEditorDialog = true;
+        (var countryId, var countryName) = SiteDataService.GetDefaultCountry(TenantId);
+        locationToEdit = new Location {
+            LocationId = null,
+            LocatableId = null,
+            Street = null,
+            Addition = null,
+            PostalCode = null,  
+            City = null,
+            SubdivisionId = null,
+            SubdivisionName = null,
+            CountryId = countryId,
+            CountryName = countryName,
+            Subdivisions = new List<SubdivisionListItem>(),
+            Latitude = null,
+            Longitude = null
+        };
+        StateHasChanged();
+    }
+    private void EditLocation(Location location)
+    {
+        locationToEdit = location;
+        StateHasChanged();
     }
     private void OnOkLocationDialog()
     {
-        if (locationEditorDialog is not null) {
-            Locatable!.Locations.Add(locationEditorDialog.GetLocation());
-            locationEditorDialog = null;
-            showLocationEditorDialog = false;
+        if (locationToEdit is not null) {
+            if (locationToEdit.LocationId is null || locationToEdit.LocatableId is null) {
+                Locatable!.Locations.Add(locationToEdit);
+            }
+            locationToEdit = null;
         }
         StateHasChanged();
     }
     private void OnCancelLocationDialog()
     {
-        if (locationEditorDialog is not null) {
-            locationEditorDialog = null;
-            showLocationEditorDialog = false;
-        }
+        locationToEdit = null;
         StateHasChanged();
     }
 }

@@ -495,13 +495,14 @@ public class EditorService : IEditorService
         locations_document as(
             select
                 jsonb_agg(jsonb_build_object(
-        			'Id', "id",
+        			'LocationId', "location_id",
+                    'LocatableId', locatable_id,
         			'Street', street,
         			'Additional', additional,
         			'City', city,
         			'PostalCode', postal_code,
         			'SubdivisionId', subdivision_id,
-                    'SubdivusionName', subdivision_name,
+                    'SubdivisionName', subdivision_name,
         			'CountryId', country_id,
                     'CountryName', country_name,
                     'Latitude', latitude,
@@ -510,7 +511,8 @@ public class EditorService : IEditorService
         		)) document
             from(
                 select 
-                l.id,
+                ll.location_id,
+                ll.locatable_id,
                 l.street,
                 l.additional,
                 l.city,
