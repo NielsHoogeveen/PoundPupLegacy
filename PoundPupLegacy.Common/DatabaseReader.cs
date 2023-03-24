@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Db.Readers
+﻿using Npgsql;
+
+namespace PoundPupLegacy.Common
 {
     public interface IDatabaseReader : IAsyncDisposable
     {
@@ -9,13 +11,12 @@
     {
         public abstract static Task<T> CreateAsync(NpgsqlConnection connection);
     }
-    public abstract class DatabaseUpdater<T> : IDatabaseReader
+    public abstract class DatabaseReader : IDatabaseReader
     {
         protected NpgsqlCommand _command;
-        protected DatabaseUpdater(NpgsqlCommand command)
+        protected DatabaseReader(NpgsqlCommand command)
         {
             _command = command;
-
         }
         public virtual async ValueTask DisposeAsync()
         {

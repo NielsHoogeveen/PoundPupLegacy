@@ -49,9 +49,9 @@ internal class NodeCacheService : INodeCacheService
         }
     }
 
-    private async Task<string?> GetNodeString(int id, int userId, int tenantId, HttpContext context)
+    private async Task<string?> GetNodeString(int urlId, int userId, int tenantId, HttpContext context)
     {
-        var node = await _fetchNodeService.FetchNode(id, userId, tenantId);
+        var node = await _fetchNodeService.FetchNode(urlId, userId, tenantId);
         if (node == null) {
             return null;
         }
@@ -59,9 +59,9 @@ internal class NodeCacheService : INodeCacheService
         return html;
     }
 
-    private async Task<IActionResult> AssembleNewResponse(int nodeId, int userId, int tenantId, HttpContext context, TenantNode tenantNode, bool storeInDictionary)
+    private async Task<IActionResult> AssembleNewResponse(int urlId, int userId, int tenantId, HttpContext context, TenantNode tenantNode, bool storeInDictionary)
     {
-        var nodeString = await GetNodeString(nodeId, userId, tenantId, context);
+        var nodeString = await GetNodeString(urlId, userId, tenantId, context);
         if (nodeString != null) {
             if (storeInDictionary) {
                 _nodeCache[tenantNode] = nodeString;

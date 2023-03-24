@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Db.Readers;
 
-public sealed class ProfessionIdReader : DatabaseUpdater<Term>, IDatabaseReader<ProfessionIdReader>
+public sealed class ProfessionIdReader : DatabaseReader, IDatabaseReader<ProfessionIdReader>
 {
     public enum ProfessionType
     {

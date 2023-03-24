@@ -1,10 +1,11 @@
 ﻿using System.Data;
+using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Db.Readers;
 
-public sealed class NodeReaderByUrlI : DatabaseUpdater<Term>, IDatabaseReader<NodeReaderByUrlI>
+public sealed class NodeReaderByUrlId : DatabaseReader, IDatabaseReader<NodeReaderByUrlId>
 {
-    public static async Task<NodeReaderByUrlI> CreateAsync(NpgsqlConnection connection)
+    public static async Task<NodeReaderByUrlId> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
         SELECT 
@@ -29,11 +30,11 @@ public sealed class NodeReaderByUrlI : DatabaseUpdater<Term>, IDatabaseReader<No
         command.Parameters.Add("url_id", NpgsqlDbType.Integer);
         await command.PrepareAsync();
 
-        return new NodeReaderByUrlI(command);
+        return new NodeReaderByUrlId(command);
 
     }
 
-    internal NodeReaderByUrlI(NpgsqlCommand command) : base(command) { }
+    internal NodeReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
     public async Task<Node> ReadAsync(int tenantId, int urlId)
     {

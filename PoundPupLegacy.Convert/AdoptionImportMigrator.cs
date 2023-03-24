@@ -84,7 +84,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeReader = await NodeReaderByUrlI.CreateAsync(_postgresConnection);
+        await using var nodeReader = await NodeReaderByUrlId.CreateAsync(_postgresConnection);
 
         var x = AdoptionImportCsvFiles()
             .OfType<SpecificAdoptionImports>()
@@ -112,7 +112,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
         await cmd.ExecuteNonQueryAsync();
     }
 
-    private async Task<InterCountryRelation> GetInterCountryRelation(int countryIdFrom, int countryIdTo, int year, int numberOfChildren, NodeReaderByUrlI nodeReader)
+    private async Task<InterCountryRelation> GetInterCountryRelation(int countryIdFrom, int countryIdTo, int year, int numberOfChildren, NodeReaderByUrlId nodeReader)
     {
         var nodeFrom = await nodeReader.ReadAsync(Constants.PPL, countryIdFrom);
         var nodeTo = await nodeReader.ReadAsync(Constants.PPL, countryIdTo);
@@ -152,7 +152,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                 },
         };
     }
-    private async IAsyncEnumerable<InterCountryRelation> ReadAdoptionExportYears(NodeReaderByUrlI nodeReader)
+    private async IAsyncEnumerable<InterCountryRelation> ReadAdoptionExportYears(NodeReaderByUrlId nodeReader)
     {
 
         var sql = $"""

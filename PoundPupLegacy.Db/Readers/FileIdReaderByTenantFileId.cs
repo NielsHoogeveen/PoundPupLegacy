@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Db.Readers;
 
-public sealed class FileIdReaderByTenantFileId : DatabaseUpdater<Term>, IDatabaseReader<FileIdReaderByTenantFileId>
+public sealed class FileIdReaderByTenantFileId : DatabaseReader, IDatabaseReader<FileIdReaderByTenantFileId>
 {
     public static async Task<FileIdReaderByTenantFileId> CreateAsync(NpgsqlConnection connection)
     {
