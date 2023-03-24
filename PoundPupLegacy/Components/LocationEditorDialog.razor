@@ -78,15 +78,8 @@
         {
             <button @onclick="Validate" style="display: block">Validate</button>
         }
-        else 
-        {
-            <button disabled style="display: block">Validate</button>
-        }
         @if (canAccept) {
             <button @onclick="Accept" style="display: block; margin-top: 1em;">Accept</button>
-        }
-        else {
-            <button disabled style="display: block;margin-top: 1em;">Accept</button>
         }
     </div>
         <div>
