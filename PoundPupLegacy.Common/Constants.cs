@@ -138,6 +138,8 @@ public static class Constants
     public const string VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE = "United States political party affiliation";
     public const string VOCABULARY_CASE_PARTY_TYPE = "Case party type";
 
+    public const int DOCUMENT = 10;
+    public const int ORGANIZATION = 23;
     public const int ABUSE_CASE = 26;
     public const int CHILD_TRAFFICKING_CASE = 29;
     public const int COERCED_ADOPTION_CASE = 30;
@@ -145,6 +147,9 @@ public static class Constants
     public const int FATHERS_RIGHTS_VIOLATION_CASE = 32;
     public const int WRONGFUL_MEDICATION_CASE = 33;
     public const int WRONGFUL_REMOVAL_CASE = 34;
+    public const int BLOG_POST = 35;
+    public const int ARTICLE = 36;
+    public const int DISCUSSION = 37;
     public const int DISRUPTED_PLACEMENT_CASE = 44;
 
     public const int UNITED_STATES_HOUSE_OF_REPRESENTATIVES = 12660;
