@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using PoundPupLegacy.EditModel;
+using PoundPupLegacy.EditModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
@@ -17,53 +18,19 @@ public class TopicSearchService : ITopicSearchService
     public async Task<List<Tag>> GetTerms(int? nodeId, int tenantId, string str)
     {
         await semaphore.WaitAsync(TimeSpan.FromMilliseconds(100));
-        await _connection.OpenAsync();
         List<Tag> tags = new();
         try {
-            var sql = """
-                select
-                distinct
-                *
-                from(
-                    select
-                    t.id,
-                    t.name
-                    from term t
-                    join tenant tt on tt.id = @tenant_id
-                    where t.vocabulary_id = tt.vocabulary_id_tagging and t.name = @search_string
-                    union
-                    select
-                    t.id,
-                    t.name
-                    from term t
-                    join tenant tt on tt.id = @tenant_id
-                    where t.vocabulary_id = tt.vocabulary_id_tagging and t.name ilike @search_string
-                    LIMIT 50
-                ) x
-            """;
-            using var readCommand = _connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            readCommand.Parameters.Add("search_string", NpgsqlTypes.NpgsqlDbType.Varchar);
-            await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = tenantId;
-            readCommand.Parameters["search_string"].Value = $"%{str}%";
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                tags.Add(new Tag {
-                    Name = reader.GetString(1),
-                    NodeId = nodeId,
-                    TermId = reader.GetInt32(0),
-                    HasBeenDeleted = false,
-                    IsStored = false,
-                });
+            await _connection.OpenAsync();
+            await using var reader = await TagDocumentsReader.CreateAsync(_connection);
+            await foreach(var elem in reader.ReadAsync(nodeId, tenantId, str)) {
+                tags.Add(elem);
             }
             return tags;
         }
         finally {
-            await _connection.CloseAsync();
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
             semaphore.Release();
         }
     }

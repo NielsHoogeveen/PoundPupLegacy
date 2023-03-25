@@ -61,7 +61,7 @@ public class ArticlesController : Controller
         stopwatch.Start();
         var termIds = query == null ? new List<int>() : GetTermIds(query.Keys).ToList();
         var startIndex = (pageNumber - 1) * NUMBER_OF_ENTRIES;
-        var articles = termIds.Any() ? await _fetchArticlesService.GetArticles(tenantId, termIds, startIndex, NUMBER_OF_ENTRIES) : await _fetchArticlesService.GetArticles(tenantId, (pageNumber - 1) * NUMBER_OF_ENTRIES, NUMBER_OF_ENTRIES);
+        var articles = await _fetchArticlesService.GetArticles(tenantId, termIds, startIndex, NUMBER_OF_ENTRIES);
         articles.PageNumber = pageNumber;
         articles.NumberOfPages = (articles.NumberOfEntries / NUMBER_OF_ENTRIES) + 1;
         articles.QueryString = string.Join("&", termIds.Select(x => $"{TERM_NAME_PREFIX}{x}"));

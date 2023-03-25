@@ -2,8 +2,24 @@
 
 public record Articles : PagedList
 {
-    public SelectionItem[] TermNames { get; set; }
-    public ArticleListEntry[] ArticleListEntries { get; set; }
+    private SelectionItem[] termNames = Array.Empty<SelectionItem>();
+    public SelectionItem[] TermNames { 
+        get => termNames;
+        set {
+            if(value != null) {
+                termNames = value;
+            }
+        } 
+    }
+    private ArticleListEntry[] articleListEntries = Array.Empty<ArticleListEntry>();
+    public ArticleListEntry[] ArticleListEntries { 
+        get => articleListEntries;
+        set {
+            if(value != null) {
+                articleListEntries = value;
+            }
+        }
+    }
     public int NumberOfEntries { get; set; }
     public int PageNumber { get; set; }
     public int NumberOfPages { get; set; }

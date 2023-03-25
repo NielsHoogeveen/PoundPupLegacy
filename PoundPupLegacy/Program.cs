@@ -64,7 +64,7 @@ public class Program
         builder.Services.AddTransient<ICongressionalDataService, CongressionalDataService>();
         builder.Services.AddTransient<ISubgroupService, SubgroupService>();
         builder.Services.AddTransient<ITopicService, TopicService>();
-        builder.Services.AddTransient<IPersonService, PersonService>();
+        builder.Services.AddTransient<IPersonService, FetchPersonsService>();
         builder.Services.AddTransient<IDocumentableDocumentsSearchService, DocumentableDocumentsSearchService>();
         builder.Services.AddTransient<IAttachmentService, AttachmentService>();
         builder.Services.AddTransient<IUserService, UserService>();

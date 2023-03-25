@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
+using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -16,14 +17,13 @@ internal class FetchNodeService : IFetchNodeService
     {
         try {
             await _connection.OpenAsync();
-            var reader = await NodeDocumentReader.CreateAsync(_connection);
-            var node = await reader.ReadAsync(urlId, userId, tenantId);
-            await reader.DisposeAsync();
-            return node;
+            await using var reader = await NodeDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(urlId, userId, tenantId);
         }
         finally {
-            await _connection.CloseAsync();
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
         }
     }
-
 }
