@@ -22,7 +22,12 @@ public class TopicSearchService : ITopicSearchService
         try {
             await _connection.OpenAsync();
             await using var reader = await TagDocumentsReader.CreateAsync(_connection);
-            await foreach(var elem in reader.ReadAsync(nodeId, tenantId, str)) {
+            await foreach(var elem in reader.ReadAsync(new TagDocumentsReader.TagDocumentsRequest {
+                NodeId = nodeId, 
+                TenantId = tenantId, 
+                SearchString = str
+
+            })) {
                 tags.Add(elem);
             }
             return tags;

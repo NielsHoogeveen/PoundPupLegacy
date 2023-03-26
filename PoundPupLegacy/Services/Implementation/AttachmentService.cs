@@ -98,7 +98,11 @@ public class AttachmentService : IAttachmentService
                 return new None();
             }
             await using var reader = await FileDocumentReader.CreateAsync(_connection);
-            var file = await reader.ReadAsync(fileId, userId, tenantId);
+            var file = await reader.ReadAsync(new FileDocumentReader.FileDocumentRequest {
+                FileId = fileId,
+                UserId = userId,
+                TenantId = tenantId
+            });
             var fullPath = attachementsLocation + "\\" + file.Path;
             return new FileReturn { FileName = file.Name, MimeType = file.MimeType, Stream = System.IO.File.OpenRead(fullPath) };
         }

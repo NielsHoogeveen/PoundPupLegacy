@@ -19,7 +19,12 @@ internal class FetchArticlesService : IFetchArticlesService
         try {
             await _connection.OpenAsync();
             await using var reader = await ArticlesDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(tenantId, selectedTerms, startIndex, length);
+            return await reader.ReadAsync(new ArticlesDocumentReader.ArticlesDocumentRequest {
+                TenantId = tenantId,
+                SelectedTerms = selectedTerms,
+                StartIndex = startIndex,
+                Length = length
+            });
 
         }
         finally {

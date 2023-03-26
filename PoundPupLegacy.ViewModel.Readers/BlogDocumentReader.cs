@@ -1,17 +1,23 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
 using PoundPupLegacy.Common;
-using System.Data.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class BlogDocumentReader : DatabaseReader, IDatabaseReader<BlogDocumentReader>
+public class BlogDocumentReader : DatabaseReader, ISingleItemDatabaseReader<BlogDocumentReader, BlogDocumentReader.BlogDocumentRequest, Blog>
 {
+    public record BlogDocumentRequest
+    {
+        public int PublisherId { get; init; }
+        public int TenantId { get; init; }
+        public int StartIndex { get; init; }
+        public int Length { get; init; }
+    }
     private BlogDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public async Task<Blog> ReadAsync(int publisherId, int tenantId, int startIndex, int length)
+    public async Task<Blog> ReadAsync(BlogDocumentRequest request)
     {
         string MakeName(string name)
         {
@@ -20,10 +26,10 @@ public class BlogDocumentReader : DatabaseReader, IDatabaseReader<BlogDocumentRe
             }
             return $"{name}'s blog";
         }
-        _command.Parameters["publisher_id"].Value = publisherId;
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["length"].Value = length;
-        _command.Parameters["start_index"].Value = startIndex;
+        _command.Parameters["publisher_id"].Value = request.PublisherId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["length"].Value = request.Length;
+        _command.Parameters["start_index"].Value = request.StartIndex;
         await using var reader = await _command.ExecuteReaderAsync();
         await reader.ReadAsync();
         var blog = reader.GetFieldValue<Blog>(0);

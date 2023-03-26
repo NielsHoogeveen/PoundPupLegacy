@@ -19,7 +19,13 @@ internal class FetchCasesService : IFetchCasesService
         try {
             await _connection.OpenAsync();
             await using var reader = await CasesDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(limit, offset, tenantId, userId, caseType);
+            return await reader.ReadAsync(new CasesDocumentReader.CasesDocumentRequest {
+                Limit = limit,
+                Offset = offset,
+                TenantId = tenantId,
+                UserId = userId,
+                CaseType = caseType
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) 

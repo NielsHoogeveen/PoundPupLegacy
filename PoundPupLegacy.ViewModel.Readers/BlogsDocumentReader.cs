@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class BlogsDocumentReader : DatabaseReader, IDatabaseReader<BlogsDocumentReader>
+public class BlogsDocumentReader : DatabaseReader, ISingleItemDatabaseReader<BlogsDocumentReader, int, List<BlogListEntry>>
 {
     private BlogsDocumentReader(NpgsqlCommand command) : base(command)
     {

@@ -24,7 +24,13 @@ public class DocumentableDocumentsSearchService : IDocumentableDocumentsSearchSe
         try {
             await _connection.OpenAsync();
             await using var reader = await DocumentableDocumentsDocumentReader.CreateAsync(_connection);
-            await foreach(var elem in reader.GetDocumentableDocuments(nodeId, userId, tenantId, str)) {
+            await foreach(var elem in reader.ReadAsync(new DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest {
+                NodeId = nodeId, 
+                UserId = userId, 
+                TenantId = tenantId, 
+                SearchString = str
+
+            })){
                 tags.Add(elem);
             }
             return tags;

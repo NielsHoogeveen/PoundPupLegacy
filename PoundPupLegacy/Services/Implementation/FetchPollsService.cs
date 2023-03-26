@@ -22,7 +22,12 @@ internal class FetchPollsService : IFetchPollsService
         try {
             await _connection.OpenAsync();
             await using var reader = await PollsDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(userId, tenantId, limit, offset);
+            return await reader.ReadAsync(new PollsDocumentReader.PollsDocumentRequest {
+                UserId = userId, 
+                TenantId = tenantId, 
+                Limit = limit, 
+                Offset = offset
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) 

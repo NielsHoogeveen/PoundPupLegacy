@@ -4,13 +4,23 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class PersonsDocumentReader : DatabaseReader, IDatabaseReader<PersonsDocumentReader>
+public class PersonsDocumentReader : DatabaseReader, ISingleItemDatabaseReader<PersonsDocumentReader, PersonsDocumentReader.PersonsDocumentRequest, Persons>
 {
+    public record PersonsDocumentRequest
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required int Limit { get; init; }
+        public required int Offset { get; init; }
+        public required string SearchTerm { get; init; }
+        public required SearchOption SearchOption { get; init; }
+
+    }
     private PersonsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 
-    public async Task<Persons> ReadAsync(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
+    public async Task<Persons> ReadAsync(PersonsDocumentRequest request)
     {
         string GetPattern(string searchTerm, SearchOption searchOption)
         {
@@ -25,11 +35,11 @@ public class PersonsDocumentReader : DatabaseReader, IDatabaseReader<PersonsDocu
                 _ => throw new Exception("Cannot reach")
             };
         }
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["user_id"].Value = userId;
-        _command.Parameters["limit"].Value = limit;
-        _command.Parameters["offset"].Value = offset;
-        _command.Parameters["pattern"].Value = GetPattern(searchTerm, searchOption);
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
+        _command.Parameters["pattern"].Value = GetPattern(request.SearchTerm, request.SearchOption);
         await using var reader = await _command.ExecuteReaderAsync();
         await reader.ReadAsync();
         var persons = reader.GetFieldValue<Persons>(0);

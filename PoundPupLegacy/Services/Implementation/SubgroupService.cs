@@ -14,13 +14,19 @@ public record SubgroupService : ISubgroupService
         _connection = connection;
     }
 
-    public async Task<SubGroupPagedList?> GetSubGroupPagedList(int userId, int subgroupId, int limit, int offset)
+    public async Task<SubgroupPagedList?> GetSubGroupPagedList(int userId, int subgroupId, int limit, int offset)
     {
         
         try {
             await _connection.OpenAsync();
             await using var reader = await SubgroupsDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(userId, subgroupId, limit, offset);
+            return await reader.ReadAsync(new SubgroupsDocumentReader.SubgroupDocumentRequest {
+                UserId = userId, 
+                SubgroupId = subgroupId, 
+                Limit = limit, 
+                Offset = offset
+
+            });
         }
         finally {
             if(_connection.State == ConnectionState.Open) {

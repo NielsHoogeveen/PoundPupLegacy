@@ -22,7 +22,14 @@ public class FetchPersonsService : IPersonService
         try {
             await _connection.OpenAsync();
             await using var reader = await PersonsDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(userId, tenantId, limit, offset, searchTerm, searchOption);
+            return await reader.ReadAsync(new PersonsDocumentReader.PersonsDocumentRequest {
+                UserId = userId, 
+                TenantId = tenantId, 
+                Limit = limit, 
+                Offset = offset, 
+                SearchTerm = searchTerm, 
+                SearchOption = searchOption
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

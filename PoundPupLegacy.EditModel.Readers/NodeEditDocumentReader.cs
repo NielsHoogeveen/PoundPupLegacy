@@ -4,9 +4,26 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class NodeEditDocumentReader<T> : DatabaseReader
+public class NodeEditDocumentReader: DatabaseReader
+{
+    public record NodeEditDocumentRequest
+    {
+        public int UrlId { get; init; }
+        public int UserId { get; init; }
+        public int TenantId { get; init; }
+
+    }
+
+    protected NodeEditDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+}
+
+public class NodeEditDocumentReader<T> : NodeEditDocumentReader
 where T : class, Node
 {
+
     private int _nodeTypeId;
     protected NodeEditDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command)
     {
@@ -29,17 +46,14 @@ where T : class, Node
 
 
 
-    public async Task<T?> Read(int url, int userId, int tenantId)
+    public async Task<T> ReadAsync(NodeEditDocumentRequest request)
     {
-        _command.Parameters["url_id"].Value = url;
-        _command.Parameters["user_id"].Value = userId;
-        _command.Parameters["tenant_id"].Value = tenantId;
+        _command.Parameters["url_id"].Value = request.UrlId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
         _command.Parameters["node_type_id"].Value = _nodeTypeId;
         await using var reader = await _command.ExecuteReaderAsync();
         await reader.ReadAsync();
-        if (!reader.HasRows) {
-            return null;
-        }
         var text = reader.GetString(0); ;
         var node = reader.GetFieldValue<T>(0);
         return node;

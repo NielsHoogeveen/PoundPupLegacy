@@ -22,7 +22,16 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
         try {
             await _connection.OpenAsync();
             await using OrganizationsDocumentReader reader = await OrganizationsDocumentReader.CreateAsync(_connection); 
-            return await reader.ReadAsync(userId, tenantId, limit, offset, searchTerm, searchOption, organizationTypeId, countryId);
+            return await reader.ReadAsync(new OrganizationsDocumentReader.OrganizationsDocumentRequest { 
+                UserId = userId,
+                TenantId = tenantId,
+                Limit = limit,
+                Offset = offset,
+                SearchTerm = searchTerm,
+                SearchOption = searchOption,
+                OrganizationTypeId = organizationTypeId,
+                CountryId = countryId
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

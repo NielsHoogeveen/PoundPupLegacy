@@ -4,43 +4,30 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class CasesDocumentReader : DatabaseReader, IDatabaseReader<CasesDocumentReader>
+public class CasesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<CasesDocumentReader, CasesDocumentReader.CasesDocumentRequest, Cases>
 {
+    public record CasesDocumentRequest
+    {
+        public int TenantId { get; init; }
+        public int UserId { get; init; }
+        public int Limit { get; init; }
+        public int Offset { get; init; }
+        public CaseType CaseType { get; init; }
+    }
     private CasesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public static async Task<CasesDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<Cases> ReadAsync(CasesDocumentRequest request)
     {
-        return new CasesDocumentReader(await GetCommand(connection));
-    }
-
-    protected async static Task<NpgsqlCommand> GetCommand(NpgsqlConnection connection)
-    {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return command;
-
-    }
-
-    public async Task<Cases> ReadAsync(int limit, int offset, int tenantId, int userId, CaseType caseType)
-    {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["user_id"].Value = userId;
-        _command.Parameters["limit"].Value = limit;
-        _command.Parameters["offset"].Value = offset;
-        if (caseType == CaseType.Any) {
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
+        if (request.CaseType == CaseType.Any) {
             _command.Parameters["node_type_id"].Value = DBNull.Value;
         }
         else {
-            _command.Parameters["node_type_id"].Value = (int)caseType;
+            _command.Parameters["node_type_id"].Value = (int)request.CaseType;
         }
         await using var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {
@@ -57,6 +44,21 @@ public class CasesDocumentReader : DatabaseReader, IDatabaseReader<CasesDocument
         }
 
     }
+    public static async Task<CasesDocumentReader> CreateAsync(NpgsqlConnection connection)
+    {
+        var command = connection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = SQL;
+        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        await command.PrepareAsync();
+        return new CasesDocumentReader(command);
+    }
+
 
     private const string SQL = """
             select

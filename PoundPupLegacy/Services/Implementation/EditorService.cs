@@ -157,7 +157,12 @@ public class EditorService : IEditorService
         try {
             await _connection.OpenAsync();
             await using var reader = await BlogPostEditDocumentReader.CreateAsync(_connection);
-            return await reader.Read(urlId, userId, tenantId);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest {
+                UrlId = urlId, 
+                UserId = userId, 
+                TenantId = tenantId
+
+            });
         }
         finally { 
             if(_connection.State == ConnectionState.Open) {
@@ -171,7 +176,11 @@ public class EditorService : IEditorService
         try {
             await _connection.OpenAsync();
             await using var reader = await ArticleEditDocumentReader.CreateAsync(_connection);
-            return await reader.Read(urlId, userId, tenantId);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest {
+                UrlId = urlId, 
+                UserId = userId, 
+                TenantId = tenantId
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) {
@@ -185,7 +194,11 @@ public class EditorService : IEditorService
         try {
             await _connection.OpenAsync();
             await using var reader = await DiscussionEditDocumentReader.CreateAsync(_connection);
-            return await reader.Read(urlId, userId, tenantId);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest { 
+                UrlId = urlId, 
+                UserId = userId, 
+                TenantId = tenantId 
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) {
@@ -199,7 +212,11 @@ public class EditorService : IEditorService
         try {
             await _connection.OpenAsync();
             await using var reader = await DocumentEditDocumentReader.CreateAsync(_connection);
-            return await reader.Read(urlId, userId, tenantId);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest { 
+                UrlId = urlId, 
+                UserId = userId, 
+                TenantId = tenantId 
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) {
@@ -213,7 +230,11 @@ public class EditorService : IEditorService
         try {
             await _connection.OpenAsync();
             await using var reader = await OrganizationEditDocumentReader.CreateAsync(_connection);
-            return await reader.Read(urlId, userId, tenantId);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest { 
+                UrlId = urlId, 
+                UserId = userId, 
+                TenantId = tenantId 
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

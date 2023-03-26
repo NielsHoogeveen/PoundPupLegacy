@@ -18,7 +18,12 @@ internal class FetchBlogService : IFetchBlogService
         try {
             await _connection.OpenAsync();
             await using var reader = await BlogDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(publisherId, tenantId, startIndex, length);
+            return await reader.ReadAsync(new BlogDocumentReader.BlogDocumentRequest{
+                PublisherId = publisherId, 
+                TenantId = tenantId, 
+                StartIndex = startIndex, 
+                Length = length 
+            });
         }
         finally {
             await _connection.CloseAsync();

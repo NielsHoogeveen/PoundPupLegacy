@@ -4,8 +4,19 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class OrganizationsDocumentReader : DatabaseReader, IDatabaseReader<OrganizationsDocumentReader>
+public class OrganizationsDocumentReader : DatabaseReader, ISingleItemDatabaseReader<OrganizationsDocumentReader, OrganizationsDocumentReader.OrganizationsDocumentRequest, OrganizationSearch>
 {
+    public record OrganizationsDocumentRequest
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required int Limit { get; init; }
+        public required int Offset { get; init; }
+        public required string SearchTerm { get; init; }
+        public required SearchOption SearchOption { get; init; }
+        public required int? OrganizationTypeId { get; init; }
+        public required int? CountryId { get; init; }
+    }
     public OrganizationsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
@@ -26,7 +37,7 @@ public class OrganizationsDocumentReader : DatabaseReader, IDatabaseReader<Organ
         return new OrganizationsDocumentReader(readCommand);
     }
 
-    public async Task<OrganizationSearch> ReadAsync(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
+    public async Task<OrganizationSearch> ReadAsync(OrganizationsDocumentRequest request)
     {
         string GetPattern(string searchTerm, SearchOption searchOption)
         {
@@ -42,19 +53,19 @@ public class OrganizationsDocumentReader : DatabaseReader, IDatabaseReader<Organ
             };
         }
 
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["user_id"].Value = userId;
-        _command.Parameters["limit"].Value = limit;
-        _command.Parameters["offset"].Value = offset;
-        _command.Parameters["pattern"].Value = GetPattern(searchTerm, searchOption);
-        if (organizationTypeId.HasValue) {
-            _command.Parameters["organization_type_id"].Value = organizationTypeId.Value;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
+        _command.Parameters["pattern"].Value = GetPattern(request.SearchTerm, request.SearchOption);
+        if (request.OrganizationTypeId.HasValue) {
+            _command.Parameters["organization_type_id"].Value = request.OrganizationTypeId.Value;
         }
         else {
             _command.Parameters["organization_type_id"].Value = DBNull.Value;
         }
-        if (countryId.HasValue) {
-            _command.Parameters["country_id"].Value = countryId.Value;
+        if (request.CountryId.HasValue) {
+            _command.Parameters["country_id"].Value = request.CountryId.Value;
         }
         else {
             _command.Parameters["country_id"].Value = DBNull.Value;

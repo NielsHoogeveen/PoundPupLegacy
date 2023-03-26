@@ -5,17 +5,25 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class PollsDocumentReader: DatabaseReader, IDatabaseReader<PollsDocumentReader>
+public class PollsDocumentReader: DatabaseReader, ISingleItemDatabaseReader<PollsDocumentReader, PollsDocumentReader.PollsDocumentRequest, Polls>
 {
+    public record PollsDocumentRequest
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required int Limit { get; init; }
+        public required int Offset { get; init; }
+    }
+    
     private PollsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public async Task<Polls> ReadAsync(int userId, int tenantId, int limit, int offset)
+    public async Task<Polls> ReadAsync(PollsDocumentRequest request)
     {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["user_id"].Value = userId;
-        _command.Parameters["limit"].Value = limit;
-        _command.Parameters["offset"].Value = offset;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
         await using var reader = await _command.ExecuteReaderAsync();
         await reader.ReadAsync();
         var organizations = reader.GetFieldValue<Polls>(0);

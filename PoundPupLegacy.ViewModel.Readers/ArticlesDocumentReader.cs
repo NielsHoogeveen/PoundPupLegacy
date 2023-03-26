@@ -5,19 +5,27 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class ArticlesDocumentReader : DatabaseReader, IDatabaseReader<ArticlesDocumentReader>
+
+public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<ArticlesDocumentReader, ArticlesDocumentReader.ArticlesDocumentRequest, Articles>
 {
+    public record ArticlesDocumentRequest
+    {
+        public required int TenantId { get; init; }
+        public required List<int> SelectedTerms { get; init; }
+        public required int StartIndex { get; init; }
+        public required int Length { get; init; }
+    }
     private ArticlesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 
-    public async Task<Articles> ReadAsync(int tenantId, List<int> selectedTerms, int startIndex, int length)
+    public async Task<Articles> ReadAsync(ArticlesDocumentRequest request)
     {
-            _command.Parameters["tenant_id"].Value = tenantId;
-            _command.Parameters["length"].Value = length;
-            _command.Parameters["start_index"].Value = startIndex;
-            if (selectedTerms.Any()) {
-                _command.Parameters["terms"].Value = selectedTerms.ToArray();
+            _command.Parameters["tenant_id"].Value = request.TenantId;
+            _command.Parameters["length"].Value = request.Length;
+            _command.Parameters["start_index"].Value = request.StartIndex;
+            if (request.SelectedTerms.Any()) {
+                _command.Parameters["terms"].Value = request.SelectedTerms.ToArray();
             }
             else {
                 _command.Parameters["terms"].Value = DBNull.Value;

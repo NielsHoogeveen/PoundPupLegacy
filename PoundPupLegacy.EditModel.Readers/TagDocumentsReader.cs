@@ -4,20 +4,27 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class TagDocumentsReader : DatabaseReader, IDatabaseReader<TagDocumentsReader>
+public class TagDocumentsReader : DatabaseReader, IEnumerableDatabaseReader<TagDocumentsReader, TagDocumentsReader.TagDocumentsRequest, Tag>
 {
+    public record TagDocumentsRequest
+    {
+        public required int? NodeId { get; init; }
+        public required int TenantId { get; init; }
+        public required string SearchString { get; init; }
+
+    }
     private TagDocumentsReader(NpgsqlCommand command) : base(command)
     {
     }
-    public async IAsyncEnumerable<Tag> ReadAsync(int? nodeId, int tenantId, string str)
+    public async IAsyncEnumerable<Tag> ReadAsync(TagDocumentsRequest request)
     {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["search_string"].Value = $"%{str}%";
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["search_string"].Value = $"%{request.SearchString}%";
         await using var reader = await _command.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {
             yield return new Tag {
                 Name = reader.GetString(1),
-                NodeId = nodeId,
+                NodeId = request.NodeId,
                 TermId = reader.GetInt32(0),
                 HasBeenDeleted = false,
                 IsStored = false,

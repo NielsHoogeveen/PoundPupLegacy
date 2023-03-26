@@ -1,17 +1,18 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data.Common;
 using System.Data;
-using System.Net.Http;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class UnitedStatesCongresssDocumentReader : DatabaseReader, IDatabaseReader<UnitedStatesCongresssDocumentReader>
+public class UnitedStatesCongresssDocumentReader : DatabaseReader, ISingleItemDatabaseReader<UnitedStatesCongresssDocumentReader, UnitedStatesCongresssDocumentReader.UnitedStatesCongresssDocumentRequest, UnitedStatesCongress>
 {
+    public record UnitedStatesCongresssDocumentRequest
+    {
+    }
     private UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public async Task<UnitedStatesCongress> ReadAsync()
+    public async Task<UnitedStatesCongress> ReadAsync(UnitedStatesCongresssDocumentRequest request)
     {
         var reader = await _command.ExecuteReaderAsync();
         await reader.ReadAsync();

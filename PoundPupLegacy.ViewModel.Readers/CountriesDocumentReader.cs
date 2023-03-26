@@ -4,21 +4,10 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class CountriesDocumentReader : DatabaseReader, IDatabaseReader<CountriesDocumentReader>
+public class CountriesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<CountriesDocumentReader, int, FirstLevelRegionListEntry[]>
 {
     private CountriesDocumentReader(NpgsqlCommand command) : base(command)
     {
-    }
-
-    public static async Task<CountriesDocumentReader> CreateAsync(NpgsqlConnection connection)
-    {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new CountriesDocumentReader(command);
     }
 
     public async Task<FirstLevelRegionListEntry[]> ReadAsync(int tenantId)
@@ -34,7 +23,16 @@ public class CountriesDocumentReader : DatabaseReader, IDatabaseReader<Countries
             return new FirstLevelRegionListEntry[] { };
         }
     }
-
+    public static async Task<CountriesDocumentReader> CreateAsync(NpgsqlConnection connection)
+    {
+        var command = connection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = SQL;
+        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        await command.PrepareAsync();
+        return new CountriesDocumentReader(command);
+    }
     const string SQL = $"""
         select
             json_agg(

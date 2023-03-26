@@ -1,21 +1,27 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class FileDocumentReader: DatabaseReader, IDatabaseReader<FileDocumentReader>
+public class FileDocumentReader: DatabaseReader, ISingleItemDatabaseReader<FileDocumentReader, FileDocumentReader.FileDocumentRequest, File>
 {
+    public record FileDocumentRequest
+    {
+        public int FileId { get; init; }
+        public int UserId { get; init; }
+        public int TenantId { get; init; }
+
+    }
     private FileDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 
-    public async Task<File> ReadAsync(int fileId, int userId, int tenantId)
+    public async Task<File> ReadAsync(FileDocumentRequest request)
     {
-        _command.Parameters["file_id"].Value = fileId;
-        _command.Parameters["user_id"].Value = userId;
-        _command.Parameters["tenant_id"].Value = tenantId;
+        _command.Parameters["file_id"].Value = request.FileId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
         await using var reader = await _command.ExecuteReaderAsync();
         await reader.ReadAsync();
         return await reader.GetFieldValueAsync<File>(0);

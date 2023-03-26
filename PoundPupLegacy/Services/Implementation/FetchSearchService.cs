@@ -20,7 +20,13 @@ internal class FetchSearchService : IFetchSearchService
         try {
             await _connection.OpenAsync();
             await using var reader = await SearchDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(userId, tenantId, limit, offset, searchString);
+            return await reader.ReadAsync(new SearchDocumentReader.SearchDocumentRequest { 
+                UserId = userId,
+                TenantId = tenantId,
+                Limit = limit,
+                Offset = offset,
+                SearchString = searchString
+            });
 
         }
         finally {

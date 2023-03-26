@@ -2,18 +2,23 @@
 using PoundPupLegacy.Common;
 using System.Data;
 
-namespace PoundPupLegacy.ViewModel.Readers;
+namespace PoundPupLegacy.Readers;
 
-public class PasswordValidationReader : DatabaseReader, IDatabaseReader<PasswordValidationReader>
+public class PasswordValidationReader : DatabaseReader, ISingleItemDatabaseReader<PasswordValidationReader, PasswordValidationReader.PasswordValidationRequest, int?>
 {
+    public record PasswordValidationRequest
+    {
+        public required string UserName { get; init; } 
+        public required string Password { get; init; } 
+    }
     private PasswordValidationReader(NpgsqlCommand command) : base(command)
     {
     }
 
-    public async Task<int?> ReadAsync(string userName, string password)
+    public async Task<int?> ReadAsync(PasswordValidationRequest request)
     {
-        _command.Parameters["name"].Value = userName.ToLower();
-        _command.Parameters["password"].Value = password;
+        _command.Parameters["name"].Value = request.UserName;
+        _command.Parameters["password"].Value = request.Password;
         await using var reader = await _command.ExecuteReaderAsync();
         if (reader.Read()) {
             return reader.GetInt32(0);

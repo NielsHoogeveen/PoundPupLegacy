@@ -21,7 +21,14 @@ public class TopicService : ITopicService
         try {
             await _connection.OpenAsync();
             await using var reader = await TopicsDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(userId, tenantId, limit, offset, searchTerm, searchOption);
+            return await reader.ReadAsync(new TopicsDocumentReader.TopicsDocumentRequest {
+                UserId = userId,
+                TenantId = tenantId,
+                Limit = limit,
+                Offset = offset,
+                SearchTerm = searchTerm,
+                SearchOption = searchOption
+            });
         }
         finally {
             await _connection.CloseAsync();

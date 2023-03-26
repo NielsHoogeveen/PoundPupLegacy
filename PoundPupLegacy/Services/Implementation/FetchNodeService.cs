@@ -18,7 +18,11 @@ internal class FetchNodeService : IFetchNodeService
         try {
             await _connection.OpenAsync();
             await using var reader = await NodeDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(urlId, userId, tenantId);
+            return await reader.ReadAsync(new NodeDocumentReader.NodeDocumentRequest {
+                UrlId = urlId,
+                UserId = userId,
+                TenantId = tenantId
+            });
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

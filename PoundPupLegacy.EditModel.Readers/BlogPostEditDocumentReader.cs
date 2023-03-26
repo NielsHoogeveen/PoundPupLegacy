@@ -3,7 +3,7 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class BlogPostEditDocumentReader : SimpleTextNodeEditDocumentReader<BlogPost>, IDatabaseReader<BlogPostEditDocumentReader>
+public class BlogPostEditDocumentReader : SimpleTextNodeEditDocumentReader<BlogPost>, ISingleItemDatabaseReader<BlogPostEditDocumentReader, NodeEditDocumentReader.NodeEditDocumentRequest, BlogPost>
 {
     protected BlogPostEditDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
     {

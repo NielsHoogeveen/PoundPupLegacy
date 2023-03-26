@@ -4,8 +4,15 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class NodeDocumentReader : DatabaseReader, IDatabaseReader<NodeDocumentReader>
+public class NodeDocumentReader : DatabaseReader, ISingleItemDatabaseReader<NodeDocumentReader, NodeDocumentReader.NodeDocumentRequest, Node>
 {
+
+    public record NodeDocumentRequest
+    {
+        public int UrlId { get; init; }
+        public int UserId { get; init; }
+        public int TenantId { get; init; }
+    }
     private NodeDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
@@ -26,11 +33,11 @@ public class NodeDocumentReader : DatabaseReader, IDatabaseReader<NodeDocumentRe
 
     }
 
-    public async Task<Node> ReadAsync(int urlId, int userId, int tenantId)
+    public async Task<Node> ReadAsync(NodeDocumentRequest request)
     {
-        _command.Parameters["url_id"].Value = urlId;
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["user_id"].Value = userId;
+        _command.Parameters["url_id"].Value = request.UrlId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
         await using var reader = await _command.ExecuteReaderAsync();
         await reader.ReadAsync();
         if (!reader.HasRows) {

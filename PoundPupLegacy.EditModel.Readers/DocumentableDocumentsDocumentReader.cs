@@ -4,20 +4,28 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class DocumentableDocumentsDocumentReader : DatabaseReader, IDatabaseReader<DocumentableDocumentsDocumentReader>
+public class DocumentableDocumentsDocumentReader : DatabaseReader, IEnumerableDatabaseReader<DocumentableDocumentsDocumentReader, DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest, DocumentableDocument>
 {
+    public record DocumentableDocumentsDocumentRequest
+    {
+        public required int NodeId { get; init; }
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required string SearchString { get; init; }
+
+    }
     private DocumentableDocumentsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public async IAsyncEnumerable<DocumentableDocument> GetDocumentableDocuments(int nodeId, int userId, int tenantId, string str)
+    public async IAsyncEnumerable<DocumentableDocument> ReadAsync(DocumentableDocumentsDocumentRequest request)
     {
-        _command.Parameters["user_id"].Value = userId;
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["search_string"].Value = $"%{str}%";
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["search_string"].Value = $"%{request.SearchString}%";
         await using var reader = await _command.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {
             yield return new DocumentableDocument {
-                DocumentableId = nodeId,
+                DocumentableId = request.NodeId,
                 DocumentId = reader.GetInt32(0),
                 Title = reader.GetString(1),
                 HasBeenDeleted = false,

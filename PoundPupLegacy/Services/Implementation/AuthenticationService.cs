@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Npgsql;
-using PoundPupLegacy.ViewModel.Readers;
+using PoundPupLegacy.Readers;
 using System.Data;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -29,7 +29,10 @@ internal class AuthenticationService : IAuthenticationService
             await _connection.OpenAsync();
 
             await using var reader = await PasswordValidationReader.CreateAsync(_connection);
-            var userId = await reader.ReadAsync(userName.ToLower(), CreateMD5(password));
+            var userId = await reader.ReadAsync(new PasswordValidationReader.PasswordValidationRequest { 
+                Password = CreateMD5(password),
+                UserName = userName.ToLower()
+            });
             if (userId is not null) {
                 var id = userId;
                 var identity = new GenericIdentity(userName);
