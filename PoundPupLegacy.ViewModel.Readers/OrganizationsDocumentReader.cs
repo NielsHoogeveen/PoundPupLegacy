@@ -78,7 +78,7 @@ public class OrganizationsDocumentReader : DatabaseReader, ISingleItemDatabaseRe
     }
     protected const string SQL = """
             select
-                json_build_object(
+                jsonb_build_object(
                     'Countries', (select
                         jsonb_agg(
                             jsonb_build_object(
@@ -120,7 +120,7 @@ public class OrganizationsDocumentReader : DatabaseReader, ISingleItemDatabaseRe
                     'Organizations', (select
             	        jsonb_build_object(
             	            'NumberOfEntries', number_of_entries,
-            	            'Entries', json_agg(
+            	            'Entries', jsonb_agg(
             	                jsonb_build_object(
             	                    'Path', url_path,
             	                    'Title', title,

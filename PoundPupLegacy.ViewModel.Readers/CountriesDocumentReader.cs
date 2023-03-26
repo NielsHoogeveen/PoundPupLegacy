@@ -35,8 +35,8 @@ public class CountriesDocumentReader : DatabaseReader, ISingleItemDatabaseReader
     }
     const string SQL = $"""
         select
-            json_agg(
-                json_build_object(
+            jsonb_agg(
+                jsonb_build_object(
                     'Name', 
                     n.title,
                     'Path', 
@@ -50,8 +50,8 @@ public class CountriesDocumentReader : DatabaseReader, ISingleItemDatabaseReader
                         	document 
                         from(
                         	select 
-                        		json_agg(
-                                    json_build_object(
+                        		jsonb_agg(
+                                    jsonb_build_object(
                             			'Name', 
                                         n2.title,
                         				'Path', 
@@ -65,8 +65,8 @@ public class CountriesDocumentReader : DatabaseReader, ISingleItemDatabaseReader
                             					document 
                             				from(
                             					select 
-                            						json_agg(
-                                                        json_build_object(
+                            						jsonb_agg(
+                                                        jsonb_build_object(
                         								    'Name', 
                                                             n3.title,
                         								    'Path', 
@@ -104,13 +104,15 @@ public class CountriesDocumentReader : DatabaseReader, ISingleItemDatabaseReader
                         	document 
                         from(
                         	select 
-                        		json_agg(json_build_object(
+                        		jsonb_agg(
+                                    jsonb_build_object(
                         			'Name', n2.title,
                         			'Path', case
                         						when n2.url_path is null then '/node/' || n2.url_id
                         						else '/' || n2.url_path
                         					end
-                        		)) document
+                        		    )
+                                ) document
                         	FROM (
             					select
             					n2.id,

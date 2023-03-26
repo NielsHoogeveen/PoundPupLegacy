@@ -38,7 +38,7 @@ public class UnitedStatesMeetingChamberDocumentReader : DatabaseReader, ISingleI
     }
     const string SQL = """
         select
-        	json_build_object(
+        	jsonb_build_object(
         		'MeetingName',	
         		meeting_name,
         		'DateFrom',
@@ -47,9 +47,9 @@ public class UnitedStatesMeetingChamberDocumentReader : DatabaseReader, ISingleI
         		date_to,
         		'States',
         		jsonb_agg(
-        			json_build_object(
+        			jsonb_build_object(
         				'State',
-        				json_build_object(
+        				jsonb_build_object(
         					'Name',
         					political_entity_name,
         					'Path',

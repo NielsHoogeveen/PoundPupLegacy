@@ -1,33 +1,14 @@
 ﻿using Npgsql;
 using PoundPupLegacy.ViewModel;
+using PoundPupLegacy.Models;
 using System.Data;
 using System.Diagnostics;
-using MenuItem = PoundPupLegacy.ViewModel.Link;
-using Tenant = PoundPupLegacy.ViewModel.Tenant;
+using PoundPupLegacy.Readers;
 
 namespace PoundPupLegacy.Services.Implementation;
 
 internal class SiteDataService : ISiteDataService
 {
-    private record UserTenantAction
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required string Action { get; init; }
-    }
-    private record UserTenantEditAction
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int NodeTypeId { get; init; }
-    }
-    private record UserTenantEditOwnAction
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int NodeTypeId { get; init; }
-    }
-
     private record Data
     {
         public required HashSet<UserTenantAction> UserTenantActions { get; init; }
@@ -152,187 +133,40 @@ internal class SiteDataService : ISiteDataService
 
         try {
             await _connection.OpenAsync();
-            using (var readCommand = _connection.CreateCommand()) {
-                var sql = $"""
-            select
-            t.id,
-            t.domain_name,
-            t.country_id_default,
-            n.title country_name
-            from tenant t
-            join node n on n.id = t.country_id_default
-            """;
-                readCommand.CommandType = CommandType.Text;
-                readCommand.CommandTimeout = 300;
-                readCommand.CommandText = sql;
-                await readCommand.PrepareAsync();
-                await using var reader = await readCommand.ExecuteReaderAsync();
-                while (await reader.ReadAsync()) {
-                    var tenantId = reader.GetInt32(0);
-                    var domainName = reader.GetString(1);
-                    var countryIdDefault = reader.GetInt32(2);
-                    var countryNameDefault = reader.GetString(3);
-                    tenants.Add(new Tenant {
-                        Id = tenantId,
-                        DomainName = domainName,
-                        CountryIdDefault = countryIdDefault,
-                        CountryNameDefault = countryNameDefault,
-                        IdToUrl = new Dictionary<int, string>(),
-                        UrlToId = new Dictionary<string, int>()
-
-                    });
-                }
+            await using var tenantsReader = await TenantsReader.CreateAsync(_connection);
+            await foreach (var tenant in tenantsReader.ReadAsync(new TenantsReader.TenantsRequest())) {
+                tenants.Add(tenant);
             }
-            using (var readCommand = _connection.CreateCommand()) {
-                var sql = $"""
-                    select
-                    tn.tenant_id,
-                    tn.url_id,
-                    tn.url_path
-                    from tenant_node tn 
-                    where tn.url_path is not null
-                    """;
-                readCommand.CommandType = CommandType.Text;
-                readCommand.CommandTimeout = 300;
-                readCommand.CommandText = sql;
-                await readCommand.PrepareAsync();
-                await using var reader = await readCommand.ExecuteReaderAsync();
-                while (await reader.ReadAsync()) {
-                    var tenant = tenants.Find(x => x.Id == reader.GetInt32(0));
-                    if (tenant is null) {
-                        throw new NullReferenceException("Tenant should not be null");
-                    }
-                    tenant.UrlToId.Add(reader.GetString(2), reader.GetInt32(1));
-                    tenant.IdToUrl.Add(reader.GetInt32(1), reader.GetString(2));
+            await using var tenantNodesReader = await TenantNodesReader.CreateAsync(_connection);
+            await foreach (var tenantNode in tenantNodesReader.ReadAsync(new TenantNodesReader.TenantNodesRequest())) {
+                var tenant = tenants.Find(x => x.Id == tenantNode.TenantId);
+                if (tenant is null) {
+                    throw new NullReferenceException("Tenant should not be null");
                 }
+                tenant.UrlToId.Add(tenantNode.UrlPath, tenantNode.UrlId);
+                tenant.IdToUrl.Add(tenantNode.UrlId, tenantNode.UrlPath);
             }
-
             _logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
             return tenants;
         }
         finally {
             await _connection.CloseAsync();
         }
-
     }
 
-    private async Task<Dictionary<(int, int), List<MenuItem>>> LoadUserMenusAsync()
+    private async Task<Dictionary<(int, int), List<Models.MenuItem>>> LoadUserMenusAsync()
     {
         var sw = Stopwatch.StartNew();
-        var userMenus = new Dictionary<(int, int), List<MenuItem>>();
+        var userMenus = new Dictionary<(int, int), List<Models.MenuItem>>();
         try {
             await _connection.OpenAsync();
-            var sql = $"""
-            with 
-            user_action as (
-            	select
-            	uar.user_id,
-            	uar.tenant_id,	
-            	arp.action_id
-            	from(
-            		select
-            		distinct
-            		u.id user_id,
-            		u.id access_role_id,
-            		t.id tenant_id
-            		from "user" u
-            		join user_group_user_role_user ug on ug.user_id = u.id
-            		join tenant t on t.id = ug.user_group_id
-            		union
-            		select
-            		u.id user_id,
-            		ug.user_role_id access_role_id,
-            		t.id tenant_id
-            		from "user" u
-            		JOIN user_group_user_role_user ug on ug.user_id = u.id
-            		join tenant t on t.id = ug.user_group_id
-            		union
-            		select
-            		0,
-            		t.access_role_id_not_logged_in,
-            		t.id tenant_id
-            		from tenant t
-            	) uar
-            	join access_role_privilege arp on arp.access_role_id = uar.access_role_id
-            )
-
-            select
-            user_id,
-            tenant_id,
-            json_agg(
-            	json_build_object(
-            		'Path', path,
-            		'Name', "name"
-            	)
-            )
-            from(
-            	select
-            	*
-            	from(
-            	select 
-            	ua.user_id,
-            	ua.tenant_id,
-            	mi.weight,
-            	case 
-            		when ba.path is not null then ba.path
-            		when cna.id is not null then '/' || replace(lower(nt.name), ' ', '_') || '/create'
-            	end path,
-            	ami.name
-            	from user_action ua
-            	join action_menu_item ami on ami.action_id = ua.action_id
-            	join menu_item mi on mi.id = ami.id
-            	left join basic_action ba on ba.id = ua.action_id
-            	left join create_node_action cna on cna.id = ua.action_id
-            	left join node_type nt on nt.id = cna.node_type_id
-            	union
-                select
-            	distinct
-            	ug.user_id,
-            	tn.tenant_id,
-            	weight,
-            	case 
-            		when tn.url_path is  null then '/node/' || tn.url_id
-            		else '/' || tn.url_path
-            	end	path,
-            	tmi.name
-            	from user_group_user_role_user ug 
-            	join tenant_node tn on tn.tenant_id = ug.user_group_id
-            	join tenant_node_menu_item tmi on tmi.tenant_node_id = tn.id
-            	join menu_item mi on mi.id = tmi.id
-            	union
-                select
-            	distinct
-            	0 user_id,
-            	tn.tenant_id,
-            	weight,
-            	case 
-            		when tn.url_path is  null then '/node/' || tn.url_id
-            		else '/' || tn.url_path
-            	end	path,
-            	tmi.name
-            	from tenant_node tn 
-            	join tenant_node_menu_item tmi on tmi.tenant_node_id = tn.id
-            	join menu_item mi on mi.id = tmi.id
-            	) a
-            	order by user_id, tenant_id, weight 
-
-            ) m
-            group by user_id, tenant_id
-            
-            """;
-
-            using var readCommand = _connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            await readCommand.PrepareAsync();
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                var user_id = reader.GetInt32(0);
-                var tenant_id = reader.GetInt32(1);
-                var menuItems = reader.GetFieldValue<List<Link>>(2);
-                userMenus.Add((user_id, tenant_id), menuItems);
+            await using var reader = await MenuItemsReader.CreateAsync(_connection);
+            await foreach (var item in reader.ReadAsync(new MenuItemsReader.MenuItemsRequest())) {
+                userMenus.Add((item.UserId, item.TenantId), item.MenuItems);
             }
+
+            
+            
             _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
             return userMenus;
         }
@@ -346,60 +180,9 @@ internal class SiteDataService : ISiteDataService
         var userTenantActions = new HashSet<UserTenantEditAction>();
         try {
             await _connection.OpenAsync();
-            var sql = """
-            select
-            distinct
-            *
-            from(
-            select
-            distinct
-            ugur.user_id,
-            t.id tenant_id,
-            ba.node_type_id
-            from edit_node_action ba
-            join access_role_privilege arp on arp.action_id = ba.id
-            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-            join tenant t on t.id = ugur.user_group_id
-            union
-            select
-            distinct
-            0,
-            t.id tenant_id,
-            ba.node_type_id
-            from edit_node_action ba
-            join access_role_privilege arp on arp.action_id = ba.id
-            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-            join tenant t on t.id = ugur.user_group_id
-            where arp.access_role_id = t.access_role_id_not_logged_in
-            union
-            select
-            uguru.user_id,
-            tn.id tenant_id,
-            ba.node_type_id
-            from edit_node_action ba
-            join tenant tn on 1=1
-            join user_group ug on ug.id = tn.id
-            join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
-            ) x
-            """;
-            using var readCommand = _connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            await readCommand.PrepareAsync();
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                var userId = reader.GetInt32(0);
-                var tenantId = reader.GetInt32(1);
-                var nodeTypeId = reader.GetInt32(2);
-
-                userTenantActions.Add(
-                     new UserTenantEditAction {
-                         UserId = userId,
-                         TenantId = tenantId,
-                         NodeTypeId = nodeTypeId,
-                     }
-                );
+            await using var reader = await UserTenantEditActionReader.CreateAsync(_connection);
+            await foreach (var item in reader.ReadAsync(new UserTenantEditActionReader.UserTenantEditActionRequest())) {
+                userTenantActions.Add(item);
             }
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
             return userTenantActions;
@@ -414,60 +197,9 @@ internal class SiteDataService : ISiteDataService
         var userTenantActions = new HashSet<UserTenantEditOwnAction>();
         try {
             await _connection.OpenAsync();
-            var sql = """
-            select
-            distinct
-            *
-            from(
-            select
-            distinct
-            ugur.user_id,
-            t.id tenant_id,
-            ba.node_type_id
-            from edit_own_node_action ba
-            join access_role_privilege arp on arp.action_id = ba.id
-            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-            join tenant t on t.id = ugur.user_group_id
-            union
-            select
-            distinct
-            0,
-            t.id tenant_id,
-            ba.node_type_id
-            from edit_own_node_action ba
-            join access_role_privilege arp on arp.action_id = ba.id
-            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-            join tenant t on t.id = ugur.user_group_id
-            where arp.access_role_id = t.access_role_id_not_logged_in
-            union
-            select
-            uguru.user_id,
-            tn.id tenant_id,
-            ba.node_type_id
-            from edit_own_node_action ba
-            join tenant tn on 1=1
-            join user_group ug on ug.id = tn.id
-            join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
-            ) x
-            """;
-            using var readCommand = _connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            await readCommand.PrepareAsync();
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                var userId = reader.GetInt32(0);
-                var tenantId = reader.GetInt32(1);
-                var nodeTypeId = reader.GetInt32(2);
-
-                userTenantActions.Add(
-                     new UserTenantEditOwnAction {
-                         UserId = userId,
-                         TenantId = tenantId,
-                         NodeTypeId = nodeTypeId,
-                     }
-                );
+            await using var reader = await UserTenantEditOwnActionReader.CreateAsync(_connection);
+            await foreach (var item in reader.ReadAsync(new UserTenantEditOwnActionReader.UserTenantEditOwnActionRequest())) {
+                userTenantActions.Add(item);
             }
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
             return userTenantActions;
@@ -482,62 +214,28 @@ internal class SiteDataService : ISiteDataService
         var userTenantActions = new HashSet<UserTenantAction>();
         try {
             await _connection.OpenAsync();
-            var sql = """
-            select
-            distinct
-            ugur.user_id,
-            t.id tenant_id,
-            ba.path
-            from basic_action ba
-            join access_role_privilege arp on arp.action_id = ba.id
-            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-            join tenant t on t.id = ugur.user_group_id
-            union
-            select
-            distinct
-            0,
-            t.id tenant_id,
-            ba.path
-            from basic_action ba
-            join access_role_privilege arp on arp.action_id = ba.id
-            join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-            join tenant t on t.id = ugur.user_group_id
-            where arp.access_role_id = t.access_role_id_not_logged_in
-            """;
-            using var readCommand = _connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            await readCommand.PrepareAsync();
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                var userId = reader.GetInt32(0);
-                var tenantId = reader.GetInt32(1);
-                var action = reader.GetFieldValue<string>(2);
-
-                userTenantActions.Add(
-                     new UserTenantAction {
-                         UserId = userId,
-                         TenantId = tenantId,
-                         Action = action,
-                     }
-                );
+            await using var reader = await UserTenantActionReader.CreateAsync(_connection);
+            await foreach( var item in reader.ReadAsync(new UserTenantActionReader.UserTenantActionRequest())) 
+            {
+                userTenantActions.Add(item);
             }
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
             return userTenantActions;
         }
         finally {
-            await _connection.CloseAsync();
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
         }
     }
 
-    public IEnumerable<Link> GetMenuItemsForUser(int userId, int tenantId)
+    public IEnumerable<MenuItem> GetMenuItemsForUser(int userId, int tenantId)
     {
         if (_data.UserMenus.TryGetValue((userId, tenantId), out var lst)) {
             return lst;
         }
         else {
-            return new List<Link>();
+            return new List<MenuItem>();
         }
     }
 

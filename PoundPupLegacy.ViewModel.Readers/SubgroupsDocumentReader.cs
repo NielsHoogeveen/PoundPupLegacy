@@ -49,8 +49,8 @@ public class SubgroupsDocumentReader : DatabaseReader, ISingleItemDatabaseReader
             	    'NumberOfEntries',
             	    number_of_entries,
             	    'Entries',
-            	    json_agg(
-            		    json_build_object(
+            	    jsonb_agg(
+            		    jsonb_build_object(
             			    'Title',
             			    title,
             			    'Path',

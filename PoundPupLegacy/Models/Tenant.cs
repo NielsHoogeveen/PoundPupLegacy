@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.ViewModel;
+﻿namespace PoundPupLegacy.Models;
 
 public record Tenant
 {

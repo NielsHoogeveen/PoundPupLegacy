@@ -48,7 +48,7 @@ public class PollsDocumentReader: DatabaseReader, ISingleItemDatabaseReader<Poll
             select
                 jsonb_build_object(
                     'NumberOfEntries', number_of_entries,
-                    'Entries', json_agg(
+                    'Entries', jsonb_agg(
                         jsonb_build_object(
                         	'Path', url_path,
                         	'Title', title,

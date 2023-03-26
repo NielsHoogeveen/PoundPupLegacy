@@ -82,7 +82,7 @@ public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<
     const string FETCH_TERMS_UNFILTERED = """
          fetch_terms_unfiltered as (
          select 
-        	json_agg(name)
+        	jsonb_agg(name)
         		FROM(
         			SELECT 
         				tn.url_id "Id",
@@ -104,7 +104,7 @@ public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<
     const string FETCH_TERMS_FILTERED = """
          fetch_terms_filtered as (
          select 
-        	json_agg(name)
+        	jsonb_agg(name)
         		FROM(
         			SELECT 
         				tn.url_id "Id",
@@ -147,7 +147,7 @@ public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<
         	 tn.url_id "Id",
         	 n.title "Title",
              stn.teaser "Text",
-        	 json_build_object(
+        	 jsonb_build_object(
         	    'Id', p.id,
         		'Name', p.name,
         		'CreatedDateTime', n.created_date_time,
@@ -155,8 +155,8 @@ public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<
         	 ) "Authoring",
             (
                 select 
-                    json_agg(
-                        json_build_object(
+                    jsonb_agg(
+                        jsonb_build_object(
                             'Path', t.path,
                             'Name', t.name
                         )
@@ -192,7 +192,7 @@ public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<
             tna.url_id "Id",
             n.title "Title",
             stn.teaser "Text",
-            json_build_object(
+            jsonb_build_object(
                 'Id', p.id,
                 'Name', p.name,
                 'CreatedDateTime', n.created_date_time,
@@ -200,8 +200,8 @@ public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<
             ) "Authoring",
             (
                 select 
-                    json_agg(
-                        json_build_object(
+                    jsonb_agg(
+                        jsonb_build_object(
                             'Path', t.path,
                             'Name', t.name
                         )
@@ -276,13 +276,13 @@ public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<
 
     const string FETCHS_ARTICLES_DOCUMENTS_UNFILTERED = """
         fetch_articles_document_unfiltered as(
-        	select json_agg(to_jsonb(x)) agg
+        	select jsonb_agg(to_jsonb(x)) agg
         	from fetch_articles_unfiltered x
         )
         """;
     const string FETCHS_ARTICLES_DOCUMENTS_FILTERED = """
         fetch_articles_document_filtered as(
-        	select json_agg(to_jsonb(x)) agg
+        	select jsonb_agg(to_jsonb(x)) agg
         	from fetch_articles_filtered x
         )
         """;

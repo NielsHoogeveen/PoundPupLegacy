@@ -299,8 +299,8 @@ public class NodeDocumentReader : DatabaseReader, ISingleItemDatabaseReader<Node
     const string POLL_QUESTIONS_DOCUMENT = """
         poll_questions_document as(
             select
-        	    json_agg(
-        		    json_build_object(
+        	    jsonb_agg(
+        		    jsonb_build_object(
         			    'Id', id,
         			    'Text',  question_text,
         			    'Authoring', jsonb_build_object(
