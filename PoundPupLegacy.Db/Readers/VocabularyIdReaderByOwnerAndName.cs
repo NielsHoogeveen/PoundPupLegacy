@@ -1,10 +1,9 @@
 ﻿using System.Data;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class VocabularyIdReaderByOwnerAndName : DatabaseReader, IDatabaseReader<VocabularyIdReaderByOwnerAndName>
+public sealed class VocabularyIdReaderByOwnerAndNameFactory : IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName>
 {
-    public static async Task<VocabularyIdReaderByOwnerAndName> CreateAsync(NpgsqlConnection connection)
+    public async Task<VocabularyIdReaderByOwnerAndName> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             SELECT id FROM vocabulary WHERE owner_id = @owner_id AND name = @name
@@ -23,12 +22,22 @@ public sealed class VocabularyIdReaderByOwnerAndName : DatabaseReader, IDatabase
 
     }
 
+}
+public sealed class VocabularyIdReaderByOwnerAndName : SingleItemDatabaseReader<VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest, int>
+{
+    public record VocabularyIdReaderByOwnerAndNameRequest
+    {
+        public required int OwnerId { get; init; }
+        public required string Name { get; init; }
+
+    }
+
     internal VocabularyIdReaderByOwnerAndName(NpgsqlCommand command) : base(command) { }
 
-    public async Task<int> ReadAsync(int ownerId, string name)
+    public override async Task<int> ReadAsync(VocabularyIdReaderByOwnerAndNameRequest request)
     {
-        _command.Parameters["owner_id"].Value = ownerId;
-        _command.Parameters["name"].Value = name;
+        _command.Parameters["owner_id"].Value = request.OwnerId;
+        _command.Parameters["name"].Value = request.Name;
 
         var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {
@@ -38,6 +47,6 @@ public sealed class VocabularyIdReaderByOwnerAndName : DatabaseReader, IDatabase
             return id;
         }
         await reader.CloseAsync();
-        throw new Exception($"vocabulary {name} cannot be found for owner {ownerId}");
+        throw new Exception($"vocabulary {request.Name} cannot be found for owner {request.OwnerId}");
     }
 }

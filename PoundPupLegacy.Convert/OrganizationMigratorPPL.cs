@@ -57,7 +57,11 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, 12625)
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    {
+                        TenantId = Constants.PPL,
+                        UrlId = 12625
+                    })
                 }
             }
         };
@@ -104,7 +108,11 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, Constants.POLITICAL_PARTY)
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    {
+                        TenantId = Constants.PPL,
+                        UrlId = Constants.POLITICAL_PARTY
+                    })
                 }
             }
         };
@@ -151,7 +159,11 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, Constants.POLITICAL_PARTY)
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    {
+                        TenantId = Constants.PPL,
+                        UrlId = Constants.POLITICAL_PARTY
+                    })
                 }
             }
         };
@@ -198,7 +210,11 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, 12630)
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    {
+                        TenantId = Constants.PPL,
+                        UrlId = 12630
+                    })
                 }
             }
         };
@@ -329,7 +345,11 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
-                var organizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, typeId);
+                var organizationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    UrlId = typeId,
+                    TenantId = Constants.PPL
+                });
                 organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
             }
 
@@ -383,29 +403,26 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = reader.GetString("title"),
                     OwnerId = Constants.OWNER_PARTIES,
-                    TenantNodes = new List<TenantNode>
-                    {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = id
+                    TenantNodes = new List<TenantNode> {
+                        new TenantNode {
+                            Id = null,
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode {
+                            Id = null,
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
                     },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
-                },
                     NodeTypeId = 63,
                     WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                     EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
@@ -419,7 +436,11 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                         new OrganizationOrganizationType
                         {
                             OrganizationId = null,
-                            OrganizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, Constants.POLITICAL_PARTY)
+                            OrganizationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                            {
+                                TenantId = Constants.PPL,
+                                UrlId = Constants.POLITICAL_PARTY
+                            })
                         }
                     }
 

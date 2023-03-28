@@ -1,10 +1,9 @@
 ﻿using System.Data;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class FileIdReaderByTenantFileId : DatabaseReader, IDatabaseReader<FileIdReaderByTenantFileId>
+public sealed class FileIdReaderByTenantFileIdFactory : IDatabaseReaderFactory<FileIdReaderByTenantFileId>
 {
-    public static async Task<FileIdReaderByTenantFileId> CreateAsync(NpgsqlConnection connection)
+    public async Task<FileIdReaderByTenantFileId> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             SELECT file_id FROM tenant_file WHERE tenant_id = @tenant_id and tenant_file_id = @tenant_file_id
@@ -22,13 +21,22 @@ public sealed class FileIdReaderByTenantFileId : DatabaseReader, IDatabaseReader
         return new FileIdReaderByTenantFileId(command);
 
     }
+}
+
+public sealed class FileIdReaderByTenantFileId : SingleItemDatabaseReader<FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest, int>
+{
+    public record FileIdReaderByTenantFileIdRequest
+    {
+        public required int TenantId { get; init; }
+        public required int TenantFileId { get; init; }
+    }
 
     internal FileIdReaderByTenantFileId(NpgsqlCommand command) : base(command) { }
 
-    public async Task<int> ReadAsync(int TenantId, int TenantFileId)
+    public override async Task<int> ReadAsync(FileIdReaderByTenantFileIdRequest request)
     {
-        _command.Parameters["tenant_id"].Value = TenantId;
-        _command.Parameters["tenant_file_id"].Value = TenantFileId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["tenant_file_id"].Value = request.TenantFileId;
 
         var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {
@@ -38,6 +46,6 @@ public sealed class FileIdReaderByTenantFileId : DatabaseReader, IDatabaseReader
             return id;
         }
         await reader.CloseAsync();
-        throw new Exception($"File id cannot be found for tenant {TenantId} and file id {TenantFileId}");
+        throw new Exception($"File id cannot be found for tenant {request.TenantId} and file id {request.TenantFileId}");
     }
 }

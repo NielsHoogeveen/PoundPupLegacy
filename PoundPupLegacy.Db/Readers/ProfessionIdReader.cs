@@ -1,17 +1,9 @@
 ﻿using System.Data;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class ProfessionIdReader : DatabaseReader, IDatabaseReader<ProfessionIdReader>
+public sealed class ProfessionIdReaderFactory : IDatabaseReaderFactory<ProfessionIdReader>
 {
-    public enum ProfessionType
-    {
-        Senator,
-        Representative,
-        Lawyer,
-        Therapist
-    }
-    public static async Task<ProfessionIdReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<ProfessionIdReader> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             select
@@ -38,6 +30,22 @@ public sealed class ProfessionIdReader : DatabaseReader, IDatabaseReader<Profess
 
     }
 
+}
+public sealed class ProfessionIdReader : SingleItemDatabaseReader<ProfessionIdReader.ProfessionIdReaderRequest, int>
+{
+    public record ProfessionIdReaderRequest
+    {
+        public int TenantId { get; init; }
+        public int UrlId { get; init; }
+        public ProfessionType ProfessionType { get; init; }
+    }
+    public enum ProfessionType
+    {
+        Senator,
+        Representative,
+        Lawyer,
+        Therapist
+    }
     internal ProfessionIdReader(NpgsqlCommand command) : base(command) { }
 
     private string GetProfessionName(ProfessionType type)
@@ -51,11 +59,11 @@ public sealed class ProfessionIdReader : DatabaseReader, IDatabaseReader<Profess
         };
     }
 
-    public async Task<int> ReadAsync(int tenantId, int urlId, ProfessionType professionType)
+    public override async Task<int> ReadAsync(ProfessionIdReaderRequest request)
     {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["url_id"].Value = urlId;
-        _command.Parameters["profession_name"].Value = GetProfessionName(professionType);
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["url_id"].Value = request.UrlId;
+        _command.Parameters["profession_name"].Value = GetProfessionName(request.ProfessionType);
 
         var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {
@@ -65,6 +73,6 @@ public sealed class ProfessionIdReader : DatabaseReader, IDatabaseReader<Profess
             return id;
         }
         await reader.CloseAsync();
-        throw new Exception($"profession role {professionType} cannot be found");
+        throw new Exception($"profession role {request.ProfessionType} cannot be found");
     }
 }

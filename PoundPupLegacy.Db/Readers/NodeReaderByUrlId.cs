@@ -1,11 +1,11 @@
 ﻿using System.Data;
 using PoundPupLegacy.Common;
+using static PoundPupLegacy.Db.Readers.NodeReaderByUrlId;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class NodeReaderByUrlId : DatabaseReader, IDatabaseReader<NodeReaderByUrlId>
+public sealed class NodeReaderByUrlIdFactory : IDatabaseReaderFactory<NodeReaderByUrlId>
 {
-    public static async Task<NodeReaderByUrlId> CreateAsync(NpgsqlConnection connection)
+    public async Task<NodeReaderByUrlId> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
         SELECT 
@@ -34,12 +34,22 @@ public sealed class NodeReaderByUrlId : DatabaseReader, IDatabaseReader<NodeRead
 
     }
 
+}
+public sealed class NodeReaderByUrlId : SingleItemDatabaseReader<NodeReaderByUrlIdRequest, Node>
+{
+    public record NodeReaderByUrlIdRequest
+    {
+        public required int TenantId { get; init; }
+        public required int UrlId { get; init; }
+
+    }
+
     internal NodeReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
-    public async Task<Node> ReadAsync(int tenantId, int urlId)
+    public override async Task<Node> ReadAsync(NodeReaderByUrlIdRequest request)
     {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["url_id"].Value = urlId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["url_id"].Value = request.UrlId;
 
         var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {
@@ -58,7 +68,7 @@ public sealed class NodeReaderByUrlId : DatabaseReader, IDatabaseReader<NodeRead
             return node;
         }
         await reader.CloseAsync();
-        var error = $"node cannot be found in for url_id {urlId} and tenant {tenantId}";
+        var error = $"node cannot be found in for url_id {request.UrlId} and tenant {request.TenantId}";
         throw new Exception(error);
     }
 }

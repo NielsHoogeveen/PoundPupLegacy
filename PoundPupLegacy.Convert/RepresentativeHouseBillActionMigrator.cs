@@ -25,7 +25,7 @@ internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
     private async IAsyncEnumerable<RepresentativeHouseBillAction> ReadRepresentativeHouseBillActionsPPL()
     {
 
-        await using var professionReader = await ProfessionIdReader.CreateAsync(_postgresConnection);
+        await using var professionReader = await new ProfessionIdReaderFactory().CreateAsync(_postgresConnection);
 
         var sql = $"""
             SELECT
@@ -63,9 +63,20 @@ internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int representativeId = await professionReader.ReadAsync(Constants.PPL, reader.GetInt32("person_id"), ProfessionIdReader.ProfessionType.Representative);
-            int billId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("bill_id"));
-            int billActionTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
+            int representativeId = await professionReader.ReadAsync(new ProfessionIdReader.ProfessionIdReaderRequest 
+            { 
+                TenantId = Constants.PPL,
+                ProfessionType = ProfessionIdReader.ProfessionType.Representative,
+                UrlId = reader.GetInt32("person_id")
+            });
+            int billId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest() {
+                TenantId = Constants.PPL,
+                UrlId = reader.GetInt32("bill_id")
+            });
+            int billActionTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                TenantId = Constants.PPL,
+                UrlId = reader.GetInt32("nameable_id")
+            });
 
             yield return new RepresentativeHouseBillAction {
                 Id = null,

@@ -4,24 +4,9 @@ using PoundPupLegacy.Models;
 using System.Data;
 
 namespace PoundPupLegacy.Readers;
-
-public class MenuItemsReader: DatabaseReader, IEnumerableDatabaseReader<MenuItemsReader, MenuItemsReader.MenuItemsRequest, UserTenantMenuItems>
+public class MenuItemsReaderFactory : IDatabaseReaderFactory<MenuItemsReader>
 {
-    public record MenuItemsRequest
-    {
-
-    }
-    private MenuItemsReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async IAsyncEnumerable<UserTenantMenuItems> ReadAsync(MenuItemsRequest request)
-    {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            yield return reader.GetFieldValue<UserTenantMenuItems>(0);
-        }
-    }
-    public static async Task<MenuItemsReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<MenuItemsReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -30,6 +15,7 @@ public class MenuItemsReader: DatabaseReader, IEnumerableDatabaseReader<MenuItem
         await command.PrepareAsync();
         return new MenuItemsReader(command);
     }
+
     const string SQL = """
         with 
         user_action as (
@@ -133,5 +119,24 @@ public class MenuItemsReader: DatabaseReader, IEnumerableDatabaseReader<MenuItem
         group by user_id, tenant_id
         """;
 
+
+}
+
+public class MenuItemsReader: EnumerableDatabaseReader<MenuItemsReader.MenuItemsRequest, UserTenantMenuItems>
+{
+    public record MenuItemsRequest
+    {
+
+    }
+    internal MenuItemsReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public override async IAsyncEnumerable<UserTenantMenuItems> ReadAsync(MenuItemsRequest request)
+    {
+        await using var reader = await _command.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
+            yield return reader.GetFieldValue<UserTenantMenuItems>(0);
+        }
+    }
 
 }

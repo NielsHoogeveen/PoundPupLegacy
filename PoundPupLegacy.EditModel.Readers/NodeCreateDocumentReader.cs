@@ -1,21 +1,13 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Common;
 using System.Data;
-using System.Data.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-
-public class NodeCreateDocumentReader<T> : NodeEditDocumentReader
-where T : class, Node
+public abstract class NodeCreateDocumentReaderFactory<T>: NodeEditDocumentReaderFactory<T>
+where T : class, IDatabaseReader
 {
-
-    private int _nodeTypeId;
-    protected NodeCreateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command)
-    {
-        _nodeTypeId = nodeTypeId;
-    }
-
-    protected async static Task<NpgsqlCommand> CreateCommand(NpgsqlConnection connection, string sql)
+    protected async Task<NpgsqlCommand> CreateCommand(NpgsqlConnection connection, string sql)
     {
         using var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -27,8 +19,17 @@ where T : class, Node
         await command.PrepareAsync();
         return command;
     }
+}
 
+public class NodeCreateDocumentReader<T> : NodeEditDocumentReader, ISingleItemDatabaseReader<NodeEditDocumentReader.NodeCreateDocumentRequest, T>
+where T : class, Node
+{
 
+    private int _nodeTypeId;
+    protected NodeCreateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command)
+    {
+        _nodeTypeId = nodeTypeId;
+    }
 
     public async Task<T> ReadAsync(NodeCreateDocumentRequest request)
     {
@@ -41,7 +42,4 @@ where T : class, Node
         var node = reader.GetFieldValue<T>(0);
         return node;
     }
-
-
-
 }

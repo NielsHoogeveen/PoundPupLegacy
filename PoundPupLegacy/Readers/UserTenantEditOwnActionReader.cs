@@ -4,32 +4,9 @@ using PoundPupLegacy.Models;
 using System.Data;
 
 namespace PoundPupLegacy.Readers;
-
-public class UserTenantEditOwnActionReader: DatabaseReader, IEnumerableDatabaseReader<UserTenantEditOwnActionReader, UserTenantEditOwnActionReader.UserTenantEditOwnActionRequest, UserTenantEditOwnAction>
+public class UserTenantEditOwnActionReaderFactory : IDatabaseReaderFactory<UserTenantEditOwnActionReader>
 {
-    public record UserTenantEditOwnActionRequest
-    {
-
-    }
-    private UserTenantEditOwnActionReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async IAsyncEnumerable<UserTenantEditOwnAction> ReadAsync(UserTenantEditOwnActionRequest request)
-    {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            var userId = reader.GetInt32(0);
-            var tenantId = reader.GetInt32(1);
-            var nodeTypeId = reader.GetInt32(2);
-            yield return  new UserTenantEditOwnAction {
-                UserId = userId,
-                TenantId = tenantId,
-                NodeTypeId = nodeTypeId,
-            };
-        }
-
-    }
-    public static async Task<UserTenantEditOwnActionReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<UserTenantEditOwnActionReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -76,5 +53,31 @@ public class UserTenantEditOwnActionReader: DatabaseReader, IEnumerableDatabaseR
         ) x
         """;
 
+
+}
+public class UserTenantEditOwnActionReader: EnumerableDatabaseReader<UserTenantEditOwnActionReader.UserTenantEditOwnActionRequest, UserTenantEditOwnAction>
+{
+    public record UserTenantEditOwnActionRequest
+    {
+
+    }
+    internal UserTenantEditOwnActionReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public override async IAsyncEnumerable<UserTenantEditOwnAction> ReadAsync(UserTenantEditOwnActionRequest request)
+    {
+        await using var reader = await _command.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
+            var userId = reader.GetInt32(0);
+            var tenantId = reader.GetInt32(1);
+            var nodeTypeId = reader.GetInt32(2);
+            yield return  new UserTenantEditOwnAction {
+                UserId = userId,
+                TenantId = tenantId,
+                NodeTypeId = nodeTypeId,
+            };
+        }
+
+    }
 
 }

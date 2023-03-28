@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
 
@@ -8,13 +9,17 @@ public class DocumentableDocumentsSearchService : IDocumentableDocumentsSearchSe
 {
 
     private readonly NpgsqlConnection _connection;
+    private readonly IDatabaseReaderFactory<DocumentableDocumentsDocumentReader> _documentableDocumentsDocumentReaderFactory;
+
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
 
     public DocumentableDocumentsSearchService(
-        NpgsqlConnection connection)
+        NpgsqlConnection connection,
+        IDatabaseReaderFactory<DocumentableDocumentsDocumentReader> documentableDocumentsDocumentReaderFactory)
     {
         _connection = connection;
+        _documentableDocumentsDocumentReaderFactory = documentableDocumentsDocumentReaderFactory;
     }
 
     public async Task<List<DocumentableDocument>> GetDocumentableDocuments(int nodeId, int userId, int tenantId, string str)
@@ -23,7 +28,7 @@ public class DocumentableDocumentsSearchService : IDocumentableDocumentsSearchSe
         List<DocumentableDocument> tags = new();
         try {
             await _connection.OpenAsync();
-            await using var reader = await DocumentableDocumentsDocumentReader.CreateAsync(_connection);
+            await using var reader = await _documentableDocumentsDocumentReaderFactory.CreateAsync(_connection);
             await foreach(var elem in reader.ReadAsync(new DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest {
                 NodeId = nodeId, 
                 UserId = userId, 

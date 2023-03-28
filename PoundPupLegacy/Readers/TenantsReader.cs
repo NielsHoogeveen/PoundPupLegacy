@@ -4,18 +4,40 @@ using PoundPupLegacy.Models;
 using System.Data;
 
 namespace PoundPupLegacy.Readers;
+public class TenantsReaderFactory : IDatabaseReaderFactory<TenantsReader>
+{
+    public async Task<TenantsReader> CreateAsync(NpgsqlConnection connection)
+    {
+        var command = connection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = SQL;
+        await command.PrepareAsync();
+        return new TenantsReader(command);
+    }
 
-public class TenantsReader: DatabaseReader, IEnumerableDatabaseReader<TenantsReader, TenantsReader.TenantsRequest, Tenant>
+    const string SQL = """
+        select
+        t.id,
+        t.domain_name,
+        t.country_id_default,
+        n.title country_name
+        from tenant t
+        join node n on n.id = t.country_id_default
+        """;
+
+}
+public class TenantsReader: EnumerableDatabaseReader<TenantsReader.TenantsRequest, Tenant>
 {
     public record TenantsRequest
     {
     }
 
-    private TenantsReader(NpgsqlCommand command) : base(command)
+    internal TenantsReader(NpgsqlCommand command) : base(command)
     {
     }
 
-    public async IAsyncEnumerable<Tenant> ReadAsync(TenantsRequest request)
+    public override async IAsyncEnumerable<Tenant> ReadAsync(TenantsRequest request)
     {
         await using var reader = await _command.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {
@@ -36,24 +58,5 @@ public class TenantsReader: DatabaseReader, IEnumerableDatabaseReader<TenantsRea
 
     }
 
-    public static async Task<TenantsReader> CreateAsync(NpgsqlConnection connection)
-    {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        await command.PrepareAsync();
-        return new TenantsReader(command);
-    }
-
-    const string SQL = """
-        select
-        t.id,
-        t.domain_name,
-        t.country_id_default,
-        n.title country_name
-        from tenant t
-        join node n on n.id = t.country_id_default
-        """;
 
 }

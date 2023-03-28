@@ -1,4 +1,6 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Common;
+using PoundPupLegacy.Readers;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
@@ -8,16 +10,22 @@ namespace PoundPupLegacy.Services.Implementation;
 internal class FetchNodeService : IFetchNodeService
 {
     private readonly NpgsqlConnection _connection;
-    public FetchNodeService(NpgsqlConnection connection)
+
+    private readonly IDatabaseReaderFactory<NodeDocumentReader> _nodeDocumentReaderFactory;
+    public FetchNodeService(
+        NpgsqlConnection connection,
+        IDatabaseReaderFactory<NodeDocumentReader> nodeDocumentReaderFactory
+        )
     {
         _connection = connection;
+        _nodeDocumentReaderFactory = nodeDocumentReaderFactory;
     }
 
     public async Task<Node?> FetchNode(int urlId, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await NodeDocumentReader.CreateAsync(_connection);
+            await using var reader = await _nodeDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeDocumentReader.NodeDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,

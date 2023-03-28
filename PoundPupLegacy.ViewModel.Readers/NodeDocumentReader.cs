@@ -3,24 +3,10 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class NodeDocumentReader : DatabaseReader, ISingleItemDatabaseReader<NodeDocumentReader, NodeDocumentReader.NodeDocumentRequest, Node>
+public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentReader>
 {
-
-    public record NodeDocumentRequest
+    public async Task<NodeDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
-        public int UrlId { get; init; }
-        public int UserId { get; init; }
-        public int TenantId { get; init; }
-    }
-    private NodeDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    public static async Task<NodeDocumentReader> CreateAsync(NpgsqlConnection connection)
-    {
-
-
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
@@ -32,71 +18,6 @@ public class NodeDocumentReader : DatabaseReader, ISingleItemDatabaseReader<Node
         return new NodeDocumentReader(command);
 
     }
-
-    public async Task<Node> ReadAsync(NodeDocumentRequest request)
-    {
-        _command.Parameters["url_id"].Value = request.UrlId;
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        if (!reader.HasRows) {
-            return null;
-        }
-        var node_type_id = reader.GetInt32(0);
-        var text = reader.IsDBNull(1) ? null : reader.GetString(1);
-        Node? node = node_type_id switch {
-            1 => reader.GetFieldValue<BasicNameable>(1),
-            2 => reader.GetFieldValue<BasicNameable>(1),
-            3 => reader.GetFieldValue<BasicNameable>(1),
-            4 => reader.GetFieldValue<BasicNameable>(1),
-            5 => reader.GetFieldValue<BasicNameable>(1),
-            6 => reader.GetFieldValue<BasicNameable>(1),
-            7 => reader.GetFieldValue<BasicNameable>(1),
-            8 => reader.GetFieldValue<BasicNameable>(1),
-            9 => reader.GetFieldValue<BasicNameable>(1),
-            10 => reader.GetFieldValue<Document>(1),
-            11 => reader.GetFieldValue<GlobalRegion>(1),
-            12 => reader.GetFieldValue<GlobalRegion>(1),
-            13 => reader.GetFieldValue<BasicCountry>(1),
-            14 => reader.GetFieldValue<BoundCountry>(1),
-            15 => reader.GetFieldValue<CountryAndSubdivision>(1),
-            16 => reader.GetFieldValue<CountryAndSubdivision>(1),
-            17 => reader.GetFieldValue<FormalSubdivision>(1),
-            18 => reader.GetFieldValue<InformalSubdivision>(1),
-            19 => reader.GetFieldValue<FormalSubdivision>(1),
-            20 => reader.GetFieldValue<BindingCountry>(1),
-            21 => reader.GetFieldValue<CountryAndSubdivision>(1),
-            22 => reader.GetFieldValue<FormalSubdivision>(1),
-            23 => reader.GetFieldValue<Organization>(1),
-            24 => reader.GetFieldValue<Person>(1),
-            26 => reader.GetFieldValue<AbuseCase>(1),
-            27 => reader.GetFieldValue<BasicNameable>(1),
-            28 => reader.GetFieldValue<BasicNameable>(1),
-            29 => reader.GetFieldValue<ChildTraffickingCase>(1),
-            30 => reader.GetFieldValue<CoercedAdoptionCase>(1),
-            31 => reader.GetFieldValue<DeportationCase>(1),
-            32 => reader.GetFieldValue<FathersRightsViolationCase>(1),
-            33 => reader.GetFieldValue<WrongfulMedicationCase>(1),
-            34 => reader.GetFieldValue<WrongfulRemovalCase>(1),
-            35 => reader.GetFieldValue<BlogPost>(1),
-            36 => reader.GetFieldValue<Article>(1),
-            37 => reader.GetFieldValue<Discussion>(1),
-            39 => reader.GetFieldValue<BasicNameable>(1),
-            40 => reader.GetFieldValue<BasicNameable>(1),
-            41 => reader.GetFieldValue<BasicNameable>(1),
-            42 => reader.GetFieldValue<Page>(1),
-            44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
-            50 => reader.GetFieldValue<BasicNameable>(1),
-            51 => reader.GetFieldValue<BasicNameable>(1),
-            53 => reader.GetFieldValue<SingleQuestionPoll>(1),
-            54 => reader.GetFieldValue<MultiQuestionPoll>(1),
-            58 => reader.GetFieldValue<BasicNameable>(1),
-            _ => null
-        };
-        return node!;
-    }
-
     const string SQL = $"""
             WITH 
             {AUTHENTICATED_NODE},
@@ -4097,4 +4018,84 @@ public class NodeDocumentReader : DatabaseReader, ISingleItemDatabaseReader<Node
             WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
         ) 
         """;
+
+}
+public class NodeDocumentReader : SingleItemDatabaseReader<NodeDocumentReader.NodeDocumentRequest, Node>
+{
+
+    public record NodeDocumentRequest
+    {
+        public int UrlId { get; init; }
+        public int UserId { get; init; }
+        public int TenantId { get; init; }
+    }
+    internal NodeDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async Task<Node> ReadAsync(NodeDocumentRequest request)
+    {
+        _command.Parameters["url_id"].Value = request.UrlId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        await using var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        if (!reader.HasRows) {
+            return null;
+        }
+        var node_type_id = reader.GetInt32(0);
+        var text = reader.IsDBNull(1) ? null : reader.GetString(1);
+        Node? node = node_type_id switch {
+            1 => reader.GetFieldValue<BasicNameable>(1),
+            2 => reader.GetFieldValue<BasicNameable>(1),
+            3 => reader.GetFieldValue<BasicNameable>(1),
+            4 => reader.GetFieldValue<BasicNameable>(1),
+            5 => reader.GetFieldValue<BasicNameable>(1),
+            6 => reader.GetFieldValue<BasicNameable>(1),
+            7 => reader.GetFieldValue<BasicNameable>(1),
+            8 => reader.GetFieldValue<BasicNameable>(1),
+            9 => reader.GetFieldValue<BasicNameable>(1),
+            10 => reader.GetFieldValue<Document>(1),
+            11 => reader.GetFieldValue<GlobalRegion>(1),
+            12 => reader.GetFieldValue<GlobalRegion>(1),
+            13 => reader.GetFieldValue<BasicCountry>(1),
+            14 => reader.GetFieldValue<BoundCountry>(1),
+            15 => reader.GetFieldValue<CountryAndSubdivision>(1),
+            16 => reader.GetFieldValue<CountryAndSubdivision>(1),
+            17 => reader.GetFieldValue<FormalSubdivision>(1),
+            18 => reader.GetFieldValue<InformalSubdivision>(1),
+            19 => reader.GetFieldValue<FormalSubdivision>(1),
+            20 => reader.GetFieldValue<BindingCountry>(1),
+            21 => reader.GetFieldValue<CountryAndSubdivision>(1),
+            22 => reader.GetFieldValue<FormalSubdivision>(1),
+            23 => reader.GetFieldValue<Organization>(1),
+            24 => reader.GetFieldValue<Person>(1),
+            26 => reader.GetFieldValue<AbuseCase>(1),
+            27 => reader.GetFieldValue<BasicNameable>(1),
+            28 => reader.GetFieldValue<BasicNameable>(1),
+            29 => reader.GetFieldValue<ChildTraffickingCase>(1),
+            30 => reader.GetFieldValue<CoercedAdoptionCase>(1),
+            31 => reader.GetFieldValue<DeportationCase>(1),
+            32 => reader.GetFieldValue<FathersRightsViolationCase>(1),
+            33 => reader.GetFieldValue<WrongfulMedicationCase>(1),
+            34 => reader.GetFieldValue<WrongfulRemovalCase>(1),
+            35 => reader.GetFieldValue<BlogPost>(1),
+            36 => reader.GetFieldValue<Article>(1),
+            37 => reader.GetFieldValue<Discussion>(1),
+            39 => reader.GetFieldValue<BasicNameable>(1),
+            40 => reader.GetFieldValue<BasicNameable>(1),
+            41 => reader.GetFieldValue<BasicNameable>(1),
+            42 => reader.GetFieldValue<Page>(1),
+            44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
+            50 => reader.GetFieldValue<BasicNameable>(1),
+            51 => reader.GetFieldValue<BasicNameable>(1),
+            53 => reader.GetFieldValue<SingleQuestionPoll>(1),
+            54 => reader.GetFieldValue<MultiQuestionPoll>(1),
+            58 => reader.GetFieldValue<BasicNameable>(1),
+            _ => null
+        };
+        return node!;
+    }
+
+
 }

@@ -3,23 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class UnitedStatesCongresssDocumentReader : DatabaseReader, ISingleItemDatabaseReader<UnitedStatesCongresssDocumentReader, UnitedStatesCongresssDocumentReader.UnitedStatesCongresssDocumentRequest, UnitedStatesCongress>
+public class UnitedStatesCongresssDocumentReaderFactory : IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader>
 {
-    public record UnitedStatesCongresssDocumentRequest
-    {
-    }
-    private UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async Task<UnitedStatesCongress> ReadAsync(UnitedStatesCongresssDocumentRequest request)
-    {
-        var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        return reader.GetFieldValue<UnitedStatesCongress>(0);
-
-    }
-    public static async Task<UnitedStatesCongresssDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<UnitedStatesCongresssDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -87,5 +73,22 @@ public class UnitedStatesCongresssDocumentReader : DatabaseReader, ISingleItemDa
         	) house_meetings
         ) x
         """;
+
+}
+public class UnitedStatesCongresssDocumentReader : SingleItemDatabaseReader<UnitedStatesCongresssDocumentReader.UnitedStatesCongresssDocumentRequest, UnitedStatesCongress>
+{
+    public record UnitedStatesCongresssDocumentRequest
+    {
+    }
+    internal UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public override async Task<UnitedStatesCongress> ReadAsync(UnitedStatesCongresssDocumentRequest request)
+    {
+        var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        return reader.GetFieldValue<UnitedStatesCongress>(0);
+
+    }
 
 }

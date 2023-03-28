@@ -3,26 +3,9 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class NodeEditDocumentReader : DatabaseReader
+public abstract class NodeEditDocumentReaderFactory<T>: IDatabaseReaderFactory<T>
+where T : class, IDatabaseReader
 {
-    public record NodeUpdateDocumentRequest
-    {
-        public int UrlId { get; init; }
-        public int UserId { get; init; }
-        public int TenantId { get; init; }
-
-    }
-    public record NodeCreateDocumentRequest
-    {
-        public int NodeTypeId { get; init; }
-        public int UserId { get; init; }
-        public int TenantId { get; init; }
-
-    }
-
-    protected NodeEditDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
     protected const string CTE_EDIT = $"""
         WITH
         {TENANT_NODES_DOCUMENT},
@@ -461,5 +444,28 @@ public class NodeEditDocumentReader : DatabaseReader
         )
         """;
 
+    public abstract Task<T> CreateAsync(NpgsqlConnection connection);
+}
+
+public class NodeEditDocumentReader : DatabaseReader
+{
+    public record NodeUpdateDocumentRequest
+    {
+        public int UrlId { get; init; }
+        public int UserId { get; init; }
+        public int TenantId { get; init; }
+
+    }
+    public record NodeCreateDocumentRequest
+    {
+        public int NodeTypeId { get; init; }
+        public int UserId { get; init; }
+        public int TenantId { get; init; }
+
+    }
+
+    protected NodeEditDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
 
 }

@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
@@ -8,17 +9,22 @@ namespace PoundPupLegacy.Services.Implementation;
 internal class FetchCasesService : IFetchCasesService
 {
     private NpgsqlConnection _connection;
+    private readonly IDatabaseReaderFactory<CasesDocumentReader> _casesDocumentReaderFactory;
 
-    public FetchCasesService(NpgsqlConnection connection)
+    public FetchCasesService(
+        NpgsqlConnection connection,
+        IDatabaseReaderFactory<CasesDocumentReader> casesDocumentReaderFactory
+        )
     {
         _connection = connection;
+        _casesDocumentReaderFactory = casesDocumentReaderFactory;
     }
 
     public async Task<Cases> FetchCases(int limit, int offset, int tenantId, int userId, CaseType caseType)
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await CasesDocumentReader.CreateAsync(_connection);
+            await using var reader = await _casesDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new CasesDocumentReader.CasesDocumentRequest {
                 Limit = limit,
                 Offset = offset,

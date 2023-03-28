@@ -3,13 +3,11 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class SimpleTextNodeCreateDocumentReader<T> : NodeCreateDocumentReader<T>
-    where T: class, SimpleTextNode
-{
-    protected SimpleTextNodeCreateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
-    {
-    }
 
+
+public abstract class SimpleTextNodeCreateDocumentReaderFactory<T>: NodeCreateDocumentReaderFactory<T>
+    where T : class, IDatabaseReader
+{
     protected const string SQL = $"""
             {CTE_CREATE}
             select
@@ -36,6 +34,14 @@ public class SimpleTextNodeCreateDocumentReader<T> : NodeCreateDocumentReader<T>
                 ) document
         """;
 
+}
+
+public class SimpleTextNodeCreateDocumentReader<T> : NodeCreateDocumentReader<T>
+    where T: class, SimpleTextNode
+{
+    protected SimpleTextNodeCreateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
+    {
+    }
 
 }
 

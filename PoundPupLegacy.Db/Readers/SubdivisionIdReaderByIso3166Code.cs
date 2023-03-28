@@ -1,10 +1,9 @@
 ﻿using System.Data;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class SubdivisionIdReaderByIso3166Code : DatabaseReader, IDatabaseReader<SubdivisionIdReaderByIso3166Code>
+public sealed class SubdivisionIdReaderByIso3166CodeFactory : IDatabaseReaderFactory<SubdivisionIdReaderByIso3166Code>
 {
-    public static async Task<SubdivisionIdReaderByIso3166Code> CreateAsync(NpgsqlConnection connection)
+    public async Task<SubdivisionIdReaderByIso3166Code> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             SELECT id
@@ -24,9 +23,13 @@ public sealed class SubdivisionIdReaderByIso3166Code : DatabaseReader, IDatabase
 
     }
 
+}
+public sealed class SubdivisionIdReaderByIso3166Code : SingleItemDatabaseReader<string, int>
+{
+
     internal SubdivisionIdReaderByIso3166Code(NpgsqlCommand command) : base(command) { }
 
-    public async Task<int> ReadAsync(string code)
+    public override async Task<int> ReadAsync(string code)
     {
         if (code is null) {
             throw new ArgumentNullException(nameof(code));

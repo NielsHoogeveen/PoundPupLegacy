@@ -4,47 +4,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class BlogDocumentReader : DatabaseReader, ISingleItemDatabaseReader<BlogDocumentReader, BlogDocumentReader.BlogDocumentRequest, Blog>
+public class BlogDocumentReaderFactory : IDatabaseReaderFactory<BlogDocumentReader>
 {
-    public record BlogDocumentRequest
-    {
-        public int PublisherId { get; init; }
-        public int TenantId { get; init; }
-        public int StartIndex { get; init; }
-        public int Length { get; init; }
-    }
-    private BlogDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async Task<Blog> ReadAsync(BlogDocumentRequest request)
-    {
-        string MakeName(string name)
-        {
-            if (name.EndsWith("s")) {
-                return $"{name}' blog";
-            }
-            return $"{name}'s blog";
-        }
-        _command.Parameters["publisher_id"].Value = request.PublisherId;
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["length"].Value = request.Length;
-        _command.Parameters["start_index"].Value = request.StartIndex;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var blog = reader.GetFieldValue<Blog>(0);
-        var entries = blog.BlogPostTeasers.Select(x => new BlogPostTeaser {
-            Id = x.Id,
-            Authoring = x.Authoring,
-            Title = x.Title,
-            Text = x.Text
-        });
-        blog.Name = MakeName(blog.Name);
-        blog.BlogPostTeasers = entries.ToList();
-        return blog!;
-    }
-
-    public static async Task<BlogDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<BlogDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -117,5 +79,46 @@ public class BlogDocumentReader : DatabaseReader, ISingleItemDatabaseReader<Blog
                 WHERE p.id = @publisher_id AND tn.publication_status_id = 1
                 GROUP BY p.name
             """;
+
+}
+public class BlogDocumentReader : SingleItemDatabaseReader<BlogDocumentReader.BlogDocumentRequest, Blog>
+{
+    public record BlogDocumentRequest
+    {
+        public int PublisherId { get; init; }
+        public int TenantId { get; init; }
+        public int StartIndex { get; init; }
+        public int Length { get; init; }
+    }
+    internal BlogDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public override async Task<Blog> ReadAsync(BlogDocumentRequest request)
+    {
+        string MakeName(string name)
+        {
+            if (name.EndsWith("s")) {
+                return $"{name}' blog";
+            }
+            return $"{name}'s blog";
+        }
+        _command.Parameters["publisher_id"].Value = request.PublisherId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["length"].Value = request.Length;
+        _command.Parameters["start_index"].Value = request.StartIndex;
+        await using var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        var blog = reader.GetFieldValue<Blog>(0);
+        var entries = blog.BlogPostTeasers.Select(x => new BlogPostTeaser {
+            Id = x.Id,
+            Authoring = x.Authoring,
+            Title = x.Title,
+            Text = x.Text
+        });
+        blog.Name = MakeName(blog.Name);
+        blog.BlogPostTeasers = entries.ToList();
+        return blog!;
+    }
+
 
 }

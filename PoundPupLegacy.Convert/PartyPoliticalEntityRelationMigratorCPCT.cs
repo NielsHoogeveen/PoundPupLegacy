@@ -88,8 +88,16 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
             var id = reader.GetInt32("id");
 
             var (partyId, partyPublicationStatusId) = await GetNodeId(reader.GetInt32("party_id"));
-            int politicalEntityId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("political_entity_id"));
-            int partyPpoliticalEntityTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
+            int politicalEntityId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                UrlId = reader.GetInt32("political_entity_id"),
+                TenantId = Constants.PPL
+            });
+            int partyPpoliticalEntityTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                UrlId = reader.GetInt32("nameable_id"),
+                TenantId = Constants.PPL
+            });
 
             var tenantNodes = new List<TenantNode>
             {

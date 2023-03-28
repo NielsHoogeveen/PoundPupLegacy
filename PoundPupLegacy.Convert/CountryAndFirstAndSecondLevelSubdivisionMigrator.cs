@@ -13,11 +13,19 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
 
     private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries()
     {
-        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
-        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+        await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
 
-        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
-        var subdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Overseas collectivity"))!.NameableId;
+        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest 
+        { 
+            OwnerId = Constants.OWNER_GEOGRAPHY,
+            Name = "Subdivision type"
+        });
+        var subdivisionTypeId = (await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest 
+        { 
+            VocabularyId = vocabularyId,
+            Name = "Overseas collectivity"
+        }))!.NameableId;
 
         yield return new CountryAndFirstAndSecondLevelSubdivision {
             Id = null,
@@ -62,13 +70,25 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                     ParentNames = new List<string> { "Caribbean" },
                 }
             },
-            SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, 3809),
-            CountryId = await _nodeIdReader.ReadAsync(Constants.PPL, 4018),
+            SecondLevelRegionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 3808
+            }),
+            CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest() 
+            {
+                TenantId = Constants.PPL,
+                UrlId = 4018
+            }),
             ISO3166_1_Code = "BL",
             ISO3166_2_Code = "FR-BL",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41213),
+            HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 41213
+            }),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -120,13 +140,24 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                         ParentNames = new List<string>{ "Caribbean" },
                     }
                 },
-            SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, 3809),
-            CountryId = await _nodeIdReader.ReadAsync(Constants.PPL, 4018),
+            SecondLevelRegionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 3809
+            }),
+            CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 4018
+            }),
             ISO3166_1_Code = "MF",
             ISO3166_2_Code = "FR-MF",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41213),
+            HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest() {
+                TenantId = Constants.PPL,
+                UrlId = 41213
+            }),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -178,13 +209,24 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                         ParentNames = new List<string>{ "Southern Africa" },
                     }
                 },
-            SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, 3828),
-            CountryId = await _nodeIdReader.ReadAsync(Constants.PPL, 4018),
+            SecondLevelRegionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 3828
+            }),
+            CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest() {
+                TenantId = Constants.PPL,
+                UrlId = 4018
+            }),
             ISO3166_1_Code = "TF",
             ISO3166_2_Code = "FR-TF",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41213),
+            HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 41213
+            }),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -202,11 +244,18 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
     }
     private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision()
     {
-        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
-        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+        await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
 
-        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
-        var subdivisionTypeId = (await termReader.ReadAsync(vocabularyId, "Overseas collectivity"))!.NameableId;
+        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest 
+        { 
+            OwnerId = Constants.OWNER_GEOGRAPHY,
+            Name = "Subdivision type"
+        });
+        var subdivisionTypeId = (await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest {
+            Name = "Overseas collectivity",
+            VocabularyId = vocabularyId
+        })).NameableId;
 
         var sql = $"""
             SELECT
@@ -298,16 +347,28 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                 NodeTypeId = 16,
                 Description = "",
                 VocabularyNames = vocabularyNames,
-                SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("second_level_region_id")),
+                SecondLevelRegionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = reader.GetInt32("second_level_region_id")
+                }),
                 ISO3166_1_Code = id == 3847 ? "NE" :
                                  id == 4010 ? "RS" :
                                  id == 4014 ? "XK" :
                                  reader.GetString("iso_3166_code"),
                 ISO3166_2_Code = GetISO3166Code2ForCountry(id),
-                CountryId = await _nodeIdReader.ReadAsync(Constants.PPL, GetSupervisingCountryId(id)),
+                CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = GetSupervisingCountryId(id)
+                }),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41213),
+                HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = 41213
+                }),
                 ResidencyRequirements = null,
                 AgeRequirements = null,
                 HealthRequirements = null,

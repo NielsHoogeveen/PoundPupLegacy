@@ -2,34 +2,11 @@
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using System.Data;
-using System.Data.Common;
 
 namespace PoundPupLegacy.Readers;
-
-public class TenantNodesReader: DatabaseReader, IEnumerableDatabaseReader<TenantNodesReader, TenantNodesReader.TenantNodesRequest, TenantNode>
+public class TenantNodesReaderFactory : IDatabaseReaderFactory<TenantNodesReader>
 {
-    public record TenantNodesRequest
-    {
-
-    }
-    private TenantNodesReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    public async IAsyncEnumerable<TenantNode> ReadAsync(TenantNodesRequest request)
-    {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            yield return new TenantNode {
-                TenantId = reader.GetInt32(0),
-                UrlId = reader.GetInt32(1),
-                UrlPath = reader.GetString(2)
-            };
-
-        }
-    }
-
-    public async static Task<TenantNodesReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<TenantNodesReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -46,5 +23,30 @@ public class TenantNodesReader: DatabaseReader, IEnumerableDatabaseReader<Tenant
         from tenant_node tn 
         where tn.url_path is not null
         """;
+
+
+}
+public class TenantNodesReader: EnumerableDatabaseReader<TenantNodesReader.TenantNodesRequest, TenantNode>
+{
+    public record TenantNodesRequest
+    {
+
+    }
+    internal TenantNodesReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async IAsyncEnumerable<TenantNode> ReadAsync(TenantNodesRequest request)
+    {
+        await using var reader = await _command.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
+            yield return new TenantNode {
+                TenantId = reader.GetInt32(0),
+                UrlId = reader.GetInt32(1),
+                UrlPath = reader.GetString(2)
+            };
+
+        }
+    }
 
 }

@@ -86,7 +86,11 @@ internal sealed class ChildTraffickingCaseMigrator : PPLMigrator
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
-                CountryIdFrom = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("country_id_from")),
+                CountryIdFrom = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = reader.GetInt32("country_id_from")
+                }),
                 FileIdTileImage = null,
             };
             yield return country;

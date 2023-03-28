@@ -3,23 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class BlogsDocumentReader : DatabaseReader, ISingleItemDatabaseReader<BlogsDocumentReader, int, List<BlogListEntry>>
+public class BlogsDocumentReaderFactory : IDatabaseReaderFactory<BlogsDocumentReader>
 {
-    private BlogsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    public async Task<List<BlogListEntry>> ReadAsync(int tenantId)
-    {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);
-        return blogs!;
-    }
-
-    public static async Task<BlogsDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<BlogsDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -60,5 +46,22 @@ public class BlogsDocumentReader : DatabaseReader, ISingleItemDatabaseReader<Blo
                 order by COUNT(n.id) desc, u.created_date_time 
             ) b
             """;
+
+
+}
+public class BlogsDocumentReader : SingleItemDatabaseReader<int, List<BlogListEntry>>
+{
+    internal BlogsDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async Task<List<BlogListEntry>> ReadAsync(int tenantId)
+    {
+        _command.Parameters["tenant_id"].Value = tenantId;
+        await using var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);
+        return blogs!;
+    }
 
 }

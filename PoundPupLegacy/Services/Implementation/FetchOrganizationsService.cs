@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
@@ -9,11 +10,13 @@ namespace PoundPupLegacy.Services.Implementation;
 internal class FetchOrganizationsService : IFetchOrganizationsService
 {
     private readonly NpgsqlConnection _connection;
-
+    private readonly IDatabaseReaderFactory<OrganizationsDocumentReader> _organizationsDocumentReaderFactory;
     public FetchOrganizationsService(
-        NpgsqlConnection connection)
+        NpgsqlConnection connection,
+        IDatabaseReaderFactory<OrganizationsDocumentReader> organizationsDocumentReaderFactory)
     {
         _connection = connection;
+        _organizationsDocumentReaderFactory = organizationsDocumentReaderFactory;
     }
 
     public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
@@ -21,7 +24,7 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
         
         try {
             await _connection.OpenAsync();
-            await using OrganizationsDocumentReader reader = await OrganizationsDocumentReader.CreateAsync(_connection); 
+            await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection); 
             return await reader.ReadAsync(new OrganizationsDocumentReader.OrganizationsDocumentRequest { 
                 UserId = userId,
                 TenantId = tenantId,

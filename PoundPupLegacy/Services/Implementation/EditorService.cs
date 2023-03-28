@@ -15,25 +15,53 @@ public class EditorService : IEditorService
     private readonly INodeCacheService _nodeCacheService;
     private readonly ITextService _textService;
     private readonly ILogger<EditorService> _logger;
+    private readonly IDatabaseReaderFactory<ArticleCreateDocumentReader> _articleCreateDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<BlogPostCreateDocumentReader> _blogPostCreateDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<DiscussionCreateDocumentReader> _discussionCreateDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<SubdivisionListItemsReader> _subdivisionListItemsReaderFactory;
+    private readonly IDatabaseReaderFactory<ArticleUpdateDocumentReader> _articleUpdateDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<BlogPostUpdateDocumentReader> _blogPostUpdateDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<DiscussionUpdateDocumentReader> _discussionUpdateDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<DocumentUpdateDocumentReader> _documentUpdateDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<OrganizationUpdateDocumentReader> _organizationUpdateDocumentReaderFactory;
     public EditorService(
     NpgsqlConnection connection,
     ISiteDataService siteDataService,
     INodeCacheService nodeCacheService,
     ITextService textService,
-    ILogger<EditorService> logger)
+    ILogger<EditorService> logger,
+    IDatabaseReaderFactory<ArticleCreateDocumentReader> articleCreateDocumentReaderFactory,
+    IDatabaseReaderFactory<BlogPostCreateDocumentReader> blogPostCreateDocumentReaderFactory,
+    IDatabaseReaderFactory<DiscussionCreateDocumentReader> discussionCreateDocumentReaderFactory,
+    IDatabaseReaderFactory<SubdivisionListItemsReader> subdivisionListItemsReaderFactory,
+    IDatabaseReaderFactory<ArticleUpdateDocumentReader> articleUpdateDocumentReaderFactory,
+    IDatabaseReaderFactory<BlogPostUpdateDocumentReader> blogPostUpdateDocumentReaderFactory,
+    IDatabaseReaderFactory<DiscussionUpdateDocumentReader> discussionUpdateDocumentReaderFactory,
+    IDatabaseReaderFactory<DocumentUpdateDocumentReader> documentUpdateDocumentReaderFactory,
+    IDatabaseReaderFactory<OrganizationUpdateDocumentReader> organizationUpdateDocumentReaderFactory
+    )
     {
         _connection = connection;
         _siteDateService = siteDataService;
         _nodeCacheService = nodeCacheService;
         _textService = textService;
         _logger = logger;
+        _articleCreateDocumentReaderFactory = articleCreateDocumentReaderFactory;
+        _blogPostCreateDocumentReaderFactory = blogPostCreateDocumentReaderFactory;
+        _discussionCreateDocumentReaderFactory = discussionCreateDocumentReaderFactory;
+        _subdivisionListItemsReaderFactory = subdivisionListItemsReaderFactory;
+        _articleUpdateDocumentReaderFactory = articleUpdateDocumentReaderFactory;
+        _blogPostUpdateDocumentReaderFactory = blogPostUpdateDocumentReaderFactory;
+        _discussionUpdateDocumentReaderFactory = discussionUpdateDocumentReaderFactory;
+        _documentUpdateDocumentReaderFactory = documentUpdateDocumentReaderFactory;
+        _organizationUpdateDocumentReaderFactory = organizationUpdateDocumentReaderFactory;
     }
 
     public async Task<List<SubdivisionListItem>> GetSubdivisions(int countryId)
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await SubdivisionListItemsReader.CreateAsync(_connection);
+            await using var reader = await _subdivisionListItemsReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(countryId);
         }
         finally {
@@ -47,7 +75,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await BlogPostCreateDocumentReader.CreateAsync(_connection);
+            await using var reader = await _blogPostCreateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
                 NodeTypeId = Constants.BLOG_POST,
                 UserId = userId,
@@ -64,7 +92,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await ArticleCreateDocumentReader.CreateAsync(_connection);
+            await using var reader = await _articleCreateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
                 NodeTypeId = Constants.ARTICLE,
                 UserId = userId,
@@ -81,7 +109,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await DiscussionCreateDocumentReader.CreateAsync(_connection);
+            await using var reader = await _discussionCreateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
                 NodeTypeId = Constants.DISCUSSION,
                 UserId = userId,
@@ -101,7 +129,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await BlogPostUpdateDocumentReader.CreateAsync(_connection);
+            await using var reader = await _blogPostUpdateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
                 UrlId = urlId, 
                 UserId = userId, 
@@ -120,7 +148,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await ArticleUpdateDocumentReader.CreateAsync(_connection);
+            await using var reader = await _articleUpdateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
                 UrlId = urlId, 
                 UserId = userId, 
@@ -138,7 +166,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await DiscussionUpdateDocumentReader.CreateAsync(_connection);
+            await using var reader = await _discussionUpdateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
                 UrlId = urlId, 
                 UserId = userId, 
@@ -156,7 +184,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await DocumentUpdateDocumentReader.CreateAsync(_connection);
+            await using var reader = await _documentUpdateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
                 UrlId = urlId, 
                 UserId = userId, 
@@ -174,7 +202,7 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await OrganizationUpdateDocumentReader.CreateAsync(_connection);
+            await using var reader = await _organizationUpdateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
                 UrlId = urlId, 
                 UserId = userId, 

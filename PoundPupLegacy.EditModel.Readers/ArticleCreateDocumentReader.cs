@@ -3,18 +3,21 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class ArticleCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Article>, ISingleItemDatabaseReader<ArticleCreateDocumentReader, NodeEditDocumentReader.NodeCreateDocumentRequest, Article>
+public class ArticleCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<ArticleCreateDocumentReader>
 {
-    protected ArticleCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
-    {
-    }
-
-    public static async Task<ArticleCreateDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public override async Task<ArticleCreateDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateCommand(connection, SQL);
         return new ArticleCreateDocumentReader(command);
     }
 
 }
+public class ArticleCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Article>
+{
+    internal ArticleCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
+    {
+    }
+}
+
 
 

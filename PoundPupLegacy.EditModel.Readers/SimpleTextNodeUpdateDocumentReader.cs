@@ -3,13 +3,9 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class SimpleTextNodeUpdateDocumentReader<T> : NodeUpdateDocumentReader<T>
-    where T: class, SimpleTextNode
+public abstract class SimpleTextNodeUpdateDocumentReaderFactory<T> : NodeUpdateDocumentReaderFactory<T>
+    where T : class, IDatabaseReader
 {
-    protected SimpleTextNodeUpdateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
-    {
-    }
-
     protected const string SQL = $"""
             {CTE_EDIT}
             select
@@ -51,6 +47,16 @@ public class SimpleTextNodeUpdateDocumentReader<T> : NodeUpdateDocumentReader<T>
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
+
+
+}
+
+public class SimpleTextNodeUpdateDocumentReader<T> : NodeUpdateDocumentReader<T>
+    where T: class, SimpleTextNode
+{
+    protected SimpleTextNodeUpdateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
+    {
+    }
 
 
 }

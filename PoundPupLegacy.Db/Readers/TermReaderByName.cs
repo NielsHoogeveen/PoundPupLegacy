@@ -1,10 +1,10 @@
 ﻿using System.Data;
+using static PoundPupLegacy.Db.Readers.TermReaderByName;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class TermReaderByName : DatabaseReader, IDatabaseReader<TermReaderByName>
+public sealed class TermReaderByNameFactory : IDatabaseReaderFactory<TermReaderByName>
 {
-    public static async Task<TermReaderByName> CreateAsync(NpgsqlConnection connection)
+    public async Task<TermReaderByName> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             SELECT id, nameable_id FROM term WHERE vocabulary_id = @vocabulary_id AND name = @name
@@ -23,29 +23,39 @@ public sealed class TermReaderByName : DatabaseReader, IDatabaseReader<TermReade
 
     }
 
+}
+public sealed class TermReaderByName : SingleItemDatabaseReader<TermReaderByNameRequest, Term>
+{
+    public record TermReaderByNameRequest
+    {
+        public required int VocabularyId { get; init; }
+        public required string Name { get; init; }
+
+    }
+
     internal TermReaderByName(NpgsqlCommand command) : base(command) { }
 
-    public async Task<Term> ReadAsync(int vocabularyId, string name)
+    public override async Task<Term> ReadAsync(TermReaderByNameRequest request)
     {
-        if (name is null) {
-            throw new ArgumentNullException(nameof(name));
+        if (request.Name is null) {
+            throw new ArgumentNullException(nameof(request.Name));
         }
-        _command.Parameters["vocabulary_id"].Value = vocabularyId;
-        _command.Parameters["name"].Value = name.Trim();
+        _command.Parameters["vocabulary_id"].Value = request.VocabularyId;
+        _command.Parameters["name"].Value = request.Name.Trim();
 
         var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {
             await reader.ReadAsync();
             var term = new Term {
                 Id = reader.GetInt32("id"),
-                Name = name,
-                VocabularyId = vocabularyId,
+                Name = request.Name,
+                VocabularyId = request.VocabularyId,
                 NameableId = reader.GetInt32("nameable_id")
             };
             await reader.CloseAsync();
             return term;
         }
         await reader.CloseAsync();
-        throw new Exception($"term {name} cannot be found in vocabulary {vocabularyId}");
+        throw new Exception($"term {request.Name} cannot be found in vocabulary {request.VocabularyId}");
     }
 }

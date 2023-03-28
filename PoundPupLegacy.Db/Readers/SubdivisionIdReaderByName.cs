@@ -1,10 +1,9 @@
 ﻿using System.Data;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class SubdivisionIdReaderByName : DatabaseReader, IDatabaseReader<SubdivisionIdReaderByName>
+public sealed class SubdivisionIdReaderByNameFactory : IDatabaseReaderFactory<SubdivisionIdReaderByName>
 {
-    public static async Task<SubdivisionIdReaderByName> CreateAsync(NpgsqlConnection connection)
+    public async Task<SubdivisionIdReaderByName> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             SELECT id
@@ -26,15 +25,24 @@ public sealed class SubdivisionIdReaderByName : DatabaseReader, IDatabaseReader<
 
     }
 
+}
+public sealed class SubdivisionIdReaderByName : SingleItemDatabaseReader<SubdivisionIdReaderByName.SubdivisionIdReaderByNameRequest, int>
+{
+    public record SubdivisionIdReaderByNameRequest
+    {
+        public required int CountryId { get; init; }
+        public required string Name { get; init; }
+
+    }
     internal SubdivisionIdReaderByName(NpgsqlCommand command) : base(command) { }
 
-    public async Task<int> ReadAsync(int countryId, string name)
+    public override async Task<int> ReadAsync(SubdivisionIdReaderByNameRequest request)
     {
-        if (name is null) {
-            throw new ArgumentNullException(nameof(name));
+        if (request.Name is null) {
+            throw new ArgumentNullException(nameof(request.Name));
         }
-        _command.Parameters["country_id"].Value = countryId;
-        _command.Parameters["name"].Value = name;
+        _command.Parameters["country_id"].Value = request.CountryId;
+        _command.Parameters["name"].Value = request.Name;
 
         var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {
@@ -44,6 +52,6 @@ public sealed class SubdivisionIdReaderByName : DatabaseReader, IDatabaseReader<
             return result;
         }
         await reader.CloseAsync();
-        throw new Exception($"subdivision with code {name} cannot be found");
+        throw new Exception($"subdivision with code {request.Name} cannot be found");
     }
 }

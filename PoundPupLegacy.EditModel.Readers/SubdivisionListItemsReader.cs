@@ -3,26 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
-
-public class SubdivisionListItemsReader : DatabaseReader, ISingleItemDatabaseReader<SubdivisionListItemsReader, int, List<SubdivisionListItem>>
+public class SubdivisionListItemsReaderFactory : IDatabaseReaderFactory<SubdivisionListItemsReader>
 {
-    private SubdivisionListItemsReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async Task<List<SubdivisionListItem>> ReadAsync(int countryId)
-    {
-        _command.Parameters["country_id"].Value = countryId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        if (!reader.HasRows) {
-            return new List<SubdivisionListItem>();
-        }
-        var text = reader.GetString(0); ;
-        var subdivisions = reader.GetFieldValue<List<SubdivisionListItem>>(0);
-        return subdivisions;
-
-    }
-    public static async Task<SubdivisionListItemsReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<SubdivisionListItemsReader> CreateAsync(NpgsqlConnection connection)
     {
         using var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -54,5 +37,25 @@ public class SubdivisionListItemsReader : DatabaseReader, ISingleItemDatabaseRea
             group by c.country_id
         )
         """;
+
+}
+public class SubdivisionListItemsReader : DatabaseReader, ISingleItemDatabaseReader<int, List<SubdivisionListItem>>
+{
+    internal SubdivisionListItemsReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public async Task<List<SubdivisionListItem>> ReadAsync(int countryId)
+    {
+        _command.Parameters["country_id"].Value = countryId;
+        await using var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        if (!reader.HasRows) {
+            return new List<SubdivisionListItem>();
+        }
+        var text = reader.GetString(0); ;
+        var subdivisions = reader.GetFieldValue<List<SubdivisionListItem>>(0);
+        return subdivisions;
+
+    }
 
 }

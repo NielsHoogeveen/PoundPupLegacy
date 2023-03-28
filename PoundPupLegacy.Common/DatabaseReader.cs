@@ -6,19 +6,17 @@ namespace PoundPupLegacy.Common
     {
 
     }
-    public interface IDatabaseReader<T> : IDatabaseReader
-        where T : IDatabaseReader<T>
+    public interface IDatabaseReaderFactory<T>
+        where T : IDatabaseReader
     {
-        public abstract static Task<T> CreateAsync(NpgsqlConnection connection);
+        public Task<T> CreateAsync(NpgsqlConnection connection);
     }
 
-    public interface ISingleItemDatabaseReader<TReader, TRequest, TResponse>: IDatabaseReader<TReader>
-        where TReader : IDatabaseReader<TReader>
+    public interface ISingleItemDatabaseReader<TRequest, TResponse>: IDatabaseReader
     {
         public Task<TResponse> ReadAsync(TRequest request);
     }
-    public interface IEnumerableDatabaseReader<TReader, TRequest, TResponse> : IDatabaseReader<TReader>
-        where TReader : IDatabaseReader<TReader>
+    public interface IEnumerableDatabaseReader<TRequest, TResponse>
     {
         public IAsyncEnumerable<TResponse> ReadAsync(TRequest request);
     }
@@ -36,4 +34,20 @@ namespace PoundPupLegacy.Common
         }
 
     }
+
+    public abstract class SingleItemDatabaseReader<TRequest, TResponse>: DatabaseReader, ISingleItemDatabaseReader<TRequest, TResponse>
+    {
+        protected SingleItemDatabaseReader(NpgsqlCommand command) : base(command)
+        {
+        }
+        public abstract Task<TResponse> ReadAsync(TRequest request);
+    }
+    public abstract class EnumerableDatabaseReader<TRequest, TResponse> : DatabaseReader, IEnumerableDatabaseReader<TRequest, TResponse>
+    {
+        protected EnumerableDatabaseReader(NpgsqlCommand command) : base(command)
+        {
+        }
+        public abstract IAsyncEnumerable<TResponse> ReadAsync(TRequest request);
+    }
+
 }

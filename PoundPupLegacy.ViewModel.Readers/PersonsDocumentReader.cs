@@ -3,50 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class PersonsDocumentReader : DatabaseReader, ISingleItemDatabaseReader<PersonsDocumentReader, PersonsDocumentReader.PersonsDocumentRequest, Persons>
+public class PersonsDocumentReaderFactory : IDatabaseReaderFactory<PersonsDocumentReader>
 {
-    public record PersonsDocumentRequest
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-        public required string SearchTerm { get; init; }
-        public required SearchOption SearchOption { get; init; }
-
-    }
-    private PersonsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    public async Task<Persons> ReadAsync(PersonsDocumentRequest request)
-    {
-        string GetPattern(string searchTerm, SearchOption searchOption)
-        {
-            if (string.IsNullOrEmpty(searchTerm)) {
-                return "%";
-            }
-            return searchOption switch {
-                SearchOption.IsEqualTo => searchTerm,
-                SearchOption.Contains => $"%{searchTerm}%",
-                SearchOption.StartsWith => $"{searchTerm}%",
-                SearchOption.EndsWith => $"%{searchTerm}",
-                _ => throw new Exception("Cannot reach")
-            };
-        }
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        _command.Parameters["pattern"].Value = GetPattern(request.SearchTerm, request.SearchOption);
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var persons = reader.GetFieldValue<Persons>(0);
-        return persons;
-    }
-
-    public static async Task<PersonsDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<PersonsDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -139,5 +98,49 @@ public class PersonsDocumentReader : DatabaseReader, ISingleItemDatabaseReader<P
         group by 
         number_of_entries
         """;
+
+}
+public class PersonsDocumentReader : SingleItemDatabaseReader<PersonsDocumentReader.PersonsDocumentRequest, Persons>
+{
+    public record PersonsDocumentRequest
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required int Limit { get; init; }
+        public required int Offset { get; init; }
+        public required string SearchTerm { get; init; }
+        public required SearchOption SearchOption { get; init; }
+
+    }
+    internal PersonsDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async Task<Persons> ReadAsync(PersonsDocumentRequest request)
+    {
+        string GetPattern(string searchTerm, SearchOption searchOption)
+        {
+            if (string.IsNullOrEmpty(searchTerm)) {
+                return "%";
+            }
+            return searchOption switch {
+                SearchOption.IsEqualTo => searchTerm,
+                SearchOption.Contains => $"%{searchTerm}%",
+                SearchOption.StartsWith => $"{searchTerm}%",
+                SearchOption.EndsWith => $"%{searchTerm}",
+                _ => throw new Exception("Cannot reach")
+            };
+        }
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
+        _command.Parameters["pattern"].Value = GetPattern(request.SearchTerm, request.SearchOption);
+        await using var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        var persons = reader.GetFieldValue<Persons>(0);
+        return persons;
+    }
+
 
 }

@@ -3,13 +3,9 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class DocumentUpdateDocumentReader : NodeUpdateDocumentReader<Document>, ISingleItemDatabaseReader<DocumentUpdateDocumentReader, NodeEditDocumentReader.NodeUpdateDocumentRequest, Document>
+public class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<DocumentUpdateDocumentReader>
 {
-    protected DocumentUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DOCUMENT)
-    {
-    }
-
-    public static async Task<DocumentUpdateDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public override async Task<DocumentUpdateDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateCommand(connection, SQL);
         return new DocumentUpdateDocumentReader(command);
@@ -61,6 +57,13 @@ public class DocumentUpdateDocumentReader : NodeUpdateDocumentReader<Document>, 
         where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         """;
 
+}
+
+public class DocumentUpdateDocumentReader : NodeUpdateDocumentReader<Document>
+{
+    internal DocumentUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DOCUMENT)
+    {
+    }
 }
 
 

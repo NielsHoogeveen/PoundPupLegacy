@@ -137,10 +137,28 @@ internal sealed class TermHierarchyMigrator : PPLMigrator
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var nodeIdChild = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id_child"));
-            var nodeIdParent = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("node_id_parent"));
-            var termIdChild = await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, nodeIdChild);
-            var termIdParent = await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, nodeIdParent);
+            var nodeIdChild = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = reader.GetInt32("node_id_child")
+            });
+            var nodeIdParent = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = reader.GetInt32("node_id_parent")
+            });
+            var termIdChild = await _termReaderByNameableId.ReadAsync(new Db.Readers.TermReaderByNameableId.TermReaderByNameableIdRequest 
+            { 
+                OwnerId = Constants.PPL,
+                VocabularyName = Constants.VOCABULARY_TOPICS,
+                NameableId = nodeIdChild
+            });
+            var termIdParent = await _termReaderByNameableId.ReadAsync(new Db.Readers.TermReaderByNameableId.TermReaderByNameableIdRequest 
+            { 
+                OwnerId = Constants.PPL,
+                VocabularyName = Constants.VOCABULARY_TOPICS,
+                NameableId = nodeIdParent
+            });
 
             yield return new TermHierarchy {
 

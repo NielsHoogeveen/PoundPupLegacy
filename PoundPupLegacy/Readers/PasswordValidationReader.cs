@@ -3,32 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.Readers;
-
-public class PasswordValidationReader : DatabaseReader, ISingleItemDatabaseReader<PasswordValidationReader, PasswordValidationReader.PasswordValidationRequest, int?>
+public class PasswordValidationReaderFactory : IDatabaseReaderFactory<PasswordValidationReader>
 {
-    public record PasswordValidationRequest
-    {
-        public required string UserName { get; init; } 
-        public required string Password { get; init; } 
-    }
-    private PasswordValidationReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    public async Task<int?> ReadAsync(PasswordValidationRequest request)
-    {
-        _command.Parameters["name"].Value = request.UserName;
-        _command.Parameters["password"].Value = request.Password;
-        await using var reader = await _command.ExecuteReaderAsync();
-        if (reader.Read()) {
-            return reader.GetInt32(0);
-        }
-        else {
-            return null;
-        }
-    }
-
-    public static async Task<PasswordValidationReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<PasswordValidationReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -47,5 +24,31 @@ public class PasswordValidationReader : DatabaseReader, ISingleItemDatabaseReade
         join publisher p on p.id = u.id
         where LOWER(p.name) = @name and u.password = @password
         """;
+
+
+}
+public class PasswordValidationReader : SingleItemDatabaseReader<PasswordValidationReader.PasswordValidationRequest, int?>
+{
+    public record PasswordValidationRequest
+    {
+        public required string UserName { get; init; } 
+        public required string Password { get; init; } 
+    }
+    internal PasswordValidationReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async Task<int?> ReadAsync(PasswordValidationRequest request)
+    {
+        _command.Parameters["name"].Value = request.UserName;
+        _command.Parameters["password"].Value = request.Password;
+        await using var reader = await _command.ExecuteReaderAsync();
+        if (reader.Read()) {
+            return reader.GetInt32(0);
+        }
+        else {
+            return null;
+        }
+    }
 
 }

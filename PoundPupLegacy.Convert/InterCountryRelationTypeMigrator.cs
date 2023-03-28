@@ -90,7 +90,13 @@ internal sealed class InterCountryRelationTypeMigrator : PPLMigrator
                 },
                 NodeTypeId = 50,
                 Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image") ? null : await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL, reader.GetInt32("file_id_tile_image")),
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image") 
+                    ? null 
+                    : await _fileIdReaderByTenantFileId.ReadAsync(new Db.Readers.FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest 
+                    { 
+                        TenantId = Constants.PPL,
+                        TenantFileId = reader.GetInt32("file_id_tile_image")
+                    }),
                 VocabularyNames = vocabularyNames,
                 IsSymmetric = reader.GetBoolean("is_symmetric"),
             };

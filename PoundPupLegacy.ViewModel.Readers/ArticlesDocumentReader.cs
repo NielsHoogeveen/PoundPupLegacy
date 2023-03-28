@@ -5,39 +5,9 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-
-public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<ArticlesDocumentReader, ArticlesDocumentReader.ArticlesDocumentRequest, Articles>
+public class ArticlesDocumentReaderFactory : IDatabaseReaderFactory<ArticlesDocumentReader>
 {
-    public record ArticlesDocumentRequest
-    {
-        public required int TenantId { get; init; }
-        public required List<int> SelectedTerms { get; init; }
-        public required int StartIndex { get; init; }
-        public required int Length { get; init; }
-    }
-    private ArticlesDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    public async Task<Articles> ReadAsync(ArticlesDocumentRequest request)
-    {
-            _command.Parameters["tenant_id"].Value = request.TenantId;
-            _command.Parameters["length"].Value = request.Length;
-            _command.Parameters["start_index"].Value = request.StartIndex;
-            if (request.SelectedTerms.Any()) {
-                _command.Parameters["terms"].Value = request.SelectedTerms.ToArray();
-            }
-            else {
-                _command.Parameters["terms"].Value = DBNull.Value;
-            }
-            await using var reader = await _command.ExecuteReaderAsync();
-            await reader.ReadAsync();
-            var articles = reader.GetFieldValue<Articles>(0);
-            return articles;
-    }
-
-
-    public static async Task<ArticlesDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<ArticlesDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -286,5 +256,38 @@ public class ArticlesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<
         	from fetch_articles_filtered x
         )
         """;
+
+}
+public class ArticlesDocumentReader : SingleItemDatabaseReader<ArticlesDocumentReader.ArticlesDocumentRequest, Articles>
+{
+    public record ArticlesDocumentRequest
+    {
+        public required int TenantId { get; init; }
+        public required List<int> SelectedTerms { get; init; }
+        public required int StartIndex { get; init; }
+        public required int Length { get; init; }
+    }
+    internal ArticlesDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async Task<Articles> ReadAsync(ArticlesDocumentRequest request)
+    {
+            _command.Parameters["tenant_id"].Value = request.TenantId;
+            _command.Parameters["length"].Value = request.Length;
+            _command.Parameters["start_index"].Value = request.StartIndex;
+            if (request.SelectedTerms.Any()) {
+                _command.Parameters["terms"].Value = request.SelectedTerms.ToArray();
+            }
+            else {
+                _command.Parameters["terms"].Value = DBNull.Value;
+            }
+            await using var reader = await _command.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            var articles = reader.GetFieldValue<Articles>(0);
+            return articles;
+    }
+
+
 
 }

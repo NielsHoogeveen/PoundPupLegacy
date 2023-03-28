@@ -1,10 +1,9 @@
 ﻿using System.Data;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class EditOwnNodeActionIdReaderByNodeTypeId : DatabaseReader, IDatabaseReader<EditOwnNodeActionIdReaderByNodeTypeId>
+public sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : IDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeId>
 {
-    public static async Task<EditOwnNodeActionIdReaderByNodeTypeId> CreateAsync(NpgsqlConnection connection)
+    public async Task<EditOwnNodeActionIdReaderByNodeTypeId> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             SELECT id FROM edit_own_node_action WHERE node_type_id = @node_type_id
@@ -19,12 +18,15 @@ public sealed class EditOwnNodeActionIdReaderByNodeTypeId : DatabaseReader, IDat
         await command.PrepareAsync();
 
         return new EditOwnNodeActionIdReaderByNodeTypeId(command);
-
     }
+
+}
+public sealed class EditOwnNodeActionIdReaderByNodeTypeId : SingleItemDatabaseReader<int, int>
+{
 
     internal EditOwnNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
 
-    public async Task<int> ReadAsync(int nodeTypeId)
+    public override async Task<int> ReadAsync(int nodeTypeId)
     {
         _command.Parameters["node_type_id"].Value = nodeTypeId;
 

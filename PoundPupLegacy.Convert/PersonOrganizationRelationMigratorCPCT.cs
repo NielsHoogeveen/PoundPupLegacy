@@ -96,7 +96,11 @@ internal sealed class PersonOrganizationRelationMigratorCPCT : CPCTMigrator
 
             var (personId, personPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id"));
             var (organizationId, organizationPublicationStatusId) = await GetNodeId(reader.GetInt32("organization_id"));
-            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
+            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                UrlId = reader.GetInt32("nameable_id"),
+                TenantId = Constants.PPL
+            });
 
             var tenantNodes = new List<TenantNode>
                 {

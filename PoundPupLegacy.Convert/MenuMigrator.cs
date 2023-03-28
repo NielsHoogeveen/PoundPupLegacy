@@ -121,13 +121,21 @@ internal sealed class MenuMigrator : PPLMigrator
         await Task.CompletedTask;
         yield return new TenantNodeMenuItem {
             Id = null,
-            TenantNodeId = await _tenantNodeIdByUrlIdReader.ReadAsync(1, 1063),
+            TenantNodeId = await _tenantNodeIdByUrlIdReader.ReadAsync(new Db.Readers.TenantNodeIdReaderByUrlId.TenantNodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 1063,
+            }),
             Name = "About Us",
             Weight = 0,
         };
         yield return new TenantNodeMenuItem {
             Id = null,
-            TenantNodeId = await _tenantNodeIdByUrlIdReader.ReadAsync(1, 34428),
+            TenantNodeId = await _tenantNodeIdByUrlIdReader.ReadAsync(new Db.Readers.TenantNodeIdReaderByUrlId.TenantNodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 34428,
+            }),
             Name = "Our Position",
             Weight = 1,
         };

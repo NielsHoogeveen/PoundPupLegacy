@@ -3,31 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class FileDocumentReader: DatabaseReader, ISingleItemDatabaseReader<FileDocumentReader, FileDocumentReader.FileDocumentRequest, File>
+public class FileDocumentReaderFactory : IDatabaseReaderFactory<FileDocumentReader>
 {
-    public record FileDocumentRequest
-    {
-        public int FileId { get; init; }
-        public int UserId { get; init; }
-        public int TenantId { get; init; }
-
-    }
-    private FileDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    public async Task<File> ReadAsync(FileDocumentRequest request)
-    {
-        _command.Parameters["file_id"].Value = request.FileId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        return await reader.GetFieldValueAsync<File>(0);
-    }
-
-    public static async Task<FileDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<FileDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -132,5 +110,30 @@ public class FileDocumentReader: DatabaseReader, ISingleItemDatabaseReader<FileD
                     size
                     having every(can_be_accessed)
                 """;
+
+}
+public class FileDocumentReader: SingleItemDatabaseReader<FileDocumentReader.FileDocumentRequest, File>
+{
+    public record FileDocumentRequest
+    {
+        public int FileId { get; init; }
+        public int UserId { get; init; }
+        public int TenantId { get; init; }
+
+    }
+    internal FileDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async Task<File> ReadAsync(FileDocumentRequest request)
+    {
+        _command.Parameters["file_id"].Value = request.FileId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        await using var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        return await reader.GetFieldValueAsync<File>(0);
+    }
+
 
 }

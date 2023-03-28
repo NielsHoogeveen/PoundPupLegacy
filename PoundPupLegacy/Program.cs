@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
+using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.Middleware;
 using PoundPupLegacy.Services;
 using PoundPupLegacy.Services.Implementation;
@@ -69,7 +70,7 @@ public class Program
         builder.Services.AddTransient<IAttachmentService, AttachmentService>();
         builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddTransient<ILocationService, LocationService>();
-
+        builder.Services.AddEditReaders();
         builder.Services.AddQuartz(q => {
             // base Quartz scheduler, job and trigger configuration
         });

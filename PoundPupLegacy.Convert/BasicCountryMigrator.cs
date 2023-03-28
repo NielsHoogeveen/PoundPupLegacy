@@ -160,11 +160,19 @@ internal sealed class BasicCountryMigrator : PPLMigrator
                             ParentNames = new List<string>{ "Caribbean" },
                         }
                 },
-            SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, 3822),
+            SecondLevelRegionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 3822
+            }),
             ISO3166_1_Code = "AG",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41213),
+            HagueStatusId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 41213
+            }),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -205,11 +213,19 @@ internal sealed class BasicCountryMigrator : PPLMigrator
                             ParentNames = new List<string>{ "Western Asia" },
                         }
                 },
-            SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, 3817),
+            SecondLevelRegionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 3817
+            }),
             ISO3166_1_Code = "PS",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41213),
+            HagueStatusId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 41213
+            }),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -250,11 +266,19 @@ internal sealed class BasicCountryMigrator : PPLMigrator
                             ParentNames = new List<string>{ "Western Africa" },
                         }
                 },
-            SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, 3825),
+            SecondLevelRegionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 3825
+            }),
             ISO3166_1_Code = "SH",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41213),
+            HagueStatusId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 41213
+            }),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -296,11 +320,19 @@ internal sealed class BasicCountryMigrator : PPLMigrator
                             ParentNames = new List<string>{ "Eastern Africa" },
                         }
                 },
-            SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, 3827),
+            SecondLevelRegionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 3827
+            }),
             ISO3166_1_Code = "SS",
             FileIdFlag = null,
             FileIdTileImage = null,
-            HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41213),
+            HagueStatusId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = 41213
+            }),
             ResidencyRequirements = null,
             AgeRequirements = null,
             HealthRequirements = null,
@@ -471,14 +503,22 @@ internal sealed class BasicCountryMigrator : PPLMigrator
                 Name = name,
                 Description = "",
                 VocabularyNames = vocabularyNames,
-                SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("second_level_region_id")),
+                SecondLevelRegionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                {
+                    TenantId = Constants.PPL,
+                    UrlId = reader.GetInt32("second_level_region_id"),
+                }),
                 ISO3166_1_Code = reader.GetInt32("id") == 3847 ? "NE" :
                               reader.GetInt32("id") == 4010 ? "RS" :
                               reader.GetInt32("id") == 4014 ? "XK" :
                               reader.GetString("iso_3166_code"),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, GetHagueStatus(name)),
+                HagueStatusId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = GetHagueStatus(name),
+                }),
                 ResidencyRequirements = reader.IsDBNull("residency_requirements") ? null : reader.GetString("residency_requirements"),
                 AgeRequirements = reader.IsDBNull("age_requirements") ? null : reader.GetString("age_requirements"),
                 MarriageRequirements = reader.IsDBNull("marriage_requirements") ? null : reader.GetString("marriage_requirements"),

@@ -175,7 +175,11 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
 
 
         var reader = await readCommand.ExecuteReaderAsync();
-        var miscellaneous = await _nodeIdReader.ReadAsync(Constants.PPL, 12634);
+        var miscellaneous = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+        { 
+            TenantId = Constants.PPL,
+            UrlId = 12634
+        });
 
         while (await reader.ReadAsync()) {
             var vocabularyNames = new List<VocabularyName>();
@@ -188,7 +192,11 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
-                var organizationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, typeId);
+                var organizationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = typeId
+                });
                 organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
             }
 

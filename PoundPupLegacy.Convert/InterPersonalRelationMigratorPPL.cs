@@ -90,10 +90,23 @@ internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int organizationIdFrom = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("person_id_from"));
-            int organizationIdTo = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("person_id_to"));
-            int interPersonalRelationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nameable_id"));
+            int organizationIdFrom = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = reader.GetInt32("person_id_from")
+            });
+            int organizationIdTo = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = reader.GetInt32("person_id_to")
 
+            });
+            int interPersonalRelationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = reader.GetInt32("nameable_id")
+
+            });
             yield return new InterPersonalRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
@@ -129,7 +142,13 @@ internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
                 PersonIdTo = organizationIdTo,
                 InterPersonalRelationTypeId = interPersonalRelationTypeId,
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
-                DocumentIdProof = reader.IsDBNull("document_id_proof") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("document_id_proof")),
+                DocumentIdProof = reader.IsDBNull("document_id_proof") 
+                    ? null 
+                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                    { 
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("document_id_proof")
+                    }),
             };
         }
         await reader.CloseAsync();

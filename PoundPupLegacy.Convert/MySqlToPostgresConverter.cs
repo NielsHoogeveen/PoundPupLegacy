@@ -124,18 +124,18 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         await mysqlConnectionPPL.OpenAsync();
         await mysqlConnectionCPCT.OpenAsync();
         await postgresConnection.OpenAsync();
-        var nodeIdReader = await NodeIdReaderByUrlId.CreateAsync(postgresConnection);
-        var termByNameableIdReader = await TermReaderByNameableId.CreateAsync(postgresConnection);
-        var subdivisionReader = await SubdivisionIdReaderByName.CreateAsync(postgresConnection);
-        var subdivisionReaderByIsoCode = await SubdivisionIdReaderByIso3166Code.CreateAsync(postgresConnection);
-        var createNodeActionIdReaderByNodeTypeId = await CreateNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
-        var deleteNodeActionIdReaderByNodeTypeId = await DeleteNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
-        var editNodeActionIdReaderByNodeTypeId = await EditNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
-        var editOwnNodeActionIdReaderByNodeTypeId = await EditOwnNodeActionIdReaderByNodeTypeId.CreateAsync(postgresConnection);
-        var actionIdReaderByPath = await ActionIdReaderByPath.CreateAsync(postgresConnection);
-        var tenantNodeIdReaderByUrlId = await TenantNodeIdReaderByUrlId.CreateAsync(postgresConnection);
-        var tenantNodeReaderByUrlId = await TenantNodeReaderByUrlId.CreateAsync(postgresConnection);
-        var fileIdReaderByTenantFileId = await FileIdReaderByTenantFileId.CreateAsync(postgresConnection);
+        var nodeIdReader = await (new NodeIdReaderByUrlIdFactory()).CreateAsync(postgresConnection);
+        var termByNameableIdReader = await (new TermReaderByNameableIdFactory()).CreateAsync(postgresConnection);
+        var subdivisionReader = await (new SubdivisionIdReaderByNameFactory()).CreateAsync(postgresConnection);
+        var subdivisionReaderByIsoCode = await (new SubdivisionIdReaderByIso3166CodeFactory()).CreateAsync(postgresConnection);
+        var createNodeActionIdReaderByNodeTypeId = await (new CreateNodeActionIdReaderByNodeTypeIdFactory()).CreateAsync(postgresConnection);
+        var deleteNodeActionIdReaderByNodeTypeId = await (new DeleteNodeActionIdReaderByNodeTypeIdFactory()).CreateAsync(postgresConnection);
+        var editNodeActionIdReaderByNodeTypeId = await (new EditNodeActionIdReaderByNodeTypeIdFactory()).CreateAsync(postgresConnection);
+        var editOwnNodeActionIdReaderByNodeTypeId = await (new EditOwnNodeActionIdReaderByNodeTypeIdFactory()).CreateAsync(postgresConnection);
+        var actionIdReaderByPath = await (new ActionIdReaderByPathFactory()).CreateAsync(postgresConnection);
+        var tenantNodeIdReaderByUrlId = await (new TenantNodeIdReaderByUrlIdFactory()).CreateAsync(postgresConnection);
+        var tenantNodeReaderByUrlId = await (new TenantNodeReaderByUrlIdFactory()).CreateAsync(postgresConnection);
+        var fileIdReaderByTenantFileId = await (new FileIdReaderByTenantFileIdFactory()).CreateAsync(postgresConnection);
 
         Console.WriteLine($" took {_stopwatch.ElapsedMilliseconds} ms");
         return new MySqlToPostgresConverter(

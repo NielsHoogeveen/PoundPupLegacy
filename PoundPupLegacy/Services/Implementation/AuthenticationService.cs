@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Readers;
+using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -10,9 +12,14 @@ namespace PoundPupLegacy.Services.Implementation;
 internal class AuthenticationService : IAuthenticationService
 {
     private NpgsqlConnection _connection;
-    public AuthenticationService(NpgsqlConnection connection)
+    private readonly IDatabaseReaderFactory<PasswordValidationReader> _passwordValidationReaderFactory;
+    public AuthenticationService(
+        NpgsqlConnection connection,
+        IDatabaseReaderFactory<PasswordValidationReader> passwordValidationReaderFactory)
     {
         _connection = connection;
+        _passwordValidationReaderFactory = passwordValidationReaderFactory;
+
     }
 
     public async Task<ClaimsIdentity?> Login(string userName, string password)
@@ -28,7 +35,7 @@ internal class AuthenticationService : IAuthenticationService
         try {
             await _connection.OpenAsync();
 
-            await using var reader = await PasswordValidationReader.CreateAsync(_connection);
+            await using var reader = await _passwordValidationReaderFactory.CreateAsync(_connection);
             var userId = await reader.ReadAsync(new PasswordValidationReader.PasswordValidationRequest { 
                 Password = CreateMD5(password),
                 UserName = userName.ToLower()

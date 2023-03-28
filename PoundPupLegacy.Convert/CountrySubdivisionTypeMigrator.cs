@@ -34,17 +34,29 @@ internal abstract class CountrySubdivisionTypeMigrator : PPLMigrator
 
     private async IAsyncEnumerable<CountrySubdivisionType> ReadCountrySubdivisionTypesCsv()
     {
-        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
-        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+        await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
 
-        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest 
+        { 
+            OwnerId = Constants.OWNER_GEOGRAPHY,
+            Name = "Subdivision type"
+        });
 
         await foreach (string line in System.IO.File.ReadLinesAsync(@$"..\..\..\files\{FileName}").Skip(1)) {
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int id = int.Parse(parts[0]);
             var name = parts[1];
-            var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[0]));
-            var subdivisionType = await termReader.ReadAsync(vocabularyId, name);
+            var countryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = int.Parse(parts[0])
+            });
+            var subdivisionType = await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest 
+            {
+                VocabularyId = vocabularyId,
+                Name = name
+            });
             if (subdivisionType is null) {
                 Console.WriteLine(name);
             }

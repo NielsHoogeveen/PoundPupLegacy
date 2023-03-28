@@ -3,48 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class CasesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<CasesDocumentReader, CasesDocumentReader.CasesDocumentRequest, Cases>
+public class CasesDocumentReaderFactory : IDatabaseReaderFactory<CasesDocumentReader>
 {
-    public record CasesDocumentRequest
-    {
-        public int TenantId { get; init; }
-        public int UserId { get; init; }
-        public int Limit { get; init; }
-        public int Offset { get; init; }
-        public CaseType CaseType { get; init; }
-    }
-    private CasesDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async Task<Cases> ReadAsync(CasesDocumentRequest request)
-    {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        if (request.CaseType == CaseType.Any) {
-            _command.Parameters["node_type_id"].Value = DBNull.Value;
-        }
-        else {
-            _command.Parameters["node_type_id"].Value = (int)request.CaseType;
-        }
-        await using var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<Cases>(0);
-            return organizations!;
-        }
-        else {
-
-            return new Cases {
-                CaseListEntries = new CaseListEntry[] { },
-                NumberOfEntries = 0,
-            };
-        }
-
-    }
-    public static async Task<CasesDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<CasesDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -152,5 +113,47 @@ public class CasesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<Cas
             where an.status <> -1
             group by number_of_entries
             """;
+
+}
+public class CasesDocumentReader : SingleItemDatabaseReader<CasesDocumentReader.CasesDocumentRequest, Cases>
+{
+    public record CasesDocumentRequest
+    {
+        public int TenantId { get; init; }
+        public int UserId { get; init; }
+        public int Limit { get; init; }
+        public int Offset { get; init; }
+        public CaseType CaseType { get; init; }
+    }
+    internal CasesDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public override async Task<Cases> ReadAsync(CasesDocumentRequest request)
+    {
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
+        if (request.CaseType == CaseType.Any) {
+            _command.Parameters["node_type_id"].Value = DBNull.Value;
+        }
+        else {
+            _command.Parameters["node_type_id"].Value = (int)request.CaseType;
+        }
+        await using var reader = await _command.ExecuteReaderAsync();
+        if (reader.HasRows) {
+            await reader.ReadAsync();
+            var organizations = reader.GetFieldValue<Cases>(0);
+            return organizations!;
+        }
+        else {
+
+            return new Cases {
+                CaseListEntries = new CaseListEntry[] { },
+                NumberOfEntries = 0,
+            };
+        }
+
+    }
 
 }

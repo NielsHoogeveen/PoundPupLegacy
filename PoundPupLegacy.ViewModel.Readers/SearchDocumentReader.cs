@@ -3,41 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class SearchDocumentReader : DatabaseReader, ISingleItemDatabaseReader<SearchDocumentReader, SearchDocumentReader.SearchDocumentRequest, SearchResult>
+public class SearchDocumentReaderFactory : IDatabaseReaderFactory<SearchDocumentReader>
 {
-    public record SearchDocumentRequest
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-        public required string SearchString { get; init; }
-
-    }
-    private SearchDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async Task<SearchResult> ReadAsync(SearchDocumentRequest request)
-    {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        _command.Parameters["search_string"].Value = request.SearchString;
-        await using var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<SearchResult>(0);
-            return organizations!;
-        }
-        else {
-            return new SearchResult {
-            };
-        }
-    }
-
-    public static async Task<SearchDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<SearchDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var readCommand = connection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -195,5 +163,40 @@ public class SearchDocumentReader : DatabaseReader, ISingleItemDatabaseReader<Se
                 ) x
                 group by number_of_entries
             """;
+
+}
+public class SearchDocumentReader : SingleItemDatabaseReader<SearchDocumentReader.SearchDocumentRequest, SearchResult>
+{
+    public record SearchDocumentRequest
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required int Limit { get; init; }
+        public required int Offset { get; init; }
+        public required string SearchString { get; init; }
+
+    }
+    internal SearchDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public override async Task<SearchResult> ReadAsync(SearchDocumentRequest request)
+    {
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
+        _command.Parameters["search_string"].Value = request.SearchString;
+        await using var reader = await _command.ExecuteReaderAsync();
+        if (reader.HasRows) {
+            await reader.ReadAsync();
+            var organizations = reader.GetFieldValue<SearchResult>(0);
+            return organizations!;
+        }
+        else {
+            return new SearchResult {
+            };
+        }
+    }
+
 
 }

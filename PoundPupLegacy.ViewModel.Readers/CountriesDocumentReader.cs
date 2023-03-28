@@ -3,27 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class CountriesDocumentReader : DatabaseReader, ISingleItemDatabaseReader<CountriesDocumentReader, int, FirstLevelRegionListEntry[]>
+public class CountriesDocumentReaderFactory : IDatabaseReaderFactory<CountriesDocumentReader>
 {
-    private CountriesDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    public async Task<FirstLevelRegionListEntry[]> ReadAsync(int tenantId)
-    {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<FirstLevelRegionListEntry[]>(0);
-            return organizations!;
-        }
-        else {
-            return new FirstLevelRegionListEntry[] { };
-        }
-    }
-    public static async Task<CountriesDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<CountriesDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -140,4 +122,25 @@ public class CountriesDocumentReader : DatabaseReader, ISingleItemDatabaseReader
             ORDER BY n.title
         ) n
         """;
+}
+public class CountriesDocumentReader : SingleItemDatabaseReader<int, FirstLevelRegionListEntry[]>
+{
+    internal CountriesDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async Task<FirstLevelRegionListEntry[]> ReadAsync(int tenantId)
+    {
+        _command.Parameters["tenant_id"].Value = tenantId;
+        await using var reader = await _command.ExecuteReaderAsync();
+        if (reader.HasRows) {
+            await reader.ReadAsync();
+            var organizations = reader.GetFieldValue<FirstLevelRegionListEntry[]>(0);
+            return organizations!;
+        }
+        else {
+            return new FirstLevelRegionListEntry[] { };
+        }
+    }
+
 }

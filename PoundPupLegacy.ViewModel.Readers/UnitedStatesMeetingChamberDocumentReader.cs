@@ -3,29 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class UnitedStatesMeetingChamberDocumentReader : DatabaseReader, ISingleItemDatabaseReader<UnitedStatesMeetingChamberDocumentReader, UnitedStatesMeetingChamberDocumentReader.UnitedStatesMeetingChamberRequest, CongressionalMeetingChamber>
+public class UnitedStatesMeetingChamberDocumentReaderFactory : IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader>
 {
-    public record UnitedStatesMeetingChamberRequest
-    {
-        public required int Number { get; init; }
-
-        public required int Type { get; init; }
-
-    }
-    private UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async Task<CongressionalMeetingChamber> ReadAsync(UnitedStatesMeetingChamberRequest request)
-    {
-        _command.Parameters["meeting_number"].Value = request.Number;
-        _command.Parameters["chamber_type"].Value = request.Type;
-        var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        return reader.GetFieldValue<CongressionalMeetingChamber>(0);
-    }
-
-    public static async Task<UnitedStatesMeetingChamberDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<UnitedStatesMeetingChamberDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -271,5 +251,28 @@ public class UnitedStatesMeetingChamberDocumentReader : DatabaseReader, ISingleI
         group by meeting_name, date_from, date_to
 
         """;
+
+}
+public class UnitedStatesMeetingChamberDocumentReader : SingleItemDatabaseReader<UnitedStatesMeetingChamberDocumentReader.UnitedStatesMeetingChamberRequest, CongressionalMeetingChamber>
+{
+    public record UnitedStatesMeetingChamberRequest
+    {
+        public required int Number { get; init; }
+
+        public required int Type { get; init; }
+
+    }
+    internal UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public override async Task<CongressionalMeetingChamber> ReadAsync(UnitedStatesMeetingChamberRequest request)
+    {
+        _command.Parameters["meeting_number"].Value = request.Number;
+        _command.Parameters["chamber_type"].Value = request.Type;
+        var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        return reader.GetFieldValue<CongressionalMeetingChamber>(0);
+    }
+
 
 }

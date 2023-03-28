@@ -173,8 +173,16 @@ internal sealed class AbuseCaseMigrator : PPLMigrator
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
-                ChildPlacementTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("child_placement_type_id")),
-                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("family_size_id")),
+                ChildPlacementTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = reader.GetInt32("child_placement_type_id")
+                }),
+                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = reader.GetInt32("family_size_id")
+                }),
                 HomeschoolingInvolved = reader.IsDBNull("home_schooling_involved") ? null : reader.GetBoolean("home_schooling_involved"),
                 FundamentalFaithInvolved = reader.IsDBNull("fundamental_faith_involved") ? null : reader.GetBoolean("fundamental_faith_involved"),
                 DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),

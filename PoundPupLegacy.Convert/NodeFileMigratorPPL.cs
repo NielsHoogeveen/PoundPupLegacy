@@ -86,8 +86,16 @@ internal sealed class NodeFileMigratorPPL : PPLMigrator
         while (await reader.ReadAsync()) {
 
             yield return new NodeFile {
-                NodeId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("nid")),
-                FileId = await _fileIdReaderByTenantFileId.ReadAsync(Constants.PPL, reader.GetInt32("fid")),
+                NodeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    UrlId = reader.GetInt32("nid"),
+                    TenantId = Constants.PPL
+                }),
+                FileId = await _fileIdReaderByTenantFileId.ReadAsync(new Db.Readers.FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    TenantFileId = reader.GetInt32("fid")
+                }),
             };
 
         }

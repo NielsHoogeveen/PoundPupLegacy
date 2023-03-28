@@ -13,10 +13,14 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
     private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv()
     {
 
-        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
-        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+        await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
 
-        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest 
+        { 
+            OwnerId = Constants.OWNER_GEOGRAPHY,
+            Name = "Subdivision type"
+        });
 
         await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\direct_subdivisions.csv").Skip(1)) {
 
@@ -24,9 +28,17 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
             var title = parts[8];
             var name = parts[9];
             int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
-            var countryId = await _nodeIdReader.ReadAsync(Constants.PPL, int.Parse(parts[7]));
-
-            var countryName = (await _termReaderByNameableId.ReadAsync(Constants.PPL, Constants.VOCABULARY_TOPICS, countryId)).Name;
+            var countryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                TenantId = Constants.PPL,
+                UrlId = int.Parse(parts[7])
+            });
+            var countryName = (await _termReaderByNameableId.ReadAsync(new TermReaderByNameableId.TermReaderByNameableIdRequest 
+            { 
+                OwnerId = Constants.PPL,
+                NameableId = countryId,
+                VocabularyName = Constants.VOCABULARY_TOPICS
+            })).Name;
             yield return new FirstAndBottomLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
@@ -74,7 +86,11 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
                 ISO3166_2_Code = parts[10],
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, parts[11].Trim())).NameableId,
+                SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest 
+                { 
+                    VocabularyId = vocabularyId,
+                    Name = parts[11].Trim()
+                })).NameableId,
             };
         }
     }
@@ -334,10 +350,14 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
     }
     private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions()
     {
-        await using var vocabularyReader = await VocabularyIdReaderByOwnerAndName.CreateAsync(_postgresConnection);
-        await using var termReader = await TermReaderByName.CreateAsync(_postgresConnection);
+        await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
 
-        var vocabularyId = await vocabularyReader.ReadAsync(Constants.OWNER_GEOGRAPHY, "Subdivision type");
+        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest 
+        { 
+            OwnerId = Constants.OWNER_GEOGRAPHY,
+            Name = "Subdivision type"
+        });
 
         var continentIds = new List<int> { 3806, 3810, 3811, 3816, 3822, 3823 };
 
@@ -438,13 +458,21 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
                 NodeTypeId = 17,
                 VocabularyNames = vocabularyNames,
                 Description = "",
-                CountryId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("id") == 11827 ? 11571 :
+                CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    TenantId = Constants.PPL,
+                    UrlId = reader.GetInt32("id") == 11827 ? 11571 :
                             reader.GetInt32("id") == 11789 ? 11571 :
-                            reader.GetInt32("country_id")),
+                            reader.GetInt32("country_id")
+                }),
                 ISO3166_2_Code = isoCode,
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReader.ReadAsync(vocabularyId, reader.GetString("subdivision_type_name"))).NameableId
+                SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest 
+                { 
+                    VocabularyId = vocabularyId,
+                    Name = reader.GetString("subdivision_type_name")
+                })).NameableId
             };
 
         }

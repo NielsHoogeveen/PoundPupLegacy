@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
@@ -9,17 +10,21 @@ namespace PoundPupLegacy.Services.Implementation;
 internal class FetchBlogsService : IFetchBlogsService
 {
     private readonly NpgsqlConnection _connection;
+    private readonly IDatabaseReaderFactory<BlogsDocumentReader> _blogsDocumentReaderFactory;
 
-    public FetchBlogsService(NpgsqlConnection connection)
+    public FetchBlogsService(
+        NpgsqlConnection connection,
+        IDatabaseReaderFactory<BlogsDocumentReader> blogsDocumentReaderFactory)
     {
         _connection = connection;
+        _blogsDocumentReaderFactory = blogsDocumentReaderFactory;
     }
 
     public async Task<List<BlogListEntry>> FetchBlogs(int tenantId)
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await BlogsDocumentReader.CreateAsync(_connection);
+            await using var reader = await _blogsDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(tenantId);
 
         }

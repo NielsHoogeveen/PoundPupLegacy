@@ -100,8 +100,20 @@ internal sealed class DeportationCaseMigrator : PPLMigrator
                 VocabularyNames = new List<VocabularyName>(),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
-                SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("subdivision_id_from")),
-                CountryIdTo = reader.IsDBNull("country_id_to") ? null : await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("country_id_to")),
+                SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from") 
+                    ? null 
+                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                    { 
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("subdivision_id_from")
+                    }),
+                CountryIdTo = reader.IsDBNull("country_id_to") 
+                    ? null 
+                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                    { 
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("country_id_to")
+                    }),
                 FileIdTileImage = null,
             };
             yield return country;

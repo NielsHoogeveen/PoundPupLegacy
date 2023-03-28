@@ -22,14 +22,21 @@ public partial class CongressionalDataService : ICongressionalDataService
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<CongressionalDataService> _logger;
     private readonly IRazorViewToStringService _razorViewToStringService;
+    private readonly IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader> _unitedStatesMeetingChamberDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader> _unitedStatesCongresssDocumentReaderFactory;
+    
     public CongressionalDataService(
         NpgsqlConnection connection,
         ILogger<CongressionalDataService> logger,
-        IRazorViewToStringService razorViewToStringService)
+        IRazorViewToStringService razorViewToStringService,
+        IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader> unitedStatesMeetingChamberDocumentReaderFactory,
+        IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader> unitedStatesCongresssDocumentReaderFactory)
     {
         _connection = connection;
         _logger = logger;
         _razorViewToStringService = razorViewToStringService;
+        _unitedStatesMeetingChamberDocumentReaderFactory = unitedStatesMeetingChamberDocumentReaderFactory;
+        _unitedStatesCongresssDocumentReaderFactory = unitedStatesCongresssDocumentReaderFactory;
     }
     private ChamberTypeAndMeetingNumber? GetChamberTypeAndMeetingNumber(HttpRequest request)
     {
@@ -63,7 +70,7 @@ public partial class CongressionalDataService : ICongressionalDataService
         }
         try {
             await _connection.OpenAsync();
-            await using var reader = await UnitedStatesMeetingChamberDocumentReader.CreateAsync(_connection);
+            await using var reader = await _unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(_connection);
             var document = await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReader.UnitedStatesMeetingChamberRequest {
                 Type = (int)congressionalMeetingChamber.ChamberType, 
                 Number = congressionalMeetingChamber.Number
@@ -79,7 +86,7 @@ public partial class CongressionalDataService : ICongressionalDataService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await UnitedStatesCongresssDocumentReader.CreateAsync(_connection);
+            await using var reader = await _unitedStatesCongresssDocumentReaderFactory.CreateAsync(_connection);
             var document = await reader.ReadAsync(new UnitedStatesCongresssDocumentReader.UnitedStatesCongresssDocumentRequest());
             return await _razorViewToStringService.GetFromView("/Views/Shared/UnitedStatesCongress.cshtml", document, context);
         }

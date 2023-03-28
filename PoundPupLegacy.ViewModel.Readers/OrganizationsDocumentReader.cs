@@ -3,24 +3,9 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class OrganizationsDocumentReader : DatabaseReader, ISingleItemDatabaseReader<OrganizationsDocumentReader, OrganizationsDocumentReader.OrganizationsDocumentRequest, OrganizationSearch>
+public class OrganizationsDocumentReaderFactory : IDatabaseReaderFactory<OrganizationsDocumentReader>
 {
-    public record OrganizationsDocumentRequest
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-        public required string SearchTerm { get; init; }
-        public required SearchOption SearchOption { get; init; }
-        public required int? OrganizationTypeId { get; init; }
-        public required int? CountryId { get; init; }
-    }
-    public OrganizationsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public static async Task<OrganizationsDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<OrganizationsDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var readCommand = connection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -35,46 +20,6 @@ public class OrganizationsDocumentReader : DatabaseReader, ISingleItemDatabaseRe
         readCommand.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
         await readCommand.PrepareAsync();
         return new OrganizationsDocumentReader(readCommand);
-    }
-
-    public async Task<OrganizationSearch> ReadAsync(OrganizationsDocumentRequest request)
-    {
-        string GetPattern(string searchTerm, SearchOption searchOption)
-        {
-            if (string.IsNullOrEmpty(searchTerm)) {
-                return "%";
-            }
-            return searchOption switch {
-                SearchOption.IsEqualTo => searchTerm,
-                SearchOption.Contains => $"%{searchTerm}%",
-                SearchOption.StartsWith => $"{searchTerm}%",
-                SearchOption.EndsWith => $"%{searchTerm}",
-                _ => throw new Exception("Cannot reach")
-            };
-        }
-
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        _command.Parameters["pattern"].Value = GetPattern(request.SearchTerm, request.SearchOption);
-        if (request.OrganizationTypeId.HasValue) {
-            _command.Parameters["organization_type_id"].Value = request.OrganizationTypeId.Value;
-        }
-        else {
-            _command.Parameters["organization_type_id"].Value = DBNull.Value;
-        }
-        if (request.CountryId.HasValue) {
-            _command.Parameters["country_id"].Value = request.CountryId.Value;
-        }
-        else {
-            _command.Parameters["country_id"].Value = DBNull.Value;
-        }
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var organizations = reader.GetFieldValue<OrganizationSearch>(0);
-        return organizations;
-
     }
     protected const string SQL = """
             select
@@ -206,5 +151,63 @@ public class OrganizationsDocumentReader : DatabaseReader, ISingleItemDatabaseRe
                     )
                 )
             """;
+
+}
+public class OrganizationsDocumentReader : SingleItemDatabaseReader<OrganizationsDocumentReader.OrganizationsDocumentRequest, OrganizationSearch>
+{
+    public record OrganizationsDocumentRequest
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required int Limit { get; init; }
+        public required int Offset { get; init; }
+        public required string SearchTerm { get; init; }
+        public required SearchOption SearchOption { get; init; }
+        public required int? OrganizationTypeId { get; init; }
+        public required int? CountryId { get; init; }
+    }
+    public OrganizationsDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    public override async Task<OrganizationSearch> ReadAsync(OrganizationsDocumentRequest request)
+    {
+        string GetPattern(string searchTerm, SearchOption searchOption)
+        {
+            if (string.IsNullOrEmpty(searchTerm)) {
+                return "%";
+            }
+            return searchOption switch {
+                SearchOption.IsEqualTo => searchTerm,
+                SearchOption.Contains => $"%{searchTerm}%",
+                SearchOption.StartsWith => $"{searchTerm}%",
+                SearchOption.EndsWith => $"%{searchTerm}",
+                _ => throw new Exception("Cannot reach")
+            };
+        }
+
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
+        _command.Parameters["pattern"].Value = GetPattern(request.SearchTerm, request.SearchOption);
+        if (request.OrganizationTypeId.HasValue) {
+            _command.Parameters["organization_type_id"].Value = request.OrganizationTypeId.Value;
+        }
+        else {
+            _command.Parameters["organization_type_id"].Value = DBNull.Value;
+        }
+        if (request.CountryId.HasValue) {
+            _command.Parameters["country_id"].Value = request.CountryId.Value;
+        }
+        else {
+            _command.Parameters["country_id"].Value = DBNull.Value;
+        }
+        await using var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        var organizations = reader.GetFieldValue<OrganizationSearch>(0);
+        return organizations;
+
+    }
 
 }

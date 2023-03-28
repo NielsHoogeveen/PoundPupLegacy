@@ -3,17 +3,19 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class BlogPostUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<BlogPost>, ISingleItemDatabaseReader<BlogPostUpdateDocumentReader, NodeEditDocumentReader.NodeUpdateDocumentRequest, BlogPost>
+public class BlogPostUpdateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<BlogPostUpdateDocumentReader>
 {
-    protected BlogPostUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
-    {
-    }
-
-    public static async Task<BlogPostUpdateDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public override async Task<BlogPostUpdateDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateCommand(connection, SQL);
         return new BlogPostUpdateDocumentReader(command);
     }
+
 }
 
-
+public class BlogPostUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<BlogPost>
+{
+    internal BlogPostUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
+    {
+    }
+ }

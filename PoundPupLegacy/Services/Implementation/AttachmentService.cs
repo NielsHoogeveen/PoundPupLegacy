@@ -2,6 +2,7 @@
 using Npgsql;
 using OneOf;
 using OneOf.Types;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.Model;
 using PoundPupLegacy.ViewModel.Readers;
@@ -13,15 +14,18 @@ public class AttachmentService : IAttachmentService
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<AttachmentService> _logger;
     private readonly IConfiguration _configuration;
+    private readonly IDatabaseReaderFactory<FileDocumentReader> _fileDocumentReaderFactory;
 
     public AttachmentService(
         NpgsqlConnection connection,
         IConfiguration configuration,
-        ILogger<AttachmentService> logger)
+        ILogger<AttachmentService> logger,
+        IDatabaseReaderFactory<FileDocumentReader> fileDocumentReaderFactory)
     {
         _connection = connection;
         _logger = logger;
         _configuration = configuration;
+        _fileDocumentReaderFactory = fileDocumentReaderFactory;
     }
 
     public async Task<int?> StoreFile(IFormFile file)
@@ -97,7 +101,7 @@ public class AttachmentService : IAttachmentService
                 _logger.LogError("AttachmentsLocation is not defined in appsettings.json");
                 return new None();
             }
-            await using var reader = await FileDocumentReader.CreateAsync(_connection);
+            await using var reader = await _fileDocumentReaderFactory.CreateAsync(_connection);
             var file = await reader.ReadAsync(new FileDocumentReader.FileDocumentRequest {
                 FileId = fileId,
                 UserId = userId,

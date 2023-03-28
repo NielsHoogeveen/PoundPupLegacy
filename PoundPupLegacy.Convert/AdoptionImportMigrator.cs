@@ -84,7 +84,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeReader = await NodeReaderByUrlId.CreateAsync(_postgresConnection);
+        await using var nodeReader = await new NodeReaderByUrlIdFactory().CreateAsync(_postgresConnection);
 
         var x = AdoptionImportCsvFiles()
             .OfType<SpecificAdoptionImports>()
@@ -114,8 +114,16 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
     private async Task<InterCountryRelation> GetInterCountryRelation(int countryIdFrom, int countryIdTo, int year, int numberOfChildren, NodeReaderByUrlId nodeReader)
     {
-        var nodeFrom = await nodeReader.ReadAsync(Constants.PPL, countryIdFrom);
-        var nodeTo = await nodeReader.ReadAsync(Constants.PPL, countryIdTo);
+        var nodeFrom = await nodeReader.ReadAsync(new NodeReaderByUrlId.NodeReaderByUrlIdRequest 
+        {
+            UrlId = countryIdFrom,
+            TenantId = Constants.PPL
+        });
+        var nodeTo = await nodeReader.ReadAsync(new NodeReaderByUrlId.NodeReaderByUrlIdRequest 
+        { 
+            UrlId = countryIdTo,
+            TenantId = Constants.PPL
+        });
 
         var title = $"Adoption exports from {nodeFrom.Title} to {nodeTo.Title} in {year}";
 
@@ -133,7 +141,11 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
             CreatedDateTime = DateTime.Now,
             DocumentIdProof = null,
             Id = null,
-            InterCountryRelationTypeId = await _nodeIdReader.ReadAsync(Constants.PPL, Constants.ADOPTION_IMPORT),
+            InterCountryRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            { 
+                UrlId = Constants.ADOPTION_IMPORT,
+                TenantId = Constants.PPL
+            }),
             NodeTypeId = 50,
             MoneyInvolved = 0,
             NumberOfChildrenInvolved = numberOfChildren,

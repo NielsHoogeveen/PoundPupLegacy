@@ -25,40 +25,100 @@ internal sealed class CaseTypeMigrator : PPLMigrator
         yield return new CaseType(Constants.ABUSE_CASE, "abuse case", "Abuse case of a child that has been placed by court", new List<int>
         {
 
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.HOMESTUDY_CASE_TYPE),
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.PLACEMENT_CASE_TYPE),
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.POSTPLACEMENT_CASE_TYPE),
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.FACILITATION_CASE_TYPE),
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.INSTITUTION_CASE_TYPE),
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.THERAPY_CASE_TYPE)
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.HOMESTUDY_CASE_TYPE
+            }),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.PLACEMENT_CASE_TYPE
+            }),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.POSTPLACEMENT_CASE_TYPE
+            }),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.FACILITATION_CASE_TYPE
+            }),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.INSTITUTION_CASE_TYPE
+            }),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.THERAPY_CASE_TYPE
+            })
         });
         yield return new CaseType(Constants.CHILD_TRAFFICKING_CASE, "child trafficking case", "Trafficking case of children to be adopted", new List<int>
         {
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.PLACEMENT_CASE_TYPE),
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.FACILITATION_CASE_TYPE),
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.INSTITUTION_CASE_TYPE)
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.PLACEMENT_CASE_TYPE
+            }),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.FACILITATION_CASE_TYPE
+            }),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.INSTITUTION_CASE_TYPE
+            })
         });
         yield return new CaseType(Constants.COERCED_ADOPTION_CASE, "coerced adoption case", "Adoption that involved coercion", new List<int>
         {
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.PLACEMENT_CASE_TYPE),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.PLACEMENT_CASE_TYPE
+            }),
         });
         yield return new CaseType(Constants.DEPORTATION_CASE, "deportation case", "Adoptees deported to country of origin", new List<int>());
         yield return new CaseType(Constants.FATHERS_RIGHTS_VIOLATION_CASE, "father's rights violation case", "Adoptions where the rights of the biological father were violated", new List<int>
         {
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.PLACEMENT_CASE_TYPE),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.PLACEMENT_CASE_TYPE
+            }),
         });
         yield return new CaseType(Constants.WRONGFUL_MEDICATION_CASE, "wrongful medication case", "Child placement situation where wrongful medication is present", new List<int>
         {
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.AUTHORITIES_CASE_TYPE)
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.AUTHORITIES_CASE_TYPE
+            }),
         });
         yield return new CaseType(Constants.WRONGFUL_REMOVAL_CASE, "wrongful removal case", "Children wrongfully removed from their family", new List<int>
         {
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.AUTHORITIES_CASE_TYPE)
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.AUTHORITIES_CASE_TYPE
+            }),
         });
         yield return new CaseType(Constants.DISRUPTED_PLACEMENT_CASE, "disrupted placement case", "A situation where the placement of a child was reverted", new List<int>
         {
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.PLACEMENT_CASE_TYPE),
-            await _nodeIdReader.ReadAsync(Constants.PPL, Constants.FACILITATION_CASE_TYPE)
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.PLACEMENT_CASE_TYPE
+            }),
+            await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+            {
+                TenantId = Constants.PPL,
+                UrlId = Constants.FACILITATION_CASE_TYPE
+            }),
         });
 
     }

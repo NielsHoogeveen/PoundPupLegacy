@@ -4,6 +4,7 @@ using PoundPupLegacy.Models;
 using System.Data;
 using System.Diagnostics;
 using PoundPupLegacy.Readers;
+using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -31,13 +32,33 @@ internal class SiteDataService : ISiteDataService
 
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<SiteDataService> _logger;
+    private readonly IDatabaseReaderFactory<TenantsReader> _tenantsReaderFactory;
+    private readonly IDatabaseReaderFactory<TenantNodesReader> _tenantNodesReaderFactory;
+    private readonly IDatabaseReaderFactory<MenuItemsReader> _menuItemsReaderFactory;
+    private readonly IDatabaseReaderFactory<UserTenantEditActionReader> _userTenantEditActionReaderFactory;
+    private readonly IDatabaseReaderFactory<UserTenantEditOwnActionReader> _userTenantEditOwnActionReaderFactory;
+    private readonly IDatabaseReaderFactory<UserTenantActionReader> _userTenantActionReaderFactory;
+
+    
 
     public SiteDataService(
         NpgsqlConnection connection,
-        ILogger<SiteDataService> logger)
+        ILogger<SiteDataService> logger,
+        IDatabaseReaderFactory<TenantsReader> tenantsReaderFactory,
+        IDatabaseReaderFactory<TenantNodesReader> tenantNodesReaderFactory,
+        IDatabaseReaderFactory<MenuItemsReader> menuItemsReaderFactory,
+        IDatabaseReaderFactory<UserTenantEditActionReader> userTenantEditActionReaderFactory,
+        IDatabaseReaderFactory<UserTenantEditOwnActionReader> userTenantEditOwnActionReaderFactory,
+        IDatabaseReaderFactory<UserTenantActionReader> userTenantActionReaderFactory)
     {
         _connection = connection;
         _logger = logger;
+        _tenantsReaderFactory = tenantsReaderFactory;
+        _tenantNodesReaderFactory = tenantNodesReaderFactory;
+        _menuItemsReaderFactory = menuItemsReaderFactory;
+        _userTenantEditActionReaderFactory = userTenantEditActionReaderFactory;
+        _userTenantEditOwnActionReaderFactory = userTenantEditOwnActionReaderFactory;
+        _userTenantActionReaderFactory = userTenantActionReaderFactory;
     }
 
     /*
@@ -133,11 +154,11 @@ internal class SiteDataService : ISiteDataService
 
         try {
             await _connection.OpenAsync();
-            await using var tenantsReader = await TenantsReader.CreateAsync(_connection);
+            await using var tenantsReader = await _tenantsReaderFactory.CreateAsync(_connection);
             await foreach (var tenant in tenantsReader.ReadAsync(new TenantsReader.TenantsRequest())) {
                 tenants.Add(tenant);
             }
-            await using var tenantNodesReader = await TenantNodesReader.CreateAsync(_connection);
+            await using var tenantNodesReader = await _tenantNodesReaderFactory.CreateAsync(_connection);
             await foreach (var tenantNode in tenantNodesReader.ReadAsync(new TenantNodesReader.TenantNodesRequest())) {
                 var tenant = tenants.Find(x => x.Id == tenantNode.TenantId);
                 if (tenant is null) {
@@ -160,7 +181,7 @@ internal class SiteDataService : ISiteDataService
         var userMenus = new Dictionary<(int, int), List<Models.MenuItem>>();
         try {
             await _connection.OpenAsync();
-            await using var reader = await MenuItemsReader.CreateAsync(_connection);
+            await using var reader = await _menuItemsReaderFactory.CreateAsync(_connection);
             await foreach (var item in reader.ReadAsync(new MenuItemsReader.MenuItemsRequest())) {
                 userMenus.Add((item.UserId, item.TenantId), item.MenuItems);
             }
@@ -180,7 +201,7 @@ internal class SiteDataService : ISiteDataService
         var userTenantActions = new HashSet<UserTenantEditAction>();
         try {
             await _connection.OpenAsync();
-            await using var reader = await UserTenantEditActionReader.CreateAsync(_connection);
+            await using var reader = await _userTenantEditActionReaderFactory.CreateAsync(_connection);
             await foreach (var item in reader.ReadAsync(new UserTenantEditActionReader.UserTenantEditActionRequest())) {
                 userTenantActions.Add(item);
             }
@@ -197,7 +218,7 @@ internal class SiteDataService : ISiteDataService
         var userTenantActions = new HashSet<UserTenantEditOwnAction>();
         try {
             await _connection.OpenAsync();
-            await using var reader = await UserTenantEditOwnActionReader.CreateAsync(_connection);
+            await using var reader = await _userTenantEditOwnActionReaderFactory.CreateAsync(_connection);
             await foreach (var item in reader.ReadAsync(new UserTenantEditOwnActionReader.UserTenantEditOwnActionRequest())) {
                 userTenantActions.Add(item);
             }
@@ -214,7 +235,7 @@ internal class SiteDataService : ISiteDataService
         var userTenantActions = new HashSet<UserTenantAction>();
         try {
             await _connection.OpenAsync();
-            await using var reader = await UserTenantActionReader.CreateAsync(_connection);
+            await using var reader = await _userTenantActionReaderFactory.CreateAsync(_connection);
             await foreach( var item in reader.ReadAsync(new UserTenantActionReader.UserTenantActionRequest())) 
             {
                 userTenantActions.Add(item);

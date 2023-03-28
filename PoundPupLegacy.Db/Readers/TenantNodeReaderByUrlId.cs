@@ -1,10 +1,9 @@
 ﻿using System.Data;
 
 namespace PoundPupLegacy.Db.Readers;
-
-public sealed class TenantNodeReaderByUrlId : DatabaseReader, IDatabaseReader<TenantNodeReaderByUrlId>
+public sealed class TenantNodeReaderByUrlIdFactory : IDatabaseReaderFactory<TenantNodeReaderByUrlId>
 {
-    public static async Task<TenantNodeReaderByUrlId> CreateAsync(NpgsqlConnection connection)
+    public async Task<TenantNodeReaderByUrlId> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
         SELECT 
@@ -32,13 +31,23 @@ public sealed class TenantNodeReaderByUrlId : DatabaseReader, IDatabaseReader<Te
 
     }
 
+}
+public sealed class TenantNodeReaderByUrlId : SingleItemDatabaseReader<TenantNodeReaderByUrlId.TenantNodeReaderByUrlIdRequest, TenantNode?>
+{
+    public record TenantNodeReaderByUrlIdRequest
+    {
+        public int TenantId { get; init; }
+        public int UrlId { get; init; }
+
+    }
+
     internal TenantNodeReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
-    public async Task<TenantNode?> ReadAsync(int tenantId, int urlId)
+    public override async Task<TenantNode?> ReadAsync(TenantNodeReaderByUrlIdRequest request)
     {
 
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["url_id"].Value = urlId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["url_id"].Value = request.UrlId;
 
         var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {

@@ -40,7 +40,11 @@ internal sealed class NodeFileMigratorCPCT : CPCTMigrator
         while (await reader.ReadAsync()) {
 
             yield return new NodeFile {
-                NodeId = await _nodeIdReader.ReadAsync(Constants.CPCT, reader.GetInt32("nid")),
+                NodeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    UrlId = reader.GetInt32("nid"),
+                    TenantId = Constants.CPCT
+                }),
                 FileId = await GetFileId(reader.GetInt32("fid")),
             };
 
@@ -64,6 +68,10 @@ internal sealed class NodeFileMigratorCPCT : CPCTMigrator
             3968 => (Constants.PPL, 1801),
             _ => (Constants.CPCT, fid)
         };
-        return await _fileIdReaderByTenantFileId.ReadAsync(tenantId, fileId);
+        return await _fileIdReaderByTenantFileId.ReadAsync(new Db.Readers.FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest 
+        { 
+            TenantId = tenantId,
+            TenantFileId = fileId
+        });
     }
 }

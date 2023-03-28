@@ -1,36 +1,11 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-
-public class PollsDocumentReader: DatabaseReader, ISingleItemDatabaseReader<PollsDocumentReader, PollsDocumentReader.PollsDocumentRequest, Polls>
+public class PollsDocumentReaderFactory : IDatabaseReaderFactory<PollsDocumentReader>
 {
-    public record PollsDocumentRequest
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-    }
-    
-    private PollsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-    public async Task<Polls> ReadAsync(PollsDocumentRequest request)
-    {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var organizations = reader.GetFieldValue<Polls>(0);
-        return organizations;
-    }
-
-    public static async Task<PollsDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<PollsDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -124,4 +99,31 @@ public class PollsDocumentReader: DatabaseReader, ISingleItemDatabaseReader<Poll
             where status <> -1
             group by number_of_entries
         """;
+}
+public class PollsDocumentReader: SingleItemDatabaseReader<PollsDocumentReader.PollsDocumentRequest, Polls>
+{
+    public record PollsDocumentRequest
+    {
+        public required int UserId { get; init; }
+        public required int TenantId { get; init; }
+        public required int Limit { get; init; }
+        public required int Offset { get; init; }
+    }
+    
+    internal PollsDocumentReader(NpgsqlCommand command) : base(command)
+    {
+    }
+    public override async Task<Polls> ReadAsync(PollsDocumentRequest request)
+    {
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["user_id"].Value = request.UserId;
+        _command.Parameters["limit"].Value = request.Limit;
+        _command.Parameters["offset"].Value = request.Offset;
+        await using var reader = await _command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+        var organizations = reader.GetFieldValue<Polls>(0);
+        return organizations;
+    }
+
+
 }

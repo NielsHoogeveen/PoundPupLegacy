@@ -99,11 +99,19 @@ internal sealed class BindingCountryMigrator : PPLMigrator
                 Description = "",
                 VocabularyNames = vocabularyNames,
                 Name = name,
-                SecondLevelRegionId = await _nodeIdReader.ReadAsync(Constants.PPL, reader.GetInt32("second_level_region_id")),
+                SecondLevelRegionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    UrlId = reader.GetInt32("second_level_region_id"),
+                    TenantId = Constants.PPL,
+                }),
                 ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await _nodeIdReader.ReadAsync(Constants.PPL, 41215),
+                HagueStatusId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
+                { 
+                    UrlId = 41215,
+                    TenantId = Constants.PPL,
+                }),
                 ResidencyRequirements = null,
                 AgeRequirements = null,
                 HealthRequirements = null,

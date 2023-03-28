@@ -2,9 +2,9 @@
 
 namespace PoundPupLegacy.Db.Readers;
 
-public sealed class ActionIdReaderByPath : DatabaseReader, IDatabaseReader<ActionIdReaderByPath>
+public sealed class ActionIdReaderByPathFactory: IDatabaseReaderFactory<ActionIdReaderByPath>
 {
-    public static async Task<ActionIdReaderByPath> CreateAsync(NpgsqlConnection connection)
+    public async Task<ActionIdReaderByPath> CreateAsync(NpgsqlConnection connection)
     {
         var sql = """
             SELECT id FROM basic_action WHERE path = @path
@@ -21,24 +21,26 @@ public sealed class ActionIdReaderByPath : DatabaseReader, IDatabaseReader<Actio
         return new ActionIdReaderByPath(command);
 
     }
+}
+public sealed class ActionIdReaderByPath : SingleItemDatabaseReader<string, int>
+{
 
     internal ActionIdReaderByPath(NpgsqlCommand command) : base(command) { }
 
-    public async Task<int> ReadAsync(string path)
+    public override async Task<int> ReadAsync(string path)
     {
         if (path is null) {
             throw new ArgumentNullException(nameof(path));
         }
         _command.Parameters["path"].Value = path;
 
-        var reader = await _command.ExecuteReaderAsync();
+        using var reader = await _command.ExecuteReaderAsync();
         if (reader.HasRows) {
             await reader.ReadAsync();
             var id = reader.GetInt32("id");
             await reader.CloseAsync();
             return id;
         }
-        await reader.CloseAsync();
         throw new Exception($"action {path} cannot be found");
     }
 }
