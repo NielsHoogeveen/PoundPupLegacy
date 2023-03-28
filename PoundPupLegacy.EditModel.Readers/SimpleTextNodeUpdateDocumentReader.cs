@@ -3,14 +3,14 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class SimpleTextNodeEditDocumentReader<T> : NodeEditDocumentReader<T>
+public class SimpleTextNodeUpdateDocumentReader<T> : NodeUpdateDocumentReader<T>
     where T: class, SimpleTextNode
 {
-    protected SimpleTextNodeEditDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
+    protected SimpleTextNodeUpdateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
     {
     }
 
-    protected const string SIMPLE_TEXT_NODE_DOCUMENT = $"""
+    protected const string SQL = $"""
             {CTE_EDIT}
             select
                 jsonb_build_object(

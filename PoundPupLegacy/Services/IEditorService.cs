@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Services;
 
 public interface IEditorService
 {
-    Task<IEnumerable<SubdivisionListItem>> GetSubdivisions(int countryId);
+    Task<List<SubdivisionListItem>> GetSubdivisions(int countryId);
     Task<Document?> GetDocument(int urlId, int userId, int tenantId);
     Task<BlogPost?> GetBlogPost(int urlId, int userId, int tenantId);
     Task<Article?> GetArticle(int urlId, int userId, int tenantId);

@@ -3,16 +3,16 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class OrganizationEditDocumentReader : NodeEditDocumentReader<Organization>, ISingleItemDatabaseReader<OrganizationEditDocumentReader, NodeEditDocumentReader.NodeEditDocumentRequest, Organization>
+public class OrganizationUpdateDocumentReader : NodeUpdateDocumentReader<Organization>, ISingleItemDatabaseReader<OrganizationUpdateDocumentReader, NodeEditDocumentReader.NodeUpdateDocumentRequest, Organization>
 {
-    protected OrganizationEditDocumentReader(NpgsqlCommand command) : base(command, Constants.ORGANIZATION)
+    protected OrganizationUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ORGANIZATION)
     {
     }
 
-    public static async Task<OrganizationEditDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public static async Task<OrganizationUpdateDocumentReader> CreateAsync(NpgsqlConnection connection)
     {
         var command = await CreateCommand(connection, SQL);
-        return new OrganizationEditDocumentReader(command);
+        return new OrganizationUpdateDocumentReader(command);
     }
 
     const string SQL = $"""

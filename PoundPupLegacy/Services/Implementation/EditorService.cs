@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using PoundPupLegacy.Common;
+using Npgsql;
 using PoundPupLegacy.Db;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
@@ -28,136 +29,80 @@ public class EditorService : IEditorService
         _logger = logger;
     }
 
-    const string CTE_CREATE = $"""
-        WITH
-        """;
-
-
-    const string SUBDIVISIONS_DOCUMENT = """
-        subdivisions_document as(
-            select
-            c.country_id,
-            jsonb_agg(
-        	    jsonb_build_object(
-        		    'Id',
-        		    c.id,
-        		    'Name',
-        		    t.name
-        	    )
-            ) document
-            from subdivision c
-            join bottom_level_subdivision b on b.id = c.id
-            join term t on t.nameable_id = c.id
-            join tenant_node tn on tn.node_id = t.vocabulary_id
-            where tn.tenant_id = 1 and tn.url_id = 4126
-            group by c.country_id
-        )
-        """;
-
-    const string NEW_SIMPLE_TEXT_DOCUMENT = $"""
-            {CTE_CREATE}
-            select
-                jsonb_build_object(
-                    'NodeId', 
-                    null,
-                    'UrlId', 
-                    null,
-                    'PublisherId',
-                    @user_id,
-                    'OwnerId',
-                    @tenant_id,
-                    'Title', 
-                    '',
-                    'Text', 
-                    '',
-            		'Tags', null,
-                    'TenantNodes',
-                    null,
-                    'Tenants',
-                    (select document from tenants_document),
-                    'Files',
-                    null
-                ) document
-        """;
-
-    public async Task<IEnumerable<SubdivisionListItem>> GetSubdivisions(int countryId)
+    public async Task<List<SubdivisionListItem>> GetSubdivisions(int countryId)
     {
         try {
             await _connection.OpenAsync();
-            var sql = SUBDIVISIONS_DOCUMENT;
-
-            using var readCommand = _connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            readCommand.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
-           await readCommand.PrepareAsync();
-            readCommand.Parameters["country_id"].Value = countryId;
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            await reader.ReadAsync();
-            if (!reader.HasRows) {
-                return new List<SubdivisionListItem>();
-            }
-            var text = reader.GetString(0); ;
-            var subdivisions = reader.GetFieldValue<List<SubdivisionListItem>>(0);
-            return subdivisions;
+            await using var reader = await SubdivisionListItemsReader.CreateAsync(_connection);
+            return await reader.ReadAsync(countryId);
         }
         finally {
-            await _connection.CloseAsync();
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
         }
     }
 
     public async Task<BlogPost?> GetNewBlogPost(int userId, int tenantId)
     {
-        return await GetNewSimpleTextNode<BlogPost>(35, userId, tenantId);
+        try {
+            await _connection.OpenAsync();
+            await using var reader = await BlogPostCreateDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
+                NodeTypeId = Constants.BLOG_POST,
+                UserId = userId,
+                TenantId = tenantId
+            });
+        }
+        finally {
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
+        }
     }
     public async Task<Article?> GetNewArticle(int userId, int tenantId)
     {
-        return await GetNewSimpleTextNode<Article>(36, userId, tenantId);
+        try {
+            await _connection.OpenAsync();
+            await using var reader = await ArticleCreateDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
+                NodeTypeId = Constants.ARTICLE,
+                UserId = userId,
+                TenantId = tenantId
+            });
+        }
+        finally {
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
+        }
     }
     public async Task<Discussion?> GetNewDiscussion(int userId, int tenantId)
     {
-        return await GetNewSimpleTextNode<Discussion>(37, userId, tenantId);
-    }
-
-    public async Task<T?> GetNewSimpleTextNode<T>(int nodeTypeId, int userId, int tenantId)
-        where T : class, SimpleTextNode
-    {
         try {
             await _connection.OpenAsync();
-            var sql = NEW_SIMPLE_TEXT_DOCUMENT;
-
-            using var readCommand = _connection.CreateCommand();
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            readCommand.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            await readCommand.PrepareAsync();
-            readCommand.Parameters["tenant_id"].Value = tenantId;
-            readCommand.Parameters["node_type_id"].Value = nodeTypeId;
-            readCommand.Parameters["user_id"].Value = userId;
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            await reader.ReadAsync();
-            if (!reader.HasRows) {
-                return null;
-            }
-            var text = reader.GetString(0); ;
-            var node = reader.GetFieldValue<T>(0);
-            return node;
+            await using var reader = await DiscussionCreateDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
+                NodeTypeId = Constants.DISCUSSION,
+                UserId = userId,
+                TenantId = tenantId
+            });
         }
         finally {
-            await _connection.CloseAsync();
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
         }
+
     }
+
 
     public async Task<BlogPost?> GetBlogPost(int urlId, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await BlogPostEditDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest {
+            await using var reader = await BlogPostUpdateDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
                 UrlId = urlId, 
                 UserId = userId, 
                 TenantId = tenantId
@@ -175,8 +120,8 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await ArticleEditDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest {
+            await using var reader = await ArticleUpdateDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
                 UrlId = urlId, 
                 UserId = userId, 
                 TenantId = tenantId
@@ -193,8 +138,8 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await DiscussionEditDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest { 
+            await using var reader = await DiscussionUpdateDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
                 UrlId = urlId, 
                 UserId = userId, 
                 TenantId = tenantId 
@@ -211,8 +156,8 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await DocumentEditDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest { 
+            await using var reader = await DocumentUpdateDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
                 UrlId = urlId, 
                 UserId = userId, 
                 TenantId = tenantId 
@@ -229,8 +174,8 @@ public class EditorService : IEditorService
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await OrganizationEditDocumentReader.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeEditDocumentRequest { 
+            await using var reader = await OrganizationUpdateDocumentReader.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
                 UrlId = urlId, 
                 UserId = userId, 
                 TenantId = tenantId 

@@ -1,14 +1,20 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class NodeEditDocumentReader: DatabaseReader
+public class NodeEditDocumentReader : DatabaseReader
 {
-    public record NodeEditDocumentRequest
+    public record NodeUpdateDocumentRequest
     {
         public int UrlId { get; init; }
+        public int UserId { get; init; }
+        public int TenantId { get; init; }
+
+    }
+    public record NodeCreateDocumentRequest
+    {
+        public int NodeTypeId { get; init; }
         public int UserId { get; init; }
         public int TenantId { get; init; }
 
@@ -17,49 +23,6 @@ public class NodeEditDocumentReader: DatabaseReader
     protected NodeEditDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-
-}
-
-public class NodeEditDocumentReader<T> : NodeEditDocumentReader
-where T : class, Node
-{
-
-    private int _nodeTypeId;
-    protected NodeEditDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command)
-    {
-        _nodeTypeId = nodeTypeId;
-    }
-
-    protected async static Task<NpgsqlCommand> CreateCommand(NpgsqlConnection connection, string sql)
-    {
-        var command = connection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-        command.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return command;
-    }
-
-
-
-    public async Task<T> ReadAsync(NodeEditDocumentRequest request)
-    {
-        _command.Parameters["url_id"].Value = request.UrlId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["node_type_id"].Value = _nodeTypeId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var text = reader.GetString(0); ;
-        var node = reader.GetFieldValue<T>(0);
-        return node;
-    }
-
-
     protected const string CTE_EDIT = $"""
         WITH
         {TENANT_NODES_DOCUMENT},

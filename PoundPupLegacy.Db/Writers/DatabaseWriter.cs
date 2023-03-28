@@ -111,8 +111,6 @@ public abstract class DatabaseWriter<T> : DatabaseWriter, IAsyncDisposable
         }
     }
 
-
-
     protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange)
     {
         WriteDateTimeRange(dateTimeRange, parameterDate, parameterDateRange, _command);
