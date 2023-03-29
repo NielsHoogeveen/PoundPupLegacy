@@ -5,9 +5,9 @@ public class InterPersonalRelationCreator : IEntityCreator<InterPersonalRelation
     public static async Task CreateAsync(IAsyncEnumerable<InterPersonalRelation> interPersonalRelations, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var interPersonalRelationWriter = await InterPersonalRelationWriter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var interPersonalRelationWriter = await InterPersonalRelationInserter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var interPersonalRelation in interPersonalRelations) {
             await nodeWriter.WriteAsync(interPersonalRelation);

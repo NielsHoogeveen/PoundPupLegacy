@@ -5,16 +5,16 @@ public class MultiQuestionPollCreator : IEntityCreator<MultiQuestionPoll>
     public static async Task CreateAsync(IAsyncEnumerable<MultiQuestionPoll> polls, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var simpleTextNodeWriter = await SimpleTextNodeWriter.CreateAsync(connection);
-        await using var pollWriter = await PollWriter.CreateAsync(connection);
-        await using var multiQuesionPollWriter = await MultiQuestionPollWriter.CreateAsync(connection);
-        await using var pollQuestionWriter = await PollQuestionWriter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
-        await using var pollOptionWriter = await PollOptionWriter.CreateAsync(connection);
-        await using var pollVoteWriter = await PollVoteWriter.CreateAsync(connection);
-        await using var multiQuestionPollPollQuestionWriter = await MultiQuestionPollPollQuestionWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var simpleTextNodeWriter = await SimpleTextNodeInserter.CreateAsync(connection);
+        await using var pollWriter = await PollInserter.CreateAsync(connection);
+        await using var multiQuesionPollWriter = await MultiQuestionPollInserter.CreateAsync(connection);
+        await using var pollQuestionWriter = await PollQuestionInserter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+        await using var pollOptionWriter = await PollOptionInserter.CreateAsync(connection);
+        await using var pollVoteWriter = await PollVoteInserter.CreateAsync(connection);
+        await using var multiQuestionPollPollQuestionWriter = await MultiQuestionPollPollQuestionInserter.CreateAsync(connection);
 
         await foreach (var poll in polls) {
             await nodeWriter.WriteAsync(poll);

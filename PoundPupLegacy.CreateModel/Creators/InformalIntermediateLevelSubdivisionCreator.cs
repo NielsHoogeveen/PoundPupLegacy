@@ -5,20 +5,20 @@ public class InformalIntermediateLevelSubdivisionCreator : IEntityCreator<Inform
     public static async Task CreateAsync(IAsyncEnumerable<InformalIntermediateLevelSubdivision> subdivisions, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
-        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
-        await using var geographicalEntityWriter = await GeographicalEnityWriter.CreateAsync(connection);
-        await using var subdivisionWriter = await SubdivisionWriter.CreateAsync(connection);
-        await using var firstLevelSubdivisionWriter = await FirstLevelSubdivisionWriter.CreateAsync(connection);
-        await using var intermediateLevelSubdivisionWriter = await IntermediateLevelSubdivisionWriter.CreateAsync(connection);
-        await using var formalIntermediateLevelSubdivisionWriter = await InformalIntermediateLevelSubdivisionWriter.CreateAsync(connection);
-        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
+        await using var nameableWriter = await NameableInserter.CreateAsync(connection);
+        await using var geographicalEntityWriter = await GeographicalEnityInserter.CreateAsync(connection);
+        await using var subdivisionWriter = await SubdivisionInserter.CreateAsync(connection);
+        await using var firstLevelSubdivisionWriter = await FirstLevelSubdivisionInserter.CreateAsync(connection);
+        await using var intermediateLevelSubdivisionWriter = await IntermediateLevelSubdivisionInserter.CreateAsync(connection);
+        await using var formalIntermediateLevelSubdivisionWriter = await InformalIntermediateLevelSubdivisionInserter.CreateAsync(connection);
+        await using var termWriter = await TermInserter.CreateAsync(connection);
         await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
-        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
         await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var subdivision in subdivisions) {
             await nodeWriter.WriteAsync(subdivision);

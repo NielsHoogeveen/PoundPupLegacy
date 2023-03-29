@@ -5,13 +5,13 @@ public class ContentSharingGroupCreator : IEntityCreator<ContentSharingGroup>
     public static async Task CreateAsync(IAsyncEnumerable<ContentSharingGroup> contentSharingGroups, NpgsqlConnection connection)
     {
 
-        await using var userGroupWriter = await UserGroupWriter.CreateAsync(connection);
-        await using var ownerWriter = await OwnerWriter.CreateAsync(connection);
-        await using var contentSharingGroupWriter = await ContentSharingGroupWriter.CreateAsync(connection);
-        await using var principalWriter = await PrincipalWriter.CreateAsync(connection);
-        await using var userRoleWriter = await UserRoleWriter.CreateAsync(connection);
-        await using var accessRoleWriter = await AccessRoleWriter.CreateAsync(connection);
-        await using var administratorRoleWriter = await AdministratorRoleWriter.CreateAsync(connection);
+        await using var userGroupWriter = await UserGroupInserter.CreateAsync(connection);
+        await using var ownerWriter = await OwnerInserter.CreateAsync(connection);
+        await using var contentSharingGroupWriter = await ContentSharingGroupInserter.CreateAsync(connection);
+        await using var principalWriter = await PrincipalInserter.CreateAsync(connection);
+        await using var userRoleWriter = await UserRoleInserter.CreateAsync(connection);
+        await using var accessRoleWriter = await AccessRoleInserter.CreateAsync(connection);
+        await using var administratorRoleWriter = await AdministratorRoleInserter.CreateAsync(connection);
 
 
         await foreach (var contentSharingGroup in contentSharingGroups) {

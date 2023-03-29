@@ -5,13 +5,13 @@ public class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
     public static async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
-        await using var professionalRoleWriter = await ProfessionalRoleWriter.CreateAsync(connection);
-        await using var memberOfCongressWriter = await MemberOfCongressWriter.CreateAsync(connection);
-        await using var representativeWriter = await RepresentativeWriter.CreateAsync(connection);
-        await using var senatorWriter = await SenatorWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
+        await using var professionalRoleWriter = await ProfessionalRoleInserter.CreateAsync(connection);
+        await using var memberOfCongressWriter = await MemberOfCongressInserter.CreateAsync(connection);
+        await using var representativeWriter = await RepresentativeInserter.CreateAsync(connection);
+        await using var senatorWriter = await SenatorInserter.CreateAsync(connection);
 
         await foreach (var professionalRole in professionalRoles) {
             await nodeWriter.WriteAsync(professionalRole);

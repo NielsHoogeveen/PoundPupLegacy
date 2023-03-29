@@ -5,26 +5,26 @@ public class CountryAndIntermediateLevelSubdivisionCreator : IEntityCreator<Coun
     public static async Task CreateAsync(IAsyncEnumerable<CountryAndIntermediateLevelSubdivision> countries, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
-        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
-        await using var geographicalEntityWriter = await GeographicalEnityWriter.CreateAsync(connection);
-        await using var politicalEntityWriter = await PoliticalEntityWriter.CreateAsync(connection);
-        await using var countryWriter = await CountryWriter.CreateAsync(connection);
-        await using var topLevelCountryWriter = await TopLevelCountryWriter.CreateAsync(connection);
-        await using var subdivisionWriter = await SubdivisionWriter.CreateAsync(connection);
-        await using var isoCodedSubdivisionWriter = await ISOCodedSubdivisionWriter.CreateAsync(connection);
-        await using var firstLevelSubdivisionWriter = await FirstLevelSubdivisionWriter.CreateAsync(connection);
-        await using var isoCodedFirstLevelSubdivisionWriter = await ISOCodedFirstLevelSubdivisionWriter.CreateAsync(connection);
-        await using var countryAndFirstLevelSubdivisionWriter = await CountryAndFirstLevelSubdivisionWriter.CreateAsync(connection);
-        await using var intermediateLevelSubdivisionWriter = await IntermediateLevelSubdivisionWriter.CreateAsync(connection);
-        await using var countryAndIntermediateLevelSubdivisionWriter = await CountryAndIntermediateLevelSubdivisionWriter.CreateAsync(connection);
-        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
+        await using var nameableWriter = await NameableInserter.CreateAsync(connection);
+        await using var geographicalEntityWriter = await GeographicalEnityInserter.CreateAsync(connection);
+        await using var politicalEntityWriter = await PoliticalEntityInserter.CreateAsync(connection);
+        await using var countryWriter = await CountryInserter.CreateAsync(connection);
+        await using var topLevelCountryWriter = await TopLevelCountryInserter.CreateAsync(connection);
+        await using var subdivisionWriter = await SubdivisionInserter.CreateAsync(connection);
+        await using var isoCodedSubdivisionWriter = await ISOCodedSubdivisionInserter.CreateAsync(connection);
+        await using var firstLevelSubdivisionWriter = await FirstLevelSubdivisionInserter.CreateAsync(connection);
+        await using var isoCodedFirstLevelSubdivisionWriter = await ISOCodedFirstLevelSubdivisionInserter.CreateAsync(connection);
+        await using var countryAndFirstLevelSubdivisionWriter = await CountryAndFirstLevelSubdivisionInserter.CreateAsync(connection);
+        await using var intermediateLevelSubdivisionWriter = await IntermediateLevelSubdivisionInserter.CreateAsync(connection);
+        await using var countryAndIntermediateLevelSubdivisionWriter = await CountryAndIntermediateLevelSubdivisionInserter.CreateAsync(connection);
+        await using var termWriter = await TermInserter.CreateAsync(connection);
         await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
-        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
         await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
 
         await foreach (var country in countries) {

@@ -4,18 +4,18 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
 {
     public static async Task CreateAsync(IAsyncEnumerable<SecondLevelGlobalRegion> nodes, NpgsqlConnection connection)
     {
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
-        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
-        await using var geographicalEntityWriter = await GeographicalEnityWriter.CreateAsync(connection);
-        await using var globalRegionWriter = await GlobalRegionWriter.CreateAsync(connection);
-        await using var secondLevelGlobalRegionWriter = await SecondLevelGlobalRegionWriter.CreateAsync(connection);
-        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
+        await using var nameableWriter = await NameableInserter.CreateAsync(connection);
+        await using var geographicalEntityWriter = await GeographicalEnityInserter.CreateAsync(connection);
+        await using var globalRegionWriter = await GlobalRegionInserter.CreateAsync(connection);
+        await using var secondLevelGlobalRegionWriter = await SecondLevelGlobalRegionInserter.CreateAsync(connection);
+        await using var termWriter = await TermInserter.CreateAsync(connection);
         await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
-        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
         await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var node in nodes) {
             await nodeWriter.WriteAsync(node);

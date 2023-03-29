@@ -5,11 +5,11 @@ public class CongressionalTermPoliticalPartyAffiliationCreator : IEntityCreator<
     public static async Task CreateAsync(IAsyncEnumerable<CongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliations, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
-        await using var congressionalTermPoliticalPartyAffiliationWriter = await CongressionalTermPoliticalPartyAffiliationWriter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
+        await using var congressionalTermPoliticalPartyAffiliationWriter = await CongressionalTermPoliticalPartyAffiliationInserter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var congressionalTermPoliticalPartyAffiliation in congressionalTermPoliticalPartyAffiliations) {
             await nodeWriter.WriteAsync(congressionalTermPoliticalPartyAffiliation);

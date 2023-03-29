@@ -5,9 +5,9 @@ public class CaseTypeCreator : IEntityCreator<CaseType>
     public static async Task CreateAsync(IAsyncEnumerable<CaseType> caseTypes, NpgsqlConnection connection)
     {
 
-        await using var nodeTypeWriter = await NodeTypeWriter.CreateAsync(connection);
-        await using var caseTypeWriter = await CaseTypeWriter.CreateAsync(connection);
-        await using var caseTypeCaseRelationTypeWriter = await CaseTypeCasePartyTypeWriter.CreateAsync(connection);
+        await using var nodeTypeWriter = await NodeTypeInserter.CreateAsync(connection);
+        await using var caseTypeWriter = await CaseTypeInserter.CreateAsync(connection);
+        await using var caseTypeCaseRelationTypeWriter = await CaseTypeCasePartyTypeInserter.CreateAsync(connection);
 
         await foreach (var caseType in caseTypes) {
             await nodeTypeWriter.WriteAsync(caseType);

@@ -5,12 +5,12 @@ public class HouseTermCreator : IEntityCreator<HouseTerm>
     public static async Task CreateAsync(IAsyncEnumerable<HouseTerm> houseTerms, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
-        await using var congressionalTermWriter = await CongressionalTermWriter.CreateAsync(connection);
-        await using var houseTermWriter = await HouseTermWriter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
+        await using var congressionalTermWriter = await CongressionalTermInserter.CreateAsync(connection);
+        await using var houseTermWriter = await HouseTermInserter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var houseTerm in houseTerms) {
             await nodeWriter.WriteAsync(houseTerm);

@@ -5,9 +5,9 @@ public class InterOrganizationalRelationCreator : IEntityCreator<InterOrganizati
     public static async Task CreateAsync(IAsyncEnumerable<InterOrganizationalRelation> interOrganizationalRelations, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var interOrganizationalRelationWriter = await InterOrganizationalRelationWriter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var interOrganizationalRelationWriter = await InterOrganizationalRelationInserter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var interOrganizationalRelation in interOrganizationalRelations) {
             await nodeWriter.WriteAsync(interOrganizationalRelation);

@@ -5,16 +5,16 @@ public class SenateBillCreator : IEntityCreator<SenateBill>
     public static async Task CreateAsync(IAsyncEnumerable<SenateBill> senateBills, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
-        await using var billWriter = await BillWriter.CreateAsync(connection);
-        await using var senateBillWriter = await SenateBillWriter.CreateAsync(connection);
-        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var nameableWriter = await NameableInserter.CreateAsync(connection);
+        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
+        await using var billWriter = await BillInserter.CreateAsync(connection);
+        await using var senateBillWriter = await SenateBillInserter.CreateAsync(connection);
+        await using var termWriter = await TermInserter.CreateAsync(connection);
         await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
-        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
         await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
 
         await foreach (var senateBill in senateBills) {

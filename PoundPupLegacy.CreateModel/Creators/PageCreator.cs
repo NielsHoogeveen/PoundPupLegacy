@@ -5,11 +5,11 @@ public class PageCreator : IEntityCreator<Page>
     public static async Task CreateAsync(IAsyncEnumerable<Page> pages, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var simpleTextNodeWriter = await SimpleTextNodeWriter.CreateAsync(connection);
-        await using var pageWriter = await PageWriter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var simpleTextNodeWriter = await SimpleTextNodeInserter.CreateAsync(connection);
+        await using var pageWriter = await PageInserter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var page in pages) {
             await nodeWriter.WriteAsync(page);

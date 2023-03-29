@@ -5,9 +5,9 @@ public class SenatorSenateBillActionCreator : IEntityCreator<SenatorSenateBillAc
     public static async Task CreateAsync(IAsyncEnumerable<SenatorSenateBillAction> senatorSenateBillActions, NpgsqlConnection connection)
     {
 
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var senatorSenateBillActionWriter = await SenatorSenateBillActionWriter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var senatorSenateBillActionWriter = await SenatorSenateBillActionInserter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var senatorSenateBillAction in senatorSenateBillActions) {
             await nodeWriter.WriteAsync(senatorSenateBillAction);

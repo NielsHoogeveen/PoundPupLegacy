@@ -5,8 +5,8 @@ public class FileCreator : IEntityCreator<File>
     public static async Task CreateAsync(IAsyncEnumerable<File> files, NpgsqlConnection connection)
     {
 
-        await using var fileWriter = await FileWriter.CreateAsync(connection);
-        await using var tenantFileWriter = await TenantFileWriter.CreateAsync(connection);
+        await using var fileWriter = await FileInserter.CreateAsync(connection);
+        await using var tenantFileWriter = await TenantFileInserter.CreateAsync(connection);
 
         await foreach (var file in files) {
             await fileWriter.WriteAsync(file);

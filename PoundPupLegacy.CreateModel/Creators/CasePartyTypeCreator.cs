@@ -4,15 +4,15 @@ public class CasePartyTypeCreator : IEntityCreator<CasePartyType>
 {
     public static async Task CreateAsync(IAsyncEnumerable<CasePartyType> casePartyTypes, NpgsqlConnection connection)
     {
-        await using var nodeWriter = await NodeWriter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableWriter.CreateAsync(connection);
-        await using var nameableWriter = await NameableWriter.CreateAsync(connection);
-        await using var casePartyTypeWriter = await CasePartyTypeWriter.CreateAsync(connection);
-        await using var termWriter = await TermWriter.CreateAsync(connection);
+        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
+        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
+        await using var nameableWriter = await NameableInserter.CreateAsync(connection);
+        await using var casePartyTypeWriter = await CasePartyTypeInserter.CreateAsync(connection);
+        await using var termWriter = await TermInserter.CreateAsync(connection);
         await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
-        await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
+        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
         await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
+        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var casePartyType in casePartyTypes) {
             await nodeWriter.WriteAsync(casePartyType);

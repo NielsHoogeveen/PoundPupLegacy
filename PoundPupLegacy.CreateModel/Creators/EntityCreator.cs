@@ -7,7 +7,7 @@ internal interface IEntityCreator<T>
 
 internal static class EntityCreator
 {
-    internal static async Task WriteTerms(Nameable nameable, DatabaseWriter<Term> termWriter, TermReaderByName termReader, DatabaseWriter<TermHierarchy> termHierarchyWriter, VocabularyIdReaderByOwnerAndName vocabularyIdReader)
+    internal static async Task WriteTerms(Nameable nameable, DatabaseInserter<Term> termWriter, TermReaderByName termReader, DatabaseInserter<TermHierarchy> termHierarchyWriter, VocabularyIdReaderByOwnerAndName vocabularyIdReader)
     {
         foreach (var vocabularyName in nameable.VocabularyNames) {
             var vocubularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest {
