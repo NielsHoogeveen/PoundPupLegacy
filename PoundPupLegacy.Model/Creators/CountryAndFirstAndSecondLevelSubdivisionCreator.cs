@@ -23,9 +23,9 @@ public class CountryAndFirstAndSecondLevelSubdivisionCreator : IEntityCreator<Co
         await using var firstAndSecondLevelSubdivisionWriter = await FirstAndSecondLevelSubdivisionWriter.CreateAsync(connection);
         await using var countryAndFirstAndSecondLevelSubdivisionWriter = await CountryAndFirstAndSecondLevelSubdivisionWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await (new TermReaderByNameFactory()).CreateAsync(connection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
-        await using var vocabularyIdReader = await (new VocabularyIdReaderByOwnerAndNameFactory()).CreateAsync(connection);
+        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
 

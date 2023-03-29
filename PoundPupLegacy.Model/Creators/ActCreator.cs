@@ -11,10 +11,10 @@ public class ActCreator : IEntityCreator<Act>
         await using var documentableWriter = await DocumentableWriter.CreateAsync(connection);
         await using var actWriter = await ActWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await (new TermReaderByNameFactory()).CreateAsync(connection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
-        await using var vocabularyIdReader = await (new VocabularyIdReaderByOwnerAndNameFactory()).CreateAsync(connection);
+        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
 
         await foreach (var act in acts) {
             await nodeWriter.WriteAsync(act);

@@ -10,9 +10,9 @@ public class PersonOrganizationRelationTypeCreator : IEntityCreator<PersonOrgani
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var personOrganizationRelationTypeWriter = await PersonOrganizationRelationTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await (new TermReaderByNameFactory()).CreateAsync(connection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
-        await using var vocabularyIdReader = await (new VocabularyIdReaderByOwnerAndNameFactory()).CreateAsync(connection);
+        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var personOrganizationRelationType in personOrganizationRelationTypes) {

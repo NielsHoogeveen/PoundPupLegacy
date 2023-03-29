@@ -10,9 +10,9 @@ public class BillActionTypeCreator : IEntityCreator<BillActionType>
         await using var nameableWriter = await NameableWriter.CreateAsync(connection);
         await using var billActionTypeWriter = await BillActionTypeWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await (new TermReaderByNameFactory()).CreateAsync(connection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
-        await using var vocabularyIdReader = await (new VocabularyIdReaderByOwnerAndNameFactory()).CreateAsync(connection);
+        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
 
         await foreach (var billActionType in billActionTypes) {

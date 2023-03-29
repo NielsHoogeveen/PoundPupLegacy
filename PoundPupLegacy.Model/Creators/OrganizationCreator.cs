@@ -14,9 +14,9 @@ public class OrganizationCreator : IEntityCreator<Organization>
         await using var organizationWriter = await OrganizationWriter.CreateAsync(connection);
         await using var unitedStatesPoliticalPartyWriter = await UnitedStatesPoliticalPartyWriter.CreateAsync(connection);
         await using var termWriter = await TermWriter.CreateAsync(connection);
-        await using var termReader = await (new TermReaderByNameFactory()).CreateAsync(connection);
+        await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
         await using var termHierarchyWriter = await TermHierarchyWriter.CreateAsync(connection);
-        await using var vocabularyIdReader = await (new VocabularyIdReaderByOwnerAndNameFactory()).CreateAsync(connection);
+        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
         await using var tenantNodeWriter = await TenantNodeWriter.CreateAsync(connection);
         await using var organizationOrganizationTypeWriter = await OrganizationOrganizationTypeWriter.CreateAsync(connection);
 
