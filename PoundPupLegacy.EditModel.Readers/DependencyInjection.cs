@@ -17,5 +17,6 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseReaderFactory<OrganizationUpdateDocumentReader>, OrganizationUpdateDocumentReaderFactory>();
         services.AddTransient<IDatabaseReaderFactory<SubdivisionListItemsReader>, SubdivisionListItemsReaderFactory>();
         services.AddTransient<IDatabaseReaderFactory<DocumentableDocumentsDocumentReader>, DocumentableDocumentsDocumentReaderFactory>();
+        services.AddTransient<IDatabaseReaderFactory<TagDocumentsReader>, TagDocumentsReaderFactory>();
     }
 }

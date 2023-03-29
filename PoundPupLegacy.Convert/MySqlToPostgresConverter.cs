@@ -211,6 +211,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         _stopwatch.Restart();
         Console.Write("Cleaning database");
         var sql = """
+            alter table tenant alter column country_id_default DROP NOT NULL;	
             TRUNCATE case_parties
             RESTART IDENTITY
             CASCADE;

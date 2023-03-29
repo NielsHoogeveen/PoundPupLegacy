@@ -28,7 +28,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
             var countryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
             { 
                 TenantId = Constants.PPL,
-                UrlId = int.Parse(parts[3])
+                UrlId = int.Parse(parts[7])
             });
             var subdivisionId = await _subdivisionIdReader.ReadAsync(new SubdivisionIdReaderByName.SubdivisionIdReaderByNameRequest 
             { 

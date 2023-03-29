@@ -3,8 +3,10 @@ using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.Middleware;
+using PoundPupLegacy.Readers;
 using PoundPupLegacy.Services;
 using PoundPupLegacy.Services.Implementation;
+using PoundPupLegacy.ViewModel.Readers;
 using Quartz;
 
 namespace PoundPupLegacy;
@@ -71,6 +73,8 @@ public class Program
         builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddTransient<ILocationService, LocationService>();
         builder.Services.AddEditReaders();
+        builder.Services.AddSystemReaders();
+        builder.Services.AddViewModelReaders();
         builder.Services.AddQuartz(q => {
             // base Quartz scheduler, job and trigger configuration
         });

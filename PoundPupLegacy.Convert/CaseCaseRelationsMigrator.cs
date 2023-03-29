@@ -657,7 +657,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 """;
         await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
         { 
-            UrlId = Constants.COERCED_ADOPTION_CASE,
+            UrlId = Constants.PLACEMENT_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
             yield return elem;
