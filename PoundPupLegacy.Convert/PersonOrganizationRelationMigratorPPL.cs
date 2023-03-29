@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
 {
@@ -109,25 +105,21 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int personId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            int personId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32("person_id"),
                 TenantId = Constants.PPL,
             });
-            int organizationId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            int organizationId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32("organization_id"),
                 TenantId = Constants.PPL,
             });
-            int? geographicalEntityId = reader.IsDBNull("geographical_entity_id") 
-                    ? null 
-                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                    { 
+            int? geographicalEntityId = reader.IsDBNull("geographical_entity_id")
+                    ? null
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                         UrlId = reader.GetInt32("geographical_entity_id"),
                         TenantId = Constants.PPL,
                     });
-            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.PPL,
             });
@@ -169,10 +161,9 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
                 PersonOrganizationRelationTypeId = personOrganizationRelationTypeId,
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
 
-                DocumentIdProof = reader.IsDBNull("document_id_proof") 
-                    ? null 
-                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                    { 
+                DocumentIdProof = reader.IsDBNull("document_id_proof")
+                    ? null
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     }),

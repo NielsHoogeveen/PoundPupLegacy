@@ -21,23 +21,23 @@ public record SubgroupService : ISubgroupService
 
     public async Task<SubgroupPagedList?> GetSubGroupPagedList(int userId, int subgroupId, int limit, int offset)
     {
-        
+
         try {
             await _connection.OpenAsync();
             await using var reader = await _subgroupsDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new SubgroupsDocumentReader.SubgroupDocumentRequest {
-                UserId = userId, 
-                SubgroupId = subgroupId, 
-                Limit = limit, 
+                UserId = userId,
+                SubgroupId = subgroupId,
+                Limit = limit,
                 Offset = offset
 
             });
         }
         finally {
-            if(_connection.State == ConnectionState.Open) {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
-            
+
         }
     }
 }

@@ -2,7 +2,6 @@
 using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Readers;
-using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -36,7 +35,7 @@ internal class AuthenticationService : IAuthenticationService
             await _connection.OpenAsync();
 
             await using var reader = await _passwordValidationReaderFactory.CreateAsync(_connection);
-            var userId = await reader.ReadAsync(new PasswordValidationReader.PasswordValidationRequest { 
+            var userId = await reader.ReadAsync(new PasswordValidationReader.PasswordValidationRequest {
                 Password = CreateMD5(password),
                 UserName = userName.ToLower()
             });

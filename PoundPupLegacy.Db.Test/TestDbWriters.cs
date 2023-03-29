@@ -1,5 +1,6 @@
 using Npgsql;
-using PoundPupLegacy.Db.Writers;
+using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.CreateModel.Writers;
 using System.Reflection;
 
 namespace PoundPupLegacy.Db.Test
@@ -15,7 +16,7 @@ namespace PoundPupLegacy.Db.Test
             connection.Open();
             var writerAssembly = Assembly.GetAssembly(typeof(UserCreator));
             var types = writerAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseWriter)) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
-            foreach (var type in types.Where(x=> x.Name != "SingleIdWriter")) {
+            foreach (var type in types.Where(x => x.Name != "SingleIdWriter")) {
                 var m = type.GetMethod("CreateAsync", new Type[] { typeof(NpgsqlConnection) });
                 var w = m!.Invoke(null, new object[] { connection }) as IDisposable;
                 var w2 = (Task)w;

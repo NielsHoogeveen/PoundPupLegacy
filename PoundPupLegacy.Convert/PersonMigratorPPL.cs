@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class PersonMigratorPPL : PPLMigrator
 {
@@ -243,10 +239,9 @@ internal sealed class PersonMigratorPPL : PPLMigrator
                 VocabularyNames = vocabularyNames,
                 DateOfBirth = GetDateOfBirth(reader.GetInt32("id"), reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth")),
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
-                FileIdPortrait = reader.IsDBNull("file_id_portrait") 
-                    ? null 
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new Db.Readers.FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest 
-                    { 
+                FileIdPortrait = reader.IsDBNull("file_id_portrait")
+                    ? null
+                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_portrait")
                     }),

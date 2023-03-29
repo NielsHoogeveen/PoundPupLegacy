@@ -1,10 +1,10 @@
 ﻿using Npgsql;
-using PoundPupLegacy.ViewModel;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
+using PoundPupLegacy.Readers;
+using PoundPupLegacy.ViewModel;
 using System.Data;
 using System.Diagnostics;
-using PoundPupLegacy.Readers;
-using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -39,7 +39,7 @@ internal class SiteDataService : ISiteDataService
     private readonly IDatabaseReaderFactory<UserTenantEditOwnActionReader> _userTenantEditOwnActionReaderFactory;
     private readonly IDatabaseReaderFactory<UserTenantActionReader> _userTenantActionReaderFactory;
 
-    
+
 
     public SiteDataService(
         NpgsqlConnection connection,
@@ -186,8 +186,8 @@ internal class SiteDataService : ISiteDataService
                 userMenus.Add((item.UserId, item.TenantId), item.MenuItems);
             }
 
-            
-            
+
+
             _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
             return userMenus;
         }
@@ -236,8 +236,7 @@ internal class SiteDataService : ISiteDataService
         try {
             await _connection.OpenAsync();
             await using var reader = await _userTenantActionReaderFactory.CreateAsync(_connection);
-            await foreach( var item in reader.ReadAsync(new UserTenantActionReader.UserTenantActionRequest())) 
-            {
+            await foreach (var item in reader.ReadAsync(new UserTenantActionReader.UserTenantActionRequest())) {
                 userTenantActions.Add(item);
             }
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");

@@ -20,7 +20,7 @@ public class TopicService : ITopicService
 
     public async Task<Topics> FetchTopics(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
     {
-        
+
         try {
             await _connection.OpenAsync();
             await using var reader = await _topicsDocumentReaderFactory.CreateAsync(_connection);

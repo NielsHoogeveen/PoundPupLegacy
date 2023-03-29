@@ -39,7 +39,7 @@ public class UserTenantActionReaderFactory : IDatabaseReaderFactory<UserTenantAc
         """;
 
 }
-public class UserTenantActionReader: EnumerableDatabaseReader<UserTenantActionReader.UserTenantActionRequest, UserTenantAction>
+public class UserTenantActionReader : EnumerableDatabaseReader<UserTenantActionReader.UserTenantActionRequest, UserTenantAction>
 {
     public record UserTenantActionRequest
     {
@@ -55,7 +55,7 @@ public class UserTenantActionReader: EnumerableDatabaseReader<UserTenantActionRe
             var userId = reader.GetInt32(0);
             var tenantId = reader.GetInt32(1);
             var action = reader.GetFieldValue<string>(2);
-            yield return  new UserTenantAction {
+            yield return new UserTenantAction {
                 UserId = userId,
                 TenantId = tenantId,
                 Action = action,

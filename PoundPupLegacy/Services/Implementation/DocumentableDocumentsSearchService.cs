@@ -29,13 +29,13 @@ public class DocumentableDocumentsSearchService : IDocumentableDocumentsSearchSe
         try {
             await _connection.OpenAsync();
             await using var reader = await _documentableDocumentsDocumentReaderFactory.CreateAsync(_connection);
-            await foreach(var elem in reader.ReadAsync(new DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest {
-                NodeId = nodeId, 
-                UserId = userId, 
-                TenantId = tenantId, 
+            await foreach (var elem in reader.ReadAsync(new DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest {
+                NodeId = nodeId,
+                UserId = userId,
+                TenantId = tenantId,
                 SearchString = str
 
-            })){
+            })) {
                 tags.Add(elem);
             }
             return tags;

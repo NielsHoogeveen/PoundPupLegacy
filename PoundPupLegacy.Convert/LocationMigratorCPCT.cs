@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class LocationMigratorCPCT : CPCTMigrator
 {
@@ -260,8 +256,7 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
                 return null;
             }
             else {
-                return await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = (int)ret!
                 });
@@ -278,8 +273,7 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
             return null;
         }
         else {
-            return await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = (int)ret!
             });
@@ -333,8 +327,7 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
             string? code = reader.IsDBNull("subdivision_code") ? null : reader.GetString("subdivision_code").Replace("UK-", "GB-");
             int? countryId = reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id");
             var (urlId, tenantId) = GetUrlIdAndTenant(reader.GetInt32("node_id"));
-            var locatableId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            var locatableId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = tenantId,
                 UrlId = urlId
             });

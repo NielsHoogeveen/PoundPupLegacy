@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal class SearchableMigrator : PPLMigrator
 {

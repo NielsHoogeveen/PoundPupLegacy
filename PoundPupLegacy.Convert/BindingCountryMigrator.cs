@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class BindingCountryMigrator : PPLMigrator
 {
@@ -99,16 +95,14 @@ internal sealed class BindingCountryMigrator : PPLMigrator
                 Description = "",
                 VocabularyNames = vocabularyNames,
                 Name = name,
-                SecondLevelRegionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                SecondLevelRegionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     UrlId = reader.GetInt32("second_level_region_id"),
                     TenantId = Constants.PPL,
                 }),
                 ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     UrlId = 41215,
                     TenantId = Constants.PPL,
                 }),

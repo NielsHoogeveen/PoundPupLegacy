@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.Readers;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;

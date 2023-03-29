@@ -2,7 +2,6 @@
 using PoundPupLegacy.Common;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
-using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
@@ -28,9 +27,9 @@ public class TopicSearchService : ITopicSearchService
         try {
             await _connection.OpenAsync();
             await using var reader = await _tagDocumentsReaderFactory.CreateAsync(_connection);
-            await foreach(var elem in reader.ReadAsync(new TagDocumentsReader.TagDocumentsRequest {
-                NodeId = nodeId, 
-                TenantId = tenantId, 
+            await foreach (var elem in reader.ReadAsync(new TagDocumentsReader.TagDocumentsRequest {
+                NodeId = nodeId,
+                TenantId = tenantId,
                 SearchString = str
 
             })) {

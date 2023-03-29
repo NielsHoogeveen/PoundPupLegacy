@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class DeportationCaseMigrator : PPLMigrator
 {
@@ -100,17 +96,15 @@ internal sealed class DeportationCaseMigrator : PPLMigrator
                 VocabularyNames = new List<VocabularyName>(),
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
-                SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from") 
-                    ? null 
-                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                    { 
+                SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from")
+                    ? null
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("subdivision_id_from")
                     }),
-                CountryIdTo = reader.IsDBNull("country_id_to") 
-                    ? null 
-                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                    { 
+                CountryIdTo = reader.IsDBNull("country_id_to")
+                    ? null
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("country_id_to")
                     }),

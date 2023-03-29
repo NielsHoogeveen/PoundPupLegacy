@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.Model;
+﻿namespace PoundPupLegacy.CreateModel;
 
 public interface Case : Locatable, Documentable, Nameable
 {

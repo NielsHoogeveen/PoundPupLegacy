@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.Model;
+﻿namespace PoundPupLegacy.CreateModel;
 
 public sealed record CountryAndFirstAndBottomLevelSubdivision : Node, CountryAndFirstLevelSubdivision, BottomLevelSubdivision
 {

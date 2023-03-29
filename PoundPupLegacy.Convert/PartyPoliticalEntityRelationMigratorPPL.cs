@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
 {
@@ -96,18 +92,15 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int partyId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            int partyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("party_id")
             });
-            int politicalEntityId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            int politicalEntityId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("political_entity_id")
             });
-            int partyPpoliticalEntityTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            int partyPpoliticalEntityTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
             });
@@ -147,10 +140,9 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
                 PoliticalEntityId = politicalEntityId,
                 PartyPoliticalEntityRelationTypeId = partyPpoliticalEntityTypeId,
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
-                DocumentIdProof = reader.IsDBNull("document_id_proof") 
-                    ? null 
-                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                    { 
+                DocumentIdProof = reader.IsDBNull("document_id_proof")
+                    ? null
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     })

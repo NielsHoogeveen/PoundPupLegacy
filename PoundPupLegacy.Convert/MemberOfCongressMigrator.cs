@@ -1,7 +1,5 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-using System.Text.Json;
+﻿using System.Text.Json;
+using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Convert;
 
@@ -268,8 +266,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
         if (!id.HasValue) {
             return null;
         }
-        return await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-        { 
+        return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
             UrlId = id.Value,
             TenantId = Constants.PPL
         });
@@ -718,7 +715,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
         }
     }
 
-    private async IAsyncEnumerable<Model.File> GetImageFiles()
+    private async IAsyncEnumerable<File> GetImageFiles()
     {
         using var command = _postgresConnection.CreateCommand();
         command.CommandType = CommandType.Text;
@@ -738,7 +735,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
             var fileNameSource = $"\\\\wsl.localhost\\Ubuntu\\home\\niels\\ppl\\files\\members_of_congress\\{reader.GetString(1)}.jpg";
             var file = new FileInfo(fileNameSource);
             if (file.Exists) {
-                yield return new Model.File {
+                yield return new File {
                     Id = null,
                     Path = $"files/members_of_congress/{reader.GetString(1)}.jpg",
                     Name = $"{reader.GetString(1)}.jpg",

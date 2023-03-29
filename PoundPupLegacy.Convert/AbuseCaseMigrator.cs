@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 internal sealed class AbuseCaseMigrator : PPLMigrator
 {
     public AbuseCaseMigrator(MySqlToPostgresConverter converter) : base(converter)
@@ -173,13 +169,11 @@ internal sealed class AbuseCaseMigrator : PPLMigrator
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
-                ChildPlacementTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                ChildPlacementTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("child_placement_type_id")
                 }),
-                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("family_size_id")
                 }),

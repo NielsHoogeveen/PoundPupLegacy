@@ -1,7 +1,5 @@
 ﻿using MySqlConnector;
 using Npgsql;
-using PoundPupLegacy.Db.Readers;
-using System.Data;
 using System.Diagnostics;
 
 namespace PoundPupLegacy.Convert;
@@ -317,8 +315,8 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
                     6 => $"{cpctDirectory.FullName}\\{path.Replace("/", "\\")}",
                     _ => throw new Exception($"Tenant {tenant} is unknown"),
                 };
-                if (File.Exists(sourcePath)) {
-                    File.Copy(sourcePath, tagetPath);
+                if (System.IO.File.Exists(sourcePath)) {
+                    System.IO.File.Copy(sourcePath, tagetPath);
                     filePaths.Add((id, newFileName.ToString()));
                 }
                 else {
@@ -345,31 +343,31 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\flags\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
-            File.Copy(file.FullName, tagetPath);
+            System.IO.File.Copy(file.FullName, tagetPath);
         }
         foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\images")).GetFiles()) {
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\images\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
-            File.Copy(file.FullName, tagetPath);
+            System.IO.File.Copy(file.FullName, tagetPath);
         }
         foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\jcics")).GetFiles()) {
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\jcics\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
-            File.Copy(file.FullName, tagetPath);
+            System.IO.File.Copy(file.FullName, tagetPath);
         }
         foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\my_own_baby_pages")).GetFiles()) {
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\my_own_baby_pages\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
-            File.Copy(file.FullName, tagetPath);
+            System.IO.File.Copy(file.FullName, tagetPath);
         }
         foreach (var file in (new DirectoryInfo($"{pplDirectory}\\files\\pictures")).GetFiles()) {
 
             var tagetPath = $"{combinedDirectory.FullName}\\files\\pictures\\{file.Name}";
             Directory.CreateDirectory(Path.GetDirectoryName(tagetPath)!);
-            File.Copy(file.FullName, tagetPath);
+            System.IO.File.Copy(file.FullName, tagetPath);
         }
 
         Directory.CreateDirectory(Path.GetDirectoryName($"{combinedDirectory}\\files\\userimages\\Image")!);

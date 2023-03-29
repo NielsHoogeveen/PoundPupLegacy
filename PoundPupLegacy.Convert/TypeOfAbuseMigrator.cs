@@ -1,9 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Writers;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class TypeOfAbuseMigrator : PPLMigrator
 {
@@ -147,11 +142,10 @@ internal sealed class TypeOfAbuseMigrator : PPLMigrator
                 },
                 NodeTypeId = 39,
                 Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image") 
-                ? null 
-                : await _fileIdReaderByTenantFileId.ReadAsync(new Db.Readers.FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest 
-                {
-                    TenantId = Constants.PPL, 
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image")
+                ? null
+                : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest {
+                    TenantId = Constants.PPL,
                     TenantFileId = reader.GetInt32("file_id_tile_image"),
                 }),
                 VocabularyNames = vocabularyNames,

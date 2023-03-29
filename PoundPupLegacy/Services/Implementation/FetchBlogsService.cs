@@ -29,11 +29,10 @@ internal class FetchBlogsService : IFetchBlogsService
 
         }
         finally {
-            if(_connection.State == ConnectionState.Open) 
-            {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
-            
+
         }
     }
 

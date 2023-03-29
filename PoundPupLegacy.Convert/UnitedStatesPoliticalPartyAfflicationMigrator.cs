@@ -1,7 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
 {
@@ -56,8 +53,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.DEMOCRATIC_PARTY
             })
@@ -106,8 +102,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.REPUBLICAN_PARTY
             })
@@ -200,8 +195,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.POPULAR_DEMOCRAT_PARTY
             })
@@ -249,8 +243,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.LIBERTARIAN_PARTY
             })

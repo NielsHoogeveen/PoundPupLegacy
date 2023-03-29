@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.Readers;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
@@ -23,16 +22,16 @@ public class FetchPersonsService : IPersonService
 
     public async Task<Persons> FetchPersons(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
     {
-        
+
         try {
             await _connection.OpenAsync();
             await using var reader = await _personsDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new PersonsDocumentReader.PersonsDocumentRequest {
-                UserId = userId, 
-                TenantId = tenantId, 
-                Limit = limit, 
-                Offset = offset, 
-                SearchTerm = searchTerm, 
+                UserId = userId,
+                TenantId = tenantId,
+                Limit = limit,
+                Offset = offset,
+                SearchTerm = searchTerm,
                 SearchOption = searchOption
             });
         }

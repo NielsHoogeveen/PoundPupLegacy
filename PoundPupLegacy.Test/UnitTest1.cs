@@ -1,12 +1,12 @@
-using System.Text.RegularExpressions;
-using LocationEditorDialog = PoundPupLegacy.Components.LocationEditorDialog;
-using Location = PoundPupLegacy.EditModel.Location;
-using PoundPupLegacy.EditModel;
-using Xunit;
 using Bunit;
-using PoundPupLegacy.Services;
-using Moq;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using PoundPupLegacy.EditModel;
+using PoundPupLegacy.Services;
+using System.Text.RegularExpressions;
+using Xunit;
+using Location = PoundPupLegacy.EditModel.Location;
+using LocationEditorDialog = PoundPupLegacy.Components.LocationEditorDialog;
 
 namespace PoundPupLegacy.Test;
 public class UnitTest1
@@ -71,21 +71,21 @@ public class UnitTest1
         };
 
 
-        
+
         //Create a new TestContext, inject the location service mock and the site data service mock
         using var ctx = new TestContext();
         ctx.Services.AddSingleton(locationServiceMock.Object);
         ctx.Services.AddSingleton(siteDataServiceMock.Object);
-        
+
         //Initialize the locationEditorDialog with Bunit and set location to the location object
         var cut = ctx.RenderComponent<LocationEditorDialog>(parameters => parameters.Add(p => p.Location, location));
-        
+
         //Assert that the rendering of locationEditorDialog contains a text box for Street with a label
         cut.Markup.Contains(@"<label for=""location-street"">Street</label>
                             <input type=""text"" id=""location-street"" value=""123 Main Street"" />");
-        
 
-        
+
+
 
     }
 

@@ -3,19 +3,19 @@
 public record Articles : PagedList
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
-    public SelectionItem[] TermNames { 
+    public SelectionItem[] TermNames {
         get => termNames;
         set {
-            if(value != null) {
+            if (value != null) {
                 termNames = value;
             }
-        } 
+        }
     }
     private ArticleListEntry[] articleListEntries = Array.Empty<ArticleListEntry>();
-    public ArticleListEntry[] ArticleListEntries { 
+    public ArticleListEntry[] ArticleListEntries {
         get => articleListEntries;
         set {
-            if(value != null) {
+            if (value != null) {
                 articleListEntries = value;
             }
         }

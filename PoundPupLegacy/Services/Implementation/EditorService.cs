@@ -1,6 +1,6 @@
-﻿using PoundPupLegacy.Common;
-using Npgsql;
-using PoundPupLegacy.Db;
+﻿using Npgsql;
+using PoundPupLegacy.Common;
+using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
 using System.Data;
@@ -131,14 +131,14 @@ public class EditorService : IEditorService
             await _connection.OpenAsync();
             await using var reader = await _blogPostUpdateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
-                UrlId = urlId, 
-                UserId = userId, 
+                UrlId = urlId,
+                UserId = userId,
                 TenantId = tenantId
 
             });
         }
-        finally { 
-            if(_connection.State == ConnectionState.Open) {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }
@@ -150,8 +150,8 @@ public class EditorService : IEditorService
             await _connection.OpenAsync();
             await using var reader = await _articleUpdateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
-                UrlId = urlId, 
-                UserId = userId, 
+                UrlId = urlId,
+                UserId = userId,
                 TenantId = tenantId
             });
         }
@@ -167,10 +167,10 @@ public class EditorService : IEditorService
         try {
             await _connection.OpenAsync();
             await using var reader = await _discussionUpdateDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
-                UrlId = urlId, 
-                UserId = userId, 
-                TenantId = tenantId 
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
+                UrlId = urlId,
+                UserId = userId,
+                TenantId = tenantId
             });
         }
         finally {
@@ -185,10 +185,10 @@ public class EditorService : IEditorService
         try {
             await _connection.OpenAsync();
             await using var reader = await _documentUpdateDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
-                UrlId = urlId, 
-                UserId = userId, 
-                TenantId = tenantId 
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
+                UrlId = urlId,
+                UserId = userId,
+                TenantId = tenantId
             });
         }
         finally {
@@ -203,10 +203,10 @@ public class EditorService : IEditorService
         try {
             await _connection.OpenAsync();
             await using var reader = await _organizationUpdateDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest { 
-                UrlId = urlId, 
-                UserId = userId, 
-                TenantId = tenantId 
+            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
+                UrlId = urlId,
+                UserId = userId,
+                TenantId = tenantId
             });
         }
         finally {
@@ -464,7 +464,7 @@ public class EditorService : IEditorService
     private async Task StoreNewBlogPost(BlogPost blogPost)
     {
         var now = DateTime.Now;
-        var nodeToStore = new Model.BlogPost {
+        var nodeToStore = new CreateModel.BlogPost {
             Id = null,
             Title = blogPost.Title,
             Text = _textService.FormatText(blogPost.Text),
@@ -474,7 +474,7 @@ public class EditorService : IEditorService
             NodeTypeId = 35,
             OwnerId = blogPost.OwnerId,
             PublisherId = blogPost.PublisherId,
-            TenantNodes = blogPost.Tenants.Where(t => t.HasTenantNode).Select(tn => new Model.TenantNode {
+            TenantNodes = blogPost.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -484,14 +484,14 @@ public class EditorService : IEditorService
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
         };
-        var blogPosts = new List<Model.BlogPost> { nodeToStore };
+        var blogPosts = new List<CreateModel.BlogPost> { nodeToStore };
         await BlogPostCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
         blogPost.UrlId = nodeToStore.Id;
     }
     private async Task StoreNewArticle(Article article)
     {
         var now = DateTime.Now;
-        var nodeToStore = new Model.Article {
+        var nodeToStore = new CreateModel.Article {
             Id = null,
             Title = article.Title,
             Text = _textService.FormatText(article.Text),
@@ -501,7 +501,7 @@ public class EditorService : IEditorService
             NodeTypeId = 36,
             OwnerId = article.OwnerId,
             PublisherId = article.PublisherId,
-            TenantNodes = article.Tenants.Where(t => t.HasTenantNode).Select(tn => new Model.TenantNode {
+            TenantNodes = article.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -511,14 +511,14 @@ public class EditorService : IEditorService
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
         };
-        var blogPosts = new List<Model.Article> { nodeToStore };
+        var blogPosts = new List<CreateModel.Article> { nodeToStore };
         await ArticleCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
         article.UrlId = nodeToStore.Id;
     }
     private async Task StoreNewDiscussion(Discussion discussion)
     {
         var now = DateTime.Now;
-        var nodeToStore = new Model.Discussion {
+        var nodeToStore = new CreateModel.Discussion {
             Id = null,
             Title = discussion.Title,
             Text = _textService.FormatText(discussion.Text),
@@ -528,7 +528,7 @@ public class EditorService : IEditorService
             NodeTypeId = 37,
             OwnerId = discussion.OwnerId,
             PublisherId = discussion.PublisherId,
-            TenantNodes = discussion.Tenants.Where(t => t.HasTenantNode).Select(tn => new Model.TenantNode {
+            TenantNodes = discussion.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -538,7 +538,7 @@ public class EditorService : IEditorService
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
         };
-        var blogPosts = new List<Model.Discussion> { nodeToStore };
+        var blogPosts = new List<CreateModel.Discussion> { nodeToStore };
         await DiscussionCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
         discussion.UrlId = nodeToStore.Id;
     }

@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class NodeTermMigrator : PPLMigrator
 {
@@ -86,19 +82,16 @@ internal sealed class NodeTermMigrator : PPLMigrator
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var nodeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            {
+            var nodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id"),
             });
-            var nameableId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            {
+            var nameableId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id"),
             });
 
-            var term = await _termReaderByNameableId.ReadAsync(new Db.Readers.TermReaderByNameableId.TermReaderByNameableIdRequest 
-            { 
+            var term = await _termReaderByNameableId.ReadAsync(new TermReaderByNameableId.TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 NameableId = nameableId,
                 VocabularyName = Constants.VOCABULARY_TOPICS,

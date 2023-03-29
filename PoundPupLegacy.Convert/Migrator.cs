@@ -1,8 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MySqlConnector;
 using Npgsql;
-using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
 using System.Diagnostics;
 using System.Text;
 

@@ -22,10 +22,8 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PoundPupLegacy.Db\PoundPupLegacy.Db.csproj" />
-    <ProjectReference Include="..\PoundPupLegacy.EditModel.Readers\PoundPupLegacy.EditModel.Readers.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj" />
-    <ProjectReference Include="..\PoundPupLegacy.ViewModel.Readers\PoundPupLegacy.ViewModel.Readers.csproj" />
+    <ProjectReference Include="..\PoundPupLegacy.Model\PoundPupLegacy.CreateModel.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj" />
   </ItemGroup>
   <ItemGroup>

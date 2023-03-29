@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class PartyPoliticalEntityRelationTypeMigrator : PPLMigrator
 {
@@ -92,10 +88,9 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator : PPLMigrator
                 },
                 NodeTypeId = 3,
                 Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image") 
-                    ? null 
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new Db.Readers.FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest 
-                    { 
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image")
+                    ? null
+                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

@@ -122,7 +122,7 @@ public class MenuItemsReaderFactory : IDatabaseReaderFactory<MenuItemsReader>
 
 }
 
-public class MenuItemsReader: EnumerableDatabaseReader<MenuItemsReader.MenuItemsRequest, UserTenantMenuItems>
+public class MenuItemsReader : EnumerableDatabaseReader<MenuItemsReader.MenuItemsRequest, UserTenantMenuItems>
 {
     public record MenuItemsRequest
     {

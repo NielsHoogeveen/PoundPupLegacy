@@ -24,7 +24,7 @@ public partial class CongressionalDataService : ICongressionalDataService
     private readonly IRazorViewToStringService _razorViewToStringService;
     private readonly IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader> _unitedStatesMeetingChamberDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader> _unitedStatesCongresssDocumentReaderFactory;
-    
+
     public CongressionalDataService(
         NpgsqlConnection connection,
         ILogger<CongressionalDataService> logger,
@@ -72,7 +72,7 @@ public partial class CongressionalDataService : ICongressionalDataService
             await _connection.OpenAsync();
             await using var reader = await _unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(_connection);
             var document = await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReader.UnitedStatesMeetingChamberRequest {
-                Type = (int)congressionalMeetingChamber.ChamberType, 
+                Type = (int)congressionalMeetingChamber.ChamberType,
                 Number = congressionalMeetingChamber.Number
             });
             return await _razorViewToStringService.GetFromView("/Views/Shared/CongressionalMeetingChamber.cshtml", document, context);

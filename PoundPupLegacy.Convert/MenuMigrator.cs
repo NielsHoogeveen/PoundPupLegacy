@@ -1,7 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class MenuMigrator : PPLMigrator
 {
@@ -121,8 +118,7 @@ internal sealed class MenuMigrator : PPLMigrator
         await Task.CompletedTask;
         yield return new TenantNodeMenuItem {
             Id = null,
-            TenantNodeId = await _tenantNodeIdByUrlIdReader.ReadAsync(new Db.Readers.TenantNodeIdReaderByUrlId.TenantNodeIdReaderByUrlIdRequest 
-            { 
+            TenantNodeId = await _tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlId.TenantNodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 1063,
             }),
@@ -131,8 +127,7 @@ internal sealed class MenuMigrator : PPLMigrator
         };
         yield return new TenantNodeMenuItem {
             Id = null,
-            TenantNodeId = await _tenantNodeIdByUrlIdReader.ReadAsync(new Db.Readers.TenantNodeIdReaderByUrlId.TenantNodeIdReaderByUrlIdRequest 
-            { 
+            TenantNodeId = await _tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlId.TenantNodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 34428,
             }),

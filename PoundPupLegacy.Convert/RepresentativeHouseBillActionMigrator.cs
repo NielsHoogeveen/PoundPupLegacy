@@ -1,9 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
 {
@@ -63,8 +58,7 @@ internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int representativeId = await professionReader.ReadAsync(new ProfessionIdReader.ProfessionIdReaderRequest 
-            { 
+            int representativeId = await professionReader.ReadAsync(new ProfessionIdReader.ProfessionIdReaderRequest {
                 TenantId = Constants.PPL,
                 ProfessionType = ProfessionIdReader.ProfessionType.Representative,
                 UrlId = reader.GetInt32("person_id")

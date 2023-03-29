@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PoundPupLegacy.Common\PoundPupLegacy.Common.csproj" />
-    <ProjectReference Include="..\PoundPupLegacy.Model\PoundPupLegacy.Model.csproj" />
+    <ProjectReference Include="..\PoundPupLegacy.Model\PoundPupLegacy.CreateModel.csproj" />
   </ItemGroup>
 
 </Project>

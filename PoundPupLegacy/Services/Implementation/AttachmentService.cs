@@ -3,9 +3,10 @@ using Npgsql;
 using OneOf;
 using OneOf.Types;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
+using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.ViewModel.Readers;
+using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -47,7 +48,7 @@ public class AttachmentService : IAttachmentService
                 var fullName = attachmentsLocation + "\\" + fileName;
                 await using FileStream fs = new(fullName, FileMode.Create);
                 await file.CopyToAsync(fs);
-                var fm = new Model.File {
+                var fm = new CreateModel.File {
                     Id = null,
                     MimeType = file.ContentType,
                     Name = file.FileName,
@@ -55,7 +56,7 @@ public class AttachmentService : IAttachmentService
                     Size = (int)file.Length,
                     TenantFiles = new List<TenantFile>()
                 };
-                await FileCreator.CreateAsync(new List<Model.File> { fm }.ToAsyncEnumerable(), _connection);
+                await FileCreator.CreateAsync(new List<File> { fm }.ToAsyncEnumerable(), _connection);
                 return fm.Id;
             }
             finally {

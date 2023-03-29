@@ -15,13 +15,11 @@ internal abstract class CPCTMigrator : Migrator
     {
         var (id, ownerId) = GetUrlIdAndTenant(urlId);
         if (urlId >= 33162 && ownerId == Constants.CPCT) {
-            var nodeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            var nodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.CPCT,
                 UrlId = id
             });
-            var node = await _tenantNodeByUrlIdReader.ReadAsync(new Db.Readers.TenantNodeReaderByUrlId.TenantNodeReaderByUrlIdRequest 
-            { 
+            var node = await _tenantNodeByUrlIdReader.ReadAsync(new TenantNodeReaderByUrlId.TenantNodeReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = id
             });
@@ -33,8 +31,7 @@ internal abstract class CPCTMigrator : Migrator
             }
 
         }
-        return (await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-        { 
+        return (await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
             UrlId = id
         }), 1);

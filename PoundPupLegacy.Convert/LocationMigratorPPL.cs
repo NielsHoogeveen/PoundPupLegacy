@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class LocationMigratorPPL : PPLMigrator
 {
@@ -25,12 +21,11 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             Additional = null,
             PostalCode = "80528",
             City = "Fort Collins",
-            SubdivisionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+            SubdivisionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 2951
             }),
-            CountryId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3805
             }),
@@ -39,7 +34,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             Locatables = new List<LocationLocatable> {
                 new LocationLocatable {
                     LocationId = 18,
-                    LocatableId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    LocatableId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
                     {
                         TenantId = Constants.PPL,
                         UrlId = 105
@@ -1287,11 +1282,10 @@ internal sealed class LocationMigratorPPL : PPLMigrator
                 return null;
             }
             else {
-                return await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                {
+                return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = (int)ret!
-                    
+
                 });
             }
         }
@@ -1311,8 +1305,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             return null;
         }
         else {
-            return await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            {
+            return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = (int)ret!
             });
@@ -1363,8 +1356,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             int? subDivisionId = reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id");
             string? code = reader.IsDBNull("subdivision_code") ? null : reader.GetString("subdivision_code").Replace("UK-", "GB-");
             int? countryId = reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id");
-            var locatableId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            {
+            var locatableId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id"),
             });

@@ -12,7 +12,7 @@ namespace PoundPupLegacy.Common
         public Task<T> CreateAsync(NpgsqlConnection connection);
     }
 
-    public interface ISingleItemDatabaseReader<TRequest, TResponse>: IDatabaseReader
+    public interface ISingleItemDatabaseReader<TRequest, TResponse> : IDatabaseReader
     {
         public Task<TResponse> ReadAsync(TRequest request);
     }
@@ -35,7 +35,7 @@ namespace PoundPupLegacy.Common
 
     }
 
-    public abstract class SingleItemDatabaseReader<TRequest, TResponse>: DatabaseReader, ISingleItemDatabaseReader<TRequest, TResponse>
+    public abstract class SingleItemDatabaseReader<TRequest, TResponse> : DatabaseReader, ISingleItemDatabaseReader<TRequest, TResponse>
     {
         protected SingleItemDatabaseReader(NpgsqlCommand command) : base(command)
         {

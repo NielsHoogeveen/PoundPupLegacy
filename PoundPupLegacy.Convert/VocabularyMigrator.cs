@@ -1,7 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Updaters;
-using PoundPupLegacy.Model;
-using System.Data;
+﻿using PoundPupLegacy.CreateModel.Updaters;
 
 namespace PoundPupLegacy.Convert;
 
@@ -274,7 +271,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
         await VocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
         await VocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
         await using var tenantUpdater = await TenantUpdaterSetTaggingVocabulary.CreateAsync(_postgresConnection);
-        await tenantUpdater.Update(Constants.PPL, await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await tenantUpdater.Update(Constants.PPL, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
             UrlId = 4126
         }));

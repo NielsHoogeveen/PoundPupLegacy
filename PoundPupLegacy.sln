@@ -5,13 +5,11 @@ VisualStudioVersion = 17.5.33209.295
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Convert", "PoundPupLegacy.Convert\PoundPupLegacy.Convert.csproj", "{58E3BDD4-8834-4FB3-9567-A79C94E65595}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Db", "PoundPupLegacy.Db\PoundPupLegacy.Db.csproj", "{22AD5E47-6C17-40E6-98DE-052C0C286DED}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Model", "PoundPupLegacy.Model\PoundPupLegacy.Model.csproj", "{8BF99659-4957-47AA-A09B-618595B22362}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.CreateModel", "PoundPupLegacy.Model\PoundPupLegacy.CreateModel.csproj", "{8BF99659-4957-47AA-A09B-618595B22362}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.ViewModel", "PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj", "{01985ABD-AE87-414F-B477-ABEE65306D10}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Db.Test", "PoundPupLegacy.Db.Test\PoundPupLegacy.Db.Test.csproj", "{0EABBB7B-E7F3-4C36-8951-4D206F9EF8C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.CreateModel.Test", "PoundPupLegacy.Db.Test\PoundPupLegacy.CreateModel.Test.csproj", "{0EABBB7B-E7F3-4C36-8951-4D206F9EF8C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy", "PoundPupLegacy\PoundPupLegacy.csproj", "{9D20839E-3087-4B82-99D5-652491A95FA8}"
 EndProject
@@ -19,13 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Test", "Poun
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.EditModel", "PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj", "{C1038565-4372-433A-B003-F26CF23576B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.MetaModel", "PoundPupLegacy.MetaModel\PoundPupLegacy.MetaModel.csproj", "{FD8E1FB3-DA73-4AC3-AB4D-42395D1A8F2F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.ViewModel.Readers", "PoundPupLegacy.ViewModel.Readers\PoundPupLegacy.ViewModel.Readers.csproj", "{D5507545-16B3-4899-9358-923CF90BEF1B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Common", "PoundPupLegacy.Common\PoundPupLegacy.Common.csproj", "{AE4B21A2-14E6-4D9B-8C06-070DC229E3F2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.EditModel.Readers", "PoundPupLegacy.EditModel.Readers\PoundPupLegacy.EditModel.Readers.csproj", "{5C0BAFB4-8733-4E85-A9B1-72A17EA39E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +29,6 @@ Global
 		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22AD5E47-6C17-40E6-98DE-052C0C286DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22AD5E47-6C17-40E6-98DE-052C0C286DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22AD5E47-6C17-40E6-98DE-052C0C286DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22AD5E47-6C17-40E6-98DE-052C0C286DED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8BF99659-4957-47AA-A09B-618595B22362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8BF99659-4957-47AA-A09B-618595B22362}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BF99659-4957-47AA-A09B-618595B22362}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,22 +53,10 @@ Global
 		{C1038565-4372-433A-B003-F26CF23576B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1038565-4372-433A-B003-F26CF23576B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1038565-4372-433A-B003-F26CF23576B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD8E1FB3-DA73-4AC3-AB4D-42395D1A8F2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD8E1FB3-DA73-4AC3-AB4D-42395D1A8F2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD8E1FB3-DA73-4AC3-AB4D-42395D1A8F2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD8E1FB3-DA73-4AC3-AB4D-42395D1A8F2F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5507545-16B3-4899-9358-923CF90BEF1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5507545-16B3-4899-9358-923CF90BEF1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5507545-16B3-4899-9358-923CF90BEF1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5507545-16B3-4899-9358-923CF90BEF1B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE4B21A2-14E6-4D9B-8C06-070DC229E3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE4B21A2-14E6-4D9B-8C06-070DC229E3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE4B21A2-14E6-4D9B-8C06-070DC229E3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE4B21A2-14E6-4D9B-8C06-070DC229E3F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C0BAFB4-8733-4E85-A9B1-72A17EA39E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C0BAFB4-8733-4E85-A9B1-72A17EA39E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C0BAFB4-8733-4E85-A9B1-72A17EA39E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C0BAFB4-8733-4E85-A9B1-72A17EA39E7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

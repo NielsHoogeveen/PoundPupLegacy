@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class PersonOrganizationRelationMigratorCPCT : CPCTMigrator
 {
@@ -96,8 +92,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT : CPCTMigrator
 
             var (personId, personPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id"));
             var (organizationId, organizationPublicationStatusId) = await GetNodeId(reader.GetInt32("organization_id"));
-            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.PPL
             });

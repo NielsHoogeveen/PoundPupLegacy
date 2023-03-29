@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class DocumentMigratorCPCT : CPCTMigrator
 {
@@ -140,10 +136,9 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
                 SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
                 Text = TextToHtml(text),
                 Teaser = TextToTeaser(text),
-                DocumentTypeId = reader.IsDBNull("document_type_id") 
-                    ? null 
-                    : await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                    { 
+                DocumentTypeId = reader.IsDBNull("document_type_id")
+                    ? null
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.CPCT,
                         UrlId = reader.GetInt32("document_type_id")
                     }),

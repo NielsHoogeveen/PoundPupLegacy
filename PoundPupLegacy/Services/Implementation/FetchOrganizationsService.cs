@@ -21,11 +21,11 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
 
     public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
     {
-        
+
         try {
             await _connection.OpenAsync();
-            await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection); 
-            return await reader.ReadAsync(new OrganizationsDocumentReader.OrganizationsDocumentRequest { 
+            await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection);
+            return await reader.ReadAsync(new OrganizationsDocumentReader.OrganizationsDocumentRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,

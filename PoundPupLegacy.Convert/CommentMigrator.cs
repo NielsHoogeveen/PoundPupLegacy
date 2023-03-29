@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class CommentMigrator : PPLMigrator
 {
@@ -76,8 +72,7 @@ internal sealed class CommentMigrator : PPLMigrator
         while (await reader.ReadAsync()) {
             var discussion = new Comment {
                 Id = reader.GetInt32("id"),
-                NodeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                NodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("node_id")
 

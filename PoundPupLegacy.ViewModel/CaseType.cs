@@ -12,5 +12,5 @@ public enum CaseType
     WrongfulMedication = Constants.WRONGFUL_MEDICATION_CASE,
     WrongfulRemoval = Constants.WRONGFUL_REMOVAL_CASE,
     DisruptedPlacement = Constants.DISRUPTED_PLACEMENT_CASE,
-    
+
 }

@@ -26,7 +26,7 @@ public class TenantNodesReaderFactory : IDatabaseReaderFactory<TenantNodesReader
 
 
 }
-public class TenantNodesReader: EnumerableDatabaseReader<TenantNodesReader.TenantNodesRequest, TenantNode>
+public class TenantNodesReader : EnumerableDatabaseReader<TenantNodesReader.TenantNodesRequest, TenantNode>
 {
     public record TenantNodesRequest
     {

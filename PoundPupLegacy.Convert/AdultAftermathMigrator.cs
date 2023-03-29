@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 internal sealed class AdultAftermathMigrator : PPLMigrator
 {
     public AdultAftermathMigrator(MySqlToPostgresConverter converter) : base(converter)
@@ -69,8 +67,7 @@ internal sealed class AdultAftermathMigrator : PPLMigrator
         var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var id = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            var id = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32(0),
                 TenantId = Constants.PPL
             });

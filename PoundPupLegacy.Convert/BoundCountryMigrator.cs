@@ -1,9 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class BoundCountryMigrator : CountryMigrator
 {
@@ -21,13 +16,11 @@ internal sealed class BoundCountryMigrator : CountryMigrator
         await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
         await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
 
-        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest 
-        { 
+        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
-        var subdivisionType = await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest 
-        { 
+        var subdivisionType = await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest {
             VocabularyId = vocabularyId,
             Name = "Country"
         });
@@ -107,8 +100,7 @@ internal sealed class BoundCountryMigrator : CountryMigrator
                 NodeTypeId = 14,
                 Description = "",
                 VocabularyNames = vocabularyNames,
-                BindingCountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                BindingCountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("binding_country_id")
                 }),
@@ -120,8 +112,7 @@ internal sealed class BoundCountryMigrator : CountryMigrator
                 }),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = 41215
                 }),

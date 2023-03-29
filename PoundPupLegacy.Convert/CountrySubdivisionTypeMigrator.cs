@@ -1,9 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Db.Readers;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class CountrySubdivisionTypeMigratorPartOne : CountrySubdivisionTypeMigrator
 {
@@ -37,8 +32,7 @@ internal abstract class CountrySubdivisionTypeMigrator : PPLMigrator
         await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
         await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
 
-        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest 
-        { 
+        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
@@ -47,13 +41,11 @@ internal abstract class CountrySubdivisionTypeMigrator : PPLMigrator
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int id = int.Parse(parts[0]);
             var name = parts[1];
-            var countryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            var countryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = int.Parse(parts[0])
             });
-            var subdivisionType = await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest 
-            {
+            var subdivisionType = await termReader.ReadAsync(new TermReaderByName.TermReaderByNameRequest {
                 VocabularyId = vocabularyId,
                 Name = name
             });

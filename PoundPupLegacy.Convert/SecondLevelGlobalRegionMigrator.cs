@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
 {
@@ -97,16 +93,14 @@ internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
                 NodeTypeId = 12,
                 VocabularyNames = vocabularyNames,
                 Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image") 
-                    ? null 
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new Db.Readers.FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest 
-                    { 
+                FileIdTileImage = reader.IsDBNull("file_id_tile_image")
+                    ? null
+                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 Name = name,
-                FirstLevelGlobalRegionId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-                { 
+                FirstLevelGlobalRegionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("first_level_global_region_id")
                 })

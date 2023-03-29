@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class TermHierarchyMigrator : PPLMigrator
 {
@@ -137,24 +133,20 @@ internal sealed class TermHierarchyMigrator : PPLMigrator
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var nodeIdChild = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            var nodeIdChild = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id_child")
             });
-            var nodeIdParent = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            var nodeIdParent = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id_parent")
             });
-            var termIdChild = await _termReaderByNameableId.ReadAsync(new Db.Readers.TermReaderByNameableId.TermReaderByNameableIdRequest 
-            { 
+            var termIdChild = await _termReaderByNameableId.ReadAsync(new TermReaderByNameableId.TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdChild
             });
-            var termIdParent = await _termReaderByNameableId.ReadAsync(new Db.Readers.TermReaderByNameableId.TermReaderByNameableIdRequest 
-            { 
+            var termIdParent = await _termReaderByNameableId.ReadAsync(new TermReaderByNameableId.TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdParent

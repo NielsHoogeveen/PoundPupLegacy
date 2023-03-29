@@ -26,15 +26,14 @@ internal class FetchPollsService : IFetchPollsService
             await _connection.OpenAsync();
             await using var reader = await _pollsDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new PollsDocumentReader.PollsDocumentRequest {
-                UserId = userId, 
-                TenantId = tenantId, 
-                Limit = limit, 
+                UserId = userId,
+                TenantId = tenantId,
+                Limit = limit,
                 Offset = offset
             });
         }
         finally {
-            if (_connection.State == ConnectionState.Open) 
-            {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

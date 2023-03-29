@@ -34,8 +34,7 @@ internal class FetchCasesService : IFetchCasesService
             });
         }
         finally {
-            if (_connection.State == ConnectionState.Open) 
-            {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

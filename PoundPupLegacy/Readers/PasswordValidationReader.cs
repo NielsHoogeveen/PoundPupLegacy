@@ -31,8 +31,8 @@ public class PasswordValidationReader : SingleItemDatabaseReader<PasswordValidat
 {
     public record PasswordValidationRequest
     {
-        public required string UserName { get; init; } 
-        public required string Password { get; init; } 
+        public required string UserName { get; init; }
+        public required string Password { get; init; }
     }
     internal PasswordValidationReader(NpgsqlCommand command) : base(command)
     {

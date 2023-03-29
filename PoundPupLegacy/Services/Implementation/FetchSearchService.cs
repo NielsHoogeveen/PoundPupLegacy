@@ -23,7 +23,7 @@ internal class FetchSearchService : IFetchSearchService
         try {
             await _connection.OpenAsync();
             await using var reader = await _searchDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new SearchDocumentReader.SearchDocumentRequest { 
+            return await reader.ReadAsync(new SearchDocumentReader.SearchDocumentRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,
@@ -33,7 +33,7 @@ internal class FetchSearchService : IFetchSearchService
 
         }
         finally {
-            if(_connection.State == ConnectionState.Open) {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

@@ -1,8 +1,4 @@
-﻿using PoundPupLegacy.Db;
-using PoundPupLegacy.Model;
-using System.Data;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class InterPersonalRelationMigratorCPCT : CPCTMigrator
 {
@@ -80,8 +76,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : CPCTMigrator
 
             var (personIdFrom, personFromPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id_from"));
             var (personIdTo, personToPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id_to"));
-            int interPersonalRelationTypeId = await _nodeIdReader.ReadAsync(new Db.Readers.NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest 
-            { 
+            int interPersonalRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.CPCT,
                 UrlId = reader.GetInt32("nameable_id")
             });

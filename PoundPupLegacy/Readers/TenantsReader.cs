@@ -27,7 +27,7 @@ public class TenantsReaderFactory : IDatabaseReaderFactory<TenantsReader>
         """;
 
 }
-public class TenantsReader: EnumerableDatabaseReader<TenantsReader.TenantsRequest, Tenant>
+public class TenantsReader : EnumerableDatabaseReader<TenantsReader.TenantsRequest, Tenant>
 {
     public record TenantsRequest
     {
