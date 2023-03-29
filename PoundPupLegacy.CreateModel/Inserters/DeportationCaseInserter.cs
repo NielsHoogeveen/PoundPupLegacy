@@ -33,7 +33,7 @@ internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase
     {
     }
 
-    internal override async Task WriteAsync(DeportationCase deportationCase)
+    public override async Task InsertAsync(DeportationCase deportationCase)
     {
         if (deportationCase.Id is null)
             throw new NullReferenceException();

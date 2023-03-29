@@ -19,17 +19,17 @@ public class PersonCreator : IEntityCreator<Person>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var person in persons) {
-            await nodeWriter.WriteAsync(person);
-            await searchableWriter.WriteAsync(person);
-            await documentableWriter.WriteAsync(person);
-            await locatableWriter.WriteAsync(person);
-            await nameableWriter.WriteAsync(person);
-            await partyWriter.WriteAsync(person);
-            await personWriter.WriteAsync(person);
+            await nodeWriter.InsertAsync(person);
+            await searchableWriter.InsertAsync(person);
+            await documentableWriter.InsertAsync(person);
+            await locatableWriter.InsertAsync(person);
+            await nameableWriter.InsertAsync(person);
+            await partyWriter.InsertAsync(person);
+            await personWriter.InsertAsync(person);
             await EntityCreator.WriteTerms(person, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in person.TenantNodes) {
                 tenantNode.NodeId = person.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
             foreach (var role in person.ProfessionalRoles) {

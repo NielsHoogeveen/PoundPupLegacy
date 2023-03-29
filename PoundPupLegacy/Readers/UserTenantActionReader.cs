@@ -39,16 +39,16 @@ public class UserTenantActionReaderFactory : IDatabaseReaderFactory<UserTenantAc
         """;
 
 }
-public class UserTenantActionReader : EnumerableDatabaseReader<UserTenantActionReader.UserTenantActionRequest, UserTenantAction>
+public class UserTenantActionReader : EnumerableDatabaseReader<UserTenantActionReader.Request, UserTenantAction>
 {
-    public record UserTenantActionRequest
+    public record Request
     {
 
     }
     internal UserTenantActionReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async IAsyncEnumerable<UserTenantAction> ReadAsync(UserTenantActionRequest request)
+    public override async IAsyncEnumerable<UserTenantAction> ReadAsync(Request request)
     {
         await using var reader = await _command.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {

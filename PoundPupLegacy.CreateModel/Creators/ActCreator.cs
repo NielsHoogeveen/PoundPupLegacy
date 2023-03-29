@@ -17,16 +17,16 @@ public class ActCreator : IEntityCreator<Act>
         await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
 
         await foreach (var act in acts) {
-            await nodeWriter.WriteAsync(act);
-            await searchableWriter.WriteAsync(act);
-            await nameableWriter.WriteAsync(act);
-            await documentableWriter.WriteAsync(act);
-            await actWriter.WriteAsync(act);
+            await nodeWriter.InsertAsync(act);
+            await searchableWriter.InsertAsync(act);
+            await nameableWriter.InsertAsync(act);
+            await documentableWriter.InsertAsync(act);
+            await actWriter.InsertAsync(act);
             await EntityCreator.WriteTerms(act, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
 
             foreach (var tenantNode in act.TenantNodes) {
                 tenantNode.NodeId = act.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

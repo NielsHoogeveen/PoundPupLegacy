@@ -27,9 +27,9 @@ public class TenantsReaderFactory : IDatabaseReaderFactory<TenantsReader>
         """;
 
 }
-public class TenantsReader : EnumerableDatabaseReader<TenantsReader.TenantsRequest, Tenant>
+public class TenantsReader : EnumerableDatabaseReader<TenantsReader.Request, Tenant>
 {
-    public record TenantsRequest
+    public record Request
     {
     }
 
@@ -37,7 +37,7 @@ public class TenantsReader : EnumerableDatabaseReader<TenantsReader.TenantsReque
     {
     }
 
-    public override async IAsyncEnumerable<Tenant> ReadAsync(TenantsRequest request)
+    public override async IAsyncEnumerable<Tenant> ReadAsync(Request request)
     {
         await using var reader = await _command.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {

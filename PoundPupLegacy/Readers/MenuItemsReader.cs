@@ -122,16 +122,15 @@ public class MenuItemsReaderFactory : IDatabaseReaderFactory<MenuItemsReader>
 
 }
 
-public class MenuItemsReader : EnumerableDatabaseReader<MenuItemsReader.MenuItemsRequest, UserTenantMenuItems>
+public class MenuItemsReader : EnumerableDatabaseReader<MenuItemsReader.Request, UserTenantMenuItems>
 {
-    public record MenuItemsRequest
+    public record Request
     {
-
     }
     internal MenuItemsReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async IAsyncEnumerable<UserTenantMenuItems> ReadAsync(MenuItemsRequest request)
+    public override async IAsyncEnumerable<UserTenantMenuItems> ReadAsync(Request request)
     {
         await using var reader = await _command.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {

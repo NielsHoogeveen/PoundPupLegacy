@@ -29,7 +29,7 @@ internal sealed class CreateNodeActionInserter : DatabaseInserter<CreateNodeActi
     {
     }
 
-    internal override async Task WriteAsync(CreateNodeAction createNodeAccessPrivilege)
+    public override async Task InsertAsync(CreateNodeAction createNodeAccessPrivilege)
     {
         if (!createNodeAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();

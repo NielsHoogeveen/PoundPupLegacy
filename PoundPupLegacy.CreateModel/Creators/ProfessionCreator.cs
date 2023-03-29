@@ -16,14 +16,14 @@ public class ProfessionCreator : IEntityCreator<Profession>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var profession in professions) {
-            await nodeWriter.WriteAsync(profession);
-            await searchableWriter.WriteAsync(profession);
-            await nameableWriter.WriteAsync(profession);
-            await professionWriter.WriteAsync(profession);
+            await nodeWriter.InsertAsync(profession);
+            await searchableWriter.InsertAsync(profession);
+            await nameableWriter.InsertAsync(profession);
+            await professionWriter.InsertAsync(profession);
             await EntityCreator.WriteTerms(profession, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in profession.TenantNodes) {
                 tenantNode.NodeId = profession.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

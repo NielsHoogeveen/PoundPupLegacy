@@ -8,7 +8,7 @@ public class LocationLocatableCreator : IEntityCreator<LocationLocatable>
         await using var locationLocatableWriter = await LocationLocatableInserter.CreateAsync(connection);
 
         await foreach (var locationLocatable in locationLocatables) {
-            await locationLocatableWriter.WriteAsync(locationLocatable);
+            await locationLocatableWriter.InsertAsync(locationLocatable);
         }
     }
 }

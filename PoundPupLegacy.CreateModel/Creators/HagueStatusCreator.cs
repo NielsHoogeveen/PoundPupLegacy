@@ -16,14 +16,14 @@ public class HagueStatusCreator : IEntityCreator<HagueStatus>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var hagueStatus in hagueStatuss) {
-            await nodeWriter.WriteAsync(hagueStatus);
-            await searchableWriter.WriteAsync(hagueStatus);
-            await nameableWriter.WriteAsync(hagueStatus);
-            await hagueStatusWriter.WriteAsync(hagueStatus);
+            await nodeWriter.InsertAsync(hagueStatus);
+            await searchableWriter.InsertAsync(hagueStatus);
+            await nameableWriter.InsertAsync(hagueStatus);
+            await hagueStatusWriter.InsertAsync(hagueStatus);
             await EntityCreator.WriteTerms(hagueStatus, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in hagueStatus.TenantNodes) {
                 tenantNode.NodeId = hagueStatus.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

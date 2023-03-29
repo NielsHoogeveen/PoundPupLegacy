@@ -36,7 +36,7 @@ internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>, IDataba
     {
     }
 
-    internal override async Task WriteAsync(TenantFile tenantFile)
+    public override async Task InsertAsync(TenantFile tenantFile)
     {
         if (tenantFile.FileId == null)
             throw new ArgumentNullException(nameof(tenantFile.FileId));

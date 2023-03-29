@@ -28,7 +28,7 @@ internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>,
     {
     }
 
-    internal override async Task WriteAsync(CollectiveUser collectiveUser)
+    public override async Task InsertAsync(CollectiveUser collectiveUser)
     {
         if (collectiveUser.CollectiveId is null || collectiveUser.UserId is null)
             throw new NullReferenceException();

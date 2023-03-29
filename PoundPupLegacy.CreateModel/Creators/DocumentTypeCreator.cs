@@ -16,14 +16,14 @@ public class DocumentTypeCreator : IEntityCreator<DocumentType>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var documentType in documentTypes) {
-            await nodeWriter.WriteAsync(documentType);
-            await searchableWriter.WriteAsync(documentType);
-            await nameableWriter.WriteAsync(documentType);
-            await documentTypeWriter.WriteAsync(documentType);
+            await nodeWriter.InsertAsync(documentType);
+            await searchableWriter.InsertAsync(documentType);
+            await nameableWriter.InsertAsync(documentType);
+            await documentTypeWriter.InsertAsync(documentType);
             await EntityCreator.WriteTerms(documentType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in documentType.TenantNodes) {
                 tenantNode.NodeId = documentType.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

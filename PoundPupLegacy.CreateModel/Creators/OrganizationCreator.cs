@@ -21,25 +21,25 @@ public class OrganizationCreator : IEntityCreator<Organization>
         await using var organizationOrganizationTypeWriter = await OrganizationOrganizationTypeInserter.CreateAsync(connection);
 
         await foreach (var organization in organizations) {
-            await nodeWriter.WriteAsync(organization);
-            await searchableWriter.WriteAsync(organization);
-            await documentableWriter.WriteAsync(organization);
-            await locatableWriter.WriteAsync(organization);
-            await nameableWriter.WriteAsync(organization);
-            await partyWriter.WriteAsync(organization);
-            await organizationWriter.WriteAsync(organization);
+            await nodeWriter.InsertAsync(organization);
+            await searchableWriter.InsertAsync(organization);
+            await documentableWriter.InsertAsync(organization);
+            await locatableWriter.InsertAsync(organization);
+            await nameableWriter.InsertAsync(organization);
+            await partyWriter.InsertAsync(organization);
+            await organizationWriter.InsertAsync(organization);
             if (organization is UnitedStatesPoliticalParty pp) {
-                await unitedStatesPoliticalPartyWriter.WriteAsync(pp);
+                await unitedStatesPoliticalPartyWriter.InsertAsync(pp);
             }
             await EntityCreator.WriteTerms(organization, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
 
             foreach (var tenantNode in organization.TenantNodes) {
                 tenantNode.NodeId = organization.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
             foreach (var organizationOrganizationType in organization.OrganizationTypes) {
                 organizationOrganizationType.OrganizationId = organization.Id;
-                await organizationOrganizationTypeWriter.WriteAsync(organizationOrganizationType);
+                await organizationOrganizationTypeWriter.InsertAsync(organizationOrganizationType);
             }
         }
     }

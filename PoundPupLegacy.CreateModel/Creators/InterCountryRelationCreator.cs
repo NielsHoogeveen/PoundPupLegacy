@@ -10,12 +10,12 @@ public class InterCountryRelationCreator : IEntityCreator<InterCountryRelation>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var interCountryRelation in interCountryRelations) {
-            await nodeWriter.WriteAsync(interCountryRelation);
-            await interCountryRelationWriter.WriteAsync(interCountryRelation);
+            await nodeWriter.InsertAsync(interCountryRelation);
+            await interCountryRelationWriter.InsertAsync(interCountryRelation);
 
             foreach (var tenantNode in interCountryRelation.TenantNodes) {
                 tenantNode.NodeId = interCountryRelation.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

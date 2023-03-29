@@ -33,7 +33,7 @@ internal sealed class ProfessionalRoleInserter : DatabaseInserter<ProfessionalRo
     {
     }
 
-    internal override async Task WriteAsync(ProfessionalRole professionalRole)
+    public override async Task InsertAsync(ProfessionalRole professionalRole)
     {
         if (professionalRole.Id is null)
             throw new NullReferenceException(nameof(professionalRole.Id));

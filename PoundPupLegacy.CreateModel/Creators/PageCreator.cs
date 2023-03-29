@@ -12,13 +12,13 @@ public class PageCreator : IEntityCreator<Page>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var page in pages) {
-            await nodeWriter.WriteAsync(page);
-            await searchableWriter.WriteAsync(page);
-            await simpleTextNodeWriter.WriteAsync(page);
-            await pageWriter.WriteAsync(page);
+            await nodeWriter.InsertAsync(page);
+            await searchableWriter.InsertAsync(page);
+            await simpleTextNodeWriter.InsertAsync(page);
+            await pageWriter.InsertAsync(page);
             foreach (var tenantNode in page.TenantNodes) {
                 tenantNode.NodeId = page.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

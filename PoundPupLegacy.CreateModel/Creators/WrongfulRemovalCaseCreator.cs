@@ -19,17 +19,17 @@ public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var wrongfulRemovalCase in wrongfulRemovalCases) {
-            await nodeWriter.WriteAsync(wrongfulRemovalCase);
-            await searchableWriter.WriteAsync(wrongfulRemovalCase);
-            await documentableWriter.WriteAsync(wrongfulRemovalCase);
-            await locatableWriter.WriteAsync(wrongfulRemovalCase);
-            await nameableWriter.WriteAsync(wrongfulRemovalCase);
-            await caseWriter.WriteAsync(wrongfulRemovalCase);
-            await wrongfulRemovalCaseWriter.WriteAsync(wrongfulRemovalCase);
+            await nodeWriter.InsertAsync(wrongfulRemovalCase);
+            await searchableWriter.InsertAsync(wrongfulRemovalCase);
+            await documentableWriter.InsertAsync(wrongfulRemovalCase);
+            await locatableWriter.InsertAsync(wrongfulRemovalCase);
+            await nameableWriter.InsertAsync(wrongfulRemovalCase);
+            await caseWriter.InsertAsync(wrongfulRemovalCase);
+            await wrongfulRemovalCaseWriter.InsertAsync(wrongfulRemovalCase);
             await EntityCreator.WriteTerms(wrongfulRemovalCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in wrongfulRemovalCase.TenantNodes) {
                 tenantNode.NodeId = wrongfulRemovalCase.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

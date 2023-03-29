@@ -13,18 +13,18 @@ public class HouseTermCreator : IEntityCreator<HouseTerm>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var houseTerm in houseTerms) {
-            await nodeWriter.WriteAsync(houseTerm);
-            await searchableWriter.WriteAsync(houseTerm);
-            await documentableWriter.WriteAsync(houseTerm);
-            await congressionalTermWriter.WriteAsync(houseTerm);
-            await houseTermWriter.WriteAsync(houseTerm);
+            await nodeWriter.InsertAsync(houseTerm);
+            await searchableWriter.InsertAsync(houseTerm);
+            await documentableWriter.InsertAsync(houseTerm);
+            await congressionalTermWriter.InsertAsync(houseTerm);
+            await houseTermWriter.InsertAsync(houseTerm);
             foreach (var partyAffiliation in houseTerm.PartyAffiliations) {
                 partyAffiliation.CongressionalTermId = houseTerm.Id;
             }
             await CongressionalTermPoliticalPartyAffiliationCreator.CreateAsync(houseTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
             foreach (var tenantNode in houseTerm.TenantNodes) {
                 tenantNode.NodeId = houseTerm.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

@@ -17,15 +17,15 @@ public class UnitedStatesCongressionalMeetingCreator : IEntityCreator<UnitedStat
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var country in countries) {
-            await nodeWriter.WriteAsync(country);
-            await searchableWriter.WriteAsync(country);
-            await documentableWriter.WriteAsync(country);
-            await nameableWriter.WriteAsync(country);
-            await unitedStatesCongressionalMeetingWriter.WriteAsync(country);
+            await nodeWriter.InsertAsync(country);
+            await searchableWriter.InsertAsync(country);
+            await documentableWriter.InsertAsync(country);
+            await nameableWriter.InsertAsync(country);
+            await unitedStatesCongressionalMeetingWriter.InsertAsync(country);
             await EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in country.TenantNodes) {
                 tenantNode.NodeId = country.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

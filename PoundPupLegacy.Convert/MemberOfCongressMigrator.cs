@@ -266,7 +266,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
         if (!id.HasValue) {
             return null;
         }
-        return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = id.Value,
             TenantId = Constants.PPL
         });

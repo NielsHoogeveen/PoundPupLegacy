@@ -109,11 +109,11 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
     private async Task<InterCountryRelation> GetInterCountryRelation(int countryIdFrom, int countryIdTo, int year, int numberOfChildren, NodeReaderByUrlId nodeReader)
     {
-        var nodeFrom = await nodeReader.ReadAsync(new NodeReaderByUrlId.NodeReaderByUrlIdRequest {
+        var nodeFrom = await nodeReader.ReadAsync(new NodeReaderByUrlId.Request {
             UrlId = countryIdFrom,
             TenantId = Constants.PPL
         });
-        var nodeTo = await nodeReader.ReadAsync(new NodeReaderByUrlId.NodeReaderByUrlIdRequest {
+        var nodeTo = await nodeReader.ReadAsync(new NodeReaderByUrlId.Request {
             UrlId = countryIdTo,
             TenantId = Constants.PPL
         });
@@ -134,7 +134,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
             CreatedDateTime = DateTime.Now,
             DocumentIdProof = null,
             Id = null,
-            InterCountryRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+            InterCountryRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = Constants.ADOPTION_IMPORT,
                 TenantId = Constants.PPL
             }),

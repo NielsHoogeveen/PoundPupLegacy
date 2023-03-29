@@ -16,14 +16,14 @@ public class InterPersonalRelationTypeCreator : IEntityCreator<InterPersonalRela
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var interPersonalRelationType in interPersonalRelationTypes) {
-            await nodeWriter.WriteAsync(interPersonalRelationType);
-            await searchableWriter.WriteAsync(interPersonalRelationType);
-            await nameableWriter.WriteAsync(interPersonalRelationType);
-            await interPersonalRelationTypeWriter.WriteAsync(interPersonalRelationType);
+            await nodeWriter.InsertAsync(interPersonalRelationType);
+            await searchableWriter.InsertAsync(interPersonalRelationType);
+            await nameableWriter.InsertAsync(interPersonalRelationType);
+            await interPersonalRelationTypeWriter.InsertAsync(interPersonalRelationType);
             await EntityCreator.WriteTerms(interPersonalRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in interPersonalRelationType.TenantNodes) {
                 tenantNode.NodeId = interPersonalRelationType.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

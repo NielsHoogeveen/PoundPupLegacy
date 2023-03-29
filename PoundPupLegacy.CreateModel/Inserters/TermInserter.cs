@@ -33,7 +33,7 @@ internal sealed class TermInserter : DatabaseInserter<Term>, IDatabaseInserter<T
     {
     }
 
-    internal override async Task WriteAsync(Term term)
+    public override async Task InsertAsync(Term term)
     {
         WriteValue(term.VocabularyId, VOCABULARY_ID);
         WriteValue(term.Name.Trim(), NAME);

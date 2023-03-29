@@ -76,7 +76,7 @@ internal sealed class PersonInserter : DatabaseInserter<Person>, IDatabaseInsert
     {
     }
 
-    internal override async Task WriteAsync(Person person)
+    public override async Task InsertAsync(Person person)
     {
         if (person.Id is null)
             throw new NullReferenceException();

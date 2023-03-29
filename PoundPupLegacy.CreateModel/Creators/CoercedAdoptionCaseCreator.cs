@@ -19,17 +19,17 @@ public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var coercedAdoptionCase in coercedAdoptionCases) {
-            await nodeWriter.WriteAsync(coercedAdoptionCase);
-            await searchableWriter.WriteAsync(coercedAdoptionCase);
-            await documentableWriter.WriteAsync(coercedAdoptionCase);
-            await locatableWriter.WriteAsync(coercedAdoptionCase);
-            await nameableWriter.WriteAsync(coercedAdoptionCase);
-            await caseWriter.WriteAsync(coercedAdoptionCase);
-            await coercedAdoptionCaseWriter.WriteAsync(coercedAdoptionCase);
+            await nodeWriter.InsertAsync(coercedAdoptionCase);
+            await searchableWriter.InsertAsync(coercedAdoptionCase);
+            await documentableWriter.InsertAsync(coercedAdoptionCase);
+            await locatableWriter.InsertAsync(coercedAdoptionCase);
+            await nameableWriter.InsertAsync(coercedAdoptionCase);
+            await caseWriter.InsertAsync(coercedAdoptionCase);
+            await coercedAdoptionCaseWriter.InsertAsync(coercedAdoptionCase);
             await EntityCreator.WriteTerms(coercedAdoptionCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in coercedAdoptionCase.TenantNodes) {
                 tenantNode.NodeId = coercedAdoptionCase.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

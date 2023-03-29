@@ -105,21 +105,21 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int personId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+            int personId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("person_id"),
                 TenantId = Constants.PPL,
             });
-            int organizationId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+            int organizationId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("organization_id"),
                 TenantId = Constants.PPL,
             });
             int? geographicalEntityId = reader.IsDBNull("geographical_entity_id")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         UrlId = reader.GetInt32("geographical_entity_id"),
                         TenantId = Constants.PPL,
                     });
-            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.PPL,
             });
@@ -163,7 +163,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
 
                 DocumentIdProof = reader.IsDBNull("document_id_proof")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     }),

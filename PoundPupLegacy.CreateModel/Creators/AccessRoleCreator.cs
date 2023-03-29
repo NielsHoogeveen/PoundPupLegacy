@@ -10,9 +10,9 @@ public class AccessRoleCreator : IEntityCreator<AccessRole>
         await using var accessRoleWriter = await AccessRoleInserter.CreateAsync(connection);
 
         await foreach (var accessRole in accessRoles) {
-            await principalWriter.WriteAsync(accessRole);
-            await userRoleWriter.WriteAsync(accessRole);
-            await accessRoleWriter.WriteAsync(accessRole);
+            await principalWriter.InsertAsync(accessRole);
+            await userRoleWriter.InsertAsync(accessRole);
+            await accessRoleWriter.InsertAsync(accessRole);
         }
     }
 }

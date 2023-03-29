@@ -40,7 +40,7 @@ internal sealed class TenantInserter : DatabaseInserter<Tenant>, IDatabaseInsert
     {
     }
 
-    internal override async Task WriteAsync(Tenant @tenant)
+    public override async Task InsertAsync(Tenant @tenant)
     {
         if (@tenant.Id is null)
             throw new NullReferenceException();

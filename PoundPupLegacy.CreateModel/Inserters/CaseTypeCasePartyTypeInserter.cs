@@ -29,7 +29,7 @@ internal sealed class CaseTypeCasePartyTypeInserter : DatabaseInserter<CaseTypeC
     {
     }
 
-    internal override async Task WriteAsync(CaseTypeCasePartyType caseTypeCasePartyType)
+    public override async Task InsertAsync(CaseTypeCasePartyType caseTypeCasePartyType)
     {
         WriteValue(caseTypeCasePartyType.CaseTypeId, CASE_TYPE_ID);
         WriteNullableValue(caseTypeCasePartyType.CasePartyTypeId, CASE_PARTY_TYPE_ID);

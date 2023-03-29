@@ -49,7 +49,7 @@ internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<Pa
     {
     }
 
-    internal override async Task WriteAsync(PartyPoliticalEntityRelation partyPoliticalEntityRelation)
+    public override async Task InsertAsync(PartyPoliticalEntityRelation partyPoliticalEntityRelation)
     {
         WriteValue(partyPoliticalEntityRelation.Id, ID);
         WriteValue(partyPoliticalEntityRelation.PartyId, PARTY_ID);

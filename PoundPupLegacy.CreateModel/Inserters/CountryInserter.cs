@@ -58,7 +58,7 @@ internal sealed class CountryInserter : DatabaseInserter<Country>, IDatabaseInse
     {
     }
 
-    internal override async Task WriteAsync(Country country)
+    public override async Task InsertAsync(Country country)
     {
         if (country.Id is null)
             throw new NullReferenceException();

@@ -28,7 +28,7 @@ internal sealed class ProfessionInserter : DatabaseInserter<Profession>, IDataba
     {
     }
 
-    internal override async Task WriteAsync(Profession profession)
+    public override async Task InsertAsync(Profession profession)
     {
         if (profession.Id is null)
             throw new NullReferenceException();

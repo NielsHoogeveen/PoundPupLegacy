@@ -33,7 +33,7 @@ internal sealed class NameableInserter : DatabaseInserter<Nameable>, IDatabaseIn
     {
     }
 
-    internal override async Task WriteAsync(Nameable nameable)
+    public override async Task InsertAsync(Nameable nameable)
     {
         if (nameable.Id is null)
             throw new NullReferenceException();

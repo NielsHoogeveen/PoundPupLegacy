@@ -15,15 +15,15 @@ public class SubgroupCreator : IEntityCreator<Subgroup>
 
 
         await foreach (var subgroup in subgroups) {
-            await userGroupWriter.WriteAsync(subgroup);
-            await publishingUserGroupWriter.WriteAsync(subgroup);
-            await subgroupWriter.WriteAsync(subgroup);
+            await userGroupWriter.InsertAsync(subgroup);
+            await publishingUserGroupWriter.InsertAsync(subgroup);
+            await subgroupWriter.InsertAsync(subgroup);
 
             var administratorRole = subgroup.AdministratorRole;
             administratorRole.UserGroupId = subgroup.Id.Value;
-            await principalWriter.WriteAsync(administratorRole);
-            await userRoleWriter.WriteAsync(administratorRole);
-            await administratorRoleWriter.WriteAsync(administratorRole);
+            await principalWriter.InsertAsync(administratorRole);
+            await userRoleWriter.InsertAsync(administratorRole);
+            await administratorRoleWriter.InsertAsync(administratorRole);
         }
     }
 }

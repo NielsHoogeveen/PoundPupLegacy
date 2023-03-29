@@ -28,10 +28,10 @@ public sealed class TermReaderByNameableIdFactory : IDatabaseReaderFactory<TermR
     }
 
 }
-public sealed class TermReaderByNameableId : SingleItemDatabaseReader<TermReaderByNameableId.TermReaderByNameableIdRequest, Term>
+public sealed class TermReaderByNameableId : SingleItemDatabaseReader<TermReaderByNameableId.Request, Term>
 {
 
-    public record TermReaderByNameableIdRequest
+    public record Request
     {
         public required int OwnerId { get; init; }
         public required string VocabularyName { get; init; }
@@ -39,7 +39,7 @@ public sealed class TermReaderByNameableId : SingleItemDatabaseReader<TermReader
     }
     internal TermReaderByNameableId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<Term> ReadAsync(TermReaderByNameableIdRequest request)
+    public override async Task<Term> ReadAsync(Request request)
     {
         _command.Parameters["owner_id"].Value = request.OwnerId;
         _command.Parameters["vocabulary_name"].Value = request.VocabularyName;

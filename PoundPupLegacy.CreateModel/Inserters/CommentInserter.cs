@@ -76,7 +76,7 @@ public class CommentInserter : DatabaseInserter<Comment>, IDatabaseInserter<Comm
         _identityCommand = identityCommand;
     }
 
-    internal override async Task WriteAsync(Comment node)
+    public override async Task InsertAsync(Comment node)
     {
         if (node.Id is null) {
             WriteValue(node.NodeId, NODE_ID, _identityCommand);

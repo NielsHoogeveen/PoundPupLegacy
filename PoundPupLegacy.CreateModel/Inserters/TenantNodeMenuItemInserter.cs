@@ -34,7 +34,7 @@ internal sealed class TenantNodeMenuItemInserter : DatabaseInserter<TenantNodeMe
     {
     }
 
-    internal override async Task WriteAsync(TenantNodeMenuItem tenantNodeMenuItem)
+    public override async Task InsertAsync(TenantNodeMenuItem tenantNodeMenuItem)
     {
         WriteValue(tenantNodeMenuItem.Id, ID);
         WriteValue(tenantNodeMenuItem.Name, NAME);

@@ -29,7 +29,7 @@ internal sealed class LocationLocatableInserter : DatabaseInserter<LocationLocat
     {
     }
 
-    internal override async Task WriteAsync(LocationLocatable locationLocatable)
+    public override async Task InsertAsync(LocationLocatable locationLocatable)
     {
         WriteValue(locationLocatable.LocationId, LOCATION_ID);
         WriteValue(locationLocatable.LocatableId, LOCATABLE_ID);

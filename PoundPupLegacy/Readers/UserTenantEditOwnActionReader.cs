@@ -55,16 +55,16 @@ public class UserTenantEditOwnActionReaderFactory : IDatabaseReaderFactory<UserT
 
 
 }
-public class UserTenantEditOwnActionReader : EnumerableDatabaseReader<UserTenantEditOwnActionReader.UserTenantEditOwnActionRequest, UserTenantEditOwnAction>
+public class UserTenantEditOwnActionReader : EnumerableDatabaseReader<UserTenantEditOwnActionReader.Request, UserTenantEditOwnAction>
 {
-    public record UserTenantEditOwnActionRequest
+    public record Request
     {
 
     }
     internal UserTenantEditOwnActionReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async IAsyncEnumerable<UserTenantEditOwnAction> ReadAsync(UserTenantEditOwnActionRequest request)
+    public override async IAsyncEnumerable<UserTenantEditOwnAction> ReadAsync(Request request)
     {
         await using var reader = await _command.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {

@@ -9,8 +9,8 @@ public class BasicActionCreator : IEntityCreator<BasicAction>
         await using var basicActionWriter = await BasicActionInserter.CreateAsync(connection);
 
         await foreach (var action in actions) {
-            await actionWriter.WriteAsync(action);
-            await basicActionWriter.WriteAsync(action);
+            await actionWriter.InsertAsync(action);
+            await basicActionWriter.InsertAsync(action);
         }
     }
 }

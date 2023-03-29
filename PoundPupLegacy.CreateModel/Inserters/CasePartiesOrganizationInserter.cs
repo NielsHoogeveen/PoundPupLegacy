@@ -29,7 +29,7 @@ internal sealed class CasePartiesOrganizationInserter : DatabaseInserter<CasePar
     {
     }
 
-    internal override async Task WriteAsync(CasePartiesOrganization casePartiesOrganization)
+    public override async Task InsertAsync(CasePartiesOrganization casePartiesOrganization)
     {
         WriteValue(casePartiesOrganization.CasePartiesId, CASE_PARTIES_ID);
         WriteValue(casePartiesOrganization.OrganizationId, ORGANIZATION_ID);

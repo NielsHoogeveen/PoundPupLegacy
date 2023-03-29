@@ -21,9 +21,9 @@ public sealed class TermReaderByNameFactory : IDatabaseReaderFactory<TermReaderB
     }
 
 }
-public sealed class TermReaderByName : SingleItemDatabaseReader<TermReaderByName.TermReaderByNameRequest, Term>
+public sealed class TermReaderByName : SingleItemDatabaseReader<TermReaderByName.Request, Term>
 {
-    public record TermReaderByNameRequest
+    public record Request
     {
         public required int VocabularyId { get; init; }
         public required string Name { get; init; }
@@ -32,7 +32,7 @@ public sealed class TermReaderByName : SingleItemDatabaseReader<TermReaderByName
 
     internal TermReaderByName(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<Term> ReadAsync(TermReaderByNameRequest request)
+    public override async Task<Term> ReadAsync(Request request)
     {
         if (request.Name is null) {
             throw new ArgumentNullException(nameof(request.Name));

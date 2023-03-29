@@ -16,14 +16,14 @@ public class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var childPlacementType in childPlacementTypes) {
-            await nodeWriter.WriteAsync(childPlacementType);
-            await searchableWriter.WriteAsync(childPlacementType);
-            await nameableWriter.WriteAsync(childPlacementType);
-            await childPlacementTypeWriter.WriteAsync(childPlacementType);
+            await nodeWriter.InsertAsync(childPlacementType);
+            await searchableWriter.InsertAsync(childPlacementType);
+            await nameableWriter.InsertAsync(childPlacementType);
+            await childPlacementTypeWriter.InsertAsync(childPlacementType);
             await EntityCreator.WriteTerms(childPlacementType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in childPlacementType.TenantNodes) {
                 tenantNode.NodeId = childPlacementType.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

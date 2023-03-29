@@ -18,17 +18,17 @@ public class SecondLevelGlobalRegionCreator : IEntityCreator<SecondLevelGlobalRe
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var node in nodes) {
-            await nodeWriter.WriteAsync(node);
-            await searchableWriter.WriteAsync(node);
-            await documentableWriter.WriteAsync(node);
-            await nameableWriter.WriteAsync(node);
-            await geographicalEntityWriter.WriteAsync(node);
-            await globalRegionWriter.WriteAsync(node);
-            await secondLevelGlobalRegionWriter.WriteAsync(node);
+            await nodeWriter.InsertAsync(node);
+            await searchableWriter.InsertAsync(node);
+            await documentableWriter.InsertAsync(node);
+            await nameableWriter.InsertAsync(node);
+            await geographicalEntityWriter.InsertAsync(node);
+            await globalRegionWriter.InsertAsync(node);
+            await secondLevelGlobalRegionWriter.InsertAsync(node);
             await EntityCreator.WriteTerms(node, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in node.TenantNodes) {
                 tenantNode.NodeId = node.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

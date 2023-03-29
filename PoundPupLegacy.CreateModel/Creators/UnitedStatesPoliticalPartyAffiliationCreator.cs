@@ -16,14 +16,14 @@ public class UnitedStatesPoliticalPartyAffliationCreator : IEntityCreator<United
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var unitedStatesPoliticalPartyAffliation in unitedStatesPoliticalPartyAffliations) {
-            await nodeWriter.WriteAsync(unitedStatesPoliticalPartyAffliation);
-            await searchableWriter.WriteAsync(unitedStatesPoliticalPartyAffliation);
-            await nameableWriter.WriteAsync(unitedStatesPoliticalPartyAffliation);
-            await unitedStatesPoliticalPartyAffliationWriter.WriteAsync(unitedStatesPoliticalPartyAffliation);
+            await nodeWriter.InsertAsync(unitedStatesPoliticalPartyAffliation);
+            await searchableWriter.InsertAsync(unitedStatesPoliticalPartyAffliation);
+            await nameableWriter.InsertAsync(unitedStatesPoliticalPartyAffliation);
+            await unitedStatesPoliticalPartyAffliationWriter.InsertAsync(unitedStatesPoliticalPartyAffliation);
             await EntityCreator.WriteTerms(unitedStatesPoliticalPartyAffliation, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in unitedStatesPoliticalPartyAffliation.TenantNodes) {
                 tenantNode.NodeId = unitedStatesPoliticalPartyAffliation.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

@@ -38,7 +38,7 @@ internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>, IDataba
     {
     }
 
-    internal override async Task WriteAsync(SenateTerm senateTerm)
+    public override async Task InsertAsync(SenateTerm senateTerm)
     {
         if (senateTerm.Id is null)
             throw new NullReferenceException();

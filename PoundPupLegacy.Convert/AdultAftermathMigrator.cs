@@ -67,7 +67,7 @@ internal sealed class AdultAftermathMigrator : PPLMigrator
         var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var id = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+            var id = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32(0),
                 TenantId = Constants.PPL
             });

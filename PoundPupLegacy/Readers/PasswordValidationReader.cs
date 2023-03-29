@@ -27,9 +27,9 @@ public class PasswordValidationReaderFactory : IDatabaseReaderFactory<PasswordVa
 
 
 }
-public class PasswordValidationReader : SingleItemDatabaseReader<PasswordValidationReader.PasswordValidationRequest, int?>
+public class PasswordValidationReader : SingleItemDatabaseReader<PasswordValidationReader.Request, int?>
 {
-    public record PasswordValidationRequest
+    public record Request
     {
         public required string UserName { get; init; }
         public required string Password { get; init; }
@@ -38,7 +38,7 @@ public class PasswordValidationReader : SingleItemDatabaseReader<PasswordValidat
     {
     }
 
-    public override async Task<int?> ReadAsync(PasswordValidationRequest request)
+    public override async Task<int?> ReadAsync(Request request)
     {
         _command.Parameters["name"].Value = request.UserName;
         _command.Parameters["password"].Value = request.Password;

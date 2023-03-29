@@ -35,7 +35,7 @@ public class UserRoleInserter : DatabaseInserter<UserRole>, IDatabaseInserter<Us
     {
     }
 
-    internal override async Task WriteAsync(UserRole userRole)
+    public override async Task InsertAsync(UserRole userRole)
     {
         WriteValue(userRole.Id, ID);
         WriteValue(userRole.UserGroupId, USER_GROUP_ID);

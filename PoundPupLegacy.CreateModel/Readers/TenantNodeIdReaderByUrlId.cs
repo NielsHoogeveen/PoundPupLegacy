@@ -21,9 +21,9 @@ public sealed class TenantNodeIdReaderByUrlIdFactory : IDatabaseReaderFactory<Te
     }
 
 }
-public sealed class TenantNodeIdReaderByUrlId : SingleItemDatabaseReader<TenantNodeIdReaderByUrlId.TenantNodeIdReaderByUrlIdRequest, int>
+public sealed class TenantNodeIdReaderByUrlId : SingleItemDatabaseReader<TenantNodeIdReaderByUrlId.Request, int>
 {
-    public record TenantNodeIdReaderByUrlIdRequest
+    public record Request
     {
         public int TenantId { get; init; }
         public int UrlId { get; init; }
@@ -31,7 +31,7 @@ public sealed class TenantNodeIdReaderByUrlId : SingleItemDatabaseReader<TenantN
 
     internal TenantNodeIdReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(TenantNodeIdReaderByUrlIdRequest request)
+    public override async Task<int> ReadAsync(Request request)
     {
 
         _command.Parameters["tenant_id"].Value = request.TenantId;

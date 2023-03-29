@@ -53,7 +53,7 @@ internal sealed class DocumentInserter : DatabaseInserter<Document>, IDatabaseIn
     {
     }
 
-    internal override async Task WriteAsync(Document document)
+    public override async Task InsertAsync(Document document)
     {
         if (document.Id is null)
             throw new NullReferenceException();

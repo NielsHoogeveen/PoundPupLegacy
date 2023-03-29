@@ -23,21 +23,21 @@ public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLeve
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var subdivision in subdivisions) {
-            await nodeWriter.WriteAsync(subdivision);
-            await searchableWriter.WriteAsync(subdivision);
-            await documentableWriter.WriteAsync(subdivision);
-            await nameableWriter.WriteAsync(subdivision);
-            await geographicalEntityWriter.WriteAsync(subdivision);
-            await politicalEntityWriter.WriteAsync(subdivision);
-            await subdivisionWriter.WriteAsync(subdivision);
-            await isoCodedSubdivisionWriter.WriteAsync(subdivision);
-            await bottomLevelSubdivisionWriter.WriteAsync(subdivision);
-            await secondLevelSubdivisionWriter.WriteAsync(subdivision);
-            await basicSecondLevelSubdivisionWriter.WriteAsync(subdivision);
+            await nodeWriter.InsertAsync(subdivision);
+            await searchableWriter.InsertAsync(subdivision);
+            await documentableWriter.InsertAsync(subdivision);
+            await nameableWriter.InsertAsync(subdivision);
+            await geographicalEntityWriter.InsertAsync(subdivision);
+            await politicalEntityWriter.InsertAsync(subdivision);
+            await subdivisionWriter.InsertAsync(subdivision);
+            await isoCodedSubdivisionWriter.InsertAsync(subdivision);
+            await bottomLevelSubdivisionWriter.InsertAsync(subdivision);
+            await secondLevelSubdivisionWriter.InsertAsync(subdivision);
+            await basicSecondLevelSubdivisionWriter.InsertAsync(subdivision);
             await EntityCreator.WriteTerms(subdivision, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in subdivision.TenantNodes) {
                 tenantNode.NodeId = subdivision.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

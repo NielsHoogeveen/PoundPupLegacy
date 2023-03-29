@@ -8,7 +8,7 @@ public class CountrySubdivisionTypeCreator : IEntityCreator<CountrySubdivisionTy
         await using var countrySubdivisionTypeWriter = await CountrySubdivisionTypeWriter.CreateAsync(connection);
 
         await foreach (var countrySubdivisionType in countrySubdivisionTypes) {
-            await countrySubdivisionTypeWriter.WriteAsync(countrySubdivisionType);
+            await countrySubdivisionTypeWriter.InsertAsync(countrySubdivisionType);
         }
 
     }

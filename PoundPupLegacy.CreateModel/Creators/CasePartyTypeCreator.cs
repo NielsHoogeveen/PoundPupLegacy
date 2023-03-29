@@ -15,14 +15,14 @@ public class CasePartyTypeCreator : IEntityCreator<CasePartyType>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var casePartyType in casePartyTypes) {
-            await nodeWriter.WriteAsync(casePartyType);
-            await searchableWriter.WriteAsync(casePartyType);
-            await nameableWriter.WriteAsync(casePartyType);
-            await casePartyTypeWriter.WriteAsync(casePartyType);
+            await nodeWriter.InsertAsync(casePartyType);
+            await searchableWriter.InsertAsync(casePartyType);
+            await nameableWriter.InsertAsync(casePartyType);
+            await casePartyTypeWriter.InsertAsync(casePartyType);
             await EntityCreator.WriteTerms(casePartyType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in casePartyType.TenantNodes) {
                 tenantNode.NodeId = casePartyType.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

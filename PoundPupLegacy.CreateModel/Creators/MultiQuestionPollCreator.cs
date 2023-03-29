@@ -17,42 +17,42 @@ public class MultiQuestionPollCreator : IEntityCreator<MultiQuestionPoll>
         await using var multiQuestionPollPollQuestionWriter = await MultiQuestionPollPollQuestionInserter.CreateAsync(connection);
 
         await foreach (var poll in polls) {
-            await nodeWriter.WriteAsync(poll);
-            await searchableWriter.WriteAsync(poll);
-            await simpleTextNodeWriter.WriteAsync(poll);
-            await pollWriter.WriteAsync(poll);
-            await multiQuesionPollWriter.WriteAsync(poll);
+            await nodeWriter.InsertAsync(poll);
+            await searchableWriter.InsertAsync(poll);
+            await simpleTextNodeWriter.InsertAsync(poll);
+            await pollWriter.InsertAsync(poll);
+            await multiQuesionPollWriter.InsertAsync(poll);
             foreach (var (question, index) in poll.PollQuestions.Select((q, i) => (q, i))) {
-                await nodeWriter.WriteAsync(question);
-                await searchableWriter.WriteAsync(question);
-                await simpleTextNodeWriter.WriteAsync(question);
-                await pollQuestionWriter.WriteAsync(question);
+                await nodeWriter.InsertAsync(question);
+                await searchableWriter.InsertAsync(question);
+                await simpleTextNodeWriter.InsertAsync(question);
+                await pollQuestionWriter.InsertAsync(question);
 
                 var pollQuestions = new MultiQuestionPollPollQuestion {
                     MultiQuestionPollId = poll.Id!.Value,
                     PollQuestionId = question.Id!.Value,
                     Delta = index
                 };
-                await multiQuestionPollPollQuestionWriter.WriteAsync(pollQuestions);
+                await multiQuestionPollPollQuestionWriter.InsertAsync(pollQuestions);
                 foreach (var pollOption in question.PollOptions) {
                     pollOption.PollQuestionId = question.Id;
-                    await pollOptionWriter.WriteAsync(pollOption);
+                    await pollOptionWriter.InsertAsync(pollOption);
                 }
                 foreach (var pollVote in question.PollVotes) {
                     pollVote.PollId = question.Id;
-                    await pollVoteWriter.WriteAsync(pollVote);
+                    await pollVoteWriter.InsertAsync(pollVote);
                 }
 
                 foreach (var tenantNode in question.TenantNodes) {
                     tenantNode.NodeId = question.Id;
-                    await tenantNodeWriter.WriteAsync(tenantNode);
+                    await tenantNodeWriter.InsertAsync(tenantNode);
                 }
 
             }
 
             foreach (var tenantNode in poll.TenantNodes) {
                 tenantNode.NodeId = poll.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

@@ -24,7 +24,7 @@ internal sealed class CasePartyTypeInserter : DatabaseInserter<CasePartyType>, I
     {
     }
 
-    internal override async Task WriteAsync(CasePartyType casePartyType)
+    public override async Task InsertAsync(CasePartyType casePartyType)
     {
         if (casePartyType.Id is null) {
             throw new ArgumentNullException(nameof(casePartyType));

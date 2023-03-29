@@ -29,7 +29,7 @@ internal sealed class CasePartiesInserter : DatabaseInserter<CaseParties>, IData
     {
     }
 
-    internal override async Task WriteAsync(CaseParties caseParties)
+    public override async Task InsertAsync(CaseParties caseParties)
     {
         if (caseParties.Id.HasValue) {
             throw new Exception($"case parties id should be null upon creation");

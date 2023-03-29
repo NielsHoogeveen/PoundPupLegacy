@@ -82,11 +82,11 @@ internal sealed class NodeFileMigratorPPL : PPLMigrator
         while (await reader.ReadAsync()) {
 
             yield return new NodeFile {
-                NodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                NodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = reader.GetInt32("nid"),
                     TenantId = Constants.PPL
                 }),
-                FileId = await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest {
+                FileId = await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                     TenantId = Constants.PPL,
                     TenantFileId = reader.GetInt32("fid")
                 }),

@@ -10,11 +10,11 @@ public class VocabularyCreator : IEntityCreator<Vocabulary>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var vocabulary in vocabularies) {
-            await nodeWriter.WriteAsync(vocabulary);
-            await vocabularyWriter.WriteAsync(vocabulary);
+            await nodeWriter.InsertAsync(vocabulary);
+            await vocabularyWriter.InsertAsync(vocabulary);
             foreach (var tenantNode in vocabulary.TenantNodes) {
                 tenantNode.NodeId = vocabulary.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
         }
     }

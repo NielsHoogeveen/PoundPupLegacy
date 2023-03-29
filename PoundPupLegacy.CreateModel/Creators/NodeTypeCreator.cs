@@ -8,7 +8,7 @@ public class NodeTypeCreator : IEntityCreator<BasicNodeType>
         await using var nodeTypeWriter = await NodeTypeInserter.CreateAsync(connection);
 
         await foreach (var nodeType in nodeTypes) {
-            await nodeTypeWriter.WriteAsync(nodeType);
+            await nodeTypeWriter.InsertAsync(nodeType);
         }
     }
 }

@@ -16,14 +16,14 @@ public class TypeOfAbuserCreator : IEntityCreator<TypeOfAbuser>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var typeOfAbuser in typesOfAbuser) {
-            await nodeWriter.WriteAsync(typeOfAbuser);
-            await searchableWriter.WriteAsync(typeOfAbuser);
-            await nameableWriter.WriteAsync(typeOfAbuser);
-            await typeOfAbuserWriter.WriteAsync(typeOfAbuser);
+            await nodeWriter.InsertAsync(typeOfAbuser);
+            await searchableWriter.InsertAsync(typeOfAbuser);
+            await nameableWriter.InsertAsync(typeOfAbuser);
+            await typeOfAbuserWriter.InsertAsync(typeOfAbuser);
             await EntityCreator.WriteTerms(typeOfAbuser, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in typeOfAbuser.TenantNodes) {
                 tenantNode.NodeId = typeOfAbuser.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

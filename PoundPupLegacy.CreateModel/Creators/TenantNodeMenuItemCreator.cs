@@ -9,8 +9,8 @@ public class TenantNodeMenuItemCreator : IEntityCreator<TenantNodeMenuItem>
         await using var tenantNodeMenuItemWriter = await TenantNodeMenuItemInserter.CreateAsync(connection);
 
         await foreach (var tenantNodeMenuItem in tenantNodeMenuItems) {
-            await menuItemWriter.WriteAsync(tenantNodeMenuItem);
-            await tenantNodeMenuItemWriter.WriteAsync(tenantNodeMenuItem);
+            await menuItemWriter.InsertAsync(tenantNodeMenuItem);
+            await tenantNodeMenuItemWriter.InsertAsync(tenantNodeMenuItem);
         }
 
     }

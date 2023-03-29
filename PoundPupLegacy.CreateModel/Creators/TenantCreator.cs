@@ -15,23 +15,23 @@ public class TenantCreator : IEntityCreator<Tenant>
         await using var administratorRoleWriter = await AdministratorRoleInserter.CreateAsync(connection);
 
         await foreach (var tenant in tenants) {
-            await userGroupWriter.WriteAsync(tenant);
-            await ownerWriter.WriteAsync(tenant);
-            await publishingUserGroupWriter.WriteAsync(tenant);
-            await tenantWriter.WriteAsync(tenant);
+            await userGroupWriter.InsertAsync(tenant);
+            await ownerWriter.InsertAsync(tenant);
+            await publishingUserGroupWriter.InsertAsync(tenant);
+            await tenantWriter.InsertAsync(tenant);
 
             var accessRole = tenant.AccessRoleNotLoggedIn;
             accessRole.UserGroupId = tenant.Id!.Value;
-            await principalWriter.WriteAsync(accessRole);
-            await userRoleWriter.WriteAsync(accessRole);
-            await accessRoleWriter.WriteAsync(accessRole);
+            await principalWriter.InsertAsync(accessRole);
+            await userRoleWriter.InsertAsync(accessRole);
+            await accessRoleWriter.InsertAsync(accessRole);
 
 
             var administratorRole = tenant.AdministratorRole;
             administratorRole.UserGroupId = tenant.Id.Value;
-            await principalWriter.WriteAsync(administratorRole);
-            await userRoleWriter.WriteAsync(administratorRole);
-            await administratorRoleWriter.WriteAsync(administratorRole);
+            await principalWriter.InsertAsync(administratorRole);
+            await userRoleWriter.InsertAsync(administratorRole);
+            await administratorRoleWriter.InsertAsync(administratorRole);
 
         }
     }

@@ -29,7 +29,7 @@ internal sealed class ActInserter : DatabaseInserter<Act>, IDatabaseInserter<Act
     {
     }
 
-    internal override async Task WriteAsync(Act act)
+    public override async Task InsertAsync(Act act)
     {
         WriteValue(act.Id, ID);
         WriteNullableValue(act.EnactmentDate, ENACTMENT_DATE);

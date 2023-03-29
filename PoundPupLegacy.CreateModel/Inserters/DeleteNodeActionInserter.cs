@@ -29,7 +29,7 @@ internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeActi
     {
     }
 
-    internal override async Task WriteAsync(DeleteNodeAction deleteNodeAccessPrivilege)
+    public override async Task InsertAsync(DeleteNodeAction deleteNodeAccessPrivilege)
     {
         if (!deleteNodeAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();

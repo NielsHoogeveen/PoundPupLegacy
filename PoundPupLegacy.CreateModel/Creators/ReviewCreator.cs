@@ -12,13 +12,13 @@ public class ReviewCreator : IEntityCreator<Review>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var review in reviews) {
-            await nodeWriter.WriteAsync(review);
-            await searchableWriter.WriteAsync(review);
-            await simpleTextNodeWriter.WriteAsync(review);
-            await reviewWriter.WriteAsync(review);
+            await nodeWriter.InsertAsync(review);
+            await searchableWriter.InsertAsync(review);
+            await simpleTextNodeWriter.InsertAsync(review);
+            await reviewWriter.InsertAsync(review);
             foreach (var tenantNode in review.TenantNodes) {
                 tenantNode.NodeId = review.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

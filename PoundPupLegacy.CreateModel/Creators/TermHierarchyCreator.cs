@@ -8,7 +8,7 @@ public class TermHierarchyCreator : IEntityCreator<TermHierarchy>
         await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
 
         await foreach (var termHierarchy in termHierarchies) {
-            await termHierarchyWriter.WriteAsync(termHierarchy);
+            await termHierarchyWriter.InsertAsync(termHierarchy);
         }
     }
 }

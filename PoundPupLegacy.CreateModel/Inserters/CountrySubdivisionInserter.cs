@@ -29,7 +29,7 @@ internal sealed class CountrySubdivisionTypeWriter : DatabaseInserter<CountrySub
     {
     }
 
-    internal override async Task WriteAsync(CountrySubdivisionType countrySubdivisionType)
+    public override async Task InsertAsync(CountrySubdivisionType countrySubdivisionType)
     {
         WriteValue(countrySubdivisionType.CountryId, COUNTRY_ID);
         WriteValue(countrySubdivisionType.SubdivisionTypeId, SUBDIVISION_TYPE_ID);

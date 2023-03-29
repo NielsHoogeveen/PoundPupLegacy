@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class TenantNodeInserter : DatabaseInserter<TenantNode>, IDatabaseInserter<TenantNode>
+public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>, IDatabaseInserter<TenantNode>
 {
 
     private const string TENANT_ID = "tenant_id";
@@ -52,7 +52,7 @@ internal sealed class TenantNodeInserter : DatabaseInserter<TenantNode>, IDataba
     {
     }
 
-    internal override async Task WriteAsync(TenantNode tenantNode)
+    public override async Task InsertAsync(TenantNode tenantNode)
     {
         if (tenantNode.Id != null) {
             throw new Exception($"Id of tenant node needs to be null");

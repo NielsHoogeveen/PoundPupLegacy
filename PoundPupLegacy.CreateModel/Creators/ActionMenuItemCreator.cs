@@ -9,8 +9,8 @@ public class ActionMenuItemCreator : IEntityCreator<ActionMenuItem>
         await using var actionMenuItemWriter = await ActionMenuItemInserter.CreateAsync(connection);
 
         await foreach (var actionMenuItem in actionMenuItems) {
-            await menuItemWriter.WriteAsync(actionMenuItem);
-            await actionMenuItemWriter.WriteAsync(actionMenuItem);
+            await menuItemWriter.InsertAsync(actionMenuItem);
+            await actionMenuItemWriter.InsertAsync(actionMenuItem);
         }
 
     }

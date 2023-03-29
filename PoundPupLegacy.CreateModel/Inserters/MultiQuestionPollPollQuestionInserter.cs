@@ -34,7 +34,7 @@ internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<M
     {
     }
 
-    internal override async Task WriteAsync(MultiQuestionPollPollQuestion question)
+    public override async Task InsertAsync(MultiQuestionPollPollQuestion question)
     {
         WriteValue(question.MultiQuestionPollId, MULTI_QUESTION_POLL_ID);
         WriteNullableValue(question.PollQuestionId, POLL_QUESTION_ID);

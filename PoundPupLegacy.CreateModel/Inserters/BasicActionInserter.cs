@@ -34,7 +34,7 @@ internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>, IData
     {
     }
 
-    internal override async Task WriteAsync(BasicAction actionAccessPrivilege)
+    public override async Task InsertAsync(BasicAction actionAccessPrivilege)
     {
         if (!actionAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();

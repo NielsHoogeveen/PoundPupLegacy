@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FileInserter : DatabaseInserter<CreateModel.File>, IDatabaseInserter<CreateModel.File>
+internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<File>
 {
     private const string ID = "id";
     private const string PATH = "path";
@@ -10,7 +10,7 @@ internal sealed class FileInserter : DatabaseInserter<CreateModel.File>, IDataba
     private const string MIME_TYPE = "mime_type";
     private const string SIZE = "size";
 
-    public static async Task<DatabaseInserter<CreateModel.File>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<File>> CreateAsync(NpgsqlConnection connection)
     {
         var collumnDefinitions = new ColumnDefinition[]
         {
@@ -56,7 +56,7 @@ internal sealed class FileInserter : DatabaseInserter<CreateModel.File>, IDataba
         _identityCommand = identityCommand;
     }
 
-    internal override async Task WriteAsync(CreateModel.File file)
+    public override async Task InsertAsync(File file)
     {
         if (file.Id is null) {
             WriteValue(file.Path, PATH, _identityCommand);

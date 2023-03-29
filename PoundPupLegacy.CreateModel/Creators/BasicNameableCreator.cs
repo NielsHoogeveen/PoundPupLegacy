@@ -16,15 +16,15 @@ public class BasicNameableCreator : IEntityCreator<BasicNameable>
         await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
 
         await foreach (var basicNameable in basicNameables) {
-            await nodeWriter.WriteAsync(basicNameable);
-            await searchableWriter.WriteAsync(basicNameable);
-            await nameableWriter.WriteAsync(basicNameable);
-            await basicNameableWriter.WriteAsync(basicNameable);
+            await nodeWriter.InsertAsync(basicNameable);
+            await searchableWriter.InsertAsync(basicNameable);
+            await nameableWriter.InsertAsync(basicNameable);
+            await basicNameableWriter.InsertAsync(basicNameable);
             await EntityCreator.WriteTerms(basicNameable, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
 
             foreach (var tenantNode in basicNameable.TenantNodes) {
                 tenantNode.NodeId = basicNameable.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

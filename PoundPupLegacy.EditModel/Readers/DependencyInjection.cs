@@ -9,6 +9,7 @@ public static class DependencyInjection
     {
         services.AddTransient<IDatabaseReaderFactory<ArticleCreateDocumentReader>, ArticleCreateDocumentReaderFactory>();
         services.AddTransient<IDatabaseReaderFactory<BlogPostCreateDocumentReader>, BlogPostCreateDocumentReaderFactory>();
+        services.AddTransient<IDatabaseReaderFactory<CountryListItemsReader>, CountryListItemsReaderFactory>();
         services.AddTransient<IDatabaseReaderFactory<DiscussionCreateDocumentReader>, DiscussionCreateDocumentReaderFactory>();
         services.AddTransient<IDatabaseReaderFactory<ArticleUpdateDocumentReader>, ArticleUpdateDocumentReaderFactory>();
         services.AddTransient<IDatabaseReaderFactory<BlogPostUpdateDocumentReader>, BlogPostUpdateDocumentReaderFactory>();

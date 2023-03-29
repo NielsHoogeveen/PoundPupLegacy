@@ -27,7 +27,7 @@ internal sealed class PoliticalEntityInserter : DatabaseInserter<PoliticalEntity
     {
     }
 
-    internal override async Task WriteAsync(PoliticalEntity entity)
+    public override async Task InsertAsync(PoliticalEntity entity)
     {
         if (entity.Id is null)
             throw new NullReferenceException();

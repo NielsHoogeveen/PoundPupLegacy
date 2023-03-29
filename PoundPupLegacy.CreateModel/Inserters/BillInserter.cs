@@ -29,7 +29,7 @@ internal sealed class BillInserter : DatabaseInserter<Bill>, IDatabaseInserter<B
     {
     }
 
-    internal override async Task WriteAsync(Bill bill)
+    public override async Task InsertAsync(Bill bill)
     {
         WriteValue(bill.Id, ID);
         WriteNullableValue(bill.IntroductionDate, INTRODUCTION_DATE);

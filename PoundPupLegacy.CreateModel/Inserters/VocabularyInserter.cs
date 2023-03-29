@@ -38,7 +38,7 @@ internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>, IDataba
     {
     }
 
-    internal override async Task WriteAsync(Vocabulary vocabulary)
+    public override async Task InsertAsync(Vocabulary vocabulary)
     {
         if (vocabulary.Id is null)
             throw new NullReferenceException();

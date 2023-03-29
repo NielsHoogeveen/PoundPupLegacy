@@ -8,7 +8,7 @@ public class NodeFileCreator : IEntityCreator<NodeFile>
         await using var nodeFileWriter = await NodeFileInserter.CreateAsync(connection);
 
         await foreach (var nodeFile in nodeFiles) {
-            await nodeFileWriter.WriteAsync(nodeFile);
+            await nodeFileWriter.InsertAsync(nodeFile);
         }
     }
 }

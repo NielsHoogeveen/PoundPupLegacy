@@ -38,7 +38,7 @@ internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>, IData
     {
     }
 
-    internal override async Task WriteAsync(Subdivision subdivision)
+    public override async Task InsertAsync(Subdivision subdivision)
     {
         if (subdivision.Id is null)
             throw new NullReferenceException();

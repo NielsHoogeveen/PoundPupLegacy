@@ -16,7 +16,7 @@ public class NodeTermCreator : IEntityCreator<NodeTerm>
         await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
 
         await foreach (var nodeTerm in nodeTerms) {
-            await nodeTermWriter.WriteAsync(nodeTerm);
+            await nodeTermWriter.InsertAsync(nodeTerm);
         }
     }
 }

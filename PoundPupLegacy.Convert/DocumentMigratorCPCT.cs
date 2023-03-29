@@ -138,7 +138,7 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
                 Teaser = TextToTeaser(text),
                 DocumentTypeId = reader.IsDBNull("document_type_id")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.CPCT,
                         UrlId = reader.GetInt32("document_type_id")
                     }),

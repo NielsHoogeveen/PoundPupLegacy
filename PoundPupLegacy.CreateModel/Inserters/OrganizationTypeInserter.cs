@@ -28,7 +28,7 @@ internal sealed class OrganizationTypeInserter : DatabaseInserter<OrganizationTy
     {
     }
 
-    internal override async Task WriteAsync(OrganizationType organizationType)
+    public override async Task InsertAsync(OrganizationType organizationType)
     {
         if (organizationType.Id is null)
             throw new NullReferenceException();

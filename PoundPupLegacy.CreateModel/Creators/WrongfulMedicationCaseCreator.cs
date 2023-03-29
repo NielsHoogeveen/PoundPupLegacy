@@ -19,17 +19,17 @@ public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCa
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var wrongfulMedicationCase in wrongfulMedicationCases) {
-            await nodeWriter.WriteAsync(wrongfulMedicationCase);
-            await searchableWriter.WriteAsync(wrongfulMedicationCase);
-            await documentableWriter.WriteAsync(wrongfulMedicationCase);
-            await locatableWriter.WriteAsync(wrongfulMedicationCase);
-            await nameableWriter.WriteAsync(wrongfulMedicationCase);
-            await caseWriter.WriteAsync(wrongfulMedicationCase);
-            await wrongfulMedicationCaseWriter.WriteAsync(wrongfulMedicationCase);
+            await nodeWriter.InsertAsync(wrongfulMedicationCase);
+            await searchableWriter.InsertAsync(wrongfulMedicationCase);
+            await documentableWriter.InsertAsync(wrongfulMedicationCase);
+            await locatableWriter.InsertAsync(wrongfulMedicationCase);
+            await nameableWriter.InsertAsync(wrongfulMedicationCase);
+            await caseWriter.InsertAsync(wrongfulMedicationCase);
+            await wrongfulMedicationCaseWriter.InsertAsync(wrongfulMedicationCase);
             await EntityCreator.WriteTerms(wrongfulMedicationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in wrongfulMedicationCase.TenantNodes) {
                 tenantNode.NodeId = wrongfulMedicationCase.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

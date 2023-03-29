@@ -28,7 +28,7 @@ internal sealed class TermHierarchyInserter : DatabaseInserter<TermHierarchy>, I
     {
     }
 
-    internal override async Task WriteAsync(TermHierarchy termHierarchy)
+    public override async Task InsertAsync(TermHierarchy termHierarchy)
     {
         WriteValue(termHierarchy.TermIdPartent, TERM_ID_PARENT);
         WriteValue(termHierarchy.TermIdChild, TERM_ID_CHILD);

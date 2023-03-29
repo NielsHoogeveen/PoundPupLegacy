@@ -28,7 +28,7 @@ internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>, IDatabaseIn
     {
     }
 
-    internal override async Task WriteAsync(Subgroup subgroup)
+    public override async Task InsertAsync(Subgroup subgroup)
     {
         if (subgroup.Id is null)
             throw new NullReferenceException();

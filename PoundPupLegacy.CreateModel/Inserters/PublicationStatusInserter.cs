@@ -28,7 +28,7 @@ internal sealed class PublicationStatusInserter : DatabaseInserter<PublicationSt
     {
     }
 
-    internal override async Task WriteAsync(PublicationStatus nodeStatus)
+    public override async Task InsertAsync(PublicationStatus nodeStatus)
     {
         if (nodeStatus.Id is null)
             throw new NullReferenceException();

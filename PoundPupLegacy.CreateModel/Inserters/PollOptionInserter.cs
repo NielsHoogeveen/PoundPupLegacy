@@ -38,7 +38,7 @@ internal sealed class PollOptionInserter : DatabaseInserter<PollOption>, IDataba
     {
     }
 
-    internal override async Task WriteAsync(PollOption pollOption)
+    public override async Task InsertAsync(PollOption pollOption)
     {
         if (pollOption.PollQuestionId is null)
             throw new NullReferenceException();

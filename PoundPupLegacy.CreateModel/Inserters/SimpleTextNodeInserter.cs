@@ -33,7 +33,7 @@ internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>,
     {
     }
 
-    internal override async Task WriteAsync(SimpleTextNode simpleTextNode)
+    public override async Task InsertAsync(SimpleTextNode simpleTextNode)
     {
         if (simpleTextNode.Id is null)
             throw new NullReferenceException();

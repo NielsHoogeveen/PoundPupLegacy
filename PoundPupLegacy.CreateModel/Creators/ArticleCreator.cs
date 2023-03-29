@@ -12,13 +12,13 @@ public class ArticleCreator : IEntityCreator<Article>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var article in articles) {
-            await nodeWriter.WriteAsync(article);
-            await searchableWriter.WriteAsync(article);
-            await simpleTextNodeWriter.WriteAsync(article);
-            await articleWriter.WriteAsync(article);
+            await nodeWriter.InsertAsync(article);
+            await searchableWriter.InsertAsync(article);
+            await simpleTextNodeWriter.InsertAsync(article);
+            await articleWriter.InsertAsync(article);
             foreach (var tenantNode in article.TenantNodes) {
                 tenantNode.NodeId = article.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

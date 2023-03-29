@@ -49,7 +49,7 @@ internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPers
     {
     }
 
-    internal override async Task WriteAsync(InterPersonalRelation interPersonalRelation)
+    public override async Task InsertAsync(InterPersonalRelation interPersonalRelation)
     {
         WriteValue(interPersonalRelation.Id, ID);
         WriteValue(interPersonalRelation.PersonIdFrom, PERSON_ID_FROM);

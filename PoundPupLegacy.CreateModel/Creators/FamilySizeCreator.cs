@@ -16,14 +16,14 @@ public class FamilySizeCreator : IEntityCreator<FamilySize>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var familySize in familySizes) {
-            await nodeWriter.WriteAsync(familySize);
-            await searchableWriter.WriteAsync(familySize);
-            await nameableWriter.WriteAsync(familySize);
-            await familySizeWriter.WriteAsync(familySize);
+            await nodeWriter.InsertAsync(familySize);
+            await searchableWriter.InsertAsync(familySize);
+            await nameableWriter.InsertAsync(familySize);
+            await familySizeWriter.InsertAsync(familySize);
             await EntityCreator.WriteTerms(familySize, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in familySize.TenantNodes) {
                 tenantNode.NodeId = familySize.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

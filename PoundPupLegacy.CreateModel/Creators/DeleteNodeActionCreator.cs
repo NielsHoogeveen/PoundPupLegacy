@@ -9,8 +9,8 @@ public class DeleteNodeActionCreator : IEntityCreator<DeleteNodeAction>
         await using var deleteNodeActionWriter = await DeleteNodeActionInserter.CreateAsync(connection);
 
         await foreach (var action in actions) {
-            await actionWriter.WriteAsync(action);
-            await deleteNodeActionWriter.WriteAsync(action);
+            await actionWriter.InsertAsync(action);
+            await deleteNodeActionWriter.InsertAsync(action);
         }
     }
 }

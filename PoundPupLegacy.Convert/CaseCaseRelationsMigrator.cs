@@ -41,21 +41,21 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
             var id = reader.GetInt32("id");
             var organizationIds = new List<int>();
             foreach (var entry in reader.IsDBNull("organization_ids") ? new List<int>() : reader.GetString("organization_ids").Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x))) {
-                organizationIds.Add(await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                organizationIds.Add(await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = entry,
                     TenantId = Constants.PPL
                 }));
             }
             var personIds = new List<int>();
             foreach (var entry in reader.IsDBNull("person_ids") ? new List<int>() : reader.GetString("person_ids").Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x))) {
-                personIds.Add(await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                personIds.Add(await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = entry,
                     TenantId = Constants.PPL
                 }));
             }
 
             yield return new CaseCaseParties {
-                CaseId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                CaseId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = id,
                     TenantId = Constants.PPL
                 }),
@@ -114,7 +114,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.HOMESTUDY_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -162,7 +162,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.PLACEMENT_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -211,7 +211,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.POSTPLACEMENT_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -260,7 +260,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.FACILITATION_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -309,7 +309,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.INSTITUTION_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -343,7 +343,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.THERAPY_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -392,7 +392,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.PLACEMENT_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -442,7 +442,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.FACILITATION_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -492,7 +492,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.INSTITUTION_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -540,7 +540,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.PLACEMENT_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -589,7 +589,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.FACILITATION_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -638,7 +638,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.PLACEMENT_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -685,7 +685,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.PLACEMENT_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -719,7 +719,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.AUTHORITIES_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {
@@ -753,7 +753,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             UrlId = Constants.AUTHORITIES_CASE_TYPE,
             TenantId = Constants.PPL
         }))) {

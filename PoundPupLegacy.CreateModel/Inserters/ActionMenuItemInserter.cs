@@ -34,7 +34,7 @@ internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>,
     {
     }
 
-    internal override async Task WriteAsync(ActionMenuItem actionMenuItem)
+    public override async Task InsertAsync(ActionMenuItem actionMenuItem)
     {
         WriteValue(actionMenuItem.Id, ID);
         WriteValue(actionMenuItem.Name.Trim(), NAME);

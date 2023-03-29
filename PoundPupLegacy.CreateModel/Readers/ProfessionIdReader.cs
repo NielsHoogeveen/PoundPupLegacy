@@ -29,9 +29,9 @@ public sealed class ProfessionIdReaderFactory : IDatabaseReaderFactory<Professio
     }
 
 }
-public sealed class ProfessionIdReader : SingleItemDatabaseReader<ProfessionIdReader.ProfessionIdReaderRequest, int>
+public sealed class ProfessionIdReader : SingleItemDatabaseReader<ProfessionIdReader.Request, int>
 {
-    public record ProfessionIdReaderRequest
+    public record Request
     {
         public int TenantId { get; init; }
         public int UrlId { get; init; }
@@ -57,7 +57,7 @@ public sealed class ProfessionIdReader : SingleItemDatabaseReader<ProfessionIdRe
         };
     }
 
-    public override async Task<int> ReadAsync(ProfessionIdReaderRequest request)
+    public override async Task<int> ReadAsync(Request request)
     {
         _command.Parameters["tenant_id"].Value = request.TenantId;
         _command.Parameters["url_id"].Value = request.UrlId;

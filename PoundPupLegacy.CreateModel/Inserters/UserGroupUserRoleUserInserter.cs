@@ -33,7 +33,7 @@ internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroup
     {
     }
 
-    internal override async Task WriteAsync(UserGroupUserRoleUser userGroupUserRoleUser)
+    public override async Task InsertAsync(UserGroupUserRoleUser userGroupUserRoleUser)
     {
         WriteValue(userGroupUserRoleUser.UserGroupId, USER_GROUP_ID);
         WriteValue(userGroupUserRoleUser.UserRoleId, USER_ROLE_ID);

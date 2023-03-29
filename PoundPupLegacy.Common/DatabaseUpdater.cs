@@ -17,7 +17,7 @@ public abstract class DatabaseUpdater<TRequest> : IDatabaseUpdater
         _command = command;
     }
 
-    public abstract Task Update(TRequest request);
+    public abstract Task UpdateAsync(TRequest request);
 
 
     public virtual async ValueTask DisposeAsync()

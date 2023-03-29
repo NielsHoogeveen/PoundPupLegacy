@@ -8,7 +8,7 @@ public class AccessRolePrivilegeCreator : IEntityCreator<AccessRolePrivilege>
         await using var accessRolePrivilegeWriter = await AccessRolePrivilegeInserter.CreateAsync(connection);
 
         await foreach (var accessRolePrivilege in accessRolePrivileges) {
-            await accessRolePrivilegeWriter.WriteAsync(accessRolePrivilege);
+            await accessRolePrivilegeWriter.InsertAsync(accessRolePrivilege);
         }
 
     }

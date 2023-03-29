@@ -98,13 +98,13 @@ internal sealed class DeportationCaseMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("subdivision_id_from")
                     }),
                 CountryIdTo = reader.IsDBNull("country_id_to")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("country_id_to")
                     }),

@@ -11,16 +11,16 @@ public class CaseCaseRelationsCreator : IEntityCreator<CaseCaseParties>
         await using var caseRelationsPersonWriter = await CasePartiesPersonInserter.CreateAsync(connection);
 
         await foreach (var caseCaseRelations in caseCaseRelationss) {
-            await caseRelationsWriter.WriteAsync(caseCaseRelations.CaseParties);
-            await caseCaseRelationsWriter.WriteAsync(caseCaseRelations);
+            await caseRelationsWriter.InsertAsync(caseCaseRelations.CaseParties);
+            await caseCaseRelationsWriter.InsertAsync(caseCaseRelations);
             foreach (var organizationId in caseCaseRelations.CaseParties.OrganizationIds) {
-                await caseRelationsOrganizationWriter.WriteAsync(new CasePartiesOrganization {
+                await caseRelationsOrganizationWriter.InsertAsync(new CasePartiesOrganization {
                     CasePartiesId = caseCaseRelations.CaseParties.Id!.Value,
                     OrganizationId = organizationId
                 });
             }
             foreach (var personId in caseCaseRelations.CaseParties.PersonsIds) {
-                await caseRelationsPersonWriter.WriteAsync(new CasePartiesPerson {
+                await caseRelationsPersonWriter.InsertAsync(new CasePartiesPerson {
                     CasePartiesId = caseCaseRelations.CaseParties.Id!.Value,
                     PersonId = personId
                 });

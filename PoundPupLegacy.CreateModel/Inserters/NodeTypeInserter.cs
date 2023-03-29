@@ -39,7 +39,7 @@ internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>, IDatabaseIn
     {
     }
 
-    internal override async Task WriteAsync(NodeType nodeType)
+    public override async Task InsertAsync(NodeType nodeType)
     {
         WriteValue(nodeType.Id, ID);
         WriteNullableValue(nodeType.Name, NAME);

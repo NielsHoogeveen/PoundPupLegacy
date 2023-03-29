@@ -10,12 +10,12 @@ public class PartyPoliticalEntityRelationCreator : IEntityCreator<PartyPolitical
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var partyPoliticalEntityRelation in partyPoliticalEntityRelations) {
-            await nodeWriter.WriteAsync(partyPoliticalEntityRelation);
-            await partyPoliticalEntityRelationWriter.WriteAsync(partyPoliticalEntityRelation);
+            await nodeWriter.InsertAsync(partyPoliticalEntityRelation);
+            await partyPoliticalEntityRelationWriter.InsertAsync(partyPoliticalEntityRelation);
 
             foreach (var tenantNode in partyPoliticalEntityRelation.TenantNodes) {
                 tenantNode.NodeId = partyPoliticalEntityRelation.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

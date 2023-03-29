@@ -16,14 +16,14 @@ public class InterCountryRelationTypeCreator : IEntityCreator<InterCountryRelati
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var interCountryRelationType in interCountryRelationTypes) {
-            await nodeWriter.WriteAsync(interCountryRelationType);
-            await searchableWriter.WriteAsync(interCountryRelationType);
-            await nameableWriter.WriteAsync(interCountryRelationType);
-            await interCountryRelationTypeWriter.WriteAsync(interCountryRelationType);
+            await nodeWriter.InsertAsync(interCountryRelationType);
+            await searchableWriter.InsertAsync(interCountryRelationType);
+            await nameableWriter.InsertAsync(interCountryRelationType);
+            await interCountryRelationTypeWriter.InsertAsync(interCountryRelationType);
             await EntityCreator.WriteTerms(interCountryRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in interCountryRelationType.TenantNodes) {
                 tenantNode.NodeId = interCountryRelationType.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

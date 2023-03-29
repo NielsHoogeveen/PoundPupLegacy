@@ -73,7 +73,7 @@ public abstract class DatabaseInserter<T> : DatabaseInserter, IAsyncDisposable
         _command = command;
     }
 
-    internal abstract Task WriteAsync(T item);
+    public abstract Task InsertAsync(T item);
     protected void WriteDateTimeRange(DateTimeRange? dateTimeRange, string parameterDateRange)
     {
         WriteDateTimeRange(dateTimeRange, parameterDateRange, _command);

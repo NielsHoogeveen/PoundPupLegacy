@@ -27,7 +27,7 @@ public class PublisherInserter : DatabaseInserter<Publisher>, IDatabaseInserter<
     {
     }
 
-    internal override async Task WriteAsync(Publisher publisher)
+    public override async Task InsertAsync(Publisher publisher)
     {
         WriteValue(publisher.Id, ID);
         WriteValue(publisher.Name, NAME);

@@ -26,7 +26,7 @@ internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSub
     {
     }
 
-    internal override async Task WriteAsync(ISOCodedSubdivision country)
+    public override async Task InsertAsync(ISOCodedSubdivision country)
     {
         if (country.Id is null)
             throw new NullReferenceException();

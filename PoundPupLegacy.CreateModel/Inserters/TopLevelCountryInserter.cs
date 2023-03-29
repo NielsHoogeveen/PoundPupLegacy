@@ -33,7 +33,7 @@ internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry
     {
     }
 
-    internal override async Task WriteAsync(TopLevelCountry country)
+    public override async Task InsertAsync(TopLevelCountry country)
     {
         if (country.Id is null)
             throw new NullReferenceException();

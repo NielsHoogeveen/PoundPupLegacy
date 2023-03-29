@@ -58,16 +58,16 @@ internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int representativeId = await professionReader.ReadAsync(new ProfessionIdReader.ProfessionIdReaderRequest {
+            int representativeId = await professionReader.ReadAsync(new ProfessionIdReader.Request {
                 TenantId = Constants.PPL,
                 ProfessionType = ProfessionIdReader.ProfessionType.Representative,
                 UrlId = reader.GetInt32("person_id")
             });
-            int billId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest() {
+            int billId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request() {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("bill_id")
             });
-            int billActionTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+            int billActionTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
             });

@@ -10,9 +10,9 @@ public class UserCreator : IEntityCreator<User>
         await using var userWriter = await UserInserter.CreateAsync(connection);
 
         await foreach (var user in users) {
-            await principalWriter.WriteAsync(user);
-            await publisherWriter.WriteAsync(user);
-            await userWriter.WriteAsync(user);
+            await principalWriter.InsertAsync(user);
+            await publisherWriter.InsertAsync(user);
+            await userWriter.InsertAsync(user);
         }
     }
 }

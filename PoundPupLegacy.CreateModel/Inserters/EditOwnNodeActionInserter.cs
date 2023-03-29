@@ -29,7 +29,7 @@ internal sealed class EditOwnNodeActionInserter : DatabaseInserter<EditOwnNodeAc
     {
     }
 
-    internal override async Task WriteAsync(EditOwnNodeAction editOwnNodeAction)
+    public override async Task InsertAsync(EditOwnNodeAction editOwnNodeAction)
     {
         if (!editOwnNodeAction.Id.HasValue) {
             throw new NullReferenceException();

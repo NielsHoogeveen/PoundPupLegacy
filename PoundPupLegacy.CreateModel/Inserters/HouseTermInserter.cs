@@ -43,7 +43,7 @@ internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>, IDatabase
     {
     }
 
-    internal override async Task WriteAsync(HouseTerm houseTerm)
+    public override async Task InsertAsync(HouseTerm houseTerm)
     {
         if (houseTerm.Id is null)
             throw new NullReferenceException();

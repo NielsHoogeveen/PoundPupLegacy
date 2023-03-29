@@ -34,7 +34,7 @@ internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraff
     {
     }
 
-    internal override async Task WriteAsync(ChildTraffickingCase abuseCase)
+    public override async Task InsertAsync(ChildTraffickingCase abuseCase)
     {
         if (abuseCase.Id is null)
             throw new NullReferenceException();

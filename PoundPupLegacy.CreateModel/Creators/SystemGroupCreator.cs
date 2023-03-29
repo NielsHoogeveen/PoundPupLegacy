@@ -13,14 +13,14 @@ public class SystemGroupCreator
         await using var administratorRoleWriter = await AdministratorRoleInserter.CreateAsync(connection);
 
         var systemGroup = new SystemGroup();
-        await userGroupWriter.WriteAsync(systemGroup);
-        await systemGroupWriter.WriteAsync(systemGroup);
+        await userGroupWriter.InsertAsync(systemGroup);
+        await systemGroupWriter.InsertAsync(systemGroup);
 
         var administratorRole = systemGroup.AdministratorRole;
         administratorRole.UserGroupId = systemGroup.Id!.Value;
-        await principalWriter.WriteAsync(administratorRole);
-        await userRoleWriter.WriteAsync(administratorRole);
-        await administratorRoleWriter.WriteAsync(administratorRole);
+        await principalWriter.InsertAsync(administratorRole);
+        await userRoleWriter.InsertAsync(administratorRole);
+        await administratorRoleWriter.InsertAsync(administratorRole);
 
     }
 }

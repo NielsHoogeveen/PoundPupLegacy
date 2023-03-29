@@ -19,17 +19,17 @@ public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var childTraffickingCase in childTraffickingCases) {
-            await nodeWriter.WriteAsync(childTraffickingCase);
-            await searchableWriter.WriteAsync(childTraffickingCase);
-            await documentableWriter.WriteAsync(childTraffickingCase);
-            await locatableWriter.WriteAsync(childTraffickingCase);
-            await nameableWriter.WriteAsync(childTraffickingCase);
-            await caseWriter.WriteAsync(childTraffickingCase);
-            await childTraffickingCaseWriter.WriteAsync(childTraffickingCase);
+            await nodeWriter.InsertAsync(childTraffickingCase);
+            await searchableWriter.InsertAsync(childTraffickingCase);
+            await documentableWriter.InsertAsync(childTraffickingCase);
+            await locatableWriter.InsertAsync(childTraffickingCase);
+            await nameableWriter.InsertAsync(childTraffickingCase);
+            await caseWriter.InsertAsync(childTraffickingCase);
+            await childTraffickingCaseWriter.InsertAsync(childTraffickingCase);
             await EntityCreator.WriteTerms(childTraffickingCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in childTraffickingCase.TenantNodes) {
                 tenantNode.NodeId = childTraffickingCase.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

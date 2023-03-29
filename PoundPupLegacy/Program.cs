@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
+using PoundPupLegacy.Deleters;
 using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.Middleware;
 using PoundPupLegacy.Readers;
 using PoundPupLegacy.Services;
 using PoundPupLegacy.Services.Implementation;
+using PoundPupLegacy.Updaters;
 using PoundPupLegacy.ViewModel.Readers;
 using Quartz;
 
@@ -74,6 +76,8 @@ public class Program
         builder.Services.AddTransient<ILocationService, LocationService>();
         builder.Services.AddEditReaders();
         builder.Services.AddSystemReaders();
+        builder.Services.AddSystemDeleters();
+        builder.Services.AddSystemUpdaters();
         builder.Services.AddViewModelReaders();
         builder.Services.AddQuartz(q => {
             // base Quartz scheduler, job and trigger configuration

@@ -19,17 +19,17 @@ public class AbuseCaseCreator : IEntityCreator<AbuseCase>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var abuseCase in abuseCases) {
-            await nodeWriter.WriteAsync(abuseCase);
-            await searchableWriter.WriteAsync(abuseCase);
-            await documentableWriter.WriteAsync(abuseCase);
-            await locatableWriter.WriteAsync(abuseCase);
-            await nameableWriter.WriteAsync(abuseCase);
-            await caseWriter.WriteAsync(abuseCase);
-            await abuseCaseWriter.WriteAsync(abuseCase);
+            await nodeWriter.InsertAsync(abuseCase);
+            await searchableWriter.InsertAsync(abuseCase);
+            await documentableWriter.InsertAsync(abuseCase);
+            await locatableWriter.InsertAsync(abuseCase);
+            await nameableWriter.InsertAsync(abuseCase);
+            await caseWriter.InsertAsync(abuseCase);
+            await abuseCaseWriter.InsertAsync(abuseCase);
             await EntityCreator.WriteTerms(abuseCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in abuseCase.TenantNodes) {
                 tenantNode.NodeId = abuseCase.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

@@ -10,10 +10,10 @@ public class CaseTypeCreator : IEntityCreator<CaseType>
         await using var caseTypeCaseRelationTypeWriter = await CaseTypeCasePartyTypeInserter.CreateAsync(connection);
 
         await foreach (var caseType in caseTypes) {
-            await nodeTypeWriter.WriteAsync(caseType);
-            await caseTypeWriter.WriteAsync(caseType);
+            await nodeTypeWriter.InsertAsync(caseType);
+            await caseTypeWriter.InsertAsync(caseType);
             foreach (var caseRelationTypeId in caseType.CaseRelationTypeIds) {
-                await caseTypeCaseRelationTypeWriter.WriteAsync(new CaseTypeCasePartyType {
+                await caseTypeCaseRelationTypeWriter.InsertAsync(new CaseTypeCasePartyType {
                     CasePartyTypeId = caseRelationTypeId,
                     CaseTypeId = caseType.Id!.Value
                 });

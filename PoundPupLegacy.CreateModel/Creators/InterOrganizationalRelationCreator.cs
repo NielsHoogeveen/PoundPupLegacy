@@ -10,12 +10,12 @@ public class InterOrganizationalRelationCreator : IEntityCreator<InterOrganizati
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var interOrganizationalRelation in interOrganizationalRelations) {
-            await nodeWriter.WriteAsync(interOrganizationalRelation);
-            await interOrganizationalRelationWriter.WriteAsync(interOrganizationalRelation);
+            await nodeWriter.InsertAsync(interOrganizationalRelation);
+            await interOrganizationalRelationWriter.InsertAsync(interOrganizationalRelation);
 
             foreach (var tenantNode in interOrganizationalRelation.TenantNodes) {
                 tenantNode.NodeId = interOrganizationalRelation.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

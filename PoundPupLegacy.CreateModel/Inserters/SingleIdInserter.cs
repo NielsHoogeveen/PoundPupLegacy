@@ -41,7 +41,7 @@ internal sealed class SingleIdWriter<T> : DatabaseInserter<T> where T : Identifi
         _tableName = tableName;
     }
 
-    internal override async Task WriteAsync(T identifiable)
+    public override async Task InsertAsync(T identifiable)
     {
         if (_identityInsert) {
             if (identifiable.Id is null)

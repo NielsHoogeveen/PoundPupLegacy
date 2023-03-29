@@ -9,8 +9,8 @@ public class EditNodeActionCreator : IEntityCreator<EditNodeAction>
         await using var editNodeActionWriter = await EditNodeActionInserter.CreateAsync(connection);
 
         await foreach (var action in actions) {
-            await actionWriter.WriteAsync(action);
-            await editNodeActionWriter.WriteAsync(action);
+            await actionWriter.InsertAsync(action);
+            await editNodeActionWriter.InsertAsync(action);
         }
     }
 }

@@ -1,8 +1,12 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.CreateModel.Inserters;
+using PoundPupLegacy.Deleters;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
+using PoundPupLegacy.Inserters;
+using PoundPupLegacy.Updaters;
 using System.Data;
 using System.Diagnostics;
 
@@ -24,6 +28,11 @@ public class EditorService : IEditorService
     private readonly IDatabaseReaderFactory<DiscussionUpdateDocumentReader> _discussionUpdateDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<DocumentUpdateDocumentReader> _documentUpdateDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<OrganizationUpdateDocumentReader> _organizationUpdateDocumentReaderFactory;
+    private readonly IDatabaseDeleterFactory<FileDeleter> _fileDeleterFactory;
+    private readonly IDatabaseDeleterFactory<TenantNodeDeleter> _tenantNodeDeleterFactory;
+    private readonly IDatabaseDeleterFactory<NodeTermDeleter> _nodeTermDeleterFactory;
+    private readonly IDatabaseUpdaterFactory<SimpleTextNodeUpdater> _simpleTextNodeUpdaterFactory;
+    private readonly IDatabaseUpdaterFactory<TenantNodeUpdater> _tenantNodeUpdaterFactory;
     public EditorService(
     NpgsqlConnection connection,
     ISiteDataService siteDataService,
@@ -38,7 +47,12 @@ public class EditorService : IEditorService
     IDatabaseReaderFactory<BlogPostUpdateDocumentReader> blogPostUpdateDocumentReaderFactory,
     IDatabaseReaderFactory<DiscussionUpdateDocumentReader> discussionUpdateDocumentReaderFactory,
     IDatabaseReaderFactory<DocumentUpdateDocumentReader> documentUpdateDocumentReaderFactory,
-    IDatabaseReaderFactory<OrganizationUpdateDocumentReader> organizationUpdateDocumentReaderFactory
+    IDatabaseReaderFactory<OrganizationUpdateDocumentReader> organizationUpdateDocumentReaderFactory,
+    IDatabaseDeleterFactory<FileDeleter> fileDeleterFactory,
+    IDatabaseDeleterFactory<TenantNodeDeleter> tenantNodeDeleterFactory,
+    IDatabaseDeleterFactory<NodeTermDeleter> nodeTermDeleterFactory,
+    IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
+    IDatabaseUpdaterFactory<TenantNodeUpdater> tenantNodeUpdaterFactory
     )
     {
         _connection = connection;
@@ -55,20 +69,11 @@ public class EditorService : IEditorService
         _discussionUpdateDocumentReaderFactory = discussionUpdateDocumentReaderFactory;
         _documentUpdateDocumentReaderFactory = documentUpdateDocumentReaderFactory;
         _organizationUpdateDocumentReaderFactory = organizationUpdateDocumentReaderFactory;
-    }
-
-    public async Task<List<SubdivisionListItem>> GetSubdivisions(int countryId)
-    {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _subdivisionListItemsReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(countryId);
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        _fileDeleterFactory = fileDeleterFactory;
+        _tenantNodeDeleterFactory = tenantNodeDeleterFactory;
+        _nodeTermDeleterFactory = nodeTermDeleterFactory;
+        _tenantNodeUpdaterFactory = tenantNodeUpdaterFactory;
+        _simpleTextNodeUpdaterFactory = simpleTextNodeUpdaterFactory;
     }
 
     public async Task<BlogPost?> GetNewBlogPost(int userId, int tenantId)
@@ -218,222 +223,97 @@ public class EditorService : IEditorService
 
     private async Task Store(List<TenantNode> tenantNodes)
     {
+
         if (tenantNodes.Any(x => x.HasBeenDeleted)) {
-            using (var command = _connection.CreateCommand()) {
-                var sql = $"""
-                    delete from tenant_node
-                    where id = @id;
-                    """;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = 300;
-                command.CommandText = sql;
-                command.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
-                await command.PrepareAsync();
-                foreach (var tenantNode in tenantNodes.Where(x => x.HasBeenDeleted)) {
-                    command.Parameters["id"].Value = tenantNode.Id;
-                    var u = await command.ExecuteNonQueryAsync();
+            await using var deleter = await _tenantNodeDeleterFactory.CreateAsync(_connection);
+            foreach (var tenantNode in tenantNodes.Where(x => x.HasBeenDeleted)) {
+                if (tenantNode is not null && tenantNode.Id.HasValue) {
+                    await deleter.DeleteAsync(tenantNode.Id.Value);
                 }
             }
         }
         if (tenantNodes.Any(x => x.Id is null)) {
-            using (var command = _connection.CreateCommand()) {
-                var sql = $"""
-                    insert into tenant_node (node_id, tenant_id, url_path, url_id, subgroup_id, publication_status_id) VALUES(@node_id, @tenant_id, @url_path, @url_id, @subgroup_id, @publication_status_id)
-                    """;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = 300;
-                command.CommandText = sql;
-                command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                command.Parameters.Add("url_path", NpgsqlTypes.NpgsqlDbType.Varchar);
-                command.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                command.Parameters.Add("subgroup_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                command.Parameters.Add("publication_status_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                await command.PrepareAsync();
+            await using var inserter = await TenantNodeInserter.CreateAsync(_connection);
                 foreach (var tenantNode in tenantNodes.Where(x => !x.Id.HasValue)) {
-                    command.Parameters["node_id"].Value = tenantNode.NodeId;
-                    command.Parameters["tenant_id"].Value = tenantNode.TenantId;
-                    if (tenantNode.UrlPath is null) {
-                        command.Parameters["url_path"].Value = DBNull.Value;
-                    }
-                    else {
-                        command.Parameters["url_path"].Value = tenantNode.UrlPath;
-                    }
-                    command.Parameters["url_id"].Value = tenantNode.UrlId;
-                    if (tenantNode.SubgroupId.HasValue) {
-                        command.Parameters["subgroup_id"].Value = tenantNode.SubgroupId;
-                    }
-                    else {
-                        command.Parameters["subgroup_id"].Value = DBNull.Value;
-                    }
-                    command.Parameters["publication_status_id"].Value = tenantNode.PublicationStatusId;
-                    var u = await command.ExecuteNonQueryAsync();
+                    var tenantNodeToCreate = new CreateModel.TenantNode {
+                        Id = tenantNode.Id,
+                        TenantId = tenantNode.TenantId,
+                        NodeId = tenantNode.NodeId,
+                        UrlId = tenantNode.UrlId,
+                        UrlPath = tenantNode.UrlPath,
+                        SubgroupId = tenantNode.SubgroupId,
+                        PublicationStatusId = tenantNode.PublicationStatusId
+                    };
+                    await inserter.InsertAsync(tenantNodeToCreate);
                 }
-            }
         }
         if (tenantNodes.Any(x => x.Id.HasValue)) {
-            using (var command = _connection.CreateCommand()) {
-                var sql = $"""
-                    update tenant_node 
-                    set 
-                    url_path = @url_path, 
-                    subgroup_id = @subgroup_id, 
-                    publication_status_id = @publication_status_id
-                    where id = @id
-                    """;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = 300;
-                command.CommandText = sql;
-                command.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
-                command.Parameters.Add("url_path", NpgsqlTypes.NpgsqlDbType.Varchar);
-                command.Parameters.Add("subgroup_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                command.Parameters.Add("publication_status_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                await command.PrepareAsync();
-                foreach (var tenantNode in tenantNodes.Where(x => x.Id.HasValue)) {
-                    command.Parameters["id"].Value = tenantNode.Id!;
-                    if (string.IsNullOrEmpty(tenantNode.UrlPath)) {
-                        command.Parameters["url_path"].Value = DBNull.Value;
-                    }
-                    else {
-                        command.Parameters["url_path"].Value = tenantNode.UrlPath;
-                    }
-                    if (tenantNode.SubgroupId.HasValue) {
-                        command.Parameters["subgroup_id"].Value = tenantNode.SubgroupId;
-                    }
-                    else {
-                        command.Parameters["subgroup_id"].Value = DBNull.Value;
-                    }
-                    command.Parameters["publication_status_id"].Value = tenantNode.PublicationStatusId;
-                    var u = await command.ExecuteNonQueryAsync();
-                }
+            await using var updater = await _tenantNodeUpdaterFactory.CreateAsync(_connection);
+            foreach (var tenantNode in tenantNodes.Where(x => x.Id.HasValue)) 
+            {
+                var tenantNodeUpdate = new TenantNodeUpdater.Request {
+                    Id = tenantNode.Id!.Value,
+                    UrlPath = tenantNode.UrlPath,
+                    SubgroupId = tenantNode.SubgroupId,
+                    PublicationStatusId = tenantNode.PublicationStatusId
+                };
+                await updater.UpdateAsync(tenantNodeUpdate);
             }
         }
-
     }
 
     private async Task Store(List<Tag> tags)
     {
-        using (var command = _connection.CreateCommand()) {
-            var sql = $"""
-                    delete from node_term
-                    where node_id = @node_id and term_id = @term_id;
-                    """;
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = sql;
-            command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            command.Parameters.Add("term_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            await command.PrepareAsync();
-            foreach (var tag in tags.Where(x => x.HasBeenDeleted)) {
-                command.Parameters["node_id"].Value = tag.NodeId;
-                command.Parameters["term_id"].Value = tag.TermId;
-                var u = await command.ExecuteNonQueryAsync();
-            }
-
+        await using var deleter = await _nodeTermDeleterFactory.CreateAsync(_connection);
+        foreach (var tag in tags.Where(x => x.HasBeenDeleted)) {
+            await deleter.DeleteAsync(new NodeTermDeleter.Request 
+            { 
+                NodeId = tag.NodeId!.Value, 
+                TermId = tag.TermId 
+            });
         }
-        using (var command = _connection.CreateCommand()) {
-            var sql = $"""
-                    insert into node_term (node_id, term_id) VALUES(@node_id, @term_id)
-                    """;
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = sql;
-            command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            command.Parameters.Add("term_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            await command.PrepareAsync();
-            foreach (var tag in tags.Where(x => !x.IsStored)) {
-                command.Parameters["node_id"].Value = tag.NodeId;
-                command.Parameters["term_id"].Value = tag.TermId;
-                var u = await command.ExecuteNonQueryAsync();
-            }
+        
+        await using var inserter = await NodeTermInserter.CreateAsync(_connection);
+        foreach (var tag in tags.Where(x => !x.IsStored)) {
+            await inserter.InsertAsync(new CreateModel.NodeTerm {
+                NodeId = tag.NodeId!.Value,
+                TermId = tag.TermId
+            });
         }
-
     }
     private async Task Store(SimpleTextNode node)
     {
-        using (var command = _connection.CreateCommand()) {
-            var sql = $"""
-                    update node set title=@title
-                    where id = @node_id;
-                    update simple_text_node set text=@text, teaser=@teaser
-                    where id = @node_id;
-                    """;
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = sql;
-            command.Parameters.Add("text", NpgsqlTypes.NpgsqlDbType.Varchar);
-            command.Parameters.Add("teaser", NpgsqlTypes.NpgsqlDbType.Varchar);
-            command.Parameters.Add("title", NpgsqlTypes.NpgsqlDbType.Varchar);
-            command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            await command.PrepareAsync();
-            command.Parameters["title"].Value = node.Title;
-            command.Parameters["text"].Value = _textService.FormatText(node.Text);
-            command.Parameters["teaser"].Value = _textService.FormatTeaser(node.Text);
-            command.Parameters["node_id"].Value = node.NodeId;
-            var u = await command.ExecuteNonQueryAsync();
-        }
+        await using var updater = await _simpleTextNodeUpdaterFactory.CreateAsync(_connection);
+        await updater.UpdateAsync(new SimpleTextNodeUpdater.Request 
+        {
+            Title = node.Title,
+            Text = _textService.FormatText(node.Text),
+            Teaser = _textService.FormatTeaser(node.Text),
+            NodeId = node.NodeId!.Value
+        });
     }
     private async Task Store(List<EditModel.File> attachments)
     {
+
         if (attachments.Any(x => x.HasBeenDeleted)) {
-            var command = _connection.CreateCommand();
-            var sql = $"""
-                delete from node_file
-                where file_id = @file_id and node_id = @node_id;
-                delete from tenant_file
-                where file_id in (
-                    select 
-                    id 
-                    from file f
-                    left join node_file nf on nf.file_id = f.id
-                    where nf.file_id is null
-                    and f.id = @file_id
-                );
-                delete from file
-                where id in (
-                    select 
-                    id 
-                    from file f
-                    left join node_file nf on nf.file_id = f.id
-                    where nf.file_id is null
-                    and f.id = @file_id
-                );
-                """;
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = sql;
-            command.Parameters.Add("file_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            await command.PrepareAsync();
+            await using var deleter = await _fileDeleterFactory.CreateAsync(_connection);
             foreach (var attachment in attachments.Where(x => x.HasBeenDeleted)) {
-                command.Parameters["file_id"].Value = attachment.Id;
-                command.Parameters["node_id"].Value = attachment.NodeId;
-                await command.ExecuteNonQueryAsync();
+                await deleter.DeleteAsync(new FileDeleter.Request {
+                    FileId = attachment.Id!.Value,
+                    NodeId = attachment.NodeId!.Value
+                });
             }
         }
         if (attachments.Any(x => x.Id is null)) {
-            using (var command = _connection.CreateCommand()) {
-                var sql = $"""
-                    insert into file (name, size, mime_type, path) VALUES(@name, @size, @mime_type, @path);
-                    insert into node_file (node_id, file_id) VALUES(@node_id, lastval());
-                    """;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = 300;
-                command.CommandText = sql;
-                command.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);
-                command.Parameters.Add("size", NpgsqlTypes.NpgsqlDbType.Integer);
-                command.Parameters.Add("mime_type", NpgsqlTypes.NpgsqlDbType.Varchar);
-                command.Parameters.Add("path", NpgsqlTypes.NpgsqlDbType.Varchar);
-                command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                await command.PrepareAsync();
-                foreach (var attachment in attachments.Where(x => !x.HasBeenStored)) {
-                    command.Parameters["name"].Value = attachment.Name;
-                    command.Parameters["size"].Value = attachment.Size;
-                    command.Parameters["mime_type"].Value = attachment.MimeType;
-                    command.Parameters["path"].Value = attachment.Path;
-                    command.Parameters["node_id"].Value = attachment.NodeId;
-                    await command.ExecuteNonQueryAsync();
-                }
+            await using var inserter = await FileInserter.CreateAsync(_connection);
+            foreach (var attachment in attachments.Where(x => x.Id is null)) {
+                await inserter.InsertAsync(new FileInserter.Request {
+                    MimeType = attachment.MimeType,
+                    Path = attachment.Path,
+                    Size = attachment.Size,
+                    Name = attachment.Name,
+                    NodeId= attachment.NodeId!.Value
+                });
             }
         }
     }

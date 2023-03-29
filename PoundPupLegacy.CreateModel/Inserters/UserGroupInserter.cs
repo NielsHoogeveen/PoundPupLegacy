@@ -52,7 +52,7 @@ public class UserGroupInserter : DatabaseInserter<UserGroup>, IDatabaseInserter<
         _identityInsertCommand = identityInsertCommand;
     }
 
-    internal override async Task WriteAsync(UserGroup userGroup)
+    public override async Task InsertAsync(UserGroup userGroup)
     {
         if (userGroup.Id is not null) {
             WriteValue(userGroup.Id, ID);

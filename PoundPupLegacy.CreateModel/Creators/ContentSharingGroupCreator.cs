@@ -15,15 +15,15 @@ public class ContentSharingGroupCreator : IEntityCreator<ContentSharingGroup>
 
 
         await foreach (var contentSharingGroup in contentSharingGroups) {
-            await userGroupWriter.WriteAsync(contentSharingGroup);
-            await ownerWriter.WriteAsync(contentSharingGroup);
-            await contentSharingGroupWriter.WriteAsync(contentSharingGroup);
+            await userGroupWriter.InsertAsync(contentSharingGroup);
+            await ownerWriter.InsertAsync(contentSharingGroup);
+            await contentSharingGroupWriter.InsertAsync(contentSharingGroup);
 
             var administratorRole = contentSharingGroup.AdministratorRole;
             administratorRole.UserGroupId = contentSharingGroup.Id.Value;
-            await principalWriter.WriteAsync(administratorRole);
-            await userRoleWriter.WriteAsync(administratorRole);
-            await administratorRoleWriter.WriteAsync(administratorRole);
+            await principalWriter.InsertAsync(administratorRole);
+            await userRoleWriter.InsertAsync(administratorRole);
+            await administratorRoleWriter.InsertAsync(administratorRole);
 
         }
     }

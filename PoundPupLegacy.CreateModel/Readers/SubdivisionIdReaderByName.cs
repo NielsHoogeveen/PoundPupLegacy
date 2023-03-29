@@ -24,9 +24,9 @@ public sealed class SubdivisionIdReaderByNameFactory : IDatabaseReaderFactory<Su
     }
 
 }
-public sealed class SubdivisionIdReaderByName : SingleItemDatabaseReader<SubdivisionIdReaderByName.SubdivisionIdReaderByNameRequest, int>
+public sealed class SubdivisionIdReaderByName : SingleItemDatabaseReader<SubdivisionIdReaderByName.Request, int>
 {
-    public record SubdivisionIdReaderByNameRequest
+    public record Request
     {
         public required int CountryId { get; init; }
         public required string Name { get; init; }
@@ -34,7 +34,7 @@ public sealed class SubdivisionIdReaderByName : SingleItemDatabaseReader<Subdivi
     }
     internal SubdivisionIdReaderByName(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(SubdivisionIdReaderByNameRequest request)
+    public override async Task<int> ReadAsync(Request request)
     {
         if (request.Name is null) {
             throw new ArgumentNullException(nameof(request.Name));

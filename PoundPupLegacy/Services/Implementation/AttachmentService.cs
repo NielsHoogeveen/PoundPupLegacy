@@ -48,7 +48,7 @@ public class AttachmentService : IAttachmentService
                 var fullName = attachmentsLocation + "\\" + fileName;
                 await using FileStream fs = new(fullName, FileMode.Create);
                 await file.CopyToAsync(fs);
-                var fm = new CreateModel.File {
+                var fm = new File {
                     Id = null,
                     MimeType = file.ContentType,
                     Name = file.FileName,

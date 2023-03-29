@@ -8,54 +8,40 @@ public class SubdivisionListItemsReaderFactory : IDatabaseReaderFactory<Subdivis
     public async Task<SubdivisionListItemsReader> CreateAsync(NpgsqlConnection connection)
     {
         using var command = connection.CreateCommand();
+        var sql = $"""
+            select
+                s.id,
+                s.name
+                from subdivision s
+                join bottom_level_subdivision bls on bls.id = s.id
+                where s.country_id = @country_id
+                order by s.name
+            """;
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
-        command.CommandText = SQL;
+        command.CommandText = sql;
         command.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
         await command.PrepareAsync();
         return new SubdivisionListItemsReader(command);
 
     }
-
-    const string SQL = """
-        subdivisions_document as(
-            select
-            c.country_id,
-            jsonb_agg(
-        	    jsonb_build_object(
-        		    'Id',
-        		    c.id,
-        		    'Name',
-        		    t.name
-        	    )
-            ) document
-            from subdivision c
-            join bottom_level_subdivision b on b.id = c.id
-            join term t on t.nameable_id = c.id
-            join tenant_node tn on tn.node_id = t.vocabulary_id
-            where tn.tenant_id = 1 and tn.url_id = 4126
-            group by c.country_id
-        )
-        """;
-
 }
-public class SubdivisionListItemsReader : DatabaseReader, ISingleItemDatabaseReader<int, List<SubdivisionListItem>>
+public class SubdivisionListItemsReader : DatabaseReader, IEnumerableDatabaseReader<int, SubdivisionListItem>
 {
     internal SubdivisionListItemsReader(NpgsqlCommand command) : base(command)
     {
     }
-    public async Task<List<SubdivisionListItem>> ReadAsync(int countryId)
+    public async IAsyncEnumerable<SubdivisionListItem> ReadAsync(int countryId)
     {
         _command.Parameters["country_id"].Value = countryId;
         await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        if (!reader.HasRows) {
-            return new List<SubdivisionListItem>();
+        while (await reader.ReadAsync()) {
+            var id = reader.GetInt32(0);
+            var name = reader.GetString(1);
+            yield return new SubdivisionListItem {
+                Id = id,
+                Name = name
+            };
         }
-        var text = reader.GetString(0); ;
-        var subdivisions = reader.GetFieldValue<List<SubdivisionListItem>>(0);
-        return subdivisions;
-
     }
-
 }

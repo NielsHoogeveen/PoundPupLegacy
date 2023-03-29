@@ -16,23 +16,23 @@ public class SingleQuestionPollCreator : IEntityCreator<SingleQuestionPoll>
         await using var pollVoteWriter = await PollVoteInserter.CreateAsync(connection);
 
         await foreach (var poll in polls) {
-            await nodeWriter.WriteAsync(poll);
-            await searchableWriter.WriteAsync(poll);
-            await simpleTextNodeWriter.WriteAsync(poll);
-            await pollWriter.WriteAsync(poll);
-            await pollQuestionWriter.WriteAsync(poll);
-            await singleQuestionPollWriter.WriteAsync(poll);
+            await nodeWriter.InsertAsync(poll);
+            await searchableWriter.InsertAsync(poll);
+            await simpleTextNodeWriter.InsertAsync(poll);
+            await pollWriter.InsertAsync(poll);
+            await pollQuestionWriter.InsertAsync(poll);
+            await singleQuestionPollWriter.InsertAsync(poll);
             foreach (var tenantNode in poll.TenantNodes) {
                 tenantNode.NodeId = poll.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
             foreach (var pollOption in poll.PollOptions) {
                 pollOption.PollQuestionId = poll.Id;
-                await pollOptionWriter.WriteAsync(pollOption);
+                await pollOptionWriter.InsertAsync(pollOption);
             }
             foreach (var pollVote in poll.PollVotes) {
                 pollVote.PollId = poll.Id;
-                await pollVoteWriter.WriteAsync(pollVote);
+                await pollVoteWriter.InsertAsync(pollVote);
             }
 
         }

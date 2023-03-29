@@ -48,7 +48,7 @@ internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>, IDatabase
     {
     }
 
-    internal override async Task WriteAsync(AbuseCase abuseCase)
+    public override async Task InsertAsync(AbuseCase abuseCase)
     {
         if (abuseCase.Id is null)
             throw new NullReferenceException();

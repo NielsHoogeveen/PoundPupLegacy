@@ -9,11 +9,11 @@ public class FileCreator : IEntityCreator<File>
         await using var tenantFileWriter = await TenantFileInserter.CreateAsync(connection);
 
         await foreach (var file in files) {
-            await fileWriter.WriteAsync(file);
+            await fileWriter.InsertAsync(file);
             foreach (var tenantFile in file.TenantFiles) {
                 tenantFile.FileId = file.Id;
                 tenantFile.TenantFileId ??= file.Id;
-                await tenantFileWriter.WriteAsync(tenantFile);
+                await tenantFileWriter.InsertAsync(tenantFile);
             }
 
         }

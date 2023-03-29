@@ -53,7 +53,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = 12625
@@ -104,7 +104,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = Constants.POLITICAL_PARTY
@@ -155,7 +155,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = Constants.POLITICAL_PARTY
@@ -206,7 +206,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = 12630
@@ -341,7 +341,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
-                var organizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                var organizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = typeId,
                     TenantId = Constants.PPL
                 });
@@ -431,7 +431,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                         new OrganizationOrganizationType
                         {
                             OrganizationId = null,
-                            OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest
+                            OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                             {
                                 TenantId = Constants.PPL,
                                 UrlId = Constants.POLITICAL_PARTY

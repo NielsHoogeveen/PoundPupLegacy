@@ -10,12 +10,12 @@ public class SenatorSenateBillActionCreator : IEntityCreator<SenatorSenateBillAc
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var senatorSenateBillAction in senatorSenateBillActions) {
-            await nodeWriter.WriteAsync(senatorSenateBillAction);
-            await senatorSenateBillActionWriter.WriteAsync(senatorSenateBillAction);
+            await nodeWriter.InsertAsync(senatorSenateBillAction);
+            await senatorSenateBillActionWriter.InsertAsync(senatorSenateBillAction);
 
             foreach (var tenantNode in senatorSenateBillAction.TenantNodes) {
                 tenantNode.NodeId = senatorSenateBillAction.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

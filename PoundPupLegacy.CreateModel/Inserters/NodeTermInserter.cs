@@ -3,7 +3,7 @@
 [assembly: InternalsVisibleTo("PoundPupLegacy.Db.Test")]
 namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class NodeTermInserter : DatabaseInserter<NodeTerm>, IDatabaseInserter<NodeTerm>
+public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>, IDatabaseInserter<NodeTerm>
 {
     private const string NODE_ID = "node_id";
     private const string TERM_ID = "term_id";
@@ -31,7 +31,7 @@ internal sealed class NodeTermInserter : DatabaseInserter<NodeTerm>, IDatabaseIn
     {
     }
 
-    internal override async Task WriteAsync(NodeTerm nodeTerm)
+    public override async Task InsertAsync(NodeTerm nodeTerm)
     {
         WriteValue(nodeTerm.NodeId, NODE_ID);
         WriteValue(nodeTerm.TermId, TERM_ID);

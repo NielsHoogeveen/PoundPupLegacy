@@ -65,7 +65,7 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
 
     }
 
-    internal override async Task WriteAsync(SenatorSenateBillAction senatorSenateBillAction)
+    public override async Task InsertAsync(SenatorSenateBillAction senatorSenateBillAction)
     {
         if (senatorSenateBillAction.Id is null) {
             DoWrites(senatorSenateBillAction, _generateIdCommand);

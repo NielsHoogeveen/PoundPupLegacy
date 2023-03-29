@@ -9,7 +9,7 @@ public class AnonimousUserCreator
         await using var publisherWriter = await PublisherInserter.CreateAsync(connection);
 
         var user = new AnonymousUser();
-        await principalWriter.WriteAsync(user);
-        await publisherWriter.WriteAsync(user);
+        await principalWriter.InsertAsync(user);
+        await publisherWriter.InsertAsync(user);
     }
 }

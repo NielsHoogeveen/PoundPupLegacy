@@ -83,7 +83,7 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
         WriteNullableValue(personOrganizationRelation.DocumentIdProof, DOCUMENT_ID_PROOF, command);
         WriteNullableValue(personOrganizationRelation.Description, DESCRIPTION, command);
     }
-    internal override async Task WriteAsync(PersonOrganizationRelation personOrganizationRelation)
+    public override async Task InsertAsync(PersonOrganizationRelation personOrganizationRelation)
     {
         if (personOrganizationRelation.Id is null) {
             DoWrites(personOrganizationRelation, _generateIdCommand);

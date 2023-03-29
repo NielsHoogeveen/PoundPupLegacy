@@ -28,7 +28,7 @@ public class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>, ID
     {
     }
 
-    internal override async Task WriteAsync(AdministratorRole administratorRole)
+    public override async Task InsertAsync(AdministratorRole administratorRole)
     {
         WriteValue(administratorRole.Id, ID);
         WriteValue(administratorRole.UserGroupId, USER_GROUP_ID);

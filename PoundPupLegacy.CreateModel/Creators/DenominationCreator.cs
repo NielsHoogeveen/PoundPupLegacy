@@ -16,14 +16,14 @@ public class DenominationCreator : IEntityCreator<Denomination>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var denomination in denominations) {
-            await nodeWriter.WriteAsync(denomination);
-            await searchableWriter.WriteAsync(denomination);
-            await nameableWriter.WriteAsync(denomination);
-            await denominationWriter.WriteAsync(denomination);
+            await nodeWriter.InsertAsync(denomination);
+            await searchableWriter.InsertAsync(denomination);
+            await nameableWriter.InsertAsync(denomination);
+            await denominationWriter.InsertAsync(denomination);
             await EntityCreator.WriteTerms(denomination, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in denomination.TenantNodes) {
                 tenantNode.NodeId = denomination.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

@@ -27,7 +27,7 @@ internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<Bas
     {
     }
 
-    internal override async Task WriteAsync(BasicSecondLevelSubdivision country)
+    public override async Task InsertAsync(BasicSecondLevelSubdivision country)
     {
         if (country.Id is null)
             throw new NullReferenceException();

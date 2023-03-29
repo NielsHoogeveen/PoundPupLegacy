@@ -51,7 +51,7 @@ public class NodeInserter : DatabaseInserter<Node>, IDatabaseInserter<Node>
     {
     }
 
-    internal override async Task WriteAsync(Node node)
+    public override async Task InsertAsync(Node node)
     {
         if (node.Id is not null) {
             throw new Exception("Node id must be null upon creation");

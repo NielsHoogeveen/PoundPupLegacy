@@ -77,7 +77,7 @@ internal sealed class LocationInserter : DatabaseInserter<Location>, IDatabaseIn
 
     }
 
-    internal override async Task WriteAsync(Location location)
+    public override async Task InsertAsync(Location location)
     {
         if (location.Id is null) {
             WriteNullableValue(location.Street, STREET, _identityCommand);

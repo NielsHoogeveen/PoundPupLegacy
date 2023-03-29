@@ -16,14 +16,14 @@ public class SubdivisionTypeCreator : IEntityCreator<SubdivisionType>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var subdivisionType in subdivisionTypes) {
-            await nodeWriter.WriteAsync(subdivisionType);
-            await searchableWriter.WriteAsync(subdivisionType);
-            await nameableWriter.WriteAsync(subdivisionType);
-            await subdivisionTypeWriter.WriteAsync(subdivisionType);
+            await nodeWriter.InsertAsync(subdivisionType);
+            await searchableWriter.InsertAsync(subdivisionType);
+            await nameableWriter.InsertAsync(subdivisionType);
+            await subdivisionTypeWriter.InsertAsync(subdivisionType);
             await EntityCreator.WriteTerms(subdivisionType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in subdivisionType.TenantNodes) {
                 tenantNode.NodeId = subdivisionType.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

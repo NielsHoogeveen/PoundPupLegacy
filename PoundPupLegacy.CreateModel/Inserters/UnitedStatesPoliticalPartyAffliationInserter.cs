@@ -29,7 +29,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationInserter : DatabaseIns
     {
     }
 
-    internal override async Task WriteAsync(UnitedStatesPoliticalPartyAffliation createNodeAccessPrivilege)
+    public override async Task InsertAsync(UnitedStatesPoliticalPartyAffliation createNodeAccessPrivilege)
     {
         WriteValue(createNodeAccessPrivilege.Id, ID);
         WriteNullableValue(createNodeAccessPrivilege.UnitedStatesPoliticalPartyId, UNITED_STATES_POLITICAL_PARTY_ID);

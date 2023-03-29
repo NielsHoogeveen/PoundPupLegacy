@@ -19,17 +19,17 @@ public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCa
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var disruptedPlacementCase in disruptedPlacementCases) {
-            await nodeWriter.WriteAsync(disruptedPlacementCase);
-            await searchableWriter.WriteAsync(disruptedPlacementCase);
-            await documentableWriter.WriteAsync(disruptedPlacementCase);
-            await locatableWriter.WriteAsync(disruptedPlacementCase);
-            await nameableWriter.WriteAsync(disruptedPlacementCase);
-            await caseWriter.WriteAsync(disruptedPlacementCase);
-            await disruptedPlacementCaseWriter.WriteAsync(disruptedPlacementCase);
+            await nodeWriter.InsertAsync(disruptedPlacementCase);
+            await searchableWriter.InsertAsync(disruptedPlacementCase);
+            await documentableWriter.InsertAsync(disruptedPlacementCase);
+            await locatableWriter.InsertAsync(disruptedPlacementCase);
+            await nameableWriter.InsertAsync(disruptedPlacementCase);
+            await caseWriter.InsertAsync(disruptedPlacementCase);
+            await disruptedPlacementCaseWriter.InsertAsync(disruptedPlacementCase);
             await EntityCreator.WriteTerms(disruptedPlacementCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in disruptedPlacementCase.TenantNodes) {
                 tenantNode.NodeId = disruptedPlacementCase.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

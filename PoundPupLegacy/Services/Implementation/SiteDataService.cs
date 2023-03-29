@@ -155,11 +155,11 @@ internal class SiteDataService : ISiteDataService
         try {
             await _connection.OpenAsync();
             await using var tenantsReader = await _tenantsReaderFactory.CreateAsync(_connection);
-            await foreach (var tenant in tenantsReader.ReadAsync(new TenantsReader.TenantsRequest())) {
+            await foreach (var tenant in tenantsReader.ReadAsync(new TenantsReader.Request())) {
                 tenants.Add(tenant);
             }
             await using var tenantNodesReader = await _tenantNodesReaderFactory.CreateAsync(_connection);
-            await foreach (var tenantNode in tenantNodesReader.ReadAsync(new TenantNodesReader.TenantNodesRequest())) {
+            await foreach (var tenantNode in tenantNodesReader.ReadAsync(new TenantNodesReader.Request())) {
                 var tenant = tenants.Find(x => x.Id == tenantNode.TenantId);
                 if (tenant is null) {
                     throw new NullReferenceException("Tenant should not be null");
@@ -182,7 +182,7 @@ internal class SiteDataService : ISiteDataService
         try {
             await _connection.OpenAsync();
             await using var reader = await _menuItemsReaderFactory.CreateAsync(_connection);
-            await foreach (var item in reader.ReadAsync(new MenuItemsReader.MenuItemsRequest())) {
+            await foreach (var item in reader.ReadAsync(new MenuItemsReader.Request())) {
                 userMenus.Add((item.UserId, item.TenantId), item.MenuItems);
             }
 
@@ -202,7 +202,7 @@ internal class SiteDataService : ISiteDataService
         try {
             await _connection.OpenAsync();
             await using var reader = await _userTenantEditActionReaderFactory.CreateAsync(_connection);
-            await foreach (var item in reader.ReadAsync(new UserTenantEditActionReader.UserTenantEditActionRequest())) {
+            await foreach (var item in reader.ReadAsync(new UserTenantEditActionReader.Request())) {
                 userTenantActions.Add(item);
             }
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
@@ -219,7 +219,7 @@ internal class SiteDataService : ISiteDataService
         try {
             await _connection.OpenAsync();
             await using var reader = await _userTenantEditOwnActionReaderFactory.CreateAsync(_connection);
-            await foreach (var item in reader.ReadAsync(new UserTenantEditOwnActionReader.UserTenantEditOwnActionRequest())) {
+            await foreach (var item in reader.ReadAsync(new UserTenantEditOwnActionReader.Request())) {
                 userTenantActions.Add(item);
             }
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
@@ -236,7 +236,7 @@ internal class SiteDataService : ISiteDataService
         try {
             await _connection.OpenAsync();
             await using var reader = await _userTenantActionReaderFactory.CreateAsync(_connection);
-            await foreach (var item in reader.ReadAsync(new UserTenantActionReader.UserTenantActionRequest())) {
+            await foreach (var item in reader.ReadAsync(new UserTenantActionReader.Request())) {
                 userTenantActions.Add(item);
             }
             _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");

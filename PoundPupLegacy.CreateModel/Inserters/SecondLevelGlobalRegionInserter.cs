@@ -27,7 +27,7 @@ public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGloba
     {
     }
 
-    internal override async Task WriteAsync(SecondLevelGlobalRegion region)
+    public override async Task InsertAsync(SecondLevelGlobalRegion region)
     {
         if (region.Id is null)
             throw new NullReferenceException();

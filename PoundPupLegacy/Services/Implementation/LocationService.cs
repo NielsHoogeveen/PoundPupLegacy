@@ -1,5 +1,7 @@
 ﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.EditModel;
+using PoundPupLegacy.EditModel.Readers;
 using System.Data;
 using System.Text;
 
@@ -8,43 +10,32 @@ namespace PoundPupLegacy.Services.Implementation;
 public class LocationService : ILocationService
 {
     private readonly NpgsqlConnection _connection;
-    public LocationService(NpgsqlConnection connection)
+    private readonly IDatabaseReaderFactory<SubdivisionListItemsReader> _subdivisionListItemReaderFactory;
+    private readonly IDatabaseReaderFactory<CountryListItemsReader> _countryListItemReaderFactory;
+    public LocationService(
+        NpgsqlConnection connection,
+        IDatabaseReaderFactory<SubdivisionListItemsReader> subdivisionListItemReaderFactory,
+        IDatabaseReaderFactory<CountryListItemsReader> countryListItemReaderFactory
+        )
     {
         _connection = connection;
+        _subdivisionListItemReaderFactory = subdivisionListItemReaderFactory;
+        _countryListItemReaderFactory = countryListItemReaderFactory;
     }
     public async IAsyncEnumerable<SubdivisionListItem> SubdivisionsOfCountry(int countryId)
     {
         try {
             await _connection.OpenAsync();
-            using (var command = _connection.CreateCommand()) {
-                var sql = $"""
-            select
-                s.id,
-                s.name
-                from subdivision s
-                join bottom_level_subdivision bls on bls.id = s.id
-                where s.country_id = @country_id
-                order by s.name
-            """;
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = 300;
-                command.CommandText = sql;
-                command.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
-                await command.PrepareAsync();
-                command.Parameters["country_id"].Value = countryId;
-                await using var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync()) {
-                    var id = reader.GetInt32(0);
-                    var name = reader.GetString(1);
-                    yield return new SubdivisionListItem {
-                        Id = id,
-                        Name = name
-                    };
-                }
+            await using var reader = await _subdivisionListItemReaderFactory.CreateAsync(_connection);
+            await foreach (var subdivision in reader.ReadAsync(countryId)) {
+                yield return subdivision;
             }
         }
         finally {
-            await _connection.CloseAsync();
+            if(_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
+            
         }
 
     }
@@ -52,31 +43,10 @@ public class LocationService : ILocationService
     {
         try {
             await _connection.OpenAsync();
-            using var readCommand = _connection.CreateCommand();
-            var sql = $"""
-                select
-                    c.id,
-                    t.name
-                    from country c
-                    join term t on t.nameable_id = c.id
-                    join tenant_node tn on tn.node_id = t.vocabulary_id
-                    where tn.tenant_id = 1 and tn.url_id = 4126
-            
-                """;
-            readCommand.CommandType = CommandType.Text;
-            readCommand.CommandTimeout = 300;
-            readCommand.CommandText = sql;
-            await readCommand.PrepareAsync();
-            await using var reader = await readCommand.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                var id = reader.GetInt32(0);
-                var name = reader.GetString(1);
-                yield return new CountryListItem {
-                    Id = id,
-                    Name = name
-                };
+            await using var reader = await _countryListItemReaderFactory.CreateAsync(_connection);
+            await foreach (var country in reader.ReadAsync(new CountryListItemsReader.Request())) {
+                yield return country;
             }
-            await reader.CloseAsync();
         }
         finally {
             await _connection.CloseAsync();

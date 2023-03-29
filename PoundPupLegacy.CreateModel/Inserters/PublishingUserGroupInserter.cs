@@ -29,7 +29,7 @@ internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingU
     {
     }
 
-    internal override async Task WriteAsync(PublishingUserGroup publishingUserGroup)
+    public override async Task InsertAsync(PublishingUserGroup publishingUserGroup)
     {
         WriteValue(publishingUserGroup.Id, ID);
         WriteNullableValue(publishingUserGroup.PublicationStatusIdDefault, PUBLICATION_STATUS_ID_DEFAULT);

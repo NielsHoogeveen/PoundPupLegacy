@@ -11,9 +11,9 @@ public class CollectiveCreator : IEntityCreator<Collective>
         await using var userWriter = await CollectiveInserter.CreateAsync(connection);
 
         await foreach (var collective in collectives) {
-            await principalWriter.WriteAsync(collective);
-            await publisherWriter.WriteAsync(collective);
-            await userWriter.WriteAsync(collective);
+            await principalWriter.InsertAsync(collective);
+            await publisherWriter.InsertAsync(collective);
+            await userWriter.InsertAsync(collective);
         }
     }
 }

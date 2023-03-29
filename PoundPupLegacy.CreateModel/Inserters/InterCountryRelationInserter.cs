@@ -58,7 +58,7 @@ internal sealed class InterCountryRelationInserter : DatabaseInserter<InterCount
     {
     }
 
-    internal override async Task WriteAsync(InterCountryRelation interCountryRelation)
+    public override async Task InsertAsync(InterCountryRelation interCountryRelation)
     {
         if (interCountryRelation.Id is null)
             throw new NullReferenceException();

@@ -21,19 +21,19 @@ public class BasicCountryCreator : IEntityCreator<BasicCountry>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var country in countries) {
-            await nodeWriter.WriteAsync(country);
-            await searchableWriter.WriteAsync(country);
-            await documentableWriter.WriteAsync(country);
-            await nameableWriter.WriteAsync(country);
-            await geographicalEntityWriter.WriteAsync(country);
-            await politicalEntityWriter.WriteAsync(country);
-            await countryWriter.WriteAsync(country);
-            await topLevelCountryWriter.WriteAsync(country);
-            await basicCountryWriter.WriteAsync(country);
+            await nodeWriter.InsertAsync(country);
+            await searchableWriter.InsertAsync(country);
+            await documentableWriter.InsertAsync(country);
+            await nameableWriter.InsertAsync(country);
+            await geographicalEntityWriter.InsertAsync(country);
+            await politicalEntityWriter.InsertAsync(country);
+            await countryWriter.InsertAsync(country);
+            await topLevelCountryWriter.InsertAsync(country);
+            await basicCountryWriter.InsertAsync(country);
             await EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in country.TenantNodes) {
                 tenantNode.NodeId = country.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

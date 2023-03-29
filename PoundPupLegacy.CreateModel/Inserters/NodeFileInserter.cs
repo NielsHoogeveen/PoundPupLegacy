@@ -28,7 +28,7 @@ internal sealed class NodeFileInserter : DatabaseInserter<NodeFile>, IDatabaseIn
     {
     }
 
-    internal override async Task WriteAsync(NodeFile nodeFile)
+    public override async Task InsertAsync(NodeFile nodeFile)
     {
         WriteValue(nodeFile.NodeId, NODE_ID);
         WriteValue(nodeFile.FileId, FILE_ID);

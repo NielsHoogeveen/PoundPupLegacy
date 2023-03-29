@@ -65,7 +65,7 @@ internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<R
 
     }
 
-    internal override async Task WriteAsync(RepresentativeHouseBillAction representativeHouseBillAction)
+    public override async Task InsertAsync(RepresentativeHouseBillAction representativeHouseBillAction)
     {
         if (representativeHouseBillAction.Id is null) {
             DoWrites(representativeHouseBillAction, _generateIdCommand);

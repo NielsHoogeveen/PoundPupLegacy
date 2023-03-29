@@ -21,9 +21,9 @@ public sealed class VocabularyIdReaderByOwnerAndNameFactory : IDatabaseReaderFac
     }
 
 }
-public sealed class VocabularyIdReaderByOwnerAndName : SingleItemDatabaseReader<VocabularyIdReaderByOwnerAndName.VocabularyIdReaderByOwnerAndNameRequest, int>
+public sealed class VocabularyIdReaderByOwnerAndName : SingleItemDatabaseReader<VocabularyIdReaderByOwnerAndName.Request, int>
 {
-    public record VocabularyIdReaderByOwnerAndNameRequest
+    public record Request
     {
         public required int OwnerId { get; init; }
         public required string Name { get; init; }
@@ -32,7 +32,7 @@ public sealed class VocabularyIdReaderByOwnerAndName : SingleItemDatabaseReader<
 
     internal VocabularyIdReaderByOwnerAndName(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(VocabularyIdReaderByOwnerAndNameRequest request)
+    public override async Task<int> ReadAsync(Request request)
     {
         _command.Parameters["owner_id"].Value = request.OwnerId;
         _command.Parameters["name"].Value = request.Name;

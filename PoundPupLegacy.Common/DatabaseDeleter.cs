@@ -17,7 +17,7 @@ public abstract class DatabaseDeleter<TRequest> : IDatabaseDeleter
         _command = command;
     }
 
-    public abstract Task Update(TRequest request);
+    public abstract Task DeleteAsync(TRequest request);
 
 
     public virtual async ValueTask DisposeAsync()

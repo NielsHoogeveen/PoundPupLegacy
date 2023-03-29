@@ -27,7 +27,7 @@ internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>, IDatabaseIn
     {
     }
 
-    internal override async Task WriteAsync(MenuItem menuItem)
+    public override async Task InsertAsync(MenuItem menuItem)
     {
         if (menuItem.Id != null) {
             throw new Exception($"Id of menu item needs to be null");

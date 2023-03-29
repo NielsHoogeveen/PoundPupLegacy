@@ -13,11 +13,11 @@ public class SenateTermCreator : IEntityCreator<SenateTerm>
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var senateTerm in senateTerms) {
-            await nodeWriter.WriteAsync(senateTerm);
-            await searchableWriter.WriteAsync(senateTerm);
-            await documentableWriter.WriteAsync(senateTerm);
-            await congressionalTermWriter.WriteAsync(senateTerm);
-            await senateTermWriter.WriteAsync(senateTerm);
+            await nodeWriter.InsertAsync(senateTerm);
+            await searchableWriter.InsertAsync(senateTerm);
+            await documentableWriter.InsertAsync(senateTerm);
+            await congressionalTermWriter.InsertAsync(senateTerm);
+            await senateTermWriter.InsertAsync(senateTerm);
             foreach (var partyAffiliation in senateTerm.PartyAffiliations) {
                 partyAffiliation.CongressionalTermId = senateTerm.Id;
             }
@@ -25,7 +25,7 @@ public class SenateTermCreator : IEntityCreator<SenateTerm>
 
             foreach (var tenantNode in senateTerm.TenantNodes) {
                 tenantNode.NodeId = senateTerm.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

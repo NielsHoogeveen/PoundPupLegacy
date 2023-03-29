@@ -10,12 +10,12 @@ public class PersonOrganizationRelationCreator : IEntityCreator<PersonOrganizati
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var personOrganizationRelation in personOrganizationRelations) {
-            await nodeWriter.WriteAsync(personOrganizationRelation);
-            await personOrganizationRelationWriter.WriteAsync(personOrganizationRelation);
+            await nodeWriter.InsertAsync(personOrganizationRelation);
+            await personOrganizationRelationWriter.InsertAsync(personOrganizationRelation);
 
             foreach (var tenantNode in personOrganizationRelation.TenantNodes) {
                 tenantNode.NodeId = personOrganizationRelation.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

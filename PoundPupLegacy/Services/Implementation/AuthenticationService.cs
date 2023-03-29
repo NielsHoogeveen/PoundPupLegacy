@@ -35,7 +35,7 @@ internal class AuthenticationService : IAuthenticationService
             await _connection.OpenAsync();
 
             await using var reader = await _passwordValidationReaderFactory.CreateAsync(_connection);
-            var userId = await reader.ReadAsync(new PasswordValidationReader.PasswordValidationRequest {
+            var userId = await reader.ReadAsync(new PasswordValidationReader.Request {
                 Password = CreateMD5(password),
                 UserName = userName.ToLower()
             });

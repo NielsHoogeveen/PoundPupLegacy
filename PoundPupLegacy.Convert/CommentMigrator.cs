@@ -72,7 +72,7 @@ internal sealed class CommentMigrator : PPLMigrator
         while (await reader.ReadAsync()) {
             var discussion = new Comment {
                 Id = reader.GetInt32("id"),
-                NodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                NodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("node_id")
 

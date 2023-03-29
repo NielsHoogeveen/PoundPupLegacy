@@ -21,9 +21,9 @@ public sealed class FileIdReaderByTenantFileIdFactory : IDatabaseReaderFactory<F
     }
 }
 
-public sealed class FileIdReaderByTenantFileId : SingleItemDatabaseReader<FileIdReaderByTenantFileId.FileIdReaderByTenantFileIdRequest, int>
+public sealed class FileIdReaderByTenantFileId : SingleItemDatabaseReader<FileIdReaderByTenantFileId.Request, int>
 {
-    public record FileIdReaderByTenantFileIdRequest
+    public record Request
     {
         public required int TenantId { get; init; }
         public required int TenantFileId { get; init; }
@@ -31,7 +31,7 @@ public sealed class FileIdReaderByTenantFileId : SingleItemDatabaseReader<FileId
 
     internal FileIdReaderByTenantFileId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(FileIdReaderByTenantFileIdRequest request)
+    public override async Task<int> ReadAsync(Request request)
     {
         _command.Parameters["tenant_id"].Value = request.TenantId;
         _command.Parameters["tenant_file_id"].Value = request.TenantFileId;

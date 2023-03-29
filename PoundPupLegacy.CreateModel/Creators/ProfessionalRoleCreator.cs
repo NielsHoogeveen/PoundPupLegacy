@@ -14,21 +14,21 @@ public class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
         await using var senatorWriter = await SenatorInserter.CreateAsync(connection);
 
         await foreach (var professionalRole in professionalRoles) {
-            await nodeWriter.WriteAsync(professionalRole);
-            await searchableWriter.WriteAsync(professionalRole);
-            await documentableWriter.WriteAsync(professionalRole);
-            await professionalRoleWriter.WriteAsync(professionalRole);
+            await nodeWriter.InsertAsync(professionalRole);
+            await searchableWriter.InsertAsync(professionalRole);
+            await documentableWriter.InsertAsync(professionalRole);
+            await professionalRoleWriter.InsertAsync(professionalRole);
             if (professionalRole is Representative representative) {
-                await memberOfCongressWriter.WriteAsync(representative);
-                await representativeWriter.WriteAsync(representative);
+                await memberOfCongressWriter.InsertAsync(representative);
+                await representativeWriter.InsertAsync(representative);
                 foreach (var term in representative.HouseTerms) {
                     term.RepresentativeId = representative.Id;
                 }
                 await HouseTermCreator.CreateAsync(representative.HouseTerms.ToAsyncEnumerable(), connection);
             }
             if (professionalRole is Senator senator) {
-                await memberOfCongressWriter.WriteAsync(senator);
-                await senatorWriter.WriteAsync(senator);
+                await memberOfCongressWriter.InsertAsync(senator);
+                await senatorWriter.InsertAsync(senator);
                 foreach (var term in senator.SenateTerms) {
                     term.SenatorId = senator.Id;
                 }

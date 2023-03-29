@@ -34,7 +34,7 @@ public class PrincipalInserter : DatabaseInserter<Principal>, IDatabaseInserter<
         _identityInsertCommand = identityInsertCommand;
     }
 
-    internal override async Task WriteAsync(Principal principal)
+    public override async Task InsertAsync(Principal principal)
     {
         if (principal.Id is not null) {
             WriteValue(principal.Id, ID);

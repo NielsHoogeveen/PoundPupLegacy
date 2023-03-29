@@ -28,7 +28,7 @@ internal sealed class InterPersonalRelationTypeInserter : DatabaseInserter<Inter
     {
     }
 
-    internal override async Task WriteAsync(InterPersonalRelationType interPersonalRelationType)
+    public override async Task InsertAsync(InterPersonalRelationType interPersonalRelationType)
     {
         if (interPersonalRelationType.Id is null)
             throw new NullReferenceException();

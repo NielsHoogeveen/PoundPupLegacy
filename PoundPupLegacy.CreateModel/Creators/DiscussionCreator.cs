@@ -13,13 +13,13 @@ public class DiscussionCreator : IEntityCreator<Discussion>
 
 
         await foreach (var discussion in discussions) {
-            await nodeWriter.WriteAsync(discussion);
-            await searchableWriter.WriteAsync(discussion);
-            await simpleTextNodeWriter.WriteAsync(discussion);
-            await discussionWriter.WriteAsync(discussion);
+            await nodeWriter.InsertAsync(discussion);
+            await searchableWriter.InsertAsync(discussion);
+            await simpleTextNodeWriter.InsertAsync(discussion);
+            await discussionWriter.InsertAsync(discussion);
             foreach (var tenantNode in discussion.TenantNodes) {
                 tenantNode.NodeId = discussion.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

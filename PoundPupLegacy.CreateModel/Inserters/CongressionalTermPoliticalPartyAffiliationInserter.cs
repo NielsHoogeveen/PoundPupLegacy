@@ -38,7 +38,7 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : Datab
     {
     }
 
-    internal override async Task WriteAsync(CongressionalTermPoliticalPartyAffiliation congressionalTermPoliticalPartyAffiliation)
+    public override async Task InsertAsync(CongressionalTermPoliticalPartyAffiliation congressionalTermPoliticalPartyAffiliation)
     {
         if (congressionalTermPoliticalPartyAffiliation.Id is null)
             throw new NullReferenceException();

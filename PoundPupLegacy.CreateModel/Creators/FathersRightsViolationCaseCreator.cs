@@ -19,17 +19,17 @@ public class FathersRightsViolationCaseCreator : IEntityCreator<FathersRightsVio
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var fathersRightsViolationCase in fathersRightsViolationCases) {
-            await nodeWriter.WriteAsync(fathersRightsViolationCase);
-            await searchableWriter.WriteAsync(fathersRightsViolationCase);
-            await documentableWriter.WriteAsync(fathersRightsViolationCase);
-            await locatableWriter.WriteAsync(fathersRightsViolationCase);
-            await nameableWriter.WriteAsync(fathersRightsViolationCase);
-            await caseWriter.WriteAsync(fathersRightsViolationCase);
-            await fathersRightsViolationCaseWriter.WriteAsync(fathersRightsViolationCase);
+            await nodeWriter.InsertAsync(fathersRightsViolationCase);
+            await searchableWriter.InsertAsync(fathersRightsViolationCase);
+            await documentableWriter.InsertAsync(fathersRightsViolationCase);
+            await locatableWriter.InsertAsync(fathersRightsViolationCase);
+            await nameableWriter.InsertAsync(fathersRightsViolationCase);
+            await caseWriter.InsertAsync(fathersRightsViolationCase);
+            await fathersRightsViolationCaseWriter.InsertAsync(fathersRightsViolationCase);
             await EntityCreator.WriteTerms(fathersRightsViolationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in fathersRightsViolationCase.TenantNodes) {
                 tenantNode.NodeId = fathersRightsViolationCase.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

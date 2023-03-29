@@ -16,14 +16,14 @@ public class InterOrganizationalRelationTypeCreator : IEntityCreator<InterOrgani
         await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
 
         await foreach (var interOrganizationalRelationType in interOrganizationalRelationTypes) {
-            await nodeWriter.WriteAsync(interOrganizationalRelationType);
-            await searchableWriter.WriteAsync(interOrganizationalRelationType);
-            await nameableWriter.WriteAsync(interOrganizationalRelationType);
-            await interOrganizationalRelationTypeWriter.WriteAsync(interOrganizationalRelationType);
+            await nodeWriter.InsertAsync(interOrganizationalRelationType);
+            await searchableWriter.InsertAsync(interOrganizationalRelationType);
+            await nameableWriter.InsertAsync(interOrganizationalRelationType);
+            await interOrganizationalRelationTypeWriter.InsertAsync(interOrganizationalRelationType);
             await EntityCreator.WriteTerms(interOrganizationalRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in interOrganizationalRelationType.TenantNodes) {
                 tenantNode.NodeId = interOrganizationalRelationType.Id;
-                await tenantNodeWriter.WriteAsync(tenantNode);
+                await tenantNodeWriter.InsertAsync(tenantNode);
             }
 
         }

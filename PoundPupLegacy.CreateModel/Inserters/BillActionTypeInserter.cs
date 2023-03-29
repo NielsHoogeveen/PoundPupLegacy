@@ -23,7 +23,7 @@ internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>,
     {
     }
 
-    internal override async Task WriteAsync(BillActionType personOrganizationRelationType)
+    public override async Task InsertAsync(BillActionType personOrganizationRelationType)
     {
         if (personOrganizationRelationType.Id is null)
             throw new NullReferenceException();

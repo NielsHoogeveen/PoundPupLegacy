@@ -32,7 +32,7 @@ internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserte
     {
     }
 
-    internal override async Task WriteAsync(UnitedStatesCongressionalMeeting unitedStatesCongressionalMeeting)
+    public override async Task InsertAsync(UnitedStatesCongressionalMeeting unitedStatesCongressionalMeeting)
     {
         if (unitedStatesCongressionalMeeting.Id is null)
             throw new NullReferenceException();

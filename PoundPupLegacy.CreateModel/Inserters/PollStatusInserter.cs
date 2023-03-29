@@ -28,7 +28,7 @@ internal sealed class PollStatusInserter : DatabaseInserter<PollStatus>, IDataba
     {
     }
 
-    internal override async Task WriteAsync(PollStatus pollStatus)
+    public override async Task InsertAsync(PollStatus pollStatus)
     {
         WriteValue(pollStatus.Id, ID);
         WriteValue(pollStatus.Name, NAME);

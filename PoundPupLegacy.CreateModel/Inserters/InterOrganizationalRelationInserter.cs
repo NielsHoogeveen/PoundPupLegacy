@@ -69,7 +69,7 @@ internal sealed class InterOrganizationalRelationInserter : DatabaseInserter<Int
     {
     }
 
-    internal override async Task WriteAsync(InterOrganizationalRelation interOrganizationalRelation)
+    public override async Task InsertAsync(InterOrganizationalRelation interOrganizationalRelation)
     {
         WriteValue(interOrganizationalRelation.Id, ID);
         WriteValue(interOrganizationalRelation.OrganizationIdFrom, ORGANIZATION_ID_FROM);

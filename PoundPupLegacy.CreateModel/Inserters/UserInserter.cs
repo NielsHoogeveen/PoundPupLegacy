@@ -63,7 +63,7 @@ internal sealed class UserInserter : DatabaseInserter<User>, IDatabaseInserter<U
     {
     }
 
-    internal override async Task WriteAsync(User user)
+    public override async Task InsertAsync(User user)
     {
         if (user.Id is null)
             throw new NullReferenceException();

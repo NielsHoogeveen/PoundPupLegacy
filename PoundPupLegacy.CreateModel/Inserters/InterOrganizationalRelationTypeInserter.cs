@@ -28,7 +28,7 @@ internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter
     {
     }
 
-    internal override async Task WriteAsync(InterOrganizationalRelationType interOrganizationalRelationType)
+    public override async Task InsertAsync(InterOrganizationalRelationType interOrganizationalRelationType)
     {
         if (interOrganizationalRelationType.Id is null)
             throw new NullReferenceException();

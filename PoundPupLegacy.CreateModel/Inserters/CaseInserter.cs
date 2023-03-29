@@ -38,7 +38,7 @@ internal sealed class CaseInserter : DatabaseInserter<Case>, IDatabaseInserter<C
     {
     }
 
-    internal override async Task WriteAsync(Case @case)
+    public override async Task InsertAsync(Case @case)
     {
         if (@case.Id is null)
             throw new NullReferenceException();

@@ -29,7 +29,7 @@ internal sealed class DocumentableDocumentInserter : DatabaseInserter<Documentab
     {
     }
 
-    internal override async Task WriteAsync(DocumentableDocument documentableDocument)
+    public override async Task InsertAsync(DocumentableDocument documentableDocument)
     {
         WriteValue(documentableDocument.DocumentableId, DOCUMENTABLE_ID);
         WriteNullableValue(documentableDocument.DocumentId, DOCUMENT_ID);

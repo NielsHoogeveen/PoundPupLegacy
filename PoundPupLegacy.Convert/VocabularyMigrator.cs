@@ -271,7 +271,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
         await VocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
         await VocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
         await using var tenantUpdater = await TenantUpdaterSetTaggingVocabulary.CreateAsync(_postgresConnection);
-        await tenantUpdater.Update(Constants.PPL, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+        await tenantUpdater.Update(Constants.PPL, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             TenantId = Constants.PPL,
             UrlId = 4126
         }));

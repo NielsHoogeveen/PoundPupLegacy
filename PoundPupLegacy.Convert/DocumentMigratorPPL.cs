@@ -117,7 +117,7 @@ internal sealed class DocumentMigratorPPL : PPLMigrator
                 Teaser = TextToTeaser(reader.GetString("text")),
                 DocumentTypeId = reader.IsDBNull("document_type_id")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.NodeIdReaderByUrlIdRequest {
+                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         UrlId = reader.GetInt32("document_type_id"),
                         TenantId = Constants.PPL,
                     }),
