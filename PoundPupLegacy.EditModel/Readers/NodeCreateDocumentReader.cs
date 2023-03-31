@@ -9,7 +9,7 @@ where T : class, IDatabaseReader
 {
     protected async Task<NpgsqlCommand> CreateCommand(NpgsqlConnection connection, string sql)
     {
-        using var command = connection.CreateCommand();
+        var command = connection.CreateCommand();
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

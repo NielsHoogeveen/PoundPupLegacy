@@ -7,7 +7,7 @@ public class CountryListItemsReaderFactory : IDatabaseReaderFactory<CountryListI
 {
     public async Task<CountryListItemsReader> CreateAsync(NpgsqlConnection connection)
     {
-        using var command = connection.CreateCommand();
+        var command = connection.CreateCommand();
         var sql = $"""
                 select
                     c.id,

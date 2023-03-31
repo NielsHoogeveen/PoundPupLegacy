@@ -4,9 +4,11 @@ namespace PoundPupLegacy.Common
 {
     public interface IDatabaseReader : IAsyncDisposable
     {
-
+        string Sql { get; }
+        bool HasBeenPrepared { get; }
     }
-    public interface IDatabaseReaderFactory<T>
+    public interface IDatabaseReaderFactory { }
+    public interface IDatabaseReaderFactory<T>: IDatabaseReaderFactory 
         where T : IDatabaseReader
     {
         public Task<T> CreateAsync(NpgsqlConnection connection);
@@ -28,11 +30,12 @@ namespace PoundPupLegacy.Common
         {
             _command = command;
         }
+        public string Sql => _command.CommandText;
+        public bool HasBeenPrepared => _command.IsPrepared;
         public virtual async ValueTask DisposeAsync()
         {
             await _command.DisposeAsync();
         }
-
     }
 
     public abstract class SingleItemDatabaseReader<TRequest, TResponse> : DatabaseReader, ISingleItemDatabaseReader<TRequest, TResponse>

@@ -7,7 +7,7 @@ public class SubdivisionListItemsReaderFactory : IDatabaseReaderFactory<Subdivis
 {
     public async Task<SubdivisionListItemsReader> CreateAsync(NpgsqlConnection connection)
     {
-        using var command = connection.CreateCommand();
+        var command = connection.CreateCommand();
         var sql = $"""
             select
                 s.id,

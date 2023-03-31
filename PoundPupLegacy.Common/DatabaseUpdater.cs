@@ -3,8 +3,15 @@ namespace PoundPupLegacy.Common;
 
 public interface IDatabaseUpdater : IAsyncDisposable
 {
+    string Sql { get; }
+    bool HasBeenPrepared { get; }
+
 }
-public interface IDatabaseUpdaterFactory<T>
+public interface IDatabaseUpdaterFactory
+{
+
+}
+public interface IDatabaseUpdaterFactory<T>: IDatabaseUpdaterFactory
     where T : IDatabaseUpdater
 {
     public Task<T> CreateAsync(NpgsqlConnection connection);
@@ -16,9 +23,10 @@ public abstract class DatabaseUpdater<TRequest> : IDatabaseUpdater
     {
         _command = command;
     }
+    public string Sql => _command.CommandText;
+    public bool HasBeenPrepared => _command.IsPrepared;
 
     public abstract Task UpdateAsync(TRequest request);
-
 
     public virtual async ValueTask DisposeAsync()
     {
