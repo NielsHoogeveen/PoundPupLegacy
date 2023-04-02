@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class ProfessionCreator : IEntityCreator<Profession>
+internal sealed class ProfessionCreator : IEntityCreator<Profession>
 {
     public async Task CreateAsync(IAsyncEnumerable<Profession> professions, IDbConnection connection)
     {

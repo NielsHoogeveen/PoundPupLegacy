@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class SubgroupCreator : IEntityCreator<Subgroup>
+internal sealed class SubgroupCreator : IEntityCreator<Subgroup>
 {
     public async Task CreateAsync(IAsyncEnumerable<Subgroup> subgroups, IDbConnection connection)
     {

@@ -4,7 +4,7 @@ using PoundPupLegacy.Models;
 using System.Data;
 
 namespace PoundPupLegacy.Readers;
-public class TenantNodesReaderFactory : IDatabaseReaderFactory<TenantNodesReader>
+internal sealed class TenantNodesReaderFactory : IDatabaseReaderFactory<TenantNodesReader>
 {
     public async Task<TenantNodesReader> CreateAsync(IDbConnection connection)
     {
@@ -29,7 +29,7 @@ public class TenantNodesReaderFactory : IDatabaseReaderFactory<TenantNodesReader
 
 
 }
-public class TenantNodesReader : EnumerableDatabaseReader<TenantNodesReader.Request, TenantNode>
+internal sealed class TenantNodesReader : EnumerableDatabaseReader<TenantNodesReader.Request, TenantNode>
 {
     public record Request
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class CountryAndIntermediateLevelSubdivisionCreator : IEntityCreator<CountryAndIntermediateLevelSubdivision>
+internal sealed class CountryAndIntermediateLevelSubdivisionCreator : IEntityCreator<CountryAndIntermediateLevelSubdivision>
 {
     public async Task CreateAsync(IAsyncEnumerable<CountryAndIntermediateLevelSubdivision> countries, IDbConnection connection)
     {

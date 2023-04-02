@@ -1,16 +1,25 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonMigratorPPL : PPLMigrator
+internal sealed class PersonMigratorPPL : MigratorPPL
 {
-    public PersonMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<Person> _personCreator;
+    public PersonMigratorPPL(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<Person> personCreator
+    ) : base(databaseConnections)
     {
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _personCreator = personCreator;
     }
 
     protected override string Name => "persons (ppl)";
 
     protected override async Task MigrateImpl()
     {
-        await new PersonCreator().CreateAsync(ReadPersons(), _postgresConnection);
+        await using var fileIdReader = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _personCreator.CreateAsync(ReadPersons(fileIdReader), _postgresConnection);
     }
     private static DateTime? GetDateOfDeath(int id, DateTime? dateTime)
     {
@@ -123,7 +132,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
         };
     }
 
-    private async IAsyncEnumerable<Person> ReadPersons()
+    private async IAsyncEnumerable<Person> ReadPersons(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -180,7 +189,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
                 WHERE n.`type` = 'adopt_person'
                 AND n.nid not in (45656, 74250)
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -241,7 +250,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
                 FileIdPortrait = reader.IsDBNull("file_id_portrait")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_portrait")
                     }),

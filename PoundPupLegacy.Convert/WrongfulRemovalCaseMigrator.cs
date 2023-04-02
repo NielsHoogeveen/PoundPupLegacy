@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class WrongfulRemovalCaseMigrator : PPLMigrator
+internal sealed class WrongfulRemovalCaseMigrator : MigratorPPL
 {
-    public WrongfulRemovalCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<WrongfulRemovalCase> _wrongfulRemovalCaseCreator;
+    public WrongfulRemovalCaseMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<WrongfulRemovalCase> wrongfulRemovalCaseCreator
+    ) : base(databaseConnections)
     {
+        _wrongfulRemovalCaseCreator = wrongfulRemovalCaseCreator;
     }
 
     protected override string Name => "wrongful removal case";
 
     protected override async Task MigrateImpl()
     {
-        await new WrongfulRemovalCaseCreator().CreateAsync(ReadWrongfulRemovalCases(), _postgresConnection);
+        await _wrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<WrongfulRemovalCase> ReadWrongfulRemovalCases()
     {
@@ -31,7 +36,7 @@ internal sealed class WrongfulRemovalCaseMigrator : PPLMigrator
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_wrongful_removal_case c ON c.nid = n.nid AND c.vid = n.vid
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

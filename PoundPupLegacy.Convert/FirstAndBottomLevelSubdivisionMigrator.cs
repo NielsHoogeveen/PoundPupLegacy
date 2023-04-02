@@ -1,17 +1,38 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
+internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
 {
     protected override string Name => "first and bottom level subdivisions";
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderByOwnerAndNameFactory;
+    private readonly IDatabaseReaderFactory<TermReaderByNameableId> _termReaderByNameableIdFactory;
+    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderByNameFactory;
+    private readonly IEntityCreator<FirstAndBottomLevelSubdivision> _firstAndBottomLevelSubdivisionCreator;
 
-    public FirstAndBottomLevelSubdivisionMigrator(MySqlToPostgresConverter converter) : base(converter) { }
-    private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv()
+    public FirstAndBottomLevelSubdivisionMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
+        IDatabaseReaderFactory<TermReaderByNameableId> termReaderByNameableIdFactory,
+        IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
+        IEntityCreator<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreator
+    ) : base(databaseConnections) 
+    { 
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
+        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
+        _termReaderByNameFactory = termReaderByNameFactory;
+        _firstAndBottomLevelSubdivisionCreator = firstAndBottomLevelSubdivisionCreator;
+    }
+    private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv(
+        NodeIdReaderByUrlId nodeIdReader,
+        VocabularyIdReaderByOwnerAndName vocabularyIdReader,
+        TermReaderByNameableId termReaderByNameableId,
+        TermReaderByName termReaderByName
+        )
     {
 
-        await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
-        await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
-
-        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
+        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
@@ -22,11 +43,11 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
             var title = parts[8];
             var name = parts[9];
             int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
-            var countryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var countryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = int.Parse(parts[7])
             });
-            var countryName = (await _termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
+            var countryName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
                 OwnerId = Constants.PPL,
                 NameableId = countryId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
@@ -78,7 +99,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
                 ISO3166_2_Code = parts[10],
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByName.Request {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByName.Request {
                     VocabularyId = vocabularyId,
                     Name = parts[11].Trim()
                 })).NameableId,
@@ -336,15 +357,31 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await new FirstAndBottomLevelSubdivisionCreator().CreateAsync(ReadDirectSubDivisionCsv(), _postgresConnection);
-        await new FirstAndBottomLevelSubdivisionCreator().CreateAsync(ReadFormalFirstLevelSubdivisions(), _postgresConnection);
-    }
-    private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions()
-    {
-        await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
-        await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var vocabularyIdReader = await _vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByName = await _termReaderByNameFactory.CreateAsync(_postgresConnection);
 
-        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
+        await _firstAndBottomLevelSubdivisionCreator.CreateAsync(ReadDirectSubDivisionCsv(
+            nodeIdReader,
+            vocabularyIdReader,
+            termReaderByNameableId,
+            termReaderByName
+        ), _postgresConnection);
+        await _firstAndBottomLevelSubdivisionCreator.CreateAsync(ReadFormalFirstLevelSubdivisions(
+            nodeIdReader,
+            vocabularyIdReader,
+            termReaderByName
+        ), _postgresConnection);
+    }
+    private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(
+        NodeIdReaderByUrlId nodeIdReader,
+        VocabularyIdReaderByOwnerAndName vocabularyIdReader,
+        TermReaderByName termReaderByName
+        )
+    {
+
+        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
@@ -396,7 +433,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
             AND n2.`type` = 'country_type'
             AND s.field_statecode_value IS NOT NULL
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -448,7 +485,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
                 NodeTypeId = 17,
                 VocabularyNames = vocabularyNames,
                 Description = "",
-                CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("id") == 11827 ? 11571 :
                             reader.GetInt32("id") == 11789 ? 11571 :
@@ -457,7 +494,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
                 ISO3166_2_Code = isoCode,
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByName.Request {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByName.Request {
                     VocabularyId = vocabularyId,
                     Name = reader.GetString("subdivision_type_name")
                 })).NameableId

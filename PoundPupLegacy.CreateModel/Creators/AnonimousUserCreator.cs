@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class AnonimousUserCreator
+public interface IAnonimousUserCreator
+{
+    Task CreateAsync(IDbConnection connection);
+}
+internal sealed class AnonimousUserCreator: IAnonimousUserCreator
 {
     public async Task CreateAsync(IDbConnection connection)
     {

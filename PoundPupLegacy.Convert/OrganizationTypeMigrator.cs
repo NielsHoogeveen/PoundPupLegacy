@@ -1,17 +1,28 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class OrganizationTypeMigrator : PPLMigrator
+internal sealed class OrganizationTypeMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<OrganizationType> _organizationTypeCreator;
 
-    public OrganizationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    public OrganizationTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<OrganizationType> organizationTypeCreator
+    ) : base(databaseConnections) 
+    { 
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _organizationTypeCreator = organizationTypeCreator;
+    }
 
     protected override string Name => "organization types";
 
     protected override async Task MigrateImpl()
     {
-        await new OrganizationTypeCreator().CreateAsync(ReadOrganizationTypes(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _organizationTypeCreator.CreateAsync(ReadOrganizationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<OrganizationType> ReadOrganizationTypes()
+    private async IAsyncEnumerable<OrganizationType> ReadOrganizationTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -75,7 +86,7 @@ internal sealed class OrganizationTypeMigrator : PPLMigrator
             ) n2 ON n2.title = v.topic_name
             """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -140,7 +151,7 @@ internal sealed class OrganizationTypeMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

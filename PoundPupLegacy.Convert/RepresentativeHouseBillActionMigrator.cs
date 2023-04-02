@@ -1,23 +1,31 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
+internal sealed class RepresentativeHouseBillActionMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
 
+    private readonly IEntityCreator<RepresentativeHouseBillAction> _representativeHouseBillActionCreator;
 
-    public RepresentativeHouseBillActionMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public RepresentativeHouseBillActionMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IEntityCreator<RepresentativeHouseBillAction> representativeHouseBillActionCreator
+    ) : base(databaseConnections)
     {
-
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _representativeHouseBillActionCreator = representativeHouseBillActionCreator;
     }
 
     protected override string Name => "representative house bill action";
 
     protected override async Task MigrateImpl()
     {
-        await new RepresentativeHouseBillActionCreator().CreateAsync(ReadRepresentativeHouseBillActionsPPL(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _representativeHouseBillActionCreator.CreateAsync(ReadRepresentativeHouseBillActionsPPL(nodeIdReader), _postgresConnection);
 
     }
 
-    private async IAsyncEnumerable<RepresentativeHouseBillAction> ReadRepresentativeHouseBillActionsPPL()
+    private async IAsyncEnumerable<RepresentativeHouseBillAction> ReadRepresentativeHouseBillActionsPPL(NodeIdReaderByUrlId nodeIdReader)
     {
 
         await using var professionReader = await new ProfessionIdReaderFactory().CreateAsync(_postgresConnection);
@@ -46,7 +54,7 @@ internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
             AND n3.title LIKE 'H%' 
             AND n.nid not in (65267, 65493)
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -63,11 +71,11 @@ internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
                 ProfessionType = ProfessionIdReader.ProfessionType.Representative,
                 UrlId = reader.GetInt32("person_id")
             });
-            int billId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request() {
+            int billId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request() {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("bill_id")
             });
-            int billActionTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int billActionTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
             });

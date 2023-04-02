@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class NodeFileCreator : IEntityCreator<NodeFile>
+internal sealed class NodeFileCreator : IEntityCreator<NodeFile>
 {
     public async Task CreateAsync(IAsyncEnumerable<NodeFile> nodeFiles, IDbConnection connection)
     {

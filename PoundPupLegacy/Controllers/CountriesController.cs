@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace PoundPupLegacy.Controllers;
 
 [Route("countries")]
-public class CountriesController : Controller
+public sealed class CountriesController : Controller
 {
 
     private readonly IFetchCountriesService _fetchCountriesService;

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
+internal sealed class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
 {
     public async Task CreateAsync(IAsyncEnumerable<ChildTraffickingCase> childTraffickingCases, IDbConnection connection)
     {

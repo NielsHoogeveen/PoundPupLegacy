@@ -1,19 +1,28 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BindingCountryMigrator : PPLMigrator
+internal sealed class BindingCountryMigrator : MigratorPPL
 {
-
-    public BindingCountryMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<BindingCountry> _bindingCountryCreator;
+    public BindingCountryMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<BindingCountry> bindingCountryCreator
+    ) : base(databaseConnections) 
+    { 
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _bindingCountryCreator = bindingCountryCreator;
+    }
 
     protected override string Name => "binding countries";
 
     protected override async Task MigrateImpl()
     {
-        await new BindingCountryCreator().CreateAsync(ReadBindingCountries(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<BindingCountry> ReadBindingCountries()
+    private async IAsyncEnumerable<BindingCountry> ReadBindingCountries(NodeIdReaderByUrlId nodeIdReader)
     {
-
         var sql = $"""
                 SELECT
                     n.nid id,
@@ -37,7 +46,7 @@ internal sealed class BindingCountryMigrator : PPLMigrator
                     3992
                 )
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -95,14 +104,14 @@ internal sealed class BindingCountryMigrator : PPLMigrator
                 Description = "",
                 VocabularyNames = vocabularyNames,
                 Name = name,
-                SecondLevelRegionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = reader.GetInt32("second_level_region_id"),
                     TenantId = Constants.PPL,
                 }),
                 ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = 41215,
                     TenantId = Constants.PPL,
                 }),

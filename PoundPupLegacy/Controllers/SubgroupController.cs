@@ -4,7 +4,7 @@ using PoundPupLegacy.Services;
 namespace PoundPupLegacy.Controllers;
 
 [Route("subgroup")]
-public class SubgroupController : Controller
+public sealed class SubgroupController : Controller
 {
     const int NUMBER_OF_ENTRIES = 150;
 

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class FamilySizeCreator : IEntityCreator<FamilySize>
+internal sealed class FamilySizeCreator : IEntityCreator<FamilySize>
 {
     public async Task CreateAsync(IAsyncEnumerable<FamilySize> familySizes, IDbConnection connection)
     {

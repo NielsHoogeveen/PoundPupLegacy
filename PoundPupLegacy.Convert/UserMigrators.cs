@@ -1,11 +1,43 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class UserMigrator : PPLMigrator
+internal sealed class UserMigrator : MigratorPPL
 {
     protected override string Name => "users";
-    public UserMigrator(MySqlToPostgresConverter converter) : base(converter)
-    {
+    private readonly IAnonimousUserCreator _anonimousUserCreator;
+    private readonly ISystemGroupCreator _systemGroupCreator;
+    private readonly IEntityCreator<AccessRole> _accessRoleCreator;
+    private readonly IEntityCreator<Tenant> _tenantCreator;
+    private readonly IEntityCreator<ContentSharingGroup> _contentSharingGroupCreator;
+    private readonly IEntityCreator<Subgroup> _subgroupCreator;
+    private readonly IEntityCreator<User> _userCreator;
+    private readonly IEntityCreator<Collective> _collectiveCreator;
+    private readonly IEntityCreator<CollectiveUser> _collectiveUserCreator;
+    private readonly IEntityCreator<UserGroupUserRoleUser> _userGroupUserRoleUserCreator;
 
+    public UserMigrator(
+        IDatabaseConnections databaseConnections,
+        IAnonimousUserCreator anonimousUserCreator,
+        ISystemGroupCreator systemGroupCreator,
+        IEntityCreator<AccessRole> accessRoleCreator,
+        IEntityCreator<Tenant> tenantCreator,
+        IEntityCreator<ContentSharingGroup> contentSharingGroupCreator,
+        IEntityCreator<Subgroup> subgroupCreator,
+        IEntityCreator<User> userCreator,
+        IEntityCreator<Collective> collectiveCreator,
+        IEntityCreator<CollectiveUser> collectiveUserCreator,
+        IEntityCreator<UserGroupUserRoleUser> userGroupUserRoleUserCreator
+    ) : base(databaseConnections)
+    {
+        _anonimousUserCreator = anonimousUserCreator;
+        _systemGroupCreator = systemGroupCreator;
+        _accessRoleCreator = accessRoleCreator;
+        _tenantCreator = tenantCreator;
+        _contentSharingGroupCreator = contentSharingGroupCreator;
+        _subgroupCreator = subgroupCreator;
+        _userCreator = userCreator;
+        _collectiveCreator = collectiveCreator;
+        _collectiveUserCreator = collectiveUserCreator;
+        _userGroupUserRoleUserCreator = userGroupUserRoleUserCreator;
     }
 
     private static async IAsyncEnumerable<AccessRole> GetAccessRoles()
@@ -215,26 +247,26 @@ internal sealed class UserMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await new AnonimousUserCreator().CreateAsync(_postgresConnection);
-        await new SystemGroupCreator().CreateAsync(_postgresConnection);
-        await new TenantCreator().CreateAsync(GetTenants(), _postgresConnection);
-        await new ContentSharingGroupCreator().CreateAsync(GetContentSharingGroups(), _postgresConnection);
-        await new SubgroupCreator().CreateAsync(GetSubgroups(), _postgresConnection);
-        await new AccessRoleCreator().CreateAsync(GetAccessRoles(), _postgresConnection);
-        await new UserCreator().CreateAsync(ReadUsers(), _postgresConnection);
-        await new CollectiveCreator().CreateAsync(GetCollectives(), _postgresConnection);
-        await new CollectiveUserCreator().CreateAsync(GetCollectiveUsers(), _postgresConnection);
-        await new UserGroupUserRoleUserCreator().CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
-        await new UserGroupUserRoleUserCreator().CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! }), _postgresConnection);
-        await new UserGroupUserRoleUserCreator().CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 12, UserId = (int)x.Id! }), _postgresConnection);
-        await new UserGroupUserRoleUserCreator().CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = 6, UserRoleId = 16, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
-        await new UserGroupUserRoleUserCreator().CreateAsync(ReadAdultAftermathMembers(), _postgresConnection);
+        await _anonimousUserCreator.CreateAsync(_postgresConnection);
+        await _systemGroupCreator.CreateAsync(_postgresConnection);
+        await _tenantCreator.CreateAsync(GetTenants(), _postgresConnection);
+        await _contentSharingGroupCreator.CreateAsync(GetContentSharingGroups(), _postgresConnection);
+        await _subgroupCreator.CreateAsync(GetSubgroups(), _postgresConnection);
+        await _accessRoleCreator.CreateAsync(GetAccessRoles(), _postgresConnection);
+        await _userCreator.CreateAsync(ReadUsers(), _postgresConnection);
+        await _collectiveCreator.CreateAsync(GetCollectives(), _postgresConnection);
+        await _collectiveUserCreator.CreateAsync(GetCollectiveUsers(), _postgresConnection);
+        await _userGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
+        await _userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! }), _postgresConnection);
+        await _userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 12, UserId = (int)x.Id! }), _postgresConnection);
+        await _userGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = 6, UserRoleId = 16, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
+        await _userGroupUserRoleUserCreator.CreateAsync(ReadAdultAftermathMembers(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<User> ReadUsers()
     {
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = """
@@ -312,7 +344,7 @@ internal sealed class UserMigrator : PPLMigrator
     private async IAsyncEnumerable<UserGroupUserRoleUser> ReadAdultAftermathMembers()
     {
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = """

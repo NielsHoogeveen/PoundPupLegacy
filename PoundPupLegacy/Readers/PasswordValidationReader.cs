@@ -3,7 +3,7 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.Readers;
-public class PasswordValidationReaderFactory : IDatabaseReaderFactory<PasswordValidationReader>
+internal sealed class PasswordValidationReaderFactory : IDatabaseReaderFactory<PasswordValidationReader>
 {
     public async Task<PasswordValidationReader> CreateAsync(IDbConnection connection)
     {
@@ -30,7 +30,7 @@ public class PasswordValidationReaderFactory : IDatabaseReaderFactory<PasswordVa
 
 
 }
-public class PasswordValidationReader : SingleItemDatabaseReader<PasswordValidationReader.Request, int?>
+internal sealed class PasswordValidationReader : SingleItemDatabaseReader<PasswordValidationReader.Request, int?>
 {
     public record Request
     {

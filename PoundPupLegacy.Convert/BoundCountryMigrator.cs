@@ -1,26 +1,54 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel.Readers;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class BoundCountryMigrator : CountryMigrator
 {
-    public BoundCountryMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderByOwnerAndNameFactory;
+    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderByNameFactory;
+    private readonly IEntityCreator<BoundCountry> _boundCountryCreator;
+    public BoundCountryMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
+        IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
+        IEntityCreator<BoundCountry> boundCountryCreator
+    ) : base(databaseConnections) 
+    { 
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
+        _termReaderByNameFactory = termReaderByNameFactory;
+        _boundCountryCreator = boundCountryCreator;
+    }
 
     protected override string Name => "bound countries";
 
     protected override async Task MigrateImpl()
     {
-        await new BoundCountryCreator().CreateAsync(ReadBoundCountries(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var vocabularyReader = await _vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByName = await _termReaderByNameFactory.CreateAsync(_postgresConnection);
+
+        await _boundCountryCreator.CreateAsync(ReadBoundCountries(
+            nodeIdReader,
+            vocabularyReader,
+            termReaderByName
+        ), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<BoundCountry> ReadBoundCountries()
+    private async IAsyncEnumerable<BoundCountry> ReadBoundCountries(
+        NodeIdReaderByUrlId nodeIdReader,
+        VocabularyIdReaderByOwnerAndName vocabularyReader,
+        TermReaderByName termReaderByName
+        )
     {
-        await using var vocabularyReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(_postgresConnection);
-        await using var termReader = await new TermReaderByNameFactory().CreateAsync(_postgresConnection);
 
         var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
-        var subdivisionType = await termReader.ReadAsync(new TermReaderByName.Request {
+        var subdivisionType = await termReaderByName.ReadAsync(new TermReaderByName.Request {
             VocabularyId = vocabularyId,
             Name = "Country"
         });
@@ -45,7 +73,7 @@ internal sealed class BoundCountryMigrator : CountryMigrator
             AND n2.`type` = 'country_type'
             AND n.nid <> 11572
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -100,19 +128,19 @@ internal sealed class BoundCountryMigrator : CountryMigrator
                 NodeTypeId = 14,
                 Description = "",
                 VocabularyNames = vocabularyNames,
-                BindingCountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                BindingCountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("binding_country_id")
                 }),
                 Name = name,
                 ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
-                CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request() {
+                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request() {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("binding_country_id")
                 }),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = 41215
                 }),

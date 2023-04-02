@@ -1,23 +1,30 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ChildPlacementTypeMigrator : PPLMigrator
+internal sealed class ChildPlacementTypeMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<ChildPlacementType> _childPlacementTypeCreator;
 
-    public ChildPlacementTypeMigrator(MySqlToPostgresConverter converter) : base(converter)
+    public ChildPlacementTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<ChildPlacementType> childPlacementTypeCreator
+    ) : base(databaseConnections)
     {
-
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _childPlacementTypeCreator = childPlacementTypeCreator;
     }
 
     protected override string Name => "child placement types";
 
     protected override async Task MigrateImpl()
     {
-        await new ChildPlacementTypeCreator().CreateAsync(ReadChildPlacementTypes(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<ChildPlacementType> ReadChildPlacementTypes()
+    private async IAsyncEnumerable<ChildPlacementType> ReadChildPlacementTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
-
         var sql = $"""
             SELECT
             t.id,
@@ -56,7 +63,7 @@ internal sealed class ChildPlacementTypeMigrator : PPLMigrator
             LEFT JOIN content_type_category_cat cc on cc.nid = n.nid AND cc.vid = n.vid
             LEFT JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -126,7 +133,7 @@ internal sealed class ChildPlacementTypeMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

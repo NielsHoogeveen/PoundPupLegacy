@@ -1,17 +1,23 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System;
 
-internal sealed class ArticleMigrator : PPLMigrator
+namespace PoundPupLegacy.Convert;
+
+internal sealed class ArticleMigrator : MigratorPPL
 {
-    public ArticleMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<Article> _articleCreator;
+    public ArticleMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<Article> articleCreator
+    ) : base(databaseConnections)
     {
+        _articleCreator = articleCreator;
     }
 
     protected override string Name => "articles";
 
     protected override async Task MigrateImpl()
     {
-        await new ArticleCreator().CreateAsync(ReadArticles(), _postgresConnection);
-
+        await _articleCreator.CreateAsync(ReadArticles(), _postgresConnection);
     }
     private async IAsyncEnumerable<Article> ReadArticles()
     {
@@ -29,7 +35,7 @@ internal sealed class ArticleMigrator : PPLMigrator
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 WHERE n.`type` = 'article' AND n.uid <> 0
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

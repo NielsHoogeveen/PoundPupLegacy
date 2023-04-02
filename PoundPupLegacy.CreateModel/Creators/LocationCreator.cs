@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class LocationCreator : IEntityCreator<Location>
+internal sealed class LocationCreator : IEntityCreator<Location>
 {
     public async Task CreateAsync(IAsyncEnumerable<Location> locations, IDbConnection connection)
     {

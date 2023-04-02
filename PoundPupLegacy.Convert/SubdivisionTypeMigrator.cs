@@ -1,9 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class SubdivisionTypeMigrator : PPLMigrator
+internal sealed class SubdivisionTypeMigrator : MigratorPPL
 {
-
-    public SubdivisionTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IEntityCreator<SubdivisionType> _subdivisionTypeCreator;
+    public SubdivisionTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<SubdivisionType> subdivisionTypeCreator
+    ) : base(databaseConnections) 
+    { 
+        _subdivisionTypeCreator = subdivisionTypeCreator;
+    }
 
     protected override string Name => "subdivision types";
 
@@ -144,6 +150,6 @@ internal sealed class SubdivisionTypeMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await new SubdivisionTypeCreator().CreateAsync(GetSubdivisionTypes(), _postgresConnection);
+        await _subdivisionTypeCreator.CreateAsync(GetSubdivisionTypes(), _postgresConnection);
     }
 }

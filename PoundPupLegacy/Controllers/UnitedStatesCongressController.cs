@@ -3,7 +3,7 @@ using PoundPupLegacy.Services;
 
 namespace PoundPupLegacy.Controllers;
 [Route("united_states_congress")]
-public class UnitedStatesCongressController : Controller
+public sealed class UnitedStatesCongressController : Controller
 {
 
     private readonly ICongressionalDataService _congressionalDataService;

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class OrganizationTypeCreator : IEntityCreator<OrganizationType>
+internal sealed class OrganizationTypeCreator : IEntityCreator<OrganizationType>
 {
     public async Task CreateAsync(IAsyncEnumerable<OrganizationType> organizationTypes, IDbConnection connection)
     {

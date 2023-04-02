@@ -12,6 +12,7 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
 {
     private readonly IDatabaseReaderFactory<BlogPostCreateDocumentReader> _createDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<BlogPostUpdateDocumentReader> _updateDocumentReaderFactory;
+    private readonly IEntityCreator<CreateModel.BlogPost> _blogPostCreator;
 
     public BlogPostEditService(
         IDbConnection connection,
@@ -24,14 +25,16 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
         ITextService textService,
-        ILogger<BlogPostEditService> logger
-    ): base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
+        ILogger<BlogPostEditService> logger,
+        IEntityCreator<CreateModel.BlogPost> blogPostCreator
+    ) : base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
     {
         _createDocumentReaderFactory = createDocumentReaderFactory;
         _updateDocumentReaderFactory = updateDocumentReaderFactory;
+        _blogPostCreator = blogPostCreator;
     }
 
-    protected sealed override IEntityCreator<CreateModel.BlogPost> EntityCreator => new BlogPostCreator();
+    protected sealed override IEntityCreator<CreateModel.BlogPost> EntityCreator => _blogPostCreator;
 
     public async Task<BlogPost> GetViewModelAsync(int userId, int tenantId)
     {

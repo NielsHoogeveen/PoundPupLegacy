@@ -2,19 +2,22 @@
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class FileMigratorPPL : PPLMigrator
+internal sealed class FileMigratorPPL : MigratorPPL
 {
-
-    public FileMigratorPPL(MySqlToPostgresConverter converter) : base(converter)
+    private readonly IEntityCreator<File> _fileCreator;
+    public FileMigratorPPL(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<File> fileCreator
+    ) : base(databaseConnections)
     {
-
+        _fileCreator = fileCreator; 
     }
 
     protected override string Name => "files (ppl)";
 
     protected override async Task MigrateImpl()
     {
-        await new FileCreator().CreateAsync(ReadFiles(), _postgresConnection);
+        await _fileCreator.CreateAsync(ReadFiles(), _postgresConnection);
     }
     private async IAsyncEnumerable<File> ReadFiles()
     {
@@ -30,7 +33,7 @@ internal sealed class FileMigratorPPL : PPLMigrator
                 WHERE fileName NOT IN ('preview', 'thumbnail', '_original')
                 AND f.fid not in (3197, 3198)
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

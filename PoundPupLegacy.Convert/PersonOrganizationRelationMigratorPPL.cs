@@ -1,23 +1,30 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
+internal sealed class PersonOrganizationRelationMigratorPPL : MigratorPPL
 {
 
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IEntityCreator<PersonOrganizationRelation> _personOrganizationRelationCreator;
 
-    public PersonOrganizationRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public PersonOrganizationRelationMigratorPPL(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IEntityCreator<PersonOrganizationRelation> personOrganizationRelationCreator
+    ) : base(databaseConnections)
     {
-
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _personOrganizationRelationCreator = personOrganizationRelationCreator;
     }
 
     protected override string Name => "person organization relation (ppl)";
 
     protected override async Task MigrateImpl()
     {
-        await new PersonOrganizationRelationCreator().CreateAsync(ReadPersonOrganizationRelationsPPL(), _postgresConnection);
-
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _personOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelationsPPL(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<PersonOrganizationRelation> ReadPersonOrganizationRelationsPPL()
+    private async IAsyncEnumerable<PersonOrganizationRelation> ReadPersonOrganizationRelationsPPL(NodeIdReaderByUrlId nodeIdReader)
     {
 
         var sql = $"""
@@ -93,7 +100,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
                     ) fp ON fp.nid = n.nid AND fp.vid = n.vid
                 ) x
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -105,21 +112,21 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int personId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int personId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("person_id"),
                 TenantId = Constants.PPL,
             });
-            int organizationId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int organizationId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("organization_id"),
                 TenantId = Constants.PPL,
             });
             int? geographicalEntityId = reader.IsDBNull("geographical_entity_id")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         UrlId = reader.GetInt32("geographical_entity_id"),
                         TenantId = Constants.PPL,
                     });
-            int personOrganizationRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int personOrganizationRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.PPL,
             });
@@ -163,7 +170,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL : PPLMigrator
 
                 DocumentIdProof = reader.IsDBNull("document_id_proof")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     }),

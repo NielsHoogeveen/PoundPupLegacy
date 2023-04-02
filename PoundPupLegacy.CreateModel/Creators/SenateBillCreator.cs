@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class SenateBillCreator : IEntityCreator<SenateBill>
+internal sealed class SenateBillCreator : IEntityCreator<SenateBill>
 {
     public async Task CreateAsync(IAsyncEnumerable<SenateBill> senateBills, IDbConnection connection)
     {

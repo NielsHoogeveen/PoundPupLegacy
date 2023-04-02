@@ -1,20 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentableDocumentMigrator : PPLMigrator
+internal sealed class DocumentableDocumentMigrator : MigratorPPL
 {
-    public DocumentableDocumentMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<DocumentableDocument> _documentableDocumentCreator;
+    public DocumentableDocumentMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<DocumentableDocument> documentableDocumentCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _documentableDocumentCreator = documentableDocumentCreator;
     }
 
     protected override string Name => "documentable documents";
 
     protected override async Task MigrateImpl()
     {
-        await new DocumentableDocumentCreator().CreateAsync(ReadArticles(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _documentableDocumentCreator.CreateAsync(ReadArticles(nodeIdReader), _postgresConnection);
 
     }
 
-    private async IAsyncEnumerable<DocumentableDocument> ReadArticles()
+    private async IAsyncEnumerable<DocumentableDocument> ReadArticles(NodeIdReaderByUrlId nodeIdReader)
     {
 
         var sql = $"""
@@ -40,7 +49,7 @@ internal sealed class DocumentableDocumentMigrator : PPLMigrator
                 JOIN content_type_adopt_ind_rep r ON r.nid = n.nid AND r.vid = n.vid
                 JOIN node n2 ON n2.nid = cfr.field_pers_org_nid
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -50,11 +59,11 @@ internal sealed class DocumentableDocumentMigrator : PPLMigrator
         while (await reader.ReadAsync()) {
 
             yield return new DocumentableDocument {
-                DocumentableId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                DocumentableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("documentable_id")
                 }),
-                DocumentId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                DocumentId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("document_id")
                 }),

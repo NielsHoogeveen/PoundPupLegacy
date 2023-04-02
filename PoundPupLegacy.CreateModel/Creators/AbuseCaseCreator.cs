@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class AbuseCaseCreator : IEntityCreator<AbuseCase>
+internal sealed class AbuseCaseCreator : IEntityCreator<AbuseCase>
 {
     public async Task CreateAsync(IAsyncEnumerable<AbuseCase> abuseCases, IDbConnection connection)
     {

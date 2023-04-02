@@ -1,8 +1,10 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal class SearchableMigrator : PPLMigrator
+internal class SearchableMigrator : MigratorPPL
 {
-    public SearchableMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public SearchableMigrator(
+        IDatabaseConnections databaseConnections
+    ) : base(databaseConnections)
     {
     }
 

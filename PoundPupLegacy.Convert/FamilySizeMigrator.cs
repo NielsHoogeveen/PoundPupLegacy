@@ -1,9 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class FamilySizeMigrator : PPLMigrator
+internal sealed class FamilySizeMigrator : MigratorPPL
 {
-
-    public FamilySizeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IEntityCreator<FamilySize> _familySizeCreator;
+   public FamilySizeMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<FamilySize> familySizeCreator
+    ) : base(databaseConnections) 
+    { 
+        _familySizeCreator = familySizeCreator;
+    }
 
     protected override string Name => "family sizes";
 
@@ -196,6 +202,6 @@ internal sealed class FamilySizeMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await new FamilySizeCreator().CreateAsync(GetFamilySizes(), _postgresConnection);
+        await _familySizeCreator.CreateAsync(GetFamilySizes(), _postgresConnection);
     }
 }

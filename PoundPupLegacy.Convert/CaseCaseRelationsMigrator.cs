@@ -1,34 +1,47 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal class CaseCaseRelationsMigrator : PPLMigrator
+internal class CaseCaseRelationsMigrator : MigratorPPL
 {
-    public CaseCaseRelationsMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<CaseCaseParties> _caseCasePartiesCreator;
+    public CaseCaseRelationsMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<CaseCaseParties> caseCasePartiesCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _caseCasePartiesCreator = caseCasePartiesCreator;
     }
 
     protected override string Name => "case case relation";
 
     protected override async Task MigrateImpl()
     {
-        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCaseHomestudyParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCasePlacementParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCasePostPlacementParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCaseFacilitatorParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCaseInstitutionParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCaseTherapyParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadChildTraffickingCasePlacementParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadChildTraffickingCaseFacilitatorParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadChildTraffickingCaseOrphanageParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadDisruptedPlacementCasePlacementParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadDisruptedPlacementCaseFacilitatorParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadCoercedAdoptionCasePlacementParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadFathersRightsViolationCasePlacementParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadWrongfulRemovalCaseAuthorityParties(), _postgresConnection);
-        await new CaseCaseRelationsCreator().CreateAsync(ReadWrongfulMedicationCaseAuthorityParties(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCaseHomestudyParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCasePlacementParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCasePostPlacementParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCaseFacilitatorParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCaseInstitutionParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCaseTherapyParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCasePlacementParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCaseFacilitatorParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCaseOrphanageParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadDisruptedPlacementCasePlacementParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadDisruptedPlacementCaseFacilitatorParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadCoercedAdoptionCasePlacementParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadFathersRightsViolationCasePlacementParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadWrongfulRemovalCaseAuthorityParties(nodeIdReader), _postgresConnection);
+        await _caseCasePartiesCreator.CreateAsync(ReadWrongfulMedicationCaseAuthorityParties(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadCaseCaseRelations(string sql, int casePartyTypeId)
+    private async IAsyncEnumerable<CaseCaseParties> ReadCaseCaseRelations(
+        string sql, 
+        int casePartyTypeId,
+        NodeIdReaderByUrlId nodeIdReader)
     {
-        using var readCommand = MysqlConnection.CreateCommand();
+        
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -41,21 +54,21 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
             var id = reader.GetInt32("id");
             var organizationIds = new List<int>();
             foreach (var entry in reader.IsDBNull("organization_ids") ? new List<int>() : reader.GetString("organization_ids").Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x))) {
-                organizationIds.Add(await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                organizationIds.Add(await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = entry,
                     TenantId = Constants.PPL
                 }));
             }
             var personIds = new List<int>();
             foreach (var entry in reader.IsDBNull("person_ids") ? new List<int>() : reader.GetString("person_ids").Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x))) {
-                personIds.Add(await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                personIds.Add(await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = entry,
                     TenantId = Constants.PPL
                 }));
             }
 
             yield return new CaseCaseParties {
-                CaseId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                CaseId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = id,
                     TenantId = Constants.PPL
                 }),
@@ -73,7 +86,7 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
         await reader.CloseAsync();
 
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseHomestudyParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseHomestudyParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -114,14 +127,19 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.HOMESTUDY_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.HOMESTUDY_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCasePlacementParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -162,15 +180,20 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.PLACEMENT_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.PLACEMENT_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCasePostPlacementParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCasePostPlacementParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -211,14 +234,19 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.POSTPLACEMENT_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.POSTPLACEMENT_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseFacilitatorParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseFacilitatorParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -260,15 +288,20 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.FACILITATION_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.FACILITATION_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseInstitutionParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseInstitutionParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -309,14 +342,19 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.INSTITUTION_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.INSTITUTION_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseTherapyParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseTherapyParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -343,14 +381,19 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.THERAPY_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.THERAPY_CASE_TYPE,
+                TenantId = Constants.PPL
+            }),
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCasePlacementParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -392,16 +435,22 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.PLACEMENT_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.PLACEMENT_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCaseFacilitatorParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCaseFacilitatorParties(NodeIdReaderByUrlId nodeIdReader)
     {
+
         var sql = $"""
                 SELECT
                 *
@@ -442,17 +491,22 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.FACILITATION_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.FACILITATION_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCaseOrphanageParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCaseOrphanageParties(NodeIdReaderByUrlId nodeIdReader)
     {
-        var sql = $"""
+       var sql = $"""
                 SELECT
                 *
                 FROM(
@@ -492,15 +546,20 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.INSTITUTION_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.INSTITUTION_CASE_TYPE,
+                TenantId = Constants.PPL
+            }),
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadDisruptedPlacementCasePlacementParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadDisruptedPlacementCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -540,14 +599,19 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.PLACEMENT_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.PLACEMENT_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadDisruptedPlacementCaseFacilitatorParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadDisruptedPlacementCaseFacilitatorParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -589,14 +653,19 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.FACILITATION_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.FACILITATION_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadCoercedAdoptionCasePlacementParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadCoercedAdoptionCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -638,14 +707,19 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.PLACEMENT_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.PLACEMENT_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadFathersRightsViolationCasePlacementParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadFathersRightsViolationCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -685,14 +759,19 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.PLACEMENT_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.PLACEMENT_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadWrongfulRemovalCaseAuthorityParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadWrongfulRemovalCaseAuthorityParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -719,14 +798,18 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.AUTHORITIES_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                UrlId = Constants.AUTHORITIES_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadWrongfulMedicationCaseAuthorityParties()
+    private async IAsyncEnumerable<CaseCaseParties> ReadWrongfulMedicationCaseAuthorityParties(NodeIdReaderByUrlId nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -753,10 +836,15 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
                 ) x
                 WHERE NOT (organizations_text IS NULL AND organization_ids IS NULL AND persons_text IS NULL AND person_ids IS NULL)
                 """;
-        await foreach (var elem in ReadCaseCaseRelations(sql, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
-            UrlId = Constants.AUTHORITIES_CASE_TYPE,
-            TenantId = Constants.PPL
-        }))) {
+        await foreach (var elem in ReadCaseCaseRelations(
+            sql, 
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request 
+            {
+                UrlId = Constants.AUTHORITIES_CASE_TYPE,
+                TenantId = Constants.PPL
+            }), 
+            nodeIdReader
+        )) {
             yield return elem;
         }
     }

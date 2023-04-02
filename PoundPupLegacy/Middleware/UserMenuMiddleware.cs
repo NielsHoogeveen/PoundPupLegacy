@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Middleware;
 
-public class UserMenuMiddleware
+public sealed class UserMenuMiddleware
 {
     private readonly RequestDelegate _next;
 

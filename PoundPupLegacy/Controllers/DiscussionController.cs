@@ -3,7 +3,7 @@
 namespace PoundPupLegacy.Controllers;
 
 [Route("discussion")]
-public class DiscussionController : Controller
+public sealed class DiscussionController : Controller
 {
     [HttpGet("create")]
     public IActionResult Index()

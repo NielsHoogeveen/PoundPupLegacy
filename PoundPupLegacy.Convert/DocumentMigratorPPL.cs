@@ -1,20 +1,32 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System.Runtime.CompilerServices;
 
-internal sealed class DocumentMigratorPPL : PPLMigrator
+namespace PoundPupLegacy.Convert;
+
+internal sealed class DocumentMigratorPPL : MigratorPPL
 {
-    public DocumentMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<Document> _documentCreator;
+    public DocumentMigratorPPL(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<Document> documentCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _documentCreator = documentCreator;
     }
 
     protected override string Name => "documents ppl";
 
     protected override async Task MigrateImpl()
     {
-        await new DocumentCreator().CreateAsync(ReadDocuments(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _documentCreator.CreateAsync(ReadDocuments(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<Document> ReadDocuments()
+    private async IAsyncEnumerable<Document> ReadDocuments(NodeIdReaderByUrlId nodeIdReader)
     {
+        
 
         var sql = $"""
                 SELECT
@@ -69,7 +81,7 @@ internal sealed class DocumentMigratorPPL : PPLMigrator
                 ) c ON c.nid = n.nid 
                 WHERE n.`type` = 'case_file'
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -117,7 +129,7 @@ internal sealed class DocumentMigratorPPL : PPLMigrator
                 Teaser = TextToTeaser(reader.GetString("text")),
                 DocumentTypeId = reader.IsDBNull("document_type_id")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         UrlId = reader.GetInt32("document_type_id"),
                         TenantId = Constants.PPL,
                     }),

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
+internal sealed class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
 {
     public async Task CreateAsync(IAsyncEnumerable<CoercedAdoptionCase> coercedAdoptionCases, IDbConnection connection)
     {

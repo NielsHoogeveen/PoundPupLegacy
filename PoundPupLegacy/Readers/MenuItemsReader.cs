@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.Common;
 
 namespace PoundPupLegacy.Readers;
-public class MenuItemsReaderFactory : IDatabaseReaderFactory<MenuItemsReader>
+internal sealed class MenuItemsReaderFactory : IDatabaseReaderFactory<MenuItemsReader>
 {
     public async Task<MenuItemsReader> CreateAsync(IDbConnection connection)
     {
@@ -126,7 +126,7 @@ public class MenuItemsReaderFactory : IDatabaseReaderFactory<MenuItemsReader>
 
 }
 
-public class MenuItemsReader : EnumerableDatabaseReader<MenuItemsReader.Request, UserTenantMenuItems>
+internal sealed class MenuItemsReader : EnumerableDatabaseReader<MenuItemsReader.Request, UserTenantMenuItems>
 {
     public record Request
     {

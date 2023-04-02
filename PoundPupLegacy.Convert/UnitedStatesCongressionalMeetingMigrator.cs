@@ -1,10 +1,18 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class UnitedStatesCongressionalMeetingMigrator : PPLMigrator
+internal sealed class UnitedStatesCongressionalMeetingMigrator : MigratorPPL
 {
     protected override string Name => "united states congressional meetings";
 
-    public UnitedStatesCongressionalMeetingMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IEntityCreator<UnitedStatesCongressionalMeeting> _unitedStatesCongressionalMeetingCreator;
+
+    public UnitedStatesCongressionalMeetingMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<UnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreator
+    ) : base(databaseConnections) 
+    { 
+        _unitedStatesCongressionalMeetingCreator = unitedStatesCongressionalMeetingCreator;
+    }
     private async IAsyncEnumerable<UnitedStatesCongressionalMeeting> ReadUnitedStatesCongressionalMeetingCsv()
     {
 
@@ -56,6 +64,6 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await new UnitedStatesCongressionalMeetingCreator().CreateAsync(ReadUnitedStatesCongressionalMeetingCsv(), _postgresConnection);
+        await _unitedStatesCongressionalMeetingCreator.CreateAsync(ReadUnitedStatesCongressionalMeetingCsv(), _postgresConnection);
     }
 }

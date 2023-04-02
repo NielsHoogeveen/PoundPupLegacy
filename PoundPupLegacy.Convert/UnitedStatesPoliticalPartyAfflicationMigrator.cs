@@ -1,13 +1,22 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
+internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
 {
-
-    public UnitedStatesPoliticalPartyAffliationMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IEntityCreator<UnitedStatesPoliticalPartyAffliation> _unitedStatesPoliticalPartyAffliationCreator;
+    public UnitedStatesPoliticalPartyAffliationMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IEntityCreator<UnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreator
+    ) : base(databaseConnections) 
+    { 
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _unitedStatesPoliticalPartyAffliationCreator = unitedStatesPoliticalPartyAffliationCreator;
+    }
 
     protected override string Name => "united states political party affilition";
 
-    private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations()
+    private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations(NodeIdReaderByUrlId nodeIdReader)
     {
 
         yield return new UnitedStatesPoliticalPartyAffliation {
@@ -53,7 +62,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = Constants.DEMOCRATIC_PARTY
             })
@@ -102,7 +111,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = Constants.REPUBLICAN_PARTY
             })
@@ -195,7 +204,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = Constants.POPULAR_DEMOCRAT_PARTY
             })
@@ -243,7 +252,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = Constants.LIBERTARIAN_PARTY
             })
@@ -251,7 +260,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-
-        await new UnitedStatesPoliticalPartyAffliationCreator().CreateAsync(GetUnitedStatesPoliticalPartyAffliations(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _unitedStatesPoliticalPartyAffliationCreator.CreateAsync(GetUnitedStatesPoliticalPartyAffliations(nodeIdReader), _postgresConnection);
     }
 }

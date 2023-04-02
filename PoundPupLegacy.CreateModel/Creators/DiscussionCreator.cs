@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class DiscussionCreator : IEntityCreator<Discussion>
+internal sealed class DiscussionCreator : IEntityCreator<Discussion>
 {
     public async Task CreateAsync(IAsyncEnumerable<Discussion> discussions, IDbConnection connection)
     {

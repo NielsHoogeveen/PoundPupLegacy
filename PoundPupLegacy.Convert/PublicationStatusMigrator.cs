@@ -1,9 +1,16 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PublicationStatusMigrator : PPLMigrator
+internal sealed class PublicationStatusMigrator : MigratorPPL
 {
     protected override string Name => "publication statuses";
-    public PublicationStatusMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IEntityCreator<PublicationStatus> _publicationStatusCreator;
+    public PublicationStatusMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<PublicationStatus> publicationStatusCreator
+    ) : base(databaseConnections) 
+    { 
+        _publicationStatusCreator = publicationStatusCreator;
+    }
 
     private static async IAsyncEnumerable<PublicationStatus> GetNodeStatuses()
     {
@@ -24,6 +31,6 @@ internal sealed class PublicationStatusMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await new PublicationStatusCreator().CreateAsync(GetNodeStatuses(), _postgresConnection);
+        await _publicationStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
     }
 }

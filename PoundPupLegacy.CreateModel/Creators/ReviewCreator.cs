@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class ReviewCreator : IEntityCreator<Review>
+internal sealed class ReviewCreator : IEntityCreator<Review>
 {
     public async Task CreateAsync(IAsyncEnumerable<Review> reviews, IDbConnection connection)
     {

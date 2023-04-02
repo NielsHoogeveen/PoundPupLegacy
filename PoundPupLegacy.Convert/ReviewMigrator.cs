@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ReviewMigrator : PPLMigrator
+internal sealed class ReviewMigrator : MigratorPPL
 {
-    public ReviewMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<BlogPost> _blogPostCreator;
+    public ReviewMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<BlogPost> blogPostCreator
+    ) : base(databaseConnections)
     {
+        _blogPostCreator = blogPostCreator;
     }
 
     protected override string Name => "reviews";
 
     protected override async Task MigrateImpl()
     {
-        await new BlogPostCreator().CreateAsync(ReadReviews(), _postgresConnection);
+        await _blogPostCreator.CreateAsync(ReadReviews(), _postgresConnection);
     }
     private async IAsyncEnumerable<BlogPost> ReadReviews()
     {
@@ -28,7 +33,7 @@ internal sealed class ReviewMigrator : PPLMigrator
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 WHERE n.`type` = 'review' AND n.uid <> 0
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

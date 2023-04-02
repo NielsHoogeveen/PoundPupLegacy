@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class DenominationCreator : IEntityCreator<Denomination>
+internal sealed class DenominationCreator : IEntityCreator<Denomination>
 {
     public async Task CreateAsync(IAsyncEnumerable<Denomination> denominations, IDbConnection connection)
     {

@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Updaters;
 
-public class TenantNodeUpdaterFactory : IDatabaseUpdaterFactory<TenantNodeUpdater>
+internal sealed class TenantNodeUpdaterFactory : IDatabaseUpdaterFactory<TenantNodeUpdater>
 {
     public async Task<TenantNodeUpdater> CreateAsync(IDbConnection connection)
     {
@@ -33,7 +33,7 @@ public class TenantNodeUpdaterFactory : IDatabaseUpdaterFactory<TenantNodeUpdate
     }
 }
 
-public class TenantNodeUpdater: DatabaseUpdater<TenantNodeUpdater.Request>
+internal sealed class TenantNodeUpdater : DatabaseUpdater<TenantNodeUpdater.Request>
 {
     public TenantNodeUpdater(NpgsqlCommand command) : base(command)
     {

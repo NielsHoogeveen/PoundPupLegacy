@@ -1,9 +1,16 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class OrganizationMigratorCPCT : CPCTMigrator
+internal sealed class OrganizationMigratorCPCT : MigratorCPCT
 {
-    public OrganizationMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<Organization> _organizationCreator;
+    public OrganizationMigratorCPCT(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IEntityCreator<Organization> organizationCreator
+    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
+        _organizationCreator = organizationCreator;
     }
 
     protected override string Name => "organizations (cpct)";
@@ -11,10 +18,11 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
 
     protected override async Task MigrateImpl()
     {
-        await new OrganizationCreator().CreateAsync(ReadOrganizations(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<BasicOrganization> ReadOrganizations()
+    private async IAsyncEnumerable<BasicOrganization> ReadOrganizations(NodeIdReaderByUrlId nodeIdReader)
     {
 
         var sql = $"""
@@ -164,14 +172,14 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
          * 48330 => 48545 cpct
          * 47699 => 48846 cpct
          */
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
 
 
         var reader = await readCommand.ExecuteReaderAsync();
-        var miscellaneous = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+        var miscellaneous = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             TenantId = Constants.PPL,
             UrlId = 12634
         });
@@ -187,7 +195,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
-                var organizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = typeId
                 });

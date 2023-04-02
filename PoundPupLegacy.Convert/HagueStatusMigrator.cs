@@ -1,14 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class HagueStatusMigrator : PPLMigrator
+internal sealed class HagueStatusMigrator : MigratorPPL
 {
-    public HagueStatusMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IEntityCreator<HagueStatus> _hagueStatusCreator;
+    public HagueStatusMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<HagueStatus> hagueStatusCreator
+    ) : base(databaseConnections) 
+    { 
+        _hagueStatusCreator = hagueStatusCreator;
+    }
 
     protected override string Name => "Hague statuses";
 
     protected override async Task MigrateImpl()
     {
-        await new HagueStatusCreator().CreateAsync(ReadHagueStatuses(), _postgresConnection);
+        await _hagueStatusCreator.CreateAsync(ReadHagueStatuses(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<HagueStatus> ReadHagueStatuses()
@@ -28,7 +35,7 @@ internal sealed class HagueStatusMigrator : PPLMigrator
                     JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                     JOIN category c ON c.cid = n.nid AND c.cnid = 41212
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

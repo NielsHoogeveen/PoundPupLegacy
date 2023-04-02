@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
+internal sealed class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
 {
     public async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, IDbConnection connection)
     {

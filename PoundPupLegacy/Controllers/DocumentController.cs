@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Controllers;
 
 
 [Route("document")]
-public class DocumentController : Controller
+public sealed class DocumentController : Controller
 {
 
 

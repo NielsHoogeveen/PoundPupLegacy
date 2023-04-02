@@ -1,16 +1,23 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System;
 
-internal sealed class BlogPostMigrator : PPLMigrator
+namespace PoundPupLegacy.Convert;
+
+internal sealed class BlogPostMigrator : MigratorPPL
 {
-    public BlogPostMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<BlogPost> _blogPostCreator;
+    public BlogPostMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<BlogPost> blogPostCreator
+    ) : base(databaseConnections)
     {
+        _blogPostCreator = blogPostCreator;
     }
 
     protected override string Name => "blog posts";
 
     protected override async Task MigrateImpl()
     {
-        await new BlogPostCreator().CreateAsync(ReadBlogPosts(), _postgresConnection);
+        await _blogPostCreator.CreateAsync(ReadBlogPosts(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<BlogPost> ReadBlogPosts()
@@ -29,7 +36,7 @@ internal sealed class BlogPostMigrator : PPLMigrator
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 WHERE n.`type` = 'blog' AND n.uid not in (0, 39)
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

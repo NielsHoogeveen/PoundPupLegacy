@@ -1,17 +1,27 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System;
 
-internal sealed class BillMigrator : PPLMigrator
+namespace PoundPupLegacy.Convert;
+
+internal sealed class BillMigrator : MigratorPPL
 {
-    public BillMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<HouseBill> _houseBillCreator;
+    private readonly IEntityCreator<SenateBill> _senateBillCreator;
+    public BillMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<HouseBill> houseBillCreator,
+        IEntityCreator<SenateBill> senateBillCreator
+    ) : base(databaseConnections)
     {
+        _houseBillCreator = houseBillCreator;
+        _senateBillCreator = senateBillCreator;
     }
 
     protected override string Name => "bills";
 
     protected override async Task MigrateImpl()
     {
-        await new HouseBillCreator().CreateAsync(ReadHouseBills(), _postgresConnection);
-        await new SenateBillCreator().CreateAsync(ReadSenateBills(), _postgresConnection);
+        await _houseBillCreator.CreateAsync(ReadHouseBills(), _postgresConnection);
+        await _senateBillCreator.CreateAsync(ReadSenateBills(), _postgresConnection);
 
     }
 
@@ -106,7 +116,7 @@ internal sealed class BillMigrator : PPLMigrator
                  WHERE SUBSTRING(title, 1, 2) = 'H.'
                 
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -255,7 +265,7 @@ internal sealed class BillMigrator : PPLMigrator
                  WHERE SUBSTRING(title, 1, 2) = 'S.'
                 
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

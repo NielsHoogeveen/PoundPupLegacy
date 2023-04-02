@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class CoercedAdoptionCaseMigrator : PPLMigrator
+internal sealed class CoercedAdoptionCaseMigrator : MigratorPPL
 {
-    public CoercedAdoptionCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<CoercedAdoptionCase> _coercedAdoptionCaseCreator;
+    public CoercedAdoptionCaseMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<CoercedAdoptionCase> coercedAdoptionCaseCreator
+    ) : base(databaseConnections)
     {
+        _coercedAdoptionCaseCreator = coercedAdoptionCaseCreator;
     }
 
     protected override string Name => "coerced adoption cases";
 
     protected override async Task MigrateImpl()
     {
-        await new CoercedAdoptionCaseCreator().CreateAsync(ReadCoercedAdoptionCases(), _postgresConnection);
+        await _coercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<CoercedAdoptionCase> ReadCoercedAdoptionCases()
     {
@@ -86,7 +91,7 @@ internal sealed class CoercedAdoptionCaseMigrator : PPLMigrator
                         n.title
                 ) c3 ON c3.title = n.title                
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class PageCreator : IEntityCreator<Page>
+internal sealed class PageCreator : IEntityCreator<Page>
 {
     public async Task CreateAsync(IAsyncEnumerable<Page> pages, IDbConnection connection)
     {

@@ -1,22 +1,34 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class NodeFileMigratorCPCT : CPCTMigrator
+internal sealed class NodeFileMigratorCPCT : MigratorCPCT
 {
 
-    public NodeFileMigratorCPCT(MySqlToPostgresConverter converter) : base(converter)
-    {
+    private IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
 
+    private readonly IEntityCreator<NodeFile> _nodeFileCreator;
+    public NodeFileMigratorCPCT(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<NodeFile> nodeFileCreator
+    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
+    {
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _nodeFileCreator = nodeFileCreator;
     }
 
     protected override string Name => "files nodes (cpct)";
 
     protected override async Task MigrateImpl()
     {
-        await new NodeFileCreator().CreateAsync(ReadNodeFiles(), _postgresConnection);
-    }
-    private async IAsyncEnumerable<NodeFile> ReadNodeFiles()
-    {
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
 
+        await _nodeFileCreator.CreateAsync(ReadNodeFiles(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
+    }
+    private async IAsyncEnumerable<NodeFile> ReadNodeFiles(NodeIdReaderByUrlId nodeIdReader, FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    {
         var sql = $"""
                 SELECT f.fid,
                 n.nid
@@ -25,7 +37,7 @@ internal sealed class NodeFileMigratorCPCT : CPCTMigrator
                 where f.fid > 1185
                 and not(n.nid = 22185 and f.fid = 1200)
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -36,18 +48,18 @@ internal sealed class NodeFileMigratorCPCT : CPCTMigrator
         while (await reader.ReadAsync()) {
 
             yield return new NodeFile {
-                NodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = reader.GetInt32("nid"),
                     TenantId = Constants.CPCT
                 }),
-                FileId = await GetFileId(reader.GetInt32("fid")),
+                FileId = await GetFileId(reader.GetInt32("fid"), fileIdReaderByTenantFileId),
             };
 
         }
         await reader.CloseAsync();
     }
 
-    private async Task<int> GetFileId(int fid)
+    private async Task<int> GetFileId(int fid, FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
         (int tenantId, int fileId) = fid switch {
             1200 => (Constants.PPL, 1293),
@@ -63,7 +75,7 @@ internal sealed class NodeFileMigratorCPCT : CPCTMigrator
             3968 => (Constants.PPL, 1801),
             _ => (Constants.CPCT, fid)
         };
-        return await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+        return await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
             TenantId = tenantId,
             TenantFileId = fileId
         });

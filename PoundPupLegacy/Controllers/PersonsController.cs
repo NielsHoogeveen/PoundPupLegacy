@@ -6,7 +6,7 @@ using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
 namespace PoundPupLegacy.Controllers;
 
 [Route("persons")]
-public class PersonsController : Controller
+public sealed class PersonsController : Controller
 {
     const int NUMBER_OF_ENTRIES = 50;
 

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class PollStatusCreator : IEntityCreator<PollStatus>
+internal sealed class PollStatusCreator : IEntityCreator<PollStatus>
 {
     public async Task CreateAsync(IAsyncEnumerable<PollStatus> pollStatuss, IDbConnection connection)
     {

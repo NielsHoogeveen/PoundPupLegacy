@@ -1,17 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class InterOrganizationalRelationTypeMigrator : PPLMigrator
+internal sealed class InterOrganizationalRelationTypeMigrator : MigratorPPL
 {
-    public InterOrganizationalRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<InterOrganizationalRelationType> _interOrganizationalRelationTypeCreator;
+    public InterOrganizationalRelationTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<InterOrganizationalRelationType> interOrganizationalRelationTypeCreator
+    ) : base(databaseConnections) 
+    { 
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _interOrganizationalRelationTypeCreator = interOrganizationalRelationTypeCreator;
+    }
 
     protected override string Name => "inter-organization relation types";
 
     protected override async Task MigrateImpl()
     {
-        await new InterOrganizationalRelationTypeCreator().CreateAsync(ReadInterOrganizationalRelationTypes(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _interOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<InterOrganizationalRelationType> ReadInterOrganizationalRelationTypes()
+    private async IAsyncEnumerable<InterOrganizationalRelationType> ReadInterOrganizationalRelationTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
+        
 
         var sql = $"""
                 SELECT
@@ -34,7 +46,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator : PPLMigrator
                 JOIN category c ON c.cid = n.nid AND c.cnid = 12637
                 """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -89,7 +101,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

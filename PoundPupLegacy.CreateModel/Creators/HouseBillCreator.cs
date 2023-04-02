@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class HouseBillCreator : IEntityCreator<HouseBill>
+internal sealed class HouseBillCreator : IEntityCreator<HouseBill>
 {
     public async Task CreateAsync(IAsyncEnumerable<HouseBill> houseBills, IDbConnection connection)
     {

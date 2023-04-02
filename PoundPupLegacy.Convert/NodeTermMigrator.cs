@@ -1,20 +1,34 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class NodeTermMigrator : PPLMigrator
+internal sealed class NodeTermMigrator : MigratorPPL
 {
-    public NodeTermMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IDatabaseReaderFactory<TermReaderByNameableId> _termReaderByNameableIdFactory;
+    private readonly IEntityCreator<NodeTerm> _nodeTermCreator;
+
+    public NodeTermMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TermReaderByNameableId> termReaderByNameableIdFactory,
+        IEntityCreator<NodeTerm> nodeTermCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
+        _nodeTermCreator = nodeTermCreator;
     }
 
     protected override string Name => "node terms";
 
     protected override async Task MigrateImpl()
     {
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
 
-        await new NodeTermCreator().CreateAsync(ReadNodeTerms(), _postgresConnection);
+        await _nodeTermCreator.CreateAsync(ReadNodeTerms(nodeIdReader, termReaderByNameableId), _postgresConnection);
 
     }
-    private async IAsyncEnumerable<NodeTerm> ReadNodeTerms()
+    private async IAsyncEnumerable<NodeTerm> ReadNodeTerms(NodeIdReaderByUrlId nodeIdReader, TermReaderByNameableId termReaderByNameableId)
     {
 
         var sql = $"""
@@ -73,7 +87,7 @@ internal sealed class NodeTermMigrator : PPLMigrator
                 AND n.`type` NOT IN ('amazon_node', 'poll', 'video', 'amazon', 'website', 'image', 'book_page', 'panel', 'viewnode')
                 AND n.uid <> 0
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -82,16 +96,16 @@ internal sealed class NodeTermMigrator : PPLMigrator
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var nodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var nodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id"),
             });
-            var nameableId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var nameableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id"),
             });
 
-            var term = await _termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
+            var term = await termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
                 OwnerId = Constants.PPL,
                 NameableId = nameableId,
                 VocabularyName = Constants.VOCABULARY_TOPICS,

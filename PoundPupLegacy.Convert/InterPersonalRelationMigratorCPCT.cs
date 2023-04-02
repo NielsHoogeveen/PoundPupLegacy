@@ -1,20 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class InterPersonalRelationMigratorCPCT : CPCTMigrator
+internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
 {
-    public InterPersonalRelationMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<InterPersonalRelation> _interPersonalRelationCreator;
+    public InterPersonalRelationMigratorCPCT(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IEntityCreator<InterPersonalRelation> interPersonalRelationCreator
+    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
+        _interPersonalRelationCreator = interPersonalRelationCreator;
     }
 
     protected override string Name => "inter personal relation";
 
     protected override async Task MigrateImpl()
     {
-        await new InterPersonalRelationCreator().CreateAsync(ReadInterPersonalRelations(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeReaderByUrlId = await _tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
 
     }
 
-    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations()
+    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReaderByUrlId)
     {
 
         var sql = $"""
@@ -62,7 +71,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : CPCTMigrator
                 	WHERE n.nid > 33162
                 ) x
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -74,9 +83,9 @@ internal sealed class InterPersonalRelationMigratorCPCT : CPCTMigrator
 
             var id = reader.GetInt32("id");
 
-            var (personIdFrom, personFromPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id_from"));
-            var (personIdTo, personToPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id_to"));
-            int interPersonalRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var (personIdFrom, personFromPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id_from"), nodeIdReader, tenantNodeReaderByUrlId);
+            var (personIdTo, personToPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id_to"), nodeIdReader, tenantNodeReaderByUrlId);
+            int interPersonalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.CPCT,
                 UrlId = reader.GetInt32("nameable_id")
             });

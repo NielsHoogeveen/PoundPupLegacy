@@ -1,20 +1,30 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DenominationMigrator : PPLMigrator
+internal sealed class DenominationMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<Denomination> _denominationCreator;
 
-    public DenominationMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    public DenominationMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<Denomination> denominationCreator
+    ) : base(databaseConnections) 
+    { 
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _denominationCreator = denominationCreator;
+    }
 
     protected override string Name => "denominations";
 
     protected override async Task MigrateImpl()
     {
-        await new DenominationCreator().CreateAsync(ReadDenominations(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _denominationCreator.CreateAsync(ReadDenominations(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<Denomination> ReadDenominations()
+    private async IAsyncEnumerable<Denomination> ReadDenominations(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
-
-        var sql = $"""
+       var sql = $"""
                 SELECT
                     n.nid id,
                     n.uid access_role_id,
@@ -53,7 +63,7 @@ internal sealed class DenominationMigrator : PPLMigrator
                 ) n2 ON n2.title = v.topic_name
                 """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -118,7 +128,7 @@ internal sealed class DenominationMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

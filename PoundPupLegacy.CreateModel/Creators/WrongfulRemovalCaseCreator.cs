@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
+internal sealed class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
 {
     public async Task CreateAsync(IAsyncEnumerable<WrongfulRemovalCase> wrongfulRemovalCases, IDbConnection connection)
     {

@@ -1,17 +1,29 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿
+namespace PoundPupLegacy.Convert;
 
-internal sealed class InterCountryRelationTypeMigrator : PPLMigrator
+internal sealed class InterCountryRelationTypeMigrator : MigratorPPL
 {
-
-    public InterCountryRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<InterCountryRelationType> _interCountryRelationTypeCreator;
+    public InterCountryRelationTypeMigrator(
+    IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<InterCountryRelationType> interCountryRelationTypeCreator
+    ) : base(databaseConnections) 
+    {
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _interCountryRelationTypeCreator = interCountryRelationTypeCreator;
+    }
 
     protected override string Name => "inter-country relation types";
 
     protected override async Task MigrateImpl()
     {
-        await new InterCountryRelationTypeCreator().CreateAsync(ReadInterCountryRelationTypes(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+
+        await _interCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<InterCountryRelationType> ReadInterCountryRelationTypes()
+    private async IAsyncEnumerable<InterCountryRelationType> ReadInterCountryRelationTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -33,7 +45,7 @@ internal sealed class InterCountryRelationTypeMigrator : PPLMigrator
                 ) x
                 """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -88,7 +100,7 @@ internal sealed class InterCountryRelationTypeMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

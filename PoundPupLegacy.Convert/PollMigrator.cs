@@ -1,17 +1,24 @@
 ﻿namespace PoundPupLegacy.Convert;
-internal sealed class PollMigrator : PPLMigrator
+internal sealed class PollMigrator : MigratorPPL
 {
-    public PollMigrator(MySqlToPostgresConverter converter) : base(converter)
+    private readonly IEntityCreator<SingleQuestionPoll> _singleQuestionPollCreator;
+    private readonly IEntityCreator<MultiQuestionPoll> _multiQuestionPollCreator;
+    public PollMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<SingleQuestionPoll> singleQuestionPollCreator,
+        IEntityCreator<MultiQuestionPoll> multiQuestionPollCreator
+    ) : base(databaseConnections)
     {
-
+        _singleQuestionPollCreator = singleQuestionPollCreator;
+        _multiQuestionPollCreator = multiQuestionPollCreator;
     }
 
     protected override string Name => "polls";
 
     protected override async Task MigrateImpl()
     {
-        await new SingleQuestionPollCreator().CreateAsync(ReadSingleQuestionPolls(), _postgresConnection);
-        await new MultiQuestionPollCreator().CreateAsync(ReadMultiQuestionPolls(), _postgresConnection);
+        await _singleQuestionPollCreator.CreateAsync(ReadSingleQuestionPolls(), _postgresConnection);
+        await _multiQuestionPollCreator.CreateAsync(ReadMultiQuestionPolls(), _postgresConnection);
     }
     private async IAsyncEnumerable<SingleQuestionPoll> ReadSingleQuestionPolls()
     {
@@ -50,7 +57,7 @@ internal sealed class PollMigrator : PPLMigrator
                 AND n.nid NOT IN (48443, 48446,48447 )
                 ORDER BY n.nid, fp.delta
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -126,7 +133,7 @@ internal sealed class PollMigrator : PPLMigrator
     {
         MultiQuestionPoll? multiQuestionPoll = null;
 
-        using (var readCommand = MysqlConnection.CreateCommand()) {
+        using (var readCommand = _mySqlConnection.CreateCommand()) {
             var sql = $"""
                 SELECT
                 distinct
@@ -186,7 +193,7 @@ internal sealed class PollMigrator : PPLMigrator
         }
 
         if (multiQuestionPoll is not null) {
-            using (var readCommand = MysqlConnection.CreateCommand()) {
+            using (var readCommand = _mySqlConnection.CreateCommand()) {
                 var sql = $"""
                 SELECT
                 distinct

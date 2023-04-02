@@ -1,18 +1,33 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
+internal sealed class SecondLevelGlobalRegionMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<SecondLevelGlobalRegion> _secondLevelGlobalRegionCreator;
 
-    public SecondLevelGlobalRegionMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    public SecondLevelGlobalRegionMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<SecondLevelGlobalRegion> secondLevelGlobalRegionCreator
+    ) : base(databaseConnections) 
+    { 
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _secondLevelGlobalRegionCreator = secondLevelGlobalRegionCreator;
+    }
 
     protected override string Name => "second level global regions";
 
     protected override async Task MigrateImpl()
     {
-        await new SecondLevelGlobalRegionCreator().CreateAsync(ReadSecondLevelGlobalRegion(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _secondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion()
+    private async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(NodeIdReaderByUrlId nodeIdReader, FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
         var sql = $"""
                 SELECT n.nid id,
@@ -37,7 +52,7 @@ internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
                 AND n2.`type` = 'region_facts'
                 """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -95,12 +110,12 @@ internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 Name = name,
-                FirstLevelGlobalRegionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                FirstLevelGlobalRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("first_level_global_region_id")
                 })

@@ -1,17 +1,31 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel.Readers;
+using System.Runtime.CompilerServices;
 
-internal sealed class FirstLevelGlobalRegionMigrator : PPLMigrator
+namespace PoundPupLegacy.Convert;
+
+internal sealed class FirstLevelGlobalRegionMigrator : MigratorPPL
 {
-    public FirstLevelGlobalRegionMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<FirstLevelGlobalRegion> _firstLevelGlobalRegionCreator;
+    public FirstLevelGlobalRegionMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<FirstLevelGlobalRegion> firstLevelGlobalRegionCreator
+    ) : base(databaseConnections) 
+    {
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _firstLevelGlobalRegionCreator = firstLevelGlobalRegionCreator;
+    }
 
     protected override string Name => "first level global regions";
 
     protected override async Task MigrateImpl()
     {
-        await new FirstLevelGlobalRegionCreator().CreateAsync(ReadFirstLevelGlobalRegions(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _firstLevelGlobalRegionCreator.CreateAsync(ReadFirstLevelGlobalRegions(fileIdReaderByTenantFileId), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<FirstLevelGlobalRegion> ReadFirstLevelGlobalRegions()
+    private async IAsyncEnumerable<FirstLevelGlobalRegion> ReadFirstLevelGlobalRegions(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
         var sql = $"""
             SELECT n.nid id,
@@ -34,7 +48,7 @@ internal sealed class FirstLevelGlobalRegionMigrator : PPLMigrator
             AND n2.`type` = 'category_cont'
             """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -91,7 +105,7 @@ internal sealed class FirstLevelGlobalRegionMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

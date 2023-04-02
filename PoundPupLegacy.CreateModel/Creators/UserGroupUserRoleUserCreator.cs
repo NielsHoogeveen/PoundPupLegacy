@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class UserGroupUserRoleUserCreator : IEntityCreator<UserGroupUserRoleUser>
+internal sealed class UserGroupUserRoleUserCreator : IEntityCreator<UserGroupUserRoleUser>
 {
     public async Task CreateAsync(IAsyncEnumerable<UserGroupUserRoleUser> userGroupUserRoleUsers, IDbConnection connection)
     {

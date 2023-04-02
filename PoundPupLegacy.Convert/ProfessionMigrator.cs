@@ -1,17 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ProfessionMigrator : PPLMigrator
+internal sealed class ProfessionMigrator : MigratorPPL
 {
 
-    public ProfessionMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IEntityCreator<Profession> _professionCreator;
+
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    public ProfessionMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<Profession> professionCreator
+    ) : base(databaseConnections) 
+    { 
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _professionCreator = professionCreator;
+    }
 
     protected override string Name => "professions";
 
     protected override async Task MigrateImpl()
     {
-        await new ProfessionCreator().CreateAsync(ReadProfessions(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _professionCreator.CreateAsync(ReadProfessions(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<Profession> ReadProfessions()
+    private async IAsyncEnumerable<Profession> ReadProfessions(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -59,7 +71,7 @@ internal sealed class ProfessionMigrator : PPLMigrator
                 ) n2 ON n2.title = v.topic_name
                 """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -124,7 +136,7 @@ internal sealed class ProfessionMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

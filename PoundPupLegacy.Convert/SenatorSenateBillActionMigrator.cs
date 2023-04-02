@@ -1,23 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class SenatorSenateBillActionMigrator : PPLMigrator
+internal sealed class SenatorSenateBillActionMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IEntityCreator<SenatorSenateBillAction> _senatorSenateBillActionCreator;
 
-
-    public SenatorSenateBillActionMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    public SenatorSenateBillActionMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IEntityCreator<SenatorSenateBillAction> senatorSenateBillActionCreator
+    ) : base(databaseConnections)
     {
-
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _senatorSenateBillActionCreator = senatorSenateBillActionCreator;
     }
 
     protected override string Name => "senator senate bill action";
 
     protected override async Task MigrateImpl()
     {
-        await new SenatorSenateBillActionCreator().CreateAsync(ReadSenatorSenateBillActionsPPL(), _postgresConnection);
-
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _senatorSenateBillActionCreator.CreateAsync(ReadSenatorSenateBillActionsPPL(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<SenatorSenateBillAction> ReadSenatorSenateBillActionsPPL()
+    private async IAsyncEnumerable<SenatorSenateBillAction> ReadSenatorSenateBillActionsPPL(NodeIdReaderByUrlId nodeIdReader)
     {
         await using var professionReader = await new ProfessionIdReaderFactory().CreateAsync(_postgresConnection);
 
@@ -45,7 +51,7 @@ internal sealed class SenatorSenateBillActionMigrator : PPLMigrator
             AND n3.title LIKE 'S%' 
             AND n.nid not in (65267, 65493)
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -62,11 +68,11 @@ internal sealed class SenatorSenateBillActionMigrator : PPLMigrator
                 ProfessionType = ProfessionIdReader.ProfessionType.Senator,
                 UrlId = reader.GetInt32("person_id")
             });
-            int billId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int billId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("bill_id")
             });
-            int billActionTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int billActionTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
             });

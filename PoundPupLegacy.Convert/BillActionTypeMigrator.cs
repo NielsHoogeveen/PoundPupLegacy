@@ -1,16 +1,27 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BillActionTypeMigrator : PPLMigrator
+internal sealed class BillActionTypeMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileId;
+    private readonly IEntityCreator<BillActionType> _billActionTypeCreator;
     protected override string Name => "person organization relation types";
-    public BillActionTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    public BillActionTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileId,
+        IEntityCreator<BillActionType> billActionTypeCreator
+    ) : base(databaseConnections) 
+    { 
+        _fileIdReaderByTenantFileId = fileIdReaderByTenantFileId;
+        _billActionTypeCreator = billActionTypeCreator;
+    }
     protected override async Task MigrateImpl()
     {
-        await new BillActionTypeCreator().CreateAsync(ReadBillActionTypes(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileId.CreateAsync(_postgresConnection);
+        await _billActionTypeCreator.CreateAsync(ReadBillActionTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<BillActionType> ReadBillActionTypes()
+    private async IAsyncEnumerable<BillActionType> ReadBillActionTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
-
+        
         var sql = $"""
                 SELECT
                     n.nid id,
@@ -29,7 +40,7 @@ internal sealed class BillActionTypeMigrator : PPLMigrator
                 WHERE n.nid in (38509, 38312)
                 """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -85,7 +96,7 @@ internal sealed class BillActionTypeMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

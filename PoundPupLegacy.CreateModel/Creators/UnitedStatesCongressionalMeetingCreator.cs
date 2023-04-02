@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class UnitedStatesCongressionalMeetingCreator : IEntityCreator<UnitedStatesCongressionalMeeting>
+internal sealed class UnitedStatesCongressionalMeetingCreator : IEntityCreator<UnitedStatesCongressionalMeeting>
 {
     public async Task CreateAsync(IAsyncEnumerable<UnitedStatesCongressionalMeeting> countries, IDbConnection connection)
     {

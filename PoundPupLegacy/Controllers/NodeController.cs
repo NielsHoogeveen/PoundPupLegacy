@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace PoundPupLegacy.Web.Controllers;
 
 [Route("node")]
-public class NodeController : Controller
+public sealed class NodeController : Controller
 {
     private readonly ILogger<NodeController> _logger;
     private readonly ISiteDataService _siteDataService;

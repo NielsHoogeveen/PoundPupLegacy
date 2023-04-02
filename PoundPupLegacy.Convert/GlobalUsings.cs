@@ -1,4 +1,5 @@
-﻿global using PoundPupLegacy.Common;
+﻿global using Microsoft.Extensions.DependencyInjection;
+global using PoundPupLegacy.Common;
 global using PoundPupLegacy.CreateModel;
 global using PoundPupLegacy.CreateModel.Creators;
 global using PoundPupLegacy.CreateModel.Readers;

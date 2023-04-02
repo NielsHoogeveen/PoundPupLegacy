@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class FathersRightsViolationsCaseMigrator : PPLMigrator
+internal sealed class FathersRightsViolationsCaseMigrator : MigratorPPL
 {
-    public FathersRightsViolationsCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<FathersRightsViolationCase> _fathersRightsViolationCaseCreator;
+    public FathersRightsViolationsCaseMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<FathersRightsViolationCase> fathersRightsViolationCaseCreator
+    ) : base(databaseConnections)
     {
+        _fathersRightsViolationCaseCreator = fathersRightsViolationCaseCreator;
     }
 
     protected override string Name => "father's rights violation cases";
 
     protected override async Task MigrateImpl()
     {
-        await new FathersRightsViolationCaseCreator().CreateAsync(ReadFathersRightsViolationCases(), _postgresConnection);
+        await _fathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<FathersRightsViolationCase> ReadFathersRightsViolationCases()
     {
@@ -31,7 +36,7 @@ internal sealed class FathersRightsViolationsCaseMigrator : PPLMigrator
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_fathers_rights_violations c ON c.nid = n.nid AND c.vid = n.vid
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

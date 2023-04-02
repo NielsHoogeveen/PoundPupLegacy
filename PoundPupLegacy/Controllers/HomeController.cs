@@ -9,7 +9,7 @@ using IAuthenticationService = PoundPupLegacy.Services.IAuthenticationService;
 
 namespace PoundPupLegacy.Controllers;
 
-public class HomeController : Controller
+public sealed class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IAuthenticationService _authenticationService;

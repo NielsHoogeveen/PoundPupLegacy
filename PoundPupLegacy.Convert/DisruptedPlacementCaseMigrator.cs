@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DisruptedPlacementCaseMigrator : PPLMigrator
+internal sealed class DisruptedPlacementCaseMigrator : MigratorPPL
 {
-    public DisruptedPlacementCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<DisruptedPlacementCase> _disruptedPlacementCaseCreator;
+    public DisruptedPlacementCaseMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<DisruptedPlacementCase> disruptedPlacementCaseCreator
+    ) : base(databaseConnections)
     {
+        _disruptedPlacementCaseCreator = disruptedPlacementCaseCreator;
     }
 
     protected override string Name => "disrupted placement cases";
 
     protected override async Task MigrateImpl()
     {
-        await new DisruptedPlacementCaseCreator().CreateAsync(ReadDisruptedPlacementCases(), _postgresConnection);
+        await _disruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<DisruptedPlacementCase> ReadDisruptedPlacementCases()
     {
@@ -34,7 +39,7 @@ internal sealed class DisruptedPlacementCaseMigrator : PPLMigrator
                 LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid 
                 LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

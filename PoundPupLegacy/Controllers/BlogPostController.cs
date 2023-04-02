@@ -3,7 +3,7 @@
 namespace PoundPupLegacy.Controllers;
 
 [Route("blog_post")]
-public class BlogPostController : Controller
+public sealed class BlogPostController : Controller
 {
     [HttpGet("create")]
     public IActionResult Index()

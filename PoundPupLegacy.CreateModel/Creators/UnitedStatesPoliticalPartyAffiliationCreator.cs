@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class UnitedStatesPoliticalPartyAffliationCreator : IEntityCreator<UnitedStatesPoliticalPartyAffliation>
+internal sealed class UnitedStatesPoliticalPartyAffliationCreator : IEntityCreator<UnitedStatesPoliticalPartyAffliation>
 {
     public async Task CreateAsync(IAsyncEnumerable<UnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliations, IDbConnection connection)
     {

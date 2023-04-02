@@ -1,31 +1,46 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class LocationMigratorPPL : PPLMigrator
+internal sealed class LocationMigratorPPL : MigratorPPL
 {
-    public LocationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IDatabaseReaderFactory<SubdivisionIdReaderByIso3166Code> _subdivisionIdReaderByIso3166CodeFactory;
+    private readonly IEntityCreator<Location> _locationCreator;
+    public LocationMigratorPPL(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<SubdivisionIdReaderByIso3166Code> subdivisionIdReaderByIso3166CodeFactory,
+        IEntityCreator<Location> locationCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _subdivisionIdReaderByIso3166CodeFactory = subdivisionIdReaderByIso3166CodeFactory;
+        _locationCreator = locationCreator;
     }
 
     protected override string Name => "locations (ppl)";
     protected override async Task MigrateImpl()
     {
-        await new LocationCreator().CreateAsync(GetLocations(), _postgresConnection);
-        await new LocationCreator().CreateAsync(ReadLocations(), _postgresConnection);
+
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var subdivisionIdReaderByIso3166Code = await _subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
+        await _locationCreator.CreateAsync(GetLocations(nodeIdReader), _postgresConnection);
+        await _locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<Location> GetLocations()
+    private async IAsyncEnumerable<Location> GetLocations(NodeIdReaderByUrlId nodeIdReader)
     {
+        
         yield return new Location {
             Id = 18,
             Street = "8010 S County Road 5 Suite 205",
             Additional = null,
             PostalCode = "80528",
             City = "Fort Collins",
-            SubdivisionId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            SubdivisionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = 2951
             }),
-            CountryId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = 3805
             }),
@@ -34,7 +49,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             Locatables = new List<LocationLocatable> {
                 new LocationLocatable {
                     LocationId = 18,
-                    LocatableId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    LocatableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = 105
@@ -301,13 +316,13 @@ internal sealed class LocationMigratorPPL : PPLMigrator
         };
     }
 
-    private async Task<int?> GetSubdivisionId(int id, int? stateId, int? countryId, string? code)
+    private async Task<int?> GetSubdivisionId(int id, int? stateId, int? countryId, string? code, NodeIdReaderByUrlId nodeIdReader, SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code)
     {
         if (countryId is null) {
             return null;
         }
 
-        var res = await GetSubdivisionId(id, stateId);
+        var res = await GetSubdivisionId(id, stateId, nodeIdReader, subdivisionIdReaderByIso3166Code);
         if (res != null) {
             return res;
         }
@@ -342,12 +357,13 @@ internal sealed class LocationMigratorPPL : PPLMigrator
         if (stateCode == null) {
             return null;
         }
-        return await _subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
+        return await subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
     }
 
 
-    private async Task<int?> GetSubdivisionId(int id, int? stateId)
+    private async Task<int?> GetSubdivisionId(int id, int? stateId, NodeIdReaderByUrlId nodeIdReader, SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code)
     {
+    
         if (stateId == null) {
             var stateCode = id switch {
                 1071 => "DO-01",
@@ -1262,7 +1278,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             if (stateCode == null) {
                 return null;
             }
-            return await _subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
+            return await subdivisionIdReaderByIso3166Code.ReadAsync(stateCode);
         }
         else {
             var ret = id switch {
@@ -1282,7 +1298,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
                 return null;
             }
             else {
-                return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                return await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = (int)ret!
 
@@ -1290,7 +1306,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             }
         }
     }
-    private async Task<int?> GetCountryId(int id, int? countryId)
+    private async Task<int?> GetCountryId(int id, int? countryId, NodeIdReaderByUrlId nodeIdReader)
     {
         var ret = id switch {
             664 => 4048,
@@ -1305,7 +1321,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             return null;
         }
         else {
-            return await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            return await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = (int)ret!
             });
@@ -1314,8 +1330,9 @@ internal sealed class LocationMigratorPPL : PPLMigrator
 
 
 
-    private async IAsyncEnumerable<Location> ReadLocations()
+    private async IAsyncEnumerable<Location> ReadLocations(NodeIdReaderByUrlId nodeIdReader, SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code)
     {
+
         var sql = $"""
             SELECT 
                 l.lid id,
@@ -1343,7 +1360,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
                 WHERE n.`type` NOT IN ('content_organisations', 'prisons', 'prisonpup')
                 AND n.nid NOT IN (11108, 7760, 12700, 30638)
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -1356,7 +1373,7 @@ internal sealed class LocationMigratorPPL : PPLMigrator
             int? subDivisionId = reader.IsDBNull("subdivision_id") ? null : reader.GetInt32("subdivision_id");
             string? code = reader.IsDBNull("subdivision_code") ? null : reader.GetString("subdivision_code").Replace("UK-", "GB-");
             int? countryId = reader.IsDBNull("country_id") ? null : reader.GetInt32("country_id");
-            var locatableId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var locatableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id"),
             });
@@ -1366,8 +1383,8 @@ internal sealed class LocationMigratorPPL : PPLMigrator
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),
                 City = GetCity(id, reader.IsDBNull("city") ? null : reader.GetString("city")),
                 PostalCode = GetPostalCode(id, reader.IsDBNull("postal_code") ? null : reader.GetString("postal_code")),
-                SubdivisionId = await GetSubdivisionId(id, subDivisionId, countryId, code),
-                CountryId = await GetCountryId(id, countryId),
+                SubdivisionId = await GetSubdivisionId(id, subDivisionId, countryId, code, nodeIdReader, subdivisionIdReaderByIso3166Code),
+                CountryId = await GetCountryId(id, countryId, nodeIdReader),
                 Latitude = GetLatitude(id, reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
                 Longitude = GetLongitude(id, reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
                 Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = id, LocatableId = locatableId } }

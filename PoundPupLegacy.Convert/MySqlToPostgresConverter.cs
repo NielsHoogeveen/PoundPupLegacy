@@ -4,207 +4,138 @@ using System.Diagnostics;
 
 namespace PoundPupLegacy.Convert;
 
-internal partial class MySqlToPostgresConverter : IAsyncDisposable
+internal partial class MySqlToPostgresConverter
 {
     private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+
     public async Task Convert()
     {
-        await TruncateDatabase();
-        await (new PollStatusMigrator(this)).Migrate();
-        await (new PublicationStatusMigrator(this)).Migrate();
-        await (new NodeTypeMigrator(this)).Migrate();
-        await (new ActionMigrator(this)).Migrate();
-        await (new UserMigrator(this)).Migrate();
-        await (new PollMigrator(this)).Migrate();
-        await (new FileMigratorPPL(this)).Migrate();
-        await (new FileMigratorCPCT(this)).Migrate();
-        await (new VocabularyMigrator(this)).Migrate();
-        await (new CasePartyTypeMigrator(this)).Migrate();
-        await (new CaseTypeMigrator(this)).Migrate();
-        await (new AccessRolePrivilegeMigrator(this)).Migrate();
-        await (new SubdivisionTypeMigrator(this)).Migrate();
-        await (new BasicNameableMigrator(this)).Migrate();
-        await (new ChildPlacementTypeMigrator(this)).Migrate();
-        await (new OrganizationTypeMigrator(this)).Migrate();
-        await (new InterCountryRelationTypeMigrator(this)).Migrate();
-        await (new InterOrganizationalRelationTypeMigrator(this)).Migrate();
-        await (new InterPersonalRelationTypeMigrator(this)).Migrate();
-        await (new PartyPoliticalEntityRelationTypeMigrator(this)).Migrate();
-        await (new PersonOrganizationRelationTypeMigrator(this)).Migrate();
-        await (new BillActionTypeMigrator(this)).Migrate();
-        await (new TypeOfAbuseMigrator(this)).Migrate();
-        await (new TypeOfAbuserMigrator(this)).Migrate();
-        await (new FamilySizeMigrator(this)).Migrate();
-        await (new ProfessionMigrator(this)).Migrate();
-        await (new DenominationMigrator(this)).Migrate();
-        await (new HagueStatusMigrator(this)).Migrate();
-        await (new DocumentTypeMigrator(this)).Migrate();
-
-        await (new UnitedStatesCongressionalMeetingMigrator(this)).Migrate();
-
-        await (new FirstLevelGlobalRegionMigrator(this)).Migrate();
-        await (new SecondLevelGlobalRegionMigrator(this)).Migrate();
-        await (new BasicCountryMigrator(this)).Migrate();
-        await (new BindingCountryMigrator(this)).Migrate();
-        await AddTenantDefaultCountry();
-        await (new CountrySubdivisionTypeMigratorPartOne(this)).Migrate();
-        await (new BoundCountryMigrator(this)).Migrate();
-        await (new CountrySubdivisionTypeMigratorPartTwo(this)).Migrate();
-        await (new CountryAndFirstLevelSubDivisionMigrator(this)).Migrate();
-        await (new CountryAndFirstAndSecondLevelSubdivisionMigrator(this)).Migrate();
-        await (new CountrySubdivisionTypeMigratorPartThree(this)).Migrate();
-        await (new FirstAndBottomLevelSubdivisionMigrator(this)).Migrate();
-        await (new InformalIntermediateLevelSubdivisionMigrator(this)).Migrate();
-        await (new FormalIntermediateLevelSubdivisionMigrator(this)).Migrate();
-        await (new BasicSecondLevelSubdivisionMigrator(this)).Migrate();
-        await (new BlogPostMigrator(this)).Migrate();
-        await (new ArticleMigrator(this)).Migrate();
-        await (new DiscussionMigrator(this)).Migrate();
-        await (new AdoptionImportMigrator(this)).Migrate();
-        await (new DocumentMigratorPPL(this)).Migrate();
-        await (new OrganizationMigratorPPL(this)).Migrate();
-        await (new UnitedStatesPoliticalPartyAffliationMigrator(this)).Migrate();
-        await (new PersonMigratorPPL(this)).Migrate();
-        await (new AbuseCaseMigrator(this)).Migrate();
-        await (new ChildTraffickingCaseMigrator(this)).Migrate();
-        await (new CoercedAdoptionCaseMigrator(this)).Migrate();
-        await (new DisruptedPlacementCaseMigrator(this)).Migrate();
-        await (new DeportationCaseMigrator(this)).Migrate();
-        await (new FathersRightsViolationsCaseMigrator(this)).Migrate();
-        await (new WrongfulMedicationCaseMigrator(this)).Migrate();
-        await (new WrongfulRemovalCaseMigrator(this)).Migrate();
-        await (new LocationMigratorPPL(this)).Migrate();
-        await (new PageMigrator(this)).Migrate();
-        await (new ReviewMigrator(this)).Migrate();
-        await (new ActMigrator(this)).Migrate();
-        await (new BillMigrator(this)).Migrate();
-        await (new NodeTermMigrator(this)).Migrate();
-        await (new MenuMigrator(this)).Migrate();
-        await (new DocumentableDocumentMigrator(this)).Migrate();
-        await (new TermHierarchyMigrator(this)).Migrate();
-        await (new PartyPoliticalEntityRelationMigratorPPL(this)).Migrate();
-        await (new PersonOrganizationRelationMigratorPPL(this)).Migrate();
-        await (new InterOrganizationalRelationMigratorPPL(this)).Migrate();
-        await (new InterPersonalRelationMigratorPPL(this)).Migrate();
-        await (new MemberOfCongressMigrator(this)).Migrate();
-        await (new RepresentativeHouseBillActionMigrator(this)).Migrate();
-        await (new SenatorSenateBillActionMigrator(this)).Migrate();
-        await (new OrganizationMigratorCPCT(this)).Migrate();
-        await (new PersonMigratorCPCT(this)).Migrate();
-        await (new PersonOrganizationRelationMigratorCPCT(this)).Migrate();
-        await (new DocumentMigratorCPCT(this)).Migrate();
-        await (new InterOrganizationalRelationMigratorCPCT(this)).Migrate();
-        await (new InterPersonalRelationMigratorCPCT(this)).Migrate();
-        await (new PartyPoliticalEntityRelationMigratorCPCT(this)).Migrate();
-        await (new LocationMigratorCPCT(this)).Migrate();
-        await (new SearchableMigrator(this)).Migrate();
-        await (new CaseCaseRelationsMigrator(this)).Migrate();
-        await (new NodeFileMigratorPPL(this)).Migrate();
-        await (new NodeFileMigratorCPCT(this)).Migrate();
-        await (new CommentMigrator(this)).Migrate();
-        await (new AdultAftermathMigrator(this)).Migrate();
-        await PrepareFiles();
-    }
-
-    internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=root;database=ppl";
-    internal const string ConnectionStringMariaDbCPCT = "server=localhost;userid=root;Password=root;database=cpct";
-
-    internal const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
-
-    public static async Task<MySqlToPostgresConverter> GetInstance()
-    {
-
-        Console.Write("Setting up connections and opening readers");
-        _stopwatch.Restart();
         var mysqlConnectionPPL = new MySqlConnection(ConnectionStringMariaDbPPL);
         var mysqlConnectionCPCT = new MySqlConnection(ConnectionStringMariaDbCPCT);
         var postgresConnection = new NpgsqlConnection(ConnectStringPostgresql);
         await mysqlConnectionPPL.OpenAsync();
         await mysqlConnectionCPCT.OpenAsync();
         await postgresConnection.OpenAsync();
-        var nodeIdReader = await (new NodeIdReaderByUrlIdFactory()).CreateAsync(postgresConnection);
-        var termByNameableIdReader = await (new TermReaderByNameableIdFactory()).CreateAsync(postgresConnection);
-        var subdivisionReader = await (new SubdivisionIdReaderByNameFactory()).CreateAsync(postgresConnection);
-        var subdivisionReaderByIsoCode = await (new SubdivisionIdReaderByIso3166CodeFactory()).CreateAsync(postgresConnection);
-        var createNodeActionIdReaderByNodeTypeId = await (new CreateNodeActionIdReaderByNodeTypeIdFactory()).CreateAsync(postgresConnection);
-        var deleteNodeActionIdReaderByNodeTypeId = await (new DeleteNodeActionIdReaderByNodeTypeIdFactory()).CreateAsync(postgresConnection);
-        var editNodeActionIdReaderByNodeTypeId = await (new EditNodeActionIdReaderByNodeTypeIdFactory()).CreateAsync(postgresConnection);
-        var editOwnNodeActionIdReaderByNodeTypeId = await (new EditOwnNodeActionIdReaderByNodeTypeIdFactory()).CreateAsync(postgresConnection);
-        var actionIdReaderByPath = await (new ActionIdReaderByPathFactory()).CreateAsync(postgresConnection);
-        var tenantNodeIdReaderByUrlId = await (new TenantNodeIdReaderByUrlIdFactory()).CreateAsync(postgresConnection);
-        var tenantNodeReaderByUrlId = await (new TenantNodeReaderByUrlIdFactory()).CreateAsync(postgresConnection);
-        var fileIdReaderByTenantFileId = await (new FileIdReaderByTenantFileIdFactory()).CreateAsync(postgresConnection);
 
-        Console.WriteLine($" took {_stopwatch.ElapsedMilliseconds} ms");
-        return new MySqlToPostgresConverter(
-            mysqlConnectionPPL,
-            mysqlConnectionCPCT,
-            postgresConnection,
-            nodeIdReader,
-            termByNameableIdReader,
-            subdivisionReader,
-            subdivisionReaderByIsoCode,
-            createNodeActionIdReaderByNodeTypeId,
-            deleteNodeActionIdReaderByNodeTypeId,
-            editNodeActionIdReaderByNodeTypeId,
-            editOwnNodeActionIdReaderByNodeTypeId,
-            actionIdReaderByPath,
-            tenantNodeIdReaderByUrlId,
-            tenantNodeReaderByUrlId,
-            fileIdReaderByTenantFileId);
+        var sc = new ServiceCollection();
+        sc.AddEntityCreators();
+        var connections = new DatabaseConnections {
+            MysqlConnectionCPCT = mysqlConnectionCPCT,
+            MysqlConnectionPPL = mysqlConnectionPPL,
+            PostgressConnection = postgresConnection
+        };
+        sc.AddSingleton<IDatabaseConnections>((sp) => connections);
+        sc.AddMigrators();
+        var sp = sc.BuildServiceProvider();
+
+        await TruncateDatabase(postgresConnection);
+
+                
+        await sp.Migrate<PollStatusMigrator>();
+        await sp.Migrate<PublicationStatusMigrator>();
+        await sp.Migrate<NodeTypeMigrator>();
+        await sp.Migrate<ActionMigrator>();
+        await sp.Migrate<UserMigrator>();
+        await sp.Migrate<PollMigrator>();
+        await sp.Migrate<FileMigratorPPL>();
+        await sp.Migrate<FileMigratorCPCT>();
+        await sp.Migrate<VocabularyMigrator>();
+        await sp.Migrate<CasePartyTypeMigrator>();
+        await sp.Migrate<CaseTypeMigrator>();
+        await sp.Migrate<AccessRolePrivilegeMigrator>();
+        await sp.Migrate<SubdivisionTypeMigrator>();
+        await sp.Migrate<BasicNameableMigrator>();
+        await sp.Migrate<ChildPlacementTypeMigrator>();
+        await sp.Migrate<OrganizationTypeMigrator>();
+        await sp.Migrate<InterCountryRelationTypeMigrator>();
+        await sp.Migrate<InterOrganizationalRelationTypeMigrator>();
+        await sp.Migrate<InterPersonalRelationTypeMigrator>();
+        await sp.Migrate<PartyPoliticalEntityRelationTypeMigrator>();
+        await sp.Migrate<PersonOrganizationRelationTypeMigrator>();
+        await sp.Migrate<BillActionTypeMigrator>();
+        await sp.Migrate<TypeOfAbuseMigrator>();
+        await sp.Migrate<TypeOfAbuserMigrator>();
+        await sp.Migrate<FamilySizeMigrator>();
+        await sp.Migrate<ProfessionMigrator>();
+        await sp.Migrate<DenominationMigrator>();
+        await sp.Migrate<HagueStatusMigrator>();
+        await sp.Migrate<DocumentTypeMigrator>();
+
+        await sp.Migrate<UnitedStatesCongressionalMeetingMigrator>();
+
+        await sp.Migrate<FirstLevelGlobalRegionMigrator>();
+        await sp.Migrate<SecondLevelGlobalRegionMigrator>();
+        await sp.Migrate<BasicCountryMigrator>();
+        await sp.Migrate<BindingCountryMigrator>();
+        await AddTenantDefaultCountry(postgresConnection);
+        await sp.Migrate<CountrySubdivisionTypeMigratorPartOne>();
+        await sp.Migrate<BoundCountryMigrator>();
+        await sp.Migrate<CountrySubdivisionTypeMigratorPartTwo>();
+        await sp.Migrate<CountryAndFirstLevelSubDivisionMigrator>();
+        await sp.Migrate<CountryAndFirstAndSecondLevelSubdivisionMigrator>();
+        await sp.Migrate<CountrySubdivisionTypeMigratorPartThree>();
+        await sp.Migrate<FirstAndBottomLevelSubdivisionMigrator>();
+        await sp.Migrate<InformalIntermediateLevelSubdivisionMigrator>();
+        await sp.Migrate<FormalIntermediateLevelSubdivisionMigrator>();
+        await sp.Migrate<BasicSecondLevelSubdivisionMigrator>();
+        await sp.Migrate<BlogPostMigrator>();
+        await sp.Migrate<ArticleMigrator>();
+        await sp.Migrate<DiscussionMigrator>();
+        await sp.Migrate<AdoptionImportMigrator>();
+        await sp.Migrate<DocumentMigratorPPL>();
+        await sp.Migrate<OrganizationMigratorPPL>();
+        await sp.Migrate<UnitedStatesPoliticalPartyAffliationMigrator>();
+        await sp.Migrate<PersonMigratorPPL>();
+        await sp.Migrate<AbuseCaseMigrator>();
+        await sp.Migrate<ChildTraffickingCaseMigrator>();
+        await sp.Migrate<CoercedAdoptionCaseMigrator>();
+        await sp.Migrate<DisruptedPlacementCaseMigrator>();
+        await sp.Migrate<DeportationCaseMigrator>();
+        await sp.Migrate<FathersRightsViolationsCaseMigrator>();
+        await sp.Migrate<WrongfulMedicationCaseMigrator>();
+        await sp.Migrate<WrongfulRemovalCaseMigrator>();
+        await sp.Migrate<LocationMigratorPPL>();
+        await sp.Migrate<PageMigrator>();
+        await sp.Migrate<ReviewMigrator>();
+        await sp.Migrate<ActMigrator>();
+        await sp.Migrate<BillMigrator>();
+        await sp.Migrate<NodeTermMigrator>();
+        await sp.Migrate<MenuMigrator>();
+        await sp.Migrate<DocumentableDocumentMigrator>();
+        await sp.Migrate<TermHierarchyMigrator>();
+        await sp.Migrate<PartyPoliticalEntityRelationMigratorPPL>();
+        await sp.Migrate<PersonOrganizationRelationMigratorPPL>();
+        await sp.Migrate<InterOrganizationalRelationMigratorPPL>();
+        await sp.Migrate<InterPersonalRelationMigratorPPL>();
+        await sp.Migrate<MemberOfCongressMigrator>();
+        await sp.Migrate<RepresentativeHouseBillActionMigrator>();
+        await sp.Migrate<SenatorSenateBillActionMigrator>();
+        await sp.Migrate<OrganizationMigratorCPCT>();
+        await sp.Migrate<PersonMigratorCPCT>();
+        await sp.Migrate<PersonOrganizationRelationMigratorCPCT>();
+        await sp.Migrate<DocumentMigratorCPCT>();
+        await sp.Migrate<InterOrganizationalRelationMigratorCPCT>();
+        await sp.Migrate<InterPersonalRelationMigratorCPCT>();
+        await sp.Migrate<PartyPoliticalEntityRelationMigratorCPCT>();
+        await sp.Migrate<LocationMigratorCPCT>();
+        await sp.Migrate<SearchableMigrator>();
+        await sp.Migrate<CaseCaseRelationsMigrator>();
+        await sp.Migrate<NodeFileMigratorPPL>();
+        await sp.Migrate<NodeFileMigratorCPCT>();
+        await sp.Migrate<CommentMigrator>();
+        await sp.Migrate<AdultAftermathMigrator>();
+        await PrepareFiles(postgresConnection);
     }
-    internal MySqlConnection MysqlConnectionPPL { get; }
-    internal MySqlConnection MysqlConnectionCPCT { get; }
-    internal NpgsqlConnection PostgresConnection { get; }
-    internal NodeIdReaderByUrlId NodeIdReader { get; }
-    internal TermReaderByNameableId TermByNameableIdReader { get; }
-    internal SubdivisionIdReaderByName SubdivisionIdReader { get; }
-    internal SubdivisionIdReaderByIso3166Code SubdivisionIdReaderByIso3166Code { get; }
-    internal CreateNodeActionIdReaderByNodeTypeId CreateNodeActionIdReaderByNodeTypeId { get; }
-    internal DeleteNodeActionIdReaderByNodeTypeId DeleteNodeActionIdReaderByNodeTypeId { get; }
-    internal EditNodeActionIdReaderByNodeTypeId EditNodeActionIdReaderByNodeTypeId { get; }
-    internal EditOwnNodeActionIdReaderByNodeTypeId EditOwnNodeActionIdReaderByNodeTypeId { get; }
-    internal ActionIdReaderByPath ActionIdReaderByPath { get; }
-    internal TenantNodeIdReaderByUrlId TenantNodeIdByUrlIdReader { get; }
-    internal TenantNodeReaderByUrlId TenantNodeByUrlIdReader { get; }
 
-    internal FileIdReaderByTenantFileId FileIdReaderByTenantFileId { get; }
-    public MySqlToPostgresConverter(
-        MySqlConnection mysqlConnectionPPL,
-        MySqlConnection mysqlConnectionCPCT,
-        NpgsqlConnection postgresConnection,
-        NodeIdReaderByUrlId nodeIdReader,
-        TermReaderByNameableId termByNameableIdReader,
-        SubdivisionIdReaderByName subdivisionIdReader,
-        SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code,
-        CreateNodeActionIdReaderByNodeTypeId createNodeActionIdReaderByNodeTypeId,
-        DeleteNodeActionIdReaderByNodeTypeId deleteNodeActionIdReaderByNodeTypeId,
-        EditNodeActionIdReaderByNodeTypeId editNodeActionIdReaderByNodeTypeId,
-        EditOwnNodeActionIdReaderByNodeTypeId editOwnNodeActionIdReaderByNodeTypeId,
-        ActionIdReaderByPath actionIdReaderByPath,
-        TenantNodeIdReaderByUrlId tenantNodeIdReaderByUrlId,
-        TenantNodeReaderByUrlId tenantNodeReaderByUrlId,
-        FileIdReaderByTenantFileId fileIdReaderByTenantFileId
-        )
+    internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=root;database=ppl";
+    internal const string ConnectionStringMariaDbCPCT = "server=localhost;userid=root;Password=root;database=cpct";
+    internal const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
+
+    public MySqlToPostgresConverter()
     {
-        MysqlConnectionPPL = mysqlConnectionPPL;
-        MysqlConnectionCPCT = mysqlConnectionCPCT;
-        PostgresConnection = postgresConnection;
-        NodeIdReader = nodeIdReader;
-        TermByNameableIdReader = termByNameableIdReader;
-        SubdivisionIdReader = subdivisionIdReader;
-        SubdivisionIdReaderByIso3166Code = subdivisionIdReaderByIso3166Code;
-        CreateNodeActionIdReaderByNodeTypeId = createNodeActionIdReaderByNodeTypeId;
-        DeleteNodeActionIdReaderByNodeTypeId = deleteNodeActionIdReaderByNodeTypeId;
-        EditNodeActionIdReaderByNodeTypeId = editNodeActionIdReaderByNodeTypeId;
-        EditOwnNodeActionIdReaderByNodeTypeId = editOwnNodeActionIdReaderByNodeTypeId;
-        ActionIdReaderByPath = actionIdReaderByPath;
-        TenantNodeIdByUrlIdReader = tenantNodeIdReaderByUrlId;
-        TenantNodeByUrlIdReader = tenantNodeReaderByUrlId;
-        FileIdReaderByTenantFileId = fileIdReaderByTenantFileId;
     }
 
-    private async Task TruncateDatabase()
+    private async Task TruncateDatabase(NpgsqlConnection postgresConnection)
     {
         _stopwatch.Restart();
         Console.Write("Cleaning database");
@@ -244,28 +175,15 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
             RESTART IDENTITY
             CASCADE;
             """;
-        using var command = PostgresConnection.CreateCommand();
+        using var command = postgresConnection.CreateCommand();
         command.CommandType = System.Data.CommandType.Text;
         command.CommandText = sql;
         await command.ExecuteNonQueryAsync();
         Console.WriteLine($" took {_stopwatch.ElapsedMilliseconds} ms");
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await PostgresConnection.CloseAsync();
-        await MysqlConnectionPPL.CloseAsync();
-        await MysqlConnectionCPCT.CloseAsync();
-        await PostgresConnection.DisposeAsync();
-        await MysqlConnectionPPL.DisposeAsync();
-        await MysqlConnectionCPCT.DisposeAsync();
-        await NodeIdReader.DisposeAsync();
-        await TermByNameableIdReader.DisposeAsync();
-        await SubdivisionIdReader.DisposeAsync();
-        await SubdivisionIdReaderByIso3166Code.DisposeAsync();
-    }
 
-    private async Task PrepareFiles()
+    private async Task PrepareFiles(NpgsqlConnection postgresConnection)
     {
         var cpctDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\cpct");
         var pplDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\ppl");
@@ -285,7 +203,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
         }
         combinedDirectory.CreateSubdirectory("files");
         List<(int, string)> filePaths = new();
-        using (var command = PostgresConnection.CreateCommand()) {
+        using (var command = postgresConnection.CreateCommand()) {
             command.CommandType = System.Data.CommandType.Text;
             command.CommandText = """
                 select 
@@ -325,7 +243,7 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
             }
             await reader.CloseAsync();
         }
-        using (var command = PostgresConnection.CreateCommand()) {
+        using (var command = postgresConnection.CreateCommand()) {
             command.CommandType = System.Data.CommandType.Text;
             command.CommandText = """
                 UPDATE file set path = @path where id = @id
@@ -376,15 +294,17 @@ internal partial class MySqlToPostgresConverter : IAsyncDisposable
 
     private static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
     {
-        foreach (DirectoryInfo dir in source.GetDirectories())
+        foreach (DirectoryInfo dir in source.GetDirectories()){
             CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
-        foreach (FileInfo file in source.GetFiles())
+        }
+        foreach (FileInfo file in source.GetFiles()) {
             file.CopyTo(Path.Combine(target.FullName, file.Name));
+        }
     }
 
-    private async Task AddTenantDefaultCountry()
+    private async Task AddTenantDefaultCountry(NpgsqlConnection postgresConnection)
     {
-        using (var command = PostgresConnection.CreateCommand()) {
+        using (var command = postgresConnection.CreateCommand()) {
             command.CommandType = System.Data.CommandType.Text;
             command.CommandText = """
             update tenant

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class AccessRoleCreator : IEntityCreator<AccessRole>
+internal sealed class AccessRoleCreator : IEntityCreator<AccessRole>
 {
     public async Task CreateAsync(IAsyncEnumerable<AccessRole> accessRoles, IDbConnection connection)
     {

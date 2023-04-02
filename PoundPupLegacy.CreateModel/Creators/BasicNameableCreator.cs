@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class BasicNameableCreator : IEntityCreator<BasicNameable>
+internal sealed class BasicNameableCreator : IEntityCreator<BasicNameable>
 {
     public async Task CreateAsync(IAsyncEnumerable<BasicNameable> basicNameables, IDbConnection connection)
     {

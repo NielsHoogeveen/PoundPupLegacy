@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class ContentSharingGroupCreator : IEntityCreator<ContentSharingGroup>
+internal sealed class ContentSharingGroupCreator : IEntityCreator<ContentSharingGroup>
 {
     public async Task CreateAsync(IAsyncEnumerable<ContentSharingGroup> contentSharingGroups, IDbConnection connection)
     {

@@ -5,43 +5,101 @@ using System.Diagnostics;
 using System.Text;
 
 namespace PoundPupLegacy.Convert;
+internal abstract class MigratorPPL : Migrator
+{
+    public MigratorPPL(
+        IDatabaseConnections databaseConnections
+    ): base(databaseConnections.PostgressConnection, databaseConnections.MysqlConnectionPPL)
+    {
+
+    }
+}
+internal abstract class MigratorCPCT: Migrator
+{
+    protected readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    protected readonly IDatabaseReaderFactory<TenantNodeReaderByUrlId> _tenantNodeReaderByUrlIdFactory;
+    public MigratorCPCT(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory
+    ) : base(databaseConnections.PostgressConnection, databaseConnections.MysqlConnectionCPCT)
+    {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _tenantNodeReaderByUrlIdFactory = tenantNodeReaderByUrlIdFactory;
+    }
+    protected async Task<(int, int)> GetNodeId(int urlId, NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader )
+    {
+        
+        var (id, ownerId) = GetUrlIdAndTenant(urlId);
+        if (urlId >= 33162 && ownerId == Constants.CPCT) {
+            var nodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                TenantId = Constants.CPCT,
+                UrlId = id
+            });
+            var node = await tenantNodeReader.ReadAsync(new TenantNodeReaderByUrlId.Request {
+                TenantId = Constants.PPL,
+                UrlId = id
+            });
+            if (node is not null) {
+                return (nodeId, node.PublicationStatusId);
+            }
+            else {
+                return (nodeId, 0);
+            }
+
+        }
+        return (await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            TenantId = Constants.PPL,
+            UrlId = id
+        }), 1);
+    }
+    protected (int, int) GetUrlIdAndTenant(int urlId)
+    {
+        return urlId switch {
+            10793 => (6138, Constants.PPL),
+            34880 => (35760, Constants.PPL),
+            35725 => (37560, Constants.PPL),
+            33644 => (38279, Constants.PPL),
+            36680 => (39755, Constants.PPL),
+            34973 => (40525, Constants.PPL),
+            45964 => (41694, Constants.PPL),
+            35124 => (45974, Constants.PPL),
+            34126 => (48192, Constants.PPL),
+            34082 => (52502, Constants.PPL),
+            34015 => (53756, Constants.PPL),
+            49152 => (60032, Constants.PPL),
+            35138 => (73657, Constants.PPL),
+            35146 => (73661, Constants.PPL),
+            33255 => (33987, Constants.PPL),
+            44216 => (29148, Constants.PPL),
+            49224 => (35567, Constants.PPL),
+            35233 => (44675, Constants.PPL),
+            33454 => (35190, Constants.PPL),
+            39431 => (55108, Constants.PPL),
+            48210 => (34899, Constants.CPCT),
+            48330 => (48545, Constants.CPCT),
+            47699 => (48846, Constants.CPCT),
+            > 33162 => (urlId, Constants.CPCT),
+            _ => (urlId, Constants.PPL),
+        };
+    }
+
+}
 
 internal abstract class Migrator
 {
 
-    protected abstract MySqlConnection MysqlConnection { get; }
     protected readonly NpgsqlConnection _postgresConnection;
-    protected readonly NodeIdReaderByUrlId _nodeIdReader;
-    protected readonly TermReaderByNameableId _termReaderByNameableId;
-    protected readonly SubdivisionIdReaderByName _subdivisionIdReader;
-    protected readonly SubdivisionIdReaderByIso3166Code _subdivisionIdReaderByIso3166Code;
-    protected readonly CreateNodeActionIdReaderByNodeTypeId _createNodeActionIdReaderByNodeTypeId;
-    protected readonly DeleteNodeActionIdReaderByNodeTypeId _deleteNodeActionIdReaderByNodeTypeId;
-    protected readonly EditNodeActionIdReaderByNodeTypeId _editNodeActionIdReaderByNodeTypeId;
-    protected readonly EditOwnNodeActionIdReaderByNodeTypeId _editOwnNodeActionIdReaderByNodeTypeId;
-    protected readonly ActionIdReaderByPath _actionReaderByPath;
-    protected readonly TenantNodeIdReaderByUrlId _tenantNodeIdByUrlIdReader;
-    protected readonly TenantNodeReaderByUrlId _tenantNodeByUrlIdReader;
-    protected readonly FileIdReaderByTenantFileId _fileIdReaderByTenantFileId;
-
-
+    protected readonly MySqlConnection _mySqlConnection;
     private readonly Stopwatch stopwatch = new Stopwatch();
 
-    protected Migrator(MySqlToPostgresConverter mySqlToPostgresConverter)
+    protected Migrator(
+        NpgsqlConnection postgresConnection, 
+        MySqlConnection mySqlConnection
+        )
     {
-        _postgresConnection = mySqlToPostgresConverter.PostgresConnection;
-        _nodeIdReader = mySqlToPostgresConverter.NodeIdReader;
-        _termReaderByNameableId = mySqlToPostgresConverter.TermByNameableIdReader;
-        _subdivisionIdReader = mySqlToPostgresConverter.SubdivisionIdReader;
-        _subdivisionIdReaderByIso3166Code = mySqlToPostgresConverter.SubdivisionIdReaderByIso3166Code;
-        _createNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.CreateNodeActionIdReaderByNodeTypeId;
-        _deleteNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.DeleteNodeActionIdReaderByNodeTypeId;
-        _editNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.EditNodeActionIdReaderByNodeTypeId;
-        _editOwnNodeActionIdReaderByNodeTypeId = mySqlToPostgresConverter.EditOwnNodeActionIdReaderByNodeTypeId;
-        _actionReaderByPath = mySqlToPostgresConverter.ActionIdReaderByPath;
-        _tenantNodeIdByUrlIdReader = mySqlToPostgresConverter.TenantNodeIdByUrlIdReader;
-        _tenantNodeByUrlIdReader = mySqlToPostgresConverter.TenantNodeByUrlIdReader;
-        _fileIdReaderByTenantFileId = mySqlToPostgresConverter.FileIdReaderByTenantFileId;
+        _postgresConnection = postgresConnection;
+        _mySqlConnection = mySqlConnection;
     }
 
     public async Task Migrate()

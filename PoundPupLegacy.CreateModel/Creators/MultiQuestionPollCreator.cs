@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class MultiQuestionPollCreator : IEntityCreator<MultiQuestionPoll>
+internal sealed class MultiQuestionPollCreator : IEntityCreator<MultiQuestionPoll>
 {
     public async Task CreateAsync(IAsyncEnumerable<MultiQuestionPoll> polls, IDbConnection connection)
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class DeleteNodeActionCreator : IEntityCreator<DeleteNodeAction>
+internal sealed class DeleteNodeActionCreator : IEntityCreator<DeleteNodeAction>
 {
     public async Task CreateAsync(IAsyncEnumerable<DeleteNodeAction> actions, IDbConnection connection)
     {

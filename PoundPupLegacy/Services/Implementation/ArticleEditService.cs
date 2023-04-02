@@ -13,6 +13,7 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
     private readonly IDatabaseReaderFactory<ArticleCreateDocumentReader> _createDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<ArticleUpdateDocumentReader> _updateDocumentReaderFactory;
 
+    private readonly IEntityCreator<CreateModel.Article> _articleCreator;
 
     public ArticleEditService(
         IDbConnection connection,
@@ -25,14 +26,16 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
         ITextService textService,
-        ILogger<ArticleEditService> logger
-    ): base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
+        ILogger<ArticleEditService> logger,
+        IEntityCreator<CreateModel.Article> articleCreator
+    ) : base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
     {
         _createDocumentReaderFactory = createDocumentReaderFactory;
         _updateDocumentReaderFactory = updateDocumentReaderFactory;
+        _articleCreator = articleCreator;
     }
 
-    protected sealed override IEntityCreator<CreateModel.Article> EntityCreator => new ArticleCreator();
+    protected sealed override IEntityCreator<CreateModel.Article> EntityCreator => _articleCreator;
 
     public async Task<Article> GetViewModelAsync(int userId, int tenantId)
     {

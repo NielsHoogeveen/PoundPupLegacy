@@ -1,17 +1,25 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class CommentMigrator : PPLMigrator
+internal sealed class CommentMigrator : MigratorPPL
 {
-    public CommentMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<Comment> _commentCreator;
+    public CommentMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<Comment> commentCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _commentCreator = commentCreator;
     }
 
     protected override string Name => "comments";
 
     protected override async Task MigrateImpl()
     {
-        await new CommentCreator().CreateAsync(ReadComments(), _postgresConnection);
-
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _commentCreator.CreateAsync(ReadComments(nodeIdReader), _postgresConnection);
     }
     private static int GetUid(int uid)
     {
@@ -24,7 +32,7 @@ internal sealed class CommentMigrator : PPLMigrator
             _ => uid
         };
     }
-    private async IAsyncEnumerable<Comment> ReadComments()
+    private async IAsyncEnumerable<Comment> ReadComments(NodeIdReaderByUrlId nodeIdReader)
     {
 
         var sql = $"""
@@ -61,7 +69,7 @@ internal sealed class CommentMigrator : PPLMigrator
             AND NOT (n.`type` = 'panel' and n.nid <> 48445)
             ORDER BY c.cid
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -72,7 +80,7 @@ internal sealed class CommentMigrator : PPLMigrator
         while (await reader.ReadAsync()) {
             var discussion = new Comment {
                 Id = reader.GetInt32("id"),
-                NodeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("node_id")
 

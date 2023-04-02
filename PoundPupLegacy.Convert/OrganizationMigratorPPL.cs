@@ -1,14 +1,22 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class OrganizationMigratorPPL : PPLMigrator
+internal sealed class OrganizationMigratorPPL : MigratorPPL
 {
-    public OrganizationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IEntityCreator<Organization> _organizationCreator;
+    public OrganizationMigratorPPL(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IEntityCreator<Organization> organizationCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _organizationCreator = organizationCreator;
     }
 
     protected override string Name => "organizations (ppl)";
 
-    private async IAsyncEnumerable<Organization> GetOrganizations()
+    private async IAsyncEnumerable<Organization> GetOrganizations(NodeIdReaderByUrlId nodeIdReader)
     {
         yield return new BasicOrganization {
             Id = null,
@@ -53,7 +61,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = 12625
@@ -104,7 +112,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = Constants.POLITICAL_PARTY
@@ -155,7 +163,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = Constants.POLITICAL_PARTY
@@ -206,7 +214,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                     {
                         TenantId = Constants.PPL,
                         UrlId = 12630
@@ -218,10 +226,11 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await new OrganizationCreator().CreateAsync(GetOrganizations(), _postgresConnection);
-        await new OrganizationCreator().CreateAsync(ReadOrganizations(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _organizationCreator.CreateAsync(GetOrganizations(nodeIdReader), _postgresConnection);
+        await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<Organization> ReadOrganizations()
+    private async IAsyncEnumerable<Organization> ReadOrganizations(NodeIdReaderByUrlId nodeIdReader)
     {
 
         var sql = $"""
@@ -322,7 +331,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                 	c2.topic_parent_names,
                 ua.dst
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -341,7 +350,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
-                var organizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     UrlId = typeId,
                     TenantId = Constants.PPL
                 });
@@ -431,7 +440,7 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
                         new OrganizationOrganizationType
                         {
                             OrganizationId = null,
-                            OrganizationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                            OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
                             {
                                 TenantId = Constants.PPL,
                                 UrlId = Constants.POLITICAL_PARTY

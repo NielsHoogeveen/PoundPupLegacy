@@ -1,16 +1,23 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System;
 
-internal sealed class ActMigrator : PPLMigrator
+namespace PoundPupLegacy.Convert;
+
+internal sealed class ActMigrator : MigratorPPL
 {
-    public ActMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<Act> _actCreator;
+    public ActMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<Act> actCreator
+    ) : base(databaseConnections)
     {
+        _actCreator = actCreator;
     }
 
     protected override string Name => "acts";
 
     protected override async Task MigrateImpl()
     {
-        await new ActCreator().CreateAsync(ReadArticles(), _postgresConnection);
+        await _actCreator.CreateAsync(ReadArticles(), _postgresConnection);
 
     }
 
@@ -94,7 +101,7 @@ internal sealed class ActMigrator : PPLMigrator
                 	WHERE n.`type` = 'adopt_orgs' AND n.uid <> 0
                 	AND (cn.nid IS NOT NULL OR n.nid IN(64018, 73678, 59410, 64614, 64123, 64297, 64324, 64151))
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

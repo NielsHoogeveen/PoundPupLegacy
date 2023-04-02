@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace PoundPupLegacy.Controllers;
 
 [Route("coerced_adoption_cases")]
-public class CoercedAdoptionCasesController : Controller
+public sealed class CoercedAdoptionCasesController : Controller
 {
     const int NUMBER_OF_ENTRIES = 25;
 

@@ -4,7 +4,7 @@ using PoundPupLegacy.Services;
 namespace PoundPupLegacy.Controllers;
 
 [Route("blogs")]
-public class BlogsController : Controller
+public sealed class BlogsController : Controller
 {
     private readonly IFetchBlogsService _fetchBlogsService;
     private readonly ISiteDataService _siteDataService;

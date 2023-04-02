@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Inserters;
 
-public sealed class FileInserter : DatabaseInserter<FileInserter.Request>, IDatabaseInserter<FileInserter.Request>
+internal sealed class FileInserter : DatabaseInserter<FileInserter.Request>, IDatabaseInserter<FileInserter.Request>
 {
     public record Request
     {

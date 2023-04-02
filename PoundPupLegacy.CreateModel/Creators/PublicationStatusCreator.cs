@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class PublicationStatusCreator : IEntityCreator<PublicationStatus>
+internal sealed class PublicationStatusCreator : IEntityCreator<PublicationStatus>
 {
     public async Task CreateAsync(IAsyncEnumerable<PublicationStatus> publicationStatuses, IDbConnection connection)
     {

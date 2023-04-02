@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class HagueStatusCreator : IEntityCreator<HagueStatus>
+internal sealed class HagueStatusCreator : IEntityCreator<HagueStatus>
 {
     public async Task CreateAsync(IAsyncEnumerable<HagueStatus> hagueStatuss, IDbConnection connection)
     {

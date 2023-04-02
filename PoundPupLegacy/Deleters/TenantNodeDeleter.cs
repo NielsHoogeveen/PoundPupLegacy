@@ -3,7 +3,7 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.Deleters;
-public class TenantNodeDeleterFactory : IDatabaseDeleterFactory<TenantNodeDeleter>
+internal sealed class TenantNodeDeleterFactory : IDatabaseDeleterFactory<TenantNodeDeleter>
 {
     public async Task<TenantNodeDeleter> CreateAsync(IDbConnection connection)
     {
@@ -25,7 +25,7 @@ public class TenantNodeDeleterFactory : IDatabaseDeleterFactory<TenantNodeDelete
         return new TenantNodeDeleter(command);
     }
 }
-public class TenantNodeDeleter : DatabaseDeleter<int>
+internal sealed class TenantNodeDeleter : DatabaseDeleter<int>
 {
     public TenantNodeDeleter(NpgsqlCommand command) : base(command)
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class VocabularyCreator : IEntityCreator<Vocabulary>
+internal sealed class VocabularyCreator : IEntityCreator<Vocabulary>
 {
     public async Task CreateAsync(IAsyncEnumerable<Vocabulary> vocabularies, IDbConnection connection)
     {

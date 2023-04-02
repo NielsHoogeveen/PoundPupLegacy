@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCase>
+internal sealed class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCase>
 {
     public async Task CreateAsync(IAsyncEnumerable<DisruptedPlacementCase> disruptedPlacementCases, IDbConnection connection)
     {

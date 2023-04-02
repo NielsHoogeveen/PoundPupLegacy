@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class CommentCreator : IEntityCreator<Comment>
+internal sealed class CommentCreator : IEntityCreator<Comment>
 {
     public async Task CreateAsync(IAsyncEnumerable<Comment> comments, IDbConnection connection)
     {

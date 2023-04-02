@@ -8,7 +8,7 @@ using System.Data;
 
 namespace PoundPupLegacy;
 
-public class Program
+public sealed class Program
 {
     public static async Task Main(string[] args)
     {

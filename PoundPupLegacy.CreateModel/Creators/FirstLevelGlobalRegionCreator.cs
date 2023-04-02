@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegion>
+internal sealed class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegion>
 {
     public async Task CreateAsync(IAsyncEnumerable<FirstLevelGlobalRegion> nodes, IDbConnection connection)
     {

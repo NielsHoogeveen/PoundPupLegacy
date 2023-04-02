@@ -4,7 +4,7 @@ using PoundPupLegacy.Services;
 namespace PoundPupLegacy.Controllers;
 
 [Route("attachment")]
-public class AttachmentController : Controller
+public sealed class AttachmentController : Controller
 {
     private readonly IAttachmentService _attachmentService;
     private readonly IUserService _userService;

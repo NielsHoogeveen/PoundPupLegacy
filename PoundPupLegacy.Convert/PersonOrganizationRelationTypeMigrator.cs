@@ -1,14 +1,27 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
+internal sealed class PersonOrganizationRelationTypeMigrator : MigratorPPL
 {
+
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<PersonOrganizationRelationType> _personOrganizationRelationTypeCreator;
     protected override string Name => "person organization relation types";
-    public PersonOrganizationRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    public PersonOrganizationRelationTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<PersonOrganizationRelationType> personOrganizationRelationTypeCreator
+    ) : base(databaseConnections)
+    { 
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _personOrganizationRelationTypeCreator = personOrganizationRelationTypeCreator;
+    }
+
     protected override async Task MigrateImpl()
     {
-        await new PersonOrganizationRelationTypeCreator().CreateAsync(ReadPersonOrganizationRelationTypes(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _personOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<PersonOrganizationRelationType> ReadPersonOrganizationRelationTypes()
+    private async IAsyncEnumerable<PersonOrganizationRelationType> ReadPersonOrganizationRelationTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -29,7 +42,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
                 WHERE n.nid not in (38509, 38312)
                 """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -85,7 +98,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

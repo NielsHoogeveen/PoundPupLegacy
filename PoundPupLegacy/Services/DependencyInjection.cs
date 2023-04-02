@@ -5,6 +5,7 @@ using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.Readers;
 using PoundPupLegacy.Updaters;
 using PoundPupLegacy.ViewModel.Readers;
+using PoundPupLegacy.CreateModel.Creators;
 
 namespace PoundPupLegacy.Services;
 
@@ -17,6 +18,7 @@ public static class DependencyInjection
         services.AddSystemDeleters();
         services.AddSystemUpdaters();
         services.AddViewModelReaders();
+        services.AddEntityCreators();
 
         services.AddTransient<IFetchNodeService, FetchNodeService>();
         services.AddTransient<IFetchBlogService, FetchBlogService>();

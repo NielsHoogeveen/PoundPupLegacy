@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class ArticleCreator : IEntityCreator<Article>
+internal sealed class ArticleCreator : IEntityCreator<Article>
 {
     public async Task CreateAsync(IAsyncEnumerable<Article> articles, IDbConnection connection)
     {

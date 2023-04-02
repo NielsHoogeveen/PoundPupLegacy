@@ -1,22 +1,30 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
+internal sealed class InterPersonalRelationMigratorPPL : MigratorPPL
 {
-    public InterPersonalRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<InterPersonalRelation> _interPersonalRelationCreator;
+    public InterPersonalRelationMigratorPPL(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<InterPersonalRelation> interPersonalRelationCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _interPersonalRelationCreator = interPersonalRelationCreator;
     }
 
     protected override string Name => "inter personal relation";
 
     protected override async Task MigrateImpl()
     {
-        await new InterPersonalRelationCreator().CreateAsync(ReadInterPersonalRelations(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader), _postgresConnection);
 
     }
 
-    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations()
+    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations(NodeIdReaderByUrlId nodeIdReader)
     {
-
         var sql = $"""
                 select
                     id,
@@ -74,7 +82,7 @@ internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
                     ) fp ON fp.nid = n.nid AND fp.vid = n.vid
                 ) x
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -86,16 +94,16 @@ internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int organizationIdFrom = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int organizationIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("person_id_from")
             });
-            int organizationIdTo = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int organizationIdTo = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("person_id_to")
 
             });
-            int interPersonalRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int interPersonalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
 
@@ -137,7 +145,7 @@ internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = reader.IsDBNull("document_id_proof")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     }),

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class TenantCreator : IEntityCreator<Tenant>
+internal sealed class TenantCreator : IEntityCreator<Tenant>
 {
     public async Task CreateAsync(IAsyncEnumerable<Tenant> tenants, IDbConnection connection)
     {

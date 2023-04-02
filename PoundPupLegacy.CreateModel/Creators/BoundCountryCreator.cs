@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class BoundCountryCreator : IEntityCreator<BoundCountry>
+internal sealed class BoundCountryCreator : IEntityCreator<BoundCountry>
 {
     public async Task CreateAsync(IAsyncEnumerable<BoundCountry> countries, IDbConnection connection)
     {

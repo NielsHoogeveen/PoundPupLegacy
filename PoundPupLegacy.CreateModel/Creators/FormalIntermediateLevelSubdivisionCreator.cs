@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIntermediateLevelSubdivision>
+internal sealed class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIntermediateLevelSubdivision>
 {
     public async Task CreateAsync(IAsyncEnumerable<FormalIntermediateLevelSubdivision> subdivisions, IDbConnection connection)
     {

@@ -12,6 +12,7 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
 {
     private readonly IDatabaseReaderFactory<DiscussionCreateDocumentReader> _createDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<DiscussionUpdateDocumentReader> _updateDocumentReaderFactory;
+    private readonly IEntityCreator<CreateModel.Discussion> _discussionCreator;
 
     public DiscussionEditService(
         IDbConnection connection,
@@ -24,14 +25,16 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
         ITextService textService,
-        ILogger<DiscussionEditService> logger
-    ): base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
+        ILogger<DiscussionEditService> logger,
+        IEntityCreator<CreateModel.Discussion> discussionCreator
+    ) : base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
     {
         _createDocumentReaderFactory = createDocumentReaderFactory;
         _updateDocumentReaderFactory = updateDocumentReaderFactory;
+        _discussionCreator = discussionCreator;
     }
 
-    protected sealed override IEntityCreator<CreateModel.Discussion> EntityCreator => new DiscussionCreator();
+    protected sealed override IEntityCreator<CreateModel.Discussion> EntityCreator => _discussionCreator;
 
     public async Task<Discussion> GetViewModelAsync(int userId, int tenantId)
     {

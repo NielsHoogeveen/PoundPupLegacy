@@ -1,28 +1,41 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentMigratorCPCT : CPCTMigrator
+internal sealed class DocumentMigratorCPCT : MigratorCPCT
 {
-    public DocumentMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<Document> _documentCreator;
+    public DocumentMigratorCPCT(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IEntityCreator<Document> documentCreator
+    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
+        _documentCreator = documentCreator;
     }
 
     protected override string Name => "documents cpct";
 
     protected override async Task MigrateImpl()
     {
-        await new DocumentCreator().CreateAsync(ReadDocuments(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeReader = await _tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _documentCreator.CreateAsync(ReadDocuments(nodeIdReader, tenantNodeReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(IEnumerable<int> documentableIds)
+    private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(
+        IEnumerable<int> documentableIds,
+        NodeIdReaderByUrlId nodeIdReader,
+        TenantNodeReaderByUrlId tenantNodeReader)
     {
         foreach (var urlId in documentableIds) {
-            yield return await GetNodeId(urlId);
+            yield return await GetNodeId(urlId, nodeIdReader, tenantNodeReader);
         }
     }
 
-    private async IAsyncEnumerable<Document> ReadDocuments()
+    private async IAsyncEnumerable<Document> ReadDocuments(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader)
     {
 
+        
         var sql = $"""
             SELECT
                 n.nid id,
@@ -72,7 +85,7 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
                 nr.body,
                 c.document_type_id
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -95,7 +108,7 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
                 .Distinct()
                 .ToList();
 
-            var documentable = await GetDocumentablesWithStatus(documentableIds).ToListAsync();
+            var documentable = await GetDocumentablesWithStatus(documentableIds, nodeIdReader, tenantNodeReader).ToListAsync();
 
             var tenantNodes = new List<TenantNode>
                 {
@@ -138,7 +151,7 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
                 Teaser = TextToTeaser(text),
                 DocumentTypeId = reader.IsDBNull("document_type_id")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.CPCT,
                         UrlId = reader.GetInt32("document_type_id")
                     }),

@@ -1,20 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
-internal sealed class AbuseCaseMigrator : PPLMigrator
-{
-    public AbuseCaseMigrator(MySqlToPostgresConverter converter) : base(converter)
-    {
 
+internal sealed class AbuseCaseMigrator : MigratorPPL
+{
+    private readonly IEntityCreator<AbuseCase> _abuseCaseCreator;
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+
+    public AbuseCaseMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<AbuseCase> abuseCaseCreator,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory
+    ) : base(databaseConnections)
+    {
+        _abuseCaseCreator = abuseCaseCreator;
+        _nodeIdReaderFactory = nodeIdReaderFactory;
     }
 
     protected override string Name => "abuse cases";
 
     protected override async Task MigrateImpl()
     {
-        await new AbuseCaseCreator().CreateAsync(ReadAbuseCases(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<AbuseCase> ReadAbuseCases()
+    private async IAsyncEnumerable<AbuseCase> ReadAbuseCases(NodeIdReaderByUrlId nodeIdReader)
     {
-
         var sql = $"""
                 SELECT
                 n.nid id,
@@ -104,7 +113,7 @@ internal sealed class AbuseCaseMigrator : PPLMigrator
                         n.title
                 ) c3 ON c3.title = n.title                
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -169,11 +178,11 @@ internal sealed class AbuseCaseMigrator : PPLMigrator
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
-                ChildPlacementTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                ChildPlacementTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("child_placement_type_id")
                 }),
-                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("family_size_id")
                 }),

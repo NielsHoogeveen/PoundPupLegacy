@@ -1,15 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentTypeMigrator : PPLMigrator
+internal sealed class DocumentTypeMigrator : MigratorPPL
 {
-
-    public DocumentTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IEntityCreator<DocumentType> _documentTypeCreator;
+    public DocumentTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<DocumentType> documentTypeCreator
+    ) : base(databaseConnections) 
+    { 
+        _documentTypeCreator = documentTypeCreator;
+    }
 
     protected override string Name => "document types";
 
     protected override async Task MigrateImpl()
     {
-        await new DocumentTypeCreator().CreateAsync(ReadSelectionOptions(), _postgresConnection);
+        await _documentTypeCreator.CreateAsync(ReadSelectionOptions(), _postgresConnection);
     }
     private async IAsyncEnumerable<DocumentType> ReadSelectionOptions()
     {
@@ -30,7 +36,7 @@ internal sealed class DocumentTypeMigrator : PPLMigrator
                     WHERE n1.nid  = 42416
                   """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

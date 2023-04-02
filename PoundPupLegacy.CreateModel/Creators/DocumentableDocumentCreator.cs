@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class DocumentableDocumentCreator : IEntityCreator<DocumentableDocument>
+internal sealed class DocumentableDocumentCreator : IEntityCreator<DocumentableDocument>
 {
     public async Task CreateAsync(IAsyncEnumerable<DocumentableDocument> documentableDocuments, IDbConnection connection)
     {

@@ -17,12 +17,15 @@ internal sealed class AttachmentService : IAttachmentService
     private readonly ILogger<AttachmentService> _logger;
     private readonly IConfiguration _configuration;
     private readonly IDatabaseReaderFactory<FileDocumentReader> _fileDocumentReaderFactory;
+    private readonly IEntityCreator<File> _fileCreator;
 
     public AttachmentService(
         IDbConnection connection,
         IConfiguration configuration,
         ILogger<AttachmentService> logger,
-        IDatabaseReaderFactory<FileDocumentReader> fileDocumentReaderFactory)
+        IDatabaseReaderFactory<FileDocumentReader> fileDocumentReaderFactory,
+        IEntityCreator<File> fileCreator
+        )
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -30,6 +33,7 @@ internal sealed class AttachmentService : IAttachmentService
         _logger = logger;
         _configuration = configuration;
         _fileDocumentReaderFactory = fileDocumentReaderFactory;
+        _fileCreator = fileCreator;
     }
 
     public async Task<int?> StoreFile(IFormFile file)
@@ -59,7 +63,7 @@ internal sealed class AttachmentService : IAttachmentService
                     Size = (int)file.Length,
                     TenantFiles = new List<TenantFile>()
                 };
-                await new FileCreator().CreateAsync(new List<File> { fm }.ToAsyncEnumerable(), _connection);
+                await _fileCreator.CreateAsync(new List<File> { fm }.ToAsyncEnumerable(), _connection);
                 return fm.Id;
             }
             finally {

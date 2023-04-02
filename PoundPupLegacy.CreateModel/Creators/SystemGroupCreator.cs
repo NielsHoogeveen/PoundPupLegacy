@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
-
-public class SystemGroupCreator
+public interface ISystemGroupCreator
+{
+    Task CreateAsync(IDbConnection connection);
+}
+internal sealed class SystemGroupCreator: ISystemGroupCreator
 {
     public async Task CreateAsync(IDbConnection connection)
     {

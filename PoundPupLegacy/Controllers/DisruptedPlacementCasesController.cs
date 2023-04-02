@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace PoundPupLegacy.Controllers;
 
 [Route("disrupted_placement_cases")]
-public class DisruptedPlacementCasesController : Controller
+public sealed class DisruptedPlacementCasesController : Controller
 {
     const int NUMBER_OF_ENTRIES = 25;
 

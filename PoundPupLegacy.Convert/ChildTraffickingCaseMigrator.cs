@@ -1,20 +1,28 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ChildTraffickingCaseMigrator : PPLMigrator
+internal sealed class ChildTraffickingCaseMigrator : MigratorPPL
 {
-    public ChildTraffickingCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<ChildTraffickingCase> _childTraffickingCaseCreator;
+    public ChildTraffickingCaseMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<ChildTraffickingCase> childTraffickingCaseCreator
+    ) : base(databaseConnections)
     {
+        _childTraffickingCaseCreator = childTraffickingCaseCreator;
+        _nodeIdReaderFactory = nodeIdReaderFactory;
     }
 
     protected override string Name => "child trafficking cases";
 
     protected override async Task MigrateImpl()
     {
-        await new ChildTraffickingCaseCreator().CreateAsync(ReadChildTraffickingCases(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases()
+    private async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases(NodeIdReaderByUrlId nodeIdReader)
     {
-
         var sql = $"""
                 SELECT
                     n.nid id,
@@ -36,7 +44,7 @@ internal sealed class ChildTraffickingCaseMigrator : PPLMigrator
                 LEFT JOIN content_type_category_cat cc ON cc.field_related_page_nid = n.nid 
                 LEFT JOIN node n2 ON n2.nid = cc.nid AND n2.vid = cc.vid
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -82,7 +90,7 @@ internal sealed class ChildTraffickingCaseMigrator : PPLMigrator
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
-                CountryIdFrom = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                CountryIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("country_id_from")
                 }),

@@ -2,13 +2,20 @@
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class VocabularyMigrator : PPLMigrator
+internal sealed class VocabularyMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IEntityCreator<Vocabulary> _vocabularyCreator;
 
     protected override string Name => "vocabularies";
-    public VocabularyMigrator(MySqlToPostgresConverter converter) : base(converter)
+    public VocabularyMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IEntityCreator<Vocabulary> vocabularyCreator
+    ) : base(databaseConnections)
     {
-
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _vocabularyCreator = vocabularyCreator;
     }
 
     private static async IAsyncEnumerable<Vocabulary> GetVocabularies()
@@ -268,10 +275,11 @@ internal sealed class VocabularyMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await new VocabularyCreator().CreateAsync(GetVocabularies(), _postgresConnection);
-        await new VocabularyCreator().CreateAsync(ReadVocabularies(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _vocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
+        await _vocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
         await using var tenantUpdater = await TenantUpdaterSetTaggingVocabulary.CreateAsync(_postgresConnection);
-        await tenantUpdater.Update(Constants.PPL, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+        await tenantUpdater.Update(Constants.PPL, await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             TenantId = Constants.PPL,
             UrlId = 4126
         }));
@@ -293,7 +301,7 @@ internal sealed class VocabularyMigrator : PPLMigrator
             JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
             WHERE n.`type` = 'category_cont' AND n.nid not in (220, 12707, 42422)
             """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

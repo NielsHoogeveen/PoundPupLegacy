@@ -1,9 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class AdoptionImportMigrator : PPLMigrator
+internal sealed class AdoptionImportMigrator : MigratorPPL
 {
-    public AdoptionImportMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<InterCountryRelation> _interCountryRelationCreator;
+    public AdoptionImportMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<InterCountryRelation> interCountryRelationCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _interCountryRelationCreator = interCountryRelationCreator;
     }
 
     private interface AdoptionImports
@@ -32,7 +40,6 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
     private async IAsyncEnumerable<AdoptionImports> AdoptionImportCsvFiles()
     {
         foreach (var f in new DirectoryInfo(@"..\..\..\files\imports").EnumerateFiles().Where(x => x.Extension == ".csv")) {
-            Console.WriteLine($"Processing file {f.Name}");
             if (int.TryParse(f.Name.Substring(0, f.Name.Length - 4), out var countryIdTo)) {
 
                 var years = new List<int>();
@@ -80,17 +87,18 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
     protected override async Task MigrateImpl()
     {
         await using var nodeReader = await new NodeReaderByUrlIdFactory().CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
 
         var x = AdoptionImportCsvFiles()
             .OfType<SpecificAdoptionImports>()
-            .Select(async x => await GetInterCountryRelation(x.CountryIdFrom, x.CountryIdTo, x.Year, x.Amount, nodeReader))
+            .Select(async x => await GetInterCountryRelation(x.CountryIdFrom, x.CountryIdTo, x.Year, x.Amount, nodeReader, nodeIdReader))
             .Select(y => y.Result);
 
 
-        var r = ReadAdoptionExportYears(nodeReader);
+        var r = ReadAdoptionExportYears(nodeReader, nodeIdReader);
 
-        await new InterCountryRelationCreator().CreateAsync(r, _postgresConnection);
-        await new InterCountryRelationCreator().CreateAsync(x, _postgresConnection);
+        await _interCountryRelationCreator.CreateAsync(r, _postgresConnection);
+        await _interCountryRelationCreator.CreateAsync(x, _postgresConnection);
 
         var cmd = _postgresConnection.CreateCommand();
         cmd.CommandText = $"""
@@ -107,8 +115,14 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
         await cmd.ExecuteNonQueryAsync();
     }
 
-    private async Task<InterCountryRelation> GetInterCountryRelation(int countryIdFrom, int countryIdTo, int year, int numberOfChildren, NodeReaderByUrlId nodeReader)
+    private async Task<InterCountryRelation> GetInterCountryRelation(
+        int countryIdFrom, 
+        int countryIdTo, 
+        int year, int numberOfChildren, 
+        NodeReaderByUrlId nodeReader,
+        NodeIdReaderByUrlId nodeIdReader)
     {
+        
         var nodeFrom = await nodeReader.ReadAsync(new NodeReaderByUrlId.Request {
             UrlId = countryIdFrom,
             TenantId = Constants.PPL
@@ -134,7 +148,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
             CreatedDateTime = DateTime.Now,
             DocumentIdProof = null,
             Id = null,
-            InterCountryRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            InterCountryRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = Constants.ADOPTION_IMPORT,
                 TenantId = Constants.PPL
             }),
@@ -156,7 +170,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                 },
         };
     }
-    private async IAsyncEnumerable<InterCountryRelation> ReadAdoptionExportYears(NodeReaderByUrlId nodeReader)
+    private async IAsyncEnumerable<InterCountryRelation> ReadAdoptionExportYears(NodeReaderByUrlId nodeReader, NodeIdReaderByUrlId  nodeIdReader)
     {
 
         var sql = $"""
@@ -259,7 +273,7 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                 AND NOT (country_id_to = 4023 AND country_id_from = 3936 AND `year` = 2009)
                 AND  NOT(country_id_to = 4018 AND `year` = 2017)
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -275,7 +289,8 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
                 reader.GetInt32("country_id_to"),
                 reader.GetInt32("year"),
                 reader.GetInt32("number_of_children"),
-                nodeReader
+                nodeReader,
+                nodeIdReader
                 );
         }
         await reader.CloseAsync();

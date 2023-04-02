@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
-internal sealed class AdultAftermathMigrator : PPLMigrator
+internal sealed class AdultAftermathMigrator : MigratorPPL
 {
-    public AdultAftermathMigrator(MySqlToPostgresConverter converter) : base(converter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    public AdultAftermathMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory
+    ) : base(databaseConnections)
     {
-
+        _nodeIdReaderFactory = nodeIdReaderFactory;
     }
 
     protected override string Name => "adult aftermath";
 
     protected override async Task MigrateImpl()
     {
-        var adultAfterMathEntries = await ReadAdultAftermaths().ToListAsync();
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_mySqlConnection);
+        var adultAfterMathEntries = await ReadAdultAftermaths(nodeIdReader).ToListAsync();
         await UpdateAdultAftermathEntries(adultAfterMathEntries);
     }
 
@@ -38,9 +43,8 @@ internal sealed class AdultAftermathMigrator : PPLMigrator
 
     }
 
-    private async IAsyncEnumerable<(int, int)> ReadAdultAftermaths()
+    private async IAsyncEnumerable<(int, int)> ReadAdultAftermaths(NodeIdReaderByUrlId nodeIdReader)
     {
-
         var sql = $"""
                 SELECT
                  n.nid,
@@ -58,7 +62,7 @@ internal sealed class AdultAftermathMigrator : PPLMigrator
                  and n.nid not in (48006, 49927, 50280)
                  and uid  <> 0
                 """;
-        using var command = MysqlConnection.CreateCommand();
+        using var command = _mySqlConnection.CreateCommand();
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;
@@ -67,7 +71,7 @@ internal sealed class AdultAftermathMigrator : PPLMigrator
         var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var id = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var id = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32(0),
                 TenantId = Constants.PPL
             });

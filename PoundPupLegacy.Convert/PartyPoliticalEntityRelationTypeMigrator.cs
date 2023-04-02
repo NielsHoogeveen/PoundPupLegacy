@@ -1,16 +1,27 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PartyPoliticalEntityRelationTypeMigrator : PPLMigrator
+internal sealed class PartyPoliticalEntityRelationTypeMigrator : MigratorPPL
 {
-    public PartyPoliticalEntityRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<PartyPoliticalEntityRelationType> _partyPoliticalEntityRelationTypeCreator;
+    public PartyPoliticalEntityRelationTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<PartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreator
+    ) : base(databaseConnections)
+    { 
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _partyPoliticalEntityRelationTypeCreator = partyPoliticalEntityRelationTypeCreator;
+    }
 
     protected override string Name => "political entity relation types";
 
     protected override async Task MigrateImpl()
     {
-        await new PartyPoliticalEntityRelationTypeCreator().CreateAsync(ReadPoliticalEntityRelationTypes(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _partyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<PartyPoliticalEntityRelationType> ReadPoliticalEntityRelationTypes()
+    private async IAsyncEnumerable<PartyPoliticalEntityRelationType> ReadPoliticalEntityRelationTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -34,7 +45,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator : PPLMigrator
                 JOIN category c ON c.cid = n.nid AND c.cnid = 12652
                 """;
 
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -90,7 +101,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

@@ -1,21 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DeportationCaseMigrator : PPLMigrator
+internal sealed class DeportationCaseMigrator : MigratorPPL
 {
-    public DeportationCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IEntityCreator<DeportationCase> _deportationCaseCreator;
+    public DeportationCaseMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IEntityCreator<DeportationCase> deportationCaseCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderFactory = nodeIdReaderFactory;
+        _deportationCaseCreator = deportationCaseCreator;
     }
 
     protected override string Name => "deportation cases";
 
     protected override async Task MigrateImpl()
     {
-        await new DeportationCaseCreator().CreateAsync(ReadDeportationCases(), _postgresConnection);
-
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await _deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<DeportationCase> ReadDeportationCases()
+    private async IAsyncEnumerable<DeportationCase> ReadDeportationCases(NodeIdReaderByUrlId nodeIdReader)
     {
-
+        
         var sql = $"""
                 SELECT
                      n.nid id,
@@ -51,7 +59,7 @@ internal sealed class DeportationCaseMigrator : PPLMigrator
                      n.changed,
                      field_description_6_value
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -98,13 +106,13 @@ internal sealed class DeportationCaseMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("subdivision_id_from")
                     }),
                 CountryIdTo = reader.IsDBNull("country_id_to")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("country_id_to")
                     }),

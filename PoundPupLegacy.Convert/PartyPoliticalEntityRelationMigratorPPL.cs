@@ -1,20 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
+internal sealed class PartyPoliticalEntityRelationMigratorPPL : MigratorPPL
 {
-    public PartyPoliticalEntityRelationMigratorPPL(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IEntityCreator<PartyPoliticalEntityRelation> _partyPoliticalEntityRelationCreator;
+    public PartyPoliticalEntityRelationMigratorPPL(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IEntityCreator<PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _partyPoliticalEntityRelationCreator = partyPoliticalEntityRelationCreator;
     }
 
     protected override string Name => "party political enitity relation";
 
     protected override async Task MigrateImpl()
     {
-        await new PartyPoliticalEntityRelationCreator().CreateAsync(ReadPartyPoliticalEntityRelations(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader), _postgresConnection);
 
     }
 
-    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations()
+    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(NodeIdReaderByUrlId nodeIdReader)
     {
 
         var sql = $"""
@@ -80,7 +89,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
                 	c.cnid
                 ) x
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -92,15 +101,15 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
 
             var id = reader.GetInt32("id");
 
-            int partyId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int partyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("party_id")
             });
-            int politicalEntityId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int politicalEntityId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("political_entity_id")
             });
-            int partyPpoliticalEntityTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int partyPpoliticalEntityTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
             });
@@ -142,7 +151,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : PPLMigrator
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = reader.IsDBNull("document_id_proof")
                     ? null
-                    : await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     })

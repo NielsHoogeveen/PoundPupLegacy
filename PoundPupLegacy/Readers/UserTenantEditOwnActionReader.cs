@@ -4,7 +4,7 @@ using PoundPupLegacy.Models;
 using System.Data;
 
 namespace PoundPupLegacy.Readers;
-public class UserTenantEditOwnActionReaderFactory : IDatabaseReaderFactory<UserTenantEditOwnActionReader>
+internal sealed class UserTenantEditOwnActionReaderFactory : IDatabaseReaderFactory<UserTenantEditOwnActionReader>
 {
     public async Task<UserTenantEditOwnActionReader> CreateAsync(IDbConnection connection)
     {
@@ -58,7 +58,7 @@ public class UserTenantEditOwnActionReaderFactory : IDatabaseReaderFactory<UserT
 
 
 }
-public class UserTenantEditOwnActionReader : EnumerableDatabaseReader<UserTenantEditOwnActionReader.Request, UserTenantEditOwnAction>
+internal sealed class UserTenantEditOwnActionReader : EnumerableDatabaseReader<UserTenantEditOwnActionReader.Request, UserTenantEditOwnAction>
 {
     public record Request
     {

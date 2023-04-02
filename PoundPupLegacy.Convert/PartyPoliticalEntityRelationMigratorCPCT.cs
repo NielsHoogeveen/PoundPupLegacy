@@ -1,20 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
+internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
 {
-    public PartyPoliticalEntityRelationMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<PartyPoliticalEntityRelation> _partyPoliticalEntityRelationCreator;
+    public PartyPoliticalEntityRelationMigratorCPCT(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IEntityCreator<PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
+    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
+        _partyPoliticalEntityRelationCreator = partyPoliticalEntityRelationCreator;
     }
 
     protected override string Name => "party political enitity relation";
 
     protected override async Task MigrateImpl()
     {
-        await new PartyPoliticalEntityRelationCreator().CreateAsync(ReadPartyPoliticalEntityRelations(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeReader = await _tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await _partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader, tenantNodeReader), _postgresConnection);
 
     }
 
-    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations()
+    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader)
     {
 
         var sql = $"""
@@ -71,7 +80,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
                     c.cnid
                 ) x
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -83,12 +92,12 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
 
             var id = reader.GetInt32("id");
 
-            var (partyId, partyPublicationStatusId) = await GetNodeId(reader.GetInt32("party_id"));
-            int politicalEntityId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var (partyId, partyPublicationStatusId) = await GetNodeId(reader.GetInt32("party_id"), nodeIdReader, tenantNodeReader);
+            int politicalEntityId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("political_entity_id"),
                 TenantId = Constants.PPL
             });
-            int partyPpoliticalEntityTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int partyPpoliticalEntityTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.PPL
             });

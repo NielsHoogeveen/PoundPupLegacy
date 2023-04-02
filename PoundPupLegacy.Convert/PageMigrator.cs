@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PageMigrator : PPLMigrator
+internal sealed class PageMigrator : MigratorPPL
 {
-    public PageMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<Page> _pageCreator;
+    public PageMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<Page> pageCreator
+    ) : base(databaseConnections)
     {
+        _pageCreator = pageCreator;
     }
 
     protected override string Name => "pages";
 
     protected override async Task MigrateImpl()
     {
-        await new PageCreator().CreateAsync(ReadPages(), _postgresConnection);
+        await _pageCreator.CreateAsync(ReadPages(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<Page> ReadPages()
@@ -31,7 +36,7 @@ internal sealed class PageMigrator : PPLMigrator
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 WHERE n.`type` = 'page' AND n.uid <> 0 and n.nid not in (63169)
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -1,20 +1,34 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class TermHierarchyMigrator : PPLMigrator
+internal sealed class TermHierarchyMigrator : MigratorPPL
 {
-    public TermHierarchyMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IDatabaseReaderFactory<TermReaderByNameableId> _termReaderByNameableIdFactory;
+    private readonly IEntityCreator<TermHierarchy> _termHierarchyCreator;
+
+    public TermHierarchyMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IDatabaseReaderFactory<TermReaderByNameableId> termReaderByNameableIdFactory,
+        IEntityCreator<TermHierarchy> termHierarchyCreator
+    ) : base(databaseConnections)
     {
+        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
+        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
+        _termHierarchyCreator = termHierarchyCreator;
     }
 
     protected override string Name => "node terms";
 
     protected override async Task MigrateImpl()
     {
+        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
 
-        await new TermHierarchyCreator().CreateAsync(ReadTermHierarchys(), _postgresConnection);
+        await _termHierarchyCreator.CreateAsync(ReadTermHierarchys(nodeIdReader, termReaderByNameableId), _postgresConnection);
 
     }
-    private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys()
+    private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys(NodeIdReaderByUrlId nodeIdReader, TermReaderByNameableId termReaderByNameableId)
     {
 
         var sql = $"""
@@ -124,7 +138,7 @@ internal sealed class TermHierarchyMigrator : PPLMigrator
                  AND (n3.nid IS NOT NULL OR n4.nid IS NOT NULL)
                  AND n4.nid not in (4126)
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -133,20 +147,20 @@ internal sealed class TermHierarchyMigrator : PPLMigrator
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var nodeIdChild = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var nodeIdChild = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id_child")
             });
-            var nodeIdParent = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var nodeIdParent = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id_parent")
             });
-            var termIdChild = await _termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
+            var termIdChild = await termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdChild
             });
-            var termIdParent = await _termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
+            var termIdParent = await termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdParent

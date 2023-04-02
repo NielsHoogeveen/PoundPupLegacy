@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class FirstAndBottomLevelSubdivisionCreator : IEntityCreator<FirstAndBottomLevelSubdivision>
+internal sealed class FirstAndBottomLevelSubdivisionCreator : IEntityCreator<FirstAndBottomLevelSubdivision>
 {
     public async Task CreateAsync(IAsyncEnumerable<FirstAndBottomLevelSubdivision> subdivisions, IDbConnection connection)
     {

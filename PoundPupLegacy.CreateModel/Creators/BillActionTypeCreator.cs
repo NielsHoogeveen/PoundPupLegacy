@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class BillActionTypeCreator : IEntityCreator<BillActionType>
+internal sealed class BillActionTypeCreator : IEntityCreator<BillActionType>
 {
     public async Task CreateAsync(IAsyncEnumerable<BillActionType> billActionTypes, IDbConnection connection)
     {

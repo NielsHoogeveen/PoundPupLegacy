@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class CaseCaseRelationsCreator : IEntityCreator<CaseCaseParties>
+internal sealed class CaseCasePartiesCreator : IEntityCreator<CaseCaseParties>
 {
     public async Task CreateAsync(IAsyncEnumerable<CaseCaseParties> caseCaseRelationss, IDbConnection connection)
     {

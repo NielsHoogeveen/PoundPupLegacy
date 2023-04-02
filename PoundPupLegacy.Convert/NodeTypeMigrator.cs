@@ -1,19 +1,35 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class NodeTypeMigrator : PPLMigrator
+internal sealed class NodeTypeMigrator : MigratorPPL
 {
     protected override string Name => "node types";
 
-    public NodeTypeMigrator(MySqlToPostgresConverter converter) : base(converter)
+    private readonly IEntityCreator<NodeType> _nodeTypeCreator;
+    private readonly IEntityCreator<CreateNodeAction> _createNodeActionCreator;
+    private readonly IEntityCreator<DeleteNodeAction> _deleteNodeActionCreator;
+    private readonly IEntityCreator<EditNodeAction> _editNodeActionCreator;
+
+
+    public NodeTypeMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<NodeType> nodeTypeCreator,
+        IEntityCreator<CreateNodeAction> createNodeActionCreator,
+        IEntityCreator<DeleteNodeAction> deleteNodeActionCreator,
+        IEntityCreator<EditNodeAction> editNodeActionCreator
+    ) : base(databaseConnections)
     {
+        _nodeTypeCreator = nodeTypeCreator;
+        _createNodeActionCreator = createNodeActionCreator;
+        _deleteNodeActionCreator = deleteNodeActionCreator;
+        _editNodeActionCreator = editNodeActionCreator;
 
     }
     protected override async Task MigrateImpl()
     {
-        await new NodeTypeCreator().CreateAsync(GetNodeTypes(), _postgresConnection);
-        await new CreateNodeActionCreator().CreateAsync(GetNodeTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await new DeleteNodeActionCreator().CreateAsync(GetNodeTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await new EditNodeActionCreator().CreateAsync(GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await _nodeTypeCreator.CreateAsync(GetNodeTypes(), _postgresConnection);
+        await _createNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await _deleteNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await _editNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
 
     }
     internal static async IAsyncEnumerable<BasicNodeType> GetNodeTypes()

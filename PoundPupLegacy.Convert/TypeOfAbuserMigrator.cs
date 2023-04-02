@@ -1,17 +1,28 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class TypeOfAbuserMigrator : PPLMigrator
+internal sealed class TypeOfAbuserMigrator : MigratorPPL
 {
+    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IEntityCreator<TypeOfAbuser> _typeOfAbuserCreator;
 
-    public TypeOfAbuserMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    public TypeOfAbuserMigrator(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IEntityCreator<TypeOfAbuser> typeOfAbuserCreator
+    ) : base(databaseConnections) 
+    { 
+        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
+        _typeOfAbuserCreator = typeOfAbuserCreator;
+    }
 
     protected override string Name => "types of abuser";
 
     protected override async Task MigrateImpl()
     {
-        await new TypeOfAbuserCreator().CreateAsync(ReadTypesOfAbusers(), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await _typeOfAbuserCreator.CreateAsync(ReadTypesOfAbusers(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<TypeOfAbuser> ReadTypesOfAbusers()
+    private async IAsyncEnumerable<TypeOfAbuser> ReadTypesOfAbusers(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -65,7 +76,7 @@ internal sealed class TypeOfAbuserMigrator : PPLMigrator
                 LEFT JOIN content_type_category_cat cc on cc.nid = n.nid AND cc.vid = n.vid
                 LEFT JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -137,7 +148,7 @@ internal sealed class TypeOfAbuserMigrator : PPLMigrator
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await _fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image"),
                     }),

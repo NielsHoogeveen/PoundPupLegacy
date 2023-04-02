@@ -4,7 +4,7 @@ using PoundPupLegacy.EditModel;
 using System.Data;
 
 namespace PoundPupLegacy.Deleters;
-public class FileDeleterFactory : IDatabaseDeleterFactory<FileDeleter>
+internal sealed class FileDeleterFactory : IDatabaseDeleterFactory<FileDeleter>
 {
     public async Task<FileDeleter> CreateAsync(IDbConnection connection)
     {
@@ -45,7 +45,7 @@ public class FileDeleterFactory : IDatabaseDeleterFactory<FileDeleter>
         return new FileDeleter(command);
     }
 }
-public class FileDeleter : DatabaseDeleter<FileDeleter.Request>
+internal sealed class FileDeleter : DatabaseDeleter<FileDeleter.Request>
 {
     public record Request
     {

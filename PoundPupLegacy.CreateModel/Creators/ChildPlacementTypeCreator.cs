@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
+internal sealed class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
 {
     public async Task CreateAsync(IAsyncEnumerable<ChildPlacementType> childPlacementTypes, IDbConnection connection)
     {

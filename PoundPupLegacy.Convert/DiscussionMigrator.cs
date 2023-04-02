@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DiscussionMigrator : PPLMigrator
+internal sealed class DiscussionMigrator : MigratorPPL
 {
-    public DiscussionMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<Discussion> _discussionCreator;
+    public DiscussionMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<Discussion> discussionCreator
+    ) : base(databaseConnections)
     {
+        _discussionCreator = discussionCreator;
     }
 
     protected override string Name => "discussions";
 
     protected override async Task MigrateImpl()
     {
-        await new DiscussionCreator().CreateAsync(ReadDiscussions(), _postgresConnection);
+        await _discussionCreator.CreateAsync(ReadDiscussions(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<Discussion> ReadDiscussions()
@@ -29,7 +34,7 @@ internal sealed class DiscussionMigrator : PPLMigrator
                 JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
                 WHERE n.`type` = 'discussion' AND n.uid not in (0, 39)
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

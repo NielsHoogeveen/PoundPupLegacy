@@ -1,14 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BasicNameableMigrator : PPLMigrator
+internal sealed class BasicNameableMigrator : MigratorPPL
 {
-    public BasicNameableMigrator(MySqlToPostgresConverter converter) : base(converter) { }
+    private readonly IEntityCreator<BasicNameable> _basicNameableCreator;
+    public BasicNameableMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<BasicNameable> basicNameableCreator
+    ) : base(databaseConnections) 
+    { 
+        _basicNameableCreator = basicNameableCreator;
+    }
 
     protected override string Name => "basic nameables";
 
     protected override async Task MigrateImpl()
     {
-        await new BasicNameableCreator().CreateAsync(ReadBasicNameables(), _postgresConnection);
+        await _basicNameableCreator.CreateAsync(ReadBasicNameables(), _postgresConnection);
     }
     private async IAsyncEnumerable<BasicNameable> ReadBasicNameables()
     {
@@ -78,7 +85,7 @@ internal sealed class BasicNameableMigrator : PPLMigrator
                 )
                 AND n2.nid IS  NULL
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace PoundPupLegacy.Controllers;
 
 [Route("blog")]
-public class BlogController : Controller
+public sealed class BlogController : Controller
 {
     const int NUMBER_OF_ENTRIES = 10;
     private readonly IFetchBlogService _fetchBlogService;

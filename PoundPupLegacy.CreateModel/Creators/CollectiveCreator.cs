@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class CollectiveCreator : IEntityCreator<Collective>
+internal sealed class CollectiveCreator : IEntityCreator<Collective>
 {
     public async Task CreateAsync(IAsyncEnumerable<Collective> collectives, IDbConnection connection)
     {

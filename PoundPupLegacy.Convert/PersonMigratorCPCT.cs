@@ -1,16 +1,23 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonMigratorCPCT : CPCTMigrator
+internal sealed class PersonMigratorCPCT : MigratorCPCT
 {
-    public PersonMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<Person> _personCreator;
+    public PersonMigratorCPCT(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IEntityCreator<Person> personCreator
+    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
+        _personCreator = personCreator;
     }
 
     protected override string Name => "persons (cpct)";
 
     protected override async Task MigrateImpl()
     {
-        await new PersonCreator().CreateAsync(ReadPersons(), _postgresConnection);
+        await _personCreator.CreateAsync(ReadPersons(), _postgresConnection);
     }
     private async IAsyncEnumerable<Person> ReadPersons()
     {
@@ -29,7 +36,7 @@ internal sealed class PersonMigratorCPCT : CPCTMigrator
                 AND n.nid > 33162
                 
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

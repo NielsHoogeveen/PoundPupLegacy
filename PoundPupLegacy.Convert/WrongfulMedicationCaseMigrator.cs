@@ -1,16 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class WrongfulMedicationCaseMigrator : PPLMigrator
+internal sealed class WrongfulMedicationCaseMigrator : MigratorPPL
 {
-    public WrongfulMedicationCaseMigrator(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<WrongfulMedicationCase> _wrongfulMedicationCaseCreator;
+    public WrongfulMedicationCaseMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<WrongfulMedicationCase> wrongfulMedicationCaseCreator
+    ) : base(databaseConnections)
     {
+        _wrongfulMedicationCaseCreator = wrongfulMedicationCaseCreator;
     }
 
     protected override string Name => "wrongful medication cases";
 
     protected override async Task MigrateImpl()
     {
-        await new WrongfulMedicationCaseCreator().CreateAsync(ReadWrongfulMedicationCases(), _postgresConnection);
+        await _wrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<WrongfulMedicationCase> ReadWrongfulMedicationCases()
     {
@@ -31,7 +36,7 @@ internal sealed class WrongfulMedicationCaseMigrator : PPLMigrator
                 LEFT JOIN url_alias ua ON cast(SUBSTRING(ua.src, 6) AS INT) = n.nid
                 JOIN content_type_wrongful_medication_case c ON c.nid = n.nid AND c.vid = n.vid
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;

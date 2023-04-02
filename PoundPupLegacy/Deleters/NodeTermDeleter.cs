@@ -4,7 +4,7 @@ using PoundPupLegacy.EditModel;
 using System.Data;
 
 namespace PoundPupLegacy.Deleters;
-public class NodeTermDeleterFactory : IDatabaseDeleterFactory<NodeTermDeleter>
+internal sealed class NodeTermDeleterFactory : IDatabaseDeleterFactory<NodeTermDeleter>
 {
     public async Task<NodeTermDeleter> CreateAsync(IDbConnection connection)
     {
@@ -27,7 +27,7 @@ public class NodeTermDeleterFactory : IDatabaseDeleterFactory<NodeTermDeleter>
         return new NodeTermDeleter(command);
     }
 }
-public class NodeTermDeleter : DatabaseDeleter<NodeTermDeleter.Request>
+internal sealed class NodeTermDeleter : DatabaseDeleter<NodeTermDeleter.Request>
 {
     public record Request
     {

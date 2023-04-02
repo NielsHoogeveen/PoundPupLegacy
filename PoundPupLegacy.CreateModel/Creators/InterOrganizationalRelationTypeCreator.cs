@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-public class InterOrganizationalRelationTypeCreator : IEntityCreator<InterOrganizationalRelationType>
+internal sealed class InterOrganizationalRelationTypeCreator : IEntityCreator<InterOrganizationalRelationType>
 {
     public async Task CreateAsync(IAsyncEnumerable<InterOrganizationalRelationType> interOrganizationalRelationTypes, IDbConnection connection)
     {

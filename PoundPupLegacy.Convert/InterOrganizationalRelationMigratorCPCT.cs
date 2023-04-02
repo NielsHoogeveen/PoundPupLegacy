@@ -1,22 +1,31 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class InterOrganizationalRelationMigratorCPCT : CPCTMigrator
+internal sealed class InterOrganizationalRelationMigratorCPCT : MigratorCPCT
 {
-    public InterOrganizationalRelationMigratorCPCT(MySqlToPostgresConverter mySqlToPostgresConverter) : base(mySqlToPostgresConverter)
+    private readonly IEntityCreator<InterOrganizationalRelation> _interOrganizationalRelationCreator;
+    public InterOrganizationalRelationMigratorCPCT(
+        IDatabaseConnections databaseConnections,
+        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IEntityCreator<InterOrganizationalRelation> interOrganizationalRelationCreator
+    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
+        _interOrganizationalRelationCreator = interOrganizationalRelationCreator;
     }
 
     protected override string Name => "person organization relation (cpct)";
 
     protected override async Task MigrateImpl()
     {
-        await new InterOrganizationalRelationCreator().CreateAsync(ReadInterOrganizationalRelations(), _postgresConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeReaderByUrlId = await _tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+
+        await _interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
 
     }
 
-    private async IAsyncEnumerable<InterOrganizationalRelation> ReadInterOrganizationalRelations()
+    private async IAsyncEnumerable<InterOrganizationalRelation> ReadInterOrganizationalRelations(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReaderByUrlId)
     {
-
         var sql = $"""
                 select
                     distinct
@@ -72,7 +81,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : CPCTMigrator
                     WHERE n.nid > 33162
                 ) x
                 """;
-        using var readCommand = MysqlConnection.CreateCommand();
+        using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
@@ -84,9 +93,9 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : CPCTMigrator
 
             var id = reader.GetInt32("id");
 
-            var (organizationIdFrom, organizationFromPublicationStatusId) = await GetNodeId(reader.GetInt32("organization_id_from"));
-            var (organizationIdTo, organizationToPublicationStatusId) = await GetNodeId(reader.GetInt32("organization_id_to"));
-            int interOrganizationalRelationTypeId = await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var (organizationIdFrom, organizationFromPublicationStatusId) = await GetNodeId(reader.GetInt32("organization_id_from"), nodeIdReader, tenantNodeReaderByUrlId);
+            var (organizationIdTo, organizationToPublicationStatusId) = await GetNodeId(reader.GetInt32("organization_id_to"), nodeIdReader, tenantNodeReaderByUrlId);
+            int interOrganizationalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.CPCT
             });
