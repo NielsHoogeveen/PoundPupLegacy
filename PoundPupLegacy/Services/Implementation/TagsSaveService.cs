@@ -16,7 +16,7 @@ public class TagsSaveService: ISaveService<IEnumerable<Tag>>
     {
         _nodeTermDeleterFactory = nodeTermDeleterFactory;
     }
-    public async Task Save(IEnumerable<Tag> tags, IDbConnection connection)
+    public async Task SaveAsync(IEnumerable<Tag> tags, IDbConnection connection)
     {
         await using var deleter = await _nodeTermDeleterFactory.CreateAsync(connection);
         foreach (var tag in tags.Where(x => x.HasBeenDeleted)) {

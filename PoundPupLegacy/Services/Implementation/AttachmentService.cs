@@ -118,7 +118,7 @@ public class AttachmentService : IAttachmentService
             return new Error<string>(e.Message);
         }
         finally {
-            if (_connection.State == System.Data.ConnectionState.Open) {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

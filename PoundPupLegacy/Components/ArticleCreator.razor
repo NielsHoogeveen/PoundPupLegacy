@@ -1,7 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
 @inject IEditService<Article> editService;
-@inject IEditorService editorService;
 @inject ILogger<ArticleCreator> logger;
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
@@ -51,7 +50,7 @@
     private async Task HandleSubmit()
     {
         logger.LogInformation(article!.ToString());
-        await editorService.Save(article);
+        await editService.SaveAsync(article);
         await JSRuntime.InvokeVoidAsync("reloadNode", article.UrlId);
     }
 

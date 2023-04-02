@@ -1,6 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
-@inject IEditorService editorService;
+@inject IEditService<Discussion> editService;
 @inject ILogger<DiscussionCreator> logger;
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
@@ -44,13 +44,13 @@
     protected override async Task OnInitializedAsync()
     {
         url = $"{navigationManager.BaseUri}image/upload";
-        discussion = await editorService.GetNewDiscussion(UserId, TenantId);
+        discussion = await editService.GetViewModelAsync(UserId, TenantId);
     }
 
     private async Task HandleSubmit()
     {
         logger.LogInformation(discussion!.ToString());
-        await editorService.Save(discussion);
+        await editService.SaveAsync(discussion);
         await JSRuntime.InvokeVoidAsync("reloadNode", discussion.UrlId);
     }
 

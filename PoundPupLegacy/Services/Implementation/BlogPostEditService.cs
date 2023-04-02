@@ -8,33 +8,32 @@ using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateModel.Article>, IEditService<Article>
+public class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPost, CreateModel.BlogPost>, IEditService<BlogPost>
 {
-    private readonly IDatabaseReaderFactory<ArticleCreateDocumentReader> _createDocumentReaderFactory;
-    private readonly IDatabaseReaderFactory<ArticleUpdateDocumentReader> _updateDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<BlogPostCreateDocumentReader> _createDocumentReaderFactory;
+    private readonly IDatabaseReaderFactory<BlogPostUpdateDocumentReader> _updateDocumentReaderFactory;
 
-
-    public ArticleEditService(
+    public BlogPostEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
-        IDatabaseReaderFactory<ArticleCreateDocumentReader> createDocumentReaderFactory,
-        IDatabaseReaderFactory<ArticleUpdateDocumentReader> updateDocumentReaderFactory,
+        IDatabaseReaderFactory<BlogPostCreateDocumentReader> createDocumentReaderFactory,
+        IDatabaseReaderFactory<BlogPostUpdateDocumentReader> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
         ITextService textService,
-        ILogger<ArticleEditService> logger
+        ILogger<BlogPostEditService> logger
     ): base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
     {
         _createDocumentReaderFactory = createDocumentReaderFactory;
         _updateDocumentReaderFactory = updateDocumentReaderFactory;
     }
 
-    protected override IEntityCreator<CreateModel.Article> EntityCreator => new ArticleCreator();
+    protected override IEntityCreator<CreateModel.BlogPost> EntityCreator => new BlogPostCreator();
 
-    public async Task<Article> GetViewModelAsync(int userId, int tenantId)
+    public async Task<BlogPost> GetViewModelAsync(int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
@@ -51,7 +50,7 @@ public class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateM
             }
         }
     }
-    public async Task<Article> GetViewModelAsync(int urlId, int userId, int tenantId)
+    public async Task<BlogPost> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
@@ -70,17 +69,17 @@ public class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateM
 
     }
 
-    protected override CreateModel.Article Map(Article item)
+    protected override CreateModel.BlogPost Map(BlogPost item)
     {
         var now = DateTime.Now;
-        return new CreateModel.Article {
+        return new CreateModel.BlogPost {
             Id = null,
             Title = item.Title,
             Text = _textService.FormatText(item.Text),
             Teaser = _textService.FormatTeaser(item.Text),
             ChangedDateTime = now,
             CreatedDateTime = now,
-            NodeTypeId = Constants.ARTICLE,
+            NodeTypeId = Constants.BLOG_POST,
             OwnerId = item.OwnerId,
             PublisherId = item.PublisherId,
             TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {

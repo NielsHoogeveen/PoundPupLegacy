@@ -1,6 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
-@inject IEditorService editorService;
+@inject IEditService<Organization> editService;
 @inject ILogger<OrganizationEditor> logger;
 @inject NavigationManager navigationManager;
 @inject IJSRuntime JSRuntime
@@ -70,7 +70,7 @@
         url = $"{navigationManager.BaseUri}image/upload";
         if (organization is null)
         {
-            organization = await editorService.GetOrganization(UrlId, UserId, TenantId);
+            organization = await editService.GetViewModelAsync(UrlId, UserId, TenantId);
             foreach (var tenant in organization!.Tenants)
             {
                 var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
@@ -87,7 +87,7 @@
         {
             await locationService.ValidateLocationAsync(location);
         }
-        await editorService.Save(organization);
+        await editService.SaveAsync(organization);
         await JSRuntime.InvokeVoidAsync("reloadNode", organization.UrlId);
     }
 

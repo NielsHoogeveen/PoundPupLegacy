@@ -16,7 +16,7 @@ public class DiscussionUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumen
 
 public class DiscussionUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<Discussion>
 {
-    internal DiscussionUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
+    internal DiscussionUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
     {
     }
 }

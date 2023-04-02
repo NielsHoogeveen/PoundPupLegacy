@@ -16,7 +16,7 @@ public class BlogPostUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumentR
 
 public class BlogPostUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<BlogPost>
 {
-    internal BlogPostUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
+    internal BlogPostUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
     {
     }
 }

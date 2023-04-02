@@ -58,8 +58,14 @@ public class Program
         builder.Services.AddTransient<IFetchSearchService, FetchSearchService>();
         builder.Services.AddTransient<IRazorViewToStringService, RazorViewToStringService>();
         builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
-        builder.Services.AddTransient<IEditorService, EditorService>();
         builder.Services.AddTransient<IEditService<Article>, ArticleEditService>();
+        builder.Services.AddTransient<IEditService<BlogPost>, BlogPostEditService>();
+        builder.Services.AddTransient<IEditService<Discussion>, DiscussionEditService>();
+        builder.Services.AddTransient<IEditService<Organization>, OrganizationEditService>();
+        builder.Services.AddTransient<IEditService<Document>, DocumentEditService>();
+        builder.Services.AddTransient<ISaveService<IEnumerable<EditModel.File>>, FilesSaveService>();
+        builder.Services.AddTransient<ISaveService<IEnumerable<TenantNode>>, TenantNodesSaveService>();
+        builder.Services.AddTransient<ISaveService<IEnumerable<Tag>>, TagsSaveService>();
         builder.Services.AddTransient<ITextService, TextService>();
         builder.Services.AddTransient<ITopicSearchService, TopicSearchService>();
         builder.Services.AddTransient<ICongressionalDataService, CongressionalDataService>();
