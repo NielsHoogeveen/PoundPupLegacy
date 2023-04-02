@@ -5,10 +5,14 @@ internal sealed class NameableInserter : DatabaseInserter<Nameable>, IDatabaseIn
     private const string ID = "id";
     private const string DESCRIPTION = "description";
     private const string FILE_ID_TILE_IMAGE = "file_id_tile_image";
-    public static async Task<DatabaseInserter<Nameable>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Nameable>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "nameable",
             new ColumnDefinition[] {
                 new ColumnDefinition{

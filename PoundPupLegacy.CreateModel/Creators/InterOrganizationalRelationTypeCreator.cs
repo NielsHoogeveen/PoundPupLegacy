@@ -2,7 +2,7 @@
 
 public class InterOrganizationalRelationTypeCreator : IEntityCreator<InterOrganizationalRelationType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<InterOrganizationalRelationType> interOrganizationalRelationTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<InterOrganizationalRelationType> interOrganizationalRelationTypes, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

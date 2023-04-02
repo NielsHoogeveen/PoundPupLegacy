@@ -2,7 +2,7 @@
 
 internal sealed class SystemGroupInserter : IDatabaseInserter<SystemGroup>
 {
-    public static async Task<DatabaseInserter<SystemGroup>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<SystemGroup>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<SystemGroup>("system_group", connection);
     }

@@ -6,10 +6,14 @@ internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>, IDataba
     private const string OWNER_ID = "owner_id";
     private const string NAME = "name";
     private const string DESCRIPTION = "description";
-    public static async Task<DatabaseInserter<Vocabulary>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Vocabulary>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "vocabulary",
             new ColumnDefinition[] {
                 new ColumnDefinition{

@@ -10,7 +10,7 @@ internal sealed class PageMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await PageCreator.CreateAsync(ReadPages(), _postgresConnection);
+        await new PageCreator().CreateAsync(ReadPages(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<Page> ReadPages()

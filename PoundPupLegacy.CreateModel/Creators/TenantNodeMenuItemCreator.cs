@@ -2,7 +2,7 @@
 
 public class TenantNodeMenuItemCreator : IEntityCreator<TenantNodeMenuItem>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<TenantNodeMenuItem> tenantNodeMenuItems, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<TenantNodeMenuItem> tenantNodeMenuItems, IDbConnection connection)
     {
 
         await using var menuItemWriter = await MenuItemInserter.CreateAsync(connection);

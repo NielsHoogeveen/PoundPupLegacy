@@ -4,10 +4,14 @@ internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSub
 {
     private const string ID = "id";
     private const string ISO_3166_2_CODE = "iso_3166_2_code";
-    public static async Task<DatabaseInserter<ISOCodedSubdivision>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<ISOCodedSubdivision>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "iso_coded_subdivision",
             new ColumnDefinition[] {
                 new ColumnDefinition{

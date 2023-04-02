@@ -2,7 +2,7 @@
 
 public class AccessRoleCreator : IEntityCreator<AccessRole>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<AccessRole> accessRoles, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<AccessRole> accessRoles, IDbConnection connection)
     {
 
         await using var principalWriter = await PrincipalInserter.CreateAsync(connection);

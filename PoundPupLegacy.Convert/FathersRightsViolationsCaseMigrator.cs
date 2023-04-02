@@ -10,7 +10,7 @@ internal sealed class FathersRightsViolationsCaseMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await FathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases(), _postgresConnection);
+        await new FathersRightsViolationCaseCreator().CreateAsync(ReadFathersRightsViolationCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<FathersRightsViolationCase> ReadFathersRightsViolationCases()
     {

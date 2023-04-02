@@ -8,8 +8,12 @@ public class NodeInserter : DatabaseInserter<Node>, IDatabaseInserter<Node>
     private const string NODE_TYPE_ID = "node_type_id";
     private const string OWNER_ID = "owner_id";
 
-    public static async Task<DatabaseInserter<Node>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Node>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition
             {
@@ -39,7 +43,7 @@ public class NodeInserter : DatabaseInserter<Node>, IDatabaseInserter<Node>
         };
 
         var command = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "node",
             columnDefinitions
         );

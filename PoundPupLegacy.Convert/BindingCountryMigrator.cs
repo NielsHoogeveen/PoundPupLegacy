@@ -9,7 +9,7 @@ internal sealed class BindingCountryMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await BindingCountryCreator.CreateAsync(ReadBindingCountries(), _postgresConnection);
+        await new BindingCountryCreator().CreateAsync(ReadBindingCountries(), _postgresConnection);
     }
     private async IAsyncEnumerable<BindingCountry> ReadBindingCountries()
     {

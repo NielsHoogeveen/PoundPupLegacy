@@ -7,7 +7,7 @@ public interface IDatabaseUpdater : IAsyncDisposable
 public interface IDatabaseUpdater<T> : IDatabaseUpdater
     where T : IDatabaseUpdater<T>
 {
-    public abstract static Task<T> CreateAsync(NpgsqlConnection connection);
+    public abstract static Task<T> CreateAsync(IDbConnection connection);
 }
 public abstract class DatabaseUpdater<T> : IDatabaseUpdater
 {

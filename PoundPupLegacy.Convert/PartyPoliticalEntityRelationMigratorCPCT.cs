@@ -10,7 +10,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : CPCTMigrator
 
     protected override async Task MigrateImpl()
     {
-        await PartyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(), _postgresConnection);
+        await new PartyPoliticalEntityRelationCreator().CreateAsync(ReadPartyPoliticalEntityRelations(), _postgresConnection);
 
     }
 

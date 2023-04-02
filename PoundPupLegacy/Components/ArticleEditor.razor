@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
+@inject IEditService<Article> editService;
 @inject IEditorService editorService;
 @inject ILogger<ArticleEditor> logger;
 @inject NavigationManager navigationManager;
@@ -48,7 +49,7 @@
     protected override async Task OnInitializedAsync()
     {
         url = $"{navigationManager.BaseUri}image/upload";
-        article = await editorService.GetArticle(UrlId, UserId, TenantId);
+        article = await editService.GetViewModelAsync(UrlId, UserId, TenantId);
         foreach(var tenant in article!.Tenants) 
         {
             var tenantNode = article.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);

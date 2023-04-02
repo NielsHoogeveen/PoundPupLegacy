@@ -2,13 +2,17 @@
 
 public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<Term>, IDatabaseUpdater<TenantUpdaterSetTaggingVocabulary>
 {
-    public static async Task<TenantUpdaterSetTaggingVocabulary> CreateAsync(NpgsqlConnection connection)
+    public static async Task<TenantUpdaterSetTaggingVocabulary> CreateAsync(IDbConnection connection)
     {
         var sql = """
             UPDATE tenant SET vocabulary_id_tagging = @vocabulary_id WHERE id = @tenant_id
             """;
 
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

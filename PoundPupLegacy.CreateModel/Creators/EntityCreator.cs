@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal interface IEntityCreator<T>
+public interface IEntityCreator<T>
 {
-    public abstract static Task CreateAsync(IAsyncEnumerable<T> elements, NpgsqlConnection connection);
+    public Task CreateAsync(IAsyncEnumerable<T> elements, IDbConnection connection);
 }
 
 internal static class EntityCreator

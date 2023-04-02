@@ -2,7 +2,7 @@
 
 public class NodeFileCreator : IEntityCreator<NodeFile>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<NodeFile> nodeFiles, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<NodeFile> nodeFiles, IDbConnection connection)
     {
 
         await using var nodeFileWriter = await NodeFileInserter.CreateAsync(connection);

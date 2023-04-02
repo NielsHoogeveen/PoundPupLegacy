@@ -7,10 +7,14 @@ public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>, IDatabaseInse
 {
     private const string NODE_ID = "node_id";
     private const string TERM_ID = "term_id";
-    public static async Task<DatabaseInserter<NodeTerm>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<NodeTerm>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "node_term",
             new ColumnDefinition[] {
                 new ColumnDefinition{

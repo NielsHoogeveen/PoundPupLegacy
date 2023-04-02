@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
+using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
@@ -444,7 +445,7 @@ where T : class, IDatabaseReader
         )
         """;
 
-    public abstract Task<T> CreateAsync(NpgsqlConnection connection);
+    public abstract Task<T> CreateAsync(IDbConnection connection);
 }
 
 public class NodeEditDocumentReader : DatabaseReader

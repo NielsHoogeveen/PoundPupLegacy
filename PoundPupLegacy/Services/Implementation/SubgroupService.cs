@@ -12,10 +12,13 @@ public record SubgroupService : ISubgroupService
     private readonly IDatabaseReaderFactory<SubgroupsDocumentReader> _subgroupsDocumentReaderFactory;
 
     public SubgroupService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<SubgroupsDocumentReader> subgroupsDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _subgroupsDocumentReaderFactory = subgroupsDocumentReaderFactory;
     }
 

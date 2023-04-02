@@ -5,10 +5,14 @@ internal sealed class BillInserter : DatabaseInserter<Bill>, IDatabaseInserter<B
 
     private const string ID = "id";
     private const string INTRODUCTION_DATE = "introduction_date";
-    public static async Task<DatabaseInserter<Bill>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Bill>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "bill",
             new ColumnDefinition[] {
                 new ColumnDefinition{

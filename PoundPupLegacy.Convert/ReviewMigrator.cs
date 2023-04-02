@@ -10,7 +10,7 @@ internal sealed class ReviewMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await BlogPostCreator.CreateAsync(ReadReviews(), _postgresConnection);
+        await new BlogPostCreator().CreateAsync(ReadReviews(), _postgresConnection);
     }
     private async IAsyncEnumerable<BlogPost> ReadReviews()
     {

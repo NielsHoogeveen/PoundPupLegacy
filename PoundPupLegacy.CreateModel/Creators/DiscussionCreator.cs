@@ -2,7 +2,7 @@
 
 public class DiscussionCreator : IEntityCreator<Discussion>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Discussion> discussions, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Discussion> discussions, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

@@ -10,10 +10,14 @@ internal sealed class CountryInserter : DatabaseInserter<Country>, IDatabaseInse
     private const string INCOME_REQUIREMENTS = "income_requirements";
     private const string HEALTH_REQUIREMENTS = "health_requirements";
     private const string OTHER_REQUIREMENTS = "other_requirements";
-    public static async Task<DatabaseInserter<Country>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Country>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "country",
             new ColumnDefinition[] {
                 new ColumnDefinition{

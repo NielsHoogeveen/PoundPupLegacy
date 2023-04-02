@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 public sealed class TenantNodeReaderByUrlIdFactory : IDatabaseReaderFactory<TenantNodeReaderByUrlId>
 {
-    public async Task<TenantNodeReaderByUrlId> CreateAsync(NpgsqlConnection connection)
+    public async Task<TenantNodeReaderByUrlId> CreateAsync(IDbConnection connection)
     {
         var sql = """
         SELECT 
@@ -16,7 +16,11 @@ public sealed class TenantNodeReaderByUrlIdFactory : IDatabaseReaderFactory<Tena
         WHERE tenant_id= @tenant_id AND url_id = @url_id
         """;
 
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

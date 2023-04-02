@@ -8,7 +8,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await InterOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(), _postgresConnection);
+        await new InterOrganizationalRelationTypeCreator().CreateAsync(ReadInterOrganizationalRelationTypes(), _postgresConnection);
     }
     private async IAsyncEnumerable<InterOrganizationalRelationType> ReadInterOrganizationalRelationTypes()
     {

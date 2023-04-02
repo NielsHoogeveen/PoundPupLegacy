@@ -2,7 +2,7 @@
 
 public class TypeOfAbuseCreator : IEntityCreator<TypeOfAbuse>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<TypeOfAbuse> typesOfAbuse, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<TypeOfAbuse> typesOfAbuse, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

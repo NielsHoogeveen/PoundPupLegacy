@@ -10,21 +10,21 @@ internal class CaseCaseRelationsMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await CaseCaseRelationsCreator.CreateAsync(ReadAbuseCaseHomestudyParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadAbuseCasePlacementParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadAbuseCasePostPlacementParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadAbuseCaseFacilitatorParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadAbuseCaseInstitutionParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadAbuseCaseTherapyParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadChildTraffickingCasePlacementParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadChildTraffickingCaseFacilitatorParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadChildTraffickingCaseOrphanageParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadDisruptedPlacementCasePlacementParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadDisruptedPlacementCaseFacilitatorParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadCoercedAdoptionCasePlacementParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadFathersRightsViolationCasePlacementParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadWrongfulRemovalCaseAuthorityParties(), _postgresConnection);
-        await CaseCaseRelationsCreator.CreateAsync(ReadWrongfulMedicationCaseAuthorityParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCaseHomestudyParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCasePlacementParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCasePostPlacementParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCaseFacilitatorParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCaseInstitutionParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadAbuseCaseTherapyParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadChildTraffickingCasePlacementParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadChildTraffickingCaseFacilitatorParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadChildTraffickingCaseOrphanageParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadDisruptedPlacementCasePlacementParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadDisruptedPlacementCaseFacilitatorParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadCoercedAdoptionCasePlacementParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadFathersRightsViolationCasePlacementParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadWrongfulRemovalCaseAuthorityParties(), _postgresConnection);
+        await new CaseCaseRelationsCreator().CreateAsync(ReadWrongfulMedicationCaseAuthorityParties(), _postgresConnection);
     }
     private async IAsyncEnumerable<CaseCaseParties> ReadCaseCaseRelations(string sql, int casePartyTypeId)
     {

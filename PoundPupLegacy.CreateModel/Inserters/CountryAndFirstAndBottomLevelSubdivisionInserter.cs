@@ -2,7 +2,7 @@
 
 internal sealed class CountryAndFirstAndBottomLevelSubdivisionInserter : IDatabaseInserter<CountryAndFirstAndBottomLevelSubdivision>
 {
-    public static async Task<DatabaseInserter<CountryAndFirstAndBottomLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<CountryAndFirstAndBottomLevelSubdivision>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<CountryAndFirstAndBottomLevelSubdivision>("country_and_first_and_bottom_level_subdivision", connection);
     }

@@ -10,8 +10,12 @@ public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>, IDatabase
     private const string SUBGROUP_ID = "subgroup_id";
     private const string PUBLICATION_STATUS_ID = "publication_status_id";
 
-    public static async Task<DatabaseInserter<TenantNode>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<TenantNode>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var collumnDefinitions = new ColumnDefinition[]
         {
             new ColumnDefinition{
@@ -41,7 +45,7 @@ public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>, IDatabase
         };
 
         var command = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "tenant_node",
             collumnDefinitions
         );

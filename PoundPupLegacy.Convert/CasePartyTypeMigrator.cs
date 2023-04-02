@@ -10,7 +10,7 @@ internal sealed class CasePartyTypeMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await CasePartyTypeCreator.CreateAsync(GetCaseRelationTypes(), _postgresConnection);
+        await new CasePartyTypeCreator().CreateAsync(GetCaseRelationTypes(), _postgresConnection);
     }
 
     internal static async IAsyncEnumerable<CasePartyType> GetCaseRelationTypes()

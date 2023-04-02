@@ -86,6 +86,6 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await FormalIntermediateLevelSubdivisionCreator.CreateAsync(ReadFormalIntermediateLevelSubdivisionCsv(), _postgresConnection);
+        await new FormalIntermediateLevelSubdivisionCreator().CreateAsync(ReadFormalIntermediateLevelSubdivisionCsv(), _postgresConnection);
     }
 }

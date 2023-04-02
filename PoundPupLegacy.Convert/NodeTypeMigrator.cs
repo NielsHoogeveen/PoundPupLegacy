@@ -10,10 +10,10 @@ internal sealed class NodeTypeMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await NodeTypeCreator.CreateAsync(GetNodeTypes(), _postgresConnection);
-        await CreateNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await DeleteNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await EditNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await new NodeTypeCreator().CreateAsync(GetNodeTypes(), _postgresConnection);
+        await new CreateNodeActionCreator().CreateAsync(GetNodeTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await new DeleteNodeActionCreator().CreateAsync(GetNodeTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await new EditNodeActionCreator().CreateAsync(GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
 
     }
     internal static async IAsyncEnumerable<BasicNodeType> GetNodeTypes()

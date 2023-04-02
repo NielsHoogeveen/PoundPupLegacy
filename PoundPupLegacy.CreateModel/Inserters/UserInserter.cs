@@ -11,10 +11,14 @@ internal sealed class UserInserter : DatabaseInserter<User>, IDatabaseInserter<U
     private const string PASSWORD = "password";
     private const string AVATAR = "avatar";
     private const string USER_STATUS_ID = "user_status_id";
-    public static async Task<DatabaseInserter<User>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<User>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "user",
             new ColumnDefinition[] {
                 new ColumnDefinition{

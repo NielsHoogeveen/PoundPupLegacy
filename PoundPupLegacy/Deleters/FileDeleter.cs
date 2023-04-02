@@ -6,9 +6,14 @@ using System.Data;
 namespace PoundPupLegacy.Deleters;
 public class FileDeleterFactory : IDatabaseDeleterFactory<FileDeleter>
 {
-    public async Task<FileDeleter> CreateAsync(NpgsqlConnection connection)
+    public async Task<FileDeleter> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
+        var command = postgresConnection.CreateCommand();
+
         var sql = $"""
                 delete from node_file
                 where file_id = @file_id and node_id = @node_id;

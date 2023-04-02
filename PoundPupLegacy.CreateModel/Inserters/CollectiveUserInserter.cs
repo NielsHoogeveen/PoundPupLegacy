@@ -4,10 +4,14 @@ internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>,
 {
     private const string COLLECTIVE_ID = "collective_id";
     private const string USER_ID = "user_id";
-    public static async Task<DatabaseInserter<CollectiveUser>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<CollectiveUser>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "collective_user",
             new ColumnDefinition[] {
                 new ColumnDefinition{

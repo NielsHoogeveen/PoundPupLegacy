@@ -4,10 +4,14 @@ public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGloba
 {
     private const string ID = "id";
     private const string FIRST_LEVEL_GLOBAL_REGION_ID = "first_level_global_region_id";
-    public static async Task<DatabaseInserter<SecondLevelGlobalRegion>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<SecondLevelGlobalRegion>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "second_level_global_region",
             new ColumnDefinition[] {
                 new ColumnDefinition{

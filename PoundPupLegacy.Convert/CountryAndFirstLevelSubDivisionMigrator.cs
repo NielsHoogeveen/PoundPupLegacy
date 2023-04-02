@@ -8,8 +8,8 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
 
     protected override async Task MigrateImpl()
     {
-        await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(GetCountryAndFirstAndBottomLevelSubdivisions(), _postgresConnection);
-        await CountryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndIntermediateLevelSubdivisions(), _postgresConnection);
+        await new CountryAndFirstAndBottomLevelSubdivisionCreator().CreateAsync(GetCountryAndFirstAndBottomLevelSubdivisions(), _postgresConnection);
+        await new CountryAndFirstAndBottomLevelSubdivisionCreator().CreateAsync(ReadCountryAndFirstAndIntermediateLevelSubdivisions(), _postgresConnection);
 
     }
 

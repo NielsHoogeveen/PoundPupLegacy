@@ -12,7 +12,7 @@ internal sealed class ChildPlacementTypeMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await ChildPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(), _postgresConnection);
+        await new ChildPlacementTypeCreator().CreateAsync(ReadChildPlacementTypes(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<ChildPlacementType> ReadChildPlacementTypes()

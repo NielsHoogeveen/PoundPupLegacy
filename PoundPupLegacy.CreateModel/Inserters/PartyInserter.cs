@@ -2,7 +2,7 @@
 
 internal sealed class PartyInserter : IDatabaseInserter<Party>
 {
-    public static async Task<DatabaseInserter<Party>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Party>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<Party>("party", connection);
     }

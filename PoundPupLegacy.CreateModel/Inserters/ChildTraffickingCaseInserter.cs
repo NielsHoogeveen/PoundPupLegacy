@@ -5,10 +5,14 @@ internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraff
     private const string ID = "id";
     private const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
     private const string COUNTRY_ID_FROM = "country_id_from";
-    public static async Task<DatabaseInserter<ChildTraffickingCase>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<ChildTraffickingCase>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "child_trafficking_case",
             new ColumnDefinition[] {
                 new ColumnDefinition{

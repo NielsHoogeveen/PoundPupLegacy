@@ -5,10 +5,14 @@ internal sealed class ProfessionalRoleInserter : DatabaseInserter<ProfessionalRo
     private const string PERSON_ID = "person_id";
     private const string PROFESSION_ID = "profession_id";
     private const string DATERANGE = "daterange";
-    public static async Task<DatabaseInserter<ProfessionalRole>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<ProfessionalRole>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "professional_role",
             new ColumnDefinition[] {
                 new ColumnDefinition{

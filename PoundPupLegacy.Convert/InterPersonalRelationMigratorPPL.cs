@@ -10,7 +10,7 @@ internal sealed class InterPersonalRelationMigratorPPL : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await InterPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(), _postgresConnection);
+        await new InterPersonalRelationCreator().CreateAsync(ReadInterPersonalRelations(), _postgresConnection);
 
     }
 

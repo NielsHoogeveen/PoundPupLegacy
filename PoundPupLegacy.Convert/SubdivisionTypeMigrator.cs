@@ -144,6 +144,6 @@ internal sealed class SubdivisionTypeMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await SubdivisionTypeCreator.CreateAsync(GetSubdivisionTypes(), _postgresConnection);
+        await new SubdivisionTypeCreator().CreateAsync(GetSubdivisionTypes(), _postgresConnection);
     }
 }

@@ -5,10 +5,14 @@ internal sealed class PollInserter : DatabaseInserter<Poll>, IDatabaseInserter<P
     private const string ID = "id";
     private const string DATE_TIME_CLOSURE = "date_time_closure";
     private const string POLL_STATUS_ID = "poll_status_id";
-    public static async Task<DatabaseInserter<Poll>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Poll>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "poll",
             new ColumnDefinition[] {
                 new ColumnDefinition{

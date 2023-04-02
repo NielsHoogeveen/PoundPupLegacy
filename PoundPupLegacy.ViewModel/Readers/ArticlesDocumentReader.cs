@@ -7,9 +7,13 @@ namespace PoundPupLegacy.ViewModel.Readers;
 
 public class ArticlesDocumentReaderFactory : IDatabaseReaderFactory<ArticlesDocumentReader>
 {
-    public async Task<ArticlesDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<ArticlesDocumentReader> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = SQL;

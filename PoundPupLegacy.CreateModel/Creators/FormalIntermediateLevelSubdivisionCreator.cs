@@ -2,7 +2,7 @@
 
 public class FormalIntermediateLevelSubdivisionCreator : IEntityCreator<FormalIntermediateLevelSubdivision>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<FormalIntermediateLevelSubdivision> subdivisions, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<FormalIntermediateLevelSubdivision> subdivisions, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

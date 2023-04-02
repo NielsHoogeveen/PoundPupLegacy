@@ -252,6 +252,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : PPLMigrator
     protected override async Task MigrateImpl()
     {
 
-        await UnitedStatesPoliticalPartyAffliationCreator.CreateAsync(GetUnitedStatesPoliticalPartyAffliations(), _postgresConnection);
+        await new UnitedStatesPoliticalPartyAffliationCreator().CreateAsync(GetUnitedStatesPoliticalPartyAffliations(), _postgresConnection);
     }
 }

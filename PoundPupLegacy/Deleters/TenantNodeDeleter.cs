@@ -5,9 +5,14 @@ using System.Data;
 namespace PoundPupLegacy.Deleters;
 public class TenantNodeDeleterFactory : IDatabaseDeleterFactory<TenantNodeDeleter>
 {
-    public async Task<TenantNodeDeleter> CreateAsync(NpgsqlConnection connection)
+    public async Task<TenantNodeDeleter> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
+        var command = postgresConnection.CreateCommand();
+
         var sql = $"""
                 delete from tenant_node
                 where id = @id;

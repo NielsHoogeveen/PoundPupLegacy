@@ -15,8 +15,12 @@ public class CommentInserter : DatabaseInserter<Comment>, IDatabaseInserter<Comm
 
 
 
-    public static async Task<DatabaseInserter<Comment>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Comment>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition{
                 Name = PUBLISHER_ID,
@@ -53,7 +57,7 @@ public class CommentInserter : DatabaseInserter<Comment>, IDatabaseInserter<Comm
         };
 
         var commandWithId = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "comment",
             columnDefinitions.ToImmutableList().Prepend(
                 new ColumnDefinition {
@@ -62,7 +66,7 @@ public class CommentInserter : DatabaseInserter<Comment>, IDatabaseInserter<Comm
                 })
         );
         var commandWithoutId = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "comment",
             columnDefinitions
         );

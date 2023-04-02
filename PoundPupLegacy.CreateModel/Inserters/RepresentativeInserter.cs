@@ -2,7 +2,7 @@
 
 internal sealed class RepresentativeInserter : IDatabaseInserter<Representative>
 {
-    public static async Task<DatabaseInserter<Representative>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Representative>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<Representative>("representative", connection);
     }

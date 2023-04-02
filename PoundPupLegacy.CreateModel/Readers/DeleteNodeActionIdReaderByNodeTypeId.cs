@@ -1,13 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 public sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : IDatabaseReaderFactory<DeleteNodeActionIdReaderByNodeTypeId>
 {
-    public async Task<DeleteNodeActionIdReaderByNodeTypeId> CreateAsync(NpgsqlConnection connection)
+    public async Task<DeleteNodeActionIdReaderByNodeTypeId> CreateAsync(IDbConnection connection)
     {
         var sql = """
             SELECT id FROM delete_node_action WHERE node_type_id = @node_type_id
             """;
 
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

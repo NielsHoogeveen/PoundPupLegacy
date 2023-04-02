@@ -6,10 +6,14 @@ internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>, IData
     private const string NAME = "name";
     private const string COUNTRY_ID = "country_id";
     private const string SUBDIVISION_TYPE_ID = "subdivision_type_id";
-    public static async Task<DatabaseInserter<Subdivision>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Subdivision>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "subdivision",
             new ColumnDefinition[] {
                 new ColumnDefinition{

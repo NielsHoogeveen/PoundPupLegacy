@@ -2,7 +2,7 @@
 
 internal sealed class ContentSharingGroupInserter : IDatabaseInserter<ContentSharingGroup>
 {
-    public static async Task<DatabaseInserter<ContentSharingGroup>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<ContentSharingGroup>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<ContentSharingGroup>("content_sharing_group", connection);
     }

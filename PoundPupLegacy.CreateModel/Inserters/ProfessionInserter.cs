@@ -4,10 +4,14 @@ internal sealed class ProfessionInserter : DatabaseInserter<Profession>, IDataba
 {
     private const string ID = "id";
     private const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
-    public static async Task<DatabaseInserter<Profession>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Profession>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "profession",
             new ColumnDefinition[] {
                 new ColumnDefinition{

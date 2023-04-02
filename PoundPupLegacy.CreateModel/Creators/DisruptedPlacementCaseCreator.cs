@@ -2,7 +2,7 @@
 
 public class DisruptedPlacementCaseCreator : IEntityCreator<DisruptedPlacementCase>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<DisruptedPlacementCase> disruptedPlacementCases, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<DisruptedPlacementCase> disruptedPlacementCases, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

@@ -9,7 +9,7 @@ internal sealed class DenominationMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await DenominationCreator.CreateAsync(ReadDenominations(), _postgresConnection);
+        await new DenominationCreator().CreateAsync(ReadDenominations(), _postgresConnection);
     }
     private async IAsyncEnumerable<Denomination> ReadDenominations()
     {

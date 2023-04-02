@@ -10,7 +10,7 @@ internal sealed class DiscussionMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await DiscussionCreator.CreateAsync(ReadDiscussions(), _postgresConnection);
+        await new DiscussionCreator().CreateAsync(ReadDiscussions(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<Discussion> ReadDiscussions()

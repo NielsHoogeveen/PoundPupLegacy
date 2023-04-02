@@ -19,11 +19,8 @@ public class EditorService : IEditorService
     private readonly INodeCacheService _nodeCacheService;
     private readonly ITextService _textService;
     private readonly ILogger<EditorService> _logger;
-    private readonly IDatabaseReaderFactory<ArticleCreateDocumentReader> _articleCreateDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<BlogPostCreateDocumentReader> _blogPostCreateDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<DiscussionCreateDocumentReader> _discussionCreateDocumentReaderFactory;
-    private readonly IDatabaseReaderFactory<SubdivisionListItemsReader> _subdivisionListItemsReaderFactory;
-    private readonly IDatabaseReaderFactory<ArticleUpdateDocumentReader> _articleUpdateDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<BlogPostUpdateDocumentReader> _blogPostUpdateDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<DiscussionUpdateDocumentReader> _discussionUpdateDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<DocumentUpdateDocumentReader> _documentUpdateDocumentReaderFactory;
@@ -34,37 +31,33 @@ public class EditorService : IEditorService
     private readonly IDatabaseUpdaterFactory<SimpleTextNodeUpdater> _simpleTextNodeUpdaterFactory;
     private readonly IDatabaseUpdaterFactory<TenantNodeUpdater> _tenantNodeUpdaterFactory;
     public EditorService(
-    NpgsqlConnection connection,
-    ISiteDataService siteDataService,
-    INodeCacheService nodeCacheService,
-    ITextService textService,
-    ILogger<EditorService> logger,
-    IDatabaseReaderFactory<ArticleCreateDocumentReader> articleCreateDocumentReaderFactory,
-    IDatabaseReaderFactory<BlogPostCreateDocumentReader> blogPostCreateDocumentReaderFactory,
-    IDatabaseReaderFactory<DiscussionCreateDocumentReader> discussionCreateDocumentReaderFactory,
-    IDatabaseReaderFactory<SubdivisionListItemsReader> subdivisionListItemsReaderFactory,
-    IDatabaseReaderFactory<ArticleUpdateDocumentReader> articleUpdateDocumentReaderFactory,
-    IDatabaseReaderFactory<BlogPostUpdateDocumentReader> blogPostUpdateDocumentReaderFactory,
-    IDatabaseReaderFactory<DiscussionUpdateDocumentReader> discussionUpdateDocumentReaderFactory,
-    IDatabaseReaderFactory<DocumentUpdateDocumentReader> documentUpdateDocumentReaderFactory,
-    IDatabaseReaderFactory<OrganizationUpdateDocumentReader> organizationUpdateDocumentReaderFactory,
-    IDatabaseDeleterFactory<FileDeleter> fileDeleterFactory,
-    IDatabaseDeleterFactory<TenantNodeDeleter> tenantNodeDeleterFactory,
-    IDatabaseDeleterFactory<NodeTermDeleter> nodeTermDeleterFactory,
-    IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
-    IDatabaseUpdaterFactory<TenantNodeUpdater> tenantNodeUpdaterFactory
+        IDbConnection connection,
+        ISiteDataService siteDataService,
+        INodeCacheService nodeCacheService,
+        ITextService textService,
+        ILogger<EditorService> logger,
+        IDatabaseReaderFactory<BlogPostCreateDocumentReader> blogPostCreateDocumentReaderFactory,
+        IDatabaseReaderFactory<DiscussionCreateDocumentReader> discussionCreateDocumentReaderFactory,
+        IDatabaseReaderFactory<BlogPostUpdateDocumentReader> blogPostUpdateDocumentReaderFactory,
+        IDatabaseReaderFactory<DiscussionUpdateDocumentReader> discussionUpdateDocumentReaderFactory,
+        IDatabaseReaderFactory<DocumentUpdateDocumentReader> documentUpdateDocumentReaderFactory,
+        IDatabaseReaderFactory<OrganizationUpdateDocumentReader> organizationUpdateDocumentReaderFactory,
+        IDatabaseDeleterFactory<FileDeleter> fileDeleterFactory,
+        IDatabaseDeleterFactory<TenantNodeDeleter> tenantNodeDeleterFactory,
+        IDatabaseDeleterFactory<NodeTermDeleter> nodeTermDeleterFactory,
+        IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
+        IDatabaseUpdaterFactory<TenantNodeUpdater> tenantNodeUpdaterFactory
     )
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
         _siteDateService = siteDataService;
         _nodeCacheService = nodeCacheService;
         _textService = textService;
         _logger = logger;
-        _articleCreateDocumentReaderFactory = articleCreateDocumentReaderFactory;
         _blogPostCreateDocumentReaderFactory = blogPostCreateDocumentReaderFactory;
         _discussionCreateDocumentReaderFactory = discussionCreateDocumentReaderFactory;
-        _subdivisionListItemsReaderFactory = subdivisionListItemsReaderFactory;
-        _articleUpdateDocumentReaderFactory = articleUpdateDocumentReaderFactory;
         _blogPostUpdateDocumentReaderFactory = blogPostUpdateDocumentReaderFactory;
         _discussionUpdateDocumentReaderFactory = discussionUpdateDocumentReaderFactory;
         _documentUpdateDocumentReaderFactory = documentUpdateDocumentReaderFactory;
@@ -83,23 +76,6 @@ public class EditorService : IEditorService
             await using var reader = await _blogPostCreateDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
                 NodeTypeId = Constants.BLOG_POST,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
-    }
-    public async Task<Article?> GetNewArticle(int userId, int tenantId)
-    {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _articleCreateDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
-                NodeTypeId = Constants.ARTICLE,
                 UserId = userId,
                 TenantId = tenantId
             });
@@ -149,24 +125,7 @@ public class EditorService : IEditorService
         }
 
     }
-    public async Task<Article?> GetArticle(int urlId, int userId, int tenantId)
-    {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _articleUpdateDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
-                UrlId = urlId,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
 
-    }
     public async Task<Discussion?> GetDiscussion(int urlId, int userId, int tenantId)
     {
         try {
@@ -365,7 +324,7 @@ public class EditorService : IEditorService
             }).ToList(),
         };
         var blogPosts = new List<CreateModel.BlogPost> { nodeToStore };
-        await BlogPostCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
+        await new BlogPostCreator().CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
         blogPost.UrlId = nodeToStore.Id;
     }
     private async Task StoreNewArticle(Article article)
@@ -392,7 +351,7 @@ public class EditorService : IEditorService
             }).ToList(),
         };
         var blogPosts = new List<CreateModel.Article> { nodeToStore };
-        await ArticleCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
+        await new ArticleCreator().CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
         article.UrlId = nodeToStore.Id;
     }
     private async Task StoreNewDiscussion(Discussion discussion)
@@ -419,7 +378,7 @@ public class EditorService : IEditorService
             }).ToList(),
         };
         var blogPosts = new List<CreateModel.Discussion> { nodeToStore };
-        await DiscussionCreator.CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
+        await new DiscussionCreator().CreateAsync(blogPosts.ToAsyncEnumerable(), _connection);
         discussion.UrlId = nodeToStore.Id;
     }
 

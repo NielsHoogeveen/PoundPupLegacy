@@ -2,7 +2,7 @@
 
 public class SystemGroupCreator
 {
-    public static async Task CreateAsync(NpgsqlConnection connection)
+    public async Task CreateAsync(IDbConnection connection)
     {
 
         await using var userGroupWriter = await UserGroupInserter.CreateAsync(connection);

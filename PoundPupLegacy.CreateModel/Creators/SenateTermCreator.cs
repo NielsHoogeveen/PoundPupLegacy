@@ -2,7 +2,7 @@
 
 public class SenateTermCreator : IEntityCreator<SenateTerm>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<SenateTerm> senateTerms, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<SenateTerm> senateTerms, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);
@@ -21,7 +21,7 @@ public class SenateTermCreator : IEntityCreator<SenateTerm>
             foreach (var partyAffiliation in senateTerm.PartyAffiliations) {
                 partyAffiliation.CongressionalTermId = senateTerm.Id;
             }
-            await CongressionalTermPoliticalPartyAffiliationCreator.CreateAsync(senateTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
+            await new CongressionalTermPoliticalPartyAffiliationCreator().CreateAsync(senateTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
 
             foreach (var tenantNode in senateTerm.TenantNodes) {
                 tenantNode.NodeId = senateTerm.Id;

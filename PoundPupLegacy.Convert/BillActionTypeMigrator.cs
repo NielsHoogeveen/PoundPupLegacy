@@ -6,7 +6,7 @@ internal sealed class BillActionTypeMigrator : PPLMigrator
     public BillActionTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
     protected override async Task MigrateImpl()
     {
-        await BillActionTypeCreator.CreateAsync(ReadBillActionTypes(), _postgresConnection);
+        await new BillActionTypeCreator().CreateAsync(ReadBillActionTypes(), _postgresConnection);
     }
     private async IAsyncEnumerable<BillActionType> ReadBillActionTypes()
     {

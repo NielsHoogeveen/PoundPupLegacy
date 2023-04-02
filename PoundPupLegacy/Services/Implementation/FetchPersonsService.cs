@@ -13,10 +13,13 @@ public class FetchPersonsService : IPersonService
     private readonly IDatabaseReaderFactory<PersonsDocumentReader> _personsDocumentReaderFactory;
 
     public FetchPersonsService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<PersonsDocumentReader> personsDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _personsDocumentReaderFactory = personsDocumentReaderFactory;
     }
 

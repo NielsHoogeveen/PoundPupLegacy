@@ -6,9 +6,13 @@ namespace PoundPupLegacy.Updaters;
 
 public class TenantNodeUpdaterFactory : IDatabaseUpdaterFactory<TenantNodeUpdater>
 {
-    public async Task<TenantNodeUpdater> CreateAsync(NpgsqlConnection connection)
+    public async Task<TenantNodeUpdater> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         var sql = $"""
                 update tenant_node 
                 set 

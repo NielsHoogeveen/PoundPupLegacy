@@ -9,7 +9,7 @@ internal sealed class TypeOfAbuserMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await TypeOfAbuserCreator.CreateAsync(ReadTypesOfAbusers(), _postgresConnection);
+        await new TypeOfAbuserCreator().CreateAsync(ReadTypesOfAbusers(), _postgresConnection);
     }
     private async IAsyncEnumerable<TypeOfAbuser> ReadTypesOfAbusers()
     {

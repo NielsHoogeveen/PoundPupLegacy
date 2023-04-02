@@ -10,8 +10,8 @@ internal sealed class BillMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await HouseBillCreator.CreateAsync(ReadHouseBills(), _postgresConnection);
-        await SenateBillCreator.CreateAsync(ReadSenateBills(), _postgresConnection);
+        await new HouseBillCreator().CreateAsync(ReadHouseBills(), _postgresConnection);
+        await new SenateBillCreator().CreateAsync(ReadSenateBills(), _postgresConnection);
 
     }
 

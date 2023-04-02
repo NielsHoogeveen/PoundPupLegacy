@@ -3,10 +3,14 @@ public class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>, ID
 {
     private const string ID = "id";
     private const string USER_GROUP_ID = "user_group_id";
-    public static async Task<DatabaseInserter<AdministratorRole>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<AdministratorRole>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "administrator_role",
             new ColumnDefinition[] {
             new ColumnDefinition

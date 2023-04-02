@@ -2,7 +2,7 @@
 
 public class FirstLevelGlobalRegionCreator : IEntityCreator<FirstLevelGlobalRegion>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<FirstLevelGlobalRegion> nodes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<FirstLevelGlobalRegion> nodes, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

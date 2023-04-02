@@ -85,8 +85,8 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await InformalIntermediateLevelSubdivisionCreator.CreateAsync(ReadInformalIntermediateLevelSubdivisionCsv(), _postgresConnection);
-        await InformalIntermediateLevelSubdivisionCreator.CreateAsync(ReadInformalIntermediateLevelSubdivisions(), _postgresConnection);
+        await new InformalIntermediateLevelSubdivisionCreator().CreateAsync(ReadInformalIntermediateLevelSubdivisionCsv(), _postgresConnection);
+        await new InformalIntermediateLevelSubdivisionCreator().CreateAsync(ReadInformalIntermediateLevelSubdivisions(), _postgresConnection);
     }
     private async IAsyncEnumerable<InformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisions()
     {

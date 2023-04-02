@@ -13,10 +13,13 @@ internal class FetchBlogsService : IFetchBlogsService
     private readonly IDatabaseReaderFactory<BlogsDocumentReader> _blogsDocumentReaderFactory;
 
     public FetchBlogsService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<BlogsDocumentReader> blogsDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _blogsDocumentReaderFactory = blogsDocumentReaderFactory;
     }
 

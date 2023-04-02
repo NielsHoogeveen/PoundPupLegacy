@@ -4,10 +4,14 @@ internal sealed class TermHierarchyInserter : DatabaseInserter<TermHierarchy>, I
 {
     private const string TERM_ID_PARENT = "term_id_parent";
     private const string TERM_ID_CHILD = "term_id_child";
-    public static async Task<DatabaseInserter<TermHierarchy>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<TermHierarchy>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "term_hierarchy",
             new ColumnDefinition[] {
                 new ColumnDefinition{

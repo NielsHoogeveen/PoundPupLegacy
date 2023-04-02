@@ -2,7 +2,7 @@
 
 public class DeportationCaseCreator : IEntityCreator<DeportationCase>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<DeportationCase> deportationCases, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<DeportationCase> deportationCases, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

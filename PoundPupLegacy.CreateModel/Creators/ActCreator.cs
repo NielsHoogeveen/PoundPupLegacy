@@ -2,7 +2,7 @@
 
 public class ActCreator : IEntityCreator<Act>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Act> acts, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Act> acts, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

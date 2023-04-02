@@ -5,10 +5,14 @@ internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroup
     private const string USER_GROUP_ID = "user_group_id";
     private const string USER_ROLE_ID = "user_role_id";
     private const string USER_ID = "user_id";
-    public static async Task<DatabaseInserter<UserGroupUserRoleUser>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<UserGroupUserRoleUser>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "user_group_user_role_user",
             new ColumnDefinition[] {
                 new ColumnDefinition{

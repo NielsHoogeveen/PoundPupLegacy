@@ -2,7 +2,7 @@
 
 internal sealed class OwnerInserter : IDatabaseInserter<Owner>
 {
-    public static async Task<DatabaseInserter<Owner>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Owner>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<Owner>("owner", connection);
     }

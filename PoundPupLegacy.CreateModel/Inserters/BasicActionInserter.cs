@@ -6,10 +6,14 @@ internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>, IData
     private const string ID = "id";
     private const string PATH = "path";
     private const string DESCRIPTION = "description";
-    public static async Task<DatabaseInserter<BasicAction>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<BasicAction>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "basic_action",
             new ColumnDefinition[] {
                 new ColumnDefinition{

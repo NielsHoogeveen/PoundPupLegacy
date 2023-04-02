@@ -2,7 +2,7 @@
 
 public class ChildPlacementTypeCreator : IEntityCreator<ChildPlacementType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<ChildPlacementType> childPlacementTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<ChildPlacementType> childPlacementTypes, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

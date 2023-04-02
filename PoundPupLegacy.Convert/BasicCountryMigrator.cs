@@ -333,8 +333,8 @@ internal sealed class BasicCountryMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await BasicCountryCreator.CreateAsync(GetBasicCountries(), _postgresConnection);
-        await BasicCountryCreator.CreateAsync(ReadBasicCountries(), _postgresConnection);
+        await new BasicCountryCreator().CreateAsync(GetBasicCountries(), _postgresConnection);
+        await new BasicCountryCreator().CreateAsync(ReadBasicCountries(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<BasicCountry> ReadBasicCountries()

@@ -2,7 +2,7 @@
 
 public class ReviewCreator : IEntityCreator<Review>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Review> reviews, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Review> reviews, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

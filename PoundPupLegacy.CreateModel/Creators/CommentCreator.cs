@@ -2,7 +2,7 @@
 
 public class CommentCreator : IEntityCreator<Comment>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Comment> comments, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Comment> comments, IDbConnection connection)
     {
 
         await using var commentWriter = await CommentInserter.CreateAsync(connection);

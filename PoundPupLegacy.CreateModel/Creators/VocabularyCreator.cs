@@ -2,7 +2,7 @@
 
 public class VocabularyCreator : IEntityCreator<Vocabulary>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Vocabulary> vocabularies, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Vocabulary> vocabularies, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

@@ -6,7 +6,7 @@ public interface IDatabaseInserter
 }
 public interface IDatabaseInserter<T> : IDatabaseInserter
 {
-    public abstract static Task<DatabaseInserter<T>> CreateAsync(NpgsqlConnection connection);
+    public abstract static Task<DatabaseInserter<T>> CreateAsync(IDbConnection connection);
 }
 
 public abstract class DatabaseInserter : IDatabaseInserter

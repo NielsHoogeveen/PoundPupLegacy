@@ -2,7 +2,7 @@
 
 internal sealed class FamilySizeInserter : IDatabaseInserter<FamilySize>
 {
-    public static async Task<DatabaseInserter<FamilySize>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<FamilySize>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<FamilySize>("family_size", connection);
     }

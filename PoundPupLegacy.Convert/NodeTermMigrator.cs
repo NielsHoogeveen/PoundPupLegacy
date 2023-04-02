@@ -11,7 +11,7 @@ internal sealed class NodeTermMigrator : PPLMigrator
     protected override async Task MigrateImpl()
     {
 
-        await NodeTermCreator.CreateAsync(ReadNodeTerms(), _postgresConnection);
+        await new NodeTermCreator().CreateAsync(ReadNodeTerms(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<NodeTerm> ReadNodeTerms()

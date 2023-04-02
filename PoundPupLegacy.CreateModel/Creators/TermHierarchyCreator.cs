@@ -2,7 +2,7 @@
 
 public class TermHierarchyCreator : IEntityCreator<TermHierarchy>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<TermHierarchy> termHierarchies, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<TermHierarchy> termHierarchies, IDbConnection connection)
     {
 
         await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);

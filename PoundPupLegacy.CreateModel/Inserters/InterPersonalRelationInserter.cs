@@ -9,10 +9,14 @@ internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPers
     private const string DATE_RANGE = "date_range";
     private const string INTER_ORGANIZATIONAL_RELATION_TYPE_ID = "inter_personal_relation_type_id";
     private const string DOCUMENT_ID_PROOF = "document_id_proof";
-    public static async Task<DatabaseInserter<InterPersonalRelation>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<InterPersonalRelation>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "inter_personal_relation",
             new ColumnDefinition[] {
                 new ColumnDefinition{

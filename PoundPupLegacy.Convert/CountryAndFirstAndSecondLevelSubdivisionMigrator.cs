@@ -225,8 +225,8 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
 
     protected override async Task MigrateImpl()
     {
-        await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(GetRegionSubdivisionCountries(), _postgresConnection);
-        await CountryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(), _postgresConnection);
+        await new CountryAndFirstAndSecondLevelSubdivisionCreator().CreateAsync(GetRegionSubdivisionCountries(), _postgresConnection);
+        await new CountryAndFirstAndSecondLevelSubdivisionCreator().CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(), _postgresConnection);
     }
     private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision()
     {

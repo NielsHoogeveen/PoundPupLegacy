@@ -10,7 +10,7 @@ internal sealed class CoercedAdoptionCaseMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await CoercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(), _postgresConnection);
+        await new CoercedAdoptionCaseCreator().CreateAsync(ReadCoercedAdoptionCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<CoercedAdoptionCase> ReadCoercedAdoptionCases()
     {

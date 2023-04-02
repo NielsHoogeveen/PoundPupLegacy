@@ -24,6 +24,6 @@ internal sealed class PublicationStatusMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await PublicationStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
+        await new PublicationStatusCreator().CreateAsync(GetNodeStatuses(), _postgresConnection);
     }
 }

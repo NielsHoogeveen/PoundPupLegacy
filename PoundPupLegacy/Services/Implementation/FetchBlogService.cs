@@ -2,6 +2,7 @@
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
+using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -11,11 +12,14 @@ internal class FetchBlogService : IFetchBlogService
     private readonly IDatabaseReaderFactory<BlogDocumentReader> _blogDocumentReaderFactory;
 
     public FetchBlogService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<BlogDocumentReader> blogDocumentReaderFactory
         )
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _blogDocumentReaderFactory = blogDocumentReaderFactory;
     }
 

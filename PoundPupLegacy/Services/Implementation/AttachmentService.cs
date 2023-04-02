@@ -6,6 +6,7 @@ using PoundPupLegacy.Common;
 using PoundPupLegacy.CreateModel;
 using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.ViewModel.Readers;
+using System.Data;
 using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
@@ -18,12 +19,14 @@ public class AttachmentService : IAttachmentService
     private readonly IDatabaseReaderFactory<FileDocumentReader> _fileDocumentReaderFactory;
 
     public AttachmentService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IConfiguration configuration,
         ILogger<AttachmentService> logger,
         IDatabaseReaderFactory<FileDocumentReader> fileDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
         _logger = logger;
         _configuration = configuration;
         _fileDocumentReaderFactory = fileDocumentReaderFactory;
@@ -56,7 +59,7 @@ public class AttachmentService : IAttachmentService
                     Size = (int)file.Length,
                     TenantFiles = new List<TenantFile>()
                 };
-                await FileCreator.CreateAsync(new List<File> { fm }.ToAsyncEnumerable(), _connection);
+                await new FileCreator().CreateAsync(new List<File> { fm }.ToAsyncEnumerable(), _connection);
                 return fm.Id;
             }
             finally {

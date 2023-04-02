@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 public sealed class SubdivisionIdReaderByNameFactory : IDatabaseReaderFactory<SubdivisionIdReaderByName>
 {
-    public async Task<SubdivisionIdReaderByName> CreateAsync(NpgsqlConnection connection)
+    public async Task<SubdivisionIdReaderByName> CreateAsync(IDbConnection connection)
     {
         var sql = """
             SELECT id
@@ -10,7 +10,11 @@ public sealed class SubdivisionIdReaderByNameFactory : IDatabaseReaderFactory<Su
             AND name = @name 
             """;
 
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

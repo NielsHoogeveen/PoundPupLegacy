@@ -10,8 +10,12 @@ internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<R
     private const string HOUSE_BILL_ID = "house_bill_id";
     private const string DATE = "date";
     private const string BILL_ACTION_TYPE_ID = "bill_action_type_id";
-    public static async Task<DatabaseInserter<RepresentativeHouseBillAction>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<RepresentativeHouseBillAction>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefinitions = new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = REPRESENTATIVE_ID,
@@ -32,13 +36,13 @@ internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<R
             };
 
         var genarateIdCommand = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "representative_house_bill_action",
             columnDefinitions
         );
 
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "representative_house_bill_action",
             columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
                 Name = ID,

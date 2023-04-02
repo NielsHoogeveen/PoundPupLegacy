@@ -13,7 +13,7 @@ internal sealed class RepresentativeHouseBillActionMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await RepresentativeHouseBillActionCreator.CreateAsync(ReadRepresentativeHouseBillActionsPPL(), _postgresConnection);
+        await new RepresentativeHouseBillActionCreator().CreateAsync(ReadRepresentativeHouseBillActionsPPL(), _postgresConnection);
 
     }
 

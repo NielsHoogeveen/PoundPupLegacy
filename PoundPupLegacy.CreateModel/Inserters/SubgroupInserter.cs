@@ -4,10 +4,14 @@ internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>, IDatabaseIn
 {
     private const string ID = "id";
     private const string TENANT_ID = "tenant_id";
-    public static async Task<DatabaseInserter<Subgroup>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Subgroup>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "subgroup",
             new ColumnDefinition[] {
                 new ColumnDefinition{

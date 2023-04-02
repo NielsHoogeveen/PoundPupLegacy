@@ -1,4 +1,6 @@
 ﻿using Npgsql;
+using System.Data;
+
 namespace PoundPupLegacy.Common;
 
 public interface IDatabaseUpdater : IAsyncDisposable
@@ -14,7 +16,7 @@ public interface IDatabaseUpdaterFactory
 public interface IDatabaseUpdaterFactory<T>: IDatabaseUpdaterFactory
     where T : IDatabaseUpdater
 {
-    public Task<T> CreateAsync(NpgsqlConnection connection);
+    public Task<T> CreateAsync(IDbConnection connection);
 }
 public abstract class DatabaseUpdater<TRequest> : IDatabaseUpdater
 {

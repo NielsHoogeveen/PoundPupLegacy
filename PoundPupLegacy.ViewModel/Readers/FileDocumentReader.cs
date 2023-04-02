@@ -5,9 +5,13 @@ using System.Data;
 namespace PoundPupLegacy.ViewModel.Readers;
 public class FileDocumentReaderFactory : IDatabaseReaderFactory<FileDocumentReader>
 {
-    public async Task<FileDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<FileDocumentReader> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandText = SQL;
 

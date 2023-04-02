@@ -2,7 +2,7 @@
 
 public class BasicSecondLevelSubdivisionCreator : IEntityCreator<BasicSecondLevelSubdivision>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<BasicSecondLevelSubdivision> subdivisions, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<BasicSecondLevelSubdivision> subdivisions, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

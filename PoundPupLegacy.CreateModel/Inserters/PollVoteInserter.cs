@@ -6,10 +6,14 @@ internal sealed class PollVoteInserter : DatabaseInserter<PollVote>, IDatabaseIn
     private const string DELTA = "delta";
     private const string USER_ID = "user_id";
     private const string IP_ADDRESS = "ip_address";
-    public static async Task<DatabaseInserter<PollVote>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<PollVote>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "poll_vote",
             new ColumnDefinition[] {
                 new ColumnDefinition{

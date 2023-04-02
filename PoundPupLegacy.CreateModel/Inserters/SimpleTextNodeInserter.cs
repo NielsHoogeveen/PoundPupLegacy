@@ -5,10 +5,14 @@ internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>,
     private const string ID = "id";
     private const string TEXT = "text";
     private const string TEASER = "teaser";
-    public static async Task<DatabaseInserter<SimpleTextNode>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<SimpleTextNode>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "simple_text_node",
             new ColumnDefinition[] {
                 new ColumnDefinition{

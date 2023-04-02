@@ -2,7 +2,7 @@
 
 public class WrongfulRemovalCaseCreator : IEntityCreator<WrongfulRemovalCase>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<WrongfulRemovalCase> wrongfulRemovalCases, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<WrongfulRemovalCase> wrongfulRemovalCases, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

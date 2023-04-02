@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using PoundPupLegacy.Services;
+﻿using PoundPupLegacy.Services;
 
 namespace PoundPupLegacy.Middleware;
 
@@ -16,8 +15,7 @@ public class UserMenuMiddleware
         HttpContext httpContext,
         IUserService userService,
         ISiteDataService siteDataService,
-        IRazorViewToStringService razorViewToStringService,
-        AuthenticationStateProvider authenticationStateProvider)
+        IRazorViewToStringService razorViewToStringService)
     {
         var userId = userService.GetUserId(httpContext.User);
         var tenantId = siteDataService.GetTenantId(httpContext.Request);

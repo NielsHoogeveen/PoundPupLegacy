@@ -10,7 +10,7 @@ internal sealed class WrongfulRemovalCaseMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await WrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases(), _postgresConnection);
+        await new WrongfulRemovalCaseCreator().CreateAsync(ReadWrongfulRemovalCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<WrongfulRemovalCase> ReadWrongfulRemovalCases()
     {

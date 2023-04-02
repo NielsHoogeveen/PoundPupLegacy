@@ -215,20 +215,20 @@ internal sealed class UserMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await AnonimousUserCreator.CreateAsync(_postgresConnection);
-        await SystemGroupCreator.CreateAsync(_postgresConnection);
-        await TenantCreator.CreateAsync(GetTenants(), _postgresConnection);
-        await ContentSharingGroupCreator.CreateAsync(GetContentSharingGroups(), _postgresConnection);
-        await SubgroupCreator.CreateAsync(GetSubgroups(), _postgresConnection);
-        await AccessRoleCreator.CreateAsync(GetAccessRoles(), _postgresConnection);
-        await UserCreator.CreateAsync(ReadUsers(), _postgresConnection);
-        await CollectiveCreator.CreateAsync(GetCollectives(), _postgresConnection);
-        await CollectiveUserCreator.CreateAsync(GetCollectiveUsers(), _postgresConnection);
-        await UserGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
-        await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! }), _postgresConnection);
-        await UserGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 12, UserId = (int)x.Id! }), _postgresConnection);
-        await UserGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = 6, UserRoleId = 16, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
-        await UserGroupUserRoleUserCreator.CreateAsync(ReadAdultAftermathMembers(), _postgresConnection);
+        await new AnonimousUserCreator().CreateAsync(_postgresConnection);
+        await new SystemGroupCreator().CreateAsync(_postgresConnection);
+        await new TenantCreator().CreateAsync(GetTenants(), _postgresConnection);
+        await new ContentSharingGroupCreator().CreateAsync(GetContentSharingGroups(), _postgresConnection);
+        await new SubgroupCreator().CreateAsync(GetSubgroups(), _postgresConnection);
+        await new AccessRoleCreator().CreateAsync(GetAccessRoles(), _postgresConnection);
+        await new UserCreator().CreateAsync(ReadUsers(), _postgresConnection);
+        await new CollectiveCreator().CreateAsync(GetCollectives(), _postgresConnection);
+        await new CollectiveUserCreator().CreateAsync(GetCollectiveUsers(), _postgresConnection);
+        await new UserGroupUserRoleUserCreator().CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
+        await new UserGroupUserRoleUserCreator().CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 4, UserId = (int)x.Id! }), _postgresConnection);
+        await new UserGroupUserRoleUserCreator().CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = 1, UserRoleId = 12, UserId = (int)x.Id! }), _postgresConnection);
+        await new UserGroupUserRoleUserCreator().CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = 6, UserRoleId = 16, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
+        await new UserGroupUserRoleUserCreator().CreateAsync(ReadAdultAftermathMembers(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<User> ReadUsers()

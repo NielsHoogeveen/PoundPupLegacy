@@ -5,10 +5,14 @@ internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<Bas
     private const string ID = "id";
     private const string INTERMEDIATE_LEVEL_SUBDIVISION_ID = "intermediate_level_subdivision_id";
 
-    public static async Task<DatabaseInserter<BasicSecondLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<BasicSecondLevelSubdivision>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "basic_second_level_subdivision",
             new ColumnDefinition[] {
                 new ColumnDefinition{

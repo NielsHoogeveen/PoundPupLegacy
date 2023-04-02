@@ -8,10 +8,14 @@ internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>, IDatabase
     private const string HOME_SCHOOLING_INVOLVED = "home_schooling_involved";
     private const string FUNDAMENTAL_FAITH_INVOLVED = "fundamental_faith_involved";
     private const string DISABILITIES_INVOLVED = "disabilities_involved";
-    public static async Task<DatabaseInserter<AbuseCase>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<AbuseCase>> CreateAsync(IDbConnection connection)
     {
-        var command = await CreateInsertStatementAsync(
-            connection,
+            if (connection is not NpgsqlConnection)
+                throw new Exception("Application only works with a Postgres database");
+            var postgresConnection = (NpgsqlConnection)connection;
+
+            var command = await CreateInsertStatementAsync(
+            postgresConnection,
             "abuse_case",
             new ColumnDefinition[] {
                 new ColumnDefinition{

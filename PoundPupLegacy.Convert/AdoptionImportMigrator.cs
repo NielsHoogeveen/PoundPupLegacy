@@ -89,8 +89,8 @@ internal sealed class AdoptionImportMigrator : PPLMigrator
 
         var r = ReadAdoptionExportYears(nodeReader);
 
-        await InterCountryRelationCreator.CreateAsync(r, _postgresConnection);
-        await InterCountryRelationCreator.CreateAsync(x, _postgresConnection);
+        await new InterCountryRelationCreator().CreateAsync(r, _postgresConnection);
+        await new InterCountryRelationCreator().CreateAsync(x, _postgresConnection);
 
         var cmd = _postgresConnection.CreateCommand();
         cmd.CommandText = $"""

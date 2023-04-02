@@ -8,10 +8,14 @@ internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>, IDataba
     private const string TENANT_ID = "tenant_id";
     private const string FILE_ID = "file_id";
     private const string TENANT_FILE_ID = "tenant_file_id";
-    public static async Task<DatabaseInserter<TenantFile>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<TenantFile>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "tenant_file",
             new ColumnDefinition[] {
                 new ColumnDefinition{

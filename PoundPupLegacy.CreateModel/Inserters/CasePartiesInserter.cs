@@ -5,10 +5,14 @@ internal sealed class CasePartiesInserter : DatabaseInserter<CaseParties>, IData
 
     private const string ORGANIZATIONS = "organizations";
     private const string PERSONS = "persons";
-    public static async Task<DatabaseInserter<CaseParties>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<CaseParties>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "case_parties",
             new ColumnDefinition[] {
                 new ColumnDefinition{

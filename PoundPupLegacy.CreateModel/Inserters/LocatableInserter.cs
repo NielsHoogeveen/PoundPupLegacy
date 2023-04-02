@@ -2,7 +2,7 @@
 
 internal sealed class LocatableInserter : IDatabaseInserter<Locatable>
 {
-    public static async Task<DatabaseInserter<Locatable>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Locatable>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<Locatable>("locatable", connection);
     }

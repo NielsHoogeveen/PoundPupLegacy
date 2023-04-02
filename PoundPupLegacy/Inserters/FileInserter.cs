@@ -15,23 +15,27 @@ public sealed class FileInserter : DatabaseInserter<FileInserter.Request>, IData
         public required long Size { get; init; }
     }
 
-    public static async Task<DatabaseInserter<Request>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Request>> CreateAsync(IDbConnection connection)
     {
-            var command = connection.CreateCommand();
-            var sql = $"""
-                    insert into file (name, size, mime_type, path) VALUES(@name, @size, @mime_type, @path);
-                    insert into node_file (node_id, file_id) VALUES(@node_id, lastval());
-                    """;
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = sql;
-            command.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);
-            command.Parameters.Add("size", NpgsqlTypes.NpgsqlDbType.Integer);
-            command.Parameters.Add("mime_type", NpgsqlTypes.NpgsqlDbType.Varchar);
-            command.Parameters.Add("path", NpgsqlTypes.NpgsqlDbType.Varchar);
-            command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
-            await command.PrepareAsync();
-            return new FileInserter(command);
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
+        var command = postgresConnection.CreateCommand();
+        var sql = $"""
+                insert into file (name, size, mime_type, path) VALUES(@name, @size, @mime_type, @path);
+                insert into node_file (node_id, file_id) VALUES(@node_id, lastval());
+                """;
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = sql;
+        command.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);
+        command.Parameters.Add("size", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("mime_type", NpgsqlTypes.NpgsqlDbType.Varchar);
+        command.Parameters.Add("path", NpgsqlTypes.NpgsqlDbType.Varchar);
+        command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        await command.PrepareAsync();
+        return new FileInserter(command);
 
     }
 

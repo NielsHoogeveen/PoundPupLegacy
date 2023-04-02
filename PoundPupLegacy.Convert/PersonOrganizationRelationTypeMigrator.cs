@@ -6,7 +6,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator : PPLMigrator
     public PersonOrganizationRelationTypeMigrator(MySqlToPostgresConverter converter) : base(converter) { }
     protected override async Task MigrateImpl()
     {
-        await PersonOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(), _postgresConnection);
+        await new PersonOrganizationRelationTypeCreator().CreateAsync(ReadPersonOrganizationRelationTypes(), _postgresConnection);
     }
     private async IAsyncEnumerable<PersonOrganizationRelationType> ReadPersonOrganizationRelationTypes()
     {

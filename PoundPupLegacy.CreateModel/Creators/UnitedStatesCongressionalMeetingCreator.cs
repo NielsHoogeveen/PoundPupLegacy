@@ -2,7 +2,7 @@
 
 public class UnitedStatesCongressionalMeetingCreator : IEntityCreator<UnitedStatesCongressionalMeeting>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<UnitedStatesCongressionalMeeting> countries, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<UnitedStatesCongressionalMeeting> countries, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

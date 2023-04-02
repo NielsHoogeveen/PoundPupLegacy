@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
+@inject IEditService<Article> editService;
 @inject IEditorService editorService;
 @inject ILogger<ArticleCreator> logger;
 @inject NavigationManager navigationManager;
@@ -44,7 +45,7 @@
     protected override async Task OnInitializedAsync()
     {
         url = $"{navigationManager.BaseUri}image/upload";
-        article = await editorService.GetNewArticle(UserId, TenantId);
+        article = await editService.GetViewModelAsync(UserId, TenantId);
     }
 
     private async Task HandleSubmit()

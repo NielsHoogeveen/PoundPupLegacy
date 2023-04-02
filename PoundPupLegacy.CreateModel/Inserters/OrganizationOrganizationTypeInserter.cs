@@ -5,10 +5,14 @@ internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<Or
 
     private const string ORGANIZATION_ID = "organization_id";
     private const string ORGANIZATION_TYPE_ID = "organization_type_id";
-    public static async Task<DatabaseInserter<OrganizationOrganizationType>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<OrganizationOrganizationType>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "organization_organization_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{

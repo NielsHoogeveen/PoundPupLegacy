@@ -2,7 +2,7 @@
 
 public class BlogPostCreator : IEntityCreator<BlogPost>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<BlogPost> blogPosts, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<BlogPost> blogPosts, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

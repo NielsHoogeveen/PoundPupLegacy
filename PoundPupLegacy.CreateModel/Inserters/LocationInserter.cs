@@ -13,8 +13,12 @@ internal sealed class LocationInserter : DatabaseInserter<Location>, IDatabaseIn
     private const string COUNTRY_ID = "country_id";
     private const string LATITUDE = "latitude";
     private const string LONGITUDE = "longitude";
-    public static async Task<DatabaseInserter<Location>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Location>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefitions = new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = STREET,
@@ -53,7 +57,7 @@ internal sealed class LocationInserter : DatabaseInserter<Location>, IDatabaseIn
             };
 
         var commandWithId = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "location",
             columnDefitions.ToImmutableList().Prepend(new ColumnDefinition {
                 Name = ID,
@@ -61,7 +65,7 @@ internal sealed class LocationInserter : DatabaseInserter<Location>, IDatabaseIn
             })
         );
         var commandWithoutId = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "location",
             columnDefitions
         );

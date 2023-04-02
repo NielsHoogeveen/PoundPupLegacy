@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using System.Data;
 
 namespace PoundPupLegacy.Common
 {
@@ -11,7 +12,7 @@ namespace PoundPupLegacy.Common
     public interface IDatabaseReaderFactory<T>: IDatabaseReaderFactory 
         where T : IDatabaseReader
     {
-        public Task<T> CreateAsync(NpgsqlConnection connection);
+        public Task<T> CreateAsync(IDbConnection connection);
     }
 
     public interface ISingleItemDatabaseReader<TRequest, TResponse> : IDatabaseReader

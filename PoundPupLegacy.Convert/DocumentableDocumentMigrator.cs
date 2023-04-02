@@ -10,7 +10,7 @@ internal sealed class DocumentableDocumentMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await DocumentableDocumentCreator.CreateAsync(ReadArticles(), _postgresConnection);
+        await new DocumentableDocumentCreator().CreateAsync(ReadArticles(), _postgresConnection);
 
     }
 

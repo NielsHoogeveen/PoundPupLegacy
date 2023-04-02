@@ -10,7 +10,7 @@ internal sealed class CommentMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await CommentCreator.CreateAsync(ReadComments(), _postgresConnection);
+        await new CommentCreator().CreateAsync(ReadComments(), _postgresConnection);
 
     }
     private static int GetUid(int uid)

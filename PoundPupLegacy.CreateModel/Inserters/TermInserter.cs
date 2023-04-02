@@ -5,10 +5,14 @@ internal sealed class TermInserter : DatabaseInserter<Term>, IDatabaseInserter<T
     private const string VOCABULARY_ID = "vocabulary_id";
     private const string NAME = "name";
     private const string NAMEABLE_ID = "nameable_id";
-    public static async Task<DatabaseInserter<Term>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Term>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "term",
             new ColumnDefinition[] {
                 new ColumnDefinition{

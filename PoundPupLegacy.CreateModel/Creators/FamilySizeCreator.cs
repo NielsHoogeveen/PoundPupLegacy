@@ -2,7 +2,7 @@
 
 public class FamilySizeCreator : IEntityCreator<FamilySize>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<FamilySize> familySizes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<FamilySize> familySizes, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

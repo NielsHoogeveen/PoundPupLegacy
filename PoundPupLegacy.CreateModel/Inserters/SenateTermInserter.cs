@@ -6,10 +6,14 @@ internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>, IDataba
     private const string SENATOR_ID = "senator_id";
     private const string SUBDIVISION_ID = "subdivision_id";
     private const string DATE_RANGE = "date_range";
-    public static async Task<DatabaseInserter<SenateTerm>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<SenateTerm>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "senate_term",
             new ColumnDefinition[] {
                 new ColumnDefinition{

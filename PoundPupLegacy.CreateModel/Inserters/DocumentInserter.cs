@@ -10,10 +10,14 @@ internal sealed class DocumentInserter : DatabaseInserter<Document>, IDatabaseIn
     private const string TEXT = "text";
     private const string TEASER = "teaser";
     private const string DOCUMENT_TYPE_ID = "document_type_id";
-    public static async Task<DatabaseInserter<Document>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Document>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "document",
             new ColumnDefinition[] {
                 new ColumnDefinition{

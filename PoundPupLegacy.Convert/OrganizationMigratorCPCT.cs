@@ -11,7 +11,7 @@ internal sealed class OrganizationMigratorCPCT : CPCTMigrator
 
     protected override async Task MigrateImpl()
     {
-        await OrganizationCreator.CreateAsync(ReadOrganizations(), _postgresConnection);
+        await new OrganizationCreator().CreateAsync(ReadOrganizations(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<BasicOrganization> ReadOrganizations()

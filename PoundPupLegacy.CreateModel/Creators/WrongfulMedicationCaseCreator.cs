@@ -2,7 +2,7 @@
 
 public class WrongfulMedicationCaseCreator : IEntityCreator<WrongfulMedicationCase>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<WrongfulMedicationCase> wrongfulMedicationCases, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<WrongfulMedicationCase> wrongfulMedicationCases, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

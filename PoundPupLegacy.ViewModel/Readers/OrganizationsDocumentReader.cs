@@ -5,21 +5,25 @@ using System.Data;
 namespace PoundPupLegacy.ViewModel.Readers;
 public class OrganizationsDocumentReaderFactory : IDatabaseReaderFactory<OrganizationsDocumentReader>
 {
-    public async Task<OrganizationsDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<OrganizationsDocumentReader> CreateAsync(IDbConnection connection)
     {
-        var readCommand = connection.CreateCommand();
-        readCommand.CommandType = CommandType.Text;
-        readCommand.CommandTimeout = 300;
-        readCommand.CommandText = string.Format(SQL, "AND oot.organization_type_id=@organization_type_id AND ll.url_id=@country_id");
-        readCommand.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("pattern", NpgsqlTypes.NpgsqlDbType.Varchar);
-        readCommand.Parameters.Add("organization_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        readCommand.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await readCommand.PrepareAsync();
-        return new OrganizationsDocumentReader(readCommand);
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = string.Format(SQL, "AND oot.organization_type_id=@organization_type_id AND ll.url_id=@country_id");
+        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("pattern", NpgsqlTypes.NpgsqlDbType.Varchar);
+        command.Parameters.Add("organization_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        command.Parameters.Add("country_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        await command.PrepareAsync();
+        return new OrganizationsDocumentReader(command);
     }
     protected const string SQL = """
             select

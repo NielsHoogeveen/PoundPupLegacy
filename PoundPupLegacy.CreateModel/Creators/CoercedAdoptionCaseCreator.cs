@@ -2,7 +2,7 @@
 
 public class CoercedAdoptionCaseCreator : IEntityCreator<CoercedAdoptionCase>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<CoercedAdoptionCase> coercedAdoptionCases, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<CoercedAdoptionCase> coercedAdoptionCases, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

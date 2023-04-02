@@ -2,13 +2,18 @@
 
 public sealed class ActionIdReaderByPathFactory : IDatabaseReaderFactory<ActionIdReaderByPath>
 {
-    public async Task<ActionIdReaderByPath> CreateAsync(NpgsqlConnection connection)
+    public async Task<ActionIdReaderByPath> CreateAsync(IDbConnection connection)
     {
+
         var sql = """
             SELECT id FROM basic_action WHERE path = @path
             """;
 
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

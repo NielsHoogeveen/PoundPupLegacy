@@ -5,9 +5,8 @@ using System.Data;
 namespace PoundPupLegacy.EditModel.Readers;
 public class CountryListItemsReaderFactory : IDatabaseReaderFactory<CountryListItemsReader>
 {
-    public async Task<CountryListItemsReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<CountryListItemsReader> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
         var sql = $"""
                 select
                     c.id,
@@ -18,7 +17,11 @@ public class CountryListItemsReaderFactory : IDatabaseReaderFactory<CountryListI
                     where tn.tenant_id = 1 and tn.url_id = 4126
             
                 """;
-        command.CommandType = CommandType.Text;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandTimeout = 300;
         command.CommandText = sql;
         await command.PrepareAsync();

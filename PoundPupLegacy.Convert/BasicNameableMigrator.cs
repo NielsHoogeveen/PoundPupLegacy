@@ -8,7 +8,7 @@ internal sealed class BasicNameableMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await BasicNameableCreator.CreateAsync(ReadBasicNameables(), _postgresConnection);
+        await new BasicNameableCreator().CreateAsync(ReadBasicNameables(), _postgresConnection);
     }
     private async IAsyncEnumerable<BasicNameable> ReadBasicNameables()
     {

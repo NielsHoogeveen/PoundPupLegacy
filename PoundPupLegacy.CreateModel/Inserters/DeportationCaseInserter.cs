@@ -5,10 +5,14 @@ internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase
     private const string ID = "id";
     private const string SUBDIVISION_ID_FROM = "subdivision_id_from";
     private const string COUNTRY_ID_TO = "country_id_to";
-    public static async Task<DatabaseInserter<DeportationCase>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<DeportationCase>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "deportation_case",
             new ColumnDefinition[] {
                 new ColumnDefinition{

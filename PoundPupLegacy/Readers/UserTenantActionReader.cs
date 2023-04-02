@@ -6,9 +6,12 @@ using System.Data;
 namespace PoundPupLegacy.Readers;
 public class UserTenantActionReaderFactory : IDatabaseReaderFactory<UserTenantActionReader>
 {
-    public async Task<UserTenantActionReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<UserTenantActionReader> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = SQL;

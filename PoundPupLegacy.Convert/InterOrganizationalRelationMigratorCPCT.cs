@@ -10,7 +10,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : CPCTMigrator
 
     protected override async Task MigrateImpl()
     {
-        await InterOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(), _postgresConnection);
+        await new InterOrganizationalRelationCreator().CreateAsync(ReadInterOrganizationalRelations(), _postgresConnection);
 
     }
 

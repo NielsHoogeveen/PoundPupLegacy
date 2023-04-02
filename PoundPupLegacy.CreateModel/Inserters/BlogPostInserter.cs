@@ -2,7 +2,7 @@
 
 internal sealed class BlogPostInserter : IDatabaseInserter<BlogPost>
 {
-    public static async Task<DatabaseInserter<BlogPost>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<BlogPost>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<BlogPost>("blog_post", connection);
     }

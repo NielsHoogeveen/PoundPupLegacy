@@ -12,7 +12,7 @@ internal sealed class NodeFileMigratorPPL : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await NodeFileCreator.CreateAsync(ReadNodeFiles(), _postgresConnection);
+        await new NodeFileCreator().CreateAsync(ReadNodeFiles(), _postgresConnection);
     }
     private async IAsyncEnumerable<NodeFile> ReadNodeFiles()
     {

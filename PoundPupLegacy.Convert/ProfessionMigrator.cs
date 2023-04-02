@@ -9,7 +9,7 @@ internal sealed class ProfessionMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await ProfessionCreator.CreateAsync(ReadProfessions(), _postgresConnection);
+        await new ProfessionCreator().CreateAsync(ReadProfessions(), _postgresConnection);
     }
     private async IAsyncEnumerable<Profession> ReadProfessions()
     {

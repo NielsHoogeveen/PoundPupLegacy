@@ -5,10 +5,14 @@ internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserte
     private const string ID = "id";
     private const string DATE_RANGE = "date_range";
     private const string NUMBER = "number";
-    public static async Task<DatabaseInserter<UnitedStatesCongressionalMeeting>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<UnitedStatesCongressionalMeeting>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "united_states_congressional_meeting",
             new ColumnDefinition[] {
                 new ColumnDefinition{

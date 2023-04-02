@@ -2,7 +2,7 @@
 
 public class DenominationCreator : IEntityCreator<Denomination>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Denomination> denominations, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Denomination> denominations, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

@@ -5,18 +5,22 @@ public class PrincipalInserter : DatabaseInserter<Principal>, IDatabaseInserter<
 {
     private const string ID = "id";
 
-    public static async Task<DatabaseInserter<Principal>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Principal>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefinitions = new ColumnDefinition[] {
         };
 
         var identityInsertCommand = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "principal",
             columnDefinitions
         );
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "principal",
             columnDefinitions.ToImmutableList().Add(
                 new ColumnDefinition {

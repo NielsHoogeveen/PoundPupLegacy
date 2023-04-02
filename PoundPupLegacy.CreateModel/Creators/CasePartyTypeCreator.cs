@@ -2,7 +2,7 @@
 
 public class CasePartyTypeCreator : IEntityCreator<CasePartyType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<CasePartyType> casePartyTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<CasePartyType> casePartyTypes, IDbConnection connection)
     {
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);
         await using var searchableWriter = await SearchableInserter.CreateAsync(connection);

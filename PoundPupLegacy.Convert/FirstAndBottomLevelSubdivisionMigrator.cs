@@ -336,8 +336,8 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await FirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadDirectSubDivisionCsv(), _postgresConnection);
-        await FirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadFormalFirstLevelSubdivisions(), _postgresConnection);
+        await new FirstAndBottomLevelSubdivisionCreator().CreateAsync(ReadDirectSubDivisionCsv(), _postgresConnection);
+        await new FirstAndBottomLevelSubdivisionCreator().CreateAsync(ReadFormalFirstLevelSubdivisions(), _postgresConnection);
     }
     private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions()
     {

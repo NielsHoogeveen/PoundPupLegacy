@@ -14,7 +14,7 @@ internal sealed class FileMigratorCPCT : CPCTMigrator
 
     protected override async Task MigrateImpl()
     {
-        await FileCreator.CreateAsync(ReadFiles(), _postgresConnection);
+        await new FileCreator().CreateAsync(ReadFiles(), _postgresConnection);
     }
     private async IAsyncEnumerable<File> ReadFiles()
     {

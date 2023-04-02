@@ -6,10 +6,14 @@ internal sealed class TenantNodeMenuItemInserter : DatabaseInserter<TenantNodeMe
     private const string ID = "id";
     private const string NAME = "name";
     private const string TENANT_NODE_ID = "tenant_node_id";
-    public static async Task<DatabaseInserter<TenantNodeMenuItem>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<TenantNodeMenuItem>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "tenant_node_menu_item",
             new ColumnDefinition[] {
                 new ColumnDefinition{

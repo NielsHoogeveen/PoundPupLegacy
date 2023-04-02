@@ -10,7 +10,7 @@ internal sealed class ArticleMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await ArticleCreator.CreateAsync(ReadArticles(), _postgresConnection);
+        await new ArticleCreator().CreateAsync(ReadArticles(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<Article> ReadArticles()

@@ -10,8 +10,8 @@ internal sealed class PollMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await SingleQuestionPollCreator.CreateAsync(ReadSingleQuestionPolls(), _postgresConnection);
-        await MultiQuestionPollCreator.CreateAsync(ReadMultiQuestionPolls(), _postgresConnection);
+        await new SingleQuestionPollCreator().CreateAsync(ReadSingleQuestionPolls(), _postgresConnection);
+        await new MultiQuestionPollCreator().CreateAsync(ReadMultiQuestionPolls(), _postgresConnection);
     }
     private async IAsyncEnumerable<SingleQuestionPoll> ReadSingleQuestionPolls()
     {

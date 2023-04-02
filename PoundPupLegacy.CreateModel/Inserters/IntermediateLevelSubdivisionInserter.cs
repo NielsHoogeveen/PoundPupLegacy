@@ -2,7 +2,7 @@
 
 internal sealed class IntermediateLevelSubdivisionInserter : IDatabaseInserter<IntermediateLevelSubdivision>
 {
-    public static async Task<DatabaseInserter<IntermediateLevelSubdivision>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<IntermediateLevelSubdivision>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<IntermediateLevelSubdivision>("intermediate_level_subdivision", connection);
     }

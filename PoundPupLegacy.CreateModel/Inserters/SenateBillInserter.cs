@@ -2,7 +2,7 @@
 
 internal sealed class SenateBillInserter : IDatabaseInserter<SenateBill>
 {
-    public static async Task<DatabaseInserter<SenateBill>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<SenateBill>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<SenateBill>("senate_bill", connection);
     }

@@ -9,7 +9,7 @@ internal sealed class SecondLevelGlobalRegionMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await SecondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(), _postgresConnection);
+        await new SecondLevelGlobalRegionCreator().CreateAsync(ReadSecondLevelGlobalRegion(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion()

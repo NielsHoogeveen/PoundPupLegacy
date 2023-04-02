@@ -4,10 +4,14 @@ internal sealed class PoliticalEntityRelationTypeWriter : DatabaseInserter<Party
 {
     private const string ID = "id";
     private const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
-    public static async Task<DatabaseInserter<PartyPoliticalEntityRelationType>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<PartyPoliticalEntityRelationType>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "party_political_entity_relation_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{

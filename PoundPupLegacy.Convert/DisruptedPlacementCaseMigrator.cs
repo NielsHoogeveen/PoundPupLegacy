@@ -10,7 +10,7 @@ internal sealed class DisruptedPlacementCaseMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await DisruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases(), _postgresConnection);
+        await new DisruptedPlacementCaseCreator().CreateAsync(ReadDisruptedPlacementCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<DisruptedPlacementCase> ReadDisruptedPlacementCases()
     {

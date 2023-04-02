@@ -5,10 +5,14 @@ internal sealed class EditNodeActionInserter : DatabaseInserter<EditNodeAction>,
 
     private const string ID = "id";
     private const string NODE_TYPE_ID = "node_type_id";
-    public static async Task<DatabaseInserter<EditNodeAction>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<EditNodeAction>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "edit_node_action",
             new ColumnDefinition[] {
                 new ColumnDefinition{

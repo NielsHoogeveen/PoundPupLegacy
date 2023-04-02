@@ -2,7 +2,7 @@
 
 public class CollectiveCreator : IEntityCreator<Collective>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Collective> collectives, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Collective> collectives, IDbConnection connection)
     {
 
         await using var principalWriter = await PrincipalInserter.CreateAsync(connection);

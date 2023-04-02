@@ -5,10 +5,14 @@ internal sealed class ActInserter : DatabaseInserter<Act>, IDatabaseInserter<Act
 
     private const string ID = "id";
     private const string ENACTMENT_DATE = "enactment_date";
-    public static async Task<DatabaseInserter<Act>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Act>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "act",
             new ColumnDefinition[] {
                 new ColumnDefinition{

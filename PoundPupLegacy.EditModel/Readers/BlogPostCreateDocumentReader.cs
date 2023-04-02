@@ -1,11 +1,12 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
+using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
 public class BlogPostCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<BlogPostCreateDocumentReader>
 {
-    public override async Task<BlogPostCreateDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public override async Task<BlogPostCreateDocumentReader> CreateAsync(IDbConnection connection)
     {
         var command = await CreateCommand(connection, SQL);
         return new BlogPostCreateDocumentReader(command);

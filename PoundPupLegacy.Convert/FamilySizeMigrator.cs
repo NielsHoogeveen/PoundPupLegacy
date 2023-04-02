@@ -196,6 +196,6 @@ internal sealed class FamilySizeMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await FamilySizeCreator.CreateAsync(GetFamilySizes(), _postgresConnection);
+        await new FamilySizeCreator().CreateAsync(GetFamilySizes(), _postgresConnection);
     }
 }

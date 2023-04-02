@@ -10,8 +10,12 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
     private const string SENATE_BILL_ID = "senate_bill_id";
     private const string DATE = "date";
     private const string BILL_ACTION_TYPE_ID = "bill_action_type_id";
-    public static async Task<DatabaseInserter<SenatorSenateBillAction>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<SenatorSenateBillAction>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefinitions = new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = SENATOR_ID,
@@ -32,13 +36,13 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
             };
 
         var genarateIdCommand = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "senator_senate_bill_action",
             columnDefinitions
         );
 
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "senator_senate_bill_action",
             columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
                 Name = ID,

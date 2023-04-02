@@ -9,8 +9,8 @@ internal sealed class LocationMigratorPPL : PPLMigrator
     protected override string Name => "locations (ppl)";
     protected override async Task MigrateImpl()
     {
-        await LocationCreator.CreateAsync(GetLocations(), _postgresConnection);
-        await LocationCreator.CreateAsync(ReadLocations(), _postgresConnection);
+        await new LocationCreator().CreateAsync(GetLocations(), _postgresConnection);
+        await new LocationCreator().CreateAsync(ReadLocations(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<Location> GetLocations()

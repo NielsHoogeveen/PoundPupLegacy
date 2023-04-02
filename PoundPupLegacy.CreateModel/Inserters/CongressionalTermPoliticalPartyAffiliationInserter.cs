@@ -6,10 +6,14 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : Datab
     private const string CONGRESSIONAL_TERM_ID = "congressional_term_id";
     private const string UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID = "united_states_political_party_affiliation_id";
     private const string DATE_RANGE = "date_range";
-    public static async Task<DatabaseInserter<CongressionalTermPoliticalPartyAffiliation>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<CongressionalTermPoliticalPartyAffiliation>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "congressional_term_political_party_affiliation",
             new ColumnDefinition[] {
                 new ColumnDefinition{

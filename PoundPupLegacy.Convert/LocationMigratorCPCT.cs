@@ -9,7 +9,7 @@ internal sealed class LocationMigratorCPCT : CPCTMigrator
     protected override string Name => "locations (cpct)";
     protected override async Task MigrateImpl()
     {
-        await LocationCreator.CreateAsync(ReadLocations(), _postgresConnection);
+        await new LocationCreator().CreateAsync(ReadLocations(), _postgresConnection);
     }
 
     private static string? GetStreet(int id, string? street)

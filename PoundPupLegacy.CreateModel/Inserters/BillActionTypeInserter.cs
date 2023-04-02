@@ -3,10 +3,14 @@
 internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>, IDatabaseInserter<BillActionType>
 {
     private const string ID = "id";
-    public static async Task<DatabaseInserter<BillActionType>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<BillActionType>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "bill_action_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{

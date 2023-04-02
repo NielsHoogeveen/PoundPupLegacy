@@ -2,7 +2,7 @@
 
 public class PersonCreator : IEntityCreator<Person>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Person> persons, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Person> persons, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);
@@ -35,12 +35,12 @@ public class PersonCreator : IEntityCreator<Person>
             foreach (var role in person.ProfessionalRoles) {
                 role.PersonId = person.Id;
             }
-            await ProfessionalRoleCreator.CreateAsync(person.ProfessionalRoles.ToAsyncEnumerable(), connection);
+            await new ProfessionalRoleCreator().CreateAsync(person.ProfessionalRoles.ToAsyncEnumerable(), connection);
 
             foreach (var relation in person.PersonOrganizationRelations) {
                 relation.PersonId = person.Id;
             }
-            await PersonOrganizationRelationCreator.CreateAsync(person.PersonOrganizationRelations.ToAsyncEnumerable(), connection);
+            await new PersonOrganizationRelationCreator().CreateAsync(person.PersonOrganizationRelations.ToAsyncEnumerable(), connection);
 
         }
     }

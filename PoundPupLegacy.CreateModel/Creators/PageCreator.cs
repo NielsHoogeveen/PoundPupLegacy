@@ -2,7 +2,7 @@
 
 public class PageCreator : IEntityCreator<Page>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Page> pages, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Page> pages, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

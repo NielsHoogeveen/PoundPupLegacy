@@ -2,7 +2,7 @@
 
 public class NodeTypeCreator : IEntityCreator<BasicNodeType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<BasicNodeType> nodeTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<BasicNodeType> nodeTypes, IDbConnection connection)
     {
 
         await using var nodeTypeWriter = await NodeTypeInserter.CreateAsync(connection);

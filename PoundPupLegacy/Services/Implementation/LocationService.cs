@@ -13,12 +13,15 @@ public class LocationService : ILocationService
     private readonly IDatabaseReaderFactory<SubdivisionListItemsReader> _subdivisionListItemReaderFactory;
     private readonly IDatabaseReaderFactory<CountryListItemsReader> _countryListItemReaderFactory;
     public LocationService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<SubdivisionListItemsReader> subdivisionListItemReaderFactory,
         IDatabaseReaderFactory<CountryListItemsReader> countryListItemReaderFactory
         )
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _subdivisionListItemReaderFactory = subdivisionListItemReaderFactory;
         _countryListItemReaderFactory = countryListItemReaderFactory;
     }

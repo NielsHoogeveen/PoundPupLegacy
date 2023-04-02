@@ -9,7 +9,7 @@ internal sealed class InterCountryRelationTypeMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await InterCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(), _postgresConnection);
+        await new InterCountryRelationTypeCreator().CreateAsync(ReadInterCountryRelationTypes(), _postgresConnection);
     }
     private async IAsyncEnumerable<InterCountryRelationType> ReadInterCountryRelationTypes()
     {

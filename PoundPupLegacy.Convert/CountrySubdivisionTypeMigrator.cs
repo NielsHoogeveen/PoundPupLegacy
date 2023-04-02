@@ -61,7 +61,7 @@ internal abstract class CountrySubdivisionTypeMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await CountrySubdivisionTypeCreator.CreateAsync(ReadCountrySubdivisionTypesCsv(), _postgresConnection);
+        await new CountrySubdivisionTypeCreator().CreateAsync(ReadCountrySubdivisionTypesCsv(), _postgresConnection);
 
     }
 }

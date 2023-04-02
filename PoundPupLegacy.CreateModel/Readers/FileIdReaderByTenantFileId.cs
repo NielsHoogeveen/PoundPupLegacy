@@ -1,13 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 public sealed class FileIdReaderByTenantFileIdFactory : IDatabaseReaderFactory<FileIdReaderByTenantFileId>
 {
-    public async Task<FileIdReaderByTenantFileId> CreateAsync(NpgsqlConnection connection)
+    public async Task<FileIdReaderByTenantFileId> CreateAsync(IDbConnection connection)
     {
         var sql = """
             SELECT file_id FROM tenant_file WHERE tenant_id = @tenant_id and tenant_file_id = @tenant_file_id
             """;
 
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

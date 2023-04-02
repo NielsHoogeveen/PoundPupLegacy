@@ -2,7 +2,7 @@
 
 public class ChildTraffickingCaseCreator : IEntityCreator<ChildTraffickingCase>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<ChildTraffickingCase> childTraffickingCases, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<ChildTraffickingCase> childTraffickingCases, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

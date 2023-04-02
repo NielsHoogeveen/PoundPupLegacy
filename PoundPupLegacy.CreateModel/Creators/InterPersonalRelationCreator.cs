@@ -2,7 +2,7 @@
 
 public class InterPersonalRelationCreator : IEntityCreator<InterPersonalRelation>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<InterPersonalRelation> interPersonalRelations, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<InterPersonalRelation> interPersonalRelations, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

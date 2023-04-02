@@ -2,7 +2,7 @@
 
 public class PublicationStatusCreator : IEntityCreator<PublicationStatus>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<PublicationStatus> publicationStatuses, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<PublicationStatus> publicationStatuses, IDbConnection connection)
     {
 
         await using var publicationStatusWriter = await PublicationStatusInserter.CreateAsync(connection);

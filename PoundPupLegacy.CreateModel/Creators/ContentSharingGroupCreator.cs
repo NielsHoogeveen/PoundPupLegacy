@@ -2,7 +2,7 @@
 
 public class ContentSharingGroupCreator : IEntityCreator<ContentSharingGroup>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<ContentSharingGroup> contentSharingGroups, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<ContentSharingGroup> contentSharingGroups, IDbConnection connection)
     {
 
         await using var userGroupWriter = await UserGroupInserter.CreateAsync(connection);

@@ -2,7 +2,7 @@
 
 public class BoundCountryCreator : IEntityCreator<BoundCountry>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<BoundCountry> countries, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<BoundCountry> countries, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

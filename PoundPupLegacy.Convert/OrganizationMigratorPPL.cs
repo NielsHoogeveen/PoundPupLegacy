@@ -218,8 +218,8 @@ internal sealed class OrganizationMigratorPPL : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await OrganizationCreator.CreateAsync(GetOrganizations(), _postgresConnection);
-        await OrganizationCreator.CreateAsync(ReadOrganizations(), _postgresConnection);
+        await new OrganizationCreator().CreateAsync(GetOrganizations(), _postgresConnection);
+        await new OrganizationCreator().CreateAsync(ReadOrganizations(), _postgresConnection);
     }
     private async IAsyncEnumerable<Organization> ReadOrganizations()
     {

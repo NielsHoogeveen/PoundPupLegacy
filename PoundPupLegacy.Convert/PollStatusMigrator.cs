@@ -20,6 +20,6 @@ internal sealed class PollStatusMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await PollStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
+        await new PollStatusCreator().CreateAsync(GetNodeStatuses(), _postgresConnection);
     }
 }

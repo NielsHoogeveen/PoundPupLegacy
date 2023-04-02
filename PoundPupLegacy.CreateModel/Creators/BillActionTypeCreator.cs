@@ -2,7 +2,7 @@
 
 public class BillActionTypeCreator : IEntityCreator<BillActionType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<BillActionType> billActionTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<BillActionType> billActionTypes, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

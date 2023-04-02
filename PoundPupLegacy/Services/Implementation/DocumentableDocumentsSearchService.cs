@@ -2,6 +2,7 @@
 using PoundPupLegacy.Common;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
+using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -15,10 +16,13 @@ public class DocumentableDocumentsSearchService : IDocumentableDocumentsSearchSe
     private SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
 
     public DocumentableDocumentsSearchService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<DocumentableDocumentsDocumentReader> documentableDocumentsDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _documentableDocumentsDocumentReaderFactory = documentableDocumentsDocumentReaderFactory;
     }
 

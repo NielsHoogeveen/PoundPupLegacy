@@ -8,7 +8,7 @@ internal sealed class BoundCountryMigrator : CountryMigrator
 
     protected override async Task MigrateImpl()
     {
-        await BoundCountryCreator.CreateAsync(ReadBoundCountries(), _postgresConnection);
+        await new BoundCountryCreator().CreateAsync(ReadBoundCountries(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<BoundCountry> ReadBoundCountries()

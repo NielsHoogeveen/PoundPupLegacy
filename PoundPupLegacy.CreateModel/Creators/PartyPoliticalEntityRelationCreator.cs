@@ -2,7 +2,7 @@
 
 public class PartyPoliticalEntityRelationCreator : IEntityCreator<PartyPoliticalEntityRelation>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<PartyPoliticalEntityRelation> partyPoliticalEntityRelations, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<PartyPoliticalEntityRelation> partyPoliticalEntityRelations, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

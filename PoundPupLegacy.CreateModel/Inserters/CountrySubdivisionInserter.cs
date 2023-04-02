@@ -5,10 +5,14 @@ internal sealed class CountrySubdivisionTypeWriter : DatabaseInserter<CountrySub
 
     private const string COUNTRY_ID = "country_id";
     private const string SUBDIVISION_TYPE_ID = "subdivision_type_id";
-    public static async Task<DatabaseInserter<CountrySubdivisionType>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<CountrySubdivisionType>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "country_subdivision_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{

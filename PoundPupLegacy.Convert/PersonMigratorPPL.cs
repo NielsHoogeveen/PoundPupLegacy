@@ -10,7 +10,7 @@ internal sealed class PersonMigratorPPL : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await PersonCreator.CreateAsync(ReadPersons(), _postgresConnection);
+        await new PersonCreator().CreateAsync(ReadPersons(), _postgresConnection);
     }
     private static DateTime? GetDateOfDeath(int id, DateTime? dateTime)
     {

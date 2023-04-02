@@ -3,9 +3,13 @@
 internal sealed class SingleIdInserter : DatabaseInserter
 {
     internal const string ID = "id";
-    internal static async Task<DatabaseInserter<T>> CreateSingleIdWriterAsync<T>(string tableName, NpgsqlConnection connection, bool insertIdentity = true)
+    internal static async Task<DatabaseInserter<T>> CreateSingleIdWriterAsync<T>(string tableName, IDbConnection connection, bool insertIdentity = true)
         where T : Identifiable
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefinitions = new List<ColumnDefinition>();
         if (insertIdentity) {
             columnDefinitions.Add(new ColumnDefinition {
@@ -15,11 +19,11 @@ internal sealed class SingleIdInserter : DatabaseInserter
         }
         var command = insertIdentity ?
             await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             tableName,
             columnDefinitions
         ) : await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             tableName,
             columnDefinitions
         );

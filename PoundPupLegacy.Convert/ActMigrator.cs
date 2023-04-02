@@ -10,7 +10,7 @@ internal sealed class ActMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await ActCreator.CreateAsync(ReadArticles(), _postgresConnection);
+        await new ActCreator().CreateAsync(ReadArticles(), _postgresConnection);
 
     }
 

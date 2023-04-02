@@ -10,8 +10,8 @@ internal sealed class MenuMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await TenantNodeMenuItemCreator.CreateAsync(GetTenantNodeMenuItems(), _postgresConnection);
-        await ActionMenuItemCreator.CreateAsync(GetActionMenuItems(), _postgresConnection);
+        await new TenantNodeMenuItemCreator().CreateAsync(GetTenantNodeMenuItems(), _postgresConnection);
+        await new ActionMenuItemCreator().CreateAsync(GetActionMenuItems(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<ActionMenuItem> GetActionMenuItems()

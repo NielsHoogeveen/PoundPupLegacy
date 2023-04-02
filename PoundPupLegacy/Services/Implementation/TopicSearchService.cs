@@ -14,10 +14,12 @@ public class TopicSearchService : ITopicSearchService
     private readonly IDatabaseReaderFactory<TagDocumentsReader> _tagDocumentsReaderFactory;
 
     public TopicSearchService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<TagDocumentsReader> tagDocumentsReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
         _tagDocumentsReaderFactory = tagDocumentsReaderFactory;
     }
     public async Task<List<Tag>> GetTerms(int? nodeId, int tenantId, string str)

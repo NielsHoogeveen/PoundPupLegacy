@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Deleters;
+using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.Middleware;
 using PoundPupLegacy.Readers;
@@ -10,6 +11,7 @@ using PoundPupLegacy.Services.Implementation;
 using PoundPupLegacy.Updaters;
 using PoundPupLegacy.ViewModel.Readers;
 using Quartz;
+using System.Data;
 
 namespace PoundPupLegacy;
 
@@ -26,19 +28,12 @@ public class Program
                 options.AccessDeniedPath = "/Forbidden/";
 
             });
-        //builder.Services.AddResponseCompression(options =>
-        //{
-        //    options.EnableForHttps = true;
-        //});
 
         builder.Services.AddLogging(loggingBuilder => {
             loggingBuilder.AddApplicationInsights(
                         configureTelemetryConfiguration: (config) => config.ConnectionString = "InstrumentationKey=61d8fcaa-1c19-44ec-b880-4fb84d08ee5a;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/",
                         configureApplicationInsightsLoggerOptions: (options) => { }
                     );
-            //loggingBuilder.AddConfiguration(builder.Configuration.GetSection("Logging"));
-            //loggingBuilder.AddConsole();
-            //loggingBuilder.AddDebug();
         });
         builder.Services.AddSignalR(e => {
             e.MaximumReceiveMessageSize = 102400000;
@@ -47,7 +42,7 @@ public class Program
         builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddTransient((sp) => {
+        builder.Services.AddTransient<IDbConnection>((sp) => {
             var configuration = sp.GetService<IConfiguration>()!;
             var connectString = configuration["ConnectString"]!;
             return new NpgsqlConnection(connectString);
@@ -64,6 +59,7 @@ public class Program
         builder.Services.AddTransient<IRazorViewToStringService, RazorViewToStringService>();
         builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
         builder.Services.AddTransient<IEditorService, EditorService>();
+        builder.Services.AddTransient<IEditService<Article>, ArticleEditService>();
         builder.Services.AddTransient<ITextService, TextService>();
         builder.Services.AddTransient<ITopicSearchService, TopicSearchService>();
         builder.Services.AddTransient<ICongressionalDataService, CongressionalDataService>();
@@ -94,11 +90,6 @@ public class Program
         var app = builder.Build();
 
 
-        //if (!app.Environment.IsDevelopment())
-        //{
-        //    app.UseResponseCompression();
-        //}
-
         if (!app.Environment.IsDevelopment()) {
             app.UseExceptionHandler("/Home/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -108,8 +99,6 @@ public class Program
         var cookiePolicyOptions = new CookiePolicyOptions {
             MinimumSameSitePolicy = SameSiteMode.Strict,
         };
-
-
 
         app.UseCookiePolicy(cookiePolicyOptions);
 

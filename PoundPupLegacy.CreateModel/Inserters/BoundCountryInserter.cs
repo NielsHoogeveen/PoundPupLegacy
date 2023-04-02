@@ -4,10 +4,14 @@ internal sealed class BoundCountryInserter : DatabaseInserter<BoundCountry>, IDa
 {
     private const string ID = "id";
     private const string BINDING_COUNTRY_ID = "binding_country_id";
-    public static async Task<DatabaseInserter<BoundCountry>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<BoundCountry>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "bound_country",
             new ColumnDefinition[] {
                 new ColumnDefinition{

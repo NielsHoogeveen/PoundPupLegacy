@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 public sealed class ProfessionIdReaderFactory : IDatabaseReaderFactory<ProfessionIdReader>
 {
-    public async Task<ProfessionIdReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<ProfessionIdReader> CreateAsync(IDbConnection connection)
     {
         var sql = """
             select
@@ -14,7 +14,11 @@ public sealed class ProfessionIdReaderFactory : IDatabaseReaderFactory<Professio
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.title = @profession_name
             """;
 
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

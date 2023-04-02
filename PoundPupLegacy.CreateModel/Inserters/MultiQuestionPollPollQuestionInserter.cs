@@ -6,10 +6,14 @@ internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<M
     private const string MULTI_QUESTION_POLL_ID = "multi_question_poll_id";
     private const string POLL_QUESTION_ID = "poll_question_id";
     private const string DELTA = "delta";
-    public static async Task<DatabaseInserter<MultiQuestionPollPollQuestion>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<MultiQuestionPollPollQuestion>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "multi_question_poll_poll_question",
             new ColumnDefinition[] {
                 new ColumnDefinition{

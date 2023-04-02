@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Readers;
+using System.Data;
 using System.Text.RegularExpressions;
 
 namespace PoundPupLegacy.Services.Implementation;
@@ -26,13 +27,16 @@ public partial class CongressionalDataService : ICongressionalDataService
     private readonly IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader> _unitedStatesCongresssDocumentReaderFactory;
 
     public CongressionalDataService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         ILogger<CongressionalDataService> logger,
         IRazorViewToStringService razorViewToStringService,
         IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader> unitedStatesMeetingChamberDocumentReaderFactory,
         IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader> unitedStatesCongresssDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _logger = logger;
         _razorViewToStringService = razorViewToStringService;
         _unitedStatesMeetingChamberDocumentReaderFactory = unitedStatesMeetingChamberDocumentReaderFactory;

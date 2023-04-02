@@ -2,6 +2,7 @@
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
+using System.Data;
 using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
 
 namespace PoundPupLegacy.Services.Implementation;
@@ -11,10 +12,13 @@ public class TopicService : ITopicService
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<TopicsDocumentReader> _topicsDocumentReaderFactory;
     public TopicService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<TopicsDocumentReader> topicsDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _topicsDocumentReaderFactory = topicsDocumentReaderFactory;
     }
 

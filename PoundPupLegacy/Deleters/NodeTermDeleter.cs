@@ -6,9 +6,14 @@ using System.Data;
 namespace PoundPupLegacy.Deleters;
 public class NodeTermDeleterFactory : IDatabaseDeleterFactory<NodeTermDeleter>
 {
-    public async Task<NodeTermDeleter> CreateAsync(NpgsqlConnection connection)
+    public async Task<NodeTermDeleter> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
+        var command = postgresConnection.CreateCommand();
+
         var sql = $"""
                     delete from node_term
                     where node_id = @node_id and term_id = @term_id;

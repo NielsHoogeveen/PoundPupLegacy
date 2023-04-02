@@ -2,7 +2,7 @@
 
 public class SubdivisionTypeCreator : IEntityCreator<SubdivisionType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<SubdivisionType> subdivisionTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<SubdivisionType> subdivisionTypes, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

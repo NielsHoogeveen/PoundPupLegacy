@@ -5,10 +5,14 @@ internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry
     private const string ID = "id";
     private const string ISO_3166_1_CODE = "iso_3166_1_code";
     private const string GLOBAL_REGION_ID = "global_region_id";
-    public static async Task<DatabaseInserter<TopLevelCountry>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<TopLevelCountry>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "top_level_country",
             new ColumnDefinition[] {
                 new ColumnDefinition{

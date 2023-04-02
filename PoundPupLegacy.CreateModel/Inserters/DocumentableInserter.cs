@@ -2,7 +2,7 @@
 
 internal sealed class DocumentableInserter : IDatabaseInserter<Documentable>
 {
-    public static async Task<DatabaseInserter<Documentable>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Documentable>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<Documentable>("documentable", connection);
     }

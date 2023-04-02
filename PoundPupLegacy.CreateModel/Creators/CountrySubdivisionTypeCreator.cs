@@ -2,7 +2,7 @@
 
 public class CountrySubdivisionTypeCreator : IEntityCreator<CountrySubdivisionType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<CountrySubdivisionType> countrySubdivisionTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<CountrySubdivisionType> countrySubdivisionTypes, IDbConnection connection)
     {
 
         await using var countrySubdivisionTypeWriter = await CountrySubdivisionTypeWriter.CreateAsync(connection);

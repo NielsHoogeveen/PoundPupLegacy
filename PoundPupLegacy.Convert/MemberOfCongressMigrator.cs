@@ -133,16 +133,16 @@ internal class MemberOfCongressMigrator : PPLMigrator
 
         var parties = _membersOfCongress.SelectMany(x => x.terms.Select(y => y.party)).Distinct().ToList();
         var persons = await GetMembersOfCongressAsync().ToListAsync();
-        await PersonCreator.CreateAsync(persons.ToAsyncEnumerable(), _postgresConnection);
+        await new PersonCreator().CreateAsync(persons.ToAsyncEnumerable(), _postgresConnection);
 
         var files = await GetImageFiles().ToListAsync();
-        await FileCreator.CreateAsync(files.ToAsyncEnumerable(), _postgresConnection);
+        await new FileCreator().CreateAsync(files.ToAsyncEnumerable(), _postgresConnection);
         var nodeImages = await GetNodeFilesImage().ToListAsync();
-        await NodeFileCreator.CreateAsync(nodeImages.ToAsyncEnumerable(), _postgresConnection);
+        await new NodeFileCreator().CreateAsync(nodeImages.ToAsyncEnumerable(), _postgresConnection);
         await UpdatePerson(nodeImages.ToAsyncEnumerable());
 
         var membership = await GetPartyMembership().ToListAsync();
-        await PersonOrganizationRelationCreator.CreateAsync(membership.ToAsyncEnumerable(), _postgresConnection);
+        await new PersonOrganizationRelationCreator().CreateAsync(membership.ToAsyncEnumerable(), _postgresConnection);
     }
 
 
@@ -589,7 +589,7 @@ internal class MemberOfCongressMigrator : PPLMigrator
                     updateCommand.Parameters["bioguide"].Value = memberOfCongress.id.bioguide;
                     updateCommand.Parameters["id"].Value = memberOfCongress.node_id;
                     await updateCommand.ExecuteNonQueryAsync();
-                    await ProfessionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable(), _postgresConnection);
+                    await new ProfessionalRoleCreator().CreateAsync(professionalRoles.ToAsyncEnumerable(), _postgresConnection);
                 }
                 else {
 

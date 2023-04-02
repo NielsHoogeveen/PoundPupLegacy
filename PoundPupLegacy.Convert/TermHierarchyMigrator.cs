@@ -11,7 +11,7 @@ internal sealed class TermHierarchyMigrator : PPLMigrator
     protected override async Task MigrateImpl()
     {
 
-        await TermHierarchyCreator.CreateAsync(ReadTermHierarchys(), _postgresConnection);
+        await new TermHierarchyCreator().CreateAsync(ReadTermHierarchys(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys()

@@ -12,11 +12,14 @@ internal class FetchCasesService : IFetchCasesService
     private readonly IDatabaseReaderFactory<CasesDocumentReader> _casesDocumentReaderFactory;
 
     public FetchCasesService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<CasesDocumentReader> casesDocumentReaderFactory
         )
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _casesDocumentReaderFactory = casesDocumentReaderFactory;
     }
 

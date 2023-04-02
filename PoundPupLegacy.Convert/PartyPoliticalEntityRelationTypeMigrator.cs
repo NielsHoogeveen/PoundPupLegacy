@@ -8,7 +8,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await PartyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(), _postgresConnection);
+        await new PartyPoliticalEntityRelationTypeCreator().CreateAsync(ReadPoliticalEntityRelationTypes(), _postgresConnection);
     }
     private async IAsyncEnumerable<PartyPoliticalEntityRelationType> ReadPoliticalEntityRelationTypes()
     {

@@ -2,7 +2,7 @@
 
 public class HouseBillCreator : IEntityCreator<HouseBill>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<HouseBill> houseBills, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<HouseBill> houseBills, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

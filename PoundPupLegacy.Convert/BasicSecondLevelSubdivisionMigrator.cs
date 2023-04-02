@@ -168,9 +168,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(), _postgresConnection);
-        await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionCsv(), _postgresConnection);
-        await BasicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(), _postgresConnection);
+        await new BasicSecondLevelSubdivisionCreator().CreateAsync(ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(), _postgresConnection);
+        await new BasicSecondLevelSubdivisionCreator().CreateAsync(ReadBasicSecondLevelSubdivisionCsv(), _postgresConnection);
+        await new BasicSecondLevelSubdivisionCreator().CreateAsync(ReadBasicSecondLevelSubdivisions(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions()

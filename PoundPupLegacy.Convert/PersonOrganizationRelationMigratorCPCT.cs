@@ -13,7 +13,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT : CPCTMigrator
 
     protected override async Task MigrateImpl()
     {
-        await PersonOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelations(), _postgresConnection);
+        await new PersonOrganizationRelationCreator().CreateAsync(ReadPersonOrganizationRelations(), _postgresConnection);
 
     }
 

@@ -10,8 +10,12 @@ internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<F
     private const string MIME_TYPE = "mime_type";
     private const string SIZE = "size";
 
-    public static async Task<DatabaseInserter<File>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<File>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var collumnDefinitions = new ColumnDefinition[]
         {
             new ColumnDefinition{
@@ -33,7 +37,7 @@ internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<F
         };
 
         var commandWithId = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "file",
             collumnDefinitions.ToImmutableList().Prepend(
                 new ColumnDefinition {
@@ -42,7 +46,7 @@ internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<F
                 })
         );
         var commandWithoutId = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "file",
             collumnDefinitions
         );

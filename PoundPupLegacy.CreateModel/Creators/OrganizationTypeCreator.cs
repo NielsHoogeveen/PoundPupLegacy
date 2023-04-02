@@ -2,7 +2,7 @@
 
 public class OrganizationTypeCreator : IEntityCreator<OrganizationType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<OrganizationType> organizationTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<OrganizationType> organizationTypes, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

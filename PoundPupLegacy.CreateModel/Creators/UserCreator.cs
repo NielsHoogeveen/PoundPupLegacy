@@ -2,7 +2,7 @@
 
 public class UserCreator : IEntityCreator<User>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<User> users, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<User> users, IDbConnection connection)
     {
 
         await using var principalWriter = await PrincipalInserter.CreateAsync(connection);

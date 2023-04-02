@@ -5,10 +5,14 @@ internal sealed class PollQuestionInserter : DatabaseInserter<PollQuestion>, IDa
     private const string ID = "id";
     private const string QUESTION = "question";
 
-    public static async Task<DatabaseInserter<PollQuestion>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<PollQuestion>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "poll_question",
             new ColumnDefinition[] {
                 new ColumnDefinition{

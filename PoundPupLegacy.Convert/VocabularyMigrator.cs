@@ -268,8 +268,8 @@ internal sealed class VocabularyMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await VocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
-        await VocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
+        await new VocabularyCreator().CreateAsync(GetVocabularies(), _postgresConnection);
+        await new VocabularyCreator().CreateAsync(ReadVocabularies(), _postgresConnection);
         await using var tenantUpdater = await TenantUpdaterSetTaggingVocabulary.CreateAsync(_postgresConnection);
         await tenantUpdater.Update(Constants.PPL, await _nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
             TenantId = Constants.PPL,

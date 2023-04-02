@@ -4,10 +4,14 @@ internal sealed class LocationLocatableInserter : DatabaseInserter<LocationLocat
 {
     private const string LOCATION_ID = "location_id";
     private const string LOCATABLE_ID = "locatable_id";
-    public static async Task<DatabaseInserter<LocationLocatable>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<LocationLocatable>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "location_locatable",
             new ColumnDefinition[] {
                 new ColumnDefinition{

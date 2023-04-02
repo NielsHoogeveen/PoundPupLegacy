@@ -2,7 +2,7 @@
 
 public class TenantCreator : IEntityCreator<Tenant>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Tenant> tenants, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Tenant> tenants, IDbConnection connection)
     {
 
         await using var userGroupWriter = await UserGroupInserter.CreateAsync(connection);

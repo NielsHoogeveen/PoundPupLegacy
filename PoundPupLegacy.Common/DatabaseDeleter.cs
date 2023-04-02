@@ -1,4 +1,6 @@
 ﻿using Npgsql;
+using System.Data;
+
 namespace PoundPupLegacy.Common;
 
 public interface IDatabaseDeleter : IAsyncDisposable
@@ -13,7 +15,7 @@ public interface IDatabaseDeleterFactory
 public interface IDatabaseDeleterFactory<T>: IDatabaseDeleterFactory
     where T : IDatabaseDeleter
 {
-    public Task<T> CreateAsync(NpgsqlConnection connection);
+    public Task<T> CreateAsync(IDbConnection connection);
 }
 public abstract class DatabaseDeleter<TRequest> : IDatabaseDeleter
 {

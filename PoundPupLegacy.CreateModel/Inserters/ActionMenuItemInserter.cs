@@ -6,10 +6,14 @@ internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>,
     private const string ID = "id";
     private const string NAME = "name";
     private const string ACTION_ID = "action_id";
-    public static async Task<DatabaseInserter<ActionMenuItem>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<ActionMenuItem>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "action_menu_item",
             new ColumnDefinition[] {
                 new ColumnDefinition{

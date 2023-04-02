@@ -12,11 +12,14 @@ internal class FetchNodeService : IFetchNodeService
 
     private readonly IDatabaseReaderFactory<NodeDocumentReader> _nodeDocumentReaderFactory;
     public FetchNodeService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<NodeDocumentReader> nodeDocumentReaderFactory
         )
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _nodeDocumentReaderFactory = nodeDocumentReaderFactory;
     }
 

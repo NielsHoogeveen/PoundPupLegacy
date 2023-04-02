@@ -10,7 +10,7 @@ internal sealed class DocumentMigratorCPCT : CPCTMigrator
 
     protected override async Task MigrateImpl()
     {
-        await DocumentCreator.CreateAsync(ReadDocuments(), _postgresConnection);
+        await new DocumentCreator().CreateAsync(ReadDocuments(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(IEnumerable<int> documentableIds)

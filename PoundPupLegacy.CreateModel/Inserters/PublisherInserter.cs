@@ -4,10 +4,14 @@ public class PublisherInserter : DatabaseInserter<Publisher>, IDatabaseInserter<
     private const string ID = "id";
     private const string NAME = "name";
 
-    public static async Task<DatabaseInserter<Publisher>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<Publisher>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "publisher",
             new ColumnDefinition[] {
             new ColumnDefinition

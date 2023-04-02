@@ -10,10 +10,10 @@ internal sealed class CaseTypeMigrator : PPLMigrator
     }
     protected override async Task MigrateImpl()
     {
-        await CaseTypeCreator.CreateAsync(GetCaseTypes(), _postgresConnection);
-        await CreateNodeActionCreator.CreateAsync(GetCaseTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await DeleteNodeActionCreator.CreateAsync(GetCaseTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await EditNodeActionCreator.CreateAsync(GetCaseTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await new CaseTypeCreator().CreateAsync(GetCaseTypes(), _postgresConnection);
+        await new CreateNodeActionCreator().CreateAsync(GetCaseTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await new DeleteNodeActionCreator().CreateAsync(GetCaseTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await new EditNodeActionCreator().CreateAsync(GetCaseTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
 
     }
     internal async IAsyncEnumerable<CaseType> GetCaseTypes()

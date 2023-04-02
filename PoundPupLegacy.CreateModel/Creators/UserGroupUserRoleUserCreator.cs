@@ -2,7 +2,7 @@
 
 public class UserGroupUserRoleUserCreator : IEntityCreator<UserGroupUserRoleUser>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<UserGroupUserRoleUser> userGroupUserRoleUsers, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<UserGroupUserRoleUser> userGroupUserRoleUsers, IDbConnection connection)
     {
 
         await using var userGroupUserRoleUserWriter = await UserGroupUserRoleUserInserter.CreateAsync(connection);

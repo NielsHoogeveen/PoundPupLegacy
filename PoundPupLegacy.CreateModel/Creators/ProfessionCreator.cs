@@ -2,7 +2,7 @@
 
 public class ProfessionCreator : IEntityCreator<Profession>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Profession> professions, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Profession> professions, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

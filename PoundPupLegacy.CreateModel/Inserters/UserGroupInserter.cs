@@ -8,8 +8,12 @@ public class UserGroupInserter : DatabaseInserter<UserGroup>, IDatabaseInserter<
     private const string DESCRIPTION = "description";
     private const string ADMINISTRATOR_ROLE_ID = "administrator_role_id";
 
-    public static async Task<DatabaseInserter<UserGroup>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<UserGroup>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition
             {
@@ -29,12 +33,12 @@ public class UserGroupInserter : DatabaseInserter<UserGroup>, IDatabaseInserter<
         };
 
         var identityInsertCommand = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "user_group",
             columnDefinitions
         );
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "user_group",
             columnDefinitions.ToImmutableList().Add(
                 new ColumnDefinition {

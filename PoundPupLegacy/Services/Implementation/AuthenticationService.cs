@@ -13,10 +13,12 @@ internal class AuthenticationService : IAuthenticationService
     private NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<PasswordValidationReader> _passwordValidationReaderFactory;
     public AuthenticationService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<PasswordValidationReader> passwordValidationReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
         _passwordValidationReaderFactory = passwordValidationReaderFactory;
 
     }

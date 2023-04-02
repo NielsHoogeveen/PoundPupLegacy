@@ -9,7 +9,7 @@ internal sealed class DocumentTypeMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await DocumentTypeCreator.CreateAsync(ReadSelectionOptions(), _postgresConnection);
+        await new DocumentTypeCreator().CreateAsync(ReadSelectionOptions(), _postgresConnection);
     }
     private async IAsyncEnumerable<DocumentType> ReadSelectionOptions()
     {

@@ -2,7 +2,7 @@
 
 public class AnonimousUserCreator
 {
-    public static async Task CreateAsync(NpgsqlConnection connection)
+    public async Task CreateAsync(IDbConnection connection)
     {
 
         await using var principalWriter = await PrincipalInserter.CreateAsync(connection);

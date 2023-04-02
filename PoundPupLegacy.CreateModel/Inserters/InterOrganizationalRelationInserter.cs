@@ -13,10 +13,14 @@ internal sealed class InterOrganizationalRelationInserter : DatabaseInserter<Int
     private const string DESCRIPTION = "description";
     private const string MONEY_INVOLVED = "money_involved";
     private const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
-    public static async Task<DatabaseInserter<InterOrganizationalRelation>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<InterOrganizationalRelation>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "inter_organizational_relation",
             new ColumnDefinition[] {
                 new ColumnDefinition{

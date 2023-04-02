@@ -1,11 +1,12 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
+using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class ArticleUpdateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<ArticleUpdateDocumentReader>
+public class ArticleUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumentReaderFactory<ArticleUpdateDocumentReader>
 {
-    public override async Task<ArticleUpdateDocumentReader> CreateAsync(NpgsqlConnection connection)
+    public override async Task<ArticleUpdateDocumentReader> CreateAsync(IDbConnection connection)
     {
         var command = await CreateCommand(connection, SQL);
         return new ArticleUpdateDocumentReader(command);

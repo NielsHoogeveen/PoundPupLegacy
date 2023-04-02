@@ -2,7 +2,7 @@
 
 public class DocumentableDocumentCreator : IEntityCreator<DocumentableDocument>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<DocumentableDocument> documentableDocuments, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<DocumentableDocument> documentableDocuments, IDbConnection connection)
     {
 
         await using var documentableDocumentWriter = await DocumentableDocumentInserter.CreateAsync(connection);

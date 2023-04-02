@@ -12,10 +12,12 @@ internal class FetchArticlesService : IFetchArticlesService
 
     public readonly IDatabaseReaderFactory<ArticlesDocumentReader> _articlesDocumentReaderFactory;
     public FetchArticlesService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<ArticlesDocumentReader> articlesDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
         _articlesDocumentReaderFactory = articlesDocumentReaderFactory;
     }
 

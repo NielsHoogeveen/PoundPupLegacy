@@ -5,9 +5,13 @@ using System.Data;
 namespace PoundPupLegacy.EditModel.Readers;
 public class SubdivisionListItemsReaderFactory : IDatabaseReaderFactory<SubdivisionListItemsReader>
 {
-    public async Task<SubdivisionListItemsReader> CreateAsync(NpgsqlConnection connection)
+    public async Task<SubdivisionListItemsReader> CreateAsync(IDbConnection connection)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         var sql = $"""
             select
                 s.id,

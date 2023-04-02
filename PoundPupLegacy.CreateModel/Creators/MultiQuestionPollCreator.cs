@@ -2,7 +2,7 @@
 
 public class MultiQuestionPollCreator : IEntityCreator<MultiQuestionPoll>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<MultiQuestionPoll> polls, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<MultiQuestionPoll> polls, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

@@ -2,7 +2,7 @@
 
 public class SingleQuestionPollCreator : IEntityCreator<SingleQuestionPoll>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<SingleQuestionPoll> polls, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<SingleQuestionPoll> polls, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

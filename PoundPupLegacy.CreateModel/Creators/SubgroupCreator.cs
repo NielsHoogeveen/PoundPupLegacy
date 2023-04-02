@@ -2,7 +2,7 @@
 
 public class SubgroupCreator : IEntityCreator<Subgroup>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<Subgroup> subgroups, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<Subgroup> subgroups, IDbConnection connection)
     {
 
         await using var userGroupWriter = await UserGroupInserter.CreateAsync(connection);

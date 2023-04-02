@@ -2,7 +2,7 @@
 
 public class FileCreator : IEntityCreator<File>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<File> files, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<File> files, IDbConnection connection)
     {
 
         await using var fileWriter = await FileInserter.CreateAsync(connection);

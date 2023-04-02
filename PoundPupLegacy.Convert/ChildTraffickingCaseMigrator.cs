@@ -10,7 +10,7 @@ internal sealed class ChildTraffickingCaseMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await ChildTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(), _postgresConnection);
+        await new ChildTraffickingCaseCreator().CreateAsync(ReadChildTraffickingCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases()
     {

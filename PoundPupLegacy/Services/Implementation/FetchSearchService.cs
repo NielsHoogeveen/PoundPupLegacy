@@ -11,10 +11,13 @@ internal class FetchSearchService : IFetchSearchService
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<SearchDocumentReader> _searchDocumentReaderFactory;
     public FetchSearchService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<SearchDocumentReader> searchDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _searchDocumentReaderFactory = searchDocumentReaderFactory;
     }
 

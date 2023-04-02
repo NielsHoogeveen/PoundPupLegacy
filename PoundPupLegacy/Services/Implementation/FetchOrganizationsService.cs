@@ -12,10 +12,13 @@ internal class FetchOrganizationsService : IFetchOrganizationsService
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<OrganizationsDocumentReader> _organizationsDocumentReaderFactory;
     public FetchOrganizationsService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<OrganizationsDocumentReader> organizationsDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _organizationsDocumentReaderFactory = organizationsDocumentReaderFactory;
     }
 

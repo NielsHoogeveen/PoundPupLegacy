@@ -4,10 +4,14 @@ internal sealed class PoliticalEntityInserter : DatabaseInserter<PoliticalEntity
 {
     private const string ID = "id";
     private const string FILE_ID_FLAG = "file_id_flag";
-    public static async Task<DatabaseInserter<PoliticalEntity>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<PoliticalEntity>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "political_entity",
             new ColumnDefinition[] {
                 new ColumnDefinition{

@@ -5,10 +5,14 @@ internal sealed class CaseTypeCasePartyTypeInserter : DatabaseInserter<CaseTypeC
 
     private const string CASE_TYPE_ID = "case_type_id";
     private const string CASE_PARTY_TYPE_ID = "case_party_type_id";
-    public static async Task<DatabaseInserter<CaseTypeCasePartyType>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<CaseTypeCasePartyType>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "case_type_case_party_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{

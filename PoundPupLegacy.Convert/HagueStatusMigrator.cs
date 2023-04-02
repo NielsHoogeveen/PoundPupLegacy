@@ -8,7 +8,7 @@ internal sealed class HagueStatusMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await HagueStatusCreator.CreateAsync(ReadHagueStatuses(), _postgresConnection);
+        await new HagueStatusCreator().CreateAsync(ReadHagueStatuses(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<HagueStatus> ReadHagueStatuses()

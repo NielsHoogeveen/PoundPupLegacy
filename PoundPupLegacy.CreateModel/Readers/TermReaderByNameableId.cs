@@ -2,7 +2,7 @@
 
 public sealed class TermReaderByNameableIdFactory : IDatabaseReaderFactory<TermReaderByNameableId>
 {
-    public async Task<TermReaderByNameableId> CreateAsync(NpgsqlConnection connection)
+    public async Task<TermReaderByNameableId> CreateAsync(IDbConnection connection)
     {
         var sql = """
             SELECT 
@@ -13,7 +13,11 @@ public sealed class TermReaderByNameableIdFactory : IDatabaseReaderFactory<TermR
             WHERE v.owner_id = @owner_id AND v.name = @vocabulary_name AND nameable_id = @nameable_id
             """;
 
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

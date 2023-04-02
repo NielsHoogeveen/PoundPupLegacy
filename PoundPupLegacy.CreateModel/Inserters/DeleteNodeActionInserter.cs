@@ -5,10 +5,14 @@ internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeActi
 
     private const string ID = "id";
     private const string NODE_TYPE_ID = "node_type_id";
-    public static async Task<DatabaseInserter<DeleteNodeAction>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<DeleteNodeAction>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "delete_node_action",
             new ColumnDefinition[] {
                 new ColumnDefinition{

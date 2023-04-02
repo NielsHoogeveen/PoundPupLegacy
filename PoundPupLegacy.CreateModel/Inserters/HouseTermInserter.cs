@@ -7,10 +7,14 @@ internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>, IDatabase
     private const string SUBDIVISION_ID = "subdivision_id";
     private const string DISTRICT = "district";
     private const string DATE_RANGE = "date_range";
-    public static async Task<DatabaseInserter<HouseTerm>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<HouseTerm>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "house_term",
             new ColumnDefinition[] {
                 new ColumnDefinition{

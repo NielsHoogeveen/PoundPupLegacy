@@ -12,10 +12,13 @@ internal class FetchCountriesService : IFetchCountriesService
     private readonly IDatabaseReaderFactory<CountriesDocumentReader> _countriesDocumentReaderFactory;
 
     public FetchCountriesService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         IDatabaseReaderFactory<CountriesDocumentReader> countriesDocumentReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _countriesDocumentReaderFactory = countriesDocumentReaderFactory;
     }
 

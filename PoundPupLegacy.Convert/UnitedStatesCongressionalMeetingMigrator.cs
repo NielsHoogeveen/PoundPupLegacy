@@ -56,6 +56,6 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator : PPLMigrator
 
     protected override async Task MigrateImpl()
     {
-        await UnitedStatesCongressionalMeetingCreator.CreateAsync(ReadUnitedStatesCongressionalMeetingCsv(), _postgresConnection);
+        await new UnitedStatesCongressionalMeetingCreator().CreateAsync(ReadUnitedStatesCongressionalMeetingCsv(), _postgresConnection);
     }
 }

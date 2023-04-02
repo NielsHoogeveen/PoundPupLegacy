@@ -5,10 +5,14 @@ public class UserRoleInserter : DatabaseInserter<UserRole>, IDatabaseInserter<Us
     private const string USER_GROUP_ID = "user_group_id";
     private const string NAME = "name";
 
-    public static async Task<DatabaseInserter<UserRole>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<UserRole>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "user_role",
             new ColumnDefinition[] {
             new ColumnDefinition

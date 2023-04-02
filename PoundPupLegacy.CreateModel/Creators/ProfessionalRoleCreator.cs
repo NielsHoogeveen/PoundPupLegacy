@@ -2,7 +2,7 @@
 
 public class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);
@@ -24,7 +24,7 @@ public class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
                 foreach (var term in representative.HouseTerms) {
                     term.RepresentativeId = representative.Id;
                 }
-                await HouseTermCreator.CreateAsync(representative.HouseTerms.ToAsyncEnumerable(), connection);
+                await new HouseTermCreator().CreateAsync(representative.HouseTerms.ToAsyncEnumerable(), connection);
             }
             if (professionalRole is Senator senator) {
                 await memberOfCongressWriter.InsertAsync(senator);
@@ -32,7 +32,7 @@ public class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
                 foreach (var term in senator.SenateTerms) {
                     term.SenatorId = senator.Id;
                 }
-                await SenateTermCreator.CreateAsync(senator.SenateTerms.ToAsyncEnumerable(), connection);
+                await new SenateTermCreator().CreateAsync(senator.SenateTerms.ToAsyncEnumerable(), connection);
             }
         }
     }

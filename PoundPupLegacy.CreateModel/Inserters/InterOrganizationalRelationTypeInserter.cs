@@ -5,10 +5,14 @@ internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter
     private const string ID = "id";
     private const string IS_SYMMETRIC = "is_symmetric";
 
-    public static async Task<DatabaseInserter<InterOrganizationalRelationType>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<InterOrganizationalRelationType>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "inter_organizational_relation_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{

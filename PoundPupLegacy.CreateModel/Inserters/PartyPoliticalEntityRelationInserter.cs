@@ -9,10 +9,14 @@ internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<Pa
     private const string DATE_RANGE = "date_range";
     private const string PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID = "party_political_entity_relation_type_id";
     private const string DOCUMENT_ID_PROOF = "document_id_proof";
-    public static async Task<DatabaseInserter<PartyPoliticalEntityRelation>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<PartyPoliticalEntityRelation>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "party_political_entity_relation",
             new ColumnDefinition[] {
                 new ColumnDefinition{

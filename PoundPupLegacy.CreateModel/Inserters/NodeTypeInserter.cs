@@ -7,10 +7,14 @@ internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>, IDatabaseIn
     private const string NAME = "name";
     private const string DESCRIPTION = "description";
     private const string AUTHOR_SPECIFIC = "author_specific";
-    public static async Task<DatabaseInserter<NodeType>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<NodeType>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "node_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{

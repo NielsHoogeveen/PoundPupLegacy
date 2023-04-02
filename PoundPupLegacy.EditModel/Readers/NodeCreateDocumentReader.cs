@@ -7,9 +7,13 @@ namespace PoundPupLegacy.EditModel.Readers;
 public abstract class NodeCreateDocumentReaderFactory<T> : NodeEditDocumentReaderFactory<T>
 where T : class, IDatabaseReader
 {
-    protected async Task<NpgsqlCommand> CreateCommand(NpgsqlConnection connection, string sql)
+    protected async Task<NpgsqlCommand> CreateCommand(IDbConnection connection, string sql)
     {
-        var command = connection.CreateCommand();
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+        var command = postgresConnection.CreateCommand();
+
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;

@@ -2,7 +2,7 @@
 
 public class InterCountryRelationTypeCreator : IEntityCreator<InterCountryRelationType>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<InterCountryRelationType> interCountryRelationTypes, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<InterCountryRelationType> interCountryRelationTypes, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

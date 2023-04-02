@@ -2,7 +2,7 @@
 
 public class DeleteNodeActionCreator : IEntityCreator<DeleteNodeAction>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<DeleteNodeAction> actions, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<DeleteNodeAction> actions, IDbConnection connection)
     {
 
         await using var actionWriter = await ActionInserter.CreateAsync(connection);

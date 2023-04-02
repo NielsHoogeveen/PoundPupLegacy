@@ -181,6 +181,6 @@ internal sealed class AccessRolePrivilegeMigrator : PPLMigrator
     protected override async Task MigrateImpl()
     {
 
-        await AccessRolePrivilegeCreator.CreateAsync(GetAccessRolePrivileges(), _postgresConnection);
+        await new AccessRolePrivilegeCreator().CreateAsync(GetAccessRolePrivileges(), _postgresConnection);
     }
 }

@@ -2,7 +2,7 @@
 
 public class CongressionalTermPoliticalPartyAffiliationCreator : IEntityCreator<CongressionalTermPoliticalPartyAffiliation>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<CongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliations, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<CongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliations, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);

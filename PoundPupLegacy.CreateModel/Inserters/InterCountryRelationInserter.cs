@@ -11,10 +11,14 @@ internal sealed class InterCountryRelationInserter : DatabaseInserter<InterCount
     private const string MONEY_INVOLVED = "money_involved";
     private const string INTER_COUNTRY_RELATION_TYPE_ID = "inter_country_relation_type_id";
     private const string DOCUMENT_ID_PROOF = "document_id_proof";
-    public static async Task<DatabaseInserter<InterCountryRelation>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<InterCountryRelation>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "inter_country_relation",
             new ColumnDefinition[] {
                 new ColumnDefinition{

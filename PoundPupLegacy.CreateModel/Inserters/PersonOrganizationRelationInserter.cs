@@ -13,8 +13,12 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
     private const string PERSON_ORGANIZATION_RELATION_TYPE_ID = "person_organization_relation_type_id";
     private const string DOCUMENT_ID_PROOF = "document_id_proof";
     private const string DESCRIPTION = "description";
-    public static async Task<DatabaseInserter<PersonOrganizationRelation>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<PersonOrganizationRelation>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var columnDefinitions = new ColumnDefinition[] {
                 new ColumnDefinition{
                     Name = PERSON_ID,
@@ -47,13 +51,13 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
             };
 
         var generateIdCommand = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "person_organization_relation",
             columnDefinitions
         );
 
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "person_organization_relation",
             columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
                 Name = ID,

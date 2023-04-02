@@ -5,8 +5,12 @@ internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>, IDatabaseIn
 
     private const string WEIGHT = "weight";
 
-    public static async Task<DatabaseInserter<MenuItem>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<MenuItem>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var collumnDefinitions = new ColumnDefinition[]
         {
             new ColumnDefinition{
@@ -16,7 +20,7 @@ internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>, IDatabaseIn
         };
 
         var command = await CreateIdentityInsertStatementAsync(
-            connection,
+            postgresConnection,
             "menu_item",
             collumnDefinitions
         );

@@ -2,7 +2,7 @@
 
 internal sealed class MultiQuestionPollInserter : IDatabaseInserter<MultiQuestionPoll>
 {
-    public static async Task<DatabaseInserter<MultiQuestionPoll>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<MultiQuestionPoll>> CreateAsync(IDbConnection connection)
     {
         return await SingleIdInserter.CreateSingleIdWriterAsync<MultiQuestionPoll>("multi_question_poll", connection);
     }

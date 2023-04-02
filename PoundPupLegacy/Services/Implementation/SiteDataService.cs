@@ -42,7 +42,7 @@ internal class SiteDataService : ISiteDataService
 
 
     public SiteDataService(
-        NpgsqlConnection connection,
+        IDbConnection connection,
         ILogger<SiteDataService> logger,
         IDatabaseReaderFactory<TenantsReader> tenantsReaderFactory,
         IDatabaseReaderFactory<TenantNodesReader> tenantNodesReaderFactory,
@@ -51,7 +51,10 @@ internal class SiteDataService : ISiteDataService
         IDatabaseReaderFactory<UserTenantEditOwnActionReader> userTenantEditOwnActionReaderFactory,
         IDatabaseReaderFactory<UserTenantActionReader> userTenantActionReaderFactory)
     {
-        _connection = connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        _connection = (NpgsqlConnection)connection;
+
         _logger = logger;
         _tenantsReaderFactory = tenantsReaderFactory;
         _tenantNodesReaderFactory = tenantNodesReaderFactory;

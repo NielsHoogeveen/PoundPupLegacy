@@ -4,10 +4,14 @@ internal sealed class NodeFileInserter : DatabaseInserter<NodeFile>, IDatabaseIn
 {
     private const string NODE_ID = "node_id";
     private const string FILE_ID = "file_id";
-    public static async Task<DatabaseInserter<NodeFile>> CreateAsync(NpgsqlConnection connection)
+    public static async Task<DatabaseInserter<NodeFile>> CreateAsync(IDbConnection connection)
     {
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
+
         var command = await CreateInsertStatementAsync(
-            connection,
+            postgresConnection,
             "node_file",
             new ColumnDefinition[] {
                 new ColumnDefinition{

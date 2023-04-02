@@ -2,7 +2,7 @@
 
 public class EditOwnNodeActionCreator : IEntityCreator<EditOwnNodeAction>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<EditOwnNodeAction> actions, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<EditOwnNodeAction> actions, IDbConnection connection)
     {
 
         await using var actionWriter = await ActionInserter.CreateAsync(connection);

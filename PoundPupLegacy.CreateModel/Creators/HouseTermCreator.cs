@@ -2,7 +2,7 @@
 
 public class HouseTermCreator : IEntityCreator<HouseTerm>
 {
-    public static async Task CreateAsync(IAsyncEnumerable<HouseTerm> houseTerms, NpgsqlConnection connection)
+    public async Task CreateAsync(IAsyncEnumerable<HouseTerm> houseTerms, IDbConnection connection)
     {
 
         await using var nodeWriter = await NodeInserter.CreateAsync(connection);
@@ -21,7 +21,7 @@ public class HouseTermCreator : IEntityCreator<HouseTerm>
             foreach (var partyAffiliation in houseTerm.PartyAffiliations) {
                 partyAffiliation.CongressionalTermId = houseTerm.Id;
             }
-            await CongressionalTermPoliticalPartyAffiliationCreator.CreateAsync(houseTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
+            await new CongressionalTermPoliticalPartyAffiliationCreator().CreateAsync(houseTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
             foreach (var tenantNode in houseTerm.TenantNodes) {
                 tenantNode.NodeId = houseTerm.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);
