@@ -18,8 +18,9 @@ public class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateM
         IDatabaseReaderFactory<ArticleUpdateDocumentReader> articleUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
-        ITextService textService
-    ): base(connection, simpleTextNodeUpdaterFactory, tagSaveService, textService)
+        ITextService textService,
+        ILogger<ArticleEditService> logger
+    ): base(connection, simpleTextNodeUpdaterFactory, tagSaveService, textService, logger)
     {
         _articleCreateDocumentReaderFactory = articleCreateDocumentReaderFactory;
         _articleUpdateDocumentReaderFactory = articleUpdateDocumentReaderFactory;
