@@ -3,7 +3,7 @@ using System.Text;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class TextService : ITextService
+internal sealed class TextService : ITextService
 {
 
     public string FormatTeaser(string text)

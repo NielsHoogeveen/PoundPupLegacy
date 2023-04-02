@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public record SubgroupService : ISubgroupService
+internal sealed class SubgroupService : ISubgroupService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<SubgroupsDocumentReader> _subgroupsDocumentReaderFactory;

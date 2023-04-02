@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchSearchService : IFetchSearchService
+internal sealed class FetchSearchService : IFetchSearchService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<SearchDocumentReader> _searchDocumentReaderFactory;

@@ -7,7 +7,7 @@ using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class FetchPersonsService : IPersonService
+internal sealed class FetchPersonsService : IPersonService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<PersonsDocumentReader> _personsDocumentReaderFactory;

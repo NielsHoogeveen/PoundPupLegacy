@@ -8,7 +8,7 @@ using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public abstract class SimpleTextNodeEditServiceBase<T,TCreate>: NodeEditServiceBase<T,TCreate>
+internal abstract class SimpleTextNodeEditServiceBase<T,TCreate>: NodeEditServiceBase<T,TCreate>
     where T: SimpleTextNode
     where TCreate : CreateModel.SimpleTextNode
 {
@@ -43,7 +43,7 @@ public abstract class SimpleTextNodeEditServiceBase<T,TCreate>: NodeEditServiceB
 
     protected abstract TCreate Map(T item);
 
-    protected override async Task StoreNew(T simpleTextNode, NpgsqlConnection connection)
+    protected sealed override async Task StoreNew(T simpleTextNode, NpgsqlConnection connection)
     {
         
         var item = Map(simpleTextNode);
@@ -56,7 +56,7 @@ public abstract class SimpleTextNodeEditServiceBase<T,TCreate>: NodeEditServiceB
         await _tagSaveService.SaveAsync(simpleTextNode.Tags, connection);
     }
 
-    protected override async Task StoreExisting(T article, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(T article, NpgsqlConnection connection)
     {
         await using var updater = await _simpleTextNodeUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new SimpleTextNodeUpdater.Request {

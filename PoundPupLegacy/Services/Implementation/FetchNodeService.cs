@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchNodeService : IFetchNodeService
+internal sealed class FetchNodeService : IFetchNodeService
 {
     private readonly NpgsqlConnection _connection;
 

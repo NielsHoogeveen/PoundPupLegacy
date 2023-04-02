@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class SiteDataService : ISiteDataService
+internal sealed class SiteDataService : ISiteDataService
 {
     private record Data
     {

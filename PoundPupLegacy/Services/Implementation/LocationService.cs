@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class LocationService : ILocationService
+internal sealed class LocationService : ILocationService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<SubdivisionListItemsReader> _subdivisionListItemReaderFactory;

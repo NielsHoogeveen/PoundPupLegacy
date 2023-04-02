@@ -7,7 +7,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class TagsSaveService: ISaveService<IEnumerable<Tag>>
+internal sealed class TagsSaveService : ISaveService<IEnumerable<Tag>>
 {
     private readonly IDatabaseDeleterFactory<NodeTermDeleter> _nodeTermDeleterFactory;
     public TagsSaveService(

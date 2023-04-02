@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record Organization : Nameable, Locatable, Documentable
+public record Organization : Party
 {
 
     public int? NodeId { get; init; }

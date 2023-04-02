@@ -5,7 +5,7 @@ using System.Data;
 using System.Text.RegularExpressions;
 
 namespace PoundPupLegacy.Services.Implementation;
-public partial class CongressionalDataService : ICongressionalDataService
+internal sealed partial class CongressionalDataService : ICongressionalDataService
 {
 
     private enum ChamberType

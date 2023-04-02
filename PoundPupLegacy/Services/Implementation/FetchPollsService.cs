@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchPollsService : IFetchPollsService
+internal sealed class FetchPollsService : IFetchPollsService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<PollsDocumentReader> _pollsDocumentReaderFactory;

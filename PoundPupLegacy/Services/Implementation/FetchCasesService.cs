@@ -5,8 +5,7 @@ using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
-
-internal class FetchCasesService : IFetchCasesService
+internal sealed class FetchCasesService : IFetchCasesService
 {
     private NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<CasesDocumentReader> _casesDocumentReaderFactory;

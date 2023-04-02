@@ -6,7 +6,7 @@ using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class FilesSaveService : ISaveService<IEnumerable<File>>
+internal sealed class FilesSaveService : ISaveService<IEnumerable<File>>
 {
     private readonly IDatabaseDeleterFactory<FileDeleter> _fileDeleterFactory;
 

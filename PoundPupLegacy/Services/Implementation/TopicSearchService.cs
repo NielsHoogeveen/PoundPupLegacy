@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class TopicSearchService : ITopicSearchService
+internal sealed class TopicSearchService : ITopicSearchService
 {
     private readonly NpgsqlConnection _connection;
 

@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class UserService : IUserService
+internal sealed class UserService : IUserService
 {
     public int GetUserId(ClaimsPrincipal claimsPrincipal)
     {

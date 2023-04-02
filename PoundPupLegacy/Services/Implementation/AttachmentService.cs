@@ -11,7 +11,7 @@ using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class AttachmentService : IAttachmentService
+internal sealed class AttachmentService : IAttachmentService
 {
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<AttachmentService> _logger;

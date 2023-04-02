@@ -7,7 +7,7 @@ using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class DocumentEditService : NodeEditServiceBase<Document, CreateModel.Document>, IEditService<Document>
+internal sealed class DocumentEditService : NodeEditServiceBase<Document, CreateModel.Document>, IEditService<Document>
 {
     private readonly IDatabaseReaderFactory<DocumentUpdateDocumentReader> _documentUpdateDocumentReaderFactory;
 
@@ -58,12 +58,12 @@ public class DocumentEditService : NodeEditServiceBase<Document, CreateModel.Doc
         throw new NotImplementedException();
     }
 
-    protected override async Task StoreNew(Document document, NpgsqlConnection connection)
+    protected sealed override async Task StoreNew(Document document, NpgsqlConnection connection)
     {
 
     }
 
-    protected override async Task StoreExisting(Document document, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(Document document, NpgsqlConnection connection)
     {
 
     }

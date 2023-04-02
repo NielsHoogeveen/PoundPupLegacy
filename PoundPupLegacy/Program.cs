@@ -1,15 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
-using PoundPupLegacy.Deleters;
-using PoundPupLegacy.EditModel;
-using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.Middleware;
-using PoundPupLegacy.Readers;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.Services.Implementation;
-using PoundPupLegacy.Updaters;
-using PoundPupLegacy.ViewModel.Readers;
 using Quartz;
 using System.Data;
 
@@ -38,8 +31,6 @@ public class Program
         builder.Services.AddSignalR(e => {
             e.MaximumReceiveMessageSize = 102400000;
         });
-        builder.Services.AddSingleton<ISiteDataService, SiteDataService>();
-        builder.Services.AddSingleton<INodeCacheService, NodeCacheService>();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddTransient<IDbConnection>((sp) => {
@@ -47,40 +38,7 @@ public class Program
             var connectString = configuration["ConnectString"]!;
             return new NpgsqlConnection(connectString);
         });
-        builder.Services.AddTransient<IFetchNodeService, FetchNodeService>();
-        builder.Services.AddTransient<IFetchBlogService, FetchBlogService>();
-        builder.Services.AddTransient<IFetchBlogsService, FetchBlogsService>();
-        builder.Services.AddTransient<IFetchArticlesService, FetchArticlesService>();
-        builder.Services.AddTransient<IFetchPollsService, FetchPollsService>();
-        builder.Services.AddTransient<IFetchOrganizationsService, FetchOrganizationsService>();
-        builder.Services.AddTransient<IFetchCasesService, FetchCasesService>();
-        builder.Services.AddTransient<IFetchCountriesService, FetchCountriesService>();
-        builder.Services.AddTransient<IFetchSearchService, FetchSearchService>();
-        builder.Services.AddTransient<IRazorViewToStringService, RazorViewToStringService>();
-        builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
-        builder.Services.AddTransient<IEditService<Article>, ArticleEditService>();
-        builder.Services.AddTransient<IEditService<BlogPost>, BlogPostEditService>();
-        builder.Services.AddTransient<IEditService<Discussion>, DiscussionEditService>();
-        builder.Services.AddTransient<IEditService<Organization>, OrganizationEditService>();
-        builder.Services.AddTransient<IEditService<Document>, DocumentEditService>();
-        builder.Services.AddTransient<ISaveService<IEnumerable<EditModel.File>>, FilesSaveService>();
-        builder.Services.AddTransient<ISaveService<IEnumerable<TenantNode>>, TenantNodesSaveService>();
-        builder.Services.AddTransient<ISaveService<IEnumerable<Tag>>, TagsSaveService>();
-        builder.Services.AddTransient<ITextService, TextService>();
-        builder.Services.AddTransient<ITopicSearchService, TopicSearchService>();
-        builder.Services.AddTransient<ICongressionalDataService, CongressionalDataService>();
-        builder.Services.AddTransient<ISubgroupService, SubgroupService>();
-        builder.Services.AddTransient<ITopicService, TopicService>();
-        builder.Services.AddTransient<IPersonService, FetchPersonsService>();
-        builder.Services.AddTransient<IDocumentableDocumentsSearchService, DocumentableDocumentsSearchService>();
-        builder.Services.AddTransient<IAttachmentService, AttachmentService>();
-        builder.Services.AddTransient<IUserService, UserService>();
-        builder.Services.AddTransient<ILocationService, LocationService>();
-        builder.Services.AddEditReaders();
-        builder.Services.AddSystemReaders();
-        builder.Services.AddSystemDeleters();
-        builder.Services.AddSystemUpdaters();
-        builder.Services.AddViewModelReaders();
+        builder.Services.AddApplicationServices();
         builder.Services.AddQuartz(q => {
             // base Quartz scheduler, job and trigger configuration
         });

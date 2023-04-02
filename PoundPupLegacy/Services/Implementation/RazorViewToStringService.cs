@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class RazorViewToStringService : IRazorViewToStringService
+internal sealed class RazorViewToStringService : IRazorViewToStringService
 {
     private readonly ITempDataProvider _tempDataProvider;
     private readonly IRazorViewEngine _viewEngine;

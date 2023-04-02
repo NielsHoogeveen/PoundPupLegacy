@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchCountriesService : IFetchCountriesService
+internal sealed class FetchCountriesService : IFetchCountriesService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<CountriesDocumentReader> _countriesDocumentReaderFactory;

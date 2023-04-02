@@ -8,7 +8,7 @@ using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class DiscussionEditService : SimpleTextNodeEditServiceBase<Discussion, CreateModel.Discussion>, IEditService<Discussion>
+internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Discussion, CreateModel.Discussion>, IEditService<Discussion>
 {
     private readonly IDatabaseReaderFactory<DiscussionCreateDocumentReader> _createDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<DiscussionUpdateDocumentReader> _updateDocumentReaderFactory;
@@ -31,7 +31,7 @@ public class DiscussionEditService : SimpleTextNodeEditServiceBase<Discussion, C
         _updateDocumentReaderFactory = updateDocumentReaderFactory;
     }
 
-    protected override IEntityCreator<CreateModel.Discussion> EntityCreator => new DiscussionCreator();
+    protected sealed override IEntityCreator<CreateModel.Discussion> EntityCreator => new DiscussionCreator();
 
     public async Task<Discussion> GetViewModelAsync(int userId, int tenantId)
     {
@@ -69,7 +69,7 @@ public class DiscussionEditService : SimpleTextNodeEditServiceBase<Discussion, C
 
     }
 
-    protected override CreateModel.Discussion Map(Discussion item)
+    protected sealed override CreateModel.Discussion Map(Discussion item)
     {
         var now = DateTime.Now;
         return new CreateModel.Discussion {

@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class DocumentableDocumentsSearchService : IDocumentableDocumentsSearchService
+internal sealed class DocumentableDocumentsSearchService : IDocumentableDocumentsSearchService
 {
 
     private readonly NpgsqlConnection _connection;

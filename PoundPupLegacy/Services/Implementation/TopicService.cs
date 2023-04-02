@@ -7,7 +7,7 @@ using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class TopicService : ITopicService
+internal sealed class TopicService : ITopicService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<TopicsDocumentReader> _topicsDocumentReaderFactory;

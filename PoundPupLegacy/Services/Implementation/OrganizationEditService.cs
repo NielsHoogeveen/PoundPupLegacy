@@ -7,7 +7,7 @@ using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class OrganizationEditService : NodeEditServiceBase<Organization, CreateModel.Organization>, IEditService<Organization>
+internal sealed class OrganizationEditService : PartyEditServiceBase<Organization, CreateModel.Organization>, IEditService<Organization>
 {
 
     private readonly IDatabaseReaderFactory<OrganizationUpdateDocumentReader> _organizationUpdateDocumentReaderFactory;
@@ -20,6 +20,7 @@ public class OrganizationEditService : NodeEditServiceBase<Organization, CreateM
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
+        ITextService textService,
         ILogger<OrganizationEditService> logger
 
     ): base(
@@ -29,6 +30,7 @@ public class OrganizationEditService : NodeEditServiceBase<Organization, CreateM
         tagSaveService,
         tenantNodesSaveService,
         filesSaveService,
+        textService,
         logger)
     {
         _organizationUpdateDocumentReaderFactory = organizationUpdateDocumentReaderFactory;
@@ -55,12 +57,12 @@ public class OrganizationEditService : NodeEditServiceBase<Organization, CreateM
     {
         throw new NotImplementedException();
     }
-    protected override async Task StoreNew(Organization organization, NpgsqlConnection connection)
+    protected sealed override async Task StoreNew(Organization organization, NpgsqlConnection connection)
     {
 
     }
 
-    protected override async Task StoreExisting(Organization organization, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(Organization organization, NpgsqlConnection connection)
     {
 
     }

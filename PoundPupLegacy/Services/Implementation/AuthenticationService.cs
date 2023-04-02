@@ -8,7 +8,7 @@ using System.Security.Principal;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class AuthenticationService : IAuthenticationService
+internal sealed class AuthenticationService : IAuthenticationService
 {
     private NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<PasswordValidationReader> _passwordValidationReaderFactory;

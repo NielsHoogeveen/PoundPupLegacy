@@ -8,7 +8,7 @@ using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateModel.Article>, IEditService<Article>
+internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateModel.Article>, IEditService<Article>
 {
     private readonly IDatabaseReaderFactory<ArticleCreateDocumentReader> _createDocumentReaderFactory;
     private readonly IDatabaseReaderFactory<ArticleUpdateDocumentReader> _updateDocumentReaderFactory;
@@ -32,7 +32,7 @@ public class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateM
         _updateDocumentReaderFactory = updateDocumentReaderFactory;
     }
 
-    protected override IEntityCreator<CreateModel.Article> EntityCreator => new ArticleCreator();
+    protected sealed override IEntityCreator<CreateModel.Article> EntityCreator => new ArticleCreator();
 
     public async Task<Article> GetViewModelAsync(int userId, int tenantId)
     {
@@ -70,7 +70,7 @@ public class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateM
 
     }
 
-    protected override CreateModel.Article Map(Article item)
+    protected sealed override CreateModel.Article Map(Article item)
     {
         var now = DateTime.Now;
         return new CreateModel.Article {

@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class NodeCacheService : INodeCacheService
+internal sealed class NodeCacheService : INodeCacheService
 {
     private readonly IConfiguration _configuration;
     private readonly IFetchNodeService _fetchNodeService;

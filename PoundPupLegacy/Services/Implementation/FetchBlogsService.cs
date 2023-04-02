@@ -5,9 +5,7 @@ using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
-
-
-internal class FetchBlogsService : IFetchBlogsService
+internal sealed class FetchBlogsService : IFetchBlogsService
 {
     private readonly NpgsqlConnection _connection;
     private readonly IDatabaseReaderFactory<BlogsDocumentReader> _blogsDocumentReaderFactory;

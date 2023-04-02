@@ -5,7 +5,7 @@ using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public abstract class NodeEditServiceBase<T, TCreate>
+internal abstract class NodeEditServiceBase<T, TCreate>
     where T : Node
     where TCreate : CreateModel.Node
 {

@@ -7,7 +7,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class TenantNodesSaveService : ISaveService<IEnumerable<TenantNode>>
+internal sealed class TenantNodesSaveService : ISaveService<IEnumerable<TenantNode>>
 {
     private readonly IDatabaseDeleterFactory<TenantNodeDeleter> _tenantNodeDeleterFactory;
     private readonly IDatabaseUpdaterFactory<TenantNodeUpdater> _tenantNodeUpdaterFactory;

@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class FetchArticlesService : IFetchArticlesService
+internal sealed class FetchArticlesService : IFetchArticlesService
 {
     private readonly NpgsqlConnection _connection;
 
