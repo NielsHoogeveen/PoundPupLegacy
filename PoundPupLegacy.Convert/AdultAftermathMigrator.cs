@@ -14,7 +14,7 @@ internal sealed class AdultAftermathMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_mySqlConnection);
+        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
         var adultAfterMathEntries = await ReadAdultAftermaths(nodeIdReader).ToListAsync();
         await UpdateAdultAftermathEntries(adultAfterMathEntries);
     }

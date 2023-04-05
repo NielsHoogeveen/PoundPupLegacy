@@ -18,6 +18,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
     {
         _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
         _vocabularyCreator = vocabularyCreator;
+        _tenantUpdaterSetTaggingVocabularyFactory = tenantUpdaterSetTaggingVocabularyFactory;
     }
 
     private static async IAsyncEnumerable<Vocabulary> GetVocabularies()

@@ -90,7 +90,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator : EntityCr
         await using var subdivisionWriter = await _subdivisionInserterFactory.CreateAsync(connection);
         await using var isoCodedSubdivisionWriter = await _isoCodedSubdivisionInserterFactory.CreateAsync(connection);
         await using var firstLevelSubdivisionWriter = await _firstLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var isoCodedFirstLevelSubdivisionWriter = await _isoCodedSubdivisionInserterFactory.CreateAsync(connection);
+        await using var isoCodedFirstLevelSubdivisionWriter = await _isoCodedFirstLevelSubdivisionInserterFactory.CreateAsync(connection);
         await using var countryAndFirstLevelSubdivisionWriter = await _countryAndFirstLevelSubdivisionInserterFactory.CreateAsync(connection);
         await using var bottomLevelSubdivisionWriter = await _bottomLevelSubdivisionInserterFactory.CreateAsync(connection);
         await using var secondLevelSubdivisionWriter = await _secondLevelSubdivisionInserterFactory.CreateAsync(connection);

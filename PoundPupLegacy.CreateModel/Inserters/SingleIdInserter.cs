@@ -32,7 +32,7 @@ internal abstract class SingleIdInserterFactory<T> : DatabaseInserterFactory<T>
             TableName,
             columnDefinitions
         );
-        return new SingleIdInserter<T>(command, !AutoGenerateIdentity, TableName);
+        return new SingleIdInserter<T>(command, AutoGenerateIdentity, TableName);
 
     }
 

@@ -27,6 +27,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreator<CasePartyType>, CasePartyTypeCreator>();
         services.AddTransient<IEntityCreator<CaseType>, CaseTypeCreator>();
         services.AddTransient<IEntityCreator<CasePartyType>, CasePartyTypeCreator>();
+        services.AddTransient<IEntityCreator<ChildPlacementType>, ChildPlacementTypeCreator>();
         services.AddTransient<IEntityCreator<ChildTraffickingCase>, ChildTraffickingCaseCreator>();
         services.AddTransient<IEntityCreator<CoercedAdoptionCase>, CoercedAdoptionCaseCreator>();
         services.AddTransient<IEntityCreator<Collective>, CollectiveCreator>();

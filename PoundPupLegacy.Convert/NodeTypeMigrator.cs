@@ -4,7 +4,7 @@ internal sealed class NodeTypeMigrator : MigratorPPL
 {
     protected override string Name => "node types";
 
-    private readonly IEntityCreator<NodeType> _nodeTypeCreator;
+    private readonly IEntityCreator<BasicNodeType> _nodeTypeCreator;
     private readonly IEntityCreator<CreateNodeAction> _createNodeActionCreator;
     private readonly IEntityCreator<DeleteNodeAction> _deleteNodeActionCreator;
     private readonly IEntityCreator<EditNodeAction> _editNodeActionCreator;
@@ -12,7 +12,7 @@ internal sealed class NodeTypeMigrator : MigratorPPL
 
     public NodeTypeMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<NodeType> nodeTypeCreator,
+        IEntityCreator<BasicNodeType> nodeTypeCreator,
         IEntityCreator<CreateNodeAction> createNodeActionCreator,
         IEntityCreator<DeleteNodeAction> deleteNodeActionCreator,
         IEntityCreator<EditNodeAction> editNodeActionCreator

@@ -1,6 +1,4 @@
-﻿using MySqlConnector;
-using Npgsql;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace PoundPupLegacy.Convert;
 
@@ -10,132 +8,115 @@ internal partial class MySqlToPostgresConverter
 
     public async Task Convert()
     {
-        var mysqlConnectionPPL = new MySqlConnection(ConnectionStringMariaDbPPL);
-        var mysqlConnectionCPCT = new MySqlConnection(ConnectionStringMariaDbCPCT);
-        var postgresConnection = new NpgsqlConnection(ConnectStringPostgresql);
-        await mysqlConnectionPPL.OpenAsync();
-        await mysqlConnectionCPCT.OpenAsync();
-        await postgresConnection.OpenAsync();
 
-        var sc = new ServiceCollection();
-        sc.AddCreateModelAccessors();
-        var connections = new DatabaseConnections {
-            MysqlConnectionCPCT = mysqlConnectionCPCT,
-            MysqlConnectionPPL = mysqlConnectionPPL,
-            PostgressConnection = postgresConnection
-        };
-        sc.AddSingleton<IDatabaseConnections>((sp) => connections);
-        sc.AddMigrators();
-        var sp = sc.BuildServiceProvider();
+        await TruncateDatabase();
+               
+        await _serviceProvider.Migrate<PollStatusMigrator>();
+        await _serviceProvider.Migrate<PublicationStatusMigrator>();
+        await _serviceProvider.Migrate<NodeTypeMigrator>();
+        await _serviceProvider.Migrate<ActionMigrator>();
+        await _serviceProvider.Migrate<UserMigrator>();
+        await _serviceProvider.Migrate<PollMigrator>();
+        await _serviceProvider.Migrate<FileMigratorPPL>();
+        await _serviceProvider.Migrate<FileMigratorCPCT>();
+        await _serviceProvider.Migrate<VocabularyMigrator>();
+        await _serviceProvider.Migrate<CasePartyTypeMigrator>();
+        await _serviceProvider.Migrate<CaseTypeMigrator>();
+        await _serviceProvider.Migrate<AccessRolePrivilegeMigrator>();
+        await _serviceProvider.Migrate<SubdivisionTypeMigrator>();
+        await _serviceProvider.Migrate<BasicNameableMigrator>();
+        await _serviceProvider.Migrate<ChildPlacementTypeMigrator>();
+        await _serviceProvider.Migrate<OrganizationTypeMigrator>();
+        await _serviceProvider.Migrate<InterCountryRelationTypeMigrator>();
+        await _serviceProvider.Migrate<InterOrganizationalRelationTypeMigrator>();
+        await _serviceProvider.Migrate<InterPersonalRelationTypeMigrator>();
+        await _serviceProvider.Migrate<PartyPoliticalEntityRelationTypeMigrator>();
+        await _serviceProvider.Migrate<PersonOrganizationRelationTypeMigrator>();
+        await _serviceProvider.Migrate<BillActionTypeMigrator>();
+        await _serviceProvider.Migrate<TypeOfAbuseMigrator>();
+        await _serviceProvider.Migrate<TypeOfAbuserMigrator>();
+        await _serviceProvider.Migrate<FamilySizeMigrator>();
+        await _serviceProvider.Migrate<ProfessionMigrator>();
+        await _serviceProvider.Migrate<DenominationMigrator>();
+        await _serviceProvider.Migrate<HagueStatusMigrator>();
+        await _serviceProvider.Migrate<DocumentTypeMigrator>();
 
-        await TruncateDatabase(postgresConnection);
+        await _serviceProvider.Migrate<UnitedStatesCongressionalMeetingMigrator>();
 
-                
-        await sp.Migrate<PollStatusMigrator>();
-        await sp.Migrate<PublicationStatusMigrator>();
-        await sp.Migrate<NodeTypeMigrator>();
-        await sp.Migrate<ActionMigrator>();
-        await sp.Migrate<UserMigrator>();
-        await sp.Migrate<PollMigrator>();
-        await sp.Migrate<FileMigratorPPL>();
-        await sp.Migrate<FileMigratorCPCT>();
-        await sp.Migrate<VocabularyMigrator>();
-        await sp.Migrate<CasePartyTypeMigrator>();
-        await sp.Migrate<CaseTypeMigrator>();
-        await sp.Migrate<AccessRolePrivilegeMigrator>();
-        await sp.Migrate<SubdivisionTypeMigrator>();
-        await sp.Migrate<BasicNameableMigrator>();
-        await sp.Migrate<ChildPlacementTypeMigrator>();
-        await sp.Migrate<OrganizationTypeMigrator>();
-        await sp.Migrate<InterCountryRelationTypeMigrator>();
-        await sp.Migrate<InterOrganizationalRelationTypeMigrator>();
-        await sp.Migrate<InterPersonalRelationTypeMigrator>();
-        await sp.Migrate<PartyPoliticalEntityRelationTypeMigrator>();
-        await sp.Migrate<PersonOrganizationRelationTypeMigrator>();
-        await sp.Migrate<BillActionTypeMigrator>();
-        await sp.Migrate<TypeOfAbuseMigrator>();
-        await sp.Migrate<TypeOfAbuserMigrator>();
-        await sp.Migrate<FamilySizeMigrator>();
-        await sp.Migrate<ProfessionMigrator>();
-        await sp.Migrate<DenominationMigrator>();
-        await sp.Migrate<HagueStatusMigrator>();
-        await sp.Migrate<DocumentTypeMigrator>();
-
-        await sp.Migrate<UnitedStatesCongressionalMeetingMigrator>();
-
-        await sp.Migrate<FirstLevelGlobalRegionMigrator>();
-        await sp.Migrate<SecondLevelGlobalRegionMigrator>();
-        await sp.Migrate<BasicCountryMigrator>();
-        await sp.Migrate<BindingCountryMigrator>();
-        await AddTenantDefaultCountry(postgresConnection);
-        await sp.Migrate<CountrySubdivisionTypeMigratorPartOne>();
-        await sp.Migrate<BoundCountryMigrator>();
-        await sp.Migrate<CountrySubdivisionTypeMigratorPartTwo>();
-        await sp.Migrate<CountryAndFirstLevelSubDivisionMigrator>();
-        await sp.Migrate<CountryAndFirstAndSecondLevelSubdivisionMigrator>();
-        await sp.Migrate<CountrySubdivisionTypeMigratorPartThree>();
-        await sp.Migrate<FirstAndBottomLevelSubdivisionMigrator>();
-        await sp.Migrate<InformalIntermediateLevelSubdivisionMigrator>();
-        await sp.Migrate<FormalIntermediateLevelSubdivisionMigrator>();
-        await sp.Migrate<BasicSecondLevelSubdivisionMigrator>();
-        await sp.Migrate<BlogPostMigrator>();
-        await sp.Migrate<ArticleMigrator>();
-        await sp.Migrate<DiscussionMigrator>();
-        await sp.Migrate<AdoptionImportMigrator>();
-        await sp.Migrate<DocumentMigratorPPL>();
-        await sp.Migrate<OrganizationMigratorPPL>();
-        await sp.Migrate<UnitedStatesPoliticalPartyAffliationMigrator>();
-        await sp.Migrate<PersonMigratorPPL>();
-        await sp.Migrate<AbuseCaseMigrator>();
-        await sp.Migrate<ChildTraffickingCaseMigrator>();
-        await sp.Migrate<CoercedAdoptionCaseMigrator>();
-        await sp.Migrate<DisruptedPlacementCaseMigrator>();
-        await sp.Migrate<DeportationCaseMigrator>();
-        await sp.Migrate<FathersRightsViolationsCaseMigrator>();
-        await sp.Migrate<WrongfulMedicationCaseMigrator>();
-        await sp.Migrate<WrongfulRemovalCaseMigrator>();
-        await sp.Migrate<LocationMigratorPPL>();
-        await sp.Migrate<PageMigrator>();
-        await sp.Migrate<ReviewMigrator>();
-        await sp.Migrate<ActMigrator>();
-        await sp.Migrate<BillMigrator>();
-        await sp.Migrate<NodeTermMigrator>();
-        await sp.Migrate<MenuMigrator>();
-        await sp.Migrate<DocumentableDocumentMigrator>();
-        await sp.Migrate<TermHierarchyMigrator>();
-        await sp.Migrate<PartyPoliticalEntityRelationMigratorPPL>();
-        await sp.Migrate<PersonOrganizationRelationMigratorPPL>();
-        await sp.Migrate<InterOrganizationalRelationMigratorPPL>();
-        await sp.Migrate<InterPersonalRelationMigratorPPL>();
-        await sp.Migrate<MemberOfCongressMigrator>();
-        await sp.Migrate<RepresentativeHouseBillActionMigrator>();
-        await sp.Migrate<SenatorSenateBillActionMigrator>();
-        await sp.Migrate<OrganizationMigratorCPCT>();
-        await sp.Migrate<PersonMigratorCPCT>();
-        await sp.Migrate<PersonOrganizationRelationMigratorCPCT>();
-        await sp.Migrate<DocumentMigratorCPCT>();
-        await sp.Migrate<InterOrganizationalRelationMigratorCPCT>();
-        await sp.Migrate<InterPersonalRelationMigratorCPCT>();
-        await sp.Migrate<PartyPoliticalEntityRelationMigratorCPCT>();
-        await sp.Migrate<LocationMigratorCPCT>();
-        await sp.Migrate<SearchableMigrator>();
-        await sp.Migrate<CaseCaseRelationsMigrator>();
-        await sp.Migrate<NodeFileMigratorPPL>();
-        await sp.Migrate<NodeFileMigratorCPCT>();
-        await sp.Migrate<CommentMigrator>();
-        await sp.Migrate<AdultAftermathMigrator>();
-        await PrepareFiles(postgresConnection);
+        await _serviceProvider.Migrate<FirstLevelGlobalRegionMigrator>();
+        await _serviceProvider.Migrate<SecondLevelGlobalRegionMigrator>();
+        await _serviceProvider.Migrate<BasicCountryMigrator>();
+        await _serviceProvider.Migrate<BindingCountryMigrator>();
+        await AddTenantDefaultCountry();
+        await _serviceProvider.Migrate<CountrySubdivisionTypeMigratorPartOne>();
+        await _serviceProvider.Migrate<BoundCountryMigrator>();
+        await _serviceProvider.Migrate<CountrySubdivisionTypeMigratorPartTwo>();
+        await _serviceProvider.Migrate<CountryAndFirstLevelSubDivisionMigrator>();
+        await _serviceProvider.Migrate<CountryAndFirstAndSecondLevelSubdivisionMigrator>();
+        await _serviceProvider.Migrate<CountrySubdivisionTypeMigratorPartThree>();
+        await _serviceProvider.Migrate<FirstAndBottomLevelSubdivisionMigrator>();
+        await _serviceProvider.Migrate<InformalIntermediateLevelSubdivisionMigrator>();
+        await _serviceProvider.Migrate<FormalIntermediateLevelSubdivisionMigrator>();
+        await _serviceProvider.Migrate<BasicSecondLevelSubdivisionMigrator>();
+        await _serviceProvider.Migrate<BlogPostMigrator>();
+        await _serviceProvider.Migrate<ArticleMigrator>();
+        await _serviceProvider.Migrate<DiscussionMigrator>();
+        await _serviceProvider.Migrate<AdoptionImportMigrator>();
+        await _serviceProvider.Migrate<DocumentMigratorPPL>();
+        await _serviceProvider.Migrate<OrganizationMigratorPPL>();
+        await _serviceProvider.Migrate<UnitedStatesPoliticalPartyAffliationMigrator>();
+        await _serviceProvider.Migrate<PersonMigratorPPL>();
+        await _serviceProvider.Migrate<AbuseCaseMigrator>();
+        await _serviceProvider.Migrate<ChildTraffickingCaseMigrator>();
+        await _serviceProvider.Migrate<CoercedAdoptionCaseMigrator>();
+        await _serviceProvider.Migrate<DisruptedPlacementCaseMigrator>();
+        await _serviceProvider.Migrate<DeportationCaseMigrator>();
+        await _serviceProvider.Migrate<FathersRightsViolationsCaseMigrator>();
+        await _serviceProvider.Migrate<WrongfulMedicationCaseMigrator>();
+        await _serviceProvider.Migrate<WrongfulRemovalCaseMigrator>();
+        await _serviceProvider.Migrate<LocationMigratorPPL>();
+        await _serviceProvider.Migrate<PageMigrator>();
+        await _serviceProvider.Migrate<ReviewMigrator>();
+        await _serviceProvider.Migrate<ActMigrator>();
+        await _serviceProvider.Migrate<BillMigrator>();
+        await _serviceProvider.Migrate<NodeTermMigrator>();
+        await _serviceProvider.Migrate<MenuMigrator>();
+        await _serviceProvider.Migrate<DocumentableDocumentMigrator>();
+        await _serviceProvider.Migrate<TermHierarchyMigrator>();
+        await _serviceProvider.Migrate<PartyPoliticalEntityRelationMigratorPPL>();
+        await _serviceProvider.Migrate<PersonOrganizationRelationMigratorPPL>();
+        await _serviceProvider.Migrate<InterOrganizationalRelationMigratorPPL>();
+        await _serviceProvider.Migrate<InterPersonalRelationMigratorPPL>();
+        await _serviceProvider.Migrate<MemberOfCongressMigrator>();
+        await _serviceProvider.Migrate<RepresentativeHouseBillActionMigrator>();
+        await _serviceProvider.Migrate<SenatorSenateBillActionMigrator>();
+        await _serviceProvider.Migrate<OrganizationMigratorCPCT>();
+        await _serviceProvider.Migrate<PersonMigratorCPCT>();
+        await _serviceProvider.Migrate<PersonOrganizationRelationMigratorCPCT>();
+        await _serviceProvider.Migrate<DocumentMigratorCPCT>();
+        await _serviceProvider.Migrate<InterOrganizationalRelationMigratorCPCT>();
+        await _serviceProvider.Migrate<InterPersonalRelationMigratorCPCT>();
+        await _serviceProvider.Migrate<PartyPoliticalEntityRelationMigratorCPCT>();
+        await _serviceProvider.Migrate<LocationMigratorCPCT>();
+        await _serviceProvider.Migrate<SearchableMigrator>();
+        await _serviceProvider.Migrate<CaseCaseRelationsMigrator>();
+        await _serviceProvider.Migrate<NodeFileMigratorPPL>();
+        await _serviceProvider.Migrate<NodeFileMigratorCPCT>();
+        await _serviceProvider.Migrate<CommentMigrator>();
+        await _serviceProvider.Migrate<AdultAftermathMigrator>();
+        await PrepareFiles();
     }
 
-    internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=root;database=ppl";
-    internal const string ConnectionStringMariaDbCPCT = "server=localhost;userid=root;Password=root;database=cpct";
-    internal const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
+    private readonly IDatabaseConnections _databaseConnections;
+    private readonly IServiceProvider _serviceProvider;
 
-    public MySqlToPostgresConverter()
+    public MySqlToPostgresConverter(IDatabaseConnections databaseConnections, IServiceProvider serviceProvider)
     {
+        _databaseConnections = databaseConnections;
+        _serviceProvider = serviceProvider;
     }
 
-    private async Task TruncateDatabase(NpgsqlConnection postgresConnection)
+    private async Task TruncateDatabase()
     {
         _stopwatch.Restart();
         Console.Write("Cleaning database");
@@ -175,7 +156,7 @@ internal partial class MySqlToPostgresConverter
             RESTART IDENTITY
             CASCADE;
             """;
-        using var command = postgresConnection.CreateCommand();
+        using var command = _databaseConnections.PostgressConnection.CreateCommand();
         command.CommandType = System.Data.CommandType.Text;
         command.CommandText = sql;
         await command.ExecuteNonQueryAsync();
@@ -183,7 +164,7 @@ internal partial class MySqlToPostgresConverter
     }
 
 
-    private async Task PrepareFiles(NpgsqlConnection postgresConnection)
+    private async Task PrepareFiles()
     {
         var cpctDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\cpct");
         var pplDirectory = new DirectoryInfo("\\\\wsl.localhost\\Ubuntu\\home\\niels\\ppl");
@@ -203,7 +184,7 @@ internal partial class MySqlToPostgresConverter
         }
         combinedDirectory.CreateSubdirectory("files");
         List<(int, string)> filePaths = new();
-        using (var command = postgresConnection.CreateCommand()) {
+        using (var command = _databaseConnections.PostgressConnection.CreateCommand()) {
             command.CommandType = System.Data.CommandType.Text;
             command.CommandText = """
                 select 
@@ -243,7 +224,7 @@ internal partial class MySqlToPostgresConverter
             }
             await reader.CloseAsync();
         }
-        using (var command = postgresConnection.CreateCommand()) {
+        using (var command = _databaseConnections.PostgressConnection.CreateCommand()) {
             command.CommandType = System.Data.CommandType.Text;
             command.CommandText = """
                 UPDATE file set path = @path where id = @id
@@ -302,9 +283,9 @@ internal partial class MySqlToPostgresConverter
         }
     }
 
-    private async Task AddTenantDefaultCountry(NpgsqlConnection postgresConnection)
+    private async Task AddTenantDefaultCountry()
     {
-        using (var command = postgresConnection.CreateCommand()) {
+        using (var command = _databaseConnections.PostgressConnection.CreateCommand()) {
             command.CommandType = System.Data.CommandType.Text;
             command.CommandText = """
             update tenant

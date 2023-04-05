@@ -15,6 +15,7 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator : EntityCr
     private readonly IDatabaseInserterFactory<FirstLevelSubdivision> _firstLevelSubdivisionInserterFactory;
     private readonly IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> _isofirstLevelSubdivisionInserterFactory;
     private readonly IDatabaseInserterFactory<BottomLevelSubdivision> _bottomLevelSubdivisionInserterFactory;
+    private readonly IDatabaseInserterFactory<CountryAndFirstLevelSubdivision> _countryAndFirstLevelSubdivisionFactory;
     private readonly IDatabaseInserterFactory<CountryAndFirstAndBottomLevelSubdivision> _countryAndFirstAndBottomLevelSubdivisionFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
     private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderByNameInserterFactory;
@@ -35,6 +36,7 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator : EntityCr
         IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory, 
         IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isofirstLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
+        IDatabaseInserterFactory<CountryAndFirstLevelSubdivision> countryAndFirstLevelSubdivisionFactory,
         IDatabaseInserterFactory<CountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyFactory,
@@ -55,6 +57,7 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator : EntityCr
         _firstLevelSubdivisionInserterFactory = firstLevelSubdivisionInserterFactory;
         _isofirstLevelSubdivisionInserterFactory = isofirstLevelSubdivisionInserterFactory;
         _bottomLevelSubdivisionInserterFactory = bottomLevelSubdivisionInserterFactory;
+        _countryAndFirstLevelSubdivisionFactory = countryAndFirstLevelSubdivisionFactory;
         _countryAndFirstAndBottomLevelSubdivisionFactory = countryAndFirstAndBottomLevelSubdivisionFactory;
         _termInserterFactory = termInserterFactory;
         _termReaderByNameInserterFactory = termReaderByNameInserterFactory;
@@ -79,7 +82,7 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator : EntityCr
         await using var isoCodedSubdivisionWriter = await _isoCodedSubdivisionInserterFactory.CreateAsync(connection);
         await using var firstLevelSubdivisionWriter = await _firstLevelSubdivisionInserterFactory.CreateAsync(connection);
         await using var isoCodedFirstLevelSubdivisionWriter = await _isofirstLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var countryAndFirstLevelSubdivisionWriter = await _countryAndFirstAndBottomLevelSubdivisionFactory.CreateAsync(connection);
+        await using var countryAndFirstLevelSubdivisionWriter = await _countryAndFirstLevelSubdivisionFactory.CreateAsync(connection);
         await using var bottomLevelSubdivisionWriter = await _bottomLevelSubdivisionInserterFactory.CreateAsync(connection);
         await using var countryAndFirstAndBottomLevelSubdivisionWriter = await _countryAndFirstAndBottomLevelSubdivisionFactory.CreateAsync(connection);
         await using var termWriter = await _termInserterFactory.CreateAsync(connection);

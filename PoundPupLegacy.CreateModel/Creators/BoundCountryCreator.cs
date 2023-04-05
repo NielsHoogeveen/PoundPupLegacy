@@ -51,6 +51,7 @@ internal sealed class BoundCountryCreator : EntityCreator<BoundCountry>
         _termHierarchyInserterFactory = termHierarchyInserterFactory;
         _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
         _tenantNodeInserterFactory = tenantNodeInserterFactory;
+        _isoCodedSubdivisionInserterFactory = isoCodedSubdivisionInserterFactory;
 
 
     }

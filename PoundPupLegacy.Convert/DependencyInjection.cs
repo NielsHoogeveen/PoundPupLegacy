@@ -40,7 +40,9 @@ internal static class DependencyInjection
         services.AddMigrator<CommentMigrator>();
         services.AddMigrator<CountryAndFirstAndSecondLevelSubdivisionMigrator>();
         services.AddMigrator<CountryAndFirstLevelSubDivisionMigrator>();
-        services.AddMigrator<CountrySubdivisionTypeMigrator>();
+        services.AddMigrator<CountrySubdivisionTypeMigratorPartOne>();
+        services.AddMigrator<CountrySubdivisionTypeMigratorPartTwo>();
+        services.AddMigrator<CountrySubdivisionTypeMigratorPartThree>();
         services.AddMigrator<DenominationMigrator>();
         services.AddMigrator<DeportationCaseMigrator>();
         services.AddMigrator<DiscussionMigrator>();
@@ -83,6 +85,7 @@ internal static class DependencyInjection
         services.AddMigrator<PartyPoliticalEntityRelationTypeMigrator>();
         services.AddMigrator<PersonMigratorCPCT>();
         services.AddMigrator<PersonMigratorPPL>();
+        services.AddMigrator<PersonOrganizationRelationTypeMigrator>();
         services.AddMigrator<PersonOrganizationRelationMigratorCPCT>();
         services.AddMigrator<PersonOrganizationRelationMigratorPPL>();
         services.AddMigrator<PollMigrator>();
