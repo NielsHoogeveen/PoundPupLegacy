@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry>, IDatabaseInserter<TopLevelCountry>
+internal sealed class TopLevelCountryInserterFactory : DatabaseInserterFactory<TopLevelCountry> 
 {
-    private const string ID = "id";
-    private const string ISO_3166_1_CODE = "iso_3166_1_code";
-    private const string GLOBAL_REGION_ID = "global_region_id";
-    public static async Task<DatabaseInserter<TopLevelCountry>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<TopLevelCountry>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,22 +12,27 @@ internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry
             "top_level_country",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = TopLevelCountryInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ISO_3166_1_CODE,
+                    Name = TopLevelCountryInserter.ISO_3166_1_CODE,
                     NpgsqlDbType = NpgsqlDbType.Char
                 },
                 new ColumnDefinition{
-                    Name = GLOBAL_REGION_ID,
+                    Name = TopLevelCountryInserter.GLOBAL_REGION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
-
         return new TopLevelCountryInserter(command);
     }
+}
+internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry>
+{
+    internal const string ID = "id";
+    internal const string ISO_3166_1_CODE = "iso_3166_1_code";
+    internal const string GLOBAL_REGION_ID = "global_region_id";
 
     internal TopLevelCountryInserter(NpgsqlCommand command) : base(command)
     {

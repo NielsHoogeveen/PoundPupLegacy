@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserter<UnitedStatesCongressionalMeeting>, IDatabaseInserter<UnitedStatesCongressionalMeeting>
+internal sealed class UnitedStatesCongressionalMeetingInserterFactory : DatabaseInserterFactory<UnitedStatesCongressionalMeeting>
 {
-
-    private const string ID = "id";
-    private const string DATE_RANGE = "date_range";
-    private const string NUMBER = "number";
-    public static async Task<DatabaseInserter<UnitedStatesCongressionalMeeting>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<UnitedStatesCongressionalMeeting>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,21 +12,29 @@ internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserte
             "united_states_congressional_meeting",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = UnitedStatesCongressionalMeetingInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_RANGE,
+                    Name = UnitedStatesCongressionalMeetingInserter.DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
-                    Name = NUMBER,
+                    Name = UnitedStatesCongressionalMeetingInserter.NUMBER,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new UnitedStatesCongressionalMeetingInserter(command);
     }
+
+}
+internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserter<UnitedStatesCongressionalMeeting>
+{
+
+    internal const string ID = "id";
+    internal const string DATE_RANGE = "date_range";
+    internal const string NUMBER = "number";
 
     internal UnitedStatesCongressionalMeetingInserter(NpgsqlCommand command) : base(command)
     {

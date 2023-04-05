@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class PersonOrganizationRelationTypeInserter : DatabaseInserter<PersonOrganizationRelationType>, IDatabaseInserter<PersonOrganizationRelationType>
+internal sealed class PersonOrganizationRelationTypeInserterFactory : DatabaseInserterFactory<PersonOrganizationRelationType>
 {
-    private const string ID = "id";
-    private const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
-    public static async Task<DatabaseInserter<PersonOrganizationRelationType>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<PersonOrganizationRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,18 +12,22 @@ internal sealed class PersonOrganizationRelationTypeInserter : DatabaseInserter<
             "person_organization_relation_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = PersonOrganizationRelationTypeInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = HAS_CONCRETE_SUBTYPE,
+                    Name = PersonOrganizationRelationTypeInserter.HAS_CONCRETE_SUBTYPE,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
             }
         );
         return new PersonOrganizationRelationTypeInserter(command);
-
     }
+}
+internal sealed class PersonOrganizationRelationTypeInserter : DatabaseInserter<PersonOrganizationRelationType>
+{
+    internal const string ID = "id";
+    internal const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
 
     internal PersonOrganizationRelationTypeInserter(NpgsqlCommand command) : base(command)
     {

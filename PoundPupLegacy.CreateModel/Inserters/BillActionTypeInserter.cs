@@ -1,9 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>, IDatabaseInserter<BillActionType>
+internal sealed class BillActionTypeInserterFactory : DatabaseInserterFactory<BillActionType>
 {
-    private const string ID = "id";
-    public static async Task<DatabaseInserter<BillActionType>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<BillActionType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -14,7 +13,7 @@ internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>,
             "bill_action_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = BillActionTypeInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 }
             }
@@ -23,16 +22,21 @@ internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>,
 
     }
 
+}
+internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>
+{
+    internal const string ID = "id";
+
     internal BillActionTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(BillActionType personOrganizationRelationType)
+    public override async Task InsertAsync(BillActionType billActionType)
     {
-        if (personOrganizationRelationType.Id is null)
+        if (billActionType.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(personOrganizationRelationType.Id, ID);
+        WriteValue(billActionType.Id, ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class ChildPlacementTypeInserter : IDatabaseInserter<ChildPlacementType>
+internal sealed class ChildPlacementTypeInserterFactory : SingleIdInserterFactory<ChildPlacementType>
 {
-    public static async Task<DatabaseInserter<ChildPlacementType>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<ChildPlacementType>("child_placement_type", connection);
-    }
+    protected override string TableName => "child_placement_type";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

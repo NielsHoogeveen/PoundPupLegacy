@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class LocatableInserter : IDatabaseInserter<Locatable>
+internal sealed class LocatableInserterFactory : SingleIdInserterFactory<Locatable>
 {
-    public static async Task<DatabaseInserter<Locatable>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<Locatable>("locatable", connection);
-    }
+    protected override string TableName => "locatable";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

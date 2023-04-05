@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class RepresentativeInserter : IDatabaseInserter<Representative>
+internal sealed class RepresentativeInserterFactory : SingleIdInserterFactory<Representative>
 {
-    public static async Task<DatabaseInserter<Representative>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<Representative>("representative", connection);
-    }
+    protected override string TableName => "representative";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

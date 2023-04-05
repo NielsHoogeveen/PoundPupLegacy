@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class SubdivisionTypeInserter : IDatabaseInserter<SubdivisionType>
+internal sealed class SubdivisionTypeInserterFactory : SingleIdInserterFactory<SubdivisionType>
 {
-    public static async Task<DatabaseInserter<SubdivisionType>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<SubdivisionType>("subdivision_type", connection);
-    }
+    protected override string TableName => "subdivision_type";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

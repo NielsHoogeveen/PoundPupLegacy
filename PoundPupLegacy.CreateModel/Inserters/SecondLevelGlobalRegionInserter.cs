@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGlobalRegion>, IDatabaseInserter<SecondLevelGlobalRegion>
+public class SecondLevelGlobalRegionInserterFactory : DatabaseInserterFactory<SecondLevelGlobalRegion>
 {
-    private const string ID = "id";
-    private const string FIRST_LEVEL_GLOBAL_REGION_ID = "first_level_global_region_id";
-    public static async Task<DatabaseInserter<SecondLevelGlobalRegion>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<SecondLevelGlobalRegion>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,17 +12,22 @@ public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGloba
             "second_level_global_region",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = SecondLevelGlobalRegionInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = FIRST_LEVEL_GLOBAL_REGION_ID,
+                    Name = SecondLevelGlobalRegionInserter.FIRST_LEVEL_GLOBAL_REGION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new SecondLevelGlobalRegionInserter(command);
     }
+}
+public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGlobalRegion>
+{
+    internal const string ID = "id";
+    internal const string FIRST_LEVEL_GLOBAL_REGION_ID = "first_level_global_region_id";
 
     public SecondLevelGlobalRegionInserter(NpgsqlCommand command) : base(command)
     {

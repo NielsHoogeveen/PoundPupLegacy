@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class BoundCountryInserter : DatabaseInserter<BoundCountry>, IDatabaseInserter<BoundCountry>
+internal sealed class BoundCountryInserterFactory : DatabaseInserterFactory<BoundCountry>
 {
-    private const string ID = "id";
-    private const string BINDING_COUNTRY_ID = "binding_country_id";
-    public static async Task<DatabaseInserter<BoundCountry>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<BoundCountry>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,18 +13,24 @@ internal sealed class BoundCountryInserter : DatabaseInserter<BoundCountry>, IDa
             "bound_country",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = BoundCountryInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = BINDING_COUNTRY_ID,
+                    Name = BoundCountryInserter.BINDING_COUNTRY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new BoundCountryInserter(command);
     }
-    private BoundCountryInserter(NpgsqlCommand command) : base(command)
+
+}
+internal sealed class BoundCountryInserter : DatabaseInserter<BoundCountry>
+{
+    internal const string ID = "id";
+    internal const string BINDING_COUNTRY_ID = "binding_country_id";
+    internal BoundCountryInserter(NpgsqlCommand command) : base(command)
     {
     }
 

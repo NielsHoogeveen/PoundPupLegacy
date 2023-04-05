@@ -1,11 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class DocumentableDocumentCreator : IEntityCreator<DocumentableDocument>
+internal sealed class DocumentableDocumentCreator : EntityCreator<DocumentableDocument>
 {
-    public async Task CreateAsync(IAsyncEnumerable<DocumentableDocument> documentableDocuments, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<DocumentableDocument> _documentableDocumentInserterFactory;
+    public DocumentableDocumentCreator(IDatabaseInserterFactory<DocumentableDocument> documentableDocumentInserterFactory)
+    {
+        _documentableDocumentInserterFactory = documentableDocumentInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<DocumentableDocument> documentableDocuments, IDbConnection connection)
     {
 
-        await using var documentableDocumentWriter = await DocumentableDocumentInserter.CreateAsync(connection);
+        await using var documentableDocumentWriter = await _documentableDocumentInserterFactory.CreateAsync(connection);
 
         await foreach (var documentableDocument in documentableDocuments) {
             await documentableDocumentWriter.InsertAsync(documentableDocument);

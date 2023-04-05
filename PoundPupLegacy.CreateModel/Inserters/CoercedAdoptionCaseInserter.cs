@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class CoercedAdoptionCaseInserter : IDatabaseInserter<CoercedAdoptionCase>
+internal sealed class CoercedAdoptionCaseInserterFactory : SingleIdInserterFactory<CoercedAdoptionCase>
 {
-    public static async Task<DatabaseInserter<CoercedAdoptionCase>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<CoercedAdoptionCase>("coerced_adoption_case", connection);
-    }
+    protected override string TableName => "coerced_adoption_case";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

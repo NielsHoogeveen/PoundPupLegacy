@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class DenominationInserter : IDatabaseInserter<Denomination>
+internal sealed class DenominationInserterFactory : SingleIdInserterFactory<Denomination>
 {
-    public static async Task<DatabaseInserter<Denomination>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<Denomination>("denomination", connection);
-    }
+    protected override string TableName => "denomination";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

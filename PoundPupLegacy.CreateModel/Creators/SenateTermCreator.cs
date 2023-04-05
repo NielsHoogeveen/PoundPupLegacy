@@ -1,16 +1,41 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class SenateTermCreator : IEntityCreator<SenateTerm>
+internal sealed class SenateTermCreator : EntityCreator<SenateTerm>
 {
-    public async Task CreateAsync(IAsyncEnumerable<SenateTerm> senateTerms, IDbConnection connection)
-    {
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
-        await using var congressionalTermWriter = await CongressionalTermInserter.CreateAsync(connection);
-        await using var senateTermWriter = await SenateTermInserter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+    private readonly IDatabaseInserterFactory<SenateTerm> _senateTermInserterFactory;
+    private readonly IDatabaseInserterFactory<CongressionalTerm> _congressionalTermInserterFactory;
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
+    private readonly IDatabaseInserterFactory<Documentable> _documentableInserterFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    private readonly IEntityCreator<CongressionalTermPoliticalPartyAffiliation> _congressionalTermPoliticalPartyAffiliationCreator;
+    public SenateTermCreator(
+        IDatabaseInserterFactory<SenateTerm> senateTermInserterFactory, 
+        IDatabaseInserterFactory<CongressionalTerm> congressionalTermInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory, 
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
+        IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
+        IEntityCreator<CongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
+    )
+    {
+        _senateTermInserterFactory = senateTermInserterFactory;
+        _congressionalTermInserterFactory = congressionalTermInserterFactory;
+        _nodeInserterFactory = nodeInserterFactory;
+        _searchableInserterFactory = searchableInserterFactory;
+        _documentableInserterFactory = documentableInserterFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+        _congressionalTermPoliticalPartyAffiliationCreator = congressionalTermPoliticalPartyAffiliationCreator;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<SenateTerm> senateTerms, IDbConnection connection)
+    {
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
+        await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);
+        await using var congressionalTermWriter = await _congressionalTermInserterFactory.CreateAsync(connection);
+        await using var senateTermWriter = await _senateTermInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var senateTerm in senateTerms) {
             await nodeWriter.InsertAsync(senateTerm);
@@ -21,7 +46,7 @@ internal sealed class SenateTermCreator : IEntityCreator<SenateTerm>
             foreach (var partyAffiliation in senateTerm.PartyAffiliations) {
                 partyAffiliation.CongressionalTermId = senateTerm.Id;
             }
-            await new CongressionalTermPoliticalPartyAffiliationCreator().CreateAsync(senateTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
+            await _congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(senateTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
 
             foreach (var tenantNode in senateTerm.TenantNodes) {
                 tenantNode.NodeId = senateTerm.Id;

@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FirstLevelGlobalRegionInserter : IDatabaseInserter<FirstLevelGlobalRegion>
+internal sealed class FirstLevelGlobalRegionInserterFactory : SingleIdInserterFactory<FirstLevelGlobalRegion>
 {
-    public static async Task<DatabaseInserter<FirstLevelGlobalRegion>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<FirstLevelGlobalRegion>("first_level_global_region", connection);
-    }
+    protected override string TableName => "first_level_global_region";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

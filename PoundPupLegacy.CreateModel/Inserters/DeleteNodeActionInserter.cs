@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeAction>, IDatabaseInserter<DeleteNodeAction>
+internal sealed class DeleteNodeActionInserterFactory : DatabaseInserterFactory<DeleteNodeAction>
 {
-
-    private const string ID = "id";
-    private const string NODE_TYPE_ID = "node_type_id";
-    public static async Task<DatabaseInserter<DeleteNodeAction>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<DeleteNodeAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,11 +12,11 @@ internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeActi
             "delete_node_action",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = DeleteNodeActionInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NODE_TYPE_ID,
+                    Name = DeleteNodeActionInserter.NODE_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -28,6 +24,13 @@ internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeActi
         return new DeleteNodeActionInserter(command);
 
     }
+
+}
+internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeAction>
+{
+
+    internal const string ID = "id";
+    internal const string NODE_TYPE_ID = "node_type_id";
 
     internal DeleteNodeActionInserter(NpgsqlCommand command) : base(command)
     {

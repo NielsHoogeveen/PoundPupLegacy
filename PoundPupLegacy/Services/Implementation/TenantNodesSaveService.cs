@@ -11,14 +11,17 @@ internal sealed class TenantNodesSaveService : ISaveService<IEnumerable<TenantNo
 {
     private readonly IDatabaseDeleterFactory<TenantNodeDeleter> _tenantNodeDeleterFactory;
     private readonly IDatabaseUpdaterFactory<TenantNodeUpdater> _tenantNodeUpdaterFactory;
+    private readonly IDatabaseInserterFactory<CreateModel.TenantNode> _tenantNodeInserterFactory;
 
     public TenantNodesSaveService(
         IDatabaseDeleterFactory<TenantNodeDeleter> tenantNodeDeleterFactory,
-        IDatabaseUpdaterFactory<TenantNodeUpdater> tenantNodeUpdaterFactory
+        IDatabaseUpdaterFactory<TenantNodeUpdater> tenantNodeUpdaterFactory,
+        IDatabaseInserterFactory<CreateModel.TenantNode> tenantNodeInserterFactory
     )
     {
         _tenantNodeDeleterFactory = tenantNodeDeleterFactory;
         _tenantNodeUpdaterFactory = tenantNodeUpdaterFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
     }
     public async Task SaveAsync(
         IEnumerable<TenantNode> tenantNodes, 
@@ -34,7 +37,7 @@ internal sealed class TenantNodesSaveService : ISaveService<IEnumerable<TenantNo
             }
         }
         if (tenantNodes.Any(x => x.Id is null)) {
-            await using var inserter = await TenantNodeInserter.CreateAsync(connection);
+            await using var inserter = await _tenantNodeInserterFactory.CreateAsync(connection);
             foreach (var tenantNode in tenantNodes.Where(x => !x.Id.HasValue)) {
                 var tenantNodeToCreate = new CreateModel.TenantNode {
                     Id = tenantNode.Id,

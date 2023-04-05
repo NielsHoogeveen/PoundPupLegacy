@@ -1,11 +1,10 @@
 ﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.CreateModel.Inserters;
-public class PrincipalInserter : DatabaseInserter<Principal>, IDatabaseInserter<Principal>
-{
-    private const string ID = "id";
 
-    public static async Task<DatabaseInserter<Principal>> CreateAsync(IDbConnection connection)
+public class PrincipalInserterFactory : DatabaseInserterFactory<Principal>
+{
+    public override async Task<IDatabaseInserter<Principal>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -24,16 +23,21 @@ public class PrincipalInserter : DatabaseInserter<Principal>, IDatabaseInserter<
             "principal",
             columnDefinitions.ToImmutableList().Add(
                 new ColumnDefinition {
-                    Name = ID,
+                    Name = PrincipalInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
 
         );
         return new PrincipalInserter(command, identityInsertCommand);
     }
+}
+public class PrincipalInserter : DatabaseInserter<Principal>
+{
+    internal const string ID = "id";
+
 
     private NpgsqlCommand _identityInsertCommand;
-    private PrincipalInserter(NpgsqlCommand command, NpgsqlCommand identityInsertCommand) : base(command)
+    internal PrincipalInserter(NpgsqlCommand command, NpgsqlCommand identityInsertCommand) : base(command)
     {
         _identityInsertCommand = identityInsertCommand;
     }

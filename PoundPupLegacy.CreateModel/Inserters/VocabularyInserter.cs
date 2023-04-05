@@ -1,12 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>, IDatabaseInserter<Vocabulary>
+internal sealed class VocabularyInserterFactory : DatabaseInserterFactory<Vocabulary>
 {
-    private const string ID = "id";
-    private const string OWNER_ID = "owner_id";
-    private const string NAME = "name";
-    private const string DESCRIPTION = "description";
-    public static async Task<DatabaseInserter<Vocabulary>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Vocabulary>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,26 +12,32 @@ internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>, IDataba
             "vocabulary",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = VocabularyInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = OWNER_ID,
+                    Name = VocabularyInserter.OWNER_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NAME,
+                    Name = VocabularyInserter.NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = DESCRIPTION,
+                    Name = VocabularyInserter.DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
             }
         );
         return new VocabularyInserter(command);
-
     }
+}
+internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>
+{
+    internal const string ID = "id";
+    internal const string OWNER_ID = "owner_id";
+    internal const string NAME = "name";
+    internal const string DESCRIPTION = "description";
 
     internal VocabularyInserter(NpgsqlCommand command) : base(command)
     {

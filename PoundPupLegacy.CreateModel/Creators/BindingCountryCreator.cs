@@ -1,24 +1,75 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class BindingCountryCreator : IEntityCreator<BindingCountry>
+internal sealed class BindingCountryCreator : EntityCreator<BindingCountry>
 {
-    public async Task CreateAsync(IAsyncEnumerable<BindingCountry> countries, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
+    private readonly IDatabaseInserterFactory<Documentable> _documentableInserterFactory;
+    private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
+    private readonly IDatabaseInserterFactory<GeographicalEntity> _geographicalEntityInserterFactory;
+    private readonly IDatabaseInserterFactory<PoliticalEntity> _politicalEntityInserterFactory;
+    private readonly IDatabaseInserterFactory<Country> _countryInserterFactory;
+    private readonly IDatabaseInserterFactory<TopLevelCountry> _topLevelCountryInserterFactory;
+    private readonly IDatabaseInserterFactory<BindingCountry> _bindingCountryInserterFactory;
+    private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
+    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
+    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+
+    public BindingCountryCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<Documentable> documentableInserterFactory,
+        IDatabaseInserterFactory<Nameable> nameableInserterFactory,
+        IDatabaseInserterFactory<GeographicalEntity> geographicalEntityInserterFactory,
+        IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory,
+        IDatabaseInserterFactory<Country> countryInserterFactory,
+        IDatabaseInserterFactory<TopLevelCountry> topLevelCountryInserterFactory,
+        IDatabaseInserterFactory<BindingCountry> bindingCountryInserterFactory,
+        IDatabaseInserterFactory<Term> termInserterFactory,
+        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
+        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+
+        )
+    {
+        //initialize fields with constructor arguments
+        _nodeInserterFactory = nodeInserterFactory;
+        _searchableInserterFactory = searchableInserterFactory;
+        _documentableInserterFactory= documentableInserterFactory;
+        _nameableInserterFactory = nameableInserterFactory;
+        _geographicalEntityInserterFactory = geographicalEntityInserterFactory;
+        _politicalEntityInserterFactory= politicalEntityInserterFactory;
+        _countryInserterFactory = countryInserterFactory;
+        _topLevelCountryInserterFactory = topLevelCountryInserterFactory;
+        _bindingCountryInserterFactory= bindingCountryInserterFactory;
+        _termInserterFactory = termInserterFactory;
+        _termReaderFactory = termReaderFactory;
+        _termHierarchyInserterFactory = termHierarchyInserterFactory;
+        _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+
+
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<BindingCountry> countries, IDbConnection connection)
     {
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
-        await using var nameableWriter = await NameableInserter.CreateAsync(connection);
-        await using var geographicalEntityWriter = await GeographicalEnityInserter.CreateAsync(connection);
-        await using var politicalEntityWriter = await PoliticalEntityInserter.CreateAsync(connection);
-        await using var countryWriter = await CountryInserter.CreateAsync(connection);
-        await using var topLevelCountryWriter = await TopLevelCountryInserter.CreateAsync(connection);
-        await using var bindingCountryWriter = await BindingCountryInserter.CreateAsync(connection);
-        await using var termWriter = await TermInserter.CreateAsync(connection);
-        await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
-        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
-        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
+        await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);
+        await using var nameableWriter = await _nameableInserterFactory.CreateAsync(connection);
+        await using var geographicalEntityWriter = await _geographicalEntityInserterFactory.CreateAsync(connection);
+        await using var politicalEntityWriter = await _politicalEntityInserterFactory.CreateAsync(connection);
+        await using var countryWriter = await _countryInserterFactory.CreateAsync(connection);
+        await using var topLevelCountryWriter = await _topLevelCountryInserterFactory.CreateAsync(connection);
+        await using var bindingCountryWriter = await _bindingCountryInserterFactory.CreateAsync(connection);
+        await using var termWriter = await _termInserterFactory.CreateAsync(connection);
+        await using var termReader = await _termReaderFactory.CreateAsync(connection);
+        await using var termHierarchyWriter = await _termHierarchyInserterFactory.CreateAsync(connection);
+        await using var vocabularyIdReader = await _vocabularyIdReaderFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var country in countries) {
             await nodeWriter.InsertAsync(country);
@@ -30,7 +81,7 @@ internal sealed class BindingCountryCreator : IEntityCreator<BindingCountry>
             await countryWriter.InsertAsync(country);
             await topLevelCountryWriter.InsertAsync(country);
             await bindingCountryWriter.InsertAsync(country);
-            await EntityCreator.WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            await WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in country.TenantNodes) {
                 tenantNode.NodeId = country.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);

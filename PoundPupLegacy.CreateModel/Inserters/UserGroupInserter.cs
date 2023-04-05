@@ -1,14 +1,10 @@
 ﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.CreateModel.Inserters;
-public class UserGroupInserter : DatabaseInserter<UserGroup>, IDatabaseInserter<UserGroup>
-{
-    private const string ID = "id";
-    private const string NAME = "name";
-    private const string DESCRIPTION = "description";
-    private const string ADMINISTRATOR_ROLE_ID = "administrator_role_id";
 
-    public static async Task<DatabaseInserter<UserGroup>> CreateAsync(IDbConnection connection)
+public class UserGroupInserterFactory : DatabaseInserterFactory<UserGroup>
+{
+    public override async Task<IDatabaseInserter<UserGroup>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,16 +13,16 @@ public class UserGroupInserter : DatabaseInserter<UserGroup>, IDatabaseInserter<
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition
             {
-                Name = NAME,
+                Name = UserGroupInserter.NAME,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition
             {
-                Name = DESCRIPTION,
+                Name = UserGroupInserter.DESCRIPTION,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition{
-                Name = ADMINISTRATOR_ROLE_ID,
+                Name = UserGroupInserter.ADMINISTRATOR_ROLE_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
 
@@ -42,16 +38,23 @@ public class UserGroupInserter : DatabaseInserter<UserGroup>, IDatabaseInserter<
             "user_group",
             columnDefinitions.ToImmutableList().Add(
                 new ColumnDefinition {
-                    Name = ID,
+                    Name = UserGroupInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
-
         );
         return new UserGroupInserter(command, identityInsertCommand);
     }
+}
+public class UserGroupInserter : DatabaseInserter<UserGroup>
+{
+    internal const string ID = "id";
+    internal const string NAME = "name";
+    internal const string DESCRIPTION = "description";
+    internal const string ADMINISTRATOR_ROLE_ID = "administrator_role_id";
+
 
     private NpgsqlCommand _identityInsertCommand;
-    private UserGroupInserter(NpgsqlCommand command, NpgsqlCommand identityInsertCommand) : base(command)
+    internal UserGroupInserter(NpgsqlCommand command, NpgsqlCommand identityInsertCommand) : base(command)
     {
         _identityInsertCommand = identityInsertCommand;
     }

@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>, IDatabaseInserter<MenuItem>
+internal sealed class MenuItemInserterFactory : DatabaseInserterFactory<MenuItem>
 {
-
-    private const string WEIGHT = "weight";
-
-    public static async Task<DatabaseInserter<MenuItem>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<MenuItem>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -14,7 +10,7 @@ internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>, IDatabaseIn
         var collumnDefinitions = new ColumnDefinition[]
         {
             new ColumnDefinition{
-                Name = WEIGHT,
+                Name = MenuItemInserter.WEIGHT,
                 NpgsqlDbType = NpgsqlDbType.Double
             },
         };
@@ -26,6 +22,13 @@ internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>, IDatabaseIn
         );
         return new MenuItemInserter(command);
     }
+
+}
+internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>
+{
+
+    internal const string WEIGHT = "weight";
+
 
     internal MenuItemInserter(NpgsqlCommand command) : base(command)
     {

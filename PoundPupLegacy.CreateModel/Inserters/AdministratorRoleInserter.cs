@@ -1,9 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>, IDatabaseInserter<AdministratorRole>
+internal sealed class AdministratorRoleInserterFactory : DatabaseInserterFactory<AdministratorRole>
 {
-    private const string ID = "id";
-    private const string USER_GROUP_ID = "user_group_id";
-    public static async Task<DatabaseInserter<AdministratorRole>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<AdministratorRole>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,12 +13,12 @@ public class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>, ID
             new ColumnDefinition[] {
             new ColumnDefinition
             {
-                Name = ID,
+                Name = AdministratorRoleInserter.ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition
             {
-                Name = USER_GROUP_ID,
+                Name = AdministratorRoleInserter.USER_GROUP_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
 
@@ -28,7 +26,13 @@ public class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>, ID
         return new AdministratorRoleInserter(command);
     }
 
-    private AdministratorRoleInserter(NpgsqlCommand command) : base(command)
+}
+internal class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>
+{
+    internal const string ID = "id";
+    internal const string USER_GROUP_ID = "user_group_id";
+
+    internal AdministratorRoleInserter(NpgsqlCommand command) : base(command)
     {
     }
 

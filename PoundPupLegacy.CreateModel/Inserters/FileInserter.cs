@@ -2,15 +2,10 @@
 
 namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<File>
+internal sealed class FileInserterFactory: DatabaseInserterFactory<File>
 {
-    private const string ID = "id";
-    private const string PATH = "path";
-    private const string NAME = "name";
-    private const string MIME_TYPE = "mime_type";
-    private const string SIZE = "size";
 
-    public static async Task<DatabaseInserter<File>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<File>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -19,19 +14,19 @@ internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<F
         var collumnDefinitions = new ColumnDefinition[]
         {
             new ColumnDefinition{
-                Name = PATH,
+                Name = FileInserter.PATH,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition{
-                Name = NAME,
+                Name = FileInserter.NAME,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition{
-                Name = MIME_TYPE,
+                Name = FileInserter.MIME_TYPE,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition{
-                Name = SIZE,
+                Name = FileInserter.SIZE,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
         };
@@ -41,7 +36,7 @@ internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<F
             "file",
             collumnDefinitions.ToImmutableList().Prepend(
                 new ColumnDefinition {
-                    Name = ID,
+                    Name = FileInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
         );
@@ -53,6 +48,16 @@ internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<F
         return new FileInserter(commandWithId, commandWithoutId);
 
     }
+}
+
+internal sealed class FileInserter : DatabaseInserter<File>
+{
+    internal const string ID = "id";
+    internal const string PATH = "path";
+    internal const string NAME = "name";
+    internal const string MIME_TYPE = "mime_type";
+    internal const string SIZE = "size";
+
     private NpgsqlCommand _identityCommand;
 
     internal FileInserter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)
@@ -64,7 +69,7 @@ internal sealed class FileInserter : DatabaseInserter<File>, IDatabaseInserter<F
     {
         if (file.Id is null) {
             WriteValue(file.Path, PATH, _identityCommand);
-            WriteValue(file.Name, NAME, _identityCommand);
+            WriteValue(file.Name,   NAME, _identityCommand);
             WriteValue(file.MimeType, MIME_TYPE, _identityCommand);
             WriteValue(file.Size, SIZE, _identityCommand);
             file.Id = await _identityCommand.ExecuteScalarAsync() switch {

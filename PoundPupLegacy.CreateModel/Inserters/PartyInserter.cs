@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class PartyInserter : IDatabaseInserter<Party>
+internal sealed class PartyInserterFactory : SingleIdInserterFactory<Party>
 {
-    public static async Task<DatabaseInserter<Party>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<Party>("party", connection);
-    }
+    protected override string TableName => "party";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

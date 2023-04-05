@@ -1,12 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : DatabaseInserter<CongressionalTermPoliticalPartyAffiliation>, IDatabaseInserter<CongressionalTermPoliticalPartyAffiliation>
+internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory : DatabaseInserterFactory<CongressionalTermPoliticalPartyAffiliation>
 {
-    private const string ID = "id";
-    private const string CONGRESSIONAL_TERM_ID = "congressional_term_id";
-    private const string UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID = "united_states_political_party_affiliation_id";
-    private const string DATE_RANGE = "date_range";
-    public static async Task<DatabaseInserter<CongressionalTermPoliticalPartyAffiliation>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<CongressionalTermPoliticalPartyAffiliation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,19 +12,19 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : Datab
             "congressional_term_political_party_affiliation",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = CongressionalTermPoliticalPartyAffiliationInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = CONGRESSIONAL_TERM_ID,
+                    Name = CongressionalTermPoliticalPartyAffiliationInserter.CONGRESSIONAL_TERM_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID,
+                    Name = CongressionalTermPoliticalPartyAffiliationInserter.UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_RANGE,
+                    Name = CongressionalTermPoliticalPartyAffiliationInserter.DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
             }
@@ -37,6 +32,14 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : Datab
         return new CongressionalTermPoliticalPartyAffiliationInserter(command);
 
     }
+
+}
+internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : DatabaseInserter<CongressionalTermPoliticalPartyAffiliation>
+{
+    internal const string ID = "id";
+    internal const string CONGRESSIONAL_TERM_ID = "congressional_term_id";
+    internal const string UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID = "united_states_political_party_affiliation_id";
+    internal const string DATE_RANGE = "date_range";
 
     internal CongressionalTermPoliticalPartyAffiliationInserter(NpgsqlCommand command) : base(command)
     {

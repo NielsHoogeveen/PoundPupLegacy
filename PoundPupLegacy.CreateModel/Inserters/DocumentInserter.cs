@@ -1,16 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using static System.Net.Mime.MediaTypeNames;
 
-internal sealed class DocumentInserter : DatabaseInserter<Document>, IDatabaseInserter<Document>
+namespace PoundPupLegacy.CreateModel.Inserters;
+internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document>
 {
-
-    private const string ID = "id";
-    private const string PUBLICATION_DATE = "publication_date";
-    private const string PUBLICATION_DATE_RANGE = "publication_date_range";
-    private const string SOURCE_URL = "source_url";
-    private const string TEXT = "text";
-    private const string TEASER = "teaser";
-    private const string DOCUMENT_TYPE_ID = "document_type_id";
-    public static async Task<DatabaseInserter<Document>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Document>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -21,37 +14,49 @@ internal sealed class DocumentInserter : DatabaseInserter<Document>, IDatabaseIn
             "document",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = DocumentInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = SOURCE_URL,
+                    Name = DocumentInserter.SOURCE_URL,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = TEXT,
+                    Name = DocumentInserter.TEXT,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = TEASER,
+                    Name = DocumentInserter.TEASER,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = DOCUMENT_TYPE_ID,
+                    Name = DocumentInserter.DOCUMENT_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PUBLICATION_DATE,
+                    Name = DocumentInserter.PUBLICATION_DATE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
-                    Name = PUBLICATION_DATE_RANGE,
+                    Name = DocumentInserter.PUBLICATION_DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
             }
         );
         return new DocumentInserter(command);
     }
+
+}
+internal sealed class DocumentInserter : DatabaseInserter<Document>
+{
+
+    internal const string ID = "id";
+    internal const string PUBLICATION_DATE = "publication_date";
+    internal const string PUBLICATION_DATE_RANGE = "publication_date_range";
+    internal const string SOURCE_URL = "source_url";
+    internal const string TEXT = "text";
+    internal const string TEASER = "teaser";
+    internal const string DOCUMENT_TYPE_ID = "document_type_id";
 
     internal DocumentInserter(NpgsqlCommand command) : base(command)
     {

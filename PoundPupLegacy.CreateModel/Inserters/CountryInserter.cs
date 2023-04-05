@@ -1,16 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class CountryInserter : DatabaseInserter<Country>, IDatabaseInserter<Country>
+internal sealed class CountryInserterFactory : DatabaseInserterFactory<Country>
 {
-    private const string ID = "id";
-    private const string HAGUE_STATUS_ID = "hague_status_id";
-    private const string RESIDENCY_REQUIREMENTS = "residency_requirements";
-    private const string AGE_REQUIREMENTS = "age_requirements";
-    private const string MARRIAGE_REQUIREMENTS = "marriage_requirements";
-    private const string INCOME_REQUIREMENTS = "income_requirements";
-    private const string HEALTH_REQUIREMENTS = "health_requirements";
-    private const string OTHER_REQUIREMENTS = "other_requirements";
-    public static async Task<DatabaseInserter<Country>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Country>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -21,35 +12,35 @@ internal sealed class CountryInserter : DatabaseInserter<Country>, IDatabaseInse
             "country",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = CountryInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = HAGUE_STATUS_ID,
+                    Name = CountryInserter.HAGUE_STATUS_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = RESIDENCY_REQUIREMENTS,
+                    Name = CountryInserter.RESIDENCY_REQUIREMENTS,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = AGE_REQUIREMENTS,
+                    Name = CountryInserter.AGE_REQUIREMENTS,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = MARRIAGE_REQUIREMENTS,
+                    Name = CountryInserter.MARRIAGE_REQUIREMENTS,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = INCOME_REQUIREMENTS,
+                    Name = CountryInserter.INCOME_REQUIREMENTS,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = HEALTH_REQUIREMENTS,
+                    Name = CountryInserter.HEALTH_REQUIREMENTS,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = OTHER_REQUIREMENTS,
+                    Name = CountryInserter.OTHER_REQUIREMENTS,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
             }
@@ -57,6 +48,18 @@ internal sealed class CountryInserter : DatabaseInserter<Country>, IDatabaseInse
         return new CountryInserter(command);
 
     }
+
+}
+internal sealed class CountryInserter : DatabaseInserter<Country>
+{
+    internal const string ID = "id";
+    internal const string HAGUE_STATUS_ID = "hague_status_id";
+    internal const string RESIDENCY_REQUIREMENTS = "residency_requirements";
+    internal const string AGE_REQUIREMENTS = "age_requirements";
+    internal const string MARRIAGE_REQUIREMENTS = "marriage_requirements";
+    internal const string INCOME_REQUIREMENTS = "income_requirements";
+    internal const string HEALTH_REQUIREMENTS = "health_requirements";
+    internal const string OTHER_REQUIREMENTS = "other_requirements";
 
     internal CountryInserter(NpgsqlCommand command) : base(command)
     {

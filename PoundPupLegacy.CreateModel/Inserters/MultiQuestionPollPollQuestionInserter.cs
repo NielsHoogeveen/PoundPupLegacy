@@ -1,12 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<MultiQuestionPollPollQuestion>, IDatabaseInserter<MultiQuestionPollPollQuestion>
+internal sealed class MultiQuestionPollPollQuestionInserterFactory : DatabaseInserterFactory<MultiQuestionPollPollQuestion>
 {
-
-    private const string MULTI_QUESTION_POLL_ID = "multi_question_poll_id";
-    private const string POLL_QUESTION_ID = "poll_question_id";
-    private const string DELTA = "delta";
-    public static async Task<DatabaseInserter<MultiQuestionPollPollQuestion>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<MultiQuestionPollPollQuestion>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,22 +12,28 @@ internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<M
             "multi_question_poll_poll_question",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = MULTI_QUESTION_POLL_ID,
+                    Name = MultiQuestionPollPollQuestionInserter.MULTI_QUESTION_POLL_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = POLL_QUESTION_ID,
+                    Name = MultiQuestionPollPollQuestionInserter.POLL_QUESTION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DELTA,
+                    Name = MultiQuestionPollPollQuestionInserter.DELTA,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new MultiQuestionPollPollQuestionInserter(command);
-
     }
+}
+internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<MultiQuestionPollPollQuestion>
+{
+
+    internal const string MULTI_QUESTION_POLL_ID = "multi_question_poll_id";
+    internal const string POLL_QUESTION_ID = "poll_question_id";
+    internal const string DELTA = "delta";
 
     internal MultiQuestionPollPollQuestionInserter(NpgsqlCommand command) : base(command)
     {

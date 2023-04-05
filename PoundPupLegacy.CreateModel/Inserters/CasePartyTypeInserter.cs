@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class CasePartyTypeInserter : DatabaseInserter<CasePartyType>, IDatabaseInserter<CasePartyType>
+internal sealed class CasePartyTypeInserterFactory : DatabaseInserterFactory<CasePartyType>
 {
-
-    private const string ID = "id";
-    public static async Task<DatabaseInserter<CasePartyType>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<CasePartyType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,7 +12,7 @@ internal sealed class CasePartyTypeInserter : DatabaseInserter<CasePartyType>, I
             "case_party_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = CasePartyTypeInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -23,6 +20,12 @@ internal sealed class CasePartyTypeInserter : DatabaseInserter<CasePartyType>, I
         return new CasePartyTypeInserter(command);
 
     }
+
+}
+internal sealed class CasePartyTypeInserter : DatabaseInserter<CasePartyType>
+{
+
+    internal const string ID = "id";
 
     internal CasePartyTypeInserter(NpgsqlCommand command) : base(command)
     {

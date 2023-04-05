@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingUserGroup>, IDatabaseInserter<PublishingUserGroup>
+internal sealed class PublishingUserGroupInserterFactory : DatabaseInserterFactory<PublishingUserGroup>
 {
-
-    private const string ID = "id";
-    private const string PUBLICATION_STATUS_ID_DEFAULT = "publication_status_id_default";
-    public static async Task<DatabaseInserter<PublishingUserGroup>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<PublishingUserGroup>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,18 +12,23 @@ internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingU
             "publishing_user_group",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = PublishingUserGroupInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PUBLICATION_STATUS_ID_DEFAULT,
+                    Name = PublishingUserGroupInserter.PUBLICATION_STATUS_ID_DEFAULT,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new PublishingUserGroupInserter(command);
-
     }
+}
+internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingUserGroup>
+{
+
+    internal const string ID = "id";
+    internal const string PUBLICATION_STATUS_ID_DEFAULT = "publication_status_id_default";
 
     internal PublishingUserGroupInserter(NpgsqlCommand command) : base(command)
     {

@@ -1,9 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class AccessRoleInserter : IDatabaseInserter<AccessRole>
+internal sealed class AccessRoleInserterFactory : SingleIdInserterFactory<AccessRole>
 {
-    public static async Task<DatabaseInserter<AccessRole>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<AccessRole>("access_role", connection);
-    }
+    protected override string TableName => "access_role";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }
+

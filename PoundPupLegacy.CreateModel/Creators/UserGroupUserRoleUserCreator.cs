@@ -1,11 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class UserGroupUserRoleUserCreator : IEntityCreator<UserGroupUserRoleUser>
+internal sealed class UserGroupUserRoleUserCreator : EntityCreator<UserGroupUserRoleUser>
 {
-    public async Task CreateAsync(IAsyncEnumerable<UserGroupUserRoleUser> userGroupUserRoleUsers, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<UserGroupUserRoleUser> _userGroupUserRoleUserInserterFactory;
+    public UserGroupUserRoleUserCreator(IDatabaseInserterFactory<UserGroupUserRoleUser> userGroupUserRoleUserInserterFactory)
     {
-
-        await using var userGroupUserRoleUserWriter = await UserGroupUserRoleUserInserter.CreateAsync(connection);
+        _userGroupUserRoleUserInserterFactory = userGroupUserRoleUserInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<UserGroupUserRoleUser> userGroupUserRoleUsers, IDbConnection connection)
+    {
+        await using var userGroupUserRoleUserWriter = await _userGroupUserRoleUserInserterFactory.CreateAsync(connection);
 
         await foreach (var userGroupUserRoleUser in userGroupUserRoleUsers) {
             await userGroupUserRoleUserWriter.InsertAsync(userGroupUserRoleUser);

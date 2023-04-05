@@ -1,16 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>, IDatabaseInserter<TenantNode>
+public sealed class TenantNodeInserterFactory : DatabaseInserterFactory<TenantNode>
 {
-
-    private const string TENANT_ID = "tenant_id";
-    private const string URL_ID = "url_id";
-    private const string URL_PATH = "url_path";
-    private const string NODE_ID = "node_id";
-    private const string SUBGROUP_ID = "subgroup_id";
-    private const string PUBLICATION_STATUS_ID = "publication_status_id";
-
-    public static async Task<DatabaseInserter<TenantNode>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<TenantNode>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -19,27 +10,27 @@ public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>, IDatabase
         var collumnDefinitions = new ColumnDefinition[]
         {
             new ColumnDefinition{
-                Name = TENANT_ID,
+                Name = TenantNodeInserter.TENANT_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = URL_ID,
+                Name = TenantNodeInserter.URL_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = URL_PATH,
+                Name = TenantNodeInserter.URL_PATH,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition{
-                Name = NODE_ID,
+                Name = TenantNodeInserter.NODE_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = SUBGROUP_ID,
+                Name = TenantNodeInserter.SUBGROUP_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = PUBLICATION_STATUS_ID,
+                Name = TenantNodeInserter.PUBLICATION_STATUS_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
         };
@@ -51,6 +42,17 @@ public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>, IDatabase
         );
         return new TenantNodeInserter(command);
     }
+}
+public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>
+{
+
+    internal const string TENANT_ID = "tenant_id";
+    internal const string URL_ID = "url_id";
+    internal const string URL_PATH = "url_path";
+    internal const string NODE_ID = "node_id";
+    internal const string SUBGROUP_ID = "subgroup_id";
+    internal const string PUBLICATION_STATUS_ID = "publication_status_id";
+
 
     internal TenantNodeInserter(NpgsqlCommand command) : base(command)
     {

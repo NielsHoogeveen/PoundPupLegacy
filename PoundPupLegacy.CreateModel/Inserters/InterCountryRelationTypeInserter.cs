@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class InterCountryRelationTypeInserter : DatabaseInserter<InterCountryRelationType>, IDatabaseInserter<InterCountryRelationType>
+internal sealed class InterCountryRelationTypeInserterFactory : DatabaseInserterFactory<InterCountryRelationType>
 {
-    private const string ID = "id";
-    private const string IS_SYMMETRIC = "is_symmetric";
-
-    public static async Task<DatabaseInserter<InterCountryRelationType>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<InterCountryRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,17 +12,24 @@ internal sealed class InterCountryRelationTypeInserter : DatabaseInserter<InterC
             "inter_country_relation_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = InterCountryRelationTypeInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = IS_SYMMETRIC,
+                    Name = InterCountryRelationTypeInserter.IS_SYMMETRIC,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
             }
         );
         return new InterCountryRelationTypeInserter(command);
     }
+
+}
+internal sealed class InterCountryRelationTypeInserter : DatabaseInserter<InterCountryRelationType>
+{
+    internal const string ID = "id";
+    internal const string IS_SYMMETRIC = "is_symmetric";
+
 
     internal InterCountryRelationTypeInserter(NpgsqlCommand command) : base(command)
     {

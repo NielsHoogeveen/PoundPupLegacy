@@ -1,12 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class CaseInserter : DatabaseInserter<Case>, IDatabaseInserter<Case>
+internal sealed class CaseInserterFactory : DatabaseInserterFactory<Case>
 {
-    private const string ID = "id";
-    private const string DESCRIPTION = "description";
-    private const string DATE = "date";
-    private const string DATERANGE = "date_range";
-    public static async Task<DatabaseInserter<Case>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Case>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,19 +12,19 @@ internal sealed class CaseInserter : DatabaseInserter<Case>, IDatabaseInserter<C
             "case",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = CaseInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DESCRIPTION,
+                    Name = CaseInserter.DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = DATE,
+                    Name = CaseInserter.DATE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
-                    Name = DATERANGE,
+                    Name = CaseInserter.DATERANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
             }
@@ -38,6 +33,14 @@ internal sealed class CaseInserter : DatabaseInserter<Case>, IDatabaseInserter<C
 
     }
 
+}
+internal sealed class CaseInserter : DatabaseInserter<Case>
+{
+    internal const string ID = "id";
+    internal const string DESCRIPTION = "description";
+    internal const string DATE = "date";
+    internal const string DATERANGE = "date_range";
+    
     internal CaseInserter(NpgsqlCommand command) : base(command)
     {
     }

@@ -1,20 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class PersonInserter : DatabaseInserter<Person>, IDatabaseInserter<Person>
+internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person>
 {
-    private const string ID = "id";
-    private const string DATE_OF_BIRTH = "date_of_birth";
-    private const string DATE_OF_DEATH = "date_of_death";
-    private const string FILE_ID_PORTRAIT = "file_id_portrait";
-    private const string FIRST_NAME = "first_name";
-    private const string MIDDLE_NAME = "middle_name";
-    private const string LAST_NAME = "last_name";
-    private const string FULL_NAME = "full_name";
-    private const string SUFFIX = "suffix";
-    private const string GOVTRACK_ID = "govtrack_id";
-    private const string BIOGUIDE = "bioguide";
-
-    public static async Task<DatabaseInserter<Person>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Person>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -25,56 +12,68 @@ internal sealed class PersonInserter : DatabaseInserter<Person>, IDatabaseInsert
             "person",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = PersonInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_OF_BIRTH,
+                    Name = PersonInserter.DATE_OF_BIRTH,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
                 new ColumnDefinition{
-                    Name = DATE_OF_DEATH,
+                    Name = PersonInserter.DATE_OF_DEATH,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
                 new ColumnDefinition{
-                    Name = FILE_ID_PORTRAIT,
+                    Name = PersonInserter.FILE_ID_PORTRAIT,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = GOVTRACK_ID,
+                    Name = PersonInserter.GOVTRACK_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = FIRST_NAME,
+                    Name = PersonInserter.FIRST_NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = MIDDLE_NAME,
+                    Name = PersonInserter.MIDDLE_NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = LAST_NAME,
+                    Name = PersonInserter.LAST_NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = FULL_NAME,
+                    Name = PersonInserter.FULL_NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = SUFFIX,
+                    Name = PersonInserter.SUFFIX,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = BIOGUIDE,
+                    Name = PersonInserter.BIOGUIDE,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
-
             }
         );
-
         return new PersonInserter(command);
-
     }
+}
+internal sealed class PersonInserter : DatabaseInserter<Person>
+{
+    internal const string ID = "id";
+    internal const string DATE_OF_BIRTH = "date_of_birth";
+    internal const string DATE_OF_DEATH = "date_of_death";
+    internal const string FILE_ID_PORTRAIT = "file_id_portrait";
+    internal const string FIRST_NAME = "first_name";
+    internal const string MIDDLE_NAME = "middle_name";
+    internal const string LAST_NAME = "last_name";
+    internal const string FULL_NAME = "full_name";
+    internal const string SUFFIX = "suffix";
+    internal const string GOVTRACK_ID = "govtrack_id";
+    internal const string BIOGUIDE = "bioguide";
+
 
     internal PersonInserter(NpgsqlCommand command) : base(command)
     {

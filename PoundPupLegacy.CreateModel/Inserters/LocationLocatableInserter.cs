@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class LocationLocatableInserter : DatabaseInserter<LocationLocatable>, IDatabaseInserter<LocationLocatable>
+internal sealed class LocationLocatableInserterFactory : DatabaseInserterFactory<LocationLocatable>
 {
-    private const string LOCATION_ID = "location_id";
-    private const string LOCATABLE_ID = "locatable_id";
-    public static async Task<DatabaseInserter<LocationLocatable>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<LocationLocatable>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,19 +12,22 @@ internal sealed class LocationLocatableInserter : DatabaseInserter<LocationLocat
             "location_locatable",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = LOCATION_ID,
+                    Name = LocationLocatableInserter.LOCATION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = LOCATABLE_ID,
+                    Name = LocationLocatableInserter.LOCATABLE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
-
         return new LocationLocatableInserter(command);
-
     }
+}
+internal sealed class LocationLocatableInserter : DatabaseInserter<LocationLocatable>
+{
+    internal const string LOCATION_ID = "location_id";
+    internal const string LOCATABLE_ID = "locatable_id";
 
     internal LocationLocatableInserter(NpgsqlCommand command) : base(command)
     {

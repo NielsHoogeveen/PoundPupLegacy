@@ -1,14 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public class NodeInserter : DatabaseInserter<Node>, IDatabaseInserter<Node>
+public class NodeInserterFactory : DatabaseInserterFactory<Node>
 {
-    private const string PUBLISHER_ID = "publisher_id";
-    private const string CREATED_DATE_TIME = "created_date_time";
-    private const string CHANGED_DATE_TIME = "changed_date_time";
-    private const string TITLE = "title";
-    private const string NODE_TYPE_ID = "node_type_id";
-    private const string OWNER_ID = "owner_id";
-
-    public static async Task<DatabaseInserter<Node>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Node>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,27 +10,27 @@ public class NodeInserter : DatabaseInserter<Node>, IDatabaseInserter<Node>
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition
             {
-                Name = PUBLISHER_ID,
+                Name = NodeInserter.PUBLISHER_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = CREATED_DATE_TIME,
+                Name = NodeInserter.CREATED_DATE_TIME,
                 NpgsqlDbType = NpgsqlDbType.Timestamp
             },
             new ColumnDefinition{
-                Name = CHANGED_DATE_TIME,
+                Name = NodeInserter.CHANGED_DATE_TIME,
                 NpgsqlDbType = NpgsqlDbType.Timestamp
             },
             new ColumnDefinition{
-                Name = TITLE,
+                Name = NodeInserter.TITLE,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition{
-                Name = NODE_TYPE_ID,
+                Name = NodeInserter.NODE_TYPE_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = OWNER_ID,
+                Name = NodeInserter.OWNER_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
         };
@@ -49,9 +42,17 @@ public class NodeInserter : DatabaseInserter<Node>, IDatabaseInserter<Node>
         );
         return new NodeInserter(command);
     }
+}
+public class NodeInserter : DatabaseInserter<Node>
+{
+    internal const string PUBLISHER_ID = "publisher_id";
+    internal const string CREATED_DATE_TIME = "created_date_time";
+    internal const string CHANGED_DATE_TIME = "changed_date_time";
+    internal const string TITLE = "title";
+    internal const string NODE_TYPE_ID = "node_type_id";
+    internal const string OWNER_ID = "owner_id";
 
-
-    private NodeInserter(NpgsqlCommand command) : base(command)
+    internal NodeInserter(NpgsqlCommand command) : base(command)
     {
     }
 

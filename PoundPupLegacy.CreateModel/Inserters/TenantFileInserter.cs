@@ -1,14 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("PoundPupLegacy.Db.Test")]
-namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>, IDatabaseInserter<TenantFile>
+﻿namespace PoundPupLegacy.CreateModel.Inserters;
+internal sealed class TenantFileInserterFactory : DatabaseInserterFactory<TenantFile>
 {
-    private const string TENANT_ID = "tenant_id";
-    private const string FILE_ID = "file_id";
-    private const string TENANT_FILE_ID = "tenant_file_id";
-    public static async Task<DatabaseInserter<TenantFile>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<TenantFile>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -19,22 +12,28 @@ internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>, IDataba
             "tenant_file",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = TENANT_ID,
+                    Name = TenantFileInserter.TENANT_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = FILE_ID,
+                    Name = TenantFileInserter.FILE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = TENANT_FILE_ID,
+                    Name = TenantFileInserter.TENANT_FILE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new TenantFileInserter(command);
-
     }
+}
+
+internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>
+{
+    internal const string TENANT_ID = "tenant_id";
+    internal const string FILE_ID = "file_id";
+    internal const string TENANT_FILE_ID = "tenant_file_id";
 
     internal TenantFileInserter(NpgsqlCommand command) : base(command)
     {

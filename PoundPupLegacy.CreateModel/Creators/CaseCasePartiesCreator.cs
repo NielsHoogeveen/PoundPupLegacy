@@ -1,14 +1,30 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CaseCasePartiesCreator : IEntityCreator<CaseCaseParties>
+internal sealed class CaseCasePartiesCreator : EntityCreator<CaseCaseParties>
 {
-    public async Task CreateAsync(IAsyncEnumerable<CaseCaseParties> caseCaseRelationss, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<CaseParties> _casePartiesInserterFactory;
+    private readonly IDatabaseInserterFactory<CaseCaseParties> _caseCasePartiesInserterFactory;
+    private readonly IDatabaseInserterFactory<CasePartiesOrganization> _casePartiesOrganizationInserterFactory;
+    private readonly IDatabaseInserterFactory<CasePartiesPerson> _casePartiesPersonInserterFactory;
+    public CaseCasePartiesCreator(
+        IDatabaseInserterFactory<CaseParties> casePartiesInserterFactory,
+        IDatabaseInserterFactory<CaseCaseParties> caseCasePartiesInserterFactory,
+        IDatabaseInserterFactory<CasePartiesOrganization> casePartiesOrganizationInserterFactory,
+        IDatabaseInserterFactory<CasePartiesPerson> casePartiesPersonInserterFactory
+        )
+    {
+        _casePartiesInserterFactory = casePartiesInserterFactory;
+        _casePartiesPersonInserterFactory = casePartiesPersonInserterFactory;
+        _caseCasePartiesInserterFactory = caseCasePartiesInserterFactory;
+        _casePartiesOrganizationInserterFactory = casePartiesOrganizationInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<CaseCaseParties> caseCaseRelationss, IDbConnection connection)
     {
 
-        await using var caseRelationsWriter = await CasePartiesInserter.CreateAsync(connection);
-        await using var caseCaseRelationsWriter = await CaseCasePartiesInserter.CreateAsync(connection);
-        await using var caseRelationsOrganizationWriter = await CasePartiesOrganizationInserter.CreateAsync(connection);
-        await using var caseRelationsPersonWriter = await CasePartiesPersonInserter.CreateAsync(connection);
+        await using var caseRelationsWriter = await _casePartiesInserterFactory.CreateAsync(connection);
+        await using var caseCaseRelationsWriter = await _caseCasePartiesInserterFactory.CreateAsync(connection);
+        await using var caseRelationsOrganizationWriter = await _casePartiesOrganizationInserterFactory.CreateAsync(connection);
+        await using var caseRelationsPersonWriter = await _casePartiesPersonInserterFactory.CreateAsync(connection);
 
         await foreach (var caseCaseRelations in caseCaseRelationss) {
             await caseRelationsWriter.InsertAsync(caseCaseRelations.CaseParties);

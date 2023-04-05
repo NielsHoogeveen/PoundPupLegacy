@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRolePrivilege>, IDatabaseInserter<AccessRolePrivilege>
+internal sealed class AccessRolePrivilegeInserterFactory : DatabaseInserterFactory<AccessRolePrivilege>
 {
-
-    private const string ACCESS_ROLE_ID = "access_role_id";
-    private const string ACTION_ID = "action_id";
-    public static async Task<DatabaseInserter<AccessRolePrivilege>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<AccessRolePrivilege>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,11 +12,11 @@ internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRoleP
             "access_role_privilege",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ACCESS_ROLE_ID,
+                    Name = AccessRolePrivilegeInserter.ACCESS_ROLE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ACTION_ID,
+                    Name = AccessRolePrivilegeInserter.ACTION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -28,6 +24,13 @@ internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRoleP
         return new AccessRolePrivilegeInserter(command);
 
     }
+
+}
+internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRolePrivilege>
+{
+
+    internal const string ACCESS_ROLE_ID = "access_role_id";
+    internal const string ACTION_ID = "action_id";
 
     internal AccessRolePrivilegeInserter(NpgsqlCommand command) : base(command)
     {

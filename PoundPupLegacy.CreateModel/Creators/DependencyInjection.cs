@@ -2,10 +2,11 @@
 
 namespace PoundPupLegacy.CreateModel.Creators;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
-    public static void AddEntityCreators(this IServiceCollection services)
+    internal static void AddCreateModelCreators(this IServiceCollection services)
     {
+        services.AddCreateModelInserters();
         services.AddTransient<IEntityCreator<AbuseCase>, AbuseCaseCreator>();
         services.AddTransient<IEntityCreator<AccessRole>, AccessRoleCreator>();
         services.AddTransient<IEntityCreator<AccessRolePrivilege>, AccessRolePrivilegeCreator>();

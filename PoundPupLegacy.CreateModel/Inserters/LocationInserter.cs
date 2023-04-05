@@ -1,19 +1,9 @@
 ﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class LocationInserter : DatabaseInserter<Location>, IDatabaseInserter<Location>
+internal sealed class LocationInserterFactory : DatabaseInserterFactory<Location>
 {
-    private const string ID = "id";
-    private const string STREET = "street";
-    private const string ADDITIONAL = "additional";
-    private const string CITY = "city";
-    private const string POSTAL_CODE = "postal_code";
-    private const string SUBDIVIONS_ID = "subdivision_id";
-    private const string COUNTRY_ID = "country_id";
-    private const string LATITUDE = "latitude";
-    private const string LONGITUDE = "longitude";
-    public static async Task<DatabaseInserter<Location>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Location>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -21,36 +11,36 @@ internal sealed class LocationInserter : DatabaseInserter<Location>, IDatabaseIn
 
         var columnDefitions = new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = STREET,
+                    Name = LocationInserter.STREET,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = ADDITIONAL,
+                    Name = LocationInserter.ADDITIONAL,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
 
                 new ColumnDefinition{
-                    Name = CITY,
+                    Name = LocationInserter.CITY,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = POSTAL_CODE,
+                    Name = LocationInserter.POSTAL_CODE,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = SUBDIVIONS_ID,
+                    Name = LocationInserter.SUBDIVIONS_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = COUNTRY_ID,
+                    Name = LocationInserter.COUNTRY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = LATITUDE,
+                    Name = LocationInserter.LATITUDE,
                     NpgsqlDbType = NpgsqlDbType.Numeric
                 },
                 new ColumnDefinition{
-                    Name = LONGITUDE,
+                    Name = LocationInserter.LONGITUDE,
                     NpgsqlDbType = NpgsqlDbType.Numeric
                 },
 
@@ -60,7 +50,7 @@ internal sealed class LocationInserter : DatabaseInserter<Location>, IDatabaseIn
             postgresConnection,
             "location",
             columnDefitions.ToImmutableList().Prepend(new ColumnDefinition {
-                Name = ID,
+                Name = LocationInserter.ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
         );
@@ -73,6 +63,19 @@ internal sealed class LocationInserter : DatabaseInserter<Location>, IDatabaseIn
         return new LocationInserter(commandWithId, commandWithoutId);
 
     }
+
+}
+internal sealed class LocationInserter : DatabaseInserter<Location>
+{
+    internal const string ID = "id";
+    internal const string STREET = "street";
+    internal const string ADDITIONAL = "additional";
+    internal const string CITY = "city";
+    internal const string POSTAL_CODE = "postal_code";
+    internal const string SUBDIVIONS_ID = "subdivision_id";
+    internal const string COUNTRY_ID = "country_id";
+    internal const string LATITUDE = "latitude";
+    internal const string LONGITUDE = "longitude";
 
     private NpgsqlCommand _identityCommand;
     internal LocationInserter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)

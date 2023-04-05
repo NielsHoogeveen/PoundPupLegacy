@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class BillInserter : DatabaseInserter<Bill>, IDatabaseInserter<Bill>
+internal sealed class BillInserterFactory : DatabaseInserterFactory<Bill>
 {
-
-    private const string ID = "id";
-    private const string INTRODUCTION_DATE = "introduction_date";
-    public static async Task<DatabaseInserter<Bill>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Bill>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,11 +12,11 @@ internal sealed class BillInserter : DatabaseInserter<Bill>, IDatabaseInserter<B
             "bill",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = BillInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = INTRODUCTION_DATE,
+                    Name = BillInserter.INTRODUCTION_DATE,
                     NpgsqlDbType = NpgsqlDbType.Date
                 },
             }
@@ -28,6 +24,13 @@ internal sealed class BillInserter : DatabaseInserter<Bill>, IDatabaseInserter<B
         return new BillInserter(command);
 
     }
+
+}
+internal sealed class BillInserter : DatabaseInserter<Bill>
+{
+
+    internal const string ID = "id";
+    internal const string INTRODUCTION_DATE = "introduction_date";
 
     internal BillInserter(NpgsqlCommand command) : base(command)
     {

@@ -1,11 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CountrySubdivisionTypeCreator : IEntityCreator<CountrySubdivisionType>
+internal sealed class CountrySubdivisionTypeCreator : EntityCreator<CountrySubdivisionType>
 {
-    public async Task CreateAsync(IAsyncEnumerable<CountrySubdivisionType> countrySubdivisionTypes, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<CountrySubdivisionType> _countrySubdivisionTypeInserterFactory;
+    public CountrySubdivisionTypeCreator(IDatabaseInserterFactory<CountrySubdivisionType> countrySubdivisionTypeInserterFactory)
+    {
+        _countrySubdivisionTypeInserterFactory = countrySubdivisionTypeInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<CountrySubdivisionType> countrySubdivisionTypes, IDbConnection connection)
     {
 
-        await using var countrySubdivisionTypeWriter = await CountrySubdivisionTypeWriter.CreateAsync(connection);
+        await using var countrySubdivisionTypeWriter = await _countrySubdivisionTypeInserterFactory.CreateAsync(connection);
 
         await foreach (var countrySubdivisionType in countrySubdivisionTypes) {
             await countrySubdivisionTypeWriter.InsertAsync(countrySubdivisionType);

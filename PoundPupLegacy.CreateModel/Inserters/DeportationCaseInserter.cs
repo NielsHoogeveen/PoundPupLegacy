@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase>, IDatabaseInserter<DeportationCase>
+internal sealed class DeportationCaseInserterFactory : DatabaseInserterFactory<DeportationCase>
 {
-    private const string ID = "id";
-    private const string SUBDIVISION_ID_FROM = "subdivision_id_from";
-    private const string COUNTRY_ID_TO = "country_id_to";
-    public static async Task<DatabaseInserter<DeportationCase>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<DeportationCase>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,22 +12,28 @@ internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase
             "deportation_case",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = DeportationCaseInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = SUBDIVISION_ID_FROM,
+                    Name = DeportationCaseInserter.SUBDIVISION_ID_FROM,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = COUNTRY_ID_TO,
+                    Name = DeportationCaseInserter.COUNTRY_ID_TO,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new DeportationCaseInserter(command);
-
     }
+}
+
+internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase>
+{
+    internal const string ID = "id";
+    internal const string SUBDIVISION_ID_FROM = "subdivision_id_from";
+    internal const string COUNTRY_ID_TO = "country_id_to";
 
     internal DeportationCaseInserter(NpgsqlCommand command) : base(command)
     {

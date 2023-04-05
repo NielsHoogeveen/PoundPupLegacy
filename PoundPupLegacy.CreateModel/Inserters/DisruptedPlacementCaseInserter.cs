@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class DisruptedPlacementCaseInserter : IDatabaseInserter<DisruptedPlacementCase>
+internal sealed class DisruptedPlacementCaseInserterFactory : SingleIdInserterFactory<DisruptedPlacementCase>
 {
-    public static async Task<DatabaseInserter<DisruptedPlacementCase>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<DisruptedPlacementCase>("disrupted_placement_case", connection);
-    }
+    protected override string TableName => "disrupted_placement_case";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

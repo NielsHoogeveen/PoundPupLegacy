@@ -1,12 +1,10 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using System.IO;
 
-internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>, IDatabaseInserter<BasicAction>
+namespace PoundPupLegacy.CreateModel.Inserters;
+
+internal sealed class BasicActionInserterFactory : DatabaseInserterFactory<BasicAction>
 {
-
-    private const string ID = "id";
-    private const string PATH = "path";
-    private const string DESCRIPTION = "description";
-    public static async Task<DatabaseInserter<BasicAction>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<BasicAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,15 +15,15 @@ internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>, IData
             "basic_action",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = BasicActionInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PATH,
+                    Name = BasicActionInserter.PATH,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = DESCRIPTION,
+                    Name = BasicActionInserter.DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
             }
@@ -33,6 +31,14 @@ internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>, IData
         return new BasicActionInserter(command);
 
     }
+
+}
+internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>
+{
+
+    internal const string ID = "id";
+    internal const string PATH = "path";
+    internal const string DESCRIPTION = "description";
 
     internal BasicActionInserter(NpgsqlCommand command) : base(command)
     {

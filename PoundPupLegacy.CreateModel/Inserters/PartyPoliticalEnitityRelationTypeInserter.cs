@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class PoliticalEntityRelationTypeWriter : DatabaseInserter<PartyPoliticalEntityRelationType>, IDatabaseInserter<PartyPoliticalEntityRelationType>
+internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : DatabaseInserterFactory<PartyPoliticalEntityRelationType>
 {
-    private const string ID = "id";
-    private const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
-    public static async Task<DatabaseInserter<PartyPoliticalEntityRelationType>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<PartyPoliticalEntityRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,20 +12,26 @@ internal sealed class PoliticalEntityRelationTypeWriter : DatabaseInserter<Party
             "party_political_entity_relation_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = PartyPoliticalEntityRelationTypeInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = HAS_CONCRETE_SUBTYPE,
+                    Name = PartyPoliticalEntityRelationTypeInserter.HAS_CONCRETE_SUBTYPE,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
             }
         );
-        return new PoliticalEntityRelationTypeWriter(command);
+        return new PartyPoliticalEntityRelationTypeInserter(command);
 
     }
 
-    internal PoliticalEntityRelationTypeWriter(NpgsqlCommand command) : base(command)
+}
+internal sealed class PartyPoliticalEntityRelationTypeInserter : DatabaseInserter<PartyPoliticalEntityRelationType>
+{
+    internal const string ID = "id";
+    internal const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
+
+    internal PartyPoliticalEntityRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 

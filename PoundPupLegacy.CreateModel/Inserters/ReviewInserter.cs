@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class ReviewInserter : IDatabaseInserter<Review>
+internal sealed class ReviewInserterFactory : SingleIdInserterFactory<Review>
 {
-    public static async Task<DatabaseInserter<Review>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<Review>("review", connection);
-    }
+    protected override string TableName => "review";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

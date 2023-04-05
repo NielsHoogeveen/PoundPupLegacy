@@ -1,19 +1,9 @@
 ﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<PersonOrganizationRelation>, IDatabaseInserter<PersonOrganizationRelation>
+internal sealed class PersonOrganizationRelationInserterFactory : DatabaseInserterFactory<PersonOrganizationRelation>
 {
-
-    private const string ID = "id";
-    private const string PERSON_ID = "person_id";
-    private const string ORGANIZATION_ID = "organization_id";
-    private const string GEOGRAPHICAL_ENTITY_ID = "geographical_entity_id";
-    private const string DATE_RANGE = "date_range";
-    private const string PERSON_ORGANIZATION_RELATION_TYPE_ID = "person_organization_relation_type_id";
-    private const string DOCUMENT_ID_PROOF = "document_id_proof";
-    private const string DESCRIPTION = "description";
-    public static async Task<DatabaseInserter<PersonOrganizationRelation>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<PersonOrganizationRelation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -21,31 +11,31 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
 
         var columnDefinitions = new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = PERSON_ID,
+                    Name = PersonOrganizationRelationInserter.PERSON_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ORGANIZATION_ID,
+                    Name = PersonOrganizationRelationInserter.ORGANIZATION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = GEOGRAPHICAL_ENTITY_ID,
+                    Name = PersonOrganizationRelationInserter.GEOGRAPHICAL_ENTITY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PERSON_ORGANIZATION_RELATION_TYPE_ID,
+                    Name = PersonOrganizationRelationInserter.PERSON_ORGANIZATION_RELATION_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_RANGE,
+                    Name = PersonOrganizationRelationInserter.DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
-                    Name = DOCUMENT_ID_PROOF,
+                    Name = PersonOrganizationRelationInserter.DOCUMENT_ID_PROOF,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DESCRIPTION,
+                    Name = PersonOrganizationRelationInserter.DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
             };
@@ -60,13 +50,24 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
             postgresConnection,
             "person_organization_relation",
             columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
-                Name = ID,
+                Name = PersonOrganizationRelationInserter.ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
         );
         return new PersonOrganizationRelationInserter(command, generateIdCommand);
-
     }
+}
+internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<PersonOrganizationRelation>
+{
+
+    internal const string ID = "id";
+    internal const string PERSON_ID = "person_id";
+    internal const string ORGANIZATION_ID = "organization_id";
+    internal const string GEOGRAPHICAL_ENTITY_ID = "geographical_entity_id";
+    internal const string DATE_RANGE = "date_range";
+    internal const string PERSON_ORGANIZATION_RELATION_TYPE_ID = "person_organization_relation_type_id";
+    internal const string DOCUMENT_ID_PROOF = "document_id_proof";
+    internal const string DESCRIPTION = "description";
     private readonly NpgsqlCommand _generateIdCommand;
     internal PersonOrganizationRelationInserter(NpgsqlCommand command, NpgsqlCommand generateIdCommand) : base(command)
     {

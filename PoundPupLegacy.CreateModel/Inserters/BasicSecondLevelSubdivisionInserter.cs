@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<BasicSecondLevelSubdivision>, IDatabaseInserter<BasicSecondLevelSubdivision>
+internal sealed class BasicSecondLevelSubdivisionInserterFactory : DatabaseInserterFactory<BasicSecondLevelSubdivision>
 {
-    private const string ID = "id";
-    private const string INTERMEDIATE_LEVEL_SUBDIVISION_ID = "intermediate_level_subdivision_id";
-
-    public static async Task<DatabaseInserter<BasicSecondLevelSubdivision>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<BasicSecondLevelSubdivision>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,18 +12,25 @@ internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<Bas
             "basic_second_level_subdivision",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = BasicSecondLevelSubdivisionInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = INTERMEDIATE_LEVEL_SUBDIVISION_ID,
+                    Name = BasicSecondLevelSubdivisionInserter.INTERMEDIATE_LEVEL_SUBDIVISION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new BasicSecondLevelSubdivisionInserter(command);
     }
-    private BasicSecondLevelSubdivisionInserter(NpgsqlCommand command) : base(command)
+
+}
+internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<BasicSecondLevelSubdivision>
+{
+    internal const string ID = "id";
+    internal const string INTERMEDIATE_LEVEL_SUBDIVISION_ID = "intermediate_level_subdivision_id";
+
+    internal BasicSecondLevelSubdivisionInserter(NpgsqlCommand command) : base(command)
     {
     }
 

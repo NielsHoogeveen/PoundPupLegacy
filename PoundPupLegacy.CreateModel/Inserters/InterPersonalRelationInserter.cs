@@ -1,15 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPersonalRelation>, IDatabaseInserter<InterPersonalRelation>
+internal sealed class InterPersonalRelationInserterFactory : DatabaseInserterFactory<InterPersonalRelation>
 {
-
-    private const string ID = "id";
-    private const string PERSON_ID_FROM = "person_id_from";
-    private const string PERSON_ID_TO = "person_id_to";
-    private const string DATE_RANGE = "date_range";
-    private const string INTER_ORGANIZATIONAL_RELATION_TYPE_ID = "inter_personal_relation_type_id";
-    private const string DOCUMENT_ID_PROOF = "document_id_proof";
-    public static async Task<DatabaseInserter<InterPersonalRelation>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<InterPersonalRelation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -20,27 +12,27 @@ internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPers
             "inter_personal_relation",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = InterPersonalRelationInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PERSON_ID_FROM,
+                    Name = InterPersonalRelationInserter.PERSON_ID_FROM,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PERSON_ID_TO,
+                    Name = InterPersonalRelationInserter.PERSON_ID_TO,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = INTER_ORGANIZATIONAL_RELATION_TYPE_ID,
+                    Name = InterPersonalRelationInserter.INTER_ORGANIZATIONAL_RELATION_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_RANGE,
+                    Name = InterPersonalRelationInserter.DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
-                    Name = DOCUMENT_ID_PROOF,
+                    Name = InterPersonalRelationInserter.DOCUMENT_ID_PROOF,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -48,6 +40,17 @@ internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPers
         return new InterPersonalRelationInserter(command);
 
     }
+}
+internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPersonalRelation>
+{
+
+    internal const string ID = "id";
+    internal const string PERSON_ID_FROM = "person_id_from";
+    internal const string PERSON_ID_TO = "person_id_to";
+    internal const string DATE_RANGE = "date_range";
+    internal const string INTER_ORGANIZATIONAL_RELATION_TYPE_ID = "inter_personal_relation_type_id";
+    internal const string DOCUMENT_ID_PROOF = "document_id_proof";
+
 
     internal InterPersonalRelationInserter(NpgsqlCommand command) : base(command)
     {

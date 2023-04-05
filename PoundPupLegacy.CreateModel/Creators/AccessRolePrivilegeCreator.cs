@@ -1,11 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class AccessRolePrivilegeCreator : IEntityCreator<AccessRolePrivilege>
+internal sealed class AccessRolePrivilegeCreator : EntityCreator<AccessRolePrivilege>
 {
-    public async Task CreateAsync(IAsyncEnumerable<AccessRolePrivilege> accessRolePrivileges, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<AccessRolePrivilege> _accessRolePrivilegeInserterFactory;
+    public AccessRolePrivilegeCreator(
+        IDatabaseInserterFactory<AccessRolePrivilege> accessRolePrivilegeInserterFactory
+    )
+    {
+        _accessRolePrivilegeInserterFactory = accessRolePrivilegeInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<AccessRolePrivilege> accessRolePrivileges, IDbConnection connection)
     {
 
-        await using var accessRolePrivilegeWriter = await AccessRolePrivilegeInserter.CreateAsync(connection);
+        await using var accessRolePrivilegeWriter = await _accessRolePrivilegeInserterFactory.CreateAsync(connection);
 
         await foreach (var accessRolePrivilege in accessRolePrivileges) {
             await accessRolePrivilegeWriter.InsertAsync(accessRolePrivilege);

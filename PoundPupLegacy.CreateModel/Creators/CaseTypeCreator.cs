@@ -1,13 +1,27 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CaseTypeCreator : IEntityCreator<CaseType>
+internal sealed class CaseTypeCreator : EntityCreator<CaseType>
 {
-    public async Task CreateAsync(IAsyncEnumerable<CaseType> caseTypes, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<NodeType> _nodeTypeInserterFactory;
+    private readonly IDatabaseInserterFactory<CaseType> _caseTypeInserterFactory;
+    private readonly IDatabaseInserterFactory<CaseTypeCasePartyType> _caseTypeCasePartyTypeInserterFactory;
+    public CaseTypeCreator(
+        IDatabaseInserterFactory<NodeType> nodeTypeInserterFactory,
+        IDatabaseInserterFactory<CaseType> caseTypeInserterFactory,
+        IDatabaseInserterFactory<CaseTypeCasePartyType> caseTypeCasePartyTypeInserterFactory
+        )
+    {
+        _nodeTypeInserterFactory = nodeTypeInserterFactory;
+        _caseTypeInserterFactory = caseTypeInserterFactory;
+        _caseTypeCasePartyTypeInserterFactory = caseTypeCasePartyTypeInserterFactory;
+
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<CaseType> caseTypes, IDbConnection connection)
     {
 
-        await using var nodeTypeWriter = await NodeTypeInserter.CreateAsync(connection);
-        await using var caseTypeWriter = await CaseTypeInserter.CreateAsync(connection);
-        await using var caseTypeCaseRelationTypeWriter = await CaseTypeCasePartyTypeInserter.CreateAsync(connection);
+        await using var nodeTypeWriter = await _nodeTypeInserterFactory.CreateAsync(connection);
+        await using var caseTypeWriter = await _caseTypeInserterFactory.CreateAsync(connection);
+        await using var caseTypeCaseRelationTypeWriter = await _caseTypeCasePartyTypeInserterFactory.CreateAsync(connection);
 
         await foreach (var caseType in caseTypes) {
             await nodeTypeWriter.InsertAsync(caseType);

@@ -1,11 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class PollInserter : DatabaseInserter<Poll>, IDatabaseInserter<Poll>
+internal sealed class PollInserterFactory : DatabaseInserterFactory<Poll>
 {
-    private const string ID = "id";
-    private const string DATE_TIME_CLOSURE = "date_time_closure";
-    private const string POLL_STATUS_ID = "poll_status_id";
-    public static async Task<DatabaseInserter<Poll>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Poll>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,22 +13,27 @@ internal sealed class PollInserter : DatabaseInserter<Poll>, IDatabaseInserter<P
             "poll",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = PollInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_TIME_CLOSURE,
+                    Name = PollInserter.DATE_TIME_CLOSURE,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
                 new ColumnDefinition{
-                    Name = POLL_STATUS_ID,
+                    Name = PollInserter.POLL_STATUS_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new PollInserter(command);
-
     }
+}
+internal sealed class PollInserter : DatabaseInserter<Poll>
+{
+    internal const string ID = "id";
+    internal const string DATE_TIME_CLOSURE = "date_time_closure";
+    internal const string POLL_STATUS_ID = "poll_status_id";
 
     internal PollInserter(NpgsqlCommand command) : base(command)
     {

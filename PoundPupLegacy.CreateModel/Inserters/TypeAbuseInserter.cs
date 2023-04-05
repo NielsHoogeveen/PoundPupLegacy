@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class TypeOfAbuseWriter : IDatabaseInserter<TypeOfAbuse>
+internal sealed class TypeOfAbuseInserterFactory : SingleIdInserterFactory<TypeOfAbuse>
 {
-    public static async Task<DatabaseInserter<TypeOfAbuse>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<TypeOfAbuse>("type_of_abuse", connection);
-    }
+    protected override string TableName => "type_of_abuse";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

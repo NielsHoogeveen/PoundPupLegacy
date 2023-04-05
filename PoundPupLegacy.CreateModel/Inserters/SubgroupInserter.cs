@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>, IDatabaseInserter<Subgroup>
+internal sealed class SubgroupInserterFactory : DatabaseInserterFactory<Subgroup>
 {
-    private const string ID = "id";
-    private const string TENANT_ID = "tenant_id";
-    public static async Task<DatabaseInserter<Subgroup>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Subgroup>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,18 +12,22 @@ internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>, IDatabaseIn
             "subgroup",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = SubgroupInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = TENANT_ID,
+                    Name = SubgroupInserter.TENANT_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new SubgroupInserter(command);
-
     }
+}
+internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>
+{
+    internal const string ID = "id";
+    internal const string TENANT_ID = "tenant_id";
 
     internal SubgroupInserter(NpgsqlCommand command) : base(command)
     {

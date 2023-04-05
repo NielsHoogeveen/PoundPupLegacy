@@ -1,17 +1,41 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class SubgroupCreator : IEntityCreator<Subgroup>
+internal sealed class SubgroupCreator : EntityCreator<Subgroup>
 {
-    public async Task CreateAsync(IAsyncEnumerable<Subgroup> subgroups, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Subgroup> _subgroupInserterFactory;
+    private readonly IDatabaseInserterFactory<UserGroup> _userGroupInserterFactory;
+    private readonly IDatabaseInserterFactory<PublishingUserGroup> _publishingUserGroupInserterFactory;
+    private readonly IDatabaseInserterFactory<Principal> _principalInserterFactory;
+    private readonly IDatabaseInserterFactory<UserRole> _userRoleInserterFactory;
+    private readonly IDatabaseInserterFactory<AccessRole> _accessRoleInserterFactory;
+    private readonly IDatabaseInserterFactory<AdministratorRole> _administratorRoleInserterFactory;
+    public SubgroupCreator(
+        IDatabaseInserterFactory<Subgroup> subgroupInserterFactory,
+        IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
+        IDatabaseInserterFactory<PublishingUserGroup> publishingUserGroupInserterFactory,
+        IDatabaseInserterFactory<Principal> principalInserterFactory,
+        IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
+        IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
+        IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
+    )
     {
-
-        await using var userGroupWriter = await UserGroupInserter.CreateAsync(connection);
-        await using var publishingUserGroupWriter = await PublishingUserGroupInserter.CreateAsync(connection);
-        await using var subgroupWriter = await SubgroupInserter.CreateAsync(connection);
-        await using var principalWriter = await PrincipalInserter.CreateAsync(connection);
-        await using var userRoleWriter = await UserRoleInserter.CreateAsync(connection);
-        await using var accessRoleWriter = await AccessRoleInserter.CreateAsync(connection);
-        await using var administratorRoleWriter = await AdministratorRoleInserter.CreateAsync(connection);
+        _subgroupInserterFactory = subgroupInserterFactory;
+        _userGroupInserterFactory = userGroupInserterFactory;
+        _publishingUserGroupInserterFactory = publishingUserGroupInserterFactory;
+        _principalInserterFactory = principalInserterFactory;
+        _userRoleInserterFactory = userRoleInserterFactory;
+        _accessRoleInserterFactory = accessRoleInserterFactory;
+        _administratorRoleInserterFactory = administratorRoleInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<Subgroup> subgroups, IDbConnection connection)
+    {
+        await using var userGroupWriter = await _userGroupInserterFactory.CreateAsync(connection);
+        await using var publishingUserGroupWriter = await _publishingUserGroupInserterFactory.CreateAsync(connection);
+        await using var subgroupWriter = await _subgroupInserterFactory.CreateAsync(connection);
+        await using var principalWriter = await _principalInserterFactory.CreateAsync(connection);
+        await using var userRoleWriter = await _userRoleInserterFactory.CreateAsync(connection);
+        await using var accessRoleWriter = await _accessRoleInserterFactory.CreateAsync(connection);
+        await using var administratorRoleWriter = await _administratorRoleInserterFactory.CreateAsync(connection);
 
 
         await foreach (var subgroup in subgroups) {

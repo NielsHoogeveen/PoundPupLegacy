@@ -1,10 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using static NpgsqlTypes.NpgsqlTsQuery;
 
-internal sealed class NodeFileInserter : DatabaseInserter<NodeFile>, IDatabaseInserter<NodeFile>
+namespace PoundPupLegacy.CreateModel.Inserters;
+internal sealed class NodeFileInserterFactory : DatabaseInserterFactory<NodeFile>
 {
-    private const string NODE_ID = "node_id";
-    private const string FILE_ID = "file_id";
-    public static async Task<DatabaseInserter<NodeFile>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<NodeFile>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,18 +14,22 @@ internal sealed class NodeFileInserter : DatabaseInserter<NodeFile>, IDatabaseIn
             "node_file",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = NODE_ID,
+                    Name = NodeFileInserter.NODE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = FILE_ID,
+                    Name = NodeFileInserter.FILE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new NodeFileInserter(command);
-
     }
+}
+internal sealed class NodeFileInserter : DatabaseInserter<NodeFile>
+{
+    internal const string NODE_ID = "node_id";
+    internal const string FILE_ID = "file_id";
 
     internal NodeFileInserter(NpgsqlCommand command) : base(command)
     {

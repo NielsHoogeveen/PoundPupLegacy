@@ -1,15 +1,34 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class ArticleCreator : IEntityCreator<Article>
+internal sealed class ArticleCreator : EntityCreator<Article>
 {
-    public async Task CreateAsync(IAsyncEnumerable<Article> articles, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
+    private readonly IDatabaseInserterFactory<SimpleTextNode> _simpleTextNodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Article> _articleInserterFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    public ArticleCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
+        IDatabaseInserterFactory<Article> articleInserterFactory,
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+        )
+    {
+        _nodeInserterFactory = nodeInserterFactory;
+        _searchableInserterFactory = searchableInserterFactory;
+        _simpleTextNodeInserterFactory = simpleTextNodeInserterFactory;
+        _articleInserterFactory = articleInserterFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<Article> articles, IDbConnection connection)
     {
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
-        await using var simpleTextNodeWriter = await SimpleTextNodeInserter.CreateAsync(connection);
-        await using var articleWriter = await ArticleInserter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
+        await using var simpleTextNodeWriter = await _simpleTextNodeInserterFactory.CreateAsync(connection);
+        await using var articleWriter = await _articleInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var article in articles) {
             await nodeWriter.InsertAsync(article);

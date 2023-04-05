@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraffickingCase>, IDatabaseInserter<ChildTraffickingCase>
+internal sealed class ChildTraffickingCaseInserterFactory : DatabaseInserterFactory<ChildTraffickingCase>
 {
-    private const string ID = "id";
-    private const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
-    private const string COUNTRY_ID_FROM = "country_id_from";
-    public static async Task<DatabaseInserter<ChildTraffickingCase>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<ChildTraffickingCase>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,23 +12,29 @@ internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraff
             "child_trafficking_case",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = ChildTraffickingCaseInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NUMBER_OF_CHILDREN_INVOLVED,
+                    Name = ChildTraffickingCaseInserter.NUMBER_OF_CHILDREN_INVOLVED,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = COUNTRY_ID_FROM,
+                    Name = ChildTraffickingCaseInserter.COUNTRY_ID_FROM,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
 
             }
         );
         return new ChildTraffickingCaseInserter(command);
-
     }
+}
+
+internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraffickingCase>
+{
+    internal const string ID = "id";
+    internal const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
+    internal const string COUNTRY_ID_FROM = "country_id_from";
 
     internal ChildTraffickingCaseInserter(NpgsqlCommand command) : base(command)
     {

@@ -1,17 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class UserInserter : DatabaseInserter<User>, IDatabaseInserter<User>
+internal sealed class UserInserterFactory : DatabaseInserterFactory<User>
 {
-    private const string ID = "id";
-    private const string CREATED_DATE_TIME = "created_date_time";
-    private const string ABOUT_ME = "about_me";
-    private const string ANIMAL_WITHIN = "animal_within";
-    private const string RELATION_TO_CHILD_PLACEMENT = "relation_to_child_placement";
-    private const string EMAIL = "email";
-    private const string PASSWORD = "password";
-    private const string AVATAR = "avatar";
-    private const string USER_STATUS_ID = "user_status_id";
-    public static async Task<DatabaseInserter<User>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<User>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -22,46 +12,57 @@ internal sealed class UserInserter : DatabaseInserter<User>, IDatabaseInserter<U
             "user",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = UserInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = CREATED_DATE_TIME,
+                    Name = UserInserter.CREATED_DATE_TIME,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
                 new ColumnDefinition{
-                    Name = ABOUT_ME,
+                    Name = UserInserter.ABOUT_ME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = ANIMAL_WITHIN,
+                    Name = UserInserter.ANIMAL_WITHIN,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = RELATION_TO_CHILD_PLACEMENT,
+                    Name = UserInserter.RELATION_TO_CHILD_PLACEMENT,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = EMAIL,
+                    Name = UserInserter.EMAIL,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = PASSWORD,
+                    Name = UserInserter.PASSWORD,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = AVATAR,
+                    Name = UserInserter.AVATAR,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = USER_STATUS_ID,
+                    Name = UserInserter.USER_STATUS_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new UserInserter(command);
-
     }
+}
+internal sealed class UserInserter : DatabaseInserter<User>
+{
+    internal const string ID = "id";
+    internal const string CREATED_DATE_TIME = "created_date_time";
+    internal const string ABOUT_ME = "about_me";
+    internal const string ANIMAL_WITHIN = "animal_within";
+    internal const string RELATION_TO_CHILD_PLACEMENT = "relation_to_child_placement";
+    internal const string EMAIL = "email";
+    internal const string PASSWORD = "password";
+    internal const string AVATAR = "avatar";
+    internal const string USER_STATUS_ID = "user_status_id";
 
     internal UserInserter(NpgsqlCommand command) : base(command)
     {

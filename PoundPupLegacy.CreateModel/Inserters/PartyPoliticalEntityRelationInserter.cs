@@ -1,15 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<PartyPoliticalEntityRelation>, IDatabaseInserter<PartyPoliticalEntityRelation>
+internal sealed class PartyPoliticalEntityRelationInserterFactory : DatabaseInserterFactory<PartyPoliticalEntityRelation>
 {
-
-    private const string ID = "id";
-    private const string POLITICAL_ENTITY_ID = "political_entity_id";
-    private const string PARTY_ID = "party_id";
-    private const string DATE_RANGE = "date_range";
-    private const string PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID = "party_political_entity_relation_type_id";
-    private const string DOCUMENT_ID_PROOF = "document_id_proof";
-    public static async Task<DatabaseInserter<PartyPoliticalEntityRelation>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<PartyPoliticalEntityRelation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -20,27 +12,27 @@ internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<Pa
             "party_political_entity_relation",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = PartyPoliticalEntityRelationInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PARTY_ID,
+                    Name = PartyPoliticalEntityRelationInserter.PARTY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = POLITICAL_ENTITY_ID,
+                    Name = PartyPoliticalEntityRelationInserter.POLITICAL_ENTITY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID,
+                    Name = PartyPoliticalEntityRelationInserter.PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_RANGE,
+                    Name = PartyPoliticalEntityRelationInserter.DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
-                    Name = DOCUMENT_ID_PROOF,
+                    Name = PartyPoliticalEntityRelationInserter.DOCUMENT_ID_PROOF,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -48,6 +40,17 @@ internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<Pa
         return new PartyPoliticalEntityRelationInserter(command);
 
     }
+
+}
+internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<PartyPoliticalEntityRelation>
+{
+
+    internal const string ID = "id";
+    internal const string POLITICAL_ENTITY_ID = "political_entity_id";
+    internal const string PARTY_ID = "party_id";
+    internal const string DATE_RANGE = "date_range";
+    internal const string PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID = "party_political_entity_relation_type_id";
+    internal const string DOCUMENT_ID_PROOF = "document_id_proof";
 
     internal PartyPoliticalEntityRelationInserter(NpgsqlCommand command) : base(command)
     {

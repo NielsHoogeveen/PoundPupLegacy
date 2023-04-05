@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class CaseTypeInserter : IDatabaseInserter<CaseType>
+internal sealed class CaseTypeInserterFactory : SingleIdInserterFactory<CaseType>
 {
-    public static async Task<DatabaseInserter<CaseType>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<CaseType>("case_type", connection);
-    }
+    protected override string TableName => "case_type";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

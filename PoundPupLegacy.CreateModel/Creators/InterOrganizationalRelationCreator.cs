@@ -1,13 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class InterOrganizationalRelationCreator : IEntityCreator<InterOrganizationalRelation>
+internal sealed class InterOrganizationalRelationCreator : EntityCreator<InterOrganizationalRelation>
 {
-    public async Task CreateAsync(IAsyncEnumerable<InterOrganizationalRelation> interOrganizationalRelations, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<InterOrganizationalRelation> _interOrganizationalRelationInserterFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    public InterOrganizationalRelationCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<InterOrganizationalRelation> interOrganizationalRelationInserterFactory,
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+    )
+    {
+        _interOrganizationalRelationInserterFactory = interOrganizationalRelationInserterFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+        _nodeInserterFactory = nodeInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<InterOrganizationalRelation> interOrganizationalRelations, IDbConnection connection)
     {
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var interOrganizationalRelationWriter = await InterOrganizationalRelationInserter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var interOrganizationalRelationWriter = await _interOrganizationalRelationInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var interOrganizationalRelation in interOrganizationalRelations) {
             await nodeWriter.InsertAsync(interOrganizationalRelation);

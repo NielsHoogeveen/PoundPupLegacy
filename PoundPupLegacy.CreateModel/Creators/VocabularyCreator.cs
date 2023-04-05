@@ -1,13 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class VocabularyCreator : IEntityCreator<Vocabulary>
+internal sealed class VocabularyCreator : EntityCreator<Vocabulary>
 {
-    public async Task CreateAsync(IAsyncEnumerable<Vocabulary> vocabularies, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Vocabulary> _vocabularyInserterFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    public VocabularyCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory, 
+        IDatabaseInserterFactory<Vocabulary> vocabularyInserterFactory, 
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+    )
     {
-
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var vocabularyWriter = await VocabularyInserter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+        _nodeInserterFactory = nodeInserterFactory;
+        _vocabularyInserterFactory = vocabularyInserterFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<Vocabulary> vocabularies, IDbConnection connection)
+    {
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var vocabularyWriter = await _vocabularyInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var vocabulary in vocabularies) {
             await nodeWriter.InsertAsync(vocabulary);

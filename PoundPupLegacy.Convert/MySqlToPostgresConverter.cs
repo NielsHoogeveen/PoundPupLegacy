@@ -18,7 +18,7 @@ internal partial class MySqlToPostgresConverter
         await postgresConnection.OpenAsync();
 
         var sc = new ServiceCollection();
-        sc.AddEntityCreators();
+        sc.AddCreateModelAccessors();
         var connections = new DatabaseConnections {
             MysqlConnectionCPCT = mysqlConnectionCPCT,
             MysqlConnectionPPL = mysqlConnectionPPL,

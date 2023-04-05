@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class TermHierarchyInserter : DatabaseInserter<TermHierarchy>, IDatabaseInserter<TermHierarchy>
+internal sealed class TermHierarchyInserterFactory : DatabaseInserterFactory<TermHierarchy>
 {
-    private const string TERM_ID_PARENT = "term_id_parent";
-    private const string TERM_ID_CHILD = "term_id_child";
-    public static async Task<DatabaseInserter<TermHierarchy>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<TermHierarchy>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,20 +12,23 @@ internal sealed class TermHierarchyInserter : DatabaseInserter<TermHierarchy>, I
             "term_hierarchy",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = TERM_ID_PARENT,
+                    Name = TermHierarchyInserter.TERM_ID_PARENT,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = TERM_ID_CHILD,
+                    Name = TermHierarchyInserter.TERM_ID_CHILD,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
-
         return new TermHierarchyInserter(command);
-
     }
-    private TermHierarchyInserter(NpgsqlCommand command) : base(command)
+}
+internal sealed class TermHierarchyInserter : DatabaseInserter<TermHierarchy>
+{
+    internal const string TERM_ID_PARENT = "term_id_parent";
+    internal const string TERM_ID_CHILD = "term_id_child";
+    internal TermHierarchyInserter(NpgsqlCommand command) : base(command)
     {
     }
 

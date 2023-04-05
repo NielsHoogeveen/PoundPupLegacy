@@ -1,12 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using static System.Net.Mime.MediaTypeNames;
 
-internal sealed class PollOptionInserter : DatabaseInserter<PollOption>, IDatabaseInserter<PollOption>
+namespace PoundPupLegacy.CreateModel.Inserters;
+internal sealed class PollOptionInserterFactory : DatabaseInserterFactory<PollOption>
 {
-    private const string POLL_QUESTION_ID = "poll_question_id";
-    private const string DELTA = "delta";
-    private const string TEXT = "text";
-    private const string NUMBER_OF_VOTES = "number_of_votes";
-    public static async Task<DatabaseInserter<PollOption>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<PollOption>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,26 +14,32 @@ internal sealed class PollOptionInserter : DatabaseInserter<PollOption>, IDataba
             "poll_option",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = POLL_QUESTION_ID,
+                    Name = PollOptionInserter.POLL_QUESTION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DELTA,
+                    Name = PollOptionInserter.DELTA,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = TEXT,
+                    Name = PollOptionInserter.TEXT,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = NUMBER_OF_VOTES,
+                    Name = PollOptionInserter.NUMBER_OF_VOTES,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new PollOptionInserter(command);
-
     }
+}
+internal sealed class PollOptionInserter : DatabaseInserter<PollOption>
+{
+    internal const string POLL_QUESTION_ID = "poll_question_id";
+    internal const string DELTA = "delta";
+    internal const string TEXT = "text";
+    internal const string NUMBER_OF_VOTES = "number_of_votes";
 
     internal PollOptionInserter(NpgsqlCommand command) : base(command)
     {

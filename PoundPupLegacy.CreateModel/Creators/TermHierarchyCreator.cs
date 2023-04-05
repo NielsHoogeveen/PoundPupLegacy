@@ -1,11 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class TermHierarchyCreator : IEntityCreator<TermHierarchy>
+internal sealed class TermHierarchyCreator : EntityCreator<TermHierarchy>
 {
-    public async Task CreateAsync(IAsyncEnumerable<TermHierarchy> termHierarchies, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
+    public TermHierarchyCreator(IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory)
+    {
+        _termHierarchyInserterFactory = termHierarchyInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<TermHierarchy> termHierarchies, IDbConnection connection)
     {
 
-        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
+        await using var termHierarchyWriter = await _termHierarchyInserterFactory.CreateAsync(connection);
 
         await foreach (var termHierarchy in termHierarchies) {
             await termHierarchyWriter.InsertAsync(termHierarchy);

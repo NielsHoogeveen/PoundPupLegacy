@@ -1,9 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class WrongfulRemovalCaseInserter : IDatabaseInserter<WrongfulRemovalCase>
+internal sealed class WrongfulRemovalCaseInserterFactory : SingleIdInserterFactory<WrongfulRemovalCase>
 {
-    public static async Task<DatabaseInserter<WrongfulRemovalCase>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<WrongfulRemovalCase>("wrongful_removal_case", connection);
-    }
+    protected override string TableName => "wrongful_removal_case";
+
+    protected override bool AutoGenerateIdentity => false;
 }

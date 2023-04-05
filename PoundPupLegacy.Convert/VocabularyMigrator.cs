@@ -6,12 +6,14 @@ internal sealed class VocabularyMigrator : MigratorPPL
 {
     private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
     private readonly IEntityCreator<Vocabulary> _vocabularyCreator;
+    private readonly IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary> _tenantUpdaterSetTaggingVocabularyFactory;
 
     protected override string Name => "vocabularies";
     public VocabularyMigrator(
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
-        IEntityCreator<Vocabulary> vocabularyCreator
+        IEntityCreator<Vocabulary> vocabularyCreator,
+        IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary> tenantUpdaterSetTaggingVocabularyFactory
     ) : base(databaseConnections)
     {
         _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
@@ -278,11 +280,14 @@ internal sealed class VocabularyMigrator : MigratorPPL
         await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         await _vocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
         await _vocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
-        await using var tenantUpdater = await TenantUpdaterSetTaggingVocabulary.CreateAsync(_postgresConnection);
-        await tenantUpdater.Update(Constants.PPL, await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+        await using var tenantUpdater = await _tenantUpdaterSetTaggingVocabularyFactory.CreateAsync(_postgresConnection);
+        await tenantUpdater.UpdateAsync(new TenantUpdaterSetTaggingVocabulary.Request { 
             TenantId = Constants.PPL,
-            UrlId = 4126
-        }));
+            VocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                TenantId = Constants.PPL,
+                UrlId = 4126
+            })
+        });
     }
     private async IAsyncEnumerable<Vocabulary> ReadVocabularies()
     {

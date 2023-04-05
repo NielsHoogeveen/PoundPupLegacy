@@ -5,7 +5,7 @@ using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.Readers;
 using PoundPupLegacy.Updaters;
 using PoundPupLegacy.ViewModel.Readers;
-using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.Services;
 
@@ -18,7 +18,7 @@ public static class DependencyInjection
         services.AddSystemDeleters();
         services.AddSystemUpdaters();
         services.AddViewModelReaders();
-        services.AddEntityCreators();
+        services.AddCreateModelAccessors();
 
         services.AddTransient<IFetchNodeService, FetchNodeService>();
         services.AddTransient<IFetchBlogService, FetchBlogService>();
@@ -31,13 +31,13 @@ public static class DependencyInjection
         services.AddTransient<IFetchSearchService, FetchSearchService>();
         services.AddTransient<IRazorViewToStringService, RazorViewToStringService>();
         services.AddTransient<IAuthenticationService, AuthenticationService>();
-        services.AddTransient<IEditService<Article>, ArticleEditService>();
-        services.AddTransient<IEditService<BlogPost>, BlogPostEditService>();
-        services.AddTransient<IEditService<Discussion>, DiscussionEditService>();
-        services.AddTransient<IEditService<Organization>, OrganizationEditService>();
-        services.AddTransient<IEditService<Document>, DocumentEditService>();
+        services.AddTransient<IEditService<EditModel.Article>, ArticleEditService>();
+        services.AddTransient<IEditService<EditModel.BlogPost>, BlogPostEditService>();
+        services.AddTransient<IEditService<EditModel.Discussion>, DiscussionEditService>();
+        services.AddTransient<IEditService<EditModel.Organization>, OrganizationEditService>();
+        services.AddTransient<IEditService<EditModel.Document>, DocumentEditService>();
         services.AddTransient<ISaveService<IEnumerable<EditModel.File>>, FilesSaveService>();
-        services.AddTransient<ISaveService<IEnumerable<TenantNode>>, TenantNodesSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<EditModel.TenantNode>>, TenantNodesSaveService>();
         services.AddTransient<ISaveService<IEnumerable<Tag>>, TagsSaveService>();
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();

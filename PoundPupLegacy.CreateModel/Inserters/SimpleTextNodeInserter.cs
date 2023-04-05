@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>, IDatabaseInserter<SimpleTextNode>
+internal sealed class SimpleTextNodeInserterFactory : DatabaseInserterFactory<SimpleTextNode>
 {
-    private const string ID = "id";
-    private const string TEXT = "text";
-    private const string TEASER = "teaser";
-    public static async Task<DatabaseInserter<SimpleTextNode>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<SimpleTextNode>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,22 +12,27 @@ internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>,
             "simple_text_node",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = SimpleTextNodeInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = TEXT,
+                    Name = SimpleTextNodeInserter.TEXT,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = TEASER,
+                    Name = SimpleTextNodeInserter.TEASER,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
             }
         );
         return new SimpleTextNodeInserter(command);
-
     }
+}
+internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>
+{
+    internal const string ID = "id";
+    internal const string TEXT = "text";
+    internal const string TEASER = "teaser";
 
     internal SimpleTextNodeInserter(NpgsqlCommand command) : base(command)
     {

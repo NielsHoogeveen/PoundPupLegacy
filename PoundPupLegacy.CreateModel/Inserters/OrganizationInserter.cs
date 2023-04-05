@@ -1,14 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class OrganizationInserter : DatabaseInserter<Organization>, IDatabaseInserter<Organization>
+internal sealed class OrganizationInserterFactory : DatabaseInserterFactory<Organization>
 {
-    private const string ID = "id";
-    private const string WEBSITE_URL = "website_url";
-    private const string EMAIL_ADDRESS = "email_address";
-    private const string DESCRIPTION = "description";
-    private const string ESTABLISHED = "established";
-    private const string TERMINATED = "terminated";
-    public static async Task<DatabaseInserter<Organization>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Organization>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -19,35 +12,42 @@ internal sealed class OrganizationInserter : DatabaseInserter<Organization>, IDa
             "organization",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = OrganizationInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = WEBSITE_URL,
+                    Name = OrganizationInserter.WEBSITE_URL,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = EMAIL_ADDRESS,
+                    Name = OrganizationInserter.EMAIL_ADDRESS,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = DESCRIPTION,
+                    Name = OrganizationInserter.DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = ESTABLISHED,
+                    Name = OrganizationInserter.ESTABLISHED,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
                 new ColumnDefinition{
-                    Name = TERMINATED,
+                    Name = OrganizationInserter.TERMINATED,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
             }
         );
-
         return new OrganizationInserter(command);
-
     }
+}
+internal sealed class OrganizationInserter : DatabaseInserter<Organization>
+{
+    internal const string ID = "id";
+    internal const string WEBSITE_URL = "website_url";
+    internal const string EMAIL_ADDRESS = "email_address";
+    internal const string DESCRIPTION = "description";
+    internal const string ESTABLISHED = "established";
+    internal const string TERMINATED = "terminated";
 
     internal OrganizationInserter(NpgsqlCommand command) : base(command)
     {

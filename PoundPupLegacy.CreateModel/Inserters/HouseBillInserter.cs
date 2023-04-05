@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class HouseBillInserter : IDatabaseInserter<HouseBill>
+internal sealed class HouseBillInserterFactory : SingleIdInserterFactory<HouseBill>
 {
-    public static async Task<DatabaseInserter<HouseBill>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<HouseBill>("house_bill", connection);
-    }
+    protected override string TableName => "house_bill";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

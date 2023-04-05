@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class SystemGroupInserter : IDatabaseInserter<SystemGroup>
+internal sealed class SystemGroupInserterFactory : SingleIdInserterFactory<SystemGroup>
 {
-    public static async Task<DatabaseInserter<SystemGroup>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<SystemGroup>("system_group", connection);
-    }
+    protected override string TableName => "system_group";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

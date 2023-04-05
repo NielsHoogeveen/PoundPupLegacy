@@ -5,15 +5,37 @@ public interface ISystemGroupCreator
 }
 internal sealed class SystemGroupCreator: ISystemGroupCreator
 {
+    private readonly IDatabaseInserterFactory<SystemGroup> _systemGroupInserterFactory;
+    private readonly IDatabaseInserterFactory<UserGroup> _userGroupInserterFactory;
+    private readonly IDatabaseInserterFactory<Principal> _principalInserterFactory;
+    private readonly IDatabaseInserterFactory<UserRole> _userRoleInserterFactory;
+    private readonly IDatabaseInserterFactory<AccessRole> _accessRoleInserterFactory;
+    private readonly IDatabaseInserterFactory<AdministratorRole> _administratorRoleInserterFactory;
+    public SystemGroupCreator(
+        IDatabaseInserterFactory<SystemGroup> systemGroupInserterFactory,
+        IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
+        IDatabaseInserterFactory<Principal> principalInserterFactory,
+        IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
+        IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
+        IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
+    )
+    {
+        _systemGroupInserterFactory = systemGroupInserterFactory;
+        _userGroupInserterFactory = userGroupInserterFactory;
+        _principalInserterFactory = principalInserterFactory;
+        _userRoleInserterFactory = userRoleInserterFactory;
+        _accessRoleInserterFactory = accessRoleInserterFactory;
+        _administratorRoleInserterFactory = administratorRoleInserterFactory;
+    }
     public async Task CreateAsync(IDbConnection connection)
     {
 
-        await using var userGroupWriter = await UserGroupInserter.CreateAsync(connection);
-        await using var systemGroupWriter = await SystemGroupInserter.CreateAsync(connection);
-        await using var principalWriter = await PrincipalInserter.CreateAsync(connection);
-        await using var userRoleWriter = await UserRoleInserter.CreateAsync(connection);
-        await using var accessRoleWriter = await AccessRoleInserter.CreateAsync(connection);
-        await using var administratorRoleWriter = await AdministratorRoleInserter.CreateAsync(connection);
+        await using var userGroupWriter = await _userGroupInserterFactory.CreateAsync(connection);
+        await using var systemGroupWriter = await _systemGroupInserterFactory.CreateAsync(connection);
+        await using var principalWriter = await _principalInserterFactory.CreateAsync(connection);
+        await using var userRoleWriter = await _userRoleInserterFactory.CreateAsync(connection);
+        await using var accessRoleWriter = await _accessRoleInserterFactory.CreateAsync(connection);
+        await using var administratorRoleWriter = await _administratorRoleInserterFactory.CreateAsync(connection);
 
         var systemGroup = new SystemGroup();
         await userGroupWriter.InsertAsync(systemGroup);

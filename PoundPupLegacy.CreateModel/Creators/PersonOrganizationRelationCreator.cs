@@ -1,13 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class PersonOrganizationRelationCreator : IEntityCreator<PersonOrganizationRelation>
+internal sealed class PersonOrganizationRelationCreator : EntityCreator<PersonOrganizationRelation>
 {
-    public async Task CreateAsync(IAsyncEnumerable<PersonOrganizationRelation> personOrganizationRelations, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<PersonOrganizationRelation> _personOrganizationRelationInserterFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    public PersonOrganizationRelationCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory, 
+        IDatabaseInserterFactory<PersonOrganizationRelation> personOrganizationRelationInserterFactory, 
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
     {
+        _nodeInserterFactory = nodeInserterFactory;
+        _personOrganizationRelationInserterFactory = personOrganizationRelationInserterFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+    }
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var personOrganizationRelationWriter = await PersonOrganizationRelationInserter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+    public override async Task CreateAsync(IAsyncEnumerable<PersonOrganizationRelation> personOrganizationRelations, IDbConnection connection)
+    {
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var personOrganizationRelationWriter = await _personOrganizationRelationInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var personOrganizationRelation in personOrganizationRelations) {
             await nodeWriter.InsertAsync(personOrganizationRelation);

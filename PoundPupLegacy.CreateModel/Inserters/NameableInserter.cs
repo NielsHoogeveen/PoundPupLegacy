@@ -1,11 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class NameableInserter : DatabaseInserter<Nameable>, IDatabaseInserter<Nameable>
+internal sealed class NameableInserterFactory : DatabaseInserterFactory<Nameable>
 {
-    private const string ID = "id";
-    private const string DESCRIPTION = "description";
-    private const string FILE_ID_TILE_IMAGE = "file_id_tile_image";
-    public static async Task<DatabaseInserter<Nameable>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Nameable>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,22 +13,27 @@ internal sealed class NameableInserter : DatabaseInserter<Nameable>, IDatabaseIn
             "nameable",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = NameableInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DESCRIPTION,
+                    Name = NameableInserter.DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = FILE_ID_TILE_IMAGE,
+                    Name = NameableInserter.FILE_ID_TILE_IMAGE,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new NameableInserter(command);
-
     }
+}
+internal sealed class NameableInserter : DatabaseInserter<Nameable>
+{
+    internal const string ID = "id";
+    internal const string DESCRIPTION = "description";
+    internal const string FILE_ID_TILE_IMAGE = "file_id_tile_image";
 
     internal NameableInserter(NpgsqlCommand command) : base(command)
     {

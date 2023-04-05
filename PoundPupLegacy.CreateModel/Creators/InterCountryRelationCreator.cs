@@ -1,13 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class InterCountryRelationCreator : IEntityCreator<InterCountryRelation>
+internal sealed class InterCountryRelationCreator : EntityCreator<InterCountryRelation>
 {
-    public async Task CreateAsync(IAsyncEnumerable<InterCountryRelation> interCountryRelations, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<InterCountryRelation> _interCountryRelationInserterFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    public InterCountryRelationCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<InterCountryRelation> interCountryRelationInserterFactory,
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+    )
+    {
+        _interCountryRelationInserterFactory = interCountryRelationInserterFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+        _nodeInserterFactory = nodeInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<InterCountryRelation> interCountryRelations, IDbConnection connection)
     {
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var interCountryRelationWriter = await InterCountryRelationInserter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var interCountryRelationWriter = await _interCountryRelationInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var interCountryRelation in interCountryRelations) {
             await nodeWriter.InsertAsync(interCountryRelation);

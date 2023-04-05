@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class CasePartiesOrganizationInserter : DatabaseInserter<CasePartiesOrganization>, IDatabaseInserter<CasePartiesOrganization>
+internal sealed class CasePartiesOrganizationInserterFactory : DatabaseInserterFactory<CasePartiesOrganization>
 {
-
-    private const string CASE_PARTIES_ID = "case_parties_id";
-    private const string ORGANIZATION_ID = "organization_id";
-    public static async Task<DatabaseInserter<CasePartiesOrganization>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<CasePartiesOrganization>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,11 +12,11 @@ internal sealed class CasePartiesOrganizationInserter : DatabaseInserter<CasePar
             "case_parties_organization",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = CASE_PARTIES_ID,
+                    Name = CasePartiesOrganizationInserter.CASE_PARTIES_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ORGANIZATION_ID,
+                    Name = CasePartiesOrganizationInserter.ORGANIZATION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -28,6 +24,13 @@ internal sealed class CasePartiesOrganizationInserter : DatabaseInserter<CasePar
         return new CasePartiesOrganizationInserter(command);
 
     }
+
+}
+internal sealed class CasePartiesOrganizationInserter : DatabaseInserter<CasePartiesOrganization>
+{
+
+    internal const string CASE_PARTIES_ID = "case_parties_id";
+    internal const string ORGANIZATION_ID = "organization_id";
 
     internal CasePartiesOrganizationInserter(NpgsqlCommand command) : base(command)
     {

@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSubdivision>, IDatabaseInserter<ISOCodedSubdivision>
+internal sealed class ISOCodedSubdivisionInserterFactory : DatabaseInserterFactory<ISOCodedSubdivision>
 {
-    private const string ID = "id";
-    private const string ISO_3166_2_CODE = "iso_3166_2_code";
-    public static async Task<DatabaseInserter<ISOCodedSubdivision>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<ISOCodedSubdivision>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,18 +12,23 @@ internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSub
             "iso_coded_subdivision",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = ISOCodedSubdivisionInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ISO_3166_2_CODE,
+                    Name = ISOCodedSubdivisionInserter.ISO_3166_2_CODE,
                     NpgsqlDbType = NpgsqlDbType.Char
                 },
             }
         );
         return new ISOCodedSubdivisionInserter(command);
     }
-    private ISOCodedSubdivisionInserter(NpgsqlCommand command) : base(command)
+}
+internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSubdivision>
+{
+    internal const string ID = "id";
+    internal const string ISO_3166_2_CODE = "iso_3166_2_code";
+    internal ISOCodedSubdivisionInserter(NpgsqlCommand command) : base(command)
     {
     }
 

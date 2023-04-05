@@ -1,11 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class NodeTypeCreator : IEntityCreator<BasicNodeType>
+internal sealed class NodeTypeCreator : EntityCreator<BasicNodeType>
 {
-    public async Task CreateAsync(IAsyncEnumerable<BasicNodeType> nodeTypes, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<NodeType> _nodeTypeInserterFactory;
+    public NodeTypeCreator(
+        IDatabaseInserterFactory<NodeType> nodeTypeInserterFactory)
+    {
+        _nodeTypeInserterFactory = nodeTypeInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<BasicNodeType> nodeTypes, IDbConnection connection)
     {
 
-        await using var nodeTypeWriter = await NodeTypeInserter.CreateAsync(connection);
+        await using var nodeTypeWriter = await _nodeTypeInserterFactory.CreateAsync(connection);
 
         await foreach (var nodeType in nodeTypes) {
             await nodeTypeWriter.InsertAsync(nodeType);

@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class ISOCodedFirstLevelSubdivisionInserter : IDatabaseInserter<ISOCodedFirstLevelSubdivision>
+internal sealed class ISOCodedFirstLevelSubdivisionInserterFactory : SingleIdInserterFactory<ISOCodedFirstLevelSubdivision>
 {
-    public static async Task<DatabaseInserter<ISOCodedFirstLevelSubdivision>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<ISOCodedFirstLevelSubdivision>("iso_coded_first_level_subdivision", connection);
-    }
+    protected override string TableName => "iso_coded_first_level_subdivision";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

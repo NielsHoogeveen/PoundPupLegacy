@@ -1,13 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>, IDatabaseInserter<HouseTerm>
+internal sealed class HouseTermInserterFactory : DatabaseInserterFactory<HouseTerm>
 {
-    private const string ID = "id";
-    private const string REPRESENTATIVE_ID = "representative_id";
-    private const string SUBDIVISION_ID = "subdivision_id";
-    private const string DISTRICT = "district";
-    private const string DATE_RANGE = "date_range";
-    public static async Task<DatabaseInserter<HouseTerm>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<HouseTerm>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -18,23 +12,23 @@ internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>, IDatabase
             "house_term",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = HouseTermInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = REPRESENTATIVE_ID,
+                    Name = HouseTermInserter.REPRESENTATIVE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = SUBDIVISION_ID,
+                    Name = HouseTermInserter.SUBDIVISION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DISTRICT,
+                    Name = HouseTermInserter.DISTRICT,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_RANGE,
+                    Name = HouseTermInserter.DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
             }
@@ -42,6 +36,15 @@ internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>, IDatabase
         return new HouseTermInserter(command);
 
     }
+
+}
+internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>
+{
+    internal const string ID = "id";
+    internal const string REPRESENTATIVE_ID = "representative_id";
+    internal const string SUBDIVISION_ID = "subdivision_id";
+    internal const string DISTRICT = "district";
+    internal const string DATE_RANGE = "date_range";
 
     internal HouseTermInserter(NpgsqlCommand command) : base(command)
     {

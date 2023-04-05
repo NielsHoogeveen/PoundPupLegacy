@@ -1,16 +1,9 @@
 ﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<RepresentativeHouseBillAction>, IDatabaseInserter<RepresentativeHouseBillAction>
+internal sealed class RepresentativeHouseBillActionInserterFactory : DatabaseInserterFactory<RepresentativeHouseBillAction>
 {
-
-    private const string ID = "id";
-    private const string REPRESENTATIVE_ID = "representative_id";
-    private const string HOUSE_BILL_ID = "house_bill_id";
-    private const string DATE = "date";
-    private const string BILL_ACTION_TYPE_ID = "bill_action_type_id";
-    public static async Task<DatabaseInserter<RepresentativeHouseBillAction>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<RepresentativeHouseBillAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -18,19 +11,19 @@ internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<R
 
         var columnDefinitions = new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = REPRESENTATIVE_ID,
+                    Name = RepresentativeHouseBillActionInserter.REPRESENTATIVE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = HOUSE_BILL_ID,
+                    Name = RepresentativeHouseBillActionInserter.HOUSE_BILL_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = BILL_ACTION_TYPE_ID,
+                    Name = RepresentativeHouseBillActionInserter.BILL_ACTION_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE,
+                    Name = RepresentativeHouseBillActionInserter.DATE,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
             };
@@ -45,13 +38,21 @@ internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<R
             postgresConnection,
             "representative_house_bill_action",
             columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
-                Name = ID,
+                Name = RepresentativeHouseBillActionInserter.ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
         );
         return new RepresentativeHouseBillActionInserter(command, genarateIdCommand);
-
     }
+}
+internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<RepresentativeHouseBillAction>
+{
+
+    internal const string ID = "id";
+    internal const string REPRESENTATIVE_ID = "representative_id";
+    internal const string HOUSE_BILL_ID = "house_bill_id";
+    internal const string DATE = "date";
+    internal const string BILL_ACTION_TYPE_ID = "bill_action_type_id";
 
     private NpgsqlCommand _generateIdCommand;
 

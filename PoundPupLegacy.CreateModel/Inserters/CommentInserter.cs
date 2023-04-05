@@ -1,21 +1,10 @@
 ﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.CreateModel.Inserters;
-public class CommentInserter : DatabaseInserter<Comment>, IDatabaseInserter<Comment>
+
+public class CommentInserterFactory : DatabaseInserterFactory<Comment>
 {
-    private const string ID = "id";
-    private const string NODE_ID = "node_id";
-    private const string COMMENT_ID_PARENT = "comment_id_parent";
-    private const string PUBLISHER_ID = "publisher_id";
-    private const string NODE_STATUS_ID = "node_status_id";
-    private const string IP_ADDRESS = "ip_address";
-    private const string CREATED_DATE_TIME = "created_date_time";
-    private const string TITLE = "title";
-    private const string TEXT = "text";
-
-
-
-    public static async Task<DatabaseInserter<Comment>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Comment>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -23,35 +12,35 @@ public class CommentInserter : DatabaseInserter<Comment>, IDatabaseInserter<Comm
 
         var columnDefinitions = new ColumnDefinition[] {
             new ColumnDefinition{
-                Name = PUBLISHER_ID,
+                Name = CommentInserter.PUBLISHER_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = NODE_ID,
+                Name = CommentInserter.NODE_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = COMMENT_ID_PARENT,
+                Name = CommentInserter.COMMENT_ID_PARENT,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = NODE_STATUS_ID,
+                Name = CommentInserter.NODE_STATUS_ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition{
-                Name = IP_ADDRESS,
+                Name = CommentInserter.IP_ADDRESS,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition{
-                Name = CREATED_DATE_TIME,
+                Name = CommentInserter.CREATED_DATE_TIME,
                 NpgsqlDbType = NpgsqlDbType.Timestamp
             },
             new ColumnDefinition{
-                Name = TITLE,
+                Name = CommentInserter.TITLE,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
             new ColumnDefinition{
-                Name = TEXT,
+                Name = CommentInserter.TEXT,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
         };
@@ -61,7 +50,7 @@ public class CommentInserter : DatabaseInserter<Comment>, IDatabaseInserter<Comm
             "comment",
             columnDefinitions.ToImmutableList().Prepend(
                 new ColumnDefinition {
-                    Name = ID,
+                    Name = CommentInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 })
         );
@@ -74,8 +63,24 @@ public class CommentInserter : DatabaseInserter<Comment>, IDatabaseInserter<Comm
     }
 
 
+
+}
+public class CommentInserter : DatabaseInserter<Comment>
+{
+    internal const string ID = "id";
+    internal const string NODE_ID = "node_id";
+    internal const string COMMENT_ID_PARENT = "comment_id_parent";
+    internal const string PUBLISHER_ID = "publisher_id";
+    internal const string NODE_STATUS_ID = "node_status_id";
+    internal const string IP_ADDRESS = "ip_address";
+    internal const string CREATED_DATE_TIME = "created_date_time";
+    internal const string TITLE = "title";
+    internal const string TEXT = "text";
+
+
+
     private NpgsqlCommand _identityCommand { get; }
-    private CommentInserter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)
+    internal CommentInserter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)
     {
         _identityCommand = identityCommand;
     }

@@ -2,12 +2,18 @@
 
 public interface IEntityCreator<T>
 {
-    public Task CreateAsync(IAsyncEnumerable<T> elements, IDbConnection connection);
+    Task CreateAsync(IAsyncEnumerable<T> elements, IDbConnection connection);
 }
 
-internal static class EntityCreator
+internal abstract class EntityCreator<T>: IEntityCreator<T>
 {
-    internal static async Task WriteTerms(Nameable nameable, DatabaseInserter<Term> termWriter, TermReaderByName termReader, DatabaseInserter<TermHierarchy> termHierarchyWriter, VocabularyIdReaderByOwnerAndName vocabularyIdReader)
+    public abstract Task CreateAsync(IAsyncEnumerable<T> elements, IDbConnection connection);
+    public async Task CreateAsync(T element, IDbConnection connection)
+    {
+        await CreateAsync(new List<T> { element }.ToAsyncEnumerable(), connection);
+    }
+
+    internal static async Task WriteTerms(Nameable nameable, IDatabaseInserter<Term> termWriter, TermReaderByName termReader, IDatabaseInserter<TermHierarchy> termHierarchyWriter, VocabularyIdReaderByOwnerAndName vocabularyIdReader)
     {
         foreach (var vocabularyName in nameable.VocabularyNames) {
             var vocubularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {

@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FirstAndBottomLevelSubdivisionInserter : IDatabaseInserter<FirstAndBottomLevelSubdivision>
+internal sealed class FirstAndBottomLevelSubdivisionInserterFactory : SingleIdInserterFactory<FirstAndBottomLevelSubdivision>
 {
-    public static async Task<DatabaseInserter<FirstAndBottomLevelSubdivision>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<FirstAndBottomLevelSubdivision>("first_and_bottom_level_subdivision", connection);
-    }
+    protected override string TableName => "first_and_bottom_level_subdivision";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

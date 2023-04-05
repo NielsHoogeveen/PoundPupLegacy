@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class PollStatusInserter : DatabaseInserter<PollStatus>, IDatabaseInserter<PollStatus>
+internal sealed class PollStatusInserterFactory : DatabaseInserterFactory<PollStatus>
 {
-    private const string ID = "id";
-    private const string NAME = "name";
-    public static async Task<DatabaseInserter<PollStatus>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<PollStatus>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,18 +12,22 @@ internal sealed class PollStatusInserter : DatabaseInserter<PollStatus>, IDataba
             "poll_status",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = PollStatusInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NAME,
+                    Name = PollStatusInserter.NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
             }
         );
         return new PollStatusInserter(command);
-
     }
+}
+internal sealed class PollStatusInserter : DatabaseInserter<PollStatus>
+{
+    internal const string ID = "id";
+    internal const string NAME = "name";
 
     internal PollStatusInserter(NpgsqlCommand command) : base(command)
     {

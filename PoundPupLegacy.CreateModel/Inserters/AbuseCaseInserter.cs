@@ -1,45 +1,39 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>, IDatabaseInserter<AbuseCase>
+internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCase>
 {
-    private const string ID = "id";
-    private const string CHILD_PLACEMENT_TYPE_ID = "child_placement_type_id";
-    private const string FAMILY_SIZE_ID = "family_size_id";
-    private const string HOME_SCHOOLING_INVOLVED = "home_schooling_involved";
-    private const string FUNDAMENTAL_FAITH_INVOLVED = "fundamental_faith_involved";
-    private const string DISABILITIES_INVOLVED = "disabilities_involved";
-    public static async Task<DatabaseInserter<AbuseCase>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<AbuseCase>> CreateAsync(IDbConnection connection)
     {
-            if (connection is not NpgsqlConnection)
-                throw new Exception("Application only works with a Postgres database");
-            var postgresConnection = (NpgsqlConnection)connection;
+        if (connection is not NpgsqlConnection)
+            throw new Exception("Application only works with a Postgres database");
+        var postgresConnection = (NpgsqlConnection)connection;
 
-            var command = await CreateInsertStatementAsync(
+        var command = await CreateInsertStatementAsync(
             postgresConnection,
             "abuse_case",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = AbuseCaseInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = CHILD_PLACEMENT_TYPE_ID,
+                    Name = AbuseCaseInserter.CHILD_PLACEMENT_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = FAMILY_SIZE_ID,
+                    Name = AbuseCaseInserter.FAMILY_SIZE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = HOME_SCHOOLING_INVOLVED,
+                    Name = AbuseCaseInserter.HOME_SCHOOLING_INVOLVED,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
                 new ColumnDefinition{
-                    Name = FUNDAMENTAL_FAITH_INVOLVED,
+                    Name = AbuseCaseInserter.FUNDAMENTAL_FAITH_INVOLVED,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
                 new ColumnDefinition{
-                    Name = DISABILITIES_INVOLVED,
+                    Name = AbuseCaseInserter.DISABILITIES_INVOLVED,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
             }
@@ -47,6 +41,16 @@ internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>, IDatabase
         return new AbuseCaseInserter(command);
 
     }
+
+}
+internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>
+{
+    internal const string ID = "id";
+    internal const string CHILD_PLACEMENT_TYPE_ID = "child_placement_type_id";
+    internal const string FAMILY_SIZE_ID = "family_size_id";
+    internal const string HOME_SCHOOLING_INVOLVED = "home_schooling_involved";
+    internal const string FUNDAMENTAL_FAITH_INVOLVED = "fundamental_faith_involved";
+    internal const string DISABILITIES_INVOLVED = "disabilities_involved";
 
     internal AbuseCaseInserter(NpgsqlCommand command) : base(command)
     {

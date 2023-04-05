@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter<InterOrganizationalRelationType>, IDatabaseInserter<InterOrganizationalRelationType>
+internal sealed class InterOrganizationalRelationTypeInserterFactory : DatabaseInserterFactory<InterOrganizationalRelationType>
 {
-    private const string ID = "id";
-    private const string IS_SYMMETRIC = "is_symmetric";
-
-    public static async Task<DatabaseInserter<InterOrganizationalRelationType>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<InterOrganizationalRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,17 +12,24 @@ internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter
             "inter_organizational_relation_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = InterOrganizationalRelationTypeInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = IS_SYMMETRIC,
+                    Name = InterOrganizationalRelationTypeInserter.IS_SYMMETRIC,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
             }
         );
         return new InterOrganizationalRelationTypeInserter(command);
     }
+
+}
+internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter<InterOrganizationalRelationType>
+{
+    internal const string ID = "id";
+    internal const string IS_SYMMETRIC = "is_symmetric";
+
 
     internal InterOrganizationalRelationTypeInserter(NpgsqlCommand command) : base(command)
     {

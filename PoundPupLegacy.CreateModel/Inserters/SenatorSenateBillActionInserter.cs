@@ -1,16 +1,8 @@
 ﻿using System.Collections.Immutable;
-
 namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<SenatorSenateBillAction>, IDatabaseInserter<SenatorSenateBillAction>
+internal sealed class SenatorSenateBillActionInserterFactory : DatabaseInserterFactory<SenatorSenateBillAction>
 {
-
-    private const string ID = "id";
-    private const string SENATOR_ID = "senator_id";
-    private const string SENATE_BILL_ID = "senate_bill_id";
-    private const string DATE = "date";
-    private const string BILL_ACTION_TYPE_ID = "bill_action_type_id";
-    public static async Task<DatabaseInserter<SenatorSenateBillAction>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<SenatorSenateBillAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -18,19 +10,19 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
 
         var columnDefinitions = new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = SENATOR_ID,
+                    Name = SenatorSenateBillActionInserter.SENATOR_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = SENATE_BILL_ID,
+                    Name = SenatorSenateBillActionInserter.SENATE_BILL_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = BILL_ACTION_TYPE_ID,
+                    Name = SenatorSenateBillActionInserter.BILL_ACTION_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE,
+                    Name = SenatorSenateBillActionInserter.DATE,
                     NpgsqlDbType = NpgsqlDbType.Timestamp
                 },
             };
@@ -45,13 +37,21 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
             postgresConnection,
             "senator_senate_bill_action",
             columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
-                Name = ID,
+                Name = SenatorSenateBillActionInserter.ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             })
         );
         return new SenatorSenateBillActionInserter(command, genarateIdCommand);
-
     }
+}
+internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<SenatorSenateBillAction>
+{
+
+    internal const string ID = "id";
+    internal const string SENATOR_ID = "senator_id";
+    internal const string SENATE_BILL_ID = "senate_bill_id";
+    internal const string DATE = "date";
+    internal const string BILL_ACTION_TYPE_ID = "bill_action_type_id";
 
     private NpgsqlCommand _generateIdCommand;
 

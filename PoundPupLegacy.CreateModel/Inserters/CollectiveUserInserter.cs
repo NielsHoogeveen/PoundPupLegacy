@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>, IDatabaseInserter<CollectiveUser>
+internal sealed class CollectiveUserInserterFactory : DatabaseInserterFactory<CollectiveUser>
 {
-    private const string COLLECTIVE_ID = "collective_id";
-    private const string USER_ID = "user_id";
-    public static async Task<DatabaseInserter<CollectiveUser>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<CollectiveUser>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,11 +12,11 @@ internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>,
             "collective_user",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = COLLECTIVE_ID,
+                    Name = CollectiveUserInserter.COLLECTIVE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = USER_ID,
+                    Name = CollectiveUserInserter.USER_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -27,6 +24,12 @@ internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>,
         return new CollectiveUserInserter(command);
 
     }
+
+}
+internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>
+{
+    internal const string COLLECTIVE_ID = "collective_id";
+    internal const string USER_ID = "user_id";
 
     internal CollectiveUserInserter(NpgsqlCommand command) : base(command)
     {

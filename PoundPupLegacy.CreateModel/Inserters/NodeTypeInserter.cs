@@ -1,13 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>, IDatabaseInserter<NodeType>
+internal sealed class NodeTypeInserterFactory : DatabaseInserterFactory<NodeType>
 {
-
-    private const string ID = "id";
-    private const string NAME = "name";
-    private const string DESCRIPTION = "description";
-    private const string AUTHOR_SPECIFIC = "author_specific";
-    public static async Task<DatabaseInserter<NodeType>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<NodeType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -18,26 +12,33 @@ internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>, IDatabaseIn
             "node_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = NodeTypeInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NAME,
+                    Name = NodeTypeInserter.NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = DESCRIPTION,
+                    Name = NodeTypeInserter.DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = AUTHOR_SPECIFIC,
+                    Name = NodeTypeInserter.AUTHOR_SPECIFIC,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
             }
         );
         return new NodeTypeInserter(command);
-
     }
+}
+internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>
+{
+
+    internal const string ID = "id";
+    internal const string NAME = "name";
+    internal const string DESCRIPTION = "description";
+    internal const string AUTHOR_SPECIFIC = "author_specific";
 
     internal NodeTypeInserter(NpgsqlCommand command) : base(command)
     {

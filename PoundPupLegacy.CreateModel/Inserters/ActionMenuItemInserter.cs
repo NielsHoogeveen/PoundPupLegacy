@@ -1,12 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using System.Xml.Linq;
 
-internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>, IDatabaseInserter<ActionMenuItem>
+namespace PoundPupLegacy.CreateModel.Inserters;
+internal sealed class ActionMenuItemInserterFactory : DatabaseInserterFactory<ActionMenuItem>
 {
-
-    private const string ID = "id";
-    private const string NAME = "name";
-    private const string ACTION_ID = "action_id";
-    public static async Task<DatabaseInserter<ActionMenuItem>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<ActionMenuItem>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,15 +14,15 @@ internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>,
             "action_menu_item",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = ActionMenuItemInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NAME,
+                    Name = ActionMenuItemInserter.NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = ACTION_ID,
+                    Name = ActionMenuItemInserter.ACTION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -33,6 +30,14 @@ internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>,
         return new ActionMenuItemInserter(command);
 
     }
+
+}
+internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>
+{
+
+    internal const string ID = "id";
+    internal const string NAME = "name";
+    internal const string ACTION_ID = "action_id";
 
     internal ActionMenuItemInserter(NpgsqlCommand command) : base(command)
     {

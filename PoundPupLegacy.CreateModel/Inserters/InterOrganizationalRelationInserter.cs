@@ -1,19 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class InterOrganizationalRelationInserter : DatabaseInserter<InterOrganizationalRelation>, IDatabaseInserter<InterOrganizationalRelation>
+internal sealed class InterOrganizationalRelationInserterFactory : DatabaseInserterFactory<InterOrganizationalRelation>
 {
-
-    private const string ID = "id";
-    private const string ORGANIZATION_ID_FROM = "organization_id_from";
-    private const string ORGANIZATION_ID_TO = "organization_id_to";
-    private const string GEOGRAPHICAL_ENTITY_ID = "geographical_entity_id";
-    private const string DATE_RANGE = "date_range";
-    private const string INTER_ORGANIZATIONAL_RELATION_TYPE_ID = "inter_organizational_relation_type_id";
-    private const string DOCUMENT_ID_PROOF = "document_id_proof";
-    private const string DESCRIPTION = "description";
-    private const string MONEY_INVOLVED = "money_involved";
-    private const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
-    public static async Task<DatabaseInserter<InterOrganizationalRelation>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<InterOrganizationalRelation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -24,43 +12,43 @@ internal sealed class InterOrganizationalRelationInserter : DatabaseInserter<Int
             "inter_organizational_relation",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = InterOrganizationalRelationInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ORGANIZATION_ID_FROM,
+                    Name = InterOrganizationalRelationInserter.ORGANIZATION_ID_FROM,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ORGANIZATION_ID_TO,
+                    Name = InterOrganizationalRelationInserter.ORGANIZATION_ID_TO,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = GEOGRAPHICAL_ENTITY_ID,
+                    Name = InterOrganizationalRelationInserter.GEOGRAPHICAL_ENTITY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = INTER_ORGANIZATIONAL_RELATION_TYPE_ID,
+                    Name = InterOrganizationalRelationInserter.INTER_ORGANIZATIONAL_RELATION_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_RANGE,
+                    Name = InterOrganizationalRelationInserter.DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
-                    Name = DOCUMENT_ID_PROOF,
+                    Name = InterOrganizationalRelationInserter.DOCUMENT_ID_PROOF,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DESCRIPTION,
+                    Name = InterOrganizationalRelationInserter.DESCRIPTION,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = MONEY_INVOLVED,
+                    Name = InterOrganizationalRelationInserter.MONEY_INVOLVED,
                     NpgsqlDbType = NpgsqlDbType.Numeric
                 },
                 new ColumnDefinition{
-                    Name = NUMBER_OF_CHILDREN_INVOLVED,
+                    Name = InterOrganizationalRelationInserter.NUMBER_OF_CHILDREN_INVOLVED,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -68,6 +56,21 @@ internal sealed class InterOrganizationalRelationInserter : DatabaseInserter<Int
         return new InterOrganizationalRelationInserter(command);
 
     }
+
+}
+internal sealed class InterOrganizationalRelationInserter : DatabaseInserter<InterOrganizationalRelation>
+{
+
+    internal const string ID = "id";
+    internal const string ORGANIZATION_ID_FROM = "organization_id_from";
+    internal const string ORGANIZATION_ID_TO = "organization_id_to";
+    internal const string GEOGRAPHICAL_ENTITY_ID = "geographical_entity_id";
+    internal const string DATE_RANGE = "date_range";
+    internal const string INTER_ORGANIZATIONAL_RELATION_TYPE_ID = "inter_organizational_relation_type_id";
+    internal const string DOCUMENT_ID_PROOF = "document_id_proof";
+    internal const string DESCRIPTION = "description";
+    internal const string MONEY_INVOLVED = "money_involved";
+    internal const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
 
     internal InterOrganizationalRelationInserter(NpgsqlCommand command) : base(command)
     {

@@ -1,16 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-public interface IDatabaseInserter
+public interface IDatabaseInserter : IAsyncDisposable { }
+public interface IDatabaseInserter<T>: IDatabaseInserter
 {
-
+    Task InsertAsync(T item);
 }
-public interface IDatabaseInserter<T> : IDatabaseInserter
+public interface IDatabaseInserterFactory<T>
 {
-    public abstract static Task<DatabaseInserter<T>> CreateAsync(IDbConnection connection);
+    Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection);
 }
 
-public abstract class DatabaseInserter : IDatabaseInserter
+public abstract class DatabaseInserterFactory<T> : IDatabaseInserterFactory<T>
 {
+
+    public abstract Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection);
 
     protected struct ColumnDefinition
     {
@@ -64,7 +66,7 @@ public abstract class DatabaseInserter : IDatabaseInserter
 
 
 }
-public abstract class DatabaseInserter<T> : DatabaseInserter, IAsyncDisposable
+public abstract class DatabaseInserter<T> : IDatabaseInserter<T>
 {
     protected readonly NpgsqlCommand _command;
 

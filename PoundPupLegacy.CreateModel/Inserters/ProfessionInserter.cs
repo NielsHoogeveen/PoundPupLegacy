@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class ProfessionInserter : DatabaseInserter<Profession>, IDatabaseInserter<Profession>
+internal sealed class ProfessionInserterFactory : DatabaseInserterFactory<Profession>
 {
-    private const string ID = "id";
-    private const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
-    public static async Task<DatabaseInserter<Profession>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Profession>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,18 +12,22 @@ internal sealed class ProfessionInserter : DatabaseInserter<Profession>, IDataba
             "profession",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = ProfessionInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = HAS_CONCRETE_SUBTYPE,
+                    Name = ProfessionInserter.HAS_CONCRETE_SUBTYPE,
                     NpgsqlDbType = NpgsqlDbType.Boolean
                 },
             }
         );
         return new ProfessionInserter(command);
-
     }
+}
+internal sealed class ProfessionInserter : DatabaseInserter<Profession>
+{
+    internal const string ID = "id";
+    internal const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
 
     internal ProfessionInserter(NpgsqlCommand command) : base(command)
     {

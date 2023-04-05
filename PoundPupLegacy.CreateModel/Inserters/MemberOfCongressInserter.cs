@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class MemberOfCongressInserter : IDatabaseInserter<MemberOfCongress>
+internal sealed class MemberOfCongressInserterFactory : SingleIdInserterFactory<MemberOfCongress>
 {
-    public static async Task<DatabaseInserter<MemberOfCongress>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<MemberOfCongress>("member_of_congress", connection);
-    }
+    protected override string TableName => "member_of_congress";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

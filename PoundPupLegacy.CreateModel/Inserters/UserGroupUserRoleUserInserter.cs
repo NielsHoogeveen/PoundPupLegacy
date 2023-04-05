@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroupUserRoleUser>, IDatabaseInserter<UserGroupUserRoleUser>
+internal sealed class UserGroupUserRoleUserInserterFactory : DatabaseInserterFactory<UserGroupUserRoleUser>
 {
-    private const string USER_GROUP_ID = "user_group_id";
-    private const string USER_ROLE_ID = "user_role_id";
-    private const string USER_ID = "user_id";
-    public static async Task<DatabaseInserter<UserGroupUserRoleUser>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<UserGroupUserRoleUser>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,22 +12,27 @@ internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroup
             "user_group_user_role_user",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = USER_GROUP_ID,
+                    Name = UserGroupUserRoleUserInserter.USER_GROUP_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = USER_ROLE_ID,
+                    Name = UserGroupUserRoleUserInserter.USER_ROLE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = USER_ID,
+                    Name = UserGroupUserRoleUserInserter.USER_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new UserGroupUserRoleUserInserter(command);
-
     }
+}
+internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroupUserRoleUser>
+{
+    internal const string USER_GROUP_ID = "user_group_id";
+    internal const string USER_ROLE_ID = "user_role_id";
+    internal const string USER_ID = "user_id";
 
     internal UserGroupUserRoleUserInserter(NpgsqlCommand command) : base(command)
     {

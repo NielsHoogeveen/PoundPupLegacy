@@ -1,12 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>, IDatabaseInserter<SenateTerm>
+internal sealed class SenateTermInserterFactory : DatabaseInserterFactory<SenateTerm>
 {
-    private const string ID = "id";
-    private const string SENATOR_ID = "senator_id";
-    private const string SUBDIVISION_ID = "subdivision_id";
-    private const string DATE_RANGE = "date_range";
-    public static async Task<DatabaseInserter<SenateTerm>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<SenateTerm>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,26 +12,32 @@ internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>, IDataba
             "senate_term",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = SenateTermInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = SENATOR_ID,
+                    Name = SenateTermInserter.SENATOR_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = SUBDIVISION_ID,
+                    Name = SenateTermInserter.SUBDIVISION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATE_RANGE,
+                    Name = SenateTermInserter.DATE_RANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
             }
         );
         return new SenateTermInserter(command);
-
     }
+}
+internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>
+{
+    internal const string ID = "id";
+    internal const string SENATOR_ID = "senator_id";
+    internal const string SUBDIVISION_ID = "subdivision_id";
+    internal const string DATE_RANGE = "date_range";
 
     internal SenateTermInserter(NpgsqlCommand command) : base(command)
     {

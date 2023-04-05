@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public class PublisherInserter : DatabaseInserter<Publisher>, IDatabaseInserter<Publisher>
-{
-    private const string ID = "id";
-    private const string NAME = "name";
 
-    public static async Task<DatabaseInserter<Publisher>> CreateAsync(IDbConnection connection)
+public class PublisherInserterFactory : DatabaseInserterFactory<Publisher>
+{
+    public override async Task<IDatabaseInserter<Publisher>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,18 +14,25 @@ public class PublisherInserter : DatabaseInserter<Publisher>, IDatabaseInserter<
             new ColumnDefinition[] {
             new ColumnDefinition
             {
-                Name = ID,
+                Name = PublisherInserter.ID,
                 NpgsqlDbType = NpgsqlDbType.Integer
             },
             new ColumnDefinition
             {
-                Name = NAME,
+                Name = PublisherInserter.NAME,
                 NpgsqlDbType = NpgsqlDbType.Varchar
             },
         });
         return new PublisherInserter(command);
     }
-    private PublisherInserter(NpgsqlCommand command) : base(command)
+
+}
+public class PublisherInserter : DatabaseInserter<Publisher>
+{
+    internal const string ID = "id";
+    internal const string NAME = "name";
+
+    internal PublisherInserter(NpgsqlCommand command) : base(command)
     {
     }
 

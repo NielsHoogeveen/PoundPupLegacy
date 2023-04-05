@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class EditOwnNodeActionInserter : DatabaseInserter<EditOwnNodeAction>, IDatabaseInserter<EditOwnNodeAction>
+internal sealed class EditOwnNodeActionInserterFactory : DatabaseInserterFactory<EditOwnNodeAction>
 {
-
-    private const string ID = "id";
-    private const string NODE_TYPE_ID = "node_type_id";
-    public static async Task<DatabaseInserter<EditOwnNodeAction>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<EditOwnNodeAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,11 +12,11 @@ internal sealed class EditOwnNodeActionInserter : DatabaseInserter<EditOwnNodeAc
             "edit_own_node_action",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = EditOwnNodeActionInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NODE_TYPE_ID,
+                    Name = EditOwnNodeActionInserter.NODE_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
@@ -28,6 +24,13 @@ internal sealed class EditOwnNodeActionInserter : DatabaseInserter<EditOwnNodeAc
         return new EditOwnNodeActionInserter(command);
 
     }
+}
+internal sealed class EditOwnNodeActionInserter : DatabaseInserter<EditOwnNodeAction>
+{
+
+    internal const string ID = "id";
+    internal const string NODE_TYPE_ID = "node_type_id";
+
 
     internal EditOwnNodeActionInserter(NpgsqlCommand command) : base(command)
     {

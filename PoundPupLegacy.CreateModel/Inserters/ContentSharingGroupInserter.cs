@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class ContentSharingGroupInserter : IDatabaseInserter<ContentSharingGroup>
+internal sealed class ContentSharingGroupInserterFactory : SingleIdInserterFactory<ContentSharingGroup>
 {
-    public static async Task<DatabaseInserter<ContentSharingGroup>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<ContentSharingGroup>("content_sharing_group", connection);
-    }
+    protected override string TableName => "content_sharing_group";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

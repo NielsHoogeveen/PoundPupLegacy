@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<OrganizationOrganizationType>, IDatabaseInserter<OrganizationOrganizationType>
+internal sealed class OrganizationOrganizationTypeInserterFactory : DatabaseInserterFactory<OrganizationOrganizationType>
 {
-
-    private const string ORGANIZATION_ID = "organization_id";
-    private const string ORGANIZATION_TYPE_ID = "organization_type_id";
-    public static async Task<DatabaseInserter<OrganizationOrganizationType>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<OrganizationOrganizationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,18 +12,23 @@ internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<Or
             "organization_organization_type",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ORGANIZATION_ID,
+                    Name = OrganizationOrganizationTypeInserter.ORGANIZATION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ORGANIZATION_TYPE_ID,
+                    Name = OrganizationOrganizationTypeInserter.ORGANIZATION_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new OrganizationOrganizationTypeInserter(command);
-
     }
+}
+internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<OrganizationOrganizationType>
+{
+
+    internal const string ORGANIZATION_ID = "organization_id";
+    internal const string ORGANIZATION_TYPE_ID = "organization_type_id";
 
     internal OrganizationOrganizationTypeInserter(NpgsqlCommand command) : base(command)
     {

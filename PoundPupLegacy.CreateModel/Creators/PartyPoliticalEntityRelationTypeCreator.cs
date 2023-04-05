@@ -1,26 +1,57 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class PartyPoliticalEntityRelationTypeCreator : IEntityCreator<PartyPoliticalEntityRelationType>
+internal sealed class PartyPoliticalEntityRelationTypeCreator : EntityCreator<PartyPoliticalEntityRelationType>
 {
-    public async Task CreateAsync(IAsyncEnumerable<PartyPoliticalEntityRelationType> politicalEntityRelationTypes, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
+    private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
+    private readonly IDatabaseInserterFactory<PartyPoliticalEntityRelationType> _politicalEntityRelationTypeInserterFactory;
+    private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
+    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
+    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    public PartyPoliticalEntityRelationTypeCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<Nameable> nameableInserterFactory,
+        IDatabaseInserterFactory<PartyPoliticalEntityRelationType> politicalEntityRelationTypeInserterFactory,
+        IDatabaseInserterFactory<Term> termInserterFactory,
+        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
+        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+    )
     {
+        _nodeInserterFactory = nodeInserterFactory;
+        _searchableInserterFactory = searchableInserterFactory;
+        _nameableInserterFactory = nameableInserterFactory;
+        _politicalEntityRelationTypeInserterFactory = politicalEntityRelationTypeInserterFactory;
+        _termInserterFactory = termInserterFactory;
+        _termReaderFactory = termReaderFactory;
+        _termHierarchyInserterFactory = termHierarchyInserterFactory;
+        _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+    }
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
-        await using var nameableWriter = await NameableInserter.CreateAsync(connection);
-        await using var politicalEntityRelationTypeWriter = await PoliticalEntityRelationTypeWriter.CreateAsync(connection);
-        await using var termWriter = await TermInserter.CreateAsync(connection);
-        await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
-        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
-        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+    public override async Task CreateAsync(IAsyncEnumerable<PartyPoliticalEntityRelationType> politicalEntityRelationTypes, IDbConnection connection)
+    {
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
+        await using var nameableWriter = await _nameableInserterFactory.CreateAsync(connection);
+        await using var politicalEntityRelationTypeWriter = await _politicalEntityRelationTypeInserterFactory.CreateAsync(connection);
+        await using var termWriter = await _termInserterFactory.CreateAsync(connection);
+        await using var termReader = await _termReaderFactory.CreateAsync(connection);
+        await using var termHierarchyWriter = await _termHierarchyInserterFactory.CreateAsync(connection);
+        await using var vocabularyIdReader = await _vocabularyIdReaderFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var politicalEntityRelationType in politicalEntityRelationTypes) {
             await nodeWriter.InsertAsync(politicalEntityRelationType);
             await searchableWriter.InsertAsync(politicalEntityRelationType);
             await nameableWriter.InsertAsync(politicalEntityRelationType);
             await politicalEntityRelationTypeWriter.InsertAsync(politicalEntityRelationType);
-            await EntityCreator.WriteTerms(politicalEntityRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            await WriteTerms(politicalEntityRelationType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
             foreach (var tenantNode in politicalEntityRelationType.TenantNodes) {
                 tenantNode.NodeId = politicalEntityRelationType.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);

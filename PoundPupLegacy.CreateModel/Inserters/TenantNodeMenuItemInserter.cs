@@ -1,12 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class TenantNodeMenuItemInserter : DatabaseInserter<TenantNodeMenuItem>, IDatabaseInserter<TenantNodeMenuItem>
+internal sealed class TenantNodeMenuItemInserterFactory : DatabaseInserterFactory<TenantNodeMenuItem>
 {
-
-    private const string ID = "id";
-    private const string NAME = "name";
-    private const string TENANT_NODE_ID = "tenant_node_id";
-    public static async Task<DatabaseInserter<TenantNodeMenuItem>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<TenantNodeMenuItem>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,22 +12,28 @@ internal sealed class TenantNodeMenuItemInserter : DatabaseInserter<TenantNodeMe
             "tenant_node_menu_item",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = TenantNodeMenuItemInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NAME,
+                    Name = TenantNodeMenuItemInserter.NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = TENANT_NODE_ID,
+                    Name = TenantNodeMenuItemInserter.TENANT_NODE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new TenantNodeMenuItemInserter(command);
-
     }
+}
+internal sealed class TenantNodeMenuItemInserter : DatabaseInserter<TenantNodeMenuItem>
+{
+
+    internal const string ID = "id";
+    internal const string NAME = "name";
+    internal const string TENANT_NODE_ID = "tenant_node_id";
 
     internal TenantNodeMenuItemInserter(NpgsqlCommand command) : base(command)
     {

@@ -1,12 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using System.Xml.Linq;
 
-internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>, IDatabaseInserter<Subdivision>
+namespace PoundPupLegacy.CreateModel.Inserters;
+internal sealed class SubdivisionInserterFactory : DatabaseInserterFactory<Subdivision>
 {
-    private const string ID = "id";
-    private const string NAME = "name";
-    private const string COUNTRY_ID = "country_id";
-    private const string SUBDIVISION_TYPE_ID = "subdivision_type_id";
-    public static async Task<DatabaseInserter<Subdivision>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Subdivision>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -17,26 +14,33 @@ internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>, IData
             "subdivision",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = SubdivisionInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NAME,
+                    Name = SubdivisionInserter.NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = COUNTRY_ID,
+                    Name = SubdivisionInserter.COUNTRY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = SUBDIVISION_TYPE_ID,
+                    Name = SubdivisionInserter.SUBDIVISION_TYPE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new SubdivisionInserter(command);
-
     }
+}
+internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>
+{
+    internal const string ID = "id";
+    internal const string NAME = "name";
+    internal const string COUNTRY_ID = "country_id";
+    internal const string SUBDIVISION_TYPE_ID = "subdivision_type_id";
+
 
     internal SubdivisionInserter(NpgsqlCommand command) : base(command)
     {

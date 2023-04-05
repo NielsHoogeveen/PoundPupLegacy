@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class CollectiveInserter : IDatabaseInserter<Collective>
+internal sealed class CollectiveInserterFactory : SingleIdInserterFactory<Collective>
 {
-    public static async Task<DatabaseInserter<Collective>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<Collective>("collective", connection);
-    }
+    protected override string TableName => "collective";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

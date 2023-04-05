@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class ProfessionalRoleInserter : DatabaseInserter<ProfessionalRole>, IDatabaseInserter<ProfessionalRole>
+internal sealed class ProfessionalRoleInserterFactory : DatabaseInserterFactory<ProfessionalRole> 
 {
-    private const string PERSON_ID = "person_id";
-    private const string PROFESSION_ID = "profession_id";
-    private const string DATERANGE = "daterange";
-    public static async Task<DatabaseInserter<ProfessionalRole>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<ProfessionalRole>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,22 +12,27 @@ internal sealed class ProfessionalRoleInserter : DatabaseInserter<ProfessionalRo
             "professional_role",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = PERSON_ID,
+                    Name = ProfessionalRoleInserter.PERSON_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = PROFESSION_ID,
+                    Name = ProfessionalRoleInserter.PROFESSION_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DATERANGE,
+                    Name = ProfessionalRoleInserter.DATERANGE,
                     NpgsqlDbType = NpgsqlDbType.Unknown
                 },
             }
         );
         return new ProfessionalRoleInserter(command);
-
     }
+}
+internal sealed class ProfessionalRoleInserter : DatabaseInserter<ProfessionalRole>
+{
+    internal const string PERSON_ID = "person_id";
+    internal const string PROFESSION_ID = "profession_id";
+    internal const string DATERANGE = "daterange";
 
     internal ProfessionalRoleInserter(NpgsqlCommand command) : base(command)
     {

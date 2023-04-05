@@ -1,13 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class TenantInserter : DatabaseInserter<Tenant>, IDatabaseInserter<Tenant>
+internal sealed class TenantInserterFactory : DatabaseInserterFactory<Tenant>
 {
-    private const string ID = "id";
-    private const string DOMAIN_NAME = "domain_name";
-    private const string VOCABULARY_ID_TAGGING = "vocabulary_id_tagging";
-    private const string ACCESS_ROLE_ID_NOT_LOGGED_IN = "access_role_id_not_logged_in";
-
-    public static async Task<DatabaseInserter<Tenant>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Tenant>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -18,27 +12,33 @@ internal sealed class TenantInserter : DatabaseInserter<Tenant>, IDatabaseInsert
             "tenant",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = TenantInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = DOMAIN_NAME,
+                    Name = TenantInserter.DOMAIN_NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = VOCABULARY_ID_TAGGING,
+                    Name = TenantInserter.VOCABULARY_ID_TAGGING,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = ACCESS_ROLE_ID_NOT_LOGGED_IN,
+                    Name = TenantInserter.ACCESS_ROLE_ID_NOT_LOGGED_IN,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
-
             }
         );
         return new TenantInserter(command);
-
     }
+}
+internal sealed class TenantInserter : DatabaseInserter<Tenant>
+{
+    internal const string ID = "id";
+    internal const string DOMAIN_NAME = "domain_name";
+    internal const string VOCABULARY_ID_TAGGING = "vocabulary_id_tagging";
+    internal const string ACCESS_ROLE_ID_NOT_LOGGED_IN = "access_role_id_not_logged_in";
+
 
     internal TenantInserter(NpgsqlCommand command) : base(command)
     {

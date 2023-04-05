@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class BindingCountryInserter : IDatabaseInserter<BindingCountry>
+internal sealed class BindingCountryInserterFactory : SingleIdInserterFactory<BindingCountry>
 {
-    public static async Task<DatabaseInserter<BindingCountry>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<BindingCountry>("binding_country", connection);
-    }
+    protected override string TableName => "binding_country";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

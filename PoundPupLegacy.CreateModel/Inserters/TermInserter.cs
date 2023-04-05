@@ -1,11 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class TermInserter : DatabaseInserter<Term>, IDatabaseInserter<Term>
+internal sealed class TermInserterFactory : DatabaseInserterFactory<Term>
 {
-    private const string VOCABULARY_ID = "vocabulary_id";
-    private const string NAME = "name";
-    private const string NAMEABLE_ID = "nameable_id";
-    public static async Task<DatabaseInserter<Term>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<Term>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -16,22 +12,27 @@ internal sealed class TermInserter : DatabaseInserter<Term>, IDatabaseInserter<T
             "term",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = NAME,
+                    Name = TermInserter.NAME,
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = VOCABULARY_ID,
+                    Name = TermInserter.VOCABULARY_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = NAMEABLE_ID,
+                    Name = TermInserter.NAMEABLE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new TermInserter(command);
-
     }
+}
+internal sealed class TermInserter : DatabaseInserter<Term>
+{
+    internal const string VOCABULARY_ID = "vocabulary_id";
+    internal const string NAME = "name";
+    internal const string NAMEABLE_ID = "nameable_id";
 
     internal TermInserter(NpgsqlCommand command) : base(command)
     {

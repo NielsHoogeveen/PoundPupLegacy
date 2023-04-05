@@ -1,21 +1,60 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class HouseBillCreator : IEntityCreator<HouseBill>
+internal sealed class HouseBillCreator : EntityCreator<HouseBill>
 {
-    public async Task CreateAsync(IAsyncEnumerable<HouseBill> houseBills, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<HouseBill> _houseBillInserterFactory;
+    private readonly IDatabaseInserterFactory<Bill> _billInserterFactory;
+    private readonly IDatabaseInserterFactory<Documentable> _documentableInserterFactory;
+    private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
+    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
+    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
+    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    //Add ctor
+    public HouseBillCreator(IDatabaseInserterFactory<HouseBill> houseBillInserterFactory,
+        IDatabaseInserterFactory<Bill> billInserterFactory,
+        IDatabaseInserterFactory<Documentable> documentableInserterFactory,
+        IDatabaseInserterFactory<Nameable> nameableInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Term> termInserterFactory,
+        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
+        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+    )
+    {
+        _houseBillInserterFactory = houseBillInserterFactory;
+        _billInserterFactory = billInserterFactory;
+        _documentableInserterFactory = documentableInserterFactory;
+        _nameableInserterFactory = nameableInserterFactory;
+        _searchableInserterFactory = searchableInserterFactory;
+        _nodeInserterFactory = nodeInserterFactory;
+        _termInserterFactory = termInserterFactory;
+        _termReaderFactory = termReaderFactory;
+        _termHierarchyInserterFactory = termHierarchyInserterFactory;
+        _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+    }
+
+
+    public override async Task CreateAsync(IAsyncEnumerable<HouseBill> houseBills, IDbConnection connection)
     {
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
-        await using var nameableWriter = await NameableInserter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
-        await using var billWriter = await BillInserter.CreateAsync(connection);
-        await using var houseBillWriter = await HouseBillInserter.CreateAsync(connection);
-        await using var termWriter = await TermInserter.CreateAsync(connection);
-        await using var termReader = await new TermReaderByNameFactory().CreateAsync(connection);
-        await using var termHierarchyWriter = await TermHierarchyInserter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
-        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
+        await using var nameableWriter = await _nameableInserterFactory.CreateAsync(connection);
+        await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);
+        await using var billWriter = await _billInserterFactory.CreateAsync(connection);
+        await using var houseBillWriter = await _houseBillInserterFactory.CreateAsync(connection);
+        await using var termWriter = await _termInserterFactory.CreateAsync(connection);
+        await using var termReader = await _termReaderFactory.CreateAsync(connection);
+        await using var termHierarchyWriter = await _termHierarchyInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
+        await using var vocabularyIdReader = await _vocabularyIdReaderFactory.CreateAsync(connection);
 
         await foreach (var houseBill in houseBills) {
             await nodeWriter.InsertAsync(houseBill);
@@ -24,7 +63,7 @@ internal sealed class HouseBillCreator : IEntityCreator<HouseBill>
             await documentableWriter.InsertAsync(houseBill);
             await billWriter.InsertAsync(houseBill);
             await houseBillWriter.InsertAsync(houseBill);
-            await EntityCreator.WriteTerms(houseBill, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            await WriteTerms(houseBill, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
 
             foreach (var tenantNode in houseBill.TenantNodes) {
                 tenantNode.NodeId = houseBill.Id;

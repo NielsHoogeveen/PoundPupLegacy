@@ -1,13 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("PoundPupLegacy.Db.Test")]
-namespace PoundPupLegacy.CreateModel.Inserters;
-
-public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>, IDatabaseInserter<NodeTerm>
+﻿namespace PoundPupLegacy.CreateModel.Inserters;
+public sealed class NodeTermInserterFactory : DatabaseInserterFactory<NodeTerm>
 {
-    private const string NODE_ID = "node_id";
-    private const string TERM_ID = "term_id";
-    public static async Task<DatabaseInserter<NodeTerm>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<NodeTerm>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -18,18 +12,22 @@ public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>, IDatabaseInse
             "node_term",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = NODE_ID,
+                    Name = NodeTermInserter.NODE_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = TERM_ID,
+                    Name = NodeTermInserter.TERM_ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new NodeTermInserter(command);
-
     }
+}
+public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>
+{
+    internal const string NODE_ID = "node_id";
+    internal const string TERM_ID = "term_id";
 
     internal NodeTermInserter(NpgsqlCommand command) : base(command)
     {

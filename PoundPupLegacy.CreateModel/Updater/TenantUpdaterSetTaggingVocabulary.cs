@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<Term>, IDatabaseUpdater<TenantUpdaterSetTaggingVocabulary>
+internal sealed class TenantUpdaterSetTaggingVocabularyFactory : IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary>
 {
-    public static async Task<TenantUpdaterSetTaggingVocabulary> CreateAsync(IDbConnection connection)
+    public async Task<TenantUpdaterSetTaggingVocabulary> CreateAsync(IDbConnection connection)
     {
         var sql = """
             UPDATE tenant SET vocabulary_id_tagging = @vocabulary_id WHERE id = @tenant_id
@@ -26,16 +26,25 @@ public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<Term>, I
 
     }
 
+}
+public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<TenantUpdaterSetTaggingVocabulary.Request>
+{
+    public record Request
+    {
+        public required int TenantId { get; init; }
+        public required int VocabularyId { get; init; }
+    }
+
     internal TenantUpdaterSetTaggingVocabulary(NpgsqlCommand command) : base(command) { }
 
-    public async Task Update(int tenantId, int vocabularyId)
+    public override async Task UpdateAsync(Request request)
     {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        _command.Parameters["vocabulary_id"].Value = vocabularyId;
+        _command.Parameters["tenant_id"].Value = request.TenantId;
+        _command.Parameters["vocabulary_id"].Value = request.VocabularyId;
 
         var count = await _command.ExecuteNonQueryAsync();
         if (count != 1) {
-            throw new Exception($"Unexpected {count} rows were updated setting vocaburaly {vocabularyId} for tenant {tenantId}");
+            throw new Exception($"Unexpected {count} rows were updated setting vocaburaly {request.VocabularyId} for tenant {request.TenantId}");
         }
     }
 }

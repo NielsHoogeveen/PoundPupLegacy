@@ -1,10 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-
-internal sealed class PoliticalEntityInserter : DatabaseInserter<PoliticalEntity>, IDatabaseInserter<PoliticalEntity>
+internal sealed class PoliticalEntityInserterFactory : DatabaseInserterFactory<PoliticalEntity>
 {
-    private const string ID = "id";
-    private const string FILE_ID_FLAG = "file_id_flag";
-    public static async Task<DatabaseInserter<PoliticalEntity>> CreateAsync(IDbConnection connection)
+    public override async Task<IDatabaseInserter<PoliticalEntity>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -15,17 +12,22 @@ internal sealed class PoliticalEntityInserter : DatabaseInserter<PoliticalEntity
             "political_entity",
             new ColumnDefinition[] {
                 new ColumnDefinition{
-                    Name = ID,
+                    Name = PoliticalEntityInserter.ID,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
                 new ColumnDefinition{
-                    Name = FILE_ID_FLAG,
+                    Name = PoliticalEntityInserter.FILE_ID_FLAG,
                     NpgsqlDbType = NpgsqlDbType.Integer
                 },
             }
         );
         return new PoliticalEntityInserter(command);
     }
+}
+internal sealed class PoliticalEntityInserter : DatabaseInserter<PoliticalEntity>
+{
+    internal const string ID = "id";
+    internal const string FILE_ID_FLAG = "file_id_flag";
 
     internal PoliticalEntityInserter(NpgsqlCommand command) : base(command)
     {

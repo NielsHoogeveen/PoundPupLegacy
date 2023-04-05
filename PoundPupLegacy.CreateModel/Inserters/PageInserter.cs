@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class PageInserter : IDatabaseInserter<Page>
+internal sealed class PageInserterFactory : SingleIdInserterFactory<Page>
 {
-    public static async Task<DatabaseInserter<Page>> CreateAsync(IDbConnection connection)
-    {
-        return await SingleIdInserter.CreateSingleIdWriterAsync<Page>("page", connection);
-    }
+    protected override string TableName => "page";
+
+    protected override bool AutoGenerateIdentity => false;
+
 }

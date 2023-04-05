@@ -1,17 +1,49 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
+internal sealed class ProfessionalRoleCreator : EntityCreator<ProfessionalRole>
 {
-    public async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
+    private readonly IDatabaseInserterFactory<Documentable> _documentableInserterFactory;
+    private readonly IDatabaseInserterFactory<ProfessionalRole> _professionalRoleInserterFactory;
+    private readonly IDatabaseInserterFactory<MemberOfCongress> _memberOfCongressInserterFactory;
+    private readonly IDatabaseInserterFactory<Representative> _representativeInserterFactory;
+    private readonly IDatabaseInserterFactory<Senator> _senatorInserterFactory;
+    private readonly IEntityCreator<SenateTerm> _senateTermCreator;
+    private readonly IEntityCreator<HouseTerm> _houseTermCreator;
+    public ProfessionalRoleCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory, 
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
+        IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
+        IDatabaseInserterFactory<ProfessionalRole> professionalRoleInserterFactory, 
+        IDatabaseInserterFactory<MemberOfCongress> memberOfCongressInserterFactory, 
+        IDatabaseInserterFactory<Representative> representativeInserterFactory, 
+        IDatabaseInserterFactory<Senator> senatorInserterFactory,
+        IEntityCreator<SenateTerm> senateTermCreator,
+        IEntityCreator<HouseTerm> houseTermCreator
+    )
+    {
+        _nodeInserterFactory = nodeInserterFactory;
+        _searchableInserterFactory = searchableInserterFactory;
+        _documentableInserterFactory = documentableInserterFactory;
+        _professionalRoleInserterFactory = professionalRoleInserterFactory;
+        _memberOfCongressInserterFactory = memberOfCongressInserterFactory;
+        _representativeInserterFactory = representativeInserterFactory;
+        _senatorInserterFactory = senatorInserterFactory;
+        _senateTermCreator = senateTermCreator;
+        _houseTermCreator = houseTermCreator;
+    }
+        
+    public override async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, IDbConnection connection)
     {
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
-        await using var documentableWriter = await DocumentableInserter.CreateAsync(connection);
-        await using var professionalRoleWriter = await ProfessionalRoleInserter.CreateAsync(connection);
-        await using var memberOfCongressWriter = await MemberOfCongressInserter.CreateAsync(connection);
-        await using var representativeWriter = await RepresentativeInserter.CreateAsync(connection);
-        await using var senatorWriter = await SenatorInserter.CreateAsync(connection);
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
+        await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);
+        await using var professionalRoleWriter = await _professionalRoleInserterFactory.CreateAsync(connection);
+        await using var memberOfCongressWriter = await _memberOfCongressInserterFactory.CreateAsync(connection);
+        await using var representativeWriter = await _representativeInserterFactory.CreateAsync(connection);
+        await using var senatorWriter = await _senatorInserterFactory.CreateAsync(connection);
 
         await foreach (var professionalRole in professionalRoles) {
             await nodeWriter.InsertAsync(professionalRole);
@@ -24,7 +56,7 @@ internal sealed class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
                 foreach (var term in representative.HouseTerms) {
                     term.RepresentativeId = representative.Id;
                 }
-                await new HouseTermCreator().CreateAsync(representative.HouseTerms.ToAsyncEnumerable(), connection);
+                await _houseTermCreator.CreateAsync(representative.HouseTerms.ToAsyncEnumerable(), connection);
             }
             if (professionalRole is Senator senator) {
                 await memberOfCongressWriter.InsertAsync(senator);
@@ -32,7 +64,7 @@ internal sealed class ProfessionalRoleCreator : IEntityCreator<ProfessionalRole>
                 foreach (var term in senator.SenateTerms) {
                     term.SenatorId = senator.Id;
                 }
-                await new SenateTermCreator().CreateAsync(senator.SenateTerms.ToAsyncEnumerable(), connection);
+                await _senateTermCreator.CreateAsync(senator.SenateTerms.ToAsyncEnumerable(), connection);
             }
         }
     }

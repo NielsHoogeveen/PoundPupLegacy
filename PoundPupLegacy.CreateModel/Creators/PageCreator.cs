@@ -1,15 +1,33 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class PageCreator : IEntityCreator<Page>
+internal sealed class PageCreator : EntityCreator<Page>
 {
-    public async Task CreateAsync(IAsyncEnumerable<Page> pages, IDbConnection connection)
+    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
+    private readonly IDatabaseInserterFactory<SimpleTextNode> _simpleTextNodeInserterFactory;
+    private readonly IDatabaseInserterFactory<Page> _pageInserterFactory;
+    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    public PageCreator(
+        IDatabaseInserterFactory<Node> nodeInserterFactory, 
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
+        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory, 
+        IDatabaseInserterFactory<Page> pageInserterFactory, 
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
+    {
+        _nodeInserterFactory = nodeInserterFactory;
+        _searchableInserterFactory = searchableInserterFactory;
+        _simpleTextNodeInserterFactory = simpleTextNodeInserterFactory;
+        _pageInserterFactory = pageInserterFactory;
+        _tenantNodeInserterFactory = tenantNodeInserterFactory;
+    }
+    public override async Task CreateAsync(IAsyncEnumerable<Page> pages, IDbConnection connection)
     {
 
-        await using var nodeWriter = await NodeInserter.CreateAsync(connection);
-        await using var searchableWriter = await SearchableInserter.CreateAsync(connection);
-        await using var simpleTextNodeWriter = await SimpleTextNodeInserter.CreateAsync(connection);
-        await using var pageWriter = await PageInserter.CreateAsync(connection);
-        await using var tenantNodeWriter = await TenantNodeInserter.CreateAsync(connection);
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
+        await using var simpleTextNodeWriter = await _simpleTextNodeInserterFactory.CreateAsync(connection);
+        await using var pageWriter = await _pageInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var page in pages) {
             await nodeWriter.InsertAsync(page);
@@ -20,7 +38,6 @@ internal sealed class PageCreator : IEntityCreator<Page>
                 tenantNode.NodeId = page.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);
             }
-
         }
     }
 }
