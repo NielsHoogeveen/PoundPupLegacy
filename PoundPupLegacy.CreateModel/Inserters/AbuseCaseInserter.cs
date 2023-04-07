@@ -60,12 +60,12 @@ internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>
     {
         if (abuseCase.Id is null)
             throw new NullReferenceException();
-        WriteValue(abuseCase.Id, ID);
-        WriteValue(abuseCase.ChildPlacementTypeId, CHILD_PLACEMENT_TYPE_ID);
-        WriteNullableValue(abuseCase.FamilySizeId, FAMILY_SIZE_ID);
-        WriteNullableValue(abuseCase.HomeschoolingInvolved, HOME_SCHOOLING_INVOLVED);
-        WriteNullableValue(abuseCase.FundamentalFaithInvolved, FUNDAMENTAL_FAITH_INVOLVED);
-        WriteNullableValue(abuseCase.DisabilitiesInvolved, DISABILITIES_INVOLVED);
+        SetParameter(abuseCase.Id, ID);
+        SetParameter(abuseCase.ChildPlacementTypeId, CHILD_PLACEMENT_TYPE_ID);
+        SetNullableParameter(abuseCase.FamilySizeId, FAMILY_SIZE_ID);
+        SetNullableParameter(abuseCase.HomeschoolingInvolved, HOME_SCHOOLING_INVOLVED);
+        SetNullableParameter(abuseCase.FundamentalFaithInvolved, FUNDAMENTAL_FAITH_INVOLVED);
+        SetNullableParameter(abuseCase.DisabilitiesInvolved, DISABILITIES_INVOLVED);
         await _command.ExecuteNonQueryAsync();
     }
 }

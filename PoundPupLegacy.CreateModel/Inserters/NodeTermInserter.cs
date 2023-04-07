@@ -35,8 +35,8 @@ public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>
 
     public override async Task InsertAsync(NodeTerm nodeTerm)
     {
-        WriteValue(nodeTerm.NodeId, NODE_ID);
-        WriteValue(nodeTerm.TermId, TERM_ID);
+        SetParameter(nodeTerm.NodeId, NODE_ID);
+        SetParameter(nodeTerm.TermId, TERM_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

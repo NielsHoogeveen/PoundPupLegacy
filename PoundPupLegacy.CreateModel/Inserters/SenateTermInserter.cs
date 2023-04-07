@@ -49,10 +49,10 @@ internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>
             throw new NullReferenceException();
         if (senateTerm.SenatorId is null)
             throw new NullReferenceException();
-        WriteValue(senateTerm.Id, ID);
-        WriteValue(senateTerm.SenatorId, SENATOR_ID);
-        WriteValue(senateTerm.SubdivisionId, SUBDIVISION_ID);
-        WriteDateTimeRange(senateTerm.DateTimeRange, DATE_RANGE);
+        SetParameter(senateTerm.Id, ID);
+        SetParameter(senateTerm.SenatorId, SENATOR_ID);
+        SetParameter(senateTerm.SubdivisionId, SUBDIVISION_ID);
+        SetDateTimeRangeParameter(senateTerm.DateTimeRange, DATE_RANGE);
         await _command.ExecuteNonQueryAsync();
     }
 }

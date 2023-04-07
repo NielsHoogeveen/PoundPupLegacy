@@ -38,8 +38,8 @@ public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGloba
         if (region.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(region.Id, ID);
-        WriteValue(region.FirstLevelGlobalRegionId, FIRST_LEVEL_GLOBAL_REGION_ID);
+        SetParameter(region.Id, ID);
+        SetParameter(region.FirstLevelGlobalRegionId, FIRST_LEVEL_GLOBAL_REGION_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

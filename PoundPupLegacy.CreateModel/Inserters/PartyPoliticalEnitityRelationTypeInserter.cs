@@ -40,8 +40,8 @@ internal sealed class PartyPoliticalEntityRelationTypeInserter : DatabaseInserte
         if (politicalEntityRelationType.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(politicalEntityRelationType.Id, ID);
-        WriteValue(politicalEntityRelationType.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
+        SetParameter(politicalEntityRelationType.Id, ID);
+        SetParameter(politicalEntityRelationType.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
         await _command.ExecuteNonQueryAsync();
     }
 }

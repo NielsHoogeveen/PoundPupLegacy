@@ -38,8 +38,8 @@ internal sealed class ProfessionInserter : DatabaseInserter<Profession>
         if (profession.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(profession.Id, ID);
-        WriteValue(profession.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
+        SetParameter(profession.Id, ID);
+        SetParameter(profession.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
         await _command.ExecuteNonQueryAsync();
     }
 }

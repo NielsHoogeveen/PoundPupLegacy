@@ -46,10 +46,10 @@ internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>
 
     public override async Task InsertAsync(NodeType nodeType)
     {
-        WriteValue(nodeType.Id, ID);
-        WriteNullableValue(nodeType.Name, NAME);
-        WriteNullableValue(nodeType.Description, DESCRIPTION);
-        WriteValue(nodeType.AuthorSpecific, AUTHOR_SPECIFIC);
+        SetParameter(nodeType.Id, ID);
+        SetNullableParameter(nodeType.Name, NAME);
+        SetNullableParameter(nodeType.Description, DESCRIPTION);
+        SetParameter(nodeType.AuthorSpecific, AUTHOR_SPECIFIC);
         await _command.ExecuteNonQueryAsync();
     }
 }

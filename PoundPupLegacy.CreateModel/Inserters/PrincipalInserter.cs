@@ -45,7 +45,7 @@ public class PrincipalInserter : DatabaseInserter<Principal>
     public override async Task InsertAsync(Principal principal)
     {
         if (principal.Id is not null) {
-            WriteValue(principal.Id, ID);
+            SetParameter(principal.Id, ID);
             await _command.ExecuteNonQueryAsync();
         }
         else {

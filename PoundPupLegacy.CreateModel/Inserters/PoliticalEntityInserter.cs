@@ -38,8 +38,8 @@ internal sealed class PoliticalEntityInserter : DatabaseInserter<PoliticalEntity
         if (entity.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(entity.Id, ID);
-        WriteNullableValue(entity.FileIdFlag, FILE_ID_FLAG);
+        SetParameter(entity.Id, ID);
+        SetNullableParameter(entity.FileIdFlag, FILE_ID_FLAG);
         await _command.ExecuteNonQueryAsync();
     }
 }

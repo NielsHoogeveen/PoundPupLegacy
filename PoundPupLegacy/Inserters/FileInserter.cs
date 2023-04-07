@@ -1,5 +1,5 @@
 ﻿using Npgsql;
-using PoundPupLegacy.CreateModel.Inserters;
+using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.Inserters;

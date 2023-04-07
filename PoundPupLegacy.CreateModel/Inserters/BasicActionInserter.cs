@@ -49,9 +49,9 @@ internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>
         if (!actionAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();
         }
-        WriteValue(actionAccessPrivilege.Id!.Value, ID);
-        WriteNullableValue(actionAccessPrivilege.Path, PATH);
-        WriteNullableValue(actionAccessPrivilege.Description, DESCRIPTION);
+        SetParameter(actionAccessPrivilege.Id!.Value, ID);
+        SetNullableParameter(actionAccessPrivilege.Path, PATH);
+        SetNullableParameter(actionAccessPrivilege.Description, DESCRIPTION);
         await _command.ExecuteNonQueryAsync();
     }
 }

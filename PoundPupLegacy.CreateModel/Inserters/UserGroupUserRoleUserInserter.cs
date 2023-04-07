@@ -40,9 +40,9 @@ internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroup
 
     public override async Task InsertAsync(UserGroupUserRoleUser userGroupUserRoleUser)
     {
-        WriteValue(userGroupUserRoleUser.UserGroupId, USER_GROUP_ID);
-        WriteValue(userGroupUserRoleUser.UserRoleId, USER_ROLE_ID);
-        WriteValue(userGroupUserRoleUser.UserId, USER_ID);
+        SetParameter(userGroupUserRoleUser.UserGroupId, USER_GROUP_ID);
+        SetParameter(userGroupUserRoleUser.UserRoleId, USER_ROLE_ID);
+        SetParameter(userGroupUserRoleUser.UserId, USER_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

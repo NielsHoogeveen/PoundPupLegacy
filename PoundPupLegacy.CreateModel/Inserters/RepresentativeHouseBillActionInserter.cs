@@ -63,10 +63,10 @@ internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<R
 
     private void DoWrites(RepresentativeHouseBillAction representativeHouseBillAction, NpgsqlCommand command)
     {
-        WriteValue(representativeHouseBillAction.RepresentativeId, REPRESENTATIVE_ID, command);
-        WriteValue(representativeHouseBillAction.HouseBillId, HOUSE_BILL_ID, command);
-        WriteValue(representativeHouseBillAction.BillActionTypeId, BILL_ACTION_TYPE_ID, command);
-        WriteValue(representativeHouseBillAction.Date, DATE, command);
+        SetParameter(representativeHouseBillAction.RepresentativeId, REPRESENTATIVE_ID, command);
+        SetParameter(representativeHouseBillAction.HouseBillId, HOUSE_BILL_ID, command);
+        SetParameter(representativeHouseBillAction.BillActionTypeId, BILL_ACTION_TYPE_ID, command);
+        SetParameter(representativeHouseBillAction.Date, DATE, command);
 
     }
 
@@ -80,7 +80,7 @@ internal sealed class RepresentativeHouseBillActionInserter : DatabaseInserter<R
             };
         }
         else {
-            WriteValue(representativeHouseBillAction.Id, ID);
+            SetParameter(representativeHouseBillAction.Id, ID);
             DoWrites(representativeHouseBillAction, _command);
             await _command.ExecuteNonQueryAsync();
         }

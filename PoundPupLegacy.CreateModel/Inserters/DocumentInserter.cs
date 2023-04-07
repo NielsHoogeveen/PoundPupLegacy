@@ -66,12 +66,12 @@ internal sealed class DocumentInserter : DatabaseInserter<Document>
     {
         if (document.Id is null)
             throw new NullReferenceException();
-        WriteValue(document.Id, ID);
-        WriteValue(document.Text, TEXT);
-        WriteValue(document.Teaser, TEASER);
-        WriteDateTimeRange(document.PublicationDate, PUBLICATION_DATE, PUBLICATION_DATE_RANGE);
-        WriteNullableValue(document.SourceUrl, SOURCE_URL);
-        WriteNullableValue(document.DocumentTypeId, DOCUMENT_TYPE_ID);
+        SetParameter(document.Id, ID);
+        SetParameter(document.Text, TEXT);
+        SetParameter(document.Teaser, TEASER);
+        SetDateTimeRangeParameter(document.PublicationDate, PUBLICATION_DATE, PUBLICATION_DATE_RANGE);
+        SetNullableParameter(document.SourceUrl, SOURCE_URL);
+        SetNullableParameter(document.DocumentTypeId, DOCUMENT_TYPE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 

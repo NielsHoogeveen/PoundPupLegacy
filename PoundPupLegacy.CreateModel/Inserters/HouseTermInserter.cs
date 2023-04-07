@@ -56,11 +56,11 @@ internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>
             throw new NullReferenceException();
         if (houseTerm.RepresentativeId is null)
             throw new NullReferenceException();
-        WriteValue(houseTerm.Id, ID);
-        WriteValue(houseTerm.RepresentativeId, REPRESENTATIVE_ID);
-        WriteValue(houseTerm.SubdivisionId, SUBDIVISION_ID);
-        WriteNullableValue(houseTerm.District, DISTRICT);
-        WriteDateTimeRange(houseTerm.DateTimeRange, DATE_RANGE);
+        SetParameter(houseTerm.Id, ID);
+        SetParameter(houseTerm.RepresentativeId, REPRESENTATIVE_ID);
+        SetParameter(houseTerm.SubdivisionId, SUBDIVISION_ID);
+        SetNullableParameter(houseTerm.District, DISTRICT);
+        SetDateTimeRangeParameter(houseTerm.DateTimeRange, DATE_RANGE);
         await _command.ExecuteNonQueryAsync();
     }
 }

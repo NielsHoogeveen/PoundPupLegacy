@@ -72,15 +72,15 @@ internal sealed class UserInserter : DatabaseInserter<User>
     {
         if (user.Id is null)
             throw new NullReferenceException();
-        WriteValue(user.Id, ID);
-        WriteValue(user.CreatedDateTime, CREATED_DATE_TIME);
-        WriteValue(user.Email, EMAIL);
-        WriteValue(user.Password, PASSWORD);
-        WriteNullableValue(user.AboutMe, ABOUT_ME);
-        WriteNullableValue(user.AnimalWithin, ANIMAL_WITHIN);
-        WriteNullableValue(user.RelationToChildPlacement, RELATION_TO_CHILD_PLACEMENT);
-        WriteNullableValue(user.Avatar, AVATAR);
-        WriteValue(user.UserStatusId, USER_STATUS_ID);
+        SetParameter(user.Id, ID);
+        SetParameter(user.CreatedDateTime, CREATED_DATE_TIME);
+        SetParameter(user.Email, EMAIL);
+        SetParameter(user.Password, PASSWORD);
+        SetNullableParameter(user.AboutMe, ABOUT_ME);
+        SetNullableParameter(user.AnimalWithin, ANIMAL_WITHIN);
+        SetNullableParameter(user.RelationToChildPlacement, RELATION_TO_CHILD_PLACEMENT);
+        SetNullableParameter(user.Avatar, AVATAR);
+        SetParameter(user.UserStatusId, USER_STATUS_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

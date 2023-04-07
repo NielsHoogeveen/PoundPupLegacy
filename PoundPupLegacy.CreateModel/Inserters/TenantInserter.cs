@@ -48,10 +48,10 @@ internal sealed class TenantInserter : DatabaseInserter<Tenant>
     {
         if (@tenant.Id is null)
             throw new NullReferenceException();
-        WriteValue(@tenant.Id, ID);
-        WriteValue(@tenant.DomainName, DOMAIN_NAME);
-        WriteNullableValue(@tenant.VocabularyIdTagging, VOCABULARY_ID_TAGGING);
-        WriteValue(@tenant.AccessRoleNotLoggedIn.Id, ACCESS_ROLE_ID_NOT_LOGGED_IN);
+        SetParameter(@tenant.Id, ID);
+        SetParameter(@tenant.DomainName, DOMAIN_NAME);
+        SetNullableParameter(@tenant.VocabularyIdTagging, VOCABULARY_ID_TAGGING);
+        SetParameter(@tenant.AccessRoleNotLoggedIn.Id, ACCESS_ROLE_ID_NOT_LOGGED_IN);
         await _command.ExecuteNonQueryAsync();
     }
 }

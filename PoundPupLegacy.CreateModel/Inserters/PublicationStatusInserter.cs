@@ -38,8 +38,8 @@ internal sealed class PublicationStatusInserter : DatabaseInserter<PublicationSt
         if (nodeStatus.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(nodeStatus.Id, ID);
-        WriteValue(nodeStatus.Name, NAME);
+        SetParameter(nodeStatus.Id, ID);
+        SetParameter(nodeStatus.Name, NAME);
         await _command.ExecuteNonQueryAsync();
     }
 }

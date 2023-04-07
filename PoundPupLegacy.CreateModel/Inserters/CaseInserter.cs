@@ -49,9 +49,9 @@ internal sealed class CaseInserter : DatabaseInserter<Case>
     {
         if (@case.Id is null)
             throw new NullReferenceException();
-        WriteValue(@case.Id, ID);
-        WriteValue(@case.Description, DESCRIPTION);
-        WriteDateTimeRange(@case.Date, DATE, DATERANGE);
+        SetParameter(@case.Id, ID);
+        SetParameter(@case.Description, DESCRIPTION);
+        SetDateTimeRangeParameter(@case.Date, DATE, DATERANGE);
         await _command.ExecuteNonQueryAsync();
     }
 }

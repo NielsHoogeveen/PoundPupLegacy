@@ -44,9 +44,9 @@ internal sealed class NameableInserter : DatabaseInserter<Nameable>
         if (nameable.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(nameable.Id, ID);
-        WriteValue(nameable.Description, DESCRIPTION);
-        WriteNullableValue(nameable.FileIdTileImage, FILE_ID_TILE_IMAGE);
+        SetParameter(nameable.Id, ID);
+        SetParameter(nameable.Description, DESCRIPTION);
+        SetNullableParameter(nameable.FileIdTileImage, FILE_ID_TILE_IMAGE);
         await _command.ExecuteNonQueryAsync();
     }
 }

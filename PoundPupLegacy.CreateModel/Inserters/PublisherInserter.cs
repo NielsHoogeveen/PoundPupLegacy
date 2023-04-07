@@ -38,8 +38,8 @@ public class PublisherInserter : DatabaseInserter<Publisher>
 
     public override async Task InsertAsync(Publisher publisher)
     {
-        WriteValue(publisher.Id, ID);
-        WriteValue(publisher.Name, NAME);
+        SetParameter(publisher.Id, ID);
+        SetParameter(publisher.Name, NAME);
         await _command.ExecuteNonQueryAsync();
     }
 }

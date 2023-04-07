@@ -44,9 +44,9 @@ internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserte
     {
         if (unitedStatesCongressionalMeeting.Id is null)
             throw new NullReferenceException();
-        WriteValue(unitedStatesCongressionalMeeting.Id, ID);
-        WriteDateTimeRange(unitedStatesCongressionalMeeting.DateRange, DATE_RANGE);
-        WriteValue(unitedStatesCongressionalMeeting.Number, NUMBER);
+        SetParameter(unitedStatesCongressionalMeeting.Id, ID);
+        SetDateTimeRangeParameter(unitedStatesCongressionalMeeting.DateRange, DATE_RANGE);
+        SetParameter(unitedStatesCongressionalMeeting.Number, NUMBER);
         await _command.ExecuteNonQueryAsync();
     }
 

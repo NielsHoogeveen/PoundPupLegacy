@@ -38,8 +38,8 @@ internal sealed class BoundCountryInserter : DatabaseInserter<BoundCountry>
     {
         if (country.Id is null)
             throw new NullReferenceException();
-        WriteValue(country.Id, ID);
-        WriteValue(country.BindingCountryId, BINDING_COUNTRY_ID);
+        SetParameter(country.Id, ID);
+        SetParameter(country.BindingCountryId, BINDING_COUNTRY_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

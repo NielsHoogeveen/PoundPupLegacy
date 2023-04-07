@@ -39,7 +39,7 @@ internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>
         if (menuItem.Id != null) {
             throw new Exception($"Id of menu item needs to be null");
         }
-        WriteValue(menuItem.Weight, WEIGHT);
+        SetParameter(menuItem.Weight, WEIGHT);
         menuItem.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("No id was generated for menu item")

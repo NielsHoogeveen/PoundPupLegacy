@@ -37,8 +37,8 @@ internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>
     {
         if (subgroup.Id is null)
             throw new NullReferenceException();
-        WriteValue(subgroup.Id, ID);
-        WriteValue(subgroup.TenantId, TENANT_ID);
+        SetParameter(subgroup.Id, ID);
+        SetParameter(subgroup.TenantId, TENANT_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

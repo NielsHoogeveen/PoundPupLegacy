@@ -41,8 +41,8 @@ internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeActi
         if (!deleteNodeAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();
         }
-        WriteValue(deleteNodeAccessPrivilege.Id.Value, ID);
-        WriteNullableValue(deleteNodeAccessPrivilege.NodeTypeId, NODE_TYPE_ID);
+        SetParameter(deleteNodeAccessPrivilege.Id.Value, ID);
+        SetNullableParameter(deleteNodeAccessPrivilege.NodeTypeId, NODE_TYPE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

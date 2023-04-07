@@ -70,14 +70,14 @@ internal sealed class CountryInserter : DatabaseInserter<Country>
         if (country.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(country.Id, ID);
-        WriteValue(country.HagueStatusId, HAGUE_STATUS_ID);
-        WriteNullableValue(country.ResidencyRequirements, RESIDENCY_REQUIREMENTS);
-        WriteNullableValue(country.AgeRequirements, AGE_REQUIREMENTS);
-        WriteNullableValue(country.MarriageRequirements, MARRIAGE_REQUIREMENTS);
-        WriteNullableValue(country.IncomeRequirements, INCOME_REQUIREMENTS);
-        WriteNullableValue(country.HealthRequirements, HEALTH_REQUIREMENTS);
-        WriteNullableValue(country.OtherRequirements, OTHER_REQUIREMENTS);
+        SetParameter(country.Id, ID);
+        SetParameter(country.HagueStatusId, HAGUE_STATUS_ID);
+        SetNullableParameter(country.ResidencyRequirements, RESIDENCY_REQUIREMENTS);
+        SetNullableParameter(country.AgeRequirements, AGE_REQUIREMENTS);
+        SetNullableParameter(country.MarriageRequirements, MARRIAGE_REQUIREMENTS);
+        SetNullableParameter(country.IncomeRequirements, INCOME_REQUIREMENTS);
+        SetNullableParameter(country.HealthRequirements, HEALTH_REQUIREMENTS);
+        SetNullableParameter(country.OtherRequirements, OTHER_REQUIREMENTS);
         await _command.ExecuteNonQueryAsync();
     }
 }

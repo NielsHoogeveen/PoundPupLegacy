@@ -42,9 +42,9 @@ internal sealed class ProfessionalRoleInserter : DatabaseInserter<ProfessionalRo
     {
         if (professionalRole.Id is null)
             throw new NullReferenceException(nameof(professionalRole.Id));
-        WriteValue(professionalRole.PersonId, PERSON_ID);
-        WriteValue(professionalRole.ProfessionId, PROFESSION_ID);
-        WriteDateTimeRange(professionalRole.DateTimeRange, DATERANGE);
+        SetParameter(professionalRole.PersonId, PERSON_ID);
+        SetParameter(professionalRole.ProfessionId, PROFESSION_ID);
+        SetDateTimeRangeParameter(professionalRole.DateTimeRange, DATERANGE);
         professionalRole.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("Insert of professional role does not return an id.")

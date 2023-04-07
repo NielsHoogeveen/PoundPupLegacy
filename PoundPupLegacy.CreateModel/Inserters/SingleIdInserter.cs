@@ -55,7 +55,7 @@ internal sealed class SingleIdInserter<T> : DatabaseInserter<T> where T : Identi
         if (!_autoGenerateIdentity) {
             if (identifiable.Id is null)
                 throw new NullReferenceException($"Id for {_tableName} should not be null");
-            WriteValue(identifiable.Id, ID);
+            SetParameter(identifiable.Id, ID);
             await _command.ExecuteNonQueryAsync();
         }
         else {

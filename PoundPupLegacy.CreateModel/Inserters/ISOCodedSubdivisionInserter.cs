@@ -37,8 +37,8 @@ internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSub
         if (country.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(country.Id, ID);
-        WriteValue(country.ISO3166_2_Code, ISO_3166_2_CODE);
+        SetParameter(country.Id, ID);
+        SetParameter(country.ISO3166_2_Code, ISO_3166_2_CODE);
         await _command.ExecuteScalarAsync();
     }
 }

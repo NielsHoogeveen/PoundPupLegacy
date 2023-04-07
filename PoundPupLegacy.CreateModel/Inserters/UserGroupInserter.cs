@@ -62,16 +62,16 @@ public class UserGroupInserter : DatabaseInserter<UserGroup>
     public override async Task InsertAsync(UserGroup userGroup)
     {
         if (userGroup.Id is not null) {
-            WriteValue(userGroup.Id, ID);
-            WriteValue(userGroup.Name, NAME);
-            WriteValue(userGroup.Description, DESCRIPTION);
-            WriteValue(userGroup.AdministratorRole.Id, ADMINISTRATOR_ROLE_ID);
+            SetParameter(userGroup.Id, ID);
+            SetParameter(userGroup.Name, NAME);
+            SetParameter(userGroup.Description, DESCRIPTION);
+            SetParameter(userGroup.AdministratorRole.Id, ADMINISTRATOR_ROLE_ID);
             await _command.ExecuteNonQueryAsync();
         }
         else {
-            WriteValue(userGroup.Name, NAME, _identityInsertCommand);
-            WriteValue(userGroup.Description, DESCRIPTION, _identityInsertCommand);
-            WriteValue(userGroup.AdministratorRole.Id, ADMINISTRATOR_ROLE_ID);
+            SetParameter(userGroup.Name, NAME, _identityInsertCommand);
+            SetParameter(userGroup.Description, DESCRIPTION, _identityInsertCommand);
+            SetParameter(userGroup.AdministratorRole.Id, ADMINISTRATOR_ROLE_ID);
             userGroup.Id = await _command.ExecuteScalarAsync() switch {
                 int i => i,
                 _ => throw new Exception("Insert of userGroup does not return an id.")

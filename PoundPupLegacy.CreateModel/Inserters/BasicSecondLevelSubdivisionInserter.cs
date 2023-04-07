@@ -38,8 +38,8 @@ internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<Bas
     {
         if (country.Id is null)
             throw new NullReferenceException();
-        WriteValue(country.Id, ID);
-        WriteValue(country.IntermediateLevelSubdivisionId, INTERMEDIATE_LEVEL_SUBDIVISION_ID);
+        SetParameter(country.Id, ID);
+        SetParameter(country.IntermediateLevelSubdivisionId, INTERMEDIATE_LEVEL_SUBDIVISION_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -62,10 +62,10 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
 
     private void DoWrites(SenatorSenateBillAction senatorSenateBillAction, NpgsqlCommand command)
     {
-        WriteValue(senatorSenateBillAction.SenatorId, SENATOR_ID, command);
-        WriteValue(senatorSenateBillAction.SenateBillId, SENATE_BILL_ID, command);
-        WriteValue(senatorSenateBillAction.BillActionTypeId, BILL_ACTION_TYPE_ID, command);
-        WriteValue(senatorSenateBillAction.Date, DATE, command);
+        SetParameter(senatorSenateBillAction.SenatorId, SENATOR_ID, command);
+        SetParameter(senatorSenateBillAction.SenateBillId, SENATE_BILL_ID, command);
+        SetParameter(senatorSenateBillAction.BillActionTypeId, BILL_ACTION_TYPE_ID, command);
+        SetParameter(senatorSenateBillAction.Date, DATE, command);
 
     }
 
@@ -79,7 +79,7 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
             };
         }
         else {
-            WriteValue(senatorSenateBillAction.Id, ID);
+            SetParameter(senatorSenateBillAction.Id, ID);
             DoWrites(senatorSenateBillAction, _command);
             await _command.ExecuteNonQueryAsync();
         }

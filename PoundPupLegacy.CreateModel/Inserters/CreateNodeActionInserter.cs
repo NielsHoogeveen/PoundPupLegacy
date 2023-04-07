@@ -39,8 +39,8 @@ internal sealed class CreateNodeActionInserter : DatabaseInserter<CreateNodeActi
         if (!createNodeAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();
         }
-        WriteValue(createNodeAccessPrivilege.Id.Value, ID);
-        WriteNullableValue(createNodeAccessPrivilege.NodeTypeId, NODE_TYPE_ID);
+        SetParameter(createNodeAccessPrivilege.Id.Value, ID);
+        SetNullableParameter(createNodeAccessPrivilege.NodeTypeId, NODE_TYPE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

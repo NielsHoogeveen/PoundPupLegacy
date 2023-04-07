@@ -61,12 +61,12 @@ public class NodeInserter : DatabaseInserter<Node>
         if (node.Id is not null) {
             throw new Exception("Node id must be null upon creation");
         }
-        WriteValue(node.PublisherId, PUBLISHER_ID);
-        WriteValue(node.CreatedDateTime, CREATED_DATE_TIME);
-        WriteValue(node.ChangedDateTime, CHANGED_DATE_TIME);
-        WriteValue(node.Title.Trim(), TITLE);
-        WriteValue(node.NodeTypeId, NODE_TYPE_ID);
-        WriteNullableValue(node.OwnerId, OWNER_ID);
+        SetParameter(node.PublisherId, PUBLISHER_ID);
+        SetParameter(node.CreatedDateTime, CREATED_DATE_TIME);
+        SetParameter(node.ChangedDateTime, CHANGED_DATE_TIME);
+        SetParameter(node.Title.Trim(), TITLE);
+        SetParameter(node.NodeTypeId, NODE_TYPE_ID);
+        SetNullableParameter(node.OwnerId, OWNER_ID);
         node.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("Insert of node does not return an id.")

@@ -43,9 +43,9 @@ internal sealed class CaseCasePartiesInserter : DatabaseInserter<CaseCaseParties
 
     public override async Task InsertAsync(CaseCaseParties caseCaseParties)
     {
-        WriteValue(caseCaseParties.CaseId, CASE_ID);
-        WriteValue(caseCaseParties.CaseParties.Id, CASE_PARTIES_ID);
-        WriteValue(caseCaseParties.CasePartyTypeId, CASE_PARTY_TYPE_ID);
+        SetParameter(caseCaseParties.CaseId, CASE_ID);
+        SetParameter(caseCaseParties.CaseParties.Id, CASE_PARTIES_ID);
+        SetParameter(caseCaseParties.CasePartyTypeId, CASE_PARTY_TYPE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -36,7 +36,7 @@ internal sealed class CasePartyTypeInserter : DatabaseInserter<CasePartyType>
         if (casePartyType.Id is null) {
             throw new ArgumentNullException(nameof(casePartyType));
         }
-        WriteValue(casePartyType.Id, ID);
+        SetParameter(casePartyType.Id, ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

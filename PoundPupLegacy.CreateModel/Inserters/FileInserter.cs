@@ -68,21 +68,21 @@ internal sealed class FileInserter : DatabaseInserter<File>
     public override async Task InsertAsync(File file)
     {
         if (file.Id is null) {
-            WriteValue(file.Path, PATH, _identityCommand);
-            WriteValue(file.Name,   NAME, _identityCommand);
-            WriteValue(file.MimeType, MIME_TYPE, _identityCommand);
-            WriteValue(file.Size, SIZE, _identityCommand);
+            SetParameter(file.Path, PATH, _identityCommand);
+            SetParameter(file.Name,   NAME, _identityCommand);
+            SetParameter(file.MimeType, MIME_TYPE, _identityCommand);
+            SetParameter(file.Size, SIZE, _identityCommand);
             file.Id = await _identityCommand.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception("No id has been assigned when adding a file"),
             };
         }
         else {
-            WriteValue(file.Id, ID);
-            WriteValue(file.Path, PATH);
-            WriteValue(file.Name, NAME);
-            WriteValue(file.MimeType, MIME_TYPE);
-            WriteValue(file.Size, SIZE);
+            SetParameter(file.Id, ID);
+            SetParameter(file.Path, PATH);
+            SetParameter(file.Name, NAME);
+            SetParameter(file.MimeType, MIME_TYPE);
+            SetParameter(file.Size, SIZE);
             await _command.ExecuteNonQueryAsync();
         }
     }

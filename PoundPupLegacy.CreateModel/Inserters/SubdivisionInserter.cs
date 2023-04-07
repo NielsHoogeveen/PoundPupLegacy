@@ -51,10 +51,10 @@ internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>
         if (subdivision.Id is null)
             throw new NullReferenceException();
         try {
-            WriteValue(subdivision.Id, ID);
-            WriteValue(subdivision.Name.Trim(), NAME);
-            WriteValue(subdivision.CountryId, COUNTRY_ID);
-            WriteValue(subdivision.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
+            SetParameter(subdivision.Id, ID);
+            SetParameter(subdivision.Name.Trim(), NAME);
+            SetParameter(subdivision.CountryId, COUNTRY_ID);
+            SetParameter(subdivision.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
             await _command.ExecuteNonQueryAsync();
         }
         catch (Exception ex) {

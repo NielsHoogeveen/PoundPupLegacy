@@ -58,12 +58,12 @@ internal sealed class OrganizationInserter : DatabaseInserter<Organization>
         if (organization.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(organization.Id, ID);
-        WriteNullableValue(organization.WebsiteURL, WEBSITE_URL);
-        WriteNullableValue(organization.EmailAddress, EMAIL_ADDRESS);
-        WriteNullableValue(organization.Description, DESCRIPTION);
-        WriteNullableValue(organization.Established, ESTABLISHED);
-        WriteNullableValue(organization.Terminated, TERMINATED);
+        SetParameter(organization.Id, ID);
+        SetNullableParameter(organization.WebsiteURL, WEBSITE_URL);
+        SetNullableParameter(organization.EmailAddress, EMAIL_ADDRESS);
+        SetNullableParameter(organization.Description, DESCRIPTION);
+        SetNullableParameter(organization.Established, ESTABLISHED);
+        SetNullableParameter(organization.Terminated, TERMINATED);
         await _command.ExecuteNonQueryAsync();
     }
 }

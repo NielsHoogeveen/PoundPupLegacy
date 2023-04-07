@@ -45,9 +45,9 @@ internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraff
         if (abuseCase.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(abuseCase.Id, ID);
-        WriteNullableValue(abuseCase.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
-        WriteValue(abuseCase.CountryIdFrom, COUNTRY_ID_FROM);
+        SetParameter(abuseCase.Id, ID);
+        SetNullableParameter(abuseCase.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
+        SetParameter(abuseCase.CountryIdFrom, COUNTRY_ID_FROM);
         await _command.ExecuteNonQueryAsync();
     }
 }

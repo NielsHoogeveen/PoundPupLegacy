@@ -38,8 +38,8 @@ internal class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>
 
     public override async Task InsertAsync(AdministratorRole administratorRole)
     {
-        WriteValue(administratorRole.Id, ID);
-        WriteValue(administratorRole.UserGroupId, USER_GROUP_ID);
+        SetParameter(administratorRole.Id, ID);
+        SetParameter(administratorRole.UserGroupId, USER_GROUP_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -36,8 +36,8 @@ internal sealed class DocumentableDocumentInserter : DatabaseInserter<Documentab
 
     public override async Task InsertAsync(DocumentableDocument documentableDocument)
     {
-        WriteValue(documentableDocument.DocumentableId, DOCUMENTABLE_ID);
-        WriteNullableValue(documentableDocument.DocumentId, DOCUMENT_ID);
+        SetParameter(documentableDocument.DocumentableId, DOCUMENTABLE_ID);
+        SetNullableParameter(documentableDocument.DocumentId, DOCUMENT_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

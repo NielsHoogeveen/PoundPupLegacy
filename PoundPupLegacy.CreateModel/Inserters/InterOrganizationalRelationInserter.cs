@@ -78,16 +78,16 @@ internal sealed class InterOrganizationalRelationInserter : DatabaseInserter<Int
 
     public override async Task InsertAsync(InterOrganizationalRelation interOrganizationalRelation)
     {
-        WriteValue(interOrganizationalRelation.Id, ID);
-        WriteValue(interOrganizationalRelation.OrganizationIdFrom, ORGANIZATION_ID_FROM);
-        WriteValue(interOrganizationalRelation.OrganizationIdTo, ORGANIZATION_ID_TO);
-        WriteNullableValue(interOrganizationalRelation.GeographicalEntityId, GEOGRAPHICAL_ENTITY_ID);
-        WriteValue(interOrganizationalRelation.InterOrganizationalRelationTypeId, INTER_ORGANIZATIONAL_RELATION_TYPE_ID);
-        WriteDateTimeRange(interOrganizationalRelation.DateRange, DATE_RANGE);
-        WriteNullableValue(interOrganizationalRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
-        WriteNullableValue(interOrganizationalRelation.Description, DESCRIPTION);
-        WriteNullableValue(interOrganizationalRelation.MoneyInvolved, MONEY_INVOLVED);
-        WriteNullableValue(interOrganizationalRelation.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
+        SetParameter(interOrganizationalRelation.Id, ID);
+        SetParameter(interOrganizationalRelation.OrganizationIdFrom, ORGANIZATION_ID_FROM);
+        SetParameter(interOrganizationalRelation.OrganizationIdTo, ORGANIZATION_ID_TO);
+        SetNullableParameter(interOrganizationalRelation.GeographicalEntityId, GEOGRAPHICAL_ENTITY_ID);
+        SetParameter(interOrganizationalRelation.InterOrganizationalRelationTypeId, INTER_ORGANIZATIONAL_RELATION_TYPE_ID);
+        SetDateTimeRangeParameter(interOrganizationalRelation.DateRange, DATE_RANGE);
+        SetNullableParameter(interOrganizationalRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
+        SetNullableParameter(interOrganizationalRelation.Description, DESCRIPTION);
+        SetNullableParameter(interOrganizationalRelation.MoneyInvolved, MONEY_INVOLVED);
+        SetNullableParameter(interOrganizationalRelation.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
         await _command.ExecuteNonQueryAsync();
     }
 }

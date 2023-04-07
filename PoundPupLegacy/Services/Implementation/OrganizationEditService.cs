@@ -11,6 +11,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
 {
 
     private readonly IDatabaseReaderFactory<OrganizationUpdateDocumentReader> _organizationUpdateDocumentReaderFactory;
+    private readonly ISaveService<IEnumerable<Location>> _locationsSaveService;
 
     public OrganizationEditService(
         IDbConnection connection,
@@ -20,6 +21,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
+        ISaveService<IEnumerable<Location>> locationsSaveService,
         ITextService textService,
         ILogger<OrganizationEditService> logger
 
@@ -34,6 +36,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         logger)
     {
         _organizationUpdateDocumentReaderFactory = organizationUpdateDocumentReaderFactory;
+        _locationsSaveService = locationsSaveService;
     }
     public async Task<Organization> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -53,18 +56,23 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         }
     }
 
+    protected override async Task StoreAdditional(Organization organization)
+    {
+        await base.StoreAdditional(organization);
+        await _locationsSaveService.SaveAsync(organization.Locations, _connection);
+    }
     public Task<Organization> GetViewModelAsync(int userId, int tenantId)
     {
         throw new NotImplementedException();
     }
     protected sealed override async Task StoreNew(Organization organization, NpgsqlConnection connection)
     {
-
+        
     }
 
     protected sealed override async Task StoreExisting(Organization organization, NpgsqlConnection connection)
     {
-
+        
     }
 
 }

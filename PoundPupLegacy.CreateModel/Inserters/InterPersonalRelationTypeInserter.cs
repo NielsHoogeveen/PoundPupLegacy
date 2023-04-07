@@ -39,8 +39,8 @@ internal sealed class InterPersonalRelationTypeInserter : DatabaseInserter<Inter
     {
         if (interPersonalRelationType.Id is null)
             throw new NullReferenceException();
-        WriteValue(interPersonalRelationType.Id, ID);
-        WriteValue(interPersonalRelationType.IsSymmetric, IS_SYMMETRIC);
+        SetParameter(interPersonalRelationType.Id, ID);
+        SetParameter(interPersonalRelationType.IsSymmetric, IS_SYMMETRIC);
         await _command.ExecuteNonQueryAsync();
     }
 

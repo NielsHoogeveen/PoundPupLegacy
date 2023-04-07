@@ -36,7 +36,7 @@ internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>
         if (billActionType.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(billActionType.Id, ID);
+        SetParameter(billActionType.Id, ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

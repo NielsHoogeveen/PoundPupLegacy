@@ -58,12 +58,12 @@ internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<Pa
 
     public override async Task InsertAsync(PartyPoliticalEntityRelation partyPoliticalEntityRelation)
     {
-        WriteValue(partyPoliticalEntityRelation.Id, ID);
-        WriteValue(partyPoliticalEntityRelation.PartyId, PARTY_ID);
-        WriteValue(partyPoliticalEntityRelation.PoliticalEntityId, POLITICAL_ENTITY_ID);
-        WriteValue(partyPoliticalEntityRelation.PartyPoliticalEntityRelationTypeId, PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID);
-        WriteDateTimeRange(partyPoliticalEntityRelation.DateRange, DATE_RANGE);
-        WriteNullableValue(partyPoliticalEntityRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
+        SetParameter(partyPoliticalEntityRelation.Id, ID);
+        SetParameter(partyPoliticalEntityRelation.PartyId, PARTY_ID);
+        SetParameter(partyPoliticalEntityRelation.PoliticalEntityId, POLITICAL_ENTITY_ID);
+        SetParameter(partyPoliticalEntityRelation.PartyPoliticalEntityRelationTypeId, PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID);
+        SetDateTimeRangeParameter(partyPoliticalEntityRelation.DateRange, DATE_RANGE);
+        SetNullableParameter(partyPoliticalEntityRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
         await _command.ExecuteNonQueryAsync();
     }
 }

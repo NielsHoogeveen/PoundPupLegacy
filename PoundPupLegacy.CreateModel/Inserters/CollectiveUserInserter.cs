@@ -39,8 +39,8 @@ internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>
     {
         if (collectiveUser.CollectiveId is null || collectiveUser.UserId is null)
             throw new NullReferenceException();
-        WriteValue(collectiveUser.CollectiveId, COLLECTIVE_ID);
-        WriteValue(collectiveUser.UserId, USER_ID);
+        SetParameter(collectiveUser.CollectiveId, COLLECTIVE_ID);
+        SetParameter(collectiveUser.UserId, USER_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -87,26 +87,26 @@ internal sealed class LocationInserter : DatabaseInserter<Location>
     public override async Task InsertAsync(Location location)
     {
         if (location.Id is null) {
-            WriteNullableValue(location.Street, STREET, _identityCommand);
-            WriteNullableValue(location.Additional, ADDITIONAL, _identityCommand);
-            WriteNullableValue(location.City, CITY, _identityCommand);
-            WriteNullableValue(location.PostalCode, POSTAL_CODE, _identityCommand);
-            WriteNullableValue(location.SubdivisionId, SUBDIVIONS_ID, _identityCommand);
-            WriteValue(location.CountryId, COUNTRY_ID, _identityCommand);
-            WriteNullableValue(location.Latitude, LATITUDE, _identityCommand);
-            WriteNullableValue(location.Longitude, LONGITUDE, _identityCommand);
+            SetNullableParameter(location.Street, STREET, _identityCommand);
+            SetNullableParameter(location.Additional, ADDITIONAL, _identityCommand);
+            SetNullableParameter(location.City, CITY, _identityCommand);
+            SetNullableParameter(location.PostalCode, POSTAL_CODE, _identityCommand);
+            SetNullableParameter(location.SubdivisionId, SUBDIVIONS_ID, _identityCommand);
+            SetParameter(location.CountryId, COUNTRY_ID, _identityCommand);
+            SetNullableParameter(location.Latitude, LATITUDE, _identityCommand);
+            SetNullableParameter(location.Longitude, LONGITUDE, _identityCommand);
             location.Id = await _command.ExecuteNonQueryAsync();
         }
         else {
-            WriteValue(location.Id, ID);
-            WriteNullableValue(location.Street, STREET);
-            WriteNullableValue(location.Additional, ADDITIONAL);
-            WriteNullableValue(location.City, CITY);
-            WriteNullableValue(location.PostalCode, POSTAL_CODE);
-            WriteNullableValue(location.SubdivisionId, SUBDIVIONS_ID);
-            WriteValue(location.CountryId, COUNTRY_ID);
-            WriteNullableValue(location.Latitude, LATITUDE);
-            WriteNullableValue(location.Longitude, LONGITUDE);
+            SetParameter(location.Id, ID);
+            SetNullableParameter(location.Street, STREET);
+            SetNullableParameter(location.Additional, ADDITIONAL);
+            SetNullableParameter(location.City, CITY);
+            SetNullableParameter(location.PostalCode, POSTAL_CODE);
+            SetNullableParameter(location.SubdivisionId, SUBDIVIONS_ID);
+            SetParameter(location.CountryId, COUNTRY_ID);
+            SetNullableParameter(location.Latitude, LATITUDE);
+            SetNullableParameter(location.Longitude, LONGITUDE);
             await _command.ExecuteNonQueryAsync();
         }
     }

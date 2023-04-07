@@ -39,8 +39,8 @@ internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<Or
         if (organizationOrganizationType.OrganizationId is null) {
             throw new NullReferenceException(nameof(organizationOrganizationType.OrganizationTypeId));
         }
-        WriteValue(organizationOrganizationType.OrganizationId, ORGANIZATION_ID);
-        WriteValue(organizationOrganizationType.OrganizationTypeId, ORGANIZATION_TYPE_ID);
+        SetParameter(organizationOrganizationType.OrganizationId, ORGANIZATION_ID);
+        SetParameter(organizationOrganizationType.OrganizationTypeId, ORGANIZATION_TYPE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

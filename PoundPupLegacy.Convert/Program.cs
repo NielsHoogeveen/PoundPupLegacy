@@ -3,7 +3,6 @@ using MySqlConnector;
 using Npgsql;
 
 namespace PoundPupLegacy.Convert;
-
 internal partial class Program
 {
     internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=root;database=ppl";

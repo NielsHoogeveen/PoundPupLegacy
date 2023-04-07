@@ -1,8 +1,11 @@
 using Bunit;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.Services;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Xunit;
 using Location = PoundPupLegacy.EditModel.Location;
@@ -13,8 +16,29 @@ public class UnitTest1
 {
     private const string URL_PATH = "united_states_senate_114th_congress";
     private const string REGEX = "united_states_(senate|house)_([0-9]+)(th|st|nd|rd)_congress";
+    const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
 
     [Fact]
+    public async void AddUpdatersPrepare()
+    {
+        using var connection = new NpgsqlConnection(ConnectStringPostgresql);
+        connection.Open();
+        var creatorAssembly = Assembly.GetAssembly(typeof(Program));
+        var types = creatorAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseUpdaterFactory)) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
+        foreach (var type in types) {
+            var i = Activator.CreateInstance(type);
+            var m = type.GetMethod("CreateAsync", new Type[] { typeof(NpgsqlConnection) });
+            var task = (Task)m!.Invoke(i, new object[] { connection });
+            await task.ConfigureAwait(false);
+            var result = task.GetType().GetProperty("Result");
+            var reader = (IDatabaseUpdater)result.GetValue(task);
+            Assert.True(reader.HasBeenPrepared);
+            Assert.NotEqual(string.Empty, reader.Sql);
+            await reader.DisposeAsync();
+        }
+        connection.Close();
+    }
+
     public void RegularExpressionIsCapableOfExtractingTypeOfChamber()
     {
         Regex regex = new Regex(REGEX);

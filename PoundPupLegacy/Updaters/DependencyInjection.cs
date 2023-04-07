@@ -8,5 +8,6 @@ public static class DependencyInjection
     {
         services.AddTransient<IDatabaseUpdaterFactory<SimpleTextNodeUpdater>, SimpleTextNodeUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<TenantNodeUpdater>, TenantNodeUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<LocationUpdater>, LocationUpdaterFactory>();
     }
 }

@@ -69,14 +69,14 @@ internal sealed class InterCountryRelationInserter : DatabaseInserter<InterCount
     {
         if (interCountryRelation.Id is null)
             throw new NullReferenceException();
-        WriteValue(interCountryRelation.Id, ID);
-        WriteValue(interCountryRelation.CountryIdFrom, COUNTRY_ID_FROM);
-        WriteValue(interCountryRelation.CountryIdTo, COUNTRY_ID_TO);
-        WriteDateTimeRange(interCountryRelation.DateTimeRange, DATE_RANGE);
-        WriteValue(interCountryRelation.InterCountryRelationTypeId, INTER_COUNTRY_RELATION_TYPE_ID);
-        WriteNullableValue(interCountryRelation.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
-        WriteNullableValue(interCountryRelation.MoneyInvolved, MONEY_INVOLVED);
-        WriteNullableValue(interCountryRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
+        SetParameter(interCountryRelation.Id, ID);
+        SetParameter(interCountryRelation.CountryIdFrom, COUNTRY_ID_FROM);
+        SetParameter(interCountryRelation.CountryIdTo, COUNTRY_ID_TO);
+        SetDateTimeRangeParameter(interCountryRelation.DateTimeRange, DATE_RANGE);
+        SetParameter(interCountryRelation.InterCountryRelationTypeId, INTER_COUNTRY_RELATION_TYPE_ID);
+        SetNullableParameter(interCountryRelation.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
+        SetNullableParameter(interCountryRelation.MoneyInvolved, MONEY_INVOLVED);
+        SetNullableParameter(interCountryRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
         await _command.ExecuteNonQueryAsync();
     }
 

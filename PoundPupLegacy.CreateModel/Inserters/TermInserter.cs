@@ -40,9 +40,9 @@ internal sealed class TermInserter : DatabaseInserter<Term>
 
     public override async Task InsertAsync(Term term)
     {
-        WriteValue(term.VocabularyId, VOCABULARY_ID);
-        WriteValue(term.Name.Trim(), NAME);
-        WriteValue(term.NameableId, NAMEABLE_ID);
+        SetParameter(term.VocabularyId, VOCABULARY_ID);
+        SetParameter(term.Name.Trim(), NAME);
+        SetParameter(term.NameableId, NAMEABLE_ID);
         var retval = await _command.ExecuteScalarAsync();
         term.Id = retval switch {
             int i => i,

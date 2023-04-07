@@ -43,9 +43,9 @@ internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>
     {
         if (tenantFile.FileId == null)
             throw new ArgumentNullException(nameof(tenantFile.FileId));
-        WriteValue(tenantFile.TenantId, TENANT_ID);
-        WriteValue(tenantFile.FileId, FILE_ID);
-        WriteValue(tenantFile.TenantFileId, TENANT_FILE_ID);
+        SetParameter(tenantFile.TenantId, TENANT_ID);
+        SetParameter(tenantFile.FileId, FILE_ID);
+        SetParameter(tenantFile.TenantFileId, TENANT_FILE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -47,10 +47,10 @@ internal sealed class PollVoteInserter : DatabaseInserter<PollVote>
     {
         if (pollVote.PollId is null)
             throw new NullReferenceException();
-        WriteValue(pollVote.PollId, POLL_ID);
-        WriteValue(pollVote.Delta, DELTA);
-        WriteNullableValue(pollVote.UserId, USER_ID);
-        WriteNullableValue(pollVote.IpAddress, IP_ADDRESS);
+        SetParameter(pollVote.PollId, POLL_ID);
+        SetParameter(pollVote.Delta, DELTA);
+        SetNullableParameter(pollVote.UserId, USER_ID);
+        SetNullableParameter(pollVote.IpAddress, IP_ADDRESS);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -43,9 +43,9 @@ internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>
         if (simpleTextNode.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(simpleTextNode.Id, ID);
-        WriteValue(simpleTextNode.Text, TEXT);
-        WriteValue(simpleTextNode.Teaser, TEASER);
+        SetParameter(simpleTextNode.Id, ID);
+        SetParameter(simpleTextNode.Text, TEXT);
+        SetParameter(simpleTextNode.Teaser, TEASER);
         await _command.ExecuteNonQueryAsync();
     }
 }

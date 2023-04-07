@@ -38,8 +38,8 @@ internal sealed class PollQuestionInserter : DatabaseInserter<PollQuestion>
     {
         if (pollQuestion.Id is null)
             throw new NullReferenceException();
-        WriteValue(pollQuestion.Id, ID);
-        WriteValue(pollQuestion.Question, QUESTION);
+        SetParameter(pollQuestion.Id, ID);
+        SetParameter(pollQuestion.Question, QUESTION);
         await _command.ExecuteNonQueryAsync();
     }
 }

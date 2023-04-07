@@ -35,8 +35,8 @@ internal sealed class PollStatusInserter : DatabaseInserter<PollStatus>
 
     public override async Task InsertAsync(PollStatus pollStatus)
     {
-        WriteValue(pollStatus.Id, ID);
-        WriteValue(pollStatus.Name, NAME);
+        SetParameter(pollStatus.Id, ID);
+        SetParameter(pollStatus.Name, NAME);
         await _command.ExecuteNonQueryAsync();
     }
 }

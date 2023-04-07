@@ -80,13 +80,13 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
         if (personOrganizationRelation.PersonId is null) {
             throw new NullReferenceException(nameof(personOrganizationRelation.PersonId));
         }
-        WriteValue(personOrganizationRelation.PersonId, PERSON_ID, command);
-        WriteValue(personOrganizationRelation.OrganizationId, ORGANIZATION_ID, command);
-        WriteNullableValue(personOrganizationRelation.GeographicalEntityId, GEOGRAPHICAL_ENTITY_ID, command);
-        WriteValue(personOrganizationRelation.PersonOrganizationRelationTypeId, PERSON_ORGANIZATION_RELATION_TYPE_ID, command);
-        WriteDateTimeRange(personOrganizationRelation.DateRange, DATE_RANGE, command);
-        WriteNullableValue(personOrganizationRelation.DocumentIdProof, DOCUMENT_ID_PROOF, command);
-        WriteNullableValue(personOrganizationRelation.Description, DESCRIPTION, command);
+        SetParameter(personOrganizationRelation.PersonId, PERSON_ID, command);
+        SetParameter(personOrganizationRelation.OrganizationId, ORGANIZATION_ID, command);
+        SetNullableParameter(personOrganizationRelation.GeographicalEntityId, GEOGRAPHICAL_ENTITY_ID, command);
+        SetParameter(personOrganizationRelation.PersonOrganizationRelationTypeId, PERSON_ORGANIZATION_RELATION_TYPE_ID, command);
+        SetDateTimeRangeParameter(personOrganizationRelation.DateRange, DATE_RANGE, command);
+        SetNullableParameter(personOrganizationRelation.DocumentIdProof, DOCUMENT_ID_PROOF, command);
+        SetNullableParameter(personOrganizationRelation.Description, DESCRIPTION, command);
     }
     public override async Task InsertAsync(PersonOrganizationRelation personOrganizationRelation)
     {
@@ -98,7 +98,7 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
             };
         }
         else {
-            WriteValue(personOrganizationRelation.Id, ID);
+            SetParameter(personOrganizationRelation.Id, ID);
             DoWrites(personOrganizationRelation, _command);
             await _command.ExecuteNonQueryAsync();
         }

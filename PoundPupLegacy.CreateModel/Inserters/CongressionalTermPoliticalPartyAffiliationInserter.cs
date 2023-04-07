@@ -49,10 +49,10 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : Datab
     {
         if (congressionalTermPoliticalPartyAffiliation.Id is null)
             throw new NullReferenceException();
-        WriteValue(congressionalTermPoliticalPartyAffiliation.Id, ID);
-        WriteValue(congressionalTermPoliticalPartyAffiliation.CongressionalTermId, CONGRESSIONAL_TERM_ID);
-        WriteValue(congressionalTermPoliticalPartyAffiliation.PoliticalPartyAffiliationId, UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID);
-        WriteDateTimeRange(congressionalTermPoliticalPartyAffiliation.DateTimeRange, DATE_RANGE);
+        SetParameter(congressionalTermPoliticalPartyAffiliation.Id, ID);
+        SetParameter(congressionalTermPoliticalPartyAffiliation.CongressionalTermId, CONGRESSIONAL_TERM_ID);
+        SetParameter(congressionalTermPoliticalPartyAffiliation.PoliticalPartyAffiliationId, UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID);
+        SetDateTimeRangeParameter(congressionalTermPoliticalPartyAffiliation.DateTimeRange, DATE_RANGE);
         await _command.ExecuteNonQueryAsync();
     }
 }

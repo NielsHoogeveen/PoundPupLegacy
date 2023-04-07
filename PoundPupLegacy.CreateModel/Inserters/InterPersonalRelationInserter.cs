@@ -58,12 +58,12 @@ internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPers
 
     public override async Task InsertAsync(InterPersonalRelation interPersonalRelation)
     {
-        WriteValue(interPersonalRelation.Id, ID);
-        WriteValue(interPersonalRelation.PersonIdFrom, PERSON_ID_FROM);
-        WriteValue(interPersonalRelation.PersonIdTo, PERSON_ID_TO);
-        WriteValue(interPersonalRelation.InterPersonalRelationTypeId, INTER_ORGANIZATIONAL_RELATION_TYPE_ID);
-        WriteDateTimeRange(interPersonalRelation.DateRange, DATE_RANGE);
-        WriteNullableValue(interPersonalRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
+        SetParameter(interPersonalRelation.Id, ID);
+        SetParameter(interPersonalRelation.PersonIdFrom, PERSON_ID_FROM);
+        SetParameter(interPersonalRelation.PersonIdTo, PERSON_ID_TO);
+        SetParameter(interPersonalRelation.InterPersonalRelationTypeId, INTER_ORGANIZATIONAL_RELATION_TYPE_ID);
+        SetDateTimeRangeParameter(interPersonalRelation.DateRange, DATE_RANGE);
+        SetNullableParameter(interPersonalRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
         await _command.ExecuteNonQueryAsync();
     }
 }

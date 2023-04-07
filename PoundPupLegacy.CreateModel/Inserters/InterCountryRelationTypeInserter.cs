@@ -39,8 +39,8 @@ internal sealed class InterCountryRelationTypeInserter : DatabaseInserter<InterC
     {
         if (interCountryRelationType.Id is null)
             throw new NullReferenceException();
-        WriteValue(interCountryRelationType.Id, ID);
-        WriteValue(interCountryRelationType.IsSymmetric, IS_SYMMETRIC);
+        SetParameter(interCountryRelationType.Id, ID);
+        SetParameter(interCountryRelationType.IsSymmetric, IS_SYMMETRIC);
         await _command.ExecuteNonQueryAsync();
     }
 

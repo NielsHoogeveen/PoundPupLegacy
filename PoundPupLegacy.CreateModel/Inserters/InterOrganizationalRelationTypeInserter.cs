@@ -39,8 +39,8 @@ internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter
     {
         if (interOrganizationalRelationType.Id is null)
             throw new NullReferenceException();
-        WriteValue(interOrganizationalRelationType.Id, ID);
-        WriteValue(interOrganizationalRelationType.IsSymmetric, IS_SYMMETRIC);
+        SetParameter(interOrganizationalRelationType.Id, ID);
+        SetParameter(interOrganizationalRelationType.IsSymmetric, IS_SYMMETRIC);
         await _command.ExecuteNonQueryAsync();
     }
 

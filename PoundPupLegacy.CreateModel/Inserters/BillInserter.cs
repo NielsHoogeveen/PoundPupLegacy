@@ -38,8 +38,8 @@ internal sealed class BillInserter : DatabaseInserter<Bill>
 
     public override async Task InsertAsync(Bill bill)
     {
-        WriteValue(bill.Id, ID);
-        WriteNullableValue(bill.IntroductionDate, INTRODUCTION_DATE);
+        SetParameter(bill.Id, ID);
+        SetNullableParameter(bill.IntroductionDate, INTRODUCTION_DATE);
         await _command.ExecuteNonQueryAsync();
     }
 }

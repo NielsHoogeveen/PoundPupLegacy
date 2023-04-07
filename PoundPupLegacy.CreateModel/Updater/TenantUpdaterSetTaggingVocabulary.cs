@@ -1,30 +1,19 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-internal sealed class TenantUpdaterSetTaggingVocabularyFactory : IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary>
+internal sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary>
 {
-    public async Task<TenantUpdaterSetTaggingVocabulary> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
-            UPDATE tenant SET vocabulary_id_tagging = @vocabulary_id WHERE id = @tenant_id
-            """;
-
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("tenant_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("vocabulary_id", NpgsqlDbType.Integer);
-
-        await command.PrepareAsync();
-
-        return new TenantUpdaterSetTaggingVocabulary(command);
-
-    }
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() {
+        Name = "tenant_id"
+    };
+    internal static NonNullableIntegerDatabaseParameter VocabularyId = new() {
+        Name = "vocabulary_id"
+    };
+    public override string Sql => """
+        UPDATE tenant 
+        SET 
+        vocabulary_id_tagging = @vocabulary_id 
+        WHERE id = @tenant_id
+        """;
 
 }
 public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<TenantUpdaterSetTaggingVocabulary.Request>
@@ -37,14 +26,11 @@ public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<TenantUp
 
     internal TenantUpdaterSetTaggingVocabulary(NpgsqlCommand command) : base(command) { }
 
-    public override async Task UpdateAsync(Request request)
+    public override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["vocabulary_id"].Value = request.VocabularyId;
-
-        var count = await _command.ExecuteNonQueryAsync();
-        if (count != 1) {
-            throw new Exception($"Unexpected {count} rows were updated setting vocaburaly {request.VocabularyId} for tenant {request.TenantId}");
-        }
+        return new List<ParameterValue> {
+            ParameterValue.Create(TenantUpdaterSetTaggingVocabularyFactory.TenantId, request.TenantId),
+            ParameterValue.Create(TenantUpdaterSetTaggingVocabularyFactory.VocabularyId, request.VocabularyId),
+        };
     }
 }

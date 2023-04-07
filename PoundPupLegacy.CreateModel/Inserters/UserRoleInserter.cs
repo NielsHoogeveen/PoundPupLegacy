@@ -44,9 +44,9 @@ public class UserRoleInserter : DatabaseInserter<UserRole>
 
     public override async Task InsertAsync(UserRole userRole)
     {
-        WriteValue(userRole.Id, ID);
-        WriteValue(userRole.UserGroupId, USER_GROUP_ID);
-        WriteValue(userRole.Name, NAME);
+        SetParameter(userRole.Id, ID);
+        SetParameter(userRole.UserGroupId, USER_GROUP_ID);
+        SetParameter(userRole.Name, NAME);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -83,17 +83,17 @@ internal sealed class PersonInserter : DatabaseInserter<Person>
     {
         if (person.Id is null)
             throw new NullReferenceException();
-        WriteValue(person.Id, ID);
-        WriteNullableValue(person.DateOfBirth, DATE_OF_BIRTH);
-        WriteNullableValue(person.DateOfDeath, DATE_OF_DEATH);
-        WriteNullableValue(person.FileIdPortrait, FILE_ID_PORTRAIT);
-        WriteNullableValue(person.GovtrackId, GOVTRACK_ID);
-        WriteNullableValue(person.FirstName, FIRST_NAME);
-        WriteNullableValue(person.MiddleName, MIDDLE_NAME);
-        WriteNullableValue(person.LastName, LAST_NAME);
-        WriteNullableValue(person.Suffix, SUFFIX);
-        WriteNullableValue(person.FullName, FULL_NAME);
-        WriteNullableValue(person.Bioguide, BIOGUIDE);
+        SetParameter(person.Id, ID);
+        SetNullableParameter(person.DateOfBirth, DATE_OF_BIRTH);
+        SetNullableParameter(person.DateOfDeath, DATE_OF_DEATH);
+        SetNullableParameter(person.FileIdPortrait, FILE_ID_PORTRAIT);
+        SetNullableParameter(person.GovtrackId, GOVTRACK_ID);
+        SetNullableParameter(person.FirstName, FIRST_NAME);
+        SetNullableParameter(person.MiddleName, MIDDLE_NAME);
+        SetNullableParameter(person.LastName, LAST_NAME);
+        SetNullableParameter(person.Suffix, SUFFIX);
+        SetNullableParameter(person.FullName, FULL_NAME);
+        SetNullableParameter(person.Bioguide, BIOGUIDE);
         await _command.ExecuteNonQueryAsync();
     }
 }

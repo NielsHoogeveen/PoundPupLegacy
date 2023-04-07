@@ -47,10 +47,10 @@ internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>
     {
         if (vocabulary.Id is null)
             throw new NullReferenceException();
-        WriteValue(vocabulary.Id, ID);
-        WriteValue(vocabulary.OwnerId, OWNER_ID);
-        WriteValue(vocabulary.Name, NAME);
-        WriteValue(vocabulary.Description, DESCRIPTION);
+        SetParameter(vocabulary.Id, ID);
+        SetParameter(vocabulary.OwnerId, OWNER_ID);
+        SetParameter(vocabulary.Name, NAME);
+        SetParameter(vocabulary.Description, DESCRIPTION);
         await _command.ExecuteNonQueryAsync();
     }
 }

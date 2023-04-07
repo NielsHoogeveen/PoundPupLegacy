@@ -63,12 +63,12 @@ public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>
         if (tenantNode.Id != null) {
             throw new Exception($"Id of tenant node needs to be null");
         }
-        WriteValue(tenantNode.TenantId, TENANT_ID);
-        WriteValue(tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value : tenantNode.NodeId, URL_ID);
-        WriteNullableValue(tenantNode.UrlPath?.Trim(), URL_PATH);
-        WriteValue(tenantNode.NodeId, NODE_ID);
-        WriteNullableValue(tenantNode.SubgroupId, SUBGROUP_ID);
-        WriteValue(tenantNode.PublicationStatusId, PUBLICATION_STATUS_ID);
+        SetParameter(tenantNode.TenantId, TENANT_ID);
+        SetParameter(tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value : tenantNode.NodeId, URL_ID);
+        SetNullableParameter(tenantNode.UrlPath?.Trim(), URL_PATH);
+        SetParameter(tenantNode.NodeId, NODE_ID);
+        SetNullableParameter(tenantNode.SubgroupId, SUBGROUP_ID);
+        SetParameter(tenantNode.PublicationStatusId, PUBLICATION_STATUS_ID);
         tenantNode.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("No id was generated for tenant node")

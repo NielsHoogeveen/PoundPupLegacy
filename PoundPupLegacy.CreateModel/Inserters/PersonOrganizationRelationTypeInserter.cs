@@ -38,8 +38,8 @@ internal sealed class PersonOrganizationRelationTypeInserter : DatabaseInserter<
         if (personOrganizationRelationType.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(personOrganizationRelationType.Id, ID);
-        WriteValue(personOrganizationRelationType.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
+        SetParameter(personOrganizationRelationType.Id, ID);
+        SetParameter(personOrganizationRelationType.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
         await _command.ExecuteNonQueryAsync();
     }
 }

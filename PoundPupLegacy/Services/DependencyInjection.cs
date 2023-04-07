@@ -1,5 +1,4 @@
-﻿using PoundPupLegacy.EditModel;
-using PoundPupLegacy.Services.Implementation;
+﻿using PoundPupLegacy.Services.Implementation;
 using PoundPupLegacy.Deleters;
 using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.Readers;
@@ -38,7 +37,8 @@ public static class DependencyInjection
         services.AddTransient<IEditService<EditModel.Document>, DocumentEditService>();
         services.AddTransient<ISaveService<IEnumerable<EditModel.File>>, FilesSaveService>();
         services.AddTransient<ISaveService<IEnumerable<EditModel.TenantNode>>, TenantNodesSaveService>();
-        services.AddTransient<ISaveService<IEnumerable<Tag>>, TagsSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<EditModel.Tag>>, TagsSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<EditModel.Location>>, LocationsSaveService>();
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();
         services.AddTransient<ICongressionalDataService, CongressionalDataService>();

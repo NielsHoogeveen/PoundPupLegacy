@@ -49,10 +49,10 @@ internal sealed class PollOptionInserter : DatabaseInserter<PollOption>
     {
         if (pollOption.PollQuestionId is null)
             throw new NullReferenceException();
-        WriteValue(pollOption.PollQuestionId, POLL_QUESTION_ID);
-        WriteValue(pollOption.Delta, DELTA);
-        WriteNullableValue(pollOption.Text, TEXT);
-        WriteNullableValue(pollOption.NumberOfVotes, NUMBER_OF_VOTES);
+        SetParameter(pollOption.PollQuestionId, POLL_QUESTION_ID);
+        SetParameter(pollOption.Delta, DELTA);
+        SetNullableParameter(pollOption.Text, TEXT);
+        SetNullableParameter(pollOption.NumberOfVotes, NUMBER_OF_VOTES);
         await _command.ExecuteNonQueryAsync();
     }
 }

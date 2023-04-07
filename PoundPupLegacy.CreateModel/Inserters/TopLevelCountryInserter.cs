@@ -42,9 +42,9 @@ internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry
     {
         if (country.Id is null)
             throw new NullReferenceException();
-        WriteValue(country.Id, ID);
-        WriteValue(country.ISO3166_1_Code, ISO_3166_1_CODE);
-        WriteValue(country.SecondLevelRegionId, GLOBAL_REGION_ID);
+        SetParameter(country.Id, ID);
+        SetParameter(country.ISO3166_1_Code, ISO_3166_1_CODE);
+        SetParameter(country.SecondLevelRegionId, GLOBAL_REGION_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

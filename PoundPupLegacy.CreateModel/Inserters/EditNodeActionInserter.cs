@@ -39,8 +39,8 @@ internal sealed class EditNodeActionInserter : DatabaseInserter<EditNodeAction>
         if (!editNodeAction.Id.HasValue) {
             throw new NullReferenceException();
         }
-        WriteValue(editNodeAction.Id.Value, ID);
-        WriteNullableValue(editNodeAction.NodeTypeId, NODE_TYPE_ID);
+        SetParameter(editNodeAction.Id.Value, ID);
+        SetNullableParameter(editNodeAction.NodeTypeId, NODE_TYPE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

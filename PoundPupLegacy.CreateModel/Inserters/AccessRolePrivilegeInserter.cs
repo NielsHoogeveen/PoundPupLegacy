@@ -38,8 +38,8 @@ internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRoleP
 
     public override async Task InsertAsync(AccessRolePrivilege createNodeAccessPrivilege)
     {
-        WriteValue(createNodeAccessPrivilege.AccessRoleId, ACCESS_ROLE_ID);
-        WriteNullableValue(createNodeAccessPrivilege.ActionId, ACTION_ID);
+        SetParameter(createNodeAccessPrivilege.AccessRoleId, ACCESS_ROLE_ID);
+        SetNullableParameter(createNodeAccessPrivilege.ActionId, ACTION_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

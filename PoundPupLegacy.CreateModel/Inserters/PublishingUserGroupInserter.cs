@@ -36,8 +36,8 @@ internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingU
 
     public override async Task InsertAsync(PublishingUserGroup publishingUserGroup)
     {
-        WriteValue(publishingUserGroup.Id, ID);
-        WriteNullableValue(publishingUserGroup.PublicationStatusIdDefault, PUBLICATION_STATUS_ID_DEFAULT);
+        SetParameter(publishingUserGroup.Id, ID);
+        SetNullableParameter(publishingUserGroup.PublicationStatusIdDefault, PUBLICATION_STATUS_ID_DEFAULT);
         await _command.ExecuteNonQueryAsync();
     }
 }

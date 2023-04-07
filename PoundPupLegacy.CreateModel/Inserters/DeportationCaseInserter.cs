@@ -44,9 +44,9 @@ internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase
         if (deportationCase.Id is null)
             throw new NullReferenceException();
 
-        WriteValue(deportationCase.Id, ID);
-        WriteNullableValue(deportationCase.SubdivisionIdFrom, SUBDIVISION_ID_FROM);
-        WriteNullableValue(deportationCase.CountryIdTo, COUNTRY_ID_TO);
+        SetParameter(deportationCase.Id, ID);
+        SetNullableParameter(deportationCase.SubdivisionIdFrom, SUBDIVISION_ID_FROM);
+        SetNullableParameter(deportationCase.CountryIdTo, COUNTRY_ID_TO);
         await _command.ExecuteNonQueryAsync();
     }
 }

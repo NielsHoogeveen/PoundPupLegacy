@@ -38,8 +38,8 @@ internal sealed class ActInserter : DatabaseInserter<Act>
 
     public override async Task InsertAsync(Act act)
     {
-        WriteValue(act.Id, ID);
-        WriteNullableValue(act.EnactmentDate, ENACTMENT_DATE);
+        SetParameter(act.Id, ID);
+        SetNullableParameter(act.EnactmentDate, ENACTMENT_DATE);
         await _command.ExecuteNonQueryAsync();
     }
 }

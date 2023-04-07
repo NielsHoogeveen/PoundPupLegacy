@@ -43,9 +43,9 @@ internal sealed class PollInserter : DatabaseInserter<Poll>
     {
         if (poll.Id is null)
             throw new NullReferenceException();
-        WriteValue(poll.Id, ID);
-        WriteValue(poll.DateTimeClosure, DATE_TIME_CLOSURE);
-        WriteValue(poll.PollStatusId, POLL_STATUS_ID);
+        SetParameter(poll.Id, ID);
+        SetParameter(poll.DateTimeClosure, DATE_TIME_CLOSURE);
+        SetParameter(poll.PollStatusId, POLL_STATUS_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }

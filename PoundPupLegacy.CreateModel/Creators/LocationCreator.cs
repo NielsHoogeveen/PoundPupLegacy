@@ -5,9 +5,9 @@ internal sealed class LocationCreator : EntityCreator<Location>
     private readonly IDatabaseInserterFactory<Location> _locationInserterFactory;
     private readonly IDatabaseInserterFactory<LocationLocatable> _locationLocatableInserterFactory;
     public LocationCreator(
-               IDatabaseInserterFactory<Location> locationInserterFactory,
-                      IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
-           )
+        IDatabaseInserterFactory<Location> locationInserterFactory,
+        IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
+    )
     {
         _locationInserterFactory = locationInserterFactory;
         _locationLocatableInserterFactory = locationLocatableInserterFactory;
@@ -21,6 +21,7 @@ internal sealed class LocationCreator : EntityCreator<Location>
         await foreach (var location in locations) {
             await locationWriter.InsertAsync(location);
             foreach (var locationLocatable in location.Locatables) {
+                locationLocatable.LocationId = location.Id;
                 await locationLocatableWriter.InsertAsync(locationLocatable);
             }
         }

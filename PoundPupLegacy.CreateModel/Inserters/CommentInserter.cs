@@ -88,29 +88,29 @@ public class CommentInserter : DatabaseInserter<Comment>
     public override async Task InsertAsync(Comment node)
     {
         if (node.Id is null) {
-            WriteValue(node.NodeId, NODE_ID, _identityCommand);
-            WriteNullableValue(node.CommentIdParent, COMMENT_ID_PARENT, _identityCommand);
-            WriteValue(node.PublisherId, PUBLISHER_ID, _identityCommand);
-            WriteValue(node.NodeStatusId, NODE_STATUS_ID, _identityCommand);
-            WriteValue(node.IPAddress, IP_ADDRESS, _identityCommand);
-            WriteValue(node.CreatedDateTime, CREATED_DATE_TIME, _identityCommand);
-            WriteValue(node.Title, TITLE, _identityCommand);
-            WriteValue(node.Text, TEXT, _identityCommand);
+            SetParameter(node.NodeId, NODE_ID, _identityCommand);
+            SetNullableParameter(node.CommentIdParent, COMMENT_ID_PARENT, _identityCommand);
+            SetParameter(node.PublisherId, PUBLISHER_ID, _identityCommand);
+            SetParameter(node.NodeStatusId, NODE_STATUS_ID, _identityCommand);
+            SetParameter(node.IPAddress, IP_ADDRESS, _identityCommand);
+            SetParameter(node.CreatedDateTime, CREATED_DATE_TIME, _identityCommand);
+            SetParameter(node.Title, TITLE, _identityCommand);
+            SetParameter(node.Text, TEXT, _identityCommand);
             node.Id = await _identityCommand.ExecuteScalarAsync() switch {
                 int i => i,
                 _ => throw new Exception("Insert of node does not return an id.")
             };
         }
         else {
-            WriteValue(node.Id, ID);
-            WriteValue(node.NodeId, NODE_ID);
-            WriteNullableValue(node.CommentIdParent, COMMENT_ID_PARENT);
-            WriteValue(node.PublisherId, PUBLISHER_ID);
-            WriteValue(node.NodeStatusId, NODE_STATUS_ID);
-            WriteValue(node.IPAddress, IP_ADDRESS);
-            WriteValue(node.CreatedDateTime, CREATED_DATE_TIME);
-            WriteValue(node.Title, TITLE);
-            WriteValue(node.Text, TEXT);
+            SetParameter(node.Id, ID);
+            SetParameter(node.NodeId, NODE_ID);
+            SetNullableParameter(node.CommentIdParent, COMMENT_ID_PARENT);
+            SetParameter(node.PublisherId, PUBLISHER_ID);
+            SetParameter(node.NodeStatusId, NODE_STATUS_ID);
+            SetParameter(node.IPAddress, IP_ADDRESS);
+            SetParameter(node.CreatedDateTime, CREATED_DATE_TIME);
+            SetParameter(node.Title, TITLE);
+            SetParameter(node.Text, TEXT);
             await _command.ExecuteNonQueryAsync();
         }
     }

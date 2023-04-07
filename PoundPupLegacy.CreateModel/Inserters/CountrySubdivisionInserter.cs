@@ -38,8 +38,8 @@ internal sealed class CountrySubdivisionTypeInserter : DatabaseInserter<CountryS
 
     public override async Task InsertAsync(CountrySubdivisionType countrySubdivisionType)
     {
-        WriteValue(countrySubdivisionType.CountryId, COUNTRY_ID);
-        WriteValue(countrySubdivisionType.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
+        SetParameter(countrySubdivisionType.CountryId, COUNTRY_ID);
+        SetParameter(countrySubdivisionType.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
         await _command.ExecuteNonQueryAsync();
     }
 }
