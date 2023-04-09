@@ -17,10 +17,11 @@ namespace PoundPupLegacy.Db.Test
             using var connection = new NpgsqlConnection(ConnectStringPostgresql);
             connection.Open();
             var creatorAssembly = Assembly.GetAssembly(typeof(Node));
-            var types = creatorAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseInserter)) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
-            foreach (var type in types.Where(x => x.Name != "SingleIdInserter")) {
+            var types = creatorAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseInserterFactory)) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
+            foreach (var type in types) {
+                var i = Activator.CreateInstance(type);
                 var m = type.GetMethod("CreateAsync", new Type[] { typeof(NpgsqlConnection) });
-                var w = m!.Invoke(null, new object[] { connection }) as IDisposable;
+                var w = m!.Invoke(i, new object[] { connection }) as IDisposable;
                 var w2 = (Task)w;
                 await w2;
                 w!.Dispose();

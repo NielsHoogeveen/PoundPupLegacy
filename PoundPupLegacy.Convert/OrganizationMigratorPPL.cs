@@ -49,7 +49,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     }
                 },
             NodeTypeId = 23,
-            WebsiteURL = null,
+            WebsiteUrl = null,
             EmailAddress = null,
             Established = null,
             Terminated = null,
@@ -100,7 +100,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     }
                 },
             NodeTypeId = 63,
-            WebsiteURL = null,
+            WebsiteUrl = null,
             EmailAddress = null,
             Established = null,
             Terminated = null,
@@ -151,7 +151,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     }
                 },
             NodeTypeId = 63,
-            WebsiteURL = null,
+            WebsiteUrl = null,
             EmailAddress = null,
             Established = null,
             Terminated = null,
@@ -202,7 +202,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     }
                 },
             NodeTypeId = 63,
-            WebsiteURL = null,
+            WebsiteUrl = null,
             EmailAddress = null,
             Established = null,
             Terminated = null,
@@ -428,11 +428,11 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                         }
                     },
                     NodeTypeId = 63,
-                    WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
+                    WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                     EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
                     Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
-                    Established = reader.IsDBNull("established") ? null : reader.GetDateTime("established"),
-                    Terminated = reader.IsDBNull("terminated") ? null : reader.GetDateTime("terminated"),
+                    Established = reader.IsDBNull("established") ? null : new DateTimeRange(reader.GetDateTime("established"), reader.GetDateTime("established")),
+                    Terminated = reader.IsDBNull("terminated") ? null : new DateTimeRange(reader.GetDateTime("terminated"), reader.GetDateTime("terminated")),
                     FileIdTileImage = null,
                     VocabularyNames = vocabularyNames,
                     OrganizationTypes = new List<OrganizationOrganizationType>
@@ -482,11 +482,11 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     }
                 },
                     NodeTypeId = reader.GetInt16("node_type_id"),
-                    WebsiteURL = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
+                    WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                     EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
                     Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
-                    Established = reader.IsDBNull("established") ? null : reader.GetDateTime("established"),
-                    Terminated = reader.IsDBNull("terminated") ? null : reader.GetDateTime("terminated"),
+                    Established = reader.IsDBNull("established") ? null : new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1)),
+                    Terminated = reader.IsDBNull("terminated") ? null : new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1)),
                     FileIdTileImage = null,
                     VocabularyNames = vocabularyNames,
                     OrganizationTypes = organizationOrganizationTypes,

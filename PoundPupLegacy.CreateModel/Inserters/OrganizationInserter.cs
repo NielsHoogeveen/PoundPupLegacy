@@ -24,16 +24,12 @@ internal sealed class OrganizationInserterFactory : DatabaseInserterFactory<Orga
                     NpgsqlDbType = NpgsqlDbType.Varchar
                 },
                 new ColumnDefinition{
-                    Name = OrganizationInserter.DESCRIPTION,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
                     Name = OrganizationInserter.ESTABLISHED,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
+                    NpgsqlDbType = NpgsqlDbType.Unknown
                 },
                 new ColumnDefinition{
                     Name = OrganizationInserter.TERMINATED,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
+                    NpgsqlDbType = NpgsqlDbType.Unknown
                 },
             }
         );
@@ -45,7 +41,6 @@ internal sealed class OrganizationInserter : DatabaseInserter<Organization>
     internal const string ID = "id";
     internal const string WEBSITE_URL = "website_url";
     internal const string EMAIL_ADDRESS = "email_address";
-    internal const string DESCRIPTION = "description";
     internal const string ESTABLISHED = "established";
     internal const string TERMINATED = "terminated";
 
@@ -59,11 +54,10 @@ internal sealed class OrganizationInserter : DatabaseInserter<Organization>
             throw new NullReferenceException();
 
         SetParameter(organization.Id, ID);
-        SetNullableParameter(organization.WebsiteURL, WEBSITE_URL);
+        SetNullableParameter(organization.WebsiteUrl, WEBSITE_URL);
         SetNullableParameter(organization.EmailAddress, EMAIL_ADDRESS);
-        SetNullableParameter(organization.Description, DESCRIPTION);
-        SetNullableParameter(organization.Established, ESTABLISHED);
-        SetNullableParameter(organization.Terminated, TERMINATED);
+        SetTimeStampRangeParameter(organization.Established, ESTABLISHED);
+        SetTimeStampRangeParameter(organization.Terminated, TERMINATED);
         await _command.ExecuteNonQueryAsync();
     }
 }

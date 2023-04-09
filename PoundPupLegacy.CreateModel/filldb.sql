@@ -3,9 +3,9 @@
 --
 
 -- Dumped from database version 15.2 (Ubuntu 15.2-1.pgdg22.04+1)
--- Dumped by pg_dump version 15.1
+-- Dumped by pg_dump version 15.2
 
--- Started on 2023-03-06 15:18:59
+-- Started on 2023-04-09 19:33:15
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -37,7 +37,7 @@ CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
 
 
 --
--- TOC entry 5177 (class 0 OID 0)
+-- TOC entry 5194 (class 0 OID 0)
 -- Dependencies: 3
 -- Name: EXTENSION btree_gist; Type: COMMENT; Schema: -; Owner: 
 --
@@ -54,7 +54,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 
 
 --
--- TOC entry 5178 (class 0 OID 0)
+-- TOC entry 5195 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: 
 --
@@ -63,7 +63,18 @@ COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching
 
 
 --
--- TOC entry 619 (class 1255 OID 17121)
+-- TOC entry 1332 (class 1247 OID 570396)
+-- Name: fuzzy_date; Type: DOMAIN; Schema: public; Owner: niels
+--
+
+CREATE DOMAIN public.fuzzy_date AS tsrange
+	CONSTRAINT fuzzy_date_is_valid CHECK (((VALUE IS NULL) OR ((date_part('hour'::text, lower(VALUE)) = (0)::double precision) AND (date_part('minute'::text, lower(VALUE)) = (0)::double precision) AND (date_part('second'::text, lower(VALUE)) = (0)::double precision) AND (date_part('hour'::text, upper(VALUE)) = (23)::double precision) AND (date_part('minute'::text, upper(VALUE)) = (59)::double precision) AND (date_part('second'::text, upper(VALUE)) = (59.999)::double precision) AND ((upper(VALUE) = ((lower(VALUE) + '1 day'::interval) - '00:00:00.001'::interval)) OR (upper(VALUE) = ((lower(VALUE) + '1 mon'::interval) - '00:00:00.001'::interval)) OR (upper(VALUE) = ((lower(VALUE) + '1 year'::interval) - '00:00:00.001'::interval))))));
+
+
+ALTER DOMAIN public.fuzzy_date OWNER TO niels;
+
+--
+-- TOC entry 620 (class 1255 OID 17121)
 -- Name: authenticated_node(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -149,7 +160,7 @@ $_$;
 ALTER FUNCTION public.authenticated_node(tenant_id integer, url_id integer, user_id integer) OWNER TO postgres;
 
 --
--- TOC entry 620 (class 1255 OID 17122)
+-- TOC entry 621 (class 1255 OID 17122)
 -- Name: f_comment_tree(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -963,6 +974,19 @@ CREATE TABLE public.edit_node_action (
 ALTER TABLE public.edit_node_action OWNER TO postgres;
 
 --
+-- TOC entry 389 (class 1259 OID 192731)
+-- Name: edit_own_node_action; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.edit_own_node_action (
+    id integer NOT NULL,
+    node_type_id integer NOT NULL
+);
+
+
+ALTER TABLE public.edit_own_node_action OWNER TO postgres;
+
+--
 -- TOC entry 275 (class 1259 OID 17313)
 -- Name: facilitator; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -1569,7 +1593,8 @@ ALTER TABLE public.node_term OWNER TO postgres;
 CREATE TABLE public.node_type (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
-    description character varying NOT NULL
+    description character varying NOT NULL,
+    author_specific boolean NOT NULL
 );
 
 
@@ -1584,9 +1609,8 @@ CREATE TABLE public.organization (
     id integer NOT NULL,
     website_url character varying(255),
     email_address character varying(255),
-    description character varying,
-    established timestamp without time zone,
-    terminated timestamp without time zone
+    established public.fuzzy_date,
+    terminated public.fuzzy_date
 );
 
 
@@ -2233,7 +2257,8 @@ CREATE TABLE public.tenant (
     id integer NOT NULL,
     vocabulary_id_tagging integer,
     domain_name character varying(255) NOT NULL,
-    access_role_id_not_logged_in integer NOT NULL
+    access_role_id_not_logged_in integer NOT NULL,
+    country_id_default integer NOT NULL
 );
 
 
@@ -2538,7 +2563,7 @@ CREATE TABLE public.wrongful_removal_case (
 ALTER TABLE public.wrongful_removal_case OWNER TO postgres;
 
 --
--- TOC entry 4335 (class 2606 OID 17681)
+-- TOC entry 4344 (class 2606 OID 17681)
 -- Name: documentable Documentable_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2547,7 +2572,7 @@ ALTER TABLE ONLY public.documentable
 
 
 --
--- TOC entry 4147 (class 2606 OID 17683)
+-- TOC entry 4156 (class 2606 OID 17683)
 -- Name: abuse_case abuse_case_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2556,7 +2581,7 @@ ALTER TABLE ONLY public.abuse_case
 
 
 --
--- TOC entry 4152 (class 2606 OID 17685)
+-- TOC entry 4161 (class 2606 OID 17685)
 -- Name: access_role access_role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2565,7 +2590,7 @@ ALTER TABLE ONLY public.access_role
 
 
 --
--- TOC entry 4155 (class 2606 OID 17687)
+-- TOC entry 4164 (class 2606 OID 17687)
 -- Name: access_role_privilege access_role_privilege_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2574,7 +2599,7 @@ ALTER TABLE ONLY public.access_role_privilege
 
 
 --
--- TOC entry 4159 (class 2606 OID 17689)
+-- TOC entry 4168 (class 2606 OID 17689)
 -- Name: act act_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2583,7 +2608,7 @@ ALTER TABLE ONLY public.act
 
 
 --
--- TOC entry 4164 (class 2606 OID 17691)
+-- TOC entry 4173 (class 2606 OID 17691)
 -- Name: action_menu_item action_menu_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2592,7 +2617,7 @@ ALTER TABLE ONLY public.action_menu_item
 
 
 --
--- TOC entry 4162 (class 2606 OID 17693)
+-- TOC entry 4171 (class 2606 OID 17693)
 -- Name: action action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2601,7 +2626,7 @@ ALTER TABLE ONLY public.action
 
 
 --
--- TOC entry 4170 (class 2606 OID 17695)
+-- TOC entry 4179 (class 2606 OID 17695)
 -- Name: administrator_role administrator_role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2610,7 +2635,7 @@ ALTER TABLE ONLY public.administrator_role
 
 
 --
--- TOC entry 4176 (class 2606 OID 17697)
+-- TOC entry 4185 (class 2606 OID 17697)
 -- Name: adoption_lawyer adoption_lawyer_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2619,7 +2644,7 @@ ALTER TABLE ONLY public.adoption_lawyer
 
 
 --
--- TOC entry 4413 (class 2606 OID 17699)
+-- TOC entry 4422 (class 2606 OID 17699)
 -- Name: inter_organizational_relation affiliation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2628,7 +2653,7 @@ ALTER TABLE ONLY public.inter_organizational_relation
 
 
 --
--- TOC entry 4179 (class 2606 OID 17701)
+-- TOC entry 4188 (class 2606 OID 17701)
 -- Name: article article_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2637,7 +2662,7 @@ ALTER TABLE ONLY public.article
 
 
 --
--- TOC entry 4182 (class 2606 OID 17703)
+-- TOC entry 4191 (class 2606 OID 17703)
 -- Name: attachment_therapist attachment_therapist_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2646,7 +2671,7 @@ ALTER TABLE ONLY public.attachment_therapist
 
 
 --
--- TOC entry 4185 (class 2606 OID 17705)
+-- TOC entry 4194 (class 2606 OID 17705)
 -- Name: basic_action basic_action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2655,7 +2680,7 @@ ALTER TABLE ONLY public.basic_action
 
 
 --
--- TOC entry 4191 (class 2606 OID 17707)
+-- TOC entry 4200 (class 2606 OID 17707)
 -- Name: basic_country basic_country_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2664,7 +2689,7 @@ ALTER TABLE ONLY public.basic_country
 
 
 --
--- TOC entry 4194 (class 2606 OID 17709)
+-- TOC entry 4203 (class 2606 OID 17709)
 -- Name: basic_first_and_second_level_subdivision basic_first_and_second_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2673,7 +2698,7 @@ ALTER TABLE ONLY public.basic_first_and_second_level_subdivision
 
 
 --
--- TOC entry 4197 (class 2606 OID 17711)
+-- TOC entry 4206 (class 2606 OID 17711)
 -- Name: basic_nameable basic_nameable_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2682,7 +2707,7 @@ ALTER TABLE ONLY public.basic_nameable
 
 
 --
--- TOC entry 4200 (class 2606 OID 17713)
+-- TOC entry 4209 (class 2606 OID 17713)
 -- Name: basic_second_level_subdivision basic_second_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2691,7 +2716,7 @@ ALTER TABLE ONLY public.basic_second_level_subdivision
 
 
 --
--- TOC entry 4206 (class 2606 OID 17715)
+-- TOC entry 4215 (class 2606 OID 17715)
 -- Name: bill_action_type bill_action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2700,7 +2725,7 @@ ALTER TABLE ONLY public.bill_action_type
 
 
 --
--- TOC entry 4203 (class 2606 OID 17717)
+-- TOC entry 4212 (class 2606 OID 17717)
 -- Name: bill bill_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2709,7 +2734,7 @@ ALTER TABLE ONLY public.bill
 
 
 --
--- TOC entry 4209 (class 2606 OID 17719)
+-- TOC entry 4218 (class 2606 OID 17719)
 -- Name: binding_country binding_country_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2718,7 +2743,7 @@ ALTER TABLE ONLY public.binding_country
 
 
 --
--- TOC entry 4212 (class 2606 OID 17721)
+-- TOC entry 4221 (class 2606 OID 17721)
 -- Name: blog_post blog_post_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2727,7 +2752,7 @@ ALTER TABLE ONLY public.blog_post
 
 
 --
--- TOC entry 4215 (class 2606 OID 17723)
+-- TOC entry 4224 (class 2606 OID 17723)
 -- Name: bottom_level_subdivision bottom_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2736,7 +2761,7 @@ ALTER TABLE ONLY public.bottom_level_subdivision
 
 
 --
--- TOC entry 4218 (class 2606 OID 17725)
+-- TOC entry 4227 (class 2606 OID 17725)
 -- Name: bound_country bound_country_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2745,7 +2770,7 @@ ALTER TABLE ONLY public.bound_country
 
 
 --
--- TOC entry 4224 (class 2606 OID 17727)
+-- TOC entry 4233 (class 2606 OID 17727)
 -- Name: case_case_parties case_case_parties_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2754,7 +2779,7 @@ ALTER TABLE ONLY public.case_case_parties
 
 
 --
--- TOC entry 4231 (class 2606 OID 17729)
+-- TOC entry 4240 (class 2606 OID 17729)
 -- Name: case_parties_organization case_parties_organization_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2763,7 +2788,7 @@ ALTER TABLE ONLY public.case_parties_organization
 
 
 --
--- TOC entry 4235 (class 2606 OID 17731)
+-- TOC entry 4244 (class 2606 OID 17731)
 -- Name: case_parties_person case_parties_person_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2772,7 +2797,7 @@ ALTER TABLE ONLY public.case_parties_person
 
 
 --
--- TOC entry 4229 (class 2606 OID 17733)
+-- TOC entry 4238 (class 2606 OID 17733)
 -- Name: case_parties case_parties_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2781,7 +2806,7 @@ ALTER TABLE ONLY public.case_parties
 
 
 --
--- TOC entry 4221 (class 2606 OID 17735)
+-- TOC entry 4230 (class 2606 OID 17735)
 -- Name: case case_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2790,7 +2815,7 @@ ALTER TABLE ONLY public."case"
 
 
 --
--- TOC entry 4239 (class 2606 OID 17737)
+-- TOC entry 4248 (class 2606 OID 17737)
 -- Name: case_party_type case_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2799,7 +2824,7 @@ ALTER TABLE ONLY public.case_party_type
 
 
 --
--- TOC entry 4245 (class 2606 OID 17739)
+-- TOC entry 4254 (class 2606 OID 17739)
 -- Name: case_type_case_party_type case_type_case_party_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2808,7 +2833,7 @@ ALTER TABLE ONLY public.case_type_case_party_type
 
 
 --
--- TOC entry 4242 (class 2606 OID 17741)
+-- TOC entry 4251 (class 2606 OID 17741)
 -- Name: case_type case_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2817,7 +2842,7 @@ ALTER TABLE ONLY public.case_type
 
 
 --
--- TOC entry 4145 (class 2606 OID 17742)
+-- TOC entry 4154 (class 2606 OID 17742)
 -- Name: system_group check_system_group_id_equals_0; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2826,7 +2851,7 @@ ALTER TABLE public.system_group
 
 
 --
--- TOC entry 4249 (class 2606 OID 17744)
+-- TOC entry 4258 (class 2606 OID 17744)
 -- Name: child_placement_type child_placement_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2835,7 +2860,7 @@ ALTER TABLE ONLY public.child_placement_type
 
 
 --
--- TOC entry 4252 (class 2606 OID 17746)
+-- TOC entry 4261 (class 2606 OID 17746)
 -- Name: child_trafficking_case child_trafficking_case_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2844,7 +2869,7 @@ ALTER TABLE ONLY public.child_trafficking_case
 
 
 --
--- TOC entry 4142 (class 2606 OID 17747)
+-- TOC entry 4150 (class 2606 OID 17747)
 -- Name: case chk_case; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2853,7 +2878,7 @@ ALTER TABLE public."case"
 
 
 --
--- TOC entry 4255 (class 2606 OID 17749)
+-- TOC entry 4264 (class 2606 OID 17749)
 -- Name: coerced_adoption_case coerced_adoption_case_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2862,7 +2887,7 @@ ALTER TABLE ONLY public.coerced_adoption_case
 
 
 --
--- TOC entry 4257 (class 2606 OID 17751)
+-- TOC entry 4266 (class 2606 OID 17751)
 -- Name: collective collective_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2871,7 +2896,7 @@ ALTER TABLE ONLY public.collective
 
 
 --
--- TOC entry 4260 (class 2606 OID 17753)
+-- TOC entry 4269 (class 2606 OID 17753)
 -- Name: collective_user collective_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2880,7 +2905,7 @@ ALTER TABLE ONLY public.collective_user
 
 
 --
--- TOC entry 4263 (class 2606 OID 17755)
+-- TOC entry 4272 (class 2606 OID 17755)
 -- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2889,7 +2914,7 @@ ALTER TABLE ONLY public.comment
 
 
 --
--- TOC entry 4268 (class 2606 OID 17757)
+-- TOC entry 4277 (class 2606 OID 17757)
 -- Name: congressional_term congressional_term_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2898,7 +2923,7 @@ ALTER TABLE ONLY public.congressional_term
 
 
 --
--- TOC entry 4271 (class 2606 OID 17759)
+-- TOC entry 4280 (class 2606 OID 17759)
 -- Name: congressional_term_political_party_affiliation congressional_term_political_party_affiliation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2907,7 +2932,7 @@ ALTER TABLE ONLY public.congressional_term_political_party_affiliation
 
 
 --
--- TOC entry 4277 (class 2606 OID 17761)
+-- TOC entry 4286 (class 2606 OID 17761)
 -- Name: content_sharing_group content_sharing_group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2916,7 +2941,7 @@ ALTER TABLE ONLY public.content_sharing_group
 
 
 --
--- TOC entry 4287 (class 2606 OID 17763)
+-- TOC entry 4296 (class 2606 OID 17763)
 -- Name: country_and_first_and_second_level_subdivision count_and_first_and_second_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2925,7 +2950,7 @@ ALTER TABLE ONLY public.country_and_first_and_second_level_subdivision
 
 
 --
--- TOC entry 4284 (class 2606 OID 17765)
+-- TOC entry 4293 (class 2606 OID 17765)
 -- Name: country_and_first_and_bottom_level_subdivision country_and_first_and_bottom_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2934,7 +2959,7 @@ ALTER TABLE ONLY public.country_and_first_and_bottom_level_subdivision
 
 
 --
--- TOC entry 4291 (class 2606 OID 17767)
+-- TOC entry 4300 (class 2606 OID 17767)
 -- Name: country_and_first_level_subdivision country_and_first_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2943,7 +2968,7 @@ ALTER TABLE ONLY public.country_and_first_level_subdivision
 
 
 --
--- TOC entry 4295 (class 2606 OID 17769)
+-- TOC entry 4304 (class 2606 OID 17769)
 -- Name: country_and_intermediate_level_subdivision country_and_intermediate_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2952,7 +2977,7 @@ ALTER TABLE ONLY public.country_and_intermediate_level_subdivision
 
 
 --
--- TOC entry 4280 (class 2606 OID 17771)
+-- TOC entry 4289 (class 2606 OID 17771)
 -- Name: country country_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2961,7 +2986,7 @@ ALTER TABLE ONLY public.country
 
 
 --
--- TOC entry 4298 (class 2606 OID 17773)
+-- TOC entry 4307 (class 2606 OID 17773)
 -- Name: country_report country_report_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2970,7 +2995,7 @@ ALTER TABLE ONLY public.country_report
 
 
 --
--- TOC entry 4444 (class 2606 OID 17775)
+-- TOC entry 4453 (class 2606 OID 17775)
 -- Name: iso_coded_subdivision country_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2979,7 +3004,7 @@ ALTER TABLE ONLY public.iso_coded_subdivision
 
 
 --
--- TOC entry 4302 (class 2606 OID 17777)
+-- TOC entry 4311 (class 2606 OID 17777)
 -- Name: country_subdivision_type country_subdivision_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2988,7 +3013,7 @@ ALTER TABLE ONLY public.country_subdivision_type
 
 
 --
--- TOC entry 4306 (class 2606 OID 17779)
+-- TOC entry 4315 (class 2606 OID 17779)
 -- Name: create_node_action create_node_action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2997,7 +3022,7 @@ ALTER TABLE ONLY public.create_node_action
 
 
 --
--- TOC entry 4310 (class 2606 OID 17781)
+-- TOC entry 4319 (class 2606 OID 17781)
 -- Name: delete_node_action delete_node_action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3006,7 +3031,7 @@ ALTER TABLE ONLY public.delete_node_action
 
 
 --
--- TOC entry 4314 (class 2606 OID 17783)
+-- TOC entry 4323 (class 2606 OID 17783)
 -- Name: denomination denomination_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3015,7 +3040,7 @@ ALTER TABLE ONLY public.denomination
 
 
 --
--- TOC entry 4317 (class 2606 OID 17785)
+-- TOC entry 4326 (class 2606 OID 17785)
 -- Name: deportation_case deportation_case_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3024,7 +3049,7 @@ ALTER TABLE ONLY public.deportation_case
 
 
 --
--- TOC entry 4322 (class 2606 OID 17787)
+-- TOC entry 4331 (class 2606 OID 17787)
 -- Name: discussion discussion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3033,7 +3058,7 @@ ALTER TABLE ONLY public.discussion
 
 
 --
--- TOC entry 4325 (class 2606 OID 17789)
+-- TOC entry 4334 (class 2606 OID 17789)
 -- Name: disrupted_placement_case disrupted_placement_case_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3042,7 +3067,7 @@ ALTER TABLE ONLY public.disrupted_placement_case
 
 
 --
--- TOC entry 4328 (class 2606 OID 17791)
+-- TOC entry 4337 (class 2606 OID 17791)
 -- Name: document document_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3051,7 +3076,7 @@ ALTER TABLE ONLY public.document
 
 
 --
--- TOC entry 4332 (class 2606 OID 17793)
+-- TOC entry 4341 (class 2606 OID 17793)
 -- Name: document_type document_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3060,7 +3085,7 @@ ALTER TABLE ONLY public.document_type
 
 
 --
--- TOC entry 4337 (class 2606 OID 17795)
+-- TOC entry 4346 (class 2606 OID 17795)
 -- Name: documentable_document documentable_document_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3069,7 +3094,7 @@ ALTER TABLE ONLY public.documentable_document
 
 
 --
--- TOC entry 4341 (class 2606 OID 17797)
+-- TOC entry 4350 (class 2606 OID 17797)
 -- Name: edit_node_action edit_node_action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3078,7 +3103,16 @@ ALTER TABLE ONLY public.edit_node_action
 
 
 --
--- TOC entry 4345 (class 2606 OID 17799)
+-- TOC entry 4778 (class 2606 OID 192735)
+-- Name: edit_own_node_action edit_own_node_action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.edit_own_node_action
+    ADD CONSTRAINT edit_own_node_action_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4354 (class 2606 OID 17799)
 -- Name: facilitator facilitator_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3087,7 +3121,7 @@ ALTER TABLE ONLY public.facilitator
 
 
 --
--- TOC entry 4348 (class 2606 OID 17801)
+-- TOC entry 4357 (class 2606 OID 17801)
 -- Name: family_size family_size_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3096,7 +3130,7 @@ ALTER TABLE ONLY public.family_size
 
 
 --
--- TOC entry 4351 (class 2606 OID 17803)
+-- TOC entry 4360 (class 2606 OID 17803)
 -- Name: fathers_rights_violation_case fathers_rights_violations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3105,7 +3139,7 @@ ALTER TABLE ONLY public.fathers_rights_violation_case
 
 
 --
--- TOC entry 4354 (class 2606 OID 17805)
+-- TOC entry 4363 (class 2606 OID 17805)
 -- Name: file file_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3114,7 +3148,7 @@ ALTER TABLE ONLY public.file
 
 
 --
--- TOC entry 4356 (class 2606 OID 17807)
+-- TOC entry 4365 (class 2606 OID 17807)
 -- Name: first_and_bottom_level_subdivision first_and_bottom_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3123,7 +3157,7 @@ ALTER TABLE ONLY public.first_and_bottom_level_subdivision
 
 
 --
--- TOC entry 4360 (class 2606 OID 17809)
+-- TOC entry 4369 (class 2606 OID 17809)
 -- Name: first_and_second_level_subdivision first_and_second_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3132,7 +3166,7 @@ ALTER TABLE ONLY public.first_and_second_level_subdivision
 
 
 --
--- TOC entry 4364 (class 2606 OID 17811)
+-- TOC entry 4373 (class 2606 OID 17811)
 -- Name: first_level_global_region first_level_global_region_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3141,7 +3175,7 @@ ALTER TABLE ONLY public.first_level_global_region
 
 
 --
--- TOC entry 4368 (class 2606 OID 17813)
+-- TOC entry 4377 (class 2606 OID 17813)
 -- Name: first_level_subdivision first_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3150,7 +3184,7 @@ ALTER TABLE ONLY public.first_level_subdivision
 
 
 --
--- TOC entry 4373 (class 2606 OID 17815)
+-- TOC entry 4382 (class 2606 OID 17815)
 -- Name: formal_intermediate_level_subdivision formal_intermediate_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3159,7 +3193,7 @@ ALTER TABLE ONLY public.formal_intermediate_level_subdivision
 
 
 --
--- TOC entry 4376 (class 2606 OID 17817)
+-- TOC entry 4385 (class 2606 OID 17817)
 -- Name: geographical_entity geographical_entity_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3168,7 +3202,7 @@ ALTER TABLE ONLY public.geographical_entity
 
 
 --
--- TOC entry 4379 (class 2606 OID 17819)
+-- TOC entry 4388 (class 2606 OID 17819)
 -- Name: global_region global_region_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3177,7 +3211,7 @@ ALTER TABLE ONLY public.global_region
 
 
 --
--- TOC entry 4382 (class 2606 OID 17821)
+-- TOC entry 4391 (class 2606 OID 17821)
 -- Name: hague_status hague_status_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3186,7 +3220,7 @@ ALTER TABLE ONLY public.hague_status
 
 
 --
--- TOC entry 4385 (class 2606 OID 17823)
+-- TOC entry 4394 (class 2606 OID 17823)
 -- Name: home_study_agency home_study_agency_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3195,7 +3229,7 @@ ALTER TABLE ONLY public.home_study_agency
 
 
 --
--- TOC entry 4388 (class 2606 OID 17825)
+-- TOC entry 4397 (class 2606 OID 17825)
 -- Name: house_bill house_bill_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3204,7 +3238,7 @@ ALTER TABLE ONLY public.house_bill
 
 
 --
--- TOC entry 4393 (class 2606 OID 17827)
+-- TOC entry 4402 (class 2606 OID 17827)
 -- Name: house_term house_term_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3213,7 +3247,7 @@ ALTER TABLE ONLY public.house_term
 
 
 --
--- TOC entry 4462 (class 2606 OID 17829)
+-- TOC entry 4471 (class 2606 OID 17829)
 -- Name: location_locatable idx_locatable_location; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3222,7 +3256,7 @@ ALTER TABLE ONLY public.location_locatable
 
 
 --
--- TOC entry 4396 (class 2606 OID 17831)
+-- TOC entry 4405 (class 2606 OID 17831)
 -- Name: informal_intermediate_level_subdivision informal_intermediate_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3231,7 +3265,7 @@ ALTER TABLE ONLY public.informal_intermediate_level_subdivision
 
 
 --
--- TOC entry 4399 (class 2606 OID 17833)
+-- TOC entry 4408 (class 2606 OID 17833)
 -- Name: institution institution_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3240,7 +3274,7 @@ ALTER TABLE ONLY public.institution
 
 
 --
--- TOC entry 4406 (class 2606 OID 17835)
+-- TOC entry 4415 (class 2606 OID 17835)
 -- Name: inter_country_relation inter_country_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3249,7 +3283,7 @@ ALTER TABLE ONLY public.inter_country_relation
 
 
 --
--- TOC entry 4411 (class 2606 OID 17837)
+-- TOC entry 4420 (class 2606 OID 17837)
 -- Name: inter_country_relation_type inter_country_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3258,7 +3292,7 @@ ALTER TABLE ONLY public.inter_country_relation_type
 
 
 --
--- TOC entry 4424 (class 2606 OID 17839)
+-- TOC entry 4433 (class 2606 OID 17839)
 -- Name: inter_organizational_relation_type inter_organizational_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3267,7 +3301,7 @@ ALTER TABLE ONLY public.inter_organizational_relation_type
 
 
 --
--- TOC entry 4432 (class 2606 OID 17841)
+-- TOC entry 4441 (class 2606 OID 17841)
 -- Name: inter_personal_relation inter_personal_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3276,7 +3310,7 @@ ALTER TABLE ONLY public.inter_personal_relation
 
 
 --
--- TOC entry 4435 (class 2606 OID 17843)
+-- TOC entry 4444 (class 2606 OID 17843)
 -- Name: inter_personal_relation_type inter_personal_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3285,7 +3319,7 @@ ALTER TABLE ONLY public.inter_personal_relation_type
 
 
 --
--- TOC entry 4438 (class 2606 OID 17845)
+-- TOC entry 4447 (class 2606 OID 17845)
 -- Name: intermediate_level_subdivision intermediate_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3294,7 +3328,7 @@ ALTER TABLE ONLY public.intermediate_level_subdivision
 
 
 --
--- TOC entry 4442 (class 2606 OID 17847)
+-- TOC entry 4451 (class 2606 OID 17847)
 -- Name: iso_coded_first_level_subdivision iso_coded_first_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3303,7 +3337,7 @@ ALTER TABLE ONLY public.iso_coded_first_level_subdivision
 
 
 --
--- TOC entry 4450 (class 2606 OID 17849)
+-- TOC entry 4459 (class 2606 OID 17849)
 -- Name: law_firm law_firm_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3312,7 +3346,7 @@ ALTER TABLE ONLY public.law_firm
 
 
 --
--- TOC entry 4452 (class 2606 OID 17851)
+-- TOC entry 4461 (class 2606 OID 17851)
 -- Name: layout layout_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3321,7 +3355,7 @@ ALTER TABLE ONLY public.layout
 
 
 --
--- TOC entry 4464 (class 2606 OID 17853)
+-- TOC entry 4473 (class 2606 OID 17853)
 -- Name: location_locatable locatable_location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3330,7 +3364,7 @@ ALTER TABLE ONLY public.location_locatable
 
 
 --
--- TOC entry 4455 (class 2606 OID 17855)
+-- TOC entry 4464 (class 2606 OID 17855)
 -- Name: locatable locatable_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3339,7 +3373,7 @@ ALTER TABLE ONLY public.locatable
 
 
 --
--- TOC entry 4460 (class 2606 OID 17857)
+-- TOC entry 4469 (class 2606 OID 17857)
 -- Name: location location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3348,7 +3382,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4467 (class 2606 OID 17859)
+-- TOC entry 4476 (class 2606 OID 17859)
 -- Name: member_of_congress member_of_congress_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3357,7 +3391,7 @@ ALTER TABLE ONLY public.member_of_congress
 
 
 --
--- TOC entry 4469 (class 2606 OID 17861)
+-- TOC entry 4478 (class 2606 OID 17861)
 -- Name: menu_item menu_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3366,7 +3400,7 @@ ALTER TABLE ONLY public.menu_item
 
 
 --
--- TOC entry 4472 (class 2606 OID 17863)
+-- TOC entry 4481 (class 2606 OID 17863)
 -- Name: multi_question_poll multi_question_poll_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3375,7 +3409,7 @@ ALTER TABLE ONLY public.multi_question_poll
 
 
 --
--- TOC entry 4476 (class 2606 OID 17865)
+-- TOC entry 4485 (class 2606 OID 17865)
 -- Name: multi_question_poll_poll_question multi_question_poll_question_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3384,7 +3418,7 @@ ALTER TABLE ONLY public.multi_question_poll_poll_question
 
 
 --
--- TOC entry 4482 (class 2606 OID 17867)
+-- TOC entry 4491 (class 2606 OID 17867)
 -- Name: nameable nameable_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3393,7 +3427,7 @@ ALTER TABLE ONLY public.nameable
 
 
 --
--- TOC entry 4275 (class 2606 OID 17869)
+-- TOC entry 4284 (class 2606 OID 17869)
 -- Name: congressional_term_political_party_affiliation no_overlap_congressional_term_political_party_affiliation; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3402,7 +3436,7 @@ ALTER TABLE ONLY public.congressional_term_political_party_affiliation
 
 
 --
--- TOC entry 4408 (class 2606 OID 17871)
+-- TOC entry 4417 (class 2606 OID 17871)
 -- Name: inter_country_relation no_overlap_inter_country_relation; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3411,7 +3445,7 @@ ALTER TABLE ONLY public.inter_country_relation
 
 
 --
--- TOC entry 4421 (class 2606 OID 17873)
+-- TOC entry 4430 (class 2606 OID 17873)
 -- Name: inter_organizational_relation no_overlap_inter_organizational_relation; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3420,7 +3454,7 @@ ALTER TABLE ONLY public.inter_organizational_relation
 
 
 --
--- TOC entry 4519 (class 2606 OID 17875)
+-- TOC entry 4528 (class 2606 OID 17875)
 -- Name: organizational_role no_overlap_organizational_role; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3429,7 +3463,7 @@ ALTER TABLE ONLY public.organizational_role
 
 
 --
--- TOC entry 4590 (class 2606 OID 17877)
+-- TOC entry 4599 (class 2606 OID 17877)
 -- Name: professional_role no_overlap_professional_role; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3438,7 +3472,7 @@ ALTER TABLE ONLY public.professional_role
 
 
 --
--- TOC entry 4721 (class 2606 OID 17879)
+-- TOC entry 4731 (class 2606 OID 17879)
 -- Name: united_states_congressional_meeting no_overlap_united_states_congressional_meeting; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3447,7 +3481,7 @@ ALTER TABLE ONLY public.united_states_congressional_meeting
 
 
 --
--- TOC entry 4492 (class 2606 OID 17881)
+-- TOC entry 4501 (class 2606 OID 17881)
 -- Name: node_file node_file_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3456,7 +3490,7 @@ ALTER TABLE ONLY public.node_file
 
 
 --
--- TOC entry 4487 (class 2606 OID 17883)
+-- TOC entry 4496 (class 2606 OID 17883)
 -- Name: node node_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3465,7 +3499,7 @@ ALTER TABLE ONLY public.node
 
 
 --
--- TOC entry 4594 (class 2606 OID 17885)
+-- TOC entry 4603 (class 2606 OID 17885)
 -- Name: publication_status node_status_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3474,7 +3508,7 @@ ALTER TABLE ONLY public.publication_status
 
 
 --
--- TOC entry 4496 (class 2606 OID 17887)
+-- TOC entry 4505 (class 2606 OID 17887)
 -- Name: node_term node_term_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3483,7 +3517,7 @@ ALTER TABLE ONLY public.node_term
 
 
 --
--- TOC entry 4500 (class 2606 OID 17889)
+-- TOC entry 4509 (class 2606 OID 17889)
 -- Name: node_type node_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3492,7 +3526,7 @@ ALTER TABLE ONLY public.node_type
 
 
 --
--- TOC entry 4508 (class 2606 OID 17891)
+-- TOC entry 4517 (class 2606 OID 17891)
 -- Name: organization_act_relation_type organization_act_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3501,7 +3535,7 @@ ALTER TABLE ONLY public.organization_act_relation_type
 
 
 --
--- TOC entry 4512 (class 2606 OID 17893)
+-- TOC entry 4521 (class 2606 OID 17893)
 -- Name: organization_organization_type organization_organization_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3510,7 +3544,7 @@ ALTER TABLE ONLY public.organization_organization_type
 
 
 --
--- TOC entry 4505 (class 2606 OID 17895)
+-- TOC entry 4514 (class 2606 OID 17895)
 -- Name: organization organization_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3519,7 +3553,7 @@ ALTER TABLE ONLY public.organization
 
 
 --
--- TOC entry 4515 (class 2606 OID 17897)
+-- TOC entry 4524 (class 2606 OID 17897)
 -- Name: organization_type organization_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3528,7 +3562,7 @@ ALTER TABLE ONLY public.organization_type
 
 
 --
--- TOC entry 4521 (class 2606 OID 17899)
+-- TOC entry 4530 (class 2606 OID 17899)
 -- Name: organizational_role organizational_role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3537,7 +3571,7 @@ ALTER TABLE ONLY public.organizational_role
 
 
 --
--- TOC entry 4524 (class 2606 OID 17901)
+-- TOC entry 4533 (class 2606 OID 17901)
 -- Name: owner owner_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3546,7 +3580,7 @@ ALTER TABLE ONLY public.owner
 
 
 --
--- TOC entry 4527 (class 2606 OID 17903)
+-- TOC entry 4536 (class 2606 OID 17903)
 -- Name: page page_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3555,7 +3589,7 @@ ALTER TABLE ONLY public.page
 
 
 --
--- TOC entry 4532 (class 2606 OID 17905)
+-- TOC entry 4541 (class 2606 OID 17905)
 -- Name: party party_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3564,7 +3598,7 @@ ALTER TABLE ONLY public.party
 
 
 --
--- TOC entry 4539 (class 2606 OID 17907)
+-- TOC entry 4548 (class 2606 OID 17907)
 -- Name: party_political_entity_relation party_political_entity_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3573,7 +3607,7 @@ ALTER TABLE ONLY public.party_political_entity_relation
 
 
 --
--- TOC entry 4541 (class 2606 OID 17909)
+-- TOC entry 4550 (class 2606 OID 17909)
 -- Name: party_political_entity_relation_type party_political_entity_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3582,7 +3616,7 @@ ALTER TABLE ONLY public.party_political_entity_relation_type
 
 
 --
--- TOC entry 4552 (class 2606 OID 17911)
+-- TOC entry 4561 (class 2606 OID 17911)
 -- Name: person_organization_relation person_organization_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3591,7 +3625,7 @@ ALTER TABLE ONLY public.person_organization_relation
 
 
 --
--- TOC entry 4555 (class 2606 OID 17913)
+-- TOC entry 4564 (class 2606 OID 17913)
 -- Name: person_organization_relation_type person_organization_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3600,7 +3634,7 @@ ALTER TABLE ONLY public.person_organization_relation_type
 
 
 --
--- TOC entry 4545 (class 2606 OID 17915)
+-- TOC entry 4554 (class 2606 OID 17915)
 -- Name: person person_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3609,7 +3643,7 @@ ALTER TABLE ONLY public.person
 
 
 --
--- TOC entry 4558 (class 2606 OID 17917)
+-- TOC entry 4567 (class 2606 OID 17917)
 -- Name: placement_agency placement_agency_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3618,7 +3652,7 @@ ALTER TABLE ONLY public.placement_agency
 
 
 --
--- TOC entry 4562 (class 2606 OID 17919)
+-- TOC entry 4571 (class 2606 OID 17919)
 -- Name: political_entity political_entity_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3627,7 +3661,7 @@ ALTER TABLE ONLY public.political_entity
 
 
 --
--- TOC entry 4568 (class 2606 OID 17921)
+-- TOC entry 4577 (class 2606 OID 17921)
 -- Name: poll_option poll_option_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3636,7 +3670,7 @@ ALTER TABLE ONLY public.poll_option
 
 
 --
--- TOC entry 4565 (class 2606 OID 17923)
+-- TOC entry 4574 (class 2606 OID 17923)
 -- Name: poll poll_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3645,7 +3679,7 @@ ALTER TABLE ONLY public.poll
 
 
 --
--- TOC entry 4571 (class 2606 OID 17925)
+-- TOC entry 4580 (class 2606 OID 17925)
 -- Name: poll_question poll_question_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3654,7 +3688,7 @@ ALTER TABLE ONLY public.poll_question
 
 
 --
--- TOC entry 4573 (class 2606 OID 17927)
+-- TOC entry 4582 (class 2606 OID 17927)
 -- Name: poll_status poll_status_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3663,7 +3697,7 @@ ALTER TABLE ONLY public.poll_status
 
 
 --
--- TOC entry 4144 (class 2606 OID 17928)
+-- TOC entry 4153 (class 2606 OID 17928)
 -- Name: poll_vote poll_vote_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3672,7 +3706,7 @@ ALTER TABLE public.poll_vote
 
 
 --
--- TOC entry 4579 (class 2606 OID 17930)
+-- TOC entry 4588 (class 2606 OID 17930)
 -- Name: poll_vote poll_vote_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3681,7 +3715,7 @@ ALTER TABLE ONLY public.poll_vote
 
 
 --
--- TOC entry 4582 (class 2606 OID 17932)
+-- TOC entry 4591 (class 2606 OID 17932)
 -- Name: post_placement_agency post_placement_agency_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3690,7 +3724,7 @@ ALTER TABLE ONLY public.post_placement_agency
 
 
 --
--- TOC entry 4584 (class 2606 OID 17934)
+-- TOC entry 4593 (class 2606 OID 17934)
 -- Name: principal principal_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3699,7 +3733,7 @@ ALTER TABLE ONLY public.principal
 
 
 --
--- TOC entry 4587 (class 2606 OID 17936)
+-- TOC entry 4596 (class 2606 OID 17936)
 -- Name: profession profession_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3708,7 +3742,7 @@ ALTER TABLE ONLY public.profession
 
 
 --
--- TOC entry 4592 (class 2606 OID 17938)
+-- TOC entry 4601 (class 2606 OID 17938)
 -- Name: professional_role professional_role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3717,7 +3751,16 @@ ALTER TABLE ONLY public.professional_role
 
 
 --
--- TOC entry 4599 (class 2606 OID 17940)
+-- TOC entry 4152 (class 2606 OID 500034)
+-- Name: document publication_is_either_date_or_date_range; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.document
+    ADD CONSTRAINT publication_is_either_date_or_date_range CHECK ((NOT ((publication_date_range IS NOT NULL) AND (publication_date IS NOT NULL)))) NOT VALID;
+
+
+--
+-- TOC entry 4608 (class 2606 OID 17940)
 -- Name: publisher publisher_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3726,7 +3769,7 @@ ALTER TABLE ONLY public.publisher
 
 
 --
--- TOC entry 4766 (class 2606 OID 139268)
+-- TOC entry 4776 (class 2606 OID 139268)
 -- Name: publishing_user_group publishing_user_group_pkey; Type: CONSTRAINT; Schema: public; Owner: niels
 --
 
@@ -3735,7 +3778,7 @@ ALTER TABLE ONLY public.publishing_user_group
 
 
 --
--- TOC entry 4609 (class 2606 OID 17942)
+-- TOC entry 4618 (class 2606 OID 17942)
 -- Name: representative_house_bill_action representative_house_bill_action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3744,7 +3787,7 @@ ALTER TABLE ONLY public.representative_house_bill_action
 
 
 --
--- TOC entry 4604 (class 2606 OID 17944)
+-- TOC entry 4613 (class 2606 OID 17944)
 -- Name: representative representative_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3753,7 +3796,7 @@ ALTER TABLE ONLY public.representative
 
 
 --
--- TOC entry 4614 (class 2606 OID 17946)
+-- TOC entry 4623 (class 2606 OID 17946)
 -- Name: review review_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3762,7 +3805,7 @@ ALTER TABLE ONLY public.review
 
 
 --
--- TOC entry 4617 (class 2606 OID 17948)
+-- TOC entry 4626 (class 2606 OID 17948)
 -- Name: searchable searchable_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3771,7 +3814,7 @@ ALTER TABLE ONLY public.searchable
 
 
 --
--- TOC entry 4622 (class 2606 OID 17950)
+-- TOC entry 4631 (class 2606 OID 17950)
 -- Name: second_level_global_region second_level_global_region_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3780,7 +3823,7 @@ ALTER TABLE ONLY public.second_level_global_region
 
 
 --
--- TOC entry 4626 (class 2606 OID 17952)
+-- TOC entry 4635 (class 2606 OID 17952)
 -- Name: second_level_subdivision second_level_subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3789,7 +3832,7 @@ ALTER TABLE ONLY public.second_level_subdivision
 
 
 --
--- TOC entry 4630 (class 2606 OID 17954)
+-- TOC entry 4639 (class 2606 OID 17954)
 -- Name: senate_bill senate_bill_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3798,7 +3841,7 @@ ALTER TABLE ONLY public.senate_bill
 
 
 --
--- TOC entry 4635 (class 2606 OID 17956)
+-- TOC entry 4644 (class 2606 OID 17956)
 -- Name: senate_term senate_term_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3807,7 +3850,7 @@ ALTER TABLE ONLY public.senate_term
 
 
 --
--- TOC entry 4638 (class 2606 OID 17958)
+-- TOC entry 4647 (class 2606 OID 17958)
 -- Name: senator senator_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3816,7 +3859,7 @@ ALTER TABLE ONLY public.senator
 
 
 --
--- TOC entry 4643 (class 2606 OID 17960)
+-- TOC entry 4652 (class 2606 OID 17960)
 -- Name: senator_senate_bill_action senator_senate_bill_action_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3825,7 +3868,7 @@ ALTER TABLE ONLY public.senator_senate_bill_action
 
 
 --
--- TOC entry 4648 (class 2606 OID 17962)
+-- TOC entry 4657 (class 2606 OID 17962)
 -- Name: simple_text_node simple_text_node_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3834,7 +3877,7 @@ ALTER TABLE ONLY public.simple_text_node
 
 
 --
--- TOC entry 4652 (class 2606 OID 17964)
+-- TOC entry 4661 (class 2606 OID 17964)
 -- Name: single_question_poll single_question_poll_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3843,7 +3886,7 @@ ALTER TABLE ONLY public.single_question_poll
 
 
 --
--- TOC entry 4657 (class 2606 OID 17966)
+-- TOC entry 4666 (class 2606 OID 17966)
 -- Name: subdivision subdivision_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3852,7 +3895,7 @@ ALTER TABLE ONLY public.subdivision
 
 
 --
--- TOC entry 4661 (class 2606 OID 17968)
+-- TOC entry 4670 (class 2606 OID 17968)
 -- Name: subdivision_type subdivision_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3861,7 +3904,7 @@ ALTER TABLE ONLY public.subdivision_type
 
 
 --
--- TOC entry 4664 (class 2606 OID 17970)
+-- TOC entry 4673 (class 2606 OID 17970)
 -- Name: subgroup subgroup_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3870,7 +3913,7 @@ ALTER TABLE ONLY public.subgroup
 
 
 --
--- TOC entry 4667 (class 2606 OID 17972)
+-- TOC entry 4676 (class 2606 OID 17972)
 -- Name: system_group system_group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3879,7 +3922,7 @@ ALTER TABLE ONLY public.system_group
 
 
 --
--- TOC entry 4680 (class 2606 OID 17974)
+-- TOC entry 4690 (class 2606 OID 17974)
 -- Name: tenant_file tenant_file_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3888,7 +3931,7 @@ ALTER TABLE ONLY public.tenant_file
 
 
 --
--- TOC entry 4694 (class 2606 OID 17976)
+-- TOC entry 4704 (class 2606 OID 17976)
 -- Name: tenant_node_menu_item tenant_node_menu_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3897,7 +3940,7 @@ ALTER TABLE ONLY public.tenant_node_menu_item
 
 
 --
--- TOC entry 4686 (class 2606 OID 17978)
+-- TOC entry 4696 (class 2606 OID 17978)
 -- Name: tenant_node tenant_node_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3906,7 +3949,7 @@ ALTER TABLE ONLY public.tenant_node
 
 
 --
--- TOC entry 4674 (class 2606 OID 17980)
+-- TOC entry 4684 (class 2606 OID 17980)
 -- Name: tenant tenant_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3915,7 +3958,7 @@ ALTER TABLE ONLY public.tenant
 
 
 --
--- TOC entry 4699 (class 2606 OID 17982)
+-- TOC entry 4709 (class 2606 OID 17982)
 -- Name: term term_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3924,7 +3967,7 @@ ALTER TABLE ONLY public.term
 
 
 --
--- TOC entry 4709 (class 2606 OID 17984)
+-- TOC entry 4719 (class 2606 OID 17984)
 -- Name: top_level_country top_level_country_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3933,7 +3976,7 @@ ALTER TABLE ONLY public.top_level_country
 
 
 --
--- TOC entry 4714 (class 2606 OID 17986)
+-- TOC entry 4724 (class 2606 OID 17986)
 -- Name: type_of_abuse type_of_abuse_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3942,7 +3985,7 @@ ALTER TABLE ONLY public.type_of_abuse
 
 
 --
--- TOC entry 4717 (class 2606 OID 17988)
+-- TOC entry 4727 (class 2606 OID 17988)
 -- Name: type_of_abuser type_of_abuser_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3951,7 +3994,7 @@ ALTER TABLE ONLY public.type_of_abuser
 
 
 --
--- TOC entry 4189 (class 2606 OID 17990)
+-- TOC entry 4198 (class 2606 OID 17990)
 -- Name: basic_action unique_action_access_privilege_action; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3960,7 +4003,7 @@ ALTER TABLE ONLY public.basic_action
 
 
 --
--- TOC entry 4168 (class 2606 OID 17992)
+-- TOC entry 4177 (class 2606 OID 17992)
 -- Name: action_menu_item unique_action_menu_item_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3969,7 +4012,7 @@ ALTER TABLE ONLY public.action_menu_item
 
 
 --
--- TOC entry 4174 (class 2606 OID 17994)
+-- TOC entry 4183 (class 2606 OID 17994)
 -- Name: administrator_role unique_administrator_role_user_group; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3978,7 +4021,7 @@ ALTER TABLE ONLY public.administrator_role
 
 
 --
--- TOC entry 4723 (class 2606 OID 17996)
+-- TOC entry 4733 (class 2606 OID 17996)
 -- Name: united_states_congressional_meeting unique_congressional_meeting_number; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3987,7 +4030,7 @@ ALTER TABLE ONLY public.united_states_congressional_meeting
 
 
 --
--- TOC entry 4447 (class 2606 OID 17998)
+-- TOC entry 4456 (class 2606 OID 17998)
 -- Name: iso_coded_subdivision unique_iso_3166_2_code; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3996,7 +4039,7 @@ ALTER TABLE ONLY public.iso_coded_subdivision
 
 
 --
--- TOC entry 4711 (class 2606 OID 18000)
+-- TOC entry 4721 (class 2606 OID 18000)
 -- Name: top_level_country unique_iso_3166_code; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4005,7 +4048,7 @@ ALTER TABLE ONLY public.top_level_country
 
 
 --
--- TOC entry 4478 (class 2606 OID 18002)
+-- TOC entry 4487 (class 2606 OID 18002)
 -- Name: multi_question_poll_poll_question unique_multi_question_poll_question_multi_question_poll_delta; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4014,7 +4057,7 @@ ALTER TABLE ONLY public.multi_question_poll_poll_question
 
 
 --
--- TOC entry 4596 (class 2606 OID 18004)
+-- TOC entry 4605 (class 2606 OID 18004)
 -- Name: publication_status unique_node_status_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4023,7 +4066,7 @@ ALTER TABLE ONLY public.publication_status
 
 
 --
--- TOC entry 4498 (class 2606 OID 18006)
+-- TOC entry 4507 (class 2606 OID 18006)
 -- Name: node_term unique_node_term_term_id_node_id; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4032,7 +4075,7 @@ ALTER TABLE ONLY public.node_term
 
 
 --
--- TOC entry 4575 (class 2606 OID 18008)
+-- TOC entry 4584 (class 2606 OID 18008)
 -- Name: poll_status unique_poll_status_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4041,7 +4084,7 @@ ALTER TABLE ONLY public.poll_status
 
 
 --
--- TOC entry 4601 (class 2606 OID 18010)
+-- TOC entry 4610 (class 2606 OID 18010)
 -- Name: publisher unique_publisher_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4050,7 +4093,7 @@ ALTER TABLE ONLY public.publisher
 
 
 --
--- TOC entry 4611 (class 2606 OID 18012)
+-- TOC entry 4620 (class 2606 OID 18012)
 -- Name: representative_house_bill_action unique_representative_house_bill_bill_action_type; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4059,7 +4102,7 @@ ALTER TABLE ONLY public.representative_house_bill_action
 
 
 --
--- TOC entry 4645 (class 2606 OID 18014)
+-- TOC entry 4654 (class 2606 OID 18014)
 -- Name: senator_senate_bill_action unique_senator_senate_bill_bill_action_type; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4068,7 +4111,7 @@ ALTER TABLE ONLY public.senator_senate_bill_action
 
 
 --
--- TOC entry 4659 (class 2606 OID 18016)
+-- TOC entry 4668 (class 2606 OID 18016)
 -- Name: subdivision unique_subdivision_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4077,7 +4120,7 @@ ALTER TABLE ONLY public.subdivision
 
 
 --
--- TOC entry 4676 (class 2606 OID 18018)
+-- TOC entry 4686 (class 2606 OID 18018)
 -- Name: tenant unique_tenant_domain_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4086,7 +4129,7 @@ ALTER TABLE ONLY public.tenant
 
 
 --
--- TOC entry 4688 (class 2606 OID 18020)
+-- TOC entry 4698 (class 2606 OID 18020)
 -- Name: tenant_node unique_tenant_id_url_id; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4095,7 +4138,7 @@ ALTER TABLE ONLY public.tenant_node
 
 
 --
--- TOC entry 4690 (class 2606 OID 18022)
+-- TOC entry 4700 (class 2606 OID 18022)
 -- Name: tenant_node unique_tenant_id_url_path; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4104,7 +4147,7 @@ ALTER TABLE ONLY public.tenant_node
 
 
 --
--- TOC entry 4696 (class 2606 OID 18024)
+-- TOC entry 4706 (class 2606 OID 18024)
 -- Name: tenant_node_menu_item unique_tenant_node_menu_item_tenant_node_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4113,7 +4156,7 @@ ALTER TABLE ONLY public.tenant_node_menu_item
 
 
 --
--- TOC entry 4701 (class 2606 OID 18026)
+-- TOC entry 4711 (class 2606 OID 18026)
 -- Name: term unique_term_vocabulary_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4122,7 +4165,7 @@ ALTER TABLE ONLY public.term
 
 
 --
--- TOC entry 4703 (class 2606 OID 18028)
+-- TOC entry 4713 (class 2606 OID 18028)
 -- Name: term unique_term_vocabulary_nameable; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4131,7 +4174,7 @@ ALTER TABLE ONLY public.term
 
 
 --
--- TOC entry 4736 (class 2606 OID 18030)
+-- TOC entry 4746 (class 2606 OID 18030)
 -- Name: user unique_user_email; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4140,7 +4183,7 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 4749 (class 2606 OID 18032)
+-- TOC entry 4759 (class 2606 OID 18032)
 -- Name: user_role unique_user_role_user_group_name; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4149,7 +4192,7 @@ ALTER TABLE ONLY public.user_role
 
 
 --
--- TOC entry 4754 (class 2606 OID 18034)
+-- TOC entry 4764 (class 2606 OID 18034)
 -- Name: vocabulary unique_vocabulary_name_per_owner; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4158,7 +4201,7 @@ ALTER TABLE ONLY public.vocabulary
 
 
 --
--- TOC entry 4725 (class 2606 OID 18036)
+-- TOC entry 4735 (class 2606 OID 18036)
 -- Name: united_states_congressional_meeting united_states_congressional_meeting_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4167,7 +4210,7 @@ ALTER TABLE ONLY public.united_states_congressional_meeting
 
 
 --
--- TOC entry 4732 (class 2606 OID 18038)
+-- TOC entry 4742 (class 2606 OID 18038)
 -- Name: united_states_political_party_affiliation united_states_political_party_affiliation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4176,7 +4219,7 @@ ALTER TABLE ONLY public.united_states_political_party_affiliation
 
 
 --
--- TOC entry 4728 (class 2606 OID 18040)
+-- TOC entry 4738 (class 2606 OID 18040)
 -- Name: united_states_political_party united_states_political_party_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4185,7 +4228,7 @@ ALTER TABLE ONLY public.united_states_political_party
 
 
 --
--- TOC entry 4740 (class 2606 OID 18042)
+-- TOC entry 4750 (class 2606 OID 18042)
 -- Name: user_group user_group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4194,7 +4237,7 @@ ALTER TABLE ONLY public.user_group
 
 
 --
--- TOC entry 4745 (class 2606 OID 18044)
+-- TOC entry 4755 (class 2606 OID 18044)
 -- Name: user_group_user_role_user user_group_user_role_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4203,7 +4246,7 @@ ALTER TABLE ONLY public.user_group_user_role_user
 
 
 --
--- TOC entry 4738 (class 2606 OID 18046)
+-- TOC entry 4748 (class 2606 OID 18046)
 -- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4212,7 +4255,7 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 4751 (class 2606 OID 18048)
+-- TOC entry 4761 (class 2606 OID 18048)
 -- Name: user_role user_role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4221,7 +4264,7 @@ ALTER TABLE ONLY public.user_role
 
 
 --
--- TOC entry 4756 (class 2606 OID 18050)
+-- TOC entry 4766 (class 2606 OID 18050)
 -- Name: vocabulary vocabulary_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4230,7 +4273,7 @@ ALTER TABLE ONLY public.vocabulary
 
 
 --
--- TOC entry 4759 (class 2606 OID 18052)
+-- TOC entry 4769 (class 2606 OID 18052)
 -- Name: wrongful_medication_case wrongful_medication_case_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4239,7 +4282,7 @@ ALTER TABLE ONLY public.wrongful_medication_case
 
 
 --
--- TOC entry 4762 (class 2606 OID 18054)
+-- TOC entry 4772 (class 2606 OID 18054)
 -- Name: wrongful_removal_case wrongful_removal_case_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4248,7 +4291,7 @@ ALTER TABLE ONLY public.wrongful_removal_case
 
 
 --
--- TOC entry 4456 (class 1259 OID 18055)
+-- TOC entry 4465 (class 1259 OID 18055)
 -- Name: fki_.; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4256,7 +4299,7 @@ CREATE INDEX "fki_." ON public.location USING btree (country_id);
 
 
 --
--- TOC entry 4165 (class 1259 OID 18056)
+-- TOC entry 4174 (class 1259 OID 18056)
 -- Name: fki_a; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4264,7 +4307,7 @@ CREATE INDEX fki_a ON public.action_menu_item USING btree (action_id);
 
 
 --
--- TOC entry 4216 (class 1259 OID 18057)
+-- TOC entry 4225 (class 1259 OID 18057)
 -- Name: fki_bottom_level_subdivision; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4272,7 +4315,7 @@ CREATE INDEX fki_bottom_level_subdivision ON public.bottom_level_subdivision USI
 
 
 --
--- TOC entry 4253 (class 1259 OID 18058)
+-- TOC entry 4262 (class 1259 OID 18058)
 -- Name: fki_c; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4280,7 +4323,7 @@ CREATE INDEX fki_c ON public.child_trafficking_case USING btree (country_id_from
 
 
 --
--- TOC entry 4445 (class 1259 OID 18059)
+-- TOC entry 4454 (class 1259 OID 18059)
 -- Name: fki_country_subdivision; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4288,7 +4331,7 @@ CREATE INDEX fki_country_subdivision ON public.iso_coded_subdivision USING btree
 
 
 --
--- TOC entry 4623 (class 1259 OID 18060)
+-- TOC entry 4632 (class 1259 OID 18060)
 -- Name: fki_country_subdivision_country_id_2; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4296,7 +4339,7 @@ CREATE INDEX fki_country_subdivision_country_id_2 ON public.second_level_subdivi
 
 
 --
--- TOC entry 4198 (class 1259 OID 18061)
+-- TOC entry 4207 (class 1259 OID 18061)
 -- Name: fki_d; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4304,7 +4347,7 @@ CREATE INDEX fki_d ON public.basic_nameable USING btree (id);
 
 
 --
--- TOC entry 4148 (class 1259 OID 18062)
+-- TOC entry 4157 (class 1259 OID 18062)
 -- Name: fki_fk_abuse_case_child_placement_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4312,7 +4355,7 @@ CREATE INDEX fki_fk_abuse_case_child_placement_type ON public.abuse_case USING b
 
 
 --
--- TOC entry 4149 (class 1259 OID 18063)
+-- TOC entry 4158 (class 1259 OID 18063)
 -- Name: fki_fk_abuse_case_family_size; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4320,7 +4363,7 @@ CREATE INDEX fki_fk_abuse_case_family_size ON public.abuse_case USING btree (id)
 
 
 --
--- TOC entry 4150 (class 1259 OID 18064)
+-- TOC entry 4159 (class 1259 OID 18064)
 -- Name: fki_fk_abuse_case_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4328,7 +4371,7 @@ CREATE INDEX fki_fk_abuse_case_id ON public.abuse_case USING btree (id);
 
 
 --
--- TOC entry 4715 (class 1259 OID 18065)
+-- TOC entry 4725 (class 1259 OID 18065)
 -- Name: fki_fk_abusers_relation_to_abused_id_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4336,7 +4379,7 @@ CREATE INDEX fki_fk_abusers_relation_to_abused_id_nameable ON public.type_of_abu
 
 
 --
--- TOC entry 4153 (class 1259 OID 18066)
+-- TOC entry 4162 (class 1259 OID 18066)
 -- Name: fki_fk_access_role_id_principal; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4344,7 +4387,7 @@ CREATE INDEX fki_fk_access_role_id_principal ON public.access_role USING btree (
 
 
 --
--- TOC entry 4156 (class 1259 OID 18067)
+-- TOC entry 4165 (class 1259 OID 18067)
 -- Name: fki_fk_access_role_privilege_access_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4352,7 +4395,7 @@ CREATE INDEX fki_fk_access_role_privilege_access_role ON public.access_role_priv
 
 
 --
--- TOC entry 4157 (class 1259 OID 18068)
+-- TOC entry 4166 (class 1259 OID 18068)
 -- Name: fki_fk_access_role_privilege_action; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4360,7 +4403,7 @@ CREATE INDEX fki_fk_access_role_privilege_action ON public.access_role_privilege
 
 
 --
--- TOC entry 4160 (class 1259 OID 18069)
+-- TOC entry 4169 (class 1259 OID 18069)
 -- Name: fki_fk_act_id_collective; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4368,7 +4411,7 @@ CREATE INDEX fki_fk_act_id_collective ON public.act USING btree (id);
 
 
 --
--- TOC entry 4186 (class 1259 OID 18070)
+-- TOC entry 4195 (class 1259 OID 18070)
 -- Name: fki_fk_action_access_privilege_id_access_privilege; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4376,7 +4419,7 @@ CREATE INDEX fki_fk_action_access_privilege_id_access_privilege ON public.basic_
 
 
 --
--- TOC entry 4166 (class 1259 OID 18071)
+-- TOC entry 4175 (class 1259 OID 18071)
 -- Name: fki_fk_action_menu_item_id_menu_item; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4384,7 +4427,7 @@ CREATE INDEX fki_fk_action_menu_item_id_menu_item ON public.action_menu_item USI
 
 
 --
--- TOC entry 4171 (class 1259 OID 18072)
+-- TOC entry 4180 (class 1259 OID 18072)
 -- Name: fki_fk_administor_role_tenant; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4392,7 +4435,7 @@ CREATE INDEX fki_fk_administor_role_tenant ON public.administrator_role USING bt
 
 
 --
--- TOC entry 4172 (class 1259 OID 18073)
+-- TOC entry 4181 (class 1259 OID 18073)
 -- Name: fki_fk_administrator_role_user_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4400,7 +4443,7 @@ CREATE INDEX fki_fk_administrator_role_user_role ON public.administrator_role US
 
 
 --
--- TOC entry 4177 (class 1259 OID 18074)
+-- TOC entry 4186 (class 1259 OID 18074)
 -- Name: fki_fk_adoption_lawyer_id_professional_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4408,7 +4451,7 @@ CREATE INDEX fki_fk_adoption_lawyer_id_professional_role ON public.adoption_lawy
 
 
 --
--- TOC entry 4414 (class 1259 OID 18075)
+-- TOC entry 4423 (class 1259 OID 18075)
 -- Name: fki_fk_affiliation_organization_from; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4416,7 +4459,7 @@ CREATE INDEX fki_fk_affiliation_organization_from ON public.inter_organizational
 
 
 --
--- TOC entry 4415 (class 1259 OID 18076)
+-- TOC entry 4424 (class 1259 OID 18076)
 -- Name: fki_fk_affiliation_organization_to; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4424,7 +4467,7 @@ CREATE INDEX fki_fk_affiliation_organization_to ON public.inter_organizational_r
 
 
 --
--- TOC entry 4416 (class 1259 OID 18077)
+-- TOC entry 4425 (class 1259 OID 18077)
 -- Name: fki_fk_affiliation_proof; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4432,7 +4475,7 @@ CREATE INDEX fki_fk_affiliation_proof ON public.inter_organizational_relation US
 
 
 --
--- TOC entry 4180 (class 1259 OID 18078)
+-- TOC entry 4189 (class 1259 OID 18078)
 -- Name: fki_fk_article_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4440,7 +4483,7 @@ CREATE INDEX fki_fk_article_node ON public.article USING btree (id);
 
 
 --
--- TOC entry 4183 (class 1259 OID 18079)
+-- TOC entry 4192 (class 1259 OID 18079)
 -- Name: fki_fk_attachment_therapist_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4448,7 +4491,7 @@ CREATE INDEX fki_fk_attachment_therapist_id ON public.attachment_therapist USING
 
 
 --
--- TOC entry 4187 (class 1259 OID 18080)
+-- TOC entry 4196 (class 1259 OID 18080)
 -- Name: fki_fk_basic_action_id_action; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4456,7 +4499,7 @@ CREATE INDEX fki_fk_basic_action_id_action ON public.basic_action USING btree (i
 
 
 --
--- TOC entry 4192 (class 1259 OID 18081)
+-- TOC entry 4201 (class 1259 OID 18081)
 -- Name: fki_fk_basic_country_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4464,7 +4507,7 @@ CREATE INDEX fki_fk_basic_country_id ON public.basic_country USING btree (id);
 
 
 --
--- TOC entry 4195 (class 1259 OID 18082)
+-- TOC entry 4204 (class 1259 OID 18082)
 -- Name: fki_fk_basic_first_and_second_level_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4472,7 +4515,7 @@ CREATE INDEX fki_fk_basic_first_and_second_level_subdivision_id ON public.basic_
 
 
 --
--- TOC entry 4201 (class 1259 OID 18083)
+-- TOC entry 4210 (class 1259 OID 18083)
 -- Name: fki_fk_basic_secondary_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4480,7 +4523,7 @@ CREATE INDEX fki_fk_basic_secondary_subdivision_id ON public.basic_second_level_
 
 
 --
--- TOC entry 4207 (class 1259 OID 18084)
+-- TOC entry 4216 (class 1259 OID 18084)
 -- Name: fki_fk_bill_action_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4488,7 +4531,7 @@ CREATE INDEX fki_fk_bill_action_nameable ON public.bill_action_type USING btree 
 
 
 --
--- TOC entry 4204 (class 1259 OID 18085)
+-- TOC entry 4213 (class 1259 OID 18085)
 -- Name: fki_fk_bill_id_collective; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4496,7 +4539,7 @@ CREATE INDEX fki_fk_bill_id_collective ON public.bill USING btree (id);
 
 
 --
--- TOC entry 4668 (class 1259 OID 18086)
+-- TOC entry 4677 (class 1259 OID 18086)
 -- Name: fki_fk_bla; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4504,7 +4547,7 @@ CREATE INDEX fki_fk_bla ON public.tenant USING btree (access_role_id_not_logged_
 
 
 --
--- TOC entry 4213 (class 1259 OID 18087)
+-- TOC entry 4222 (class 1259 OID 18087)
 -- Name: fki_fk_blog_post_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4512,7 +4555,7 @@ CREATE INDEX fki_fk_blog_post_node ON public.blog_post USING btree (id);
 
 
 --
--- TOC entry 4219 (class 1259 OID 18088)
+-- TOC entry 4228 (class 1259 OID 18088)
 -- Name: fki_fk_bound_country_top_level_country; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4520,7 +4563,7 @@ CREATE INDEX fki_fk_bound_country_top_level_country ON public.bound_country USIN
 
 
 --
--- TOC entry 4210 (class 1259 OID 18089)
+-- TOC entry 4219 (class 1259 OID 18089)
 -- Name: fki_fk_bounding_country_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4528,7 +4571,7 @@ CREATE INDEX fki_fk_bounding_country_id ON public.binding_country USING btree (i
 
 
 --
--- TOC entry 4225 (class 1259 OID 18090)
+-- TOC entry 4234 (class 1259 OID 18090)
 -- Name: fki_fk_case_case_parties_case; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4536,7 +4579,7 @@ CREATE INDEX fki_fk_case_case_parties_case ON public.case_case_parties USING btr
 
 
 --
--- TOC entry 4226 (class 1259 OID 18091)
+-- TOC entry 4235 (class 1259 OID 18091)
 -- Name: fki_fk_case_case_parties_case_parties; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4544,7 +4587,7 @@ CREATE INDEX fki_fk_case_case_parties_case_parties ON public.case_case_parties U
 
 
 --
--- TOC entry 4227 (class 1259 OID 18092)
+-- TOC entry 4236 (class 1259 OID 18092)
 -- Name: fki_fk_case_case_parties_case_party_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4552,7 +4595,7 @@ CREATE INDEX fki_fk_case_case_parties_case_party_type ON public.case_case_partie
 
 
 --
--- TOC entry 4222 (class 1259 OID 18093)
+-- TOC entry 4231 (class 1259 OID 18093)
 -- Name: fki_fk_case_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4560,7 +4603,7 @@ CREATE INDEX fki_fk_case_id ON public."case" USING btree (id);
 
 
 --
--- TOC entry 4232 (class 1259 OID 18094)
+-- TOC entry 4241 (class 1259 OID 18094)
 -- Name: fki_fk_case_parties_organization_case_parties; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4568,7 +4611,7 @@ CREATE INDEX fki_fk_case_parties_organization_case_parties ON public.case_partie
 
 
 --
--- TOC entry 4233 (class 1259 OID 18095)
+-- TOC entry 4242 (class 1259 OID 18095)
 -- Name: fki_fk_case_parties_organization_organization; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4576,7 +4619,7 @@ CREATE INDEX fki_fk_case_parties_organization_organization ON public.case_partie
 
 
 --
--- TOC entry 4236 (class 1259 OID 18096)
+-- TOC entry 4245 (class 1259 OID 18096)
 -- Name: fki_fk_case_parties_person; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4584,7 +4627,7 @@ CREATE INDEX fki_fk_case_parties_person ON public.case_parties_person USING btre
 
 
 --
--- TOC entry 4237 (class 1259 OID 18097)
+-- TOC entry 4246 (class 1259 OID 18097)
 -- Name: fki_fk_case_parties_person_person; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4592,7 +4635,7 @@ CREATE INDEX fki_fk_case_parties_person_person ON public.case_parties_person USI
 
 
 --
--- TOC entry 4240 (class 1259 OID 18098)
+-- TOC entry 4249 (class 1259 OID 18098)
 -- Name: fki_fk_case_party_type_id_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4600,7 +4643,7 @@ CREATE INDEX fki_fk_case_party_type_id_nameable ON public.case_party_type USING 
 
 
 --
--- TOC entry 4246 (class 1259 OID 18099)
+-- TOC entry 4255 (class 1259 OID 18099)
 -- Name: fki_fk_case_type_case_party_type_case_party_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4608,7 +4651,7 @@ CREATE INDEX fki_fk_case_type_case_party_type_case_party_type ON public.case_typ
 
 
 --
--- TOC entry 4247 (class 1259 OID 18100)
+-- TOC entry 4256 (class 1259 OID 18100)
 -- Name: fki_fk_case_type_case_party_type_case_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4616,7 +4659,7 @@ CREATE INDEX fki_fk_case_type_case_party_type_case_type ON public.case_type_case
 
 
 --
--- TOC entry 4243 (class 1259 OID 18101)
+-- TOC entry 4252 (class 1259 OID 18101)
 -- Name: fki_fk_case_type_id_node_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4624,7 +4667,7 @@ CREATE INDEX fki_fk_case_type_id_node_type ON public.case_type USING btree (id);
 
 
 --
--- TOC entry 4752 (class 1259 OID 18102)
+-- TOC entry 4762 (class 1259 OID 18102)
 -- Name: fki_fk_category_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4632,7 +4675,7 @@ CREATE INDEX fki_fk_category_id ON public.vocabulary USING btree (id);
 
 
 --
--- TOC entry 4250 (class 1259 OID 18103)
+-- TOC entry 4259 (class 1259 OID 18103)
 -- Name: fki_fk_child_placement_type_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4640,7 +4683,7 @@ CREATE INDEX fki_fk_child_placement_type_id ON public.child_placement_type USING
 
 
 --
--- TOC entry 4258 (class 1259 OID 18104)
+-- TOC entry 4267 (class 1259 OID 18104)
 -- Name: fki_fk_collective_id_published; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4648,7 +4691,7 @@ CREATE INDEX fki_fk_collective_id_published ON public.collective USING btree (id
 
 
 --
--- TOC entry 4261 (class 1259 OID 18105)
+-- TOC entry 4270 (class 1259 OID 18105)
 -- Name: fki_fk_collective_user_user; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4656,7 +4699,7 @@ CREATE INDEX fki_fk_collective_user_user ON public.collective_user USING btree (
 
 
 --
--- TOC entry 4264 (class 1259 OID 18106)
+-- TOC entry 4273 (class 1259 OID 18106)
 -- Name: fki_fk_comment_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4664,7 +4707,7 @@ CREATE INDEX fki_fk_comment_id ON public.comment USING btree (id);
 
 
 --
--- TOC entry 4265 (class 1259 OID 18107)
+-- TOC entry 4274 (class 1259 OID 18107)
 -- Name: fki_fk_comment_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4672,7 +4715,7 @@ CREATE INDEX fki_fk_comment_node ON public.comment USING btree (node_id);
 
 
 --
--- TOC entry 4266 (class 1259 OID 18108)
+-- TOC entry 4275 (class 1259 OID 18108)
 -- Name: fki_fk_comment_publisher; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4680,7 +4723,7 @@ CREATE INDEX fki_fk_comment_publisher ON public.comment USING btree (publisher_i
 
 
 --
--- TOC entry 4269 (class 1259 OID 18109)
+-- TOC entry 4278 (class 1259 OID 18109)
 -- Name: fki_fk_congressional_term_documentable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4688,7 +4731,7 @@ CREATE INDEX fki_fk_congressional_term_documentable ON public.congressional_term
 
 
 --
--- TOC entry 4272 (class 1259 OID 18110)
+-- TOC entry 4281 (class 1259 OID 18110)
 -- Name: fki_fk_congressional_term_political_party_affiliation_id_docume; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4696,7 +4739,7 @@ CREATE INDEX fki_fk_congressional_term_political_party_affiliation_id_docume ON 
 
 
 --
--- TOC entry 4273 (class 1259 OID 18111)
+-- TOC entry 4282 (class 1259 OID 18111)
 -- Name: fki_fk_congressional_term_political_party_affiliation_united_st; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4704,7 +4747,7 @@ CREATE INDEX fki_fk_congressional_term_political_party_affiliation_united_st ON 
 
 
 --
--- TOC entry 4278 (class 1259 OID 18112)
+-- TOC entry 4287 (class 1259 OID 18112)
 -- Name: fki_fk_content_sharing_group_id_owner; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4712,7 +4755,7 @@ CREATE INDEX fki_fk_content_sharing_group_id_owner ON public.content_sharing_gro
 
 
 --
--- TOC entry 4365 (class 1259 OID 18113)
+-- TOC entry 4374 (class 1259 OID 18113)
 -- Name: fki_fk_continent_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4720,7 +4763,7 @@ CREATE INDEX fki_fk_continent_id ON public.first_level_global_region USING btree
 
 
 --
--- TOC entry 4288 (class 1259 OID 18114)
+-- TOC entry 4297 (class 1259 OID 18114)
 -- Name: fki_fk_country_and_first_and_second_level_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4728,7 +4771,7 @@ CREATE INDEX fki_fk_country_and_first_and_second_level_subdivision_id ON public.
 
 
 --
--- TOC entry 4289 (class 1259 OID 18115)
+-- TOC entry 4298 (class 1259 OID 18115)
 -- Name: fki_fk_country_and_first_and_second_level_subdivision_id_2; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4736,7 +4779,7 @@ CREATE INDEX fki_fk_country_and_first_and_second_level_subdivision_id_2 ON publi
 
 
 --
--- TOC entry 4292 (class 1259 OID 18116)
+-- TOC entry 4301 (class 1259 OID 18116)
 -- Name: fki_fk_country_and_first_level_subdivision_1; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4744,7 +4787,7 @@ CREATE INDEX fki_fk_country_and_first_level_subdivision_1 ON public.country_and_
 
 
 --
--- TOC entry 4285 (class 1259 OID 18117)
+-- TOC entry 4294 (class 1259 OID 18117)
 -- Name: fki_fk_country_and_first_level_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4752,7 +4795,7 @@ CREATE INDEX fki_fk_country_and_first_level_subdivision_id ON public.country_and
 
 
 --
--- TOC entry 4293 (class 1259 OID 18118)
+-- TOC entry 4302 (class 1259 OID 18118)
 -- Name: fki_fk_country_and_first_level_subdivision_id_2; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4760,7 +4803,7 @@ CREATE INDEX fki_fk_country_and_first_level_subdivision_id_2 ON public.country_a
 
 
 --
--- TOC entry 4296 (class 1259 OID 18119)
+-- TOC entry 4305 (class 1259 OID 18119)
 -- Name: fki_fk_country_and_intermediate_level_subdivision_1; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4768,7 +4811,7 @@ CREATE INDEX fki_fk_country_and_intermediate_level_subdivision_1 ON public.count
 
 
 --
--- TOC entry 4281 (class 1259 OID 18120)
+-- TOC entry 4290 (class 1259 OID 18120)
 -- Name: fki_fk_country_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4776,7 +4819,7 @@ CREATE INDEX fki_fk_country_id ON public.country USING btree (id);
 
 
 --
--- TOC entry 4653 (class 1259 OID 18121)
+-- TOC entry 4662 (class 1259 OID 18121)
 -- Name: fki_fk_country_part_name_country; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4784,7 +4827,7 @@ CREATE INDEX fki_fk_country_part_name_country ON public.subdivision USING btree 
 
 
 --
--- TOC entry 4654 (class 1259 OID 18122)
+-- TOC entry 4663 (class 1259 OID 18122)
 -- Name: fki_fk_country_part_name_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4792,7 +4835,7 @@ CREATE INDEX fki_fk_country_part_name_id ON public.subdivision USING btree (id);
 
 
 --
--- TOC entry 4369 (class 1259 OID 18123)
+-- TOC entry 4378 (class 1259 OID 18123)
 -- Name: fki_fk_country_region_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4800,7 +4843,7 @@ CREATE INDEX fki_fk_country_region_id ON public.first_level_subdivision USING bt
 
 
 --
--- TOC entry 4370 (class 1259 OID 18124)
+-- TOC entry 4379 (class 1259 OID 18124)
 -- Name: fki_fk_country_region_id_2; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4808,7 +4851,7 @@ CREATE INDEX fki_fk_country_region_id_2 ON public.first_level_subdivision USING 
 
 
 --
--- TOC entry 4299 (class 1259 OID 18125)
+-- TOC entry 4308 (class 1259 OID 18125)
 -- Name: fki_fk_country_report_country; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4816,7 +4859,7 @@ CREATE INDEX fki_fk_country_report_country ON public.country_report USING btree 
 
 
 --
--- TOC entry 4624 (class 1259 OID 18126)
+-- TOC entry 4633 (class 1259 OID 18126)
 -- Name: fki_fk_country_subdivision_country_id_1; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4824,7 +4867,7 @@ CREATE INDEX fki_fk_country_subdivision_country_id_1 ON public.second_level_subd
 
 
 --
--- TOC entry 4303 (class 1259 OID 18127)
+-- TOC entry 4312 (class 1259 OID 18127)
 -- Name: fki_fk_country_subdivision_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4832,7 +4875,7 @@ CREATE INDEX fki_fk_country_subdivision_type ON public.country_subdivision_type 
 
 
 --
--- TOC entry 4304 (class 1259 OID 18128)
+-- TOC entry 4313 (class 1259 OID 18128)
 -- Name: fki_fk_country_subdivision_type_subdivision_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4840,7 +4883,7 @@ CREATE INDEX fki_fk_country_subdivision_type_subdivision_type ON public.country_
 
 
 --
--- TOC entry 4307 (class 1259 OID 18129)
+-- TOC entry 4316 (class 1259 OID 18129)
 -- Name: fki_fk_create_node_action_id_access_privilege; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4848,7 +4891,7 @@ CREATE INDEX fki_fk_create_node_action_id_access_privilege ON public.create_node
 
 
 --
--- TOC entry 4308 (class 1259 OID 18130)
+-- TOC entry 4317 (class 1259 OID 18130)
 -- Name: fki_fk_create_node_action_node_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4856,7 +4899,7 @@ CREATE INDEX fki_fk_create_node_action_node_type ON public.create_node_action US
 
 
 --
--- TOC entry 4311 (class 1259 OID 18131)
+-- TOC entry 4320 (class 1259 OID 18131)
 -- Name: fki_fk_delete_node_action_id_access_privilege; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4864,7 +4907,7 @@ CREATE INDEX fki_fk_delete_node_action_id_access_privilege ON public.delete_node
 
 
 --
--- TOC entry 4312 (class 1259 OID 18132)
+-- TOC entry 4321 (class 1259 OID 18132)
 -- Name: fki_fk_delete_node_action_node_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4872,7 +4915,7 @@ CREATE INDEX fki_fk_delete_node_action_node_type ON public.delete_node_action US
 
 
 --
--- TOC entry 4315 (class 1259 OID 18133)
+-- TOC entry 4324 (class 1259 OID 18133)
 -- Name: fki_fk_denomination_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4880,7 +4923,7 @@ CREATE INDEX fki_fk_denomination_id ON public.denomination USING btree (id);
 
 
 --
--- TOC entry 4318 (class 1259 OID 18134)
+-- TOC entry 4327 (class 1259 OID 18134)
 -- Name: fki_fk_deportation_case_country_id_to; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4888,7 +4931,7 @@ CREATE INDEX fki_fk_deportation_case_country_id_to ON public.deportation_case US
 
 
 --
--- TOC entry 4319 (class 1259 OID 18135)
+-- TOC entry 4328 (class 1259 OID 18135)
 -- Name: fki_fk_deportation_case_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4896,7 +4939,7 @@ CREATE INDEX fki_fk_deportation_case_id ON public.deportation_case USING btree (
 
 
 --
--- TOC entry 4320 (class 1259 OID 18136)
+-- TOC entry 4329 (class 1259 OID 18136)
 -- Name: fki_fk_deportation_case_subdivision_id_from; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4904,7 +4947,7 @@ CREATE INDEX fki_fk_deportation_case_subdivision_id_from ON public.deportation_c
 
 
 --
--- TOC entry 4323 (class 1259 OID 18137)
+-- TOC entry 4332 (class 1259 OID 18137)
 -- Name: fki_fk_discussion_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4912,7 +4955,7 @@ CREATE INDEX fki_fk_discussion_id ON public.discussion USING btree (id);
 
 
 --
--- TOC entry 4326 (class 1259 OID 18138)
+-- TOC entry 4335 (class 1259 OID 18138)
 -- Name: fki_fk_disrupted_placement_case_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4920,7 +4963,7 @@ CREATE INDEX fki_fk_disrupted_placement_case_id ON public.disrupted_placement_ca
 
 
 --
--- TOC entry 4329 (class 1259 OID 18139)
+-- TOC entry 4338 (class 1259 OID 18139)
 -- Name: fki_fk_document_document_type_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4928,7 +4971,7 @@ CREATE INDEX fki_fk_document_document_type_id ON public.document USING btree (id
 
 
 --
--- TOC entry 4330 (class 1259 OID 18140)
+-- TOC entry 4339 (class 1259 OID 18140)
 -- Name: fki_fk_document_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4936,7 +4979,7 @@ CREATE INDEX fki_fk_document_id ON public.document USING btree (id);
 
 
 --
--- TOC entry 4333 (class 1259 OID 18141)
+-- TOC entry 4342 (class 1259 OID 18141)
 -- Name: fki_fk_document_type_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4944,7 +4987,7 @@ CREATE INDEX fki_fk_document_type_id ON public.document_type USING btree (id);
 
 
 --
--- TOC entry 4338 (class 1259 OID 18142)
+-- TOC entry 4347 (class 1259 OID 18142)
 -- Name: fki_fk_documentable_document_document; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4952,7 +4995,7 @@ CREATE INDEX fki_fk_documentable_document_document ON public.documentable_docume
 
 
 --
--- TOC entry 4339 (class 1259 OID 18143)
+-- TOC entry 4348 (class 1259 OID 18143)
 -- Name: fki_fk_documentable_document_documentable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4960,7 +5003,7 @@ CREATE INDEX fki_fk_documentable_document_documentable ON public.documentable_do
 
 
 --
--- TOC entry 4342 (class 1259 OID 18144)
+-- TOC entry 4351 (class 1259 OID 18144)
 -- Name: fki_fk_edit_node_action_id_action; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4968,7 +5011,7 @@ CREATE INDEX fki_fk_edit_node_action_id_action ON public.edit_node_action USING 
 
 
 --
--- TOC entry 4343 (class 1259 OID 18145)
+-- TOC entry 4352 (class 1259 OID 18145)
 -- Name: fki_fk_edit_node_action_node_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4976,7 +5019,23 @@ CREATE INDEX fki_fk_edit_node_action_node_type ON public.edit_node_action USING 
 
 
 --
--- TOC entry 4346 (class 1259 OID 18146)
+-- TOC entry 4779 (class 1259 OID 192746)
+-- Name: fki_fk_edit_own_node_action_id_action; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fk_edit_own_node_action_id_action ON public.edit_own_node_action USING btree (id);
+
+
+--
+-- TOC entry 4780 (class 1259 OID 192747)
+-- Name: fki_fk_edit_own_node_action_node_type; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fk_edit_own_node_action_node_type ON public.edit_own_node_action USING btree (node_type_id);
+
+
+--
+-- TOC entry 4355 (class 1259 OID 18146)
 -- Name: fki_fk_facilitator_id_organizational_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4984,7 +5043,7 @@ CREATE INDEX fki_fk_facilitator_id_organizational_role ON public.facilitator USI
 
 
 --
--- TOC entry 4349 (class 1259 OID 18147)
+-- TOC entry 4358 (class 1259 OID 18147)
 -- Name: fki_fk_family_size_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4992,7 +5051,7 @@ CREATE INDEX fki_fk_family_size_id ON public.family_size USING btree (id);
 
 
 --
--- TOC entry 4352 (class 1259 OID 18148)
+-- TOC entry 4361 (class 1259 OID 18148)
 -- Name: fki_fk_fathers_rights_violations_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5000,7 +5059,7 @@ CREATE INDEX fki_fk_fathers_rights_violations_id ON public.fathers_rights_violat
 
 
 --
--- TOC entry 4542 (class 1259 OID 18149)
+-- TOC entry 4551 (class 1259 OID 18149)
 -- Name: fki_fk_file_id_file_portrait; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5008,7 +5067,7 @@ CREATE INDEX fki_fk_file_id_file_portrait ON public.person USING btree (file_id_
 
 
 --
--- TOC entry 4357 (class 1259 OID 18150)
+-- TOC entry 4366 (class 1259 OID 18150)
 -- Name: fki_fk_first_and_bottom_level_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5016,7 +5075,7 @@ CREATE INDEX fki_fk_first_and_bottom_level_subdivision_id ON public.first_and_bo
 
 
 --
--- TOC entry 4358 (class 1259 OID 18151)
+-- TOC entry 4367 (class 1259 OID 18151)
 -- Name: fki_fk_first_and_bottom_level_subdivision_id_02; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5024,7 +5083,7 @@ CREATE INDEX fki_fk_first_and_bottom_level_subdivision_id_02 ON public.first_and
 
 
 --
--- TOC entry 4361 (class 1259 OID 18152)
+-- TOC entry 4370 (class 1259 OID 18152)
 -- Name: fki_fk_first_and_second_level_subdivision_id_1; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5032,7 +5091,7 @@ CREATE INDEX fki_fk_first_and_second_level_subdivision_id_1 ON public.first_and_
 
 
 --
--- TOC entry 4362 (class 1259 OID 18153)
+-- TOC entry 4371 (class 1259 OID 18153)
 -- Name: fki_fk_first_and_second_level_subdivision_id_2; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5040,7 +5099,7 @@ CREATE INDEX fki_fk_first_and_second_level_subdivision_id_2 ON public.first_and_
 
 
 --
--- TOC entry 4366 (class 1259 OID 18154)
+-- TOC entry 4375 (class 1259 OID 18154)
 -- Name: fki_fk_first_level_global_region_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5048,7 +5107,7 @@ CREATE INDEX fki_fk_first_level_global_region_id ON public.first_level_global_re
 
 
 --
--- TOC entry 4371 (class 1259 OID 18155)
+-- TOC entry 4380 (class 1259 OID 18155)
 -- Name: fki_fk_formal_first_level_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5056,7 +5115,7 @@ CREATE INDEX fki_fk_formal_first_level_subdivision_id ON public.formal_intermedi
 
 
 --
--- TOC entry 4559 (class 1259 OID 18156)
+-- TOC entry 4568 (class 1259 OID 18156)
 -- Name: fki_fk_geographical_entity_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5064,7 +5123,7 @@ CREATE INDEX fki_fk_geographical_entity_id ON public.political_entity USING btre
 
 
 --
--- TOC entry 4374 (class 1259 OID 18157)
+-- TOC entry 4383 (class 1259 OID 18157)
 -- Name: fki_fk_geographical_entity_id_2; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5072,7 +5131,7 @@ CREATE INDEX fki_fk_geographical_entity_id_2 ON public.geographical_entity USING
 
 
 --
--- TOC entry 4377 (class 1259 OID 18158)
+-- TOC entry 4386 (class 1259 OID 18158)
 -- Name: fki_fk_global_region_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5080,7 +5139,7 @@ CREATE INDEX fki_fk_global_region_id ON public.global_region USING btree (id);
 
 
 --
--- TOC entry 4380 (class 1259 OID 18159)
+-- TOC entry 4389 (class 1259 OID 18159)
 -- Name: fki_fk_hague_status_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5088,7 +5147,7 @@ CREATE INDEX fki_fk_hague_status_id ON public.hague_status USING btree (id);
 
 
 --
--- TOC entry 4383 (class 1259 OID 18160)
+-- TOC entry 4392 (class 1259 OID 18160)
 -- Name: fki_fk_home_study_agency_id_organization_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5096,7 +5155,7 @@ CREATE INDEX fki_fk_home_study_agency_id_organization_role ON public.home_study_
 
 
 --
--- TOC entry 4386 (class 1259 OID 18161)
+-- TOC entry 4395 (class 1259 OID 18161)
 -- Name: fki_fk_house_bill_bill; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5104,7 +5163,7 @@ CREATE INDEX fki_fk_house_bill_bill ON public.house_bill USING btree (id);
 
 
 --
--- TOC entry 4389 (class 1259 OID 18162)
+-- TOC entry 4398 (class 1259 OID 18162)
 -- Name: fki_fk_house_term_id_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5112,7 +5171,7 @@ CREATE INDEX fki_fk_house_term_id_node ON public.house_term USING btree (id);
 
 
 --
--- TOC entry 4390 (class 1259 OID 18163)
+-- TOC entry 4399 (class 1259 OID 18163)
 -- Name: fki_fk_house_term_representative; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5120,7 +5179,7 @@ CREATE INDEX fki_fk_house_term_representative ON public.house_term USING btree (
 
 
 --
--- TOC entry 4391 (class 1259 OID 18164)
+-- TOC entry 4400 (class 1259 OID 18164)
 -- Name: fki_fk_house_term_subdivision; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5128,7 +5187,7 @@ CREATE INDEX fki_fk_house_term_subdivision ON public.house_term USING btree (sub
 
 
 --
--- TOC entry 4394 (class 1259 OID 18165)
+-- TOC entry 4403 (class 1259 OID 18165)
 -- Name: fki_fk_informal_first_level_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5136,7 +5195,7 @@ CREATE INDEX fki_fk_informal_first_level_subdivision_id ON public.informal_inter
 
 
 --
--- TOC entry 4397 (class 1259 OID 18166)
+-- TOC entry 4406 (class 1259 OID 18166)
 -- Name: fki_fk_institution_id_organizational_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5144,7 +5203,7 @@ CREATE INDEX fki_fk_institution_id_organizational_role ON public.institution USI
 
 
 --
--- TOC entry 4417 (class 1259 OID 18167)
+-- TOC entry 4426 (class 1259 OID 18167)
 -- Name: fki_fk_inter_collective_relation_political_entity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5152,7 +5211,7 @@ CREATE INDEX fki_fk_inter_collective_relation_political_entity ON public.inter_o
 
 
 --
--- TOC entry 4400 (class 1259 OID 18168)
+-- TOC entry 4409 (class 1259 OID 18168)
 -- Name: fki_fk_inter_country_relation_country_from; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5160,7 +5219,7 @@ CREATE INDEX fki_fk_inter_country_relation_country_from ON public.inter_country_
 
 
 --
--- TOC entry 4401 (class 1259 OID 18169)
+-- TOC entry 4410 (class 1259 OID 18169)
 -- Name: fki_fk_inter_country_relation_country_to; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5168,7 +5227,7 @@ CREATE INDEX fki_fk_inter_country_relation_country_to ON public.inter_country_re
 
 
 --
--- TOC entry 4402 (class 1259 OID 18170)
+-- TOC entry 4411 (class 1259 OID 18170)
 -- Name: fki_fk_inter_country_relation_document_id_proof; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5176,7 +5235,7 @@ CREATE INDEX fki_fk_inter_country_relation_document_id_proof ON public.inter_cou
 
 
 --
--- TOC entry 4403 (class 1259 OID 18171)
+-- TOC entry 4412 (class 1259 OID 18171)
 -- Name: fki_fk_inter_country_relation_id_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5184,7 +5243,7 @@ CREATE INDEX fki_fk_inter_country_relation_id_node ON public.inter_country_relat
 
 
 --
--- TOC entry 4404 (class 1259 OID 18172)
+-- TOC entry 4413 (class 1259 OID 18172)
 -- Name: fki_fk_inter_country_relation_inter_country_relation_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5192,7 +5251,7 @@ CREATE INDEX fki_fk_inter_country_relation_inter_country_relation_type ON public
 
 
 --
--- TOC entry 4409 (class 1259 OID 18173)
+-- TOC entry 4418 (class 1259 OID 18173)
 -- Name: fki_fk_inter_country_relation_type_id_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5200,7 +5259,7 @@ CREATE INDEX fki_fk_inter_country_relation_type_id_nameable ON public.inter_coun
 
 
 --
--- TOC entry 4425 (class 1259 OID 18174)
+-- TOC entry 4434 (class 1259 OID 18174)
 -- Name: fki_fk_inter_personal_relation_id_documentable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5208,7 +5267,7 @@ CREATE INDEX fki_fk_inter_personal_relation_id_documentable ON public.inter_pers
 
 
 --
--- TOC entry 4436 (class 1259 OID 18175)
+-- TOC entry 4445 (class 1259 OID 18175)
 -- Name: fki_fk_intermediate_level_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5216,7 +5275,7 @@ CREATE INDEX fki_fk_intermediate_level_subdivision_id ON public.intermediate_lev
 
 
 --
--- TOC entry 4439 (class 1259 OID 18176)
+-- TOC entry 4448 (class 1259 OID 18176)
 -- Name: fki_fk_iso_coded_first_level_subdivision_1; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5224,7 +5283,7 @@ CREATE INDEX fki_fk_iso_coded_first_level_subdivision_1 ON public.iso_coded_firs
 
 
 --
--- TOC entry 4440 (class 1259 OID 18177)
+-- TOC entry 4449 (class 1259 OID 18177)
 -- Name: fki_fk_iso_coded_first_level_subdivision_2; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5232,7 +5291,7 @@ CREATE INDEX fki_fk_iso_coded_first_level_subdivision_2 ON public.iso_coded_firs
 
 
 --
--- TOC entry 4448 (class 1259 OID 18178)
+-- TOC entry 4457 (class 1259 OID 18178)
 -- Name: fki_fk_law_firm_organizational_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5240,7 +5299,7 @@ CREATE INDEX fki_fk_law_firm_organizational_role ON public.law_firm USING btree 
 
 
 --
--- TOC entry 4457 (class 1259 OID 18179)
+-- TOC entry 4466 (class 1259 OID 18179)
 -- Name: fki_fk_location_subdivision; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5248,7 +5307,7 @@ CREATE INDEX fki_fk_location_subdivision ON public.location USING btree (subdivi
 
 
 --
--- TOC entry 4458 (class 1259 OID 18180)
+-- TOC entry 4467 (class 1259 OID 18180)
 -- Name: fki_fk_location_subdivision_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5256,7 +5315,7 @@ CREATE INDEX fki_fk_location_subdivision_id ON public.location USING btree (subd
 
 
 --
--- TOC entry 4465 (class 1259 OID 18181)
+-- TOC entry 4474 (class 1259 OID 18181)
 -- Name: fki_fk_member_of_congress_political_entity_relation; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5264,7 +5323,7 @@ CREATE INDEX fki_fk_member_of_congress_political_entity_relation ON public.membe
 
 
 --
--- TOC entry 4470 (class 1259 OID 18182)
+-- TOC entry 4479 (class 1259 OID 18182)
 -- Name: fki_fk_multi_question_poll_id_poll; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5272,7 +5331,7 @@ CREATE INDEX fki_fk_multi_question_poll_id_poll ON public.multi_question_poll US
 
 
 --
--- TOC entry 4473 (class 1259 OID 18183)
+-- TOC entry 4482 (class 1259 OID 18183)
 -- Name: fki_fk_multi_question_poll_question_multi_question_poll; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5280,7 +5339,7 @@ CREATE INDEX fki_fk_multi_question_poll_question_multi_question_poll ON public.m
 
 
 --
--- TOC entry 4474 (class 1259 OID 18184)
+-- TOC entry 4483 (class 1259 OID 18184)
 -- Name: fki_fk_multi_question_poll_question_poll_question; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5288,7 +5347,7 @@ CREATE INDEX fki_fk_multi_question_poll_question_poll_question ON public.multi_q
 
 
 --
--- TOC entry 4479 (class 1259 OID 18185)
+-- TOC entry 4488 (class 1259 OID 18185)
 -- Name: fki_fk_nameable_file_tile_image; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5296,7 +5355,7 @@ CREATE INDEX fki_fk_nameable_file_tile_image ON public.nameable USING btree (fil
 
 
 --
--- TOC entry 4489 (class 1259 OID 18186)
+-- TOC entry 4498 (class 1259 OID 18186)
 -- Name: fki_fk_node_file_file; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5304,7 +5363,7 @@ CREATE INDEX fki_fk_node_file_file ON public.node_file USING btree (file_id);
 
 
 --
--- TOC entry 4490 (class 1259 OID 18187)
+-- TOC entry 4499 (class 1259 OID 18187)
 -- Name: fki_fk_node_file_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5312,7 +5371,7 @@ CREATE INDEX fki_fk_node_file_node ON public.node_file USING btree (node_id);
 
 
 --
--- TOC entry 4493 (class 1259 OID 18188)
+-- TOC entry 4502 (class 1259 OID 18188)
 -- Name: fki_fk_node_term_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5320,7 +5379,7 @@ CREATE INDEX fki_fk_node_term_node ON public.node_term USING btree (node_id);
 
 
 --
--- TOC entry 4494 (class 1259 OID 18189)
+-- TOC entry 4503 (class 1259 OID 18189)
 -- Name: fki_fk_node_term_term; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5328,7 +5387,7 @@ CREATE INDEX fki_fk_node_term_term ON public.node_term USING btree (term_id);
 
 
 --
--- TOC entry 4483 (class 1259 OID 18190)
+-- TOC entry 4492 (class 1259 OID 18190)
 -- Name: fki_fk_node_user; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5336,7 +5395,7 @@ CREATE INDEX fki_fk_node_user ON public.node USING btree (publisher_id);
 
 
 --
--- TOC entry 4484 (class 1259 OID 18191)
+-- TOC entry 4493 (class 1259 OID 18191)
 -- Name: fki_fk_node_user_group; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5344,7 +5403,7 @@ CREATE INDEX fki_fk_node_user_group ON public.node USING btree (owner_id);
 
 
 --
--- TOC entry 4506 (class 1259 OID 18192)
+-- TOC entry 4515 (class 1259 OID 18192)
 -- Name: fki_fk_organization_act_relation_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5352,7 +5411,7 @@ CREATE INDEX fki_fk_organization_act_relation_type ON public.organization_act_re
 
 
 --
--- TOC entry 4501 (class 1259 OID 18193)
+-- TOC entry 4510 (class 1259 OID 18193)
 -- Name: fki_fk_organization_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5360,7 +5419,7 @@ CREATE INDEX fki_fk_organization_id ON public.organization USING btree (id);
 
 
 --
--- TOC entry 4502 (class 1259 OID 18194)
+-- TOC entry 4511 (class 1259 OID 18194)
 -- Name: fki_fk_organization_id_collective; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5368,7 +5427,7 @@ CREATE INDEX fki_fk_organization_id_collective ON public.organization USING btre
 
 
 --
--- TOC entry 4503 (class 1259 OID 18195)
+-- TOC entry 4512 (class 1259 OID 18195)
 -- Name: fki_fk_organization_organization_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5376,7 +5435,7 @@ CREATE INDEX fki_fk_organization_organization_type ON public.organization USING 
 
 
 --
--- TOC entry 4509 (class 1259 OID 18196)
+-- TOC entry 4518 (class 1259 OID 18196)
 -- Name: fki_fk_organization_organization_type_organization; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5384,7 +5443,7 @@ CREATE INDEX fki_fk_organization_organization_type_organization ON public.organi
 
 
 --
--- TOC entry 4510 (class 1259 OID 18197)
+-- TOC entry 4519 (class 1259 OID 18197)
 -- Name: fki_fk_organization_organization_type_organization_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5392,7 +5451,7 @@ CREATE INDEX fki_fk_organization_organization_type_organization_type ON public.o
 
 
 --
--- TOC entry 4513 (class 1259 OID 18198)
+-- TOC entry 4522 (class 1259 OID 18198)
 -- Name: fki_fk_organization_type_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5400,7 +5459,7 @@ CREATE INDEX fki_fk_organization_type_id ON public.organization_type USING btree
 
 
 --
--- TOC entry 4516 (class 1259 OID 18199)
+-- TOC entry 4525 (class 1259 OID 18199)
 -- Name: fki_fk_organizational_role_organization; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5408,7 +5467,7 @@ CREATE INDEX fki_fk_organizational_role_organization ON public.organizational_ro
 
 
 --
--- TOC entry 4517 (class 1259 OID 18200)
+-- TOC entry 4526 (class 1259 OID 18200)
 -- Name: fki_fk_organizational_role_organization_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5416,7 +5475,7 @@ CREATE INDEX fki_fk_organizational_role_organization_type ON public.organization
 
 
 --
--- TOC entry 4525 (class 1259 OID 18201)
+-- TOC entry 4534 (class 1259 OID 18201)
 -- Name: fki_fk_page_id_simple_text_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5424,7 +5483,7 @@ CREATE INDEX fki_fk_page_id_simple_text_node ON public.page USING btree (id);
 
 
 --
--- TOC entry 4528 (class 1259 OID 18202)
+-- TOC entry 4537 (class 1259 OID 18202)
 -- Name: fki_fk_party; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5432,7 +5491,7 @@ CREATE INDEX fki_fk_party ON public.party USING btree (id);
 
 
 --
--- TOC entry 4529 (class 1259 OID 18203)
+-- TOC entry 4538 (class 1259 OID 18203)
 -- Name: fki_fk_party_id_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5440,7 +5499,7 @@ CREATE INDEX fki_fk_party_id_nameable ON public.party USING btree (id);
 
 
 --
--- TOC entry 4530 (class 1259 OID 18204)
+-- TOC entry 4539 (class 1259 OID 18204)
 -- Name: fki_fk_party_location; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5448,7 +5507,7 @@ CREATE INDEX fki_fk_party_location ON public.party USING btree (id);
 
 
 --
--- TOC entry 4533 (class 1259 OID 18205)
+-- TOC entry 4542 (class 1259 OID 18205)
 -- Name: fki_fk_party_political_entity_relation_document_proof; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5456,7 +5515,7 @@ CREATE INDEX fki_fk_party_political_entity_relation_document_proof ON public.par
 
 
 --
--- TOC entry 4534 (class 1259 OID 18206)
+-- TOC entry 4543 (class 1259 OID 18206)
 -- Name: fki_fk_party_political_entity_relation_political_entity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5464,7 +5523,7 @@ CREATE INDEX fki_fk_party_political_entity_relation_political_entity ON public.p
 
 
 --
--- TOC entry 4535 (class 1259 OID 18207)
+-- TOC entry 4544 (class 1259 OID 18207)
 -- Name: fki_fk_party_political_entity_relation_political_entity_relatab; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5472,7 +5531,7 @@ CREATE INDEX fki_fk_party_political_entity_relation_political_entity_relatab ON 
 
 
 --
--- TOC entry 4536 (class 1259 OID 18208)
+-- TOC entry 4545 (class 1259 OID 18208)
 -- Name: fki_fk_party_political_entity_relation_political_entity_relatio; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5480,7 +5539,7 @@ CREATE INDEX fki_fk_party_political_entity_relation_political_entity_relatio ON 
 
 
 --
--- TOC entry 4537 (class 1259 OID 18209)
+-- TOC entry 4546 (class 1259 OID 18209)
 -- Name: fki_fk_party_politicial_entity_relation_id_documentable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5488,7 +5547,7 @@ CREATE INDEX fki_fk_party_politicial_entity_relation_id_documentable ON public.p
 
 
 --
--- TOC entry 4546 (class 1259 OID 18210)
+-- TOC entry 4555 (class 1259 OID 18210)
 -- Name: fki_fk_person_collective_relation_person; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5496,7 +5555,7 @@ CREATE INDEX fki_fk_person_collective_relation_person ON public.person_organizat
 
 
 --
--- TOC entry 4547 (class 1259 OID 18211)
+-- TOC entry 4556 (class 1259 OID 18211)
 -- Name: fki_fk_person_collective_relation_person_collective_relation_ty; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5504,7 +5563,7 @@ CREATE INDEX fki_fk_person_collective_relation_person_collective_relation_ty ON 
 
 
 --
--- TOC entry 4543 (class 1259 OID 18212)
+-- TOC entry 4552 (class 1259 OID 18212)
 -- Name: fki_fk_person_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5512,7 +5571,7 @@ CREATE INDEX fki_fk_person_id ON public.person USING btree (id);
 
 
 --
--- TOC entry 4548 (class 1259 OID 18213)
+-- TOC entry 4557 (class 1259 OID 18213)
 -- Name: fki_fk_person_organization_relation_id_documentable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5520,7 +5579,7 @@ CREATE INDEX fki_fk_person_organization_relation_id_documentable ON public.perso
 
 
 --
--- TOC entry 4426 (class 1259 OID 18214)
+-- TOC entry 4435 (class 1259 OID 18214)
 -- Name: fki_fk_personal_relationship_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5528,7 +5587,7 @@ CREATE INDEX fki_fk_personal_relationship_id ON public.inter_personal_relation U
 
 
 --
--- TOC entry 4427 (class 1259 OID 18215)
+-- TOC entry 4436 (class 1259 OID 18215)
 -- Name: fki_fk_personal_relationship_person_from; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5536,7 +5595,7 @@ CREATE INDEX fki_fk_personal_relationship_person_from ON public.inter_personal_r
 
 
 --
--- TOC entry 4428 (class 1259 OID 18216)
+-- TOC entry 4437 (class 1259 OID 18216)
 -- Name: fki_fk_personal_relationship_person_to; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5544,7 +5603,7 @@ CREATE INDEX fki_fk_personal_relationship_person_to ON public.inter_personal_rel
 
 
 --
--- TOC entry 4429 (class 1259 OID 18217)
+-- TOC entry 4438 (class 1259 OID 18217)
 -- Name: fki_fk_personal_relationship_personal_relationship_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5552,7 +5611,7 @@ CREATE INDEX fki_fk_personal_relationship_personal_relationship_type ON public.i
 
 
 --
--- TOC entry 4430 (class 1259 OID 18218)
+-- TOC entry 4439 (class 1259 OID 18218)
 -- Name: fki_fk_personal_relationship_proof; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5560,7 +5619,7 @@ CREATE INDEX fki_fk_personal_relationship_proof ON public.inter_personal_relatio
 
 
 --
--- TOC entry 4433 (class 1259 OID 18219)
+-- TOC entry 4442 (class 1259 OID 18219)
 -- Name: fki_fk_personal_relationship_type_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5568,7 +5627,7 @@ CREATE INDEX fki_fk_personal_relationship_type_id ON public.inter_personal_relat
 
 
 --
--- TOC entry 4556 (class 1259 OID 18220)
+-- TOC entry 4565 (class 1259 OID 18220)
 -- Name: fki_fk_placement_agency_id_organizational_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5576,7 +5635,7 @@ CREATE INDEX fki_fk_placement_agency_id_organizational_role ON public.placement_
 
 
 --
--- TOC entry 4560 (class 1259 OID 18221)
+-- TOC entry 4569 (class 1259 OID 18221)
 -- Name: fki_fk_political_entity_file_flag; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5584,7 +5643,7 @@ CREATE INDEX fki_fk_political_entity_file_flag ON public.political_entity USING 
 
 
 --
--- TOC entry 4566 (class 1259 OID 18222)
+-- TOC entry 4575 (class 1259 OID 18222)
 -- Name: fki_fk_poll_option_pole; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5592,7 +5651,7 @@ CREATE INDEX fki_fk_poll_option_pole ON public.poll_option USING btree (poll_que
 
 
 --
--- TOC entry 4563 (class 1259 OID 18223)
+-- TOC entry 4572 (class 1259 OID 18223)
 -- Name: fki_fk_poll_simple_text_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5600,7 +5659,7 @@ CREATE INDEX fki_fk_poll_simple_text_node ON public.poll USING btree (id);
 
 
 --
--- TOC entry 4576 (class 1259 OID 18224)
+-- TOC entry 4585 (class 1259 OID 18224)
 -- Name: fki_fk_poll_vote_user; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5608,7 +5667,7 @@ CREATE INDEX fki_fk_poll_vote_user ON public.poll_vote USING btree (user_id);
 
 
 --
--- TOC entry 4580 (class 1259 OID 18225)
+-- TOC entry 4589 (class 1259 OID 18225)
 -- Name: fki_fk_post_placement_agency_id_organizational_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5616,7 +5675,7 @@ CREATE INDEX fki_fk_post_placement_agency_id_organizational_role ON public.post_
 
 
 --
--- TOC entry 4585 (class 1259 OID 18226)
+-- TOC entry 4594 (class 1259 OID 18226)
 -- Name: fki_fk_profession_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5624,7 +5683,7 @@ CREATE INDEX fki_fk_profession_id ON public.profession USING btree (id);
 
 
 --
--- TOC entry 4588 (class 1259 OID 18227)
+-- TOC entry 4597 (class 1259 OID 18227)
 -- Name: fki_fk_professional_role_profession; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5632,7 +5691,7 @@ CREATE INDEX fki_fk_professional_role_profession ON public.professional_role USI
 
 
 --
--- TOC entry 4597 (class 1259 OID 18228)
+-- TOC entry 4606 (class 1259 OID 18228)
 -- Name: fki_fk_publisher_id_principal; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5640,7 +5699,7 @@ CREATE INDEX fki_fk_publisher_id_principal ON public.publisher USING btree (id);
 
 
 --
--- TOC entry 4763 (class 1259 OID 139274)
+-- TOC entry 4773 (class 1259 OID 139274)
 -- Name: fki_fk_publishing_user_group_id_user_group; Type: INDEX; Schema: public; Owner: niels
 --
 
@@ -5648,7 +5707,7 @@ CREATE INDEX fki_fk_publishing_user_group_id_user_group ON public.publishing_use
 
 
 --
--- TOC entry 4764 (class 1259 OID 139280)
+-- TOC entry 4774 (class 1259 OID 139280)
 -- Name: fki_fk_publishing_user_group_publication_status_default; Type: INDEX; Schema: public; Owner: niels
 --
 
@@ -5656,7 +5715,7 @@ CREATE INDEX fki_fk_publishing_user_group_publication_status_default ON public.p
 
 
 --
--- TOC entry 4619 (class 1259 OID 18229)
+-- TOC entry 4628 (class 1259 OID 18229)
 -- Name: fki_fk_region_continent; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5664,7 +5723,7 @@ CREATE INDEX fki_fk_region_continent ON public.second_level_global_region USING 
 
 
 --
--- TOC entry 4620 (class 1259 OID 18230)
+-- TOC entry 4629 (class 1259 OID 18230)
 -- Name: fki_fk_region_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5672,7 +5731,7 @@ CREATE INDEX fki_fk_region_id ON public.second_level_global_region USING btree (
 
 
 --
--- TOC entry 4605 (class 1259 OID 18231)
+-- TOC entry 4614 (class 1259 OID 18231)
 -- Name: fki_fk_representative_house_bill_bill_action_bill_action; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5680,7 +5739,7 @@ CREATE INDEX fki_fk_representative_house_bill_bill_action_bill_action ON public.
 
 
 --
--- TOC entry 4606 (class 1259 OID 18232)
+-- TOC entry 4615 (class 1259 OID 18232)
 -- Name: fki_fk_representative_house_bill_bill_action_house_bill; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5688,7 +5747,7 @@ CREATE INDEX fki_fk_representative_house_bill_bill_action_house_bill ON public.r
 
 
 --
--- TOC entry 4607 (class 1259 OID 18233)
+-- TOC entry 4616 (class 1259 OID 18233)
 -- Name: fki_fk_representative_house_bill_bill_action_representative; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5696,7 +5755,7 @@ CREATE INDEX fki_fk_representative_house_bill_bill_action_representative ON publ
 
 
 --
--- TOC entry 4602 (class 1259 OID 18234)
+-- TOC entry 4611 (class 1259 OID 18234)
 -- Name: fki_fk_representative_member_of_congress; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5704,7 +5763,7 @@ CREATE INDEX fki_fk_representative_member_of_congress ON public.representative U
 
 
 --
--- TOC entry 4612 (class 1259 OID 18235)
+-- TOC entry 4621 (class 1259 OID 18235)
 -- Name: fki_fk_review_id_simple_text_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5712,7 +5771,7 @@ CREATE INDEX fki_fk_review_id_simple_text_node ON public.review USING btree (id)
 
 
 --
--- TOC entry 4615 (class 1259 OID 18236)
+-- TOC entry 4624 (class 1259 OID 18236)
 -- Name: fki_fk_searchable_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5720,7 +5779,7 @@ CREATE INDEX fki_fk_searchable_node ON public.searchable USING btree (id);
 
 
 --
--- TOC entry 4627 (class 1259 OID 18237)
+-- TOC entry 4636 (class 1259 OID 18237)
 -- Name: fki_fk_senate_bill; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5728,7 +5787,7 @@ CREATE INDEX fki_fk_senate_bill ON public.senate_bill USING btree (id);
 
 
 --
--- TOC entry 4628 (class 1259 OID 18238)
+-- TOC entry 4637 (class 1259 OID 18238)
 -- Name: fki_fk_senate_bill_id_bill; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5736,7 +5795,7 @@ CREATE INDEX fki_fk_senate_bill_id_bill ON public.senate_bill USING btree (id);
 
 
 --
--- TOC entry 4631 (class 1259 OID 18239)
+-- TOC entry 4640 (class 1259 OID 18239)
 -- Name: fki_fk_senate_term_id_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5744,7 +5803,7 @@ CREATE INDEX fki_fk_senate_term_id_node ON public.senate_term USING btree (id);
 
 
 --
--- TOC entry 4632 (class 1259 OID 18240)
+-- TOC entry 4641 (class 1259 OID 18240)
 -- Name: fki_fk_senate_term_senator; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5752,7 +5811,7 @@ CREATE INDEX fki_fk_senate_term_senator ON public.senate_term USING btree (senat
 
 
 --
--- TOC entry 4633 (class 1259 OID 18241)
+-- TOC entry 4642 (class 1259 OID 18241)
 -- Name: fki_fk_senate_term_subdivision; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5760,7 +5819,7 @@ CREATE INDEX fki_fk_senate_term_subdivision ON public.senate_term USING btree (s
 
 
 --
--- TOC entry 4636 (class 1259 OID 18242)
+-- TOC entry 4645 (class 1259 OID 18242)
 -- Name: fki_fk_senator_member_of_congress; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5768,7 +5827,7 @@ CREATE INDEX fki_fk_senator_member_of_congress ON public.senator USING btree (id
 
 
 --
--- TOC entry 4639 (class 1259 OID 18243)
+-- TOC entry 4648 (class 1259 OID 18243)
 -- Name: fki_fk_senator_senate_bill_bill_action_bill_action; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5776,7 +5835,7 @@ CREATE INDEX fki_fk_senator_senate_bill_bill_action_bill_action ON public.senato
 
 
 --
--- TOC entry 4640 (class 1259 OID 18244)
+-- TOC entry 4649 (class 1259 OID 18244)
 -- Name: fki_fk_senator_senate_bill_bill_action_senate_bill; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5784,7 +5843,7 @@ CREATE INDEX fki_fk_senator_senate_bill_bill_action_senate_bill ON public.senato
 
 
 --
--- TOC entry 4641 (class 1259 OID 18245)
+-- TOC entry 4650 (class 1259 OID 18245)
 -- Name: fki_fk_senator_senate_bill_bill_action_senator; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5792,7 +5851,7 @@ CREATE INDEX fki_fk_senator_senate_bill_bill_action_senator ON public.senator_se
 
 
 --
--- TOC entry 4646 (class 1259 OID 18246)
+-- TOC entry 4655 (class 1259 OID 18246)
 -- Name: fki_fk_simple_text_node_id_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5800,7 +5859,7 @@ CREATE INDEX fki_fk_simple_text_node_id_node ON public.simple_text_node USING bt
 
 
 --
--- TOC entry 4649 (class 1259 OID 18247)
+-- TOC entry 4658 (class 1259 OID 18247)
 -- Name: fki_fk_single_question_poll_id_poll; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5808,7 +5867,7 @@ CREATE INDEX fki_fk_single_question_poll_id_poll ON public.single_question_poll 
 
 
 --
--- TOC entry 4650 (class 1259 OID 18248)
+-- TOC entry 4659 (class 1259 OID 18248)
 -- Name: fki_fk_single_question_poll_id_poll_question; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5816,7 +5875,7 @@ CREATE INDEX fki_fk_single_question_poll_id_poll_question ON public.single_quest
 
 
 --
--- TOC entry 4655 (class 1259 OID 18249)
+-- TOC entry 4664 (class 1259 OID 18249)
 -- Name: fki_fk_subdivision_country_subdivision; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5824,7 +5883,7 @@ CREATE INDEX fki_fk_subdivision_country_subdivision ON public.subdivision USING 
 
 
 --
--- TOC entry 4662 (class 1259 OID 18250)
+-- TOC entry 4671 (class 1259 OID 18250)
 -- Name: fki_fk_subgroup_tenant; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5832,7 +5891,7 @@ CREATE INDEX fki_fk_subgroup_tenant ON public.subgroup USING btree (tenant_id);
 
 
 --
--- TOC entry 4665 (class 1259 OID 18251)
+-- TOC entry 4674 (class 1259 OID 18251)
 -- Name: fki_fk_system_group_user_group; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5840,7 +5899,7 @@ CREATE INDEX fki_fk_system_group_user_group ON public.system_group USING btree (
 
 
 --
--- TOC entry 4677 (class 1259 OID 18252)
+-- TOC entry 4687 (class 1259 OID 18252)
 -- Name: fki_fk_tenant_file_file; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5848,7 +5907,7 @@ CREATE INDEX fki_fk_tenant_file_file ON public.tenant_file USING btree (file_id)
 
 
 --
--- TOC entry 4678 (class 1259 OID 18253)
+-- TOC entry 4688 (class 1259 OID 18253)
 -- Name: fki_fk_tenant_file_tenant; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5856,7 +5915,7 @@ CREATE INDEX fki_fk_tenant_file_tenant ON public.tenant_file USING btree (tenant
 
 
 --
--- TOC entry 4669 (class 1259 OID 139286)
+-- TOC entry 4678 (class 1259 OID 139286)
 -- Name: fki_fk_tenant_id_publishing_user_group; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5864,7 +5923,7 @@ CREATE INDEX fki_fk_tenant_id_publishing_user_group ON public.tenant USING btree
 
 
 --
--- TOC entry 4691 (class 1259 OID 18254)
+-- TOC entry 4701 (class 1259 OID 18254)
 -- Name: fki_fk_tenant_node_menu_item_id_menu_item; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5872,7 +5931,7 @@ CREATE INDEX fki_fk_tenant_node_menu_item_id_menu_item ON public.tenant_node_men
 
 
 --
--- TOC entry 4692 (class 1259 OID 18255)
+-- TOC entry 4702 (class 1259 OID 18255)
 -- Name: fki_fk_tenant_node_menu_item_tenant_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5880,7 +5939,7 @@ CREATE INDEX fki_fk_tenant_node_menu_item_tenant_node ON public.tenant_node_menu
 
 
 --
--- TOC entry 4681 (class 1259 OID 18256)
+-- TOC entry 4691 (class 1259 OID 18256)
 -- Name: fki_fk_tenant_node_publication_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5888,7 +5947,7 @@ CREATE INDEX fki_fk_tenant_node_publication_status ON public.tenant_node USING b
 
 
 --
--- TOC entry 4682 (class 1259 OID 18257)
+-- TOC entry 4692 (class 1259 OID 18257)
 -- Name: fki_fk_tenant_node_subgroup; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5896,7 +5955,7 @@ CREATE INDEX fki_fk_tenant_node_subgroup ON public.tenant_node USING btree (subg
 
 
 --
--- TOC entry 4683 (class 1259 OID 18258)
+-- TOC entry 4693 (class 1259 OID 18258)
 -- Name: fki_fk_tenant_node_tenant; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5904,7 +5963,7 @@ CREATE INDEX fki_fk_tenant_node_tenant ON public.tenant_node USING btree (tenant
 
 
 --
--- TOC entry 4670 (class 1259 OID 18259)
+-- TOC entry 4679 (class 1259 OID 18259)
 -- Name: fki_fk_tenant_user_group; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5912,7 +5971,7 @@ CREATE INDEX fki_fk_tenant_user_group ON public.tenant USING btree (id);
 
 
 --
--- TOC entry 4671 (class 1259 OID 18260)
+-- TOC entry 4680 (class 1259 OID 18260)
 -- Name: fki_fk_tenant_user_role_id_not_logged_in; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5920,7 +5979,7 @@ CREATE INDEX fki_fk_tenant_user_role_id_not_logged_in ON public.tenant USING btr
 
 
 --
--- TOC entry 4672 (class 1259 OID 18261)
+-- TOC entry 4681 (class 1259 OID 18261)
 -- Name: fki_fk_tenant_vocabulary_tagging; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5928,7 +5987,7 @@ CREATE INDEX fki_fk_tenant_vocabulary_tagging ON public.tenant USING btree (voca
 
 
 --
--- TOC entry 4704 (class 1259 OID 18262)
+-- TOC entry 4714 (class 1259 OID 18262)
 -- Name: fki_fk_term_hierarchy_parent; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5936,7 +5995,7 @@ CREATE INDEX fki_fk_term_hierarchy_parent ON public.term_hierarchy USING btree (
 
 
 --
--- TOC entry 4480 (class 1259 OID 18263)
+-- TOC entry 4489 (class 1259 OID 18263)
 -- Name: fki_fk_term_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5944,7 +6003,7 @@ CREATE INDEX fki_fk_term_id ON public.nameable USING btree (id);
 
 
 --
--- TOC entry 4697 (class 1259 OID 18264)
+-- TOC entry 4707 (class 1259 OID 18264)
 -- Name: fki_fk_term_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5952,7 +6011,7 @@ CREATE INDEX fki_fk_term_nameable ON public.term USING btree (nameable_id);
 
 
 --
--- TOC entry 4706 (class 1259 OID 18265)
+-- TOC entry 4716 (class 1259 OID 18265)
 -- Name: fki_fk_top_level_country_country; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5960,7 +6019,7 @@ CREATE INDEX fki_fk_top_level_country_country ON public.top_level_country USING 
 
 
 --
--- TOC entry 4707 (class 1259 OID 18266)
+-- TOC entry 4717 (class 1259 OID 18266)
 -- Name: fki_fk_top_level_country_global_region; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5968,7 +6027,7 @@ CREATE INDEX fki_fk_top_level_country_global_region ON public.top_level_country 
 
 
 --
--- TOC entry 4712 (class 1259 OID 18267)
+-- TOC entry 4722 (class 1259 OID 18267)
 -- Name: fki_fk_type_of_abuse_id_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5976,7 +6035,7 @@ CREATE INDEX fki_fk_type_of_abuse_id_nameable ON public.type_of_abuse USING btre
 
 
 --
--- TOC entry 4718 (class 1259 OID 18268)
+-- TOC entry 4728 (class 1259 OID 18268)
 -- Name: fki_fk_united_states_congressional_meetings_documentable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5984,7 +6043,7 @@ CREATE INDEX fki_fk_united_states_congressional_meetings_documentable ON public.
 
 
 --
--- TOC entry 4719 (class 1259 OID 18269)
+-- TOC entry 4729 (class 1259 OID 18269)
 -- Name: fki_fk_united_states_congressional_meetings_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5992,7 +6051,7 @@ CREATE INDEX fki_fk_united_states_congressional_meetings_nameable ON public.unit
 
 
 --
--- TOC entry 4729 (class 1259 OID 18270)
+-- TOC entry 4739 (class 1259 OID 18270)
 -- Name: fki_fk_united_states_politcal_party_affiliation_united_states_p; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6000,7 +6059,7 @@ CREATE INDEX fki_fk_united_states_politcal_party_affiliation_united_states_p ON 
 
 
 --
--- TOC entry 4730 (class 1259 OID 18271)
+-- TOC entry 4740 (class 1259 OID 18271)
 -- Name: fki_fk_united_states_political_party_affiliation_id_nameable; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6008,7 +6067,7 @@ CREATE INDEX fki_fk_united_states_political_party_affiliation_id_nameable ON pub
 
 
 --
--- TOC entry 4726 (class 1259 OID 18272)
+-- TOC entry 4736 (class 1259 OID 18272)
 -- Name: fki_fk_united_states_political_party_id_organization; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6016,7 +6075,7 @@ CREATE INDEX fki_fk_united_states_political_party_id_organization ON public.unit
 
 
 --
--- TOC entry 4733 (class 1259 OID 18273)
+-- TOC entry 4743 (class 1259 OID 18273)
 -- Name: fki_fk_user_id_access_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6024,7 +6083,7 @@ CREATE INDEX fki_fk_user_id_access_role ON public."user" USING btree (id);
 
 
 --
--- TOC entry 4746 (class 1259 OID 18274)
+-- TOC entry 4756 (class 1259 OID 18274)
 -- Name: fki_fk_user_role_user_group; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6032,7 +6091,7 @@ CREATE INDEX fki_fk_user_role_user_group ON public.user_role USING btree (user_g
 
 
 --
--- TOC entry 4741 (class 1259 OID 18275)
+-- TOC entry 4751 (class 1259 OID 18275)
 -- Name: fki_fk_user_role_user_user; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6040,7 +6099,7 @@ CREATE INDEX fki_fk_user_role_user_user ON public.user_group_user_role_user USIN
 
 
 --
--- TOC entry 4742 (class 1259 OID 18276)
+-- TOC entry 4752 (class 1259 OID 18276)
 -- Name: fki_fk_user_role_user_user_group; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6048,7 +6107,7 @@ CREATE INDEX fki_fk_user_role_user_user_group ON public.user_group_user_role_use
 
 
 --
--- TOC entry 4743 (class 1259 OID 18277)
+-- TOC entry 4753 (class 1259 OID 18277)
 -- Name: fki_fk_user_role_user_user_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6056,7 +6115,7 @@ CREATE INDEX fki_fk_user_role_user_user_role ON public.user_group_user_role_user
 
 
 --
--- TOC entry 4757 (class 1259 OID 18278)
+-- TOC entry 4767 (class 1259 OID 18278)
 -- Name: fki_fk_wrongful_medication_case_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6064,7 +6123,7 @@ CREATE INDEX fki_fk_wrongful_medication_case_id ON public.wrongful_medication_ca
 
 
 --
--- TOC entry 4760 (class 1259 OID 18279)
+-- TOC entry 4770 (class 1259 OID 18279)
 -- Name: fki_fk_wrongful_removal_case_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6072,7 +6131,7 @@ CREATE INDEX fki_fk_wrongful_removal_case_id ON public.wrongful_removal_case USI
 
 
 --
--- TOC entry 4485 (class 1259 OID 18280)
+-- TOC entry 4494 (class 1259 OID 18280)
 -- Name: fki_g; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6080,7 +6139,7 @@ CREATE INDEX fki_g ON public.node USING btree (node_type_id);
 
 
 --
--- TOC entry 4553 (class 1259 OID 18281)
+-- TOC entry 4562 (class 1259 OID 18281)
 -- Name: fki_h; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6088,7 +6147,7 @@ CREATE INDEX fki_h ON public.person_organization_relation_type USING btree (id);
 
 
 --
--- TOC entry 4418 (class 1259 OID 18282)
+-- TOC entry 4427 (class 1259 OID 18282)
 -- Name: fki_inter_organizational_relation_id_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6096,7 +6155,7 @@ CREATE INDEX fki_inter_organizational_relation_id_node ON public.inter_organizat
 
 
 --
--- TOC entry 4422 (class 1259 OID 18283)
+-- TOC entry 4431 (class 1259 OID 18283)
 -- Name: fki_j; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6104,7 +6163,7 @@ CREATE INDEX fki_j ON public.inter_organizational_relation_type USING btree (id)
 
 
 --
--- TOC entry 4419 (class 1259 OID 18284)
+-- TOC entry 4428 (class 1259 OID 18284)
 -- Name: fki_k; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6112,7 +6171,7 @@ CREATE INDEX fki_k ON public.inter_organizational_relation USING btree (id);
 
 
 --
--- TOC entry 4453 (class 1259 OID 18285)
+-- TOC entry 4462 (class 1259 OID 18285)
 -- Name: fki_l; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6120,7 +6179,7 @@ CREATE INDEX fki_l ON public.locatable USING btree (id);
 
 
 --
--- TOC entry 4522 (class 1259 OID 18286)
+-- TOC entry 4531 (class 1259 OID 18286)
 -- Name: fki_o; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6128,7 +6187,7 @@ CREATE INDEX fki_o ON public.owner USING btree (id);
 
 
 --
--- TOC entry 4577 (class 1259 OID 18287)
+-- TOC entry 4586 (class 1259 OID 18287)
 -- Name: fki_p; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6136,7 +6195,7 @@ CREATE INDEX fki_p ON public.poll_vote USING btree (poll_id, delta);
 
 
 --
--- TOC entry 4549 (class 1259 OID 18288)
+-- TOC entry 4558 (class 1259 OID 18288)
 -- Name: fki_person_collective_relation_collective; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6144,7 +6203,7 @@ CREATE INDEX fki_person_collective_relation_collective ON public.person_organiza
 
 
 --
--- TOC entry 4550 (class 1259 OID 18289)
+-- TOC entry 4559 (class 1259 OID 18289)
 -- Name: fki_person_organization_relation_political_entity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6152,7 +6211,7 @@ CREATE INDEX fki_person_organization_relation_political_entity ON public.person_
 
 
 --
--- TOC entry 4684 (class 1259 OID 18290)
+-- TOC entry 4694 (class 1259 OID 18290)
 -- Name: fki_r; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6160,7 +6219,15 @@ CREATE INDEX fki_r ON public.tenant_node USING btree (node_id);
 
 
 --
--- TOC entry 4569 (class 1259 OID 18291)
+-- TOC entry 4682 (class 1259 OID 262150)
+-- Name: fki_tenant_country_default; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_tenant_country_default ON public.tenant USING btree (country_id_default);
+
+
+--
+-- TOC entry 4578 (class 1259 OID 18291)
 -- Name: fki_tk_poll_question_id_simple_text_node; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6168,7 +6235,7 @@ CREATE INDEX fki_tk_poll_question_id_simple_text_node ON public.poll_question US
 
 
 --
--- TOC entry 4734 (class 1259 OID 18292)
+-- TOC entry 4744 (class 1259 OID 18292)
 -- Name: fki_u; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6176,7 +6243,7 @@ CREATE INDEX fki_u ON public."user" USING btree (id);
 
 
 --
--- TOC entry 4747 (class 1259 OID 18293)
+-- TOC entry 4757 (class 1259 OID 18293)
 -- Name: fki_user_role_access_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6184,7 +6251,7 @@ CREATE INDEX fki_user_role_access_role ON public.user_role USING btree (id);
 
 
 --
--- TOC entry 4282 (class 1259 OID 18294)
+-- TOC entry 4291 (class 1259 OID 18294)
 -- Name: fki_v; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6192,7 +6259,7 @@ CREATE INDEX fki_v ON public.country USING btree (hague_status_id);
 
 
 --
--- TOC entry 4300 (class 1259 OID 18295)
+-- TOC entry 4309 (class 1259 OID 18295)
 -- Name: idx_country_year; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6200,7 +6267,7 @@ CREATE INDEX idx_country_year ON public.country_report USING btree (country_id, 
 
 
 --
--- TOC entry 4705 (class 1259 OID 18296)
+-- TOC entry 4715 (class 1259 OID 18296)
 -- Name: idx_term_id_child; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6208,7 +6275,7 @@ CREATE INDEX idx_term_id_child ON public.term_hierarchy USING btree (term_id_chi
 
 
 --
--- TOC entry 4488 (class 1259 OID 18297)
+-- TOC entry 4497 (class 1259 OID 18297)
 -- Name: node_trgm_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6216,7 +6283,7 @@ CREATE INDEX node_trgm_idx ON public.node USING gist (title public.gist_trgm_ops
 
 
 --
--- TOC entry 4618 (class 1259 OID 18298)
+-- TOC entry 4627 (class 1259 OID 18298)
 -- Name: searchable_tsvector_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6224,7 +6291,7 @@ CREATE INDEX searchable_tsvector_idx ON public.searchable USING gin (tsvector);
 
 
 --
--- TOC entry 4767 (class 2606 OID 18299)
+-- TOC entry 4781 (class 2606 OID 18299)
 -- Name: abuse_case fk_abuse_case_child_placement_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6233,7 +6300,7 @@ ALTER TABLE ONLY public.abuse_case
 
 
 --
--- TOC entry 4768 (class 2606 OID 18304)
+-- TOC entry 4782 (class 2606 OID 18304)
 -- Name: abuse_case fk_abuse_case_family_size; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6242,7 +6309,7 @@ ALTER TABLE ONLY public.abuse_case
 
 
 --
--- TOC entry 4769 (class 2606 OID 18309)
+-- TOC entry 4783 (class 2606 OID 18309)
 -- Name: abuse_case fk_abuse_case_id_case; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6251,7 +6318,7 @@ ALTER TABLE ONLY public.abuse_case
 
 
 --
--- TOC entry 4771 (class 2606 OID 18314)
+-- TOC entry 4785 (class 2606 OID 18314)
 -- Name: access_role_privilege fk_access_role_privilege_access_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6260,7 +6327,7 @@ ALTER TABLE ONLY public.access_role_privilege
 
 
 --
--- TOC entry 4772 (class 2606 OID 18319)
+-- TOC entry 4786 (class 2606 OID 18319)
 -- Name: access_role_privilege fk_access_role_privilege_action; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6269,7 +6336,7 @@ ALTER TABLE ONLY public.access_role_privilege
 
 
 --
--- TOC entry 4770 (class 2606 OID 18324)
+-- TOC entry 4784 (class 2606 OID 18324)
 -- Name: access_role fk_access_role_user_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6278,7 +6345,7 @@ ALTER TABLE ONLY public.access_role
 
 
 --
--- TOC entry 4773 (class 2606 OID 18329)
+-- TOC entry 4787 (class 2606 OID 18329)
 -- Name: act fk_act_id_documentable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6287,7 +6354,7 @@ ALTER TABLE ONLY public.act
 
 
 --
--- TOC entry 4774 (class 2606 OID 18334)
+-- TOC entry 4788 (class 2606 OID 18334)
 -- Name: act fk_act_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6296,7 +6363,7 @@ ALTER TABLE ONLY public.act
 
 
 --
--- TOC entry 4775 (class 2606 OID 18339)
+-- TOC entry 4789 (class 2606 OID 18339)
 -- Name: action_menu_item fk_action_menu_item_action; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6305,7 +6372,7 @@ ALTER TABLE ONLY public.action_menu_item
 
 
 --
--- TOC entry 4776 (class 2606 OID 18344)
+-- TOC entry 4790 (class 2606 OID 18344)
 -- Name: action_menu_item fk_action_menu_item_id_menu_item; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6314,7 +6381,7 @@ ALTER TABLE ONLY public.action_menu_item
 
 
 --
--- TOC entry 4777 (class 2606 OID 18349)
+-- TOC entry 4791 (class 2606 OID 18349)
 -- Name: administrator_role fk_administor_role_user_group; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6323,7 +6390,7 @@ ALTER TABLE ONLY public.administrator_role
 
 
 --
--- TOC entry 4778 (class 2606 OID 18354)
+-- TOC entry 4792 (class 2606 OID 18354)
 -- Name: administrator_role fk_administrator_role_user_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6332,7 +6399,7 @@ ALTER TABLE ONLY public.administrator_role
 
 
 --
--- TOC entry 4779 (class 2606 OID 18359)
+-- TOC entry 4793 (class 2606 OID 18359)
 -- Name: adoption_lawyer fk_adoption_lawyer_id_professional_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6341,7 +6408,7 @@ ALTER TABLE ONLY public.adoption_lawyer
 
 
 --
--- TOC entry 4780 (class 2606 OID 18364)
+-- TOC entry 4794 (class 2606 OID 18364)
 -- Name: article fk_article_node_id_simple_text_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6350,7 +6417,7 @@ ALTER TABLE ONLY public.article
 
 
 --
--- TOC entry 4781 (class 2606 OID 18369)
+-- TOC entry 4795 (class 2606 OID 18369)
 -- Name: attachment_therapist fk_attachment_therapist_id_professional_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6359,7 +6426,7 @@ ALTER TABLE ONLY public.attachment_therapist
 
 
 --
--- TOC entry 4782 (class 2606 OID 18374)
+-- TOC entry 4796 (class 2606 OID 18374)
 -- Name: basic_action fk_basic_action_id_action; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6368,7 +6435,7 @@ ALTER TABLE ONLY public.basic_action
 
 
 --
--- TOC entry 4783 (class 2606 OID 18379)
+-- TOC entry 4797 (class 2606 OID 18379)
 -- Name: basic_country fk_basic_country_id_top_level_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6377,7 +6444,7 @@ ALTER TABLE ONLY public.basic_country
 
 
 --
--- TOC entry 4784 (class 2606 OID 18384)
+-- TOC entry 4798 (class 2606 OID 18384)
 -- Name: basic_first_and_second_level_subdivision fk_basic_first_and_second_level_subdivision_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6386,7 +6453,7 @@ ALTER TABLE ONLY public.basic_first_and_second_level_subdivision
 
 
 --
--- TOC entry 4785 (class 2606 OID 18389)
+-- TOC entry 4799 (class 2606 OID 18389)
 -- Name: basic_nameable fk_basic_nameable_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6395,7 +6462,7 @@ ALTER TABLE ONLY public.basic_nameable
 
 
 --
--- TOC entry 4786 (class 2606 OID 18394)
+-- TOC entry 4800 (class 2606 OID 18394)
 -- Name: basic_second_level_subdivision fk_basic_second_level_subdivision_id_1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6404,7 +6471,7 @@ ALTER TABLE ONLY public.basic_second_level_subdivision
 
 
 --
--- TOC entry 4787 (class 2606 OID 18399)
+-- TOC entry 4801 (class 2606 OID 18399)
 -- Name: basic_second_level_subdivision fk_basic_second_level_subdivision_intermediate_level_subdivisio; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6413,7 +6480,7 @@ ALTER TABLE ONLY public.basic_second_level_subdivision
 
 
 --
--- TOC entry 4790 (class 2606 OID 18404)
+-- TOC entry 4804 (class 2606 OID 18404)
 -- Name: bill_action_type fk_bill_action_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6422,7 +6489,7 @@ ALTER TABLE ONLY public.bill_action_type
 
 
 --
--- TOC entry 4788 (class 2606 OID 18409)
+-- TOC entry 4802 (class 2606 OID 18409)
 -- Name: bill fk_bill_id_documentable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6431,7 +6498,7 @@ ALTER TABLE ONLY public.bill
 
 
 --
--- TOC entry 4789 (class 2606 OID 18414)
+-- TOC entry 4803 (class 2606 OID 18414)
 -- Name: bill fk_bill_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6440,7 +6507,7 @@ ALTER TABLE ONLY public.bill
 
 
 --
--- TOC entry 4791 (class 2606 OID 18419)
+-- TOC entry 4805 (class 2606 OID 18419)
 -- Name: binding_country fk_binding_country_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6449,7 +6516,7 @@ ALTER TABLE ONLY public.binding_country
 
 
 --
--- TOC entry 4792 (class 2606 OID 18424)
+-- TOC entry 4806 (class 2606 OID 18424)
 -- Name: blog_post fk_blog_post_id_simple_text_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6458,7 +6525,7 @@ ALTER TABLE ONLY public.blog_post
 
 
 --
--- TOC entry 4793 (class 2606 OID 18429)
+-- TOC entry 4807 (class 2606 OID 18429)
 -- Name: bottom_level_subdivision fk_bottom_level_subdivision_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6467,7 +6534,7 @@ ALTER TABLE ONLY public.bottom_level_subdivision
 
 
 --
--- TOC entry 4794 (class 2606 OID 18434)
+-- TOC entry 4808 (class 2606 OID 18434)
 -- Name: bound_country fk_bound_country_binding_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6476,7 +6543,7 @@ ALTER TABLE ONLY public.bound_country
 
 
 --
--- TOC entry 4795 (class 2606 OID 18439)
+-- TOC entry 4809 (class 2606 OID 18439)
 -- Name: bound_country fk_bound_country_id_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6485,7 +6552,7 @@ ALTER TABLE ONLY public.bound_country
 
 
 --
--- TOC entry 4796 (class 2606 OID 18444)
+-- TOC entry 4810 (class 2606 OID 18444)
 -- Name: bound_country fk_bound_country_id_iso_coded_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6494,7 +6561,7 @@ ALTER TABLE ONLY public.bound_country
 
 
 --
--- TOC entry 4800 (class 2606 OID 18449)
+-- TOC entry 4814 (class 2606 OID 18449)
 -- Name: case_case_parties fk_case_case_parties_case; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6503,7 +6570,7 @@ ALTER TABLE ONLY public.case_case_parties
 
 
 --
--- TOC entry 4801 (class 2606 OID 18454)
+-- TOC entry 4815 (class 2606 OID 18454)
 -- Name: case_case_parties fk_case_case_parties_case_parties; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6512,7 +6579,7 @@ ALTER TABLE ONLY public.case_case_parties
 
 
 --
--- TOC entry 4802 (class 2606 OID 18459)
+-- TOC entry 4816 (class 2606 OID 18459)
 -- Name: case_case_parties fk_case_case_parties_case_party_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6521,7 +6588,7 @@ ALTER TABLE ONLY public.case_case_parties
 
 
 --
--- TOC entry 4797 (class 2606 OID 18464)
+-- TOC entry 4811 (class 2606 OID 18464)
 -- Name: case fk_case_id_documentable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6530,7 +6597,7 @@ ALTER TABLE ONLY public."case"
 
 
 --
--- TOC entry 4798 (class 2606 OID 18469)
+-- TOC entry 4812 (class 2606 OID 18469)
 -- Name: case fk_case_id_locatable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6539,7 +6606,7 @@ ALTER TABLE ONLY public."case"
 
 
 --
--- TOC entry 4799 (class 2606 OID 18474)
+-- TOC entry 4813 (class 2606 OID 18474)
 -- Name: case fk_case_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6548,7 +6615,7 @@ ALTER TABLE ONLY public."case"
 
 
 --
--- TOC entry 4803 (class 2606 OID 18479)
+-- TOC entry 4817 (class 2606 OID 18479)
 -- Name: case_parties_organization fk_case_parties_organization_case_parties; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6557,7 +6624,7 @@ ALTER TABLE ONLY public.case_parties_organization
 
 
 --
--- TOC entry 4804 (class 2606 OID 18484)
+-- TOC entry 4818 (class 2606 OID 18484)
 -- Name: case_parties_organization fk_case_parties_organization_organization; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6566,7 +6633,7 @@ ALTER TABLE ONLY public.case_parties_organization
 
 
 --
--- TOC entry 4805 (class 2606 OID 18489)
+-- TOC entry 4819 (class 2606 OID 18489)
 -- Name: case_parties_person fk_case_parties_person_case_parties; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6575,7 +6642,7 @@ ALTER TABLE ONLY public.case_parties_person
 
 
 --
--- TOC entry 4806 (class 2606 OID 18494)
+-- TOC entry 4820 (class 2606 OID 18494)
 -- Name: case_parties_person fk_case_parties_person_person; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6584,7 +6651,7 @@ ALTER TABLE ONLY public.case_parties_person
 
 
 --
--- TOC entry 4807 (class 2606 OID 18499)
+-- TOC entry 4821 (class 2606 OID 18499)
 -- Name: case_party_type fk_case_party_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6593,7 +6660,7 @@ ALTER TABLE ONLY public.case_party_type
 
 
 --
--- TOC entry 4809 (class 2606 OID 18504)
+-- TOC entry 4823 (class 2606 OID 18504)
 -- Name: case_type_case_party_type fk_case_type_case_party_type_case_party_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6602,7 +6669,7 @@ ALTER TABLE ONLY public.case_type_case_party_type
 
 
 --
--- TOC entry 4810 (class 2606 OID 18509)
+-- TOC entry 4824 (class 2606 OID 18509)
 -- Name: case_type_case_party_type fk_case_type_case_party_type_case_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6611,7 +6678,7 @@ ALTER TABLE ONLY public.case_type_case_party_type
 
 
 --
--- TOC entry 4808 (class 2606 OID 18514)
+-- TOC entry 4822 (class 2606 OID 18514)
 -- Name: case_type fk_case_type_id_node_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6620,7 +6687,7 @@ ALTER TABLE ONLY public.case_type
 
 
 --
--- TOC entry 4811 (class 2606 OID 18519)
+-- TOC entry 4825 (class 2606 OID 18519)
 -- Name: child_placement_type fk_child_placement_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6629,7 +6696,7 @@ ALTER TABLE ONLY public.child_placement_type
 
 
 --
--- TOC entry 4812 (class 2606 OID 18524)
+-- TOC entry 4826 (class 2606 OID 18524)
 -- Name: child_trafficking_case fk_child_trafficking_case_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6638,7 +6705,7 @@ ALTER TABLE ONLY public.child_trafficking_case
 
 
 --
--- TOC entry 4813 (class 2606 OID 18529)
+-- TOC entry 4827 (class 2606 OID 18529)
 -- Name: child_trafficking_case fk_childtrafficking_case_country_from; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6647,7 +6714,7 @@ ALTER TABLE ONLY public.child_trafficking_case
 
 
 --
--- TOC entry 4814 (class 2606 OID 18534)
+-- TOC entry 4828 (class 2606 OID 18534)
 -- Name: coerced_adoption_case fk_coerced_adoption_case_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6656,7 +6723,7 @@ ALTER TABLE ONLY public.coerced_adoption_case
 
 
 --
--- TOC entry 4815 (class 2606 OID 18539)
+-- TOC entry 4829 (class 2606 OID 18539)
 -- Name: collective fk_collective_id_publisher; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6665,7 +6732,7 @@ ALTER TABLE ONLY public.collective
 
 
 --
--- TOC entry 4816 (class 2606 OID 18544)
+-- TOC entry 4830 (class 2606 OID 18544)
 -- Name: collective_user fk_collective_user_collective; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6674,7 +6741,7 @@ ALTER TABLE ONLY public.collective_user
 
 
 --
--- TOC entry 4817 (class 2606 OID 18549)
+-- TOC entry 4831 (class 2606 OID 18549)
 -- Name: collective_user fk_collective_user_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6683,7 +6750,7 @@ ALTER TABLE ONLY public.collective_user
 
 
 --
--- TOC entry 4818 (class 2606 OID 18554)
+-- TOC entry 4832 (class 2606 OID 18554)
 -- Name: comment fk_comment_comment_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6692,7 +6759,7 @@ ALTER TABLE ONLY public.comment
 
 
 --
--- TOC entry 4819 (class 2606 OID 18559)
+-- TOC entry 4833 (class 2606 OID 18559)
 -- Name: comment fk_comment_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6701,7 +6768,7 @@ ALTER TABLE ONLY public.comment
 
 
 --
--- TOC entry 4820 (class 2606 OID 18564)
+-- TOC entry 4834 (class 2606 OID 18564)
 -- Name: comment fk_comment_publisher; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6710,7 +6777,7 @@ ALTER TABLE ONLY public.comment
 
 
 --
--- TOC entry 4821 (class 2606 OID 18569)
+-- TOC entry 4835 (class 2606 OID 18569)
 -- Name: congressional_term fk_congressional_term_documentable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6719,7 +6786,7 @@ ALTER TABLE ONLY public.congressional_term
 
 
 --
--- TOC entry 4822 (class 2606 OID 18574)
+-- TOC entry 4836 (class 2606 OID 18574)
 -- Name: congressional_term_political_party_affiliation fk_congressional_term_political_party_affiliation_id_documentab; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6728,7 +6795,7 @@ ALTER TABLE ONLY public.congressional_term_political_party_affiliation
 
 
 --
--- TOC entry 4823 (class 2606 OID 18579)
+-- TOC entry 4837 (class 2606 OID 18579)
 -- Name: congressional_term_political_party_affiliation fk_congressional_term_political_party_affiliation_united_states; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6737,7 +6804,7 @@ ALTER TABLE ONLY public.congressional_term_political_party_affiliation
 
 
 --
--- TOC entry 4824 (class 2606 OID 18584)
+-- TOC entry 4838 (class 2606 OID 18584)
 -- Name: content_sharing_group fk_content_sharing_group_id_owner; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6746,7 +6813,7 @@ ALTER TABLE ONLY public.content_sharing_group
 
 
 --
--- TOC entry 4827 (class 2606 OID 18589)
+-- TOC entry 4841 (class 2606 OID 18589)
 -- Name: country_and_first_and_bottom_level_subdivision fk_country_and_first_and_bottom_level_subdivision_id_1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6755,7 +6822,7 @@ ALTER TABLE ONLY public.country_and_first_and_bottom_level_subdivision
 
 
 --
--- TOC entry 4828 (class 2606 OID 18594)
+-- TOC entry 4842 (class 2606 OID 18594)
 -- Name: country_and_first_and_bottom_level_subdivision fk_country_and_first_and_bottom_level_subdivision_id_2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6764,7 +6831,7 @@ ALTER TABLE ONLY public.country_and_first_and_bottom_level_subdivision
 
 
 --
--- TOC entry 4829 (class 2606 OID 18599)
+-- TOC entry 4843 (class 2606 OID 18599)
 -- Name: country_and_first_and_second_level_subdivision fk_country_and_first_and_second_level_subdivision_id_country_an; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6773,7 +6840,7 @@ ALTER TABLE ONLY public.country_and_first_and_second_level_subdivision
 
 
 --
--- TOC entry 4830 (class 2606 OID 18604)
+-- TOC entry 4844 (class 2606 OID 18604)
 -- Name: country_and_first_and_second_level_subdivision fk_country_and_first_and_second_level_subdivision_id_first_and_; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6782,7 +6849,7 @@ ALTER TABLE ONLY public.country_and_first_and_second_level_subdivision
 
 
 --
--- TOC entry 4831 (class 2606 OID 18609)
+-- TOC entry 4845 (class 2606 OID 18609)
 -- Name: country_and_first_level_subdivision fk_country_and_first_level_subdivision_id_iso_coded_first_level; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6791,7 +6858,7 @@ ALTER TABLE ONLY public.country_and_first_level_subdivision
 
 
 --
--- TOC entry 4832 (class 2606 OID 18614)
+-- TOC entry 4846 (class 2606 OID 18614)
 -- Name: country_and_first_level_subdivision fk_country_and_first_level_subdivision_id_top_level_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6800,7 +6867,7 @@ ALTER TABLE ONLY public.country_and_first_level_subdivision
 
 
 --
--- TOC entry 4833 (class 2606 OID 18619)
+-- TOC entry 4847 (class 2606 OID 18619)
 -- Name: country_and_intermediate_level_subdivision fk_country_and_intermediate_level_subdivision_1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6809,7 +6876,7 @@ ALTER TABLE ONLY public.country_and_intermediate_level_subdivision
 
 
 --
--- TOC entry 4834 (class 2606 OID 18624)
+-- TOC entry 4848 (class 2606 OID 18624)
 -- Name: country_and_intermediate_level_subdivision fk_country_and_intermediate_level_subdivision_2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6818,7 +6885,7 @@ ALTER TABLE ONLY public.country_and_intermediate_level_subdivision
 
 
 --
--- TOC entry 4825 (class 2606 OID 18629)
+-- TOC entry 4839 (class 2606 OID 18629)
 -- Name: country fk_country_hague_status; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6827,7 +6894,7 @@ ALTER TABLE ONLY public.country
 
 
 --
--- TOC entry 4826 (class 2606 OID 18634)
+-- TOC entry 4840 (class 2606 OID 18634)
 -- Name: country fk_country_id_political_entity; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6836,7 +6903,7 @@ ALTER TABLE ONLY public.country
 
 
 --
--- TOC entry 4835 (class 2606 OID 18639)
+-- TOC entry 4849 (class 2606 OID 18639)
 -- Name: country_report fk_country_report_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6845,7 +6912,7 @@ ALTER TABLE ONLY public.country_report
 
 
 --
--- TOC entry 4836 (class 2606 OID 18644)
+-- TOC entry 4850 (class 2606 OID 18644)
 -- Name: country_subdivision_type fk_country_subdivision_type_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6854,7 +6921,7 @@ ALTER TABLE ONLY public.country_subdivision_type
 
 
 --
--- TOC entry 4837 (class 2606 OID 18649)
+-- TOC entry 4851 (class 2606 OID 18649)
 -- Name: country_subdivision_type fk_country_subdivision_type_subdivision_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6863,7 +6930,7 @@ ALTER TABLE ONLY public.country_subdivision_type
 
 
 --
--- TOC entry 4838 (class 2606 OID 18654)
+-- TOC entry 4852 (class 2606 OID 18654)
 -- Name: create_node_action fk_create_node_action_id_action; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6872,7 +6939,7 @@ ALTER TABLE ONLY public.create_node_action
 
 
 --
--- TOC entry 4839 (class 2606 OID 18659)
+-- TOC entry 4853 (class 2606 OID 18659)
 -- Name: create_node_action fk_create_node_action_node_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6881,7 +6948,7 @@ ALTER TABLE ONLY public.create_node_action
 
 
 --
--- TOC entry 4840 (class 2606 OID 18664)
+-- TOC entry 4854 (class 2606 OID 18664)
 -- Name: delete_node_action fk_delete_node_action_id_access_privilege; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6890,7 +6957,7 @@ ALTER TABLE ONLY public.delete_node_action
 
 
 --
--- TOC entry 4841 (class 2606 OID 18669)
+-- TOC entry 4855 (class 2606 OID 18669)
 -- Name: delete_node_action fk_delete_node_action_node_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6899,7 +6966,7 @@ ALTER TABLE ONLY public.delete_node_action
 
 
 --
--- TOC entry 4842 (class 2606 OID 18674)
+-- TOC entry 4856 (class 2606 OID 18674)
 -- Name: denomination fk_denomination_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6908,7 +6975,7 @@ ALTER TABLE ONLY public.denomination
 
 
 --
--- TOC entry 4843 (class 2606 OID 18679)
+-- TOC entry 4857 (class 2606 OID 18679)
 -- Name: deportation_case fk_deportation_case_country_id_to; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6917,7 +6984,7 @@ ALTER TABLE ONLY public.deportation_case
 
 
 --
--- TOC entry 4844 (class 2606 OID 18684)
+-- TOC entry 4858 (class 2606 OID 18684)
 -- Name: deportation_case fk_deportation_case_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6926,7 +6993,7 @@ ALTER TABLE ONLY public.deportation_case
 
 
 --
--- TOC entry 4845 (class 2606 OID 18689)
+-- TOC entry 4859 (class 2606 OID 18689)
 -- Name: deportation_case fk_deportation_case_subdivision_id_from; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6935,7 +7002,7 @@ ALTER TABLE ONLY public.deportation_case
 
 
 --
--- TOC entry 4846 (class 2606 OID 18694)
+-- TOC entry 4860 (class 2606 OID 18694)
 -- Name: discussion fk_discussion_id_simple_text_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6944,7 +7011,7 @@ ALTER TABLE ONLY public.discussion
 
 
 --
--- TOC entry 4847 (class 2606 OID 18699)
+-- TOC entry 4861 (class 2606 OID 18699)
 -- Name: disrupted_placement_case fk_disrupted_placement_case_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6953,7 +7020,7 @@ ALTER TABLE ONLY public.disrupted_placement_case
 
 
 --
--- TOC entry 4848 (class 2606 OID 18704)
+-- TOC entry 4862 (class 2606 OID 18704)
 -- Name: document fk_document_document_type_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6962,7 +7029,7 @@ ALTER TABLE ONLY public.document
 
 
 --
--- TOC entry 4849 (class 2606 OID 18709)
+-- TOC entry 4863 (class 2606 OID 18709)
 -- Name: document fk_document_id_searchable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6971,7 +7038,7 @@ ALTER TABLE ONLY public.document
 
 
 --
--- TOC entry 4850 (class 2606 OID 18714)
+-- TOC entry 4864 (class 2606 OID 18714)
 -- Name: document_type fk_document_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6980,7 +7047,7 @@ ALTER TABLE ONLY public.document_type
 
 
 --
--- TOC entry 4852 (class 2606 OID 18719)
+-- TOC entry 4866 (class 2606 OID 18719)
 -- Name: documentable_document fk_documentable_document_document; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6989,7 +7056,7 @@ ALTER TABLE ONLY public.documentable_document
 
 
 --
--- TOC entry 4853 (class 2606 OID 18724)
+-- TOC entry 4867 (class 2606 OID 18724)
 -- Name: documentable_document fk_documentable_document_documentable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6998,7 +7065,7 @@ ALTER TABLE ONLY public.documentable_document
 
 
 --
--- TOC entry 4851 (class 2606 OID 18729)
+-- TOC entry 4865 (class 2606 OID 18729)
 -- Name: documentable fk_documentable_id_searchable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7007,7 +7074,7 @@ ALTER TABLE ONLY public.documentable
 
 
 --
--- TOC entry 4854 (class 2606 OID 18734)
+-- TOC entry 4868 (class 2606 OID 18734)
 -- Name: edit_node_action fk_edit_node_action_id_action; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7016,7 +7083,7 @@ ALTER TABLE ONLY public.edit_node_action
 
 
 --
--- TOC entry 4855 (class 2606 OID 18739)
+-- TOC entry 4869 (class 2606 OID 18739)
 -- Name: edit_node_action fk_edit_node_action_node_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7025,7 +7092,25 @@ ALTER TABLE ONLY public.edit_node_action
 
 
 --
--- TOC entry 4856 (class 2606 OID 18744)
+-- TOC entry 5044 (class 2606 OID 192736)
+-- Name: edit_own_node_action fk_edit_own_node_action_id_action; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.edit_own_node_action
+    ADD CONSTRAINT fk_edit_own_node_action_id_action FOREIGN KEY (id) REFERENCES public.action(id);
+
+
+--
+-- TOC entry 5045 (class 2606 OID 192741)
+-- Name: edit_own_node_action fk_edit_own_node_action_node_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.edit_own_node_action
+    ADD CONSTRAINT fk_edit_own_node_action_node_type FOREIGN KEY (node_type_id) REFERENCES public.node_type(id);
+
+
+--
+-- TOC entry 4870 (class 2606 OID 18744)
 -- Name: facilitator fk_facilitator_id_organizational_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7034,7 +7119,7 @@ ALTER TABLE ONLY public.facilitator
 
 
 --
--- TOC entry 4857 (class 2606 OID 18749)
+-- TOC entry 4871 (class 2606 OID 18749)
 -- Name: family_size fk_family_size_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7043,7 +7128,7 @@ ALTER TABLE ONLY public.family_size
 
 
 --
--- TOC entry 4858 (class 2606 OID 18754)
+-- TOC entry 4872 (class 2606 OID 18754)
 -- Name: fathers_rights_violation_case fk_fathers_rights_violation_case_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7052,7 +7137,7 @@ ALTER TABLE ONLY public.fathers_rights_violation_case
 
 
 --
--- TOC entry 4940 (class 2606 OID 18759)
+-- TOC entry 4954 (class 2606 OID 18759)
 -- Name: person fk_file_id_file_portrait; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7061,7 +7146,7 @@ ALTER TABLE ONLY public.person
 
 
 --
--- TOC entry 4859 (class 2606 OID 18764)
+-- TOC entry 4873 (class 2606 OID 18764)
 -- Name: first_and_bottom_level_subdivision fk_first_and_bottom_level_subdivision_id_1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7070,7 +7155,7 @@ ALTER TABLE ONLY public.first_and_bottom_level_subdivision
 
 
 --
--- TOC entry 4860 (class 2606 OID 18769)
+-- TOC entry 4874 (class 2606 OID 18769)
 -- Name: first_and_bottom_level_subdivision fk_first_and_bottom_level_subdivision_id_2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7079,7 +7164,7 @@ ALTER TABLE ONLY public.first_and_bottom_level_subdivision
 
 
 --
--- TOC entry 4861 (class 2606 OID 18774)
+-- TOC entry 4875 (class 2606 OID 18774)
 -- Name: first_and_second_level_subdivision fk_first_and_second_level_subdivision_id_1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7088,7 +7173,7 @@ ALTER TABLE ONLY public.first_and_second_level_subdivision
 
 
 --
--- TOC entry 4862 (class 2606 OID 18779)
+-- TOC entry 4876 (class 2606 OID 18779)
 -- Name: first_and_second_level_subdivision fk_first_and_second_level_subdivision_id_2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7097,7 +7182,7 @@ ALTER TABLE ONLY public.first_and_second_level_subdivision
 
 
 --
--- TOC entry 4863 (class 2606 OID 18784)
+-- TOC entry 4877 (class 2606 OID 18784)
 -- Name: first_level_global_region fk_first_level_global_region_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7106,7 +7191,7 @@ ALTER TABLE ONLY public.first_level_global_region
 
 
 --
--- TOC entry 4864 (class 2606 OID 18789)
+-- TOC entry 4878 (class 2606 OID 18789)
 -- Name: first_level_subdivision fk_first_level_subdivision_id_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7115,7 +7200,7 @@ ALTER TABLE ONLY public.first_level_subdivision
 
 
 --
--- TOC entry 4865 (class 2606 OID 18794)
+-- TOC entry 4879 (class 2606 OID 18794)
 -- Name: formal_intermediate_level_subdivision fk_formal_intermediate_level_subdivision_id_1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7124,7 +7209,7 @@ ALTER TABLE ONLY public.formal_intermediate_level_subdivision
 
 
 --
--- TOC entry 4866 (class 2606 OID 18799)
+-- TOC entry 4880 (class 2606 OID 18799)
 -- Name: formal_intermediate_level_subdivision fk_formal_intermediate_level_subdivision_id_2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7133,7 +7218,7 @@ ALTER TABLE ONLY public.formal_intermediate_level_subdivision
 
 
 --
--- TOC entry 4867 (class 2606 OID 18804)
+-- TOC entry 4881 (class 2606 OID 18804)
 -- Name: geographical_entity fk_geographical_entity_id_documentable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7142,7 +7227,7 @@ ALTER TABLE ONLY public.geographical_entity
 
 
 --
--- TOC entry 4868 (class 2606 OID 18809)
+-- TOC entry 4882 (class 2606 OID 18809)
 -- Name: geographical_entity fk_geographical_entity_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7151,7 +7236,7 @@ ALTER TABLE ONLY public.geographical_entity
 
 
 --
--- TOC entry 4869 (class 2606 OID 18814)
+-- TOC entry 4883 (class 2606 OID 18814)
 -- Name: global_region fk_global_region_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7160,7 +7245,7 @@ ALTER TABLE ONLY public.global_region
 
 
 --
--- TOC entry 4870 (class 2606 OID 18819)
+-- TOC entry 4884 (class 2606 OID 18819)
 -- Name: hague_status fk_hague_status_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7169,7 +7254,7 @@ ALTER TABLE ONLY public.hague_status
 
 
 --
--- TOC entry 4871 (class 2606 OID 18824)
+-- TOC entry 4885 (class 2606 OID 18824)
 -- Name: home_study_agency fk_home_study_agency_id_organization_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7178,7 +7263,7 @@ ALTER TABLE ONLY public.home_study_agency
 
 
 --
--- TOC entry 4872 (class 2606 OID 18829)
+-- TOC entry 4886 (class 2606 OID 18829)
 -- Name: house_bill fk_house_bill_id_bill; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7187,7 +7272,7 @@ ALTER TABLE ONLY public.house_bill
 
 
 --
--- TOC entry 4873 (class 2606 OID 18834)
+-- TOC entry 4887 (class 2606 OID 18834)
 -- Name: house_term fk_house_term_id_congressional_term; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7196,7 +7281,7 @@ ALTER TABLE ONLY public.house_term
 
 
 --
--- TOC entry 4874 (class 2606 OID 18839)
+-- TOC entry 4888 (class 2606 OID 18839)
 -- Name: house_term fk_house_term_representative; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7205,7 +7290,7 @@ ALTER TABLE ONLY public.house_term
 
 
 --
--- TOC entry 4875 (class 2606 OID 18844)
+-- TOC entry 4889 (class 2606 OID 18844)
 -- Name: house_term fk_house_term_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7214,7 +7299,7 @@ ALTER TABLE ONLY public.house_term
 
 
 --
--- TOC entry 4876 (class 2606 OID 18849)
+-- TOC entry 4890 (class 2606 OID 18849)
 -- Name: informal_intermediate_level_subdivision fk_informal_intermediate_level_subdivision_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7223,7 +7308,7 @@ ALTER TABLE ONLY public.informal_intermediate_level_subdivision
 
 
 --
--- TOC entry 4877 (class 2606 OID 18854)
+-- TOC entry 4891 (class 2606 OID 18854)
 -- Name: institution fk_institution_id_organizational_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7232,7 +7317,7 @@ ALTER TABLE ONLY public.institution
 
 
 --
--- TOC entry 4878 (class 2606 OID 18859)
+-- TOC entry 4892 (class 2606 OID 18859)
 -- Name: inter_country_relation fk_inter_country_relation_country_from; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7241,7 +7326,7 @@ ALTER TABLE ONLY public.inter_country_relation
 
 
 --
--- TOC entry 4879 (class 2606 OID 18864)
+-- TOC entry 4893 (class 2606 OID 18864)
 -- Name: inter_country_relation fk_inter_country_relation_country_to; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7250,7 +7335,7 @@ ALTER TABLE ONLY public.inter_country_relation
 
 
 --
--- TOC entry 4880 (class 2606 OID 18869)
+-- TOC entry 4894 (class 2606 OID 18869)
 -- Name: inter_country_relation fk_inter_country_relation_document_id_proof; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7259,7 +7344,7 @@ ALTER TABLE ONLY public.inter_country_relation
 
 
 --
--- TOC entry 4881 (class 2606 OID 18874)
+-- TOC entry 4895 (class 2606 OID 18874)
 -- Name: inter_country_relation fk_inter_country_relation_id_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7268,7 +7353,7 @@ ALTER TABLE ONLY public.inter_country_relation
 
 
 --
--- TOC entry 4882 (class 2606 OID 18879)
+-- TOC entry 4896 (class 2606 OID 18879)
 -- Name: inter_country_relation fk_inter_country_relation_inter_country_relation_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7277,7 +7362,7 @@ ALTER TABLE ONLY public.inter_country_relation
 
 
 --
--- TOC entry 4883 (class 2606 OID 18884)
+-- TOC entry 4897 (class 2606 OID 18884)
 -- Name: inter_country_relation_type fk_inter_country_relation_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7286,7 +7371,7 @@ ALTER TABLE ONLY public.inter_country_relation_type
 
 
 --
--- TOC entry 4884 (class 2606 OID 18889)
+-- TOC entry 4898 (class 2606 OID 18889)
 -- Name: inter_organizational_relation fk_inter_organizational_relation_document_proof; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7295,7 +7380,7 @@ ALTER TABLE ONLY public.inter_organizational_relation
 
 
 --
--- TOC entry 4885 (class 2606 OID 18894)
+-- TOC entry 4899 (class 2606 OID 18894)
 -- Name: inter_organizational_relation fk_inter_organizational_relation_geographical_entity; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7304,7 +7389,7 @@ ALTER TABLE ONLY public.inter_organizational_relation
 
 
 --
--- TOC entry 4886 (class 2606 OID 18899)
+-- TOC entry 4900 (class 2606 OID 18899)
 -- Name: inter_organizational_relation fk_inter_organizational_relation_organizational_from; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7313,7 +7398,7 @@ ALTER TABLE ONLY public.inter_organizational_relation
 
 
 --
--- TOC entry 4887 (class 2606 OID 18904)
+-- TOC entry 4901 (class 2606 OID 18904)
 -- Name: inter_organizational_relation fk_inter_organizational_relation_organizational_to; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7322,7 +7407,7 @@ ALTER TABLE ONLY public.inter_organizational_relation
 
 
 --
--- TOC entry 4890 (class 2606 OID 18909)
+-- TOC entry 4904 (class 2606 OID 18909)
 -- Name: inter_organizational_relation_type fk_inter_organizational_relation_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7331,7 +7416,7 @@ ALTER TABLE ONLY public.inter_organizational_relation_type
 
 
 --
--- TOC entry 4888 (class 2606 OID 18914)
+-- TOC entry 4902 (class 2606 OID 18914)
 -- Name: inter_organizational_relation fk_inter_organizationale_relation_inter_organizational_relation; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7340,7 +7425,7 @@ ALTER TABLE ONLY public.inter_organizational_relation
 
 
 --
--- TOC entry 4891 (class 2606 OID 18919)
+-- TOC entry 4905 (class 2606 OID 18919)
 -- Name: inter_personal_relation fk_inter_personal_relation_document_proof; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7349,7 +7434,7 @@ ALTER TABLE ONLY public.inter_personal_relation
 
 
 --
--- TOC entry 4892 (class 2606 OID 18924)
+-- TOC entry 4906 (class 2606 OID 18924)
 -- Name: inter_personal_relation fk_inter_personal_relation_id_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7358,7 +7443,7 @@ ALTER TABLE ONLY public.inter_personal_relation
 
 
 --
--- TOC entry 4893 (class 2606 OID 18929)
+-- TOC entry 4907 (class 2606 OID 18929)
 -- Name: inter_personal_relation fk_inter_personal_relation_inter_personal_relation_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7367,7 +7452,7 @@ ALTER TABLE ONLY public.inter_personal_relation
 
 
 --
--- TOC entry 4894 (class 2606 OID 18934)
+-- TOC entry 4908 (class 2606 OID 18934)
 -- Name: inter_personal_relation fk_inter_personal_relation_person_from; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7376,7 +7461,7 @@ ALTER TABLE ONLY public.inter_personal_relation
 
 
 --
--- TOC entry 4895 (class 2606 OID 18939)
+-- TOC entry 4909 (class 2606 OID 18939)
 -- Name: inter_personal_relation fk_inter_personal_relation_person_to; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7385,7 +7470,7 @@ ALTER TABLE ONLY public.inter_personal_relation
 
 
 --
--- TOC entry 4896 (class 2606 OID 18944)
+-- TOC entry 4910 (class 2606 OID 18944)
 -- Name: inter_personal_relation_type fk_inter_personal_relation_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7394,7 +7479,7 @@ ALTER TABLE ONLY public.inter_personal_relation_type
 
 
 --
--- TOC entry 4897 (class 2606 OID 18949)
+-- TOC entry 4911 (class 2606 OID 18949)
 -- Name: intermediate_level_subdivision fk_intermediate_level_subdivision_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7403,7 +7488,7 @@ ALTER TABLE ONLY public.intermediate_level_subdivision
 
 
 --
--- TOC entry 4898 (class 2606 OID 18954)
+-- TOC entry 4912 (class 2606 OID 18954)
 -- Name: iso_coded_first_level_subdivision fk_iso_coded_first_level_subdivision_1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7412,7 +7497,7 @@ ALTER TABLE ONLY public.iso_coded_first_level_subdivision
 
 
 --
--- TOC entry 4899 (class 2606 OID 18959)
+-- TOC entry 4913 (class 2606 OID 18959)
 -- Name: iso_coded_first_level_subdivision fk_iso_coded_first_level_subdivision_2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7421,7 +7506,7 @@ ALTER TABLE ONLY public.iso_coded_first_level_subdivision
 
 
 --
--- TOC entry 4900 (class 2606 OID 18964)
+-- TOC entry 4914 (class 2606 OID 18964)
 -- Name: iso_coded_subdivision fk_iso_coded_subdivision_id_political_entity; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7430,7 +7515,7 @@ ALTER TABLE ONLY public.iso_coded_subdivision
 
 
 --
--- TOC entry 4901 (class 2606 OID 18969)
+-- TOC entry 4915 (class 2606 OID 18969)
 -- Name: iso_coded_subdivision fk_iso_coded_subdivision_id_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7439,7 +7524,7 @@ ALTER TABLE ONLY public.iso_coded_subdivision
 
 
 --
--- TOC entry 4902 (class 2606 OID 18974)
+-- TOC entry 4916 (class 2606 OID 18974)
 -- Name: law_firm fk_law_firm_id_organizational_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7448,7 +7533,7 @@ ALTER TABLE ONLY public.law_firm
 
 
 --
--- TOC entry 4903 (class 2606 OID 18979)
+-- TOC entry 4917 (class 2606 OID 18979)
 -- Name: locatable fk_locatable_id_searchable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7457,7 +7542,7 @@ ALTER TABLE ONLY public.locatable
 
 
 --
--- TOC entry 4904 (class 2606 OID 18984)
+-- TOC entry 4918 (class 2606 OID 18984)
 -- Name: location fk_location_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7466,7 +7551,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4906 (class 2606 OID 18989)
+-- TOC entry 4920 (class 2606 OID 18989)
 -- Name: location_locatable fk_location_locatable_locatable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7475,7 +7560,7 @@ ALTER TABLE ONLY public.location_locatable
 
 
 --
--- TOC entry 4907 (class 2606 OID 18994)
+-- TOC entry 4921 (class 2606 OID 18994)
 -- Name: location_locatable fk_location_locatable_location; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7484,7 +7569,7 @@ ALTER TABLE ONLY public.location_locatable
 
 
 --
--- TOC entry 4905 (class 2606 OID 18999)
+-- TOC entry 4919 (class 2606 OID 18999)
 -- Name: location fk_location_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7493,7 +7578,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4908 (class 2606 OID 19004)
+-- TOC entry 4922 (class 2606 OID 19004)
 -- Name: member_of_congress fk_member_of_congress_professional_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7502,7 +7587,7 @@ ALTER TABLE ONLY public.member_of_congress
 
 
 --
--- TOC entry 4909 (class 2606 OID 19009)
+-- TOC entry 4923 (class 2606 OID 19009)
 -- Name: multi_question_poll fk_multi_question_poll_id_poll; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7511,7 +7596,7 @@ ALTER TABLE ONLY public.multi_question_poll
 
 
 --
--- TOC entry 4910 (class 2606 OID 19014)
+-- TOC entry 4924 (class 2606 OID 19014)
 -- Name: multi_question_poll fk_multi_question_poll_id_simpe_text_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7520,7 +7605,7 @@ ALTER TABLE ONLY public.multi_question_poll
 
 
 --
--- TOC entry 4911 (class 2606 OID 19019)
+-- TOC entry 4925 (class 2606 OID 19019)
 -- Name: multi_question_poll_poll_question fk_multi_question_poll_question_multi_question_poll; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7529,7 +7614,7 @@ ALTER TABLE ONLY public.multi_question_poll_poll_question
 
 
 --
--- TOC entry 4912 (class 2606 OID 19024)
+-- TOC entry 4926 (class 2606 OID 19024)
 -- Name: multi_question_poll_poll_question fk_multi_question_poll_question_poll_question; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7538,7 +7623,7 @@ ALTER TABLE ONLY public.multi_question_poll_poll_question
 
 
 --
--- TOC entry 4913 (class 2606 OID 19029)
+-- TOC entry 4927 (class 2606 OID 19029)
 -- Name: nameable fk_nameable_file_tile_image; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7547,7 +7632,7 @@ ALTER TABLE ONLY public.nameable
 
 
 --
--- TOC entry 4914 (class 2606 OID 19034)
+-- TOC entry 4928 (class 2606 OID 19034)
 -- Name: nameable fk_nameable_id_searchable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7556,7 +7641,7 @@ ALTER TABLE ONLY public.nameable
 
 
 --
--- TOC entry 4918 (class 2606 OID 19039)
+-- TOC entry 4932 (class 2606 OID 19039)
 -- Name: node_file fk_node_file_file; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7565,7 +7650,7 @@ ALTER TABLE ONLY public.node_file
 
 
 --
--- TOC entry 4919 (class 2606 OID 19044)
+-- TOC entry 4933 (class 2606 OID 19044)
 -- Name: node_file fk_node_file_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7574,7 +7659,7 @@ ALTER TABLE ONLY public.node_file
 
 
 --
--- TOC entry 4915 (class 2606 OID 19049)
+-- TOC entry 4929 (class 2606 OID 19049)
 -- Name: node fk_node_node_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7583,7 +7668,7 @@ ALTER TABLE ONLY public.node
 
 
 --
--- TOC entry 4916 (class 2606 OID 19054)
+-- TOC entry 4930 (class 2606 OID 19054)
 -- Name: node fk_node_owner; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7592,7 +7677,7 @@ ALTER TABLE ONLY public.node
 
 
 --
--- TOC entry 4917 (class 2606 OID 19059)
+-- TOC entry 4931 (class 2606 OID 19059)
 -- Name: node fk_node_publisher; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7601,7 +7686,7 @@ ALTER TABLE ONLY public.node
 
 
 --
--- TOC entry 4920 (class 2606 OID 19064)
+-- TOC entry 4934 (class 2606 OID 19064)
 -- Name: node_term fk_node_term_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7610,7 +7695,7 @@ ALTER TABLE ONLY public.node_term
 
 
 --
--- TOC entry 4921 (class 2606 OID 19069)
+-- TOC entry 4935 (class 2606 OID 19069)
 -- Name: node_term fk_node_term_term; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7619,7 +7704,7 @@ ALTER TABLE ONLY public.node_term
 
 
 --
--- TOC entry 4923 (class 2606 OID 19074)
+-- TOC entry 4937 (class 2606 OID 19074)
 -- Name: organization_act_relation_type fk_organization_act_relation_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7628,16 +7713,16 @@ ALTER TABLE ONLY public.organization_act_relation_type
 
 
 --
--- TOC entry 4922 (class 2606 OID 19079)
+-- TOC entry 4936 (class 2606 OID 19079)
 -- Name: organization fk_organization_id_party; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.organization
-    ADD CONSTRAINT fk_organization_id_party FOREIGN KEY (id) REFERENCES public.party(id) NOT VALID;
+    ADD CONSTRAINT fk_organization_id_party FOREIGN KEY (id) REFERENCES public.party(id);
 
 
 --
--- TOC entry 4924 (class 2606 OID 19084)
+-- TOC entry 4938 (class 2606 OID 19084)
 -- Name: organization_organization_type fk_organization_organization_type_organization; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7646,7 +7731,7 @@ ALTER TABLE ONLY public.organization_organization_type
 
 
 --
--- TOC entry 4925 (class 2606 OID 19089)
+-- TOC entry 4939 (class 2606 OID 19089)
 -- Name: organization_organization_type fk_organization_organization_type_organization_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7655,7 +7740,7 @@ ALTER TABLE ONLY public.organization_organization_type
 
 
 --
--- TOC entry 4926 (class 2606 OID 19094)
+-- TOC entry 4940 (class 2606 OID 19094)
 -- Name: organization_type fk_organization_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7664,7 +7749,7 @@ ALTER TABLE ONLY public.organization_type
 
 
 --
--- TOC entry 4927 (class 2606 OID 19099)
+-- TOC entry 4941 (class 2606 OID 19099)
 -- Name: organizational_role fk_organizational_role_organization; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7673,7 +7758,7 @@ ALTER TABLE ONLY public.organizational_role
 
 
 --
--- TOC entry 4928 (class 2606 OID 19104)
+-- TOC entry 4942 (class 2606 OID 19104)
 -- Name: organizational_role fk_organizational_role_organization_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7682,7 +7767,7 @@ ALTER TABLE ONLY public.organizational_role
 
 
 --
--- TOC entry 4929 (class 2606 OID 19109)
+-- TOC entry 4943 (class 2606 OID 19109)
 -- Name: owner fk_owner_id_user_group; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7691,7 +7776,7 @@ ALTER TABLE ONLY public.owner
 
 
 --
--- TOC entry 4930 (class 2606 OID 19114)
+-- TOC entry 4944 (class 2606 OID 19114)
 -- Name: page fk_page_id_simple_text_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7700,7 +7785,7 @@ ALTER TABLE ONLY public.page
 
 
 --
--- TOC entry 4931 (class 2606 OID 19119)
+-- TOC entry 4945 (class 2606 OID 19119)
 -- Name: party fk_party_id_documentable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7709,7 +7794,7 @@ ALTER TABLE ONLY public.party
 
 
 --
--- TOC entry 4932 (class 2606 OID 19124)
+-- TOC entry 4946 (class 2606 OID 19124)
 -- Name: party fk_party_id_locatable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7718,7 +7803,7 @@ ALTER TABLE ONLY public.party
 
 
 --
--- TOC entry 4933 (class 2606 OID 19129)
+-- TOC entry 4947 (class 2606 OID 19129)
 -- Name: party fk_party_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7727,7 +7812,7 @@ ALTER TABLE ONLY public.party
 
 
 --
--- TOC entry 4934 (class 2606 OID 19134)
+-- TOC entry 4948 (class 2606 OID 19134)
 -- Name: party_political_entity_relation fk_party_political_entity_relation_document_proof; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7736,7 +7821,7 @@ ALTER TABLE ONLY public.party_political_entity_relation
 
 
 --
--- TOC entry 4935 (class 2606 OID 19139)
+-- TOC entry 4949 (class 2606 OID 19139)
 -- Name: party_political_entity_relation fk_party_political_entity_relation_party; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7745,7 +7830,7 @@ ALTER TABLE ONLY public.party_political_entity_relation
 
 
 --
--- TOC entry 4936 (class 2606 OID 19144)
+-- TOC entry 4950 (class 2606 OID 19144)
 -- Name: party_political_entity_relation fk_party_political_entity_relation_political_entity; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7754,7 +7839,7 @@ ALTER TABLE ONLY public.party_political_entity_relation
 
 
 --
--- TOC entry 4937 (class 2606 OID 19149)
+-- TOC entry 4951 (class 2606 OID 19149)
 -- Name: party_political_entity_relation fk_party_political_entity_relation_political_entity_relation_ty; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7763,7 +7848,7 @@ ALTER TABLE ONLY public.party_political_entity_relation
 
 
 --
--- TOC entry 4939 (class 2606 OID 19154)
+-- TOC entry 4953 (class 2606 OID 19154)
 -- Name: party_political_entity_relation_type fk_party_political_entity_relation_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7772,7 +7857,7 @@ ALTER TABLE ONLY public.party_political_entity_relation_type
 
 
 --
--- TOC entry 4938 (class 2606 OID 19159)
+-- TOC entry 4952 (class 2606 OID 19159)
 -- Name: party_political_entity_relation fk_party_politicial_entity_relation_id_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7781,7 +7866,7 @@ ALTER TABLE ONLY public.party_political_entity_relation
 
 
 --
--- TOC entry 4942 (class 2606 OID 19164)
+-- TOC entry 4956 (class 2606 OID 19164)
 -- Name: person_organization_relation fk_person_collective_relation_person_collective_relation_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7790,7 +7875,7 @@ ALTER TABLE ONLY public.person_organization_relation
 
 
 --
--- TOC entry 4941 (class 2606 OID 19169)
+-- TOC entry 4955 (class 2606 OID 19169)
 -- Name: person fk_person_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7799,7 +7884,7 @@ ALTER TABLE ONLY public.person
 
 
 --
--- TOC entry 4943 (class 2606 OID 19174)
+-- TOC entry 4957 (class 2606 OID 19174)
 -- Name: person_organization_relation fk_person_organization_relation_document; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7808,7 +7893,7 @@ ALTER TABLE ONLY public.person_organization_relation
 
 
 --
--- TOC entry 4944 (class 2606 OID 19179)
+-- TOC entry 4958 (class 2606 OID 19179)
 -- Name: person_organization_relation fk_person_organization_relation_id_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7817,7 +7902,7 @@ ALTER TABLE ONLY public.person_organization_relation
 
 
 --
--- TOC entry 4945 (class 2606 OID 19184)
+-- TOC entry 4959 (class 2606 OID 19184)
 -- Name: person_organization_relation fk_person_organization_relation_person; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7826,7 +7911,7 @@ ALTER TABLE ONLY public.person_organization_relation
 
 
 --
--- TOC entry 4948 (class 2606 OID 19189)
+-- TOC entry 4962 (class 2606 OID 19189)
 -- Name: person_organization_relation_type fk_person_organization_relation_type_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7835,7 +7920,7 @@ ALTER TABLE ONLY public.person_organization_relation_type
 
 
 --
--- TOC entry 4949 (class 2606 OID 19194)
+-- TOC entry 4963 (class 2606 OID 19194)
 -- Name: placement_agency fk_placement_agency_id_organizational_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7844,7 +7929,7 @@ ALTER TABLE ONLY public.placement_agency
 
 
 --
--- TOC entry 4950 (class 2606 OID 19199)
+-- TOC entry 4964 (class 2606 OID 19199)
 -- Name: political_entity fk_political_entity_file_flag; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7853,7 +7938,7 @@ ALTER TABLE ONLY public.political_entity
 
 
 --
--- TOC entry 4951 (class 2606 OID 19204)
+-- TOC entry 4965 (class 2606 OID 19204)
 -- Name: political_entity fk_political_entity_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7862,7 +7947,7 @@ ALTER TABLE ONLY public.political_entity
 
 
 --
--- TOC entry 4952 (class 2606 OID 19209)
+-- TOC entry 4966 (class 2606 OID 19209)
 -- Name: poll fk_poll_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7871,7 +7956,7 @@ ALTER TABLE ONLY public.poll
 
 
 --
--- TOC entry 4954 (class 2606 OID 19214)
+-- TOC entry 4968 (class 2606 OID 19214)
 -- Name: poll_option fk_poll_option_pole_question; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7880,7 +7965,7 @@ ALTER TABLE ONLY public.poll_option
 
 
 --
--- TOC entry 4953 (class 2606 OID 19219)
+-- TOC entry 4967 (class 2606 OID 19219)
 -- Name: poll fk_poll_poll_status; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7889,7 +7974,7 @@ ALTER TABLE ONLY public.poll
 
 
 --
--- TOC entry 4956 (class 2606 OID 19224)
+-- TOC entry 4970 (class 2606 OID 19224)
 -- Name: poll_vote fk_poll_vote_poll_option; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7898,7 +7983,7 @@ ALTER TABLE ONLY public.poll_vote
 
 
 --
--- TOC entry 4957 (class 2606 OID 19229)
+-- TOC entry 4971 (class 2606 OID 19229)
 -- Name: poll_vote fk_poll_vote_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7907,7 +7992,7 @@ ALTER TABLE ONLY public.poll_vote
 
 
 --
--- TOC entry 4958 (class 2606 OID 19234)
+-- TOC entry 4972 (class 2606 OID 19234)
 -- Name: post_placement_agency fk_post_placement_agency_id_organizational_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7916,7 +8001,7 @@ ALTER TABLE ONLY public.post_placement_agency
 
 
 --
--- TOC entry 4959 (class 2606 OID 19239)
+-- TOC entry 4973 (class 2606 OID 19239)
 -- Name: profession fk_profession_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7925,7 +8010,7 @@ ALTER TABLE ONLY public.profession
 
 
 --
--- TOC entry 4960 (class 2606 OID 19244)
+-- TOC entry 4974 (class 2606 OID 19244)
 -- Name: professional_role fk_professional_role_person; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7934,7 +8019,7 @@ ALTER TABLE ONLY public.professional_role
 
 
 --
--- TOC entry 4961 (class 2606 OID 19249)
+-- TOC entry 4975 (class 2606 OID 19249)
 -- Name: professional_role fk_professional_role_profession; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7943,7 +8028,7 @@ ALTER TABLE ONLY public.professional_role
 
 
 --
--- TOC entry 4962 (class 2606 OID 19254)
+-- TOC entry 4976 (class 2606 OID 19254)
 -- Name: publisher fk_publisher_id_principal; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7952,7 +8037,7 @@ ALTER TABLE ONLY public.publisher
 
 
 --
--- TOC entry 5027 (class 2606 OID 139269)
+-- TOC entry 5042 (class 2606 OID 139269)
 -- Name: publishing_user_group fk_publishing_user_group_id_user_group; Type: FK CONSTRAINT; Schema: public; Owner: niels
 --
 
@@ -7961,7 +8046,7 @@ ALTER TABLE ONLY public.publishing_user_group
 
 
 --
--- TOC entry 5028 (class 2606 OID 139275)
+-- TOC entry 5043 (class 2606 OID 139275)
 -- Name: publishing_user_group fk_publishing_user_group_publication_status_default; Type: FK CONSTRAINT; Schema: public; Owner: niels
 --
 
@@ -7970,7 +8055,7 @@ ALTER TABLE ONLY public.publishing_user_group
 
 
 --
--- TOC entry 4964 (class 2606 OID 19259)
+-- TOC entry 4978 (class 2606 OID 19259)
 -- Name: representative_house_bill_action fk_representative_house_bill_action_bill_action_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7979,7 +8064,7 @@ ALTER TABLE ONLY public.representative_house_bill_action
 
 
 --
--- TOC entry 4965 (class 2606 OID 19264)
+-- TOC entry 4979 (class 2606 OID 19264)
 -- Name: representative_house_bill_action fk_representative_house_bill_action_house_bill; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7988,7 +8073,7 @@ ALTER TABLE ONLY public.representative_house_bill_action
 
 
 --
--- TOC entry 4966 (class 2606 OID 19269)
+-- TOC entry 4980 (class 2606 OID 19269)
 -- Name: representative_house_bill_action fk_representative_house_bill_action_representative; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -7997,7 +8082,7 @@ ALTER TABLE ONLY public.representative_house_bill_action
 
 
 --
--- TOC entry 4963 (class 2606 OID 19274)
+-- TOC entry 4977 (class 2606 OID 19274)
 -- Name: representative fk_representative_member_of_congress; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8006,7 +8091,7 @@ ALTER TABLE ONLY public.representative
 
 
 --
--- TOC entry 4967 (class 2606 OID 19279)
+-- TOC entry 4981 (class 2606 OID 19279)
 -- Name: review fk_review_id_simple_text_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8015,7 +8100,7 @@ ALTER TABLE ONLY public.review
 
 
 --
--- TOC entry 4968 (class 2606 OID 19284)
+-- TOC entry 4982 (class 2606 OID 19284)
 -- Name: searchable fk_searchable_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8024,7 +8109,7 @@ ALTER TABLE ONLY public.searchable
 
 
 --
--- TOC entry 4969 (class 2606 OID 19289)
+-- TOC entry 4983 (class 2606 OID 19289)
 -- Name: second_level_global_region fk_second_level_global_region_first_level_global_region; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8033,7 +8118,7 @@ ALTER TABLE ONLY public.second_level_global_region
 
 
 --
--- TOC entry 4970 (class 2606 OID 19294)
+-- TOC entry 4984 (class 2606 OID 19294)
 -- Name: second_level_global_region fk_second_level_global_region_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8042,7 +8127,7 @@ ALTER TABLE ONLY public.second_level_global_region
 
 
 --
--- TOC entry 4971 (class 2606 OID 19299)
+-- TOC entry 4985 (class 2606 OID 19299)
 -- Name: second_level_subdivision fk_second_level_subdivision_id_bottom_level_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8051,7 +8136,7 @@ ALTER TABLE ONLY public.second_level_subdivision
 
 
 --
--- TOC entry 4972 (class 2606 OID 19304)
+-- TOC entry 4986 (class 2606 OID 19304)
 -- Name: second_level_subdivision fk_second_level_subdivision_id_iso_coded_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8060,7 +8145,7 @@ ALTER TABLE ONLY public.second_level_subdivision
 
 
 --
--- TOC entry 4973 (class 2606 OID 19309)
+-- TOC entry 4987 (class 2606 OID 19309)
 -- Name: senate_bill fk_senate_bill_id_bill; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8069,7 +8154,7 @@ ALTER TABLE ONLY public.senate_bill
 
 
 --
--- TOC entry 4974 (class 2606 OID 19314)
+-- TOC entry 4988 (class 2606 OID 19314)
 -- Name: senate_term fk_senate_term_id_congressional_term; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8078,7 +8163,7 @@ ALTER TABLE ONLY public.senate_term
 
 
 --
--- TOC entry 4975 (class 2606 OID 19319)
+-- TOC entry 4989 (class 2606 OID 19319)
 -- Name: senate_term fk_senate_term_senator; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8087,7 +8172,7 @@ ALTER TABLE ONLY public.senate_term
 
 
 --
--- TOC entry 4976 (class 2606 OID 19324)
+-- TOC entry 4990 (class 2606 OID 19324)
 -- Name: senate_term fk_senate_term_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8096,7 +8181,7 @@ ALTER TABLE ONLY public.senate_term
 
 
 --
--- TOC entry 4977 (class 2606 OID 19329)
+-- TOC entry 4991 (class 2606 OID 19329)
 -- Name: senator fk_senator_member_of_congress; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8105,7 +8190,7 @@ ALTER TABLE ONLY public.senator
 
 
 --
--- TOC entry 4978 (class 2606 OID 19334)
+-- TOC entry 4992 (class 2606 OID 19334)
 -- Name: senator_senate_bill_action fk_senator_senate_bill_action_bill_action_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8114,7 +8199,7 @@ ALTER TABLE ONLY public.senator_senate_bill_action
 
 
 --
--- TOC entry 4979 (class 2606 OID 19339)
+-- TOC entry 4993 (class 2606 OID 19339)
 -- Name: senator_senate_bill_action fk_senator_senate_bill_action_senate_bill; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8123,7 +8208,7 @@ ALTER TABLE ONLY public.senator_senate_bill_action
 
 
 --
--- TOC entry 4980 (class 2606 OID 19344)
+-- TOC entry 4994 (class 2606 OID 19344)
 -- Name: senator_senate_bill_action fk_senator_senate_bill_action_senator; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8132,7 +8217,7 @@ ALTER TABLE ONLY public.senator_senate_bill_action
 
 
 --
--- TOC entry 4981 (class 2606 OID 19349)
+-- TOC entry 4995 (class 2606 OID 19349)
 -- Name: simple_text_node fk_simple_text_node_id_searchable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8141,7 +8226,7 @@ ALTER TABLE ONLY public.simple_text_node
 
 
 --
--- TOC entry 4982 (class 2606 OID 19354)
+-- TOC entry 4996 (class 2606 OID 19354)
 -- Name: single_question_poll fk_single_question_poll_id_poll; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8150,7 +8235,7 @@ ALTER TABLE ONLY public.single_question_poll
 
 
 --
--- TOC entry 4983 (class 2606 OID 19359)
+-- TOC entry 4997 (class 2606 OID 19359)
 -- Name: single_question_poll fk_single_question_poll_id_poll_question; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8159,7 +8244,7 @@ ALTER TABLE ONLY public.single_question_poll
 
 
 --
--- TOC entry 4984 (class 2606 OID 19364)
+-- TOC entry 4998 (class 2606 OID 19364)
 -- Name: subdivision fk_subdivision_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8168,7 +8253,7 @@ ALTER TABLE ONLY public.subdivision
 
 
 --
--- TOC entry 4985 (class 2606 OID 19369)
+-- TOC entry 4999 (class 2606 OID 19369)
 -- Name: subdivision fk_subdivision_country_subdivision; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8177,7 +8262,7 @@ ALTER TABLE ONLY public.subdivision
 
 
 --
--- TOC entry 4986 (class 2606 OID 19374)
+-- TOC entry 5000 (class 2606 OID 19374)
 -- Name: subdivision fk_subdivision_id_geographical_entity; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8186,7 +8271,7 @@ ALTER TABLE ONLY public.subdivision
 
 
 --
--- TOC entry 4987 (class 2606 OID 19379)
+-- TOC entry 5001 (class 2606 OID 19379)
 -- Name: subdivision fk_subdivision_subdivision_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8195,7 +8280,7 @@ ALTER TABLE ONLY public.subdivision
 
 
 --
--- TOC entry 4988 (class 2606 OID 19384)
+-- TOC entry 5002 (class 2606 OID 19384)
 -- Name: subdivision_type fk_subdivision_type_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8204,7 +8289,7 @@ ALTER TABLE ONLY public.subdivision_type
 
 
 --
--- TOC entry 4989 (class 2606 OID 139287)
+-- TOC entry 5003 (class 2606 OID 139287)
 -- Name: subgroup fk_subgroup_id_publishing_user_group; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8213,7 +8298,7 @@ ALTER TABLE ONLY public.subgroup
 
 
 --
--- TOC entry 4990 (class 2606 OID 19394)
+-- TOC entry 5004 (class 2606 OID 19394)
 -- Name: subgroup fk_subgroup_tenant; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8222,7 +8307,7 @@ ALTER TABLE ONLY public.subgroup
 
 
 --
--- TOC entry 4991 (class 2606 OID 19399)
+-- TOC entry 5005 (class 2606 OID 19399)
 -- Name: system_group fk_system_group_user_group; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8231,7 +8316,7 @@ ALTER TABLE ONLY public.system_group
 
 
 --
--- TOC entry 4992 (class 2606 OID 19404)
+-- TOC entry 5006 (class 2606 OID 19404)
 -- Name: tenant fk_tenant_access_role_id_not_logged_in; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8240,7 +8325,7 @@ ALTER TABLE ONLY public.tenant
 
 
 --
--- TOC entry 4996 (class 2606 OID 19409)
+-- TOC entry 5011 (class 2606 OID 19409)
 -- Name: tenant_file fk_tenant_file_file; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8249,7 +8334,7 @@ ALTER TABLE ONLY public.tenant_file
 
 
 --
--- TOC entry 4997 (class 2606 OID 19414)
+-- TOC entry 5012 (class 2606 OID 19414)
 -- Name: tenant_file fk_tenant_file_tenant; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8258,7 +8343,7 @@ ALTER TABLE ONLY public.tenant_file
 
 
 --
--- TOC entry 4993 (class 2606 OID 19419)
+-- TOC entry 5007 (class 2606 OID 19419)
 -- Name: tenant fk_tenant_id_owner; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8267,7 +8352,7 @@ ALTER TABLE ONLY public.tenant
 
 
 --
--- TOC entry 4994 (class 2606 OID 139281)
+-- TOC entry 5008 (class 2606 OID 139281)
 -- Name: tenant fk_tenant_id_publishing_user_group; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8276,7 +8361,7 @@ ALTER TABLE ONLY public.tenant
 
 
 --
--- TOC entry 5002 (class 2606 OID 19424)
+-- TOC entry 5017 (class 2606 OID 19424)
 -- Name: tenant_node_menu_item fk_tenant_node_menu_item_id_menu_item; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8285,7 +8370,7 @@ ALTER TABLE ONLY public.tenant_node_menu_item
 
 
 --
--- TOC entry 5003 (class 2606 OID 19429)
+-- TOC entry 5018 (class 2606 OID 19429)
 -- Name: tenant_node_menu_item fk_tenant_node_menu_item_tenant_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8294,7 +8379,7 @@ ALTER TABLE ONLY public.tenant_node_menu_item
 
 
 --
--- TOC entry 4998 (class 2606 OID 19434)
+-- TOC entry 5013 (class 2606 OID 19434)
 -- Name: tenant_node fk_tenant_node_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8303,7 +8388,7 @@ ALTER TABLE ONLY public.tenant_node
 
 
 --
--- TOC entry 4999 (class 2606 OID 19439)
+-- TOC entry 5014 (class 2606 OID 19439)
 -- Name: tenant_node fk_tenant_node_publication_status; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8312,7 +8397,7 @@ ALTER TABLE ONLY public.tenant_node
 
 
 --
--- TOC entry 5000 (class 2606 OID 19444)
+-- TOC entry 5015 (class 2606 OID 19444)
 -- Name: tenant_node fk_tenant_node_subgroup; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8321,7 +8406,7 @@ ALTER TABLE ONLY public.tenant_node
 
 
 --
--- TOC entry 5001 (class 2606 OID 19449)
+-- TOC entry 5016 (class 2606 OID 19449)
 -- Name: tenant_node fk_tenant_node_tenant; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8330,7 +8415,7 @@ ALTER TABLE ONLY public.tenant_node
 
 
 --
--- TOC entry 4995 (class 2606 OID 19454)
+-- TOC entry 5009 (class 2606 OID 19454)
 -- Name: tenant fk_tenant_vocabulary_tagging; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8339,7 +8424,7 @@ ALTER TABLE ONLY public.tenant
 
 
 --
--- TOC entry 5006 (class 2606 OID 19459)
+-- TOC entry 5021 (class 2606 OID 19459)
 -- Name: term_hierarchy fk_term_hierarchy_child; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8348,7 +8433,7 @@ ALTER TABLE ONLY public.term_hierarchy
 
 
 --
--- TOC entry 5007 (class 2606 OID 19464)
+-- TOC entry 5022 (class 2606 OID 19464)
 -- Name: term_hierarchy fk_term_hierarchy_parent; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8357,7 +8442,7 @@ ALTER TABLE ONLY public.term_hierarchy
 
 
 --
--- TOC entry 5004 (class 2606 OID 19469)
+-- TOC entry 5019 (class 2606 OID 19469)
 -- Name: term fk_term_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8366,7 +8451,7 @@ ALTER TABLE ONLY public.term
 
 
 --
--- TOC entry 5005 (class 2606 OID 19474)
+-- TOC entry 5020 (class 2606 OID 19474)
 -- Name: term fk_term_vocabulary; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8375,7 +8460,7 @@ ALTER TABLE ONLY public.term
 
 
 --
--- TOC entry 5008 (class 2606 OID 19479)
+-- TOC entry 5023 (class 2606 OID 19479)
 -- Name: top_level_country fk_top_level_country_global_region; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8384,7 +8469,7 @@ ALTER TABLE ONLY public.top_level_country
 
 
 --
--- TOC entry 5009 (class 2606 OID 19484)
+-- TOC entry 5024 (class 2606 OID 19484)
 -- Name: top_level_country fk_top_level_country_id_country; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8393,7 +8478,7 @@ ALTER TABLE ONLY public.top_level_country
 
 
 --
--- TOC entry 5010 (class 2606 OID 19489)
+-- TOC entry 5025 (class 2606 OID 19489)
 -- Name: type_of_abuse fk_type_of_abuse_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8402,7 +8487,7 @@ ALTER TABLE ONLY public.type_of_abuse
 
 
 --
--- TOC entry 5011 (class 2606 OID 19494)
+-- TOC entry 5026 (class 2606 OID 19494)
 -- Name: type_of_abuser fk_type_of_abuser_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8411,7 +8496,7 @@ ALTER TABLE ONLY public.type_of_abuser
 
 
 --
--- TOC entry 5012 (class 2606 OID 19499)
+-- TOC entry 5027 (class 2606 OID 19499)
 -- Name: united_states_congressional_meeting fk_united_states_congressional_meeting_documentable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8420,7 +8505,7 @@ ALTER TABLE ONLY public.united_states_congressional_meeting
 
 
 --
--- TOC entry 5013 (class 2606 OID 19504)
+-- TOC entry 5028 (class 2606 OID 19504)
 -- Name: united_states_congressional_meeting fk_united_states_congressional_meeting_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8429,7 +8514,7 @@ ALTER TABLE ONLY public.united_states_congressional_meeting
 
 
 --
--- TOC entry 5015 (class 2606 OID 19509)
+-- TOC entry 5030 (class 2606 OID 19509)
 -- Name: united_states_political_party_affiliation fk_united_states_politcal_party_affiliation_united_states_polit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8438,7 +8523,7 @@ ALTER TABLE ONLY public.united_states_political_party_affiliation
 
 
 --
--- TOC entry 5016 (class 2606 OID 19514)
+-- TOC entry 5031 (class 2606 OID 19514)
 -- Name: united_states_political_party_affiliation fk_united_states_political_party_affiliation_id_nameable; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8447,7 +8532,7 @@ ALTER TABLE ONLY public.united_states_political_party_affiliation
 
 
 --
--- TOC entry 5014 (class 2606 OID 19519)
+-- TOC entry 5029 (class 2606 OID 19519)
 -- Name: united_states_political_party fk_united_states_political_party_id_organization; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8456,7 +8541,7 @@ ALTER TABLE ONLY public.united_states_political_party
 
 
 --
--- TOC entry 5018 (class 2606 OID 19524)
+-- TOC entry 5033 (class 2606 OID 19524)
 -- Name: user_group fk_user_group_administrator_role_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8465,7 +8550,7 @@ ALTER TABLE ONLY public.user_group
 
 
 --
--- TOC entry 5019 (class 2606 OID 19529)
+-- TOC entry 5034 (class 2606 OID 19529)
 -- Name: user_group_user_role_user fk_user_group_user_role_user_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8474,7 +8559,7 @@ ALTER TABLE ONLY public.user_group_user_role_user
 
 
 --
--- TOC entry 5020 (class 2606 OID 19534)
+-- TOC entry 5035 (class 2606 OID 19534)
 -- Name: user_group_user_role_user fk_user_group_user_role_user_user_group; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8483,7 +8568,7 @@ ALTER TABLE ONLY public.user_group_user_role_user
 
 
 --
--- TOC entry 5021 (class 2606 OID 19539)
+-- TOC entry 5036 (class 2606 OID 19539)
 -- Name: user_group_user_role_user fk_user_group_user_role_user_user_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8492,7 +8577,7 @@ ALTER TABLE ONLY public.user_group_user_role_user
 
 
 --
--- TOC entry 5017 (class 2606 OID 19544)
+-- TOC entry 5032 (class 2606 OID 19544)
 -- Name: user fk_user_id_publisher; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8501,7 +8586,7 @@ ALTER TABLE ONLY public."user"
 
 
 --
--- TOC entry 5022 (class 2606 OID 19549)
+-- TOC entry 5037 (class 2606 OID 19549)
 -- Name: user_role fk_user_role_id_principal; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8510,7 +8595,7 @@ ALTER TABLE ONLY public.user_role
 
 
 --
--- TOC entry 5023 (class 2606 OID 19554)
+-- TOC entry 5038 (class 2606 OID 19554)
 -- Name: user_role fk_user_role_user_group; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8519,7 +8604,7 @@ ALTER TABLE ONLY public.user_role
 
 
 --
--- TOC entry 5024 (class 2606 OID 19559)
+-- TOC entry 5039 (class 2606 OID 19559)
 -- Name: vocabulary fk_vocabulary_id_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8528,7 +8613,7 @@ ALTER TABLE ONLY public.vocabulary
 
 
 --
--- TOC entry 5025 (class 2606 OID 19564)
+-- TOC entry 5040 (class 2606 OID 19564)
 -- Name: wrongful_medication_case fk_wrongful_medication_case_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8537,7 +8622,7 @@ ALTER TABLE ONLY public.wrongful_medication_case
 
 
 --
--- TOC entry 5026 (class 2606 OID 19569)
+-- TOC entry 5041 (class 2606 OID 19569)
 -- Name: wrongful_removal_case fk_wrongful_removal_case_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8546,7 +8631,7 @@ ALTER TABLE ONLY public.wrongful_removal_case
 
 
 --
--- TOC entry 4889 (class 2606 OID 19574)
+-- TOC entry 4903 (class 2606 OID 19574)
 -- Name: inter_organizational_relation inter_organizational_relation_id_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8555,7 +8640,7 @@ ALTER TABLE ONLY public.inter_organizational_relation
 
 
 --
--- TOC entry 4946 (class 2606 OID 19579)
+-- TOC entry 4960 (class 2606 OID 19579)
 -- Name: person_organization_relation person_organization_relation_geographical_entity; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8564,7 +8649,7 @@ ALTER TABLE ONLY public.person_organization_relation
 
 
 --
--- TOC entry 4947 (class 2606 OID 19584)
+-- TOC entry 4961 (class 2606 OID 19584)
 -- Name: person_organization_relation person_organization_relation_organization; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8573,7 +8658,16 @@ ALTER TABLE ONLY public.person_organization_relation
 
 
 --
--- TOC entry 4955 (class 2606 OID 19589)
+-- TOC entry 5010 (class 2606 OID 262145)
+-- Name: tenant tenant_country_default; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tenant
+    ADD CONSTRAINT tenant_country_default FOREIGN KEY (country_id_default) REFERENCES public.country(id) NOT VALID;
+
+
+--
+-- TOC entry 4969 (class 2606 OID 19589)
 -- Name: poll_question tk_poll_question_id_simple_text_node; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8582,7 +8676,7 @@ ALTER TABLE ONLY public.poll_question
 
 
 --
--- TOC entry 5176 (class 0 OID 0)
+-- TOC entry 5193 (class 0 OID 0)
 -- Dependencies: 7
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -8591,7 +8685,7 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2023-03-06 15:18:59
+-- Completed on 2023-04-09 19:33:16
 
 --
 -- PostgreSQL database dump complete

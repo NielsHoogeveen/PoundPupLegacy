@@ -24,7 +24,7 @@ public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<TenantUp
         public required int VocabularyId { get; init; }
     }
 
-    internal TenantUpdaterSetTaggingVocabulary(NpgsqlCommand command) : base(command) { }
+    public TenantUpdaterSetTaggingVocabulary(NpgsqlCommand command) : base(command) { }
 
     public override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

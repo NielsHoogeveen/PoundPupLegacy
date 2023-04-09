@@ -13,4 +13,15 @@ public sealed record DateTimeRange
 
     public DateTime? Start { get; }
     public DateTime? End { get; }
+
+    public FuzzyDate? ToFuzzyDate()
+    {
+        if (Start is null || End is null) {
+            return null;
+        }
+        if (FuzzyDate.TryFromDateTimeRange(this, out var result)) {
+            return result;
+        }
+        return null;
+    }
 }

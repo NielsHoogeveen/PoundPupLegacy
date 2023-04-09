@@ -79,3 +79,15 @@ public record NonNullableDateTimeDatabaseParameter : DatabaseParameter<DateTime>
 
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Timestamp;
 }
+public record NullableDateTimeRangeDatabaseParameter : DatabaseParameter<DateTimeRange?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Unknown;
+}
+
+public record NonNullableDateTimeRangeDatabaseParameter : DatabaseParameter<DateTimeRange>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Unknown;
+}

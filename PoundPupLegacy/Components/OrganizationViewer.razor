@@ -20,18 +20,18 @@
             @Model.EmailAddress
         </div>
     }
-    @if (Model.Established.HasValue)
+    @if (Model.Establishment is not null)
     {
         <div>
             <label>Established: </label>
-            @Model.Established.Value.ToString("yyyy MMMM dd")
+            @Model.Establishment.ToDisplayString()
         </div>
     }
-    @if (Model.Terminated.HasValue)
+    @if (Model.Termination is not null)
     {
         <div>
         <label>Terminated: </label>
-            @Model.Terminated.Value.ToString("yyyy MMMM dd")
+            @Model.Termination.ToDisplayString()
         </div>
     }
     <OrganizationTypesViewer Model="@Model.OrganizationTypes" />

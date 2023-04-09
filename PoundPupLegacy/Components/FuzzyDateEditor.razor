@@ -1,0 +1,151 @@
+﻿@using PoundPupLegacy.Common
+@using System.Text.RegularExpressions
+@using System.Diagnostics.CodeAnalysis
+@inherits Microsoft.AspNetCore.Components.Forms.InputBase<FuzzyDate>
+<select @onchange="OnYearChanged">
+    <option value=""></option>
+    @foreach(var year in years)
+    {
+        if(selectedYear.HasValue && selectedYear.Value == year)
+        {
+            <option value="@year" selected="selected">@year</option>
+        }
+        else
+        {
+            <option value="@year">@year</option>
+        }
+    })
+</select>
+@if(selectedYear.HasValue){
+    <select @onchange="OnMonthChanged">
+        <option value=""></option>
+        @foreach (var month in months) {
+            if (selectedMonth.HasValue && selectedMonth.Value == month.Item1)
+            {
+                <option value="@month.Item1" selected="selected">@month.Item2</option>
+            }
+            else 
+            {
+                <option value="@month.Item1">@month.Item2</option>
+            }
+        }
+        )
+    </select>
+    @if(selectedMonth.HasValue)
+    {
+        <select @onchange="OnDayChanged">
+            <option value=""></option>
+            @foreach (var day in days) {
+                if (selectedDay.HasValue && selectedDay.Value == day)
+                {
+                    <option value="@day" selected="selected">@day</option>
+                }
+                else {
+                    <option value="@day">@day</option>
+                }
+            }
+        </select>
+    }
+}
+
+@code {
+
+    private int? selectedYear;
+    private int? selectedMonth;
+    private int? selectedDay;
+
+    private List<int> years = Enumerable.Range(1900, DateTime.Now.Year - 1900 + 1).Reverse().ToList();
+    private List<(int, string)> months = Enumerable.Range(1, 12).Select(x => (x, System.Globalization.CultureInfo.CurrentCulture.
+    DateTimeFormat.GetMonthName(x))).ToList();
+    protected override bool TryParseValueFromString(string value, [MaybeNullWhen(false)] out FuzzyDate result, [NotNullWhen(false)] out string validationErrorMessage)
+    {
+        if(FuzzyDate.TryParse(value, out var fuzzyDate))
+        {
+            result = fuzzyDate!;
+            validationErrorMessage = "";
+            return true;
+        }
+        else {
+            result = null;
+            validationErrorMessage = $"{value} is not a properly formatted fuzzy date";
+            return false;
+        }
+    }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (Value is not null)
+        {
+            selectedYear = Value.Year;
+            selectedMonth = Value.Month;
+            selectedDay = Value.Day;
+        }
+        StateHasChanged();
+    }
+    private List<int> days => !selectedYear.HasValue
+    ? new List<int>()
+        : !selectedMonth.HasValue
+            ? new List<int>()
+            : Enumerable.Range(1, DateTime.DaysInMonth(selectedYear.Value, selectedMonth.Value)).ToList();
+
+    private void OnYearChanged(ChangeEventArgs e)
+    {
+        if (e.Value is null)
+        {
+            selectedYear = null;
+            return;
+        }
+        if (int.TryParse(e.Value.ToString(), out var value))
+        {
+            selectedYear = value;
+        }
+        else 
+        {
+            selectedYear = null;
+        }
+        SetFuzzyDateValue();
+        StateHasChanged();
+    }
+    private void OnMonthChanged(ChangeEventArgs e)
+    {
+        if (e.Value is null) 
+        {
+            selectedMonth = null;
+            return;
+        }
+        if (int.TryParse(e.Value.ToString(), out var value)) 
+        {
+            selectedMonth = value;
+        }
+        else 
+        {
+            selectedMonth = null;
+        }
+        SetFuzzyDateValue();
+        StateHasChanged();
+    }
+    private void OnDayChanged(ChangeEventArgs e)
+    {
+        if (e.Value is null) {
+            selectedDay = null;
+            return;
+        }
+        if (int.TryParse(e.Value.ToString(), out var value)) 
+        {
+            selectedDay = value;
+        }
+        else 
+        {
+            selectedDay = null;
+        }
+        StateHasChanged();
+    }
+    private void SetFuzzyDateValue()
+    {
+        if(selectedYear is null) {
+            Value = null;
+            return;
+        }
+        Value = new FuzzyDate(selectedYear.Value, selectedMonth, selectedDay);
+    }
+}

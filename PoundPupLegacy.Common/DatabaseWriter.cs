@@ -14,6 +14,40 @@ public abstract class DatabaseWriter
     {
         SetDateTimeRangeParameter(dateTimeRange, parameterDateRange, _command);
     }
+    protected void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange)
+    {
+        SetTimeStampRangeParameter(dateTimeRange, parameterDateRange, _command);
+    }
+    protected void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
+    {
+        if (dateTimeRange is null) {
+            command.Parameters[parameterDateRange].Value = DBNull.Value;
+        }
+        else {
+            if (dateTimeRange.Start.HasValue && dateTimeRange.End.HasValue) {
+                if (dateTimeRange.Start.Equals(dateTimeRange.End.Value)) {
+                    throw new ArgumentException("A date range should have a start that is below the end");
+
+                }
+                else {
+                    command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd HH:mm:ss.fff")}, {dateTimeRange.End.Value.ToString("yyyy-MM-dd HH:mm:ss.fff")})";
+                }
+            }
+            else if (!dateTimeRange.Start.HasValue && dateTimeRange.End.HasValue) {
+                command.Parameters[parameterDateRange].Value = $"(, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
+
+            }
+            else if (dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue) {
+                command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")},)";
+
+            }
+            else if (!dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue) {
+                command.Parameters[parameterDateRange].Value = $"(,)";
+
+            }
+        }
+    }
+
     protected void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
     {
         if (dateTimeRange is null) {

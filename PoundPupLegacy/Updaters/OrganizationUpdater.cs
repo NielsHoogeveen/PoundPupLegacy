@@ -20,10 +20,10 @@ internal sealed class OrganizationUpdaterFactory : DatabaseUpdaterFactory<Organi
     internal static NullableStringDatabaseParameter EmailAddress = new() {
         Name = "email_address"
     };
-    internal static NullableDateTimeDatabaseParameter Established = new() {
+    internal static NullableDateTimeRangeDatabaseParameter Established = new() {
         Name = "established"
     };
-    internal static NullableDateTimeDatabaseParameter Terminated = new() {
+    internal static NullableDateTimeRangeDatabaseParameter Terminated = new() {
         Name = "terminated"
     };
 
@@ -32,9 +32,12 @@ internal sealed class OrganizationUpdaterFactory : DatabaseUpdaterFactory<Organi
         set 
             title=@title
         where id = @node_id;
+        update nameable 
+        set 
+            description=@description
+        where id = @node_id;
         update organization 
         set 
-            description=@description, 
             website_url=@website_url,
             email_address=@email_address,
             established=@established,
@@ -59,8 +62,8 @@ internal sealed class OrganizationUpdater : DatabaseUpdater<OrganizationUpdater.
             ParameterValue.Create(OrganizationUpdaterFactory.Description, request.Description),
             ParameterValue.Create(OrganizationUpdaterFactory.WebsiteUrl, request.WebsiteUrl),
             ParameterValue.Create(OrganizationUpdaterFactory.EmailAddress, request.EmailAddress),
-            ParameterValue.Create(OrganizationUpdaterFactory.Established, request.Established),
-            ParameterValue.Create(OrganizationUpdaterFactory.Terminated, request.Terminated)
+            ParameterValue.Create(OrganizationUpdaterFactory.Established, request.EstablishmentDateRange),
+            ParameterValue.Create(OrganizationUpdaterFactory.Terminated, request.TerminationDateRange)
         };
     }
 
@@ -71,7 +74,8 @@ internal sealed class OrganizationUpdater : DatabaseUpdater<OrganizationUpdater.
         public required string Description { get; init; }
         public required string? WebsiteUrl { get; init; }
         public required string? EmailAddress { get; init; }
-        public required DateTime? Established { get; init; }
-        public required DateTime? Terminated { get; init; }
+        public required DateTimeRange? EstablishmentDateRange { get; init; }
+        public required DateTimeRange? TerminationDateRange { get; init; }
+
     }
 }

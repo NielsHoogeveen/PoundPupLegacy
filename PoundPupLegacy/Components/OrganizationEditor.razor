@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
+@using PoundPupLegacy.Common;
 @inject IEditService<Organization> editService;
 @inject ILogger<OrganizationEditor> logger;
 @inject NavigationManager navigationManager;
@@ -19,7 +20,8 @@
             margin-bottom: 1em;
         }
     </style>
-    <EditForm Model="@organization" OnSubmit="@HandleSubmit" class="edit-form">
+    <EditForm Model="@organization" OnSubmit="HandleSubmit" class="edit-form">
+        
         <InputText class="title-editor" id="name" @bind-Value="organization.Title" />
         <CKEditor Id="#editor"
               @bind-Value=@organization.Description
@@ -40,20 +42,29 @@
             </select>
         }
         </div>
-        <Tags Elems="@organization.Tags"/>
+    
+        <FuzzyDateEditor @bind-Value="organization.Establishment" />
+
+        <FuzzyDateEditor @bind-Value="organization.Termination" />
+        
+        <Tags Elems="@organization.Tags" />
         <TenantNodesEditor Node="@organization" />
         <AttachmentEditor Files="organization.Files"/>
         <LocationsEditor Locatable="organization"/>
         
         <button type="submit" style="display: block;">Submit</button>
-    </EditForm>
     
+    </EditForm>
+
 }
 @code {
     Organization? organization;
 
     string url = "";
 
+    private FuzzyDate? Establishment;
+
+    private FuzzyDate? Termination;
 
     [CascadingParameter(Name = "UrlId")]
     public int UrlId { get; set; }
@@ -76,6 +87,7 @@
                 var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
                 tenant.TenantNode = tenantNode;
             }
+            Establishment = organization.Establishment;
         }
     }
 

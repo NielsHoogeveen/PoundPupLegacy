@@ -27,15 +27,19 @@ public class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderF
                     'Title' , 
                     n.title,
                     'Description', 
-                    o.description,
+                    nm.description,
                     'WebSiteUrl',
                     o.website_url,
                     'EmailAddress',
                     o.email_address,
-                    'Established',
-                    o.established,
-                    'Terminated',
-                    o.terminated,
+                    'EstablishmentDateFrom',
+                    lower(o.established),
+                    'EstablishmentDateTo',
+                    upper(o.established),
+                    'TerminationDateFrom',
+                    lower(o.terminated),
+                    'TerminationDateTo',
+                    upper(o.terminated),
                     'OrganizationOrganizationTypes',
                     (select document from organization_organization_types_document),
                     'OrganizationTypes',
@@ -70,6 +74,7 @@ public class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderF
                 ) document
             from node n
             join organization o on o.id = n.id
+            join nameable nm on nm.id = n.id
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;

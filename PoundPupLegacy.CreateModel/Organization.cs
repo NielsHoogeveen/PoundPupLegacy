@@ -2,10 +2,9 @@
 
 public interface Organization : Party
 {
-    string? WebsiteURL { get; }
+    string? WebsiteUrl { get; }
     string? EmailAddress { get; }
-    string Description { get; }
-    DateTime? Established { get; }
-    DateTime? Terminated { get; }
+    DateTimeRange? Established { get; }
+    DateTimeRange? Terminated { get; }
     List<OrganizationOrganizationType> OrganizationTypes { get; }
 }

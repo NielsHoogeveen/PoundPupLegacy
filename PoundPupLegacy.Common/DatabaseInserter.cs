@@ -8,7 +8,10 @@ public interface IDatabaseInserter<T>: IDatabaseInserter
 {
     Task InsertAsync(T item);
 }
-public interface IDatabaseInserterFactory<T>
+public interface IDatabaseInserterFactory 
+{ 
+}
+public interface IDatabaseInserterFactory<T>: IDatabaseInserterFactory
 {
     Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection);
 }

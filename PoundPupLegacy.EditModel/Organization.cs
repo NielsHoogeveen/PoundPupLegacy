@@ -1,18 +1,66 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using PoundPupLegacy.Common;
+
+namespace PoundPupLegacy.EditModel;
 
 public record Organization : Party
 {
-
     public int? NodeId { get; init; }
     public int? UrlId { get; set; }
     public required string Title { get; set; }
     public required int PublisherId { get; set; }
     public required int OwnerId { get; set; }
     public required string Description { get; set; }
-    public string? WebSiteUrl { get; init; }
-    public string? EmailAddress { get; init; }
-    public DateTime? Established { get; init; }
-    public DateTime? Terminated { get; init; }
+    public string? WebSiteUrl { get; set; }
+    public string? EmailAddress { get; set; }
+    public DateTime? EstablishmentDateFrom { get; init; }
+    public DateTime? EstablishmentDateTo { get; init; }
+    public DateTime? TerminationDateFrom { get; init; }
+    public DateTime? TerminationDateTo { get; init; }
+
+    private bool _establishmentSet;
+    private FuzzyDate? _establishment;
+    public FuzzyDate? Establishment {
+        get {
+            if (!_establishmentSet) {
+                if (EstablishmentDateFrom is not null && EstablishmentDateTo is not null) {
+                    var dateTimeRange = new DateTimeRange(EstablishmentDateFrom, EstablishmentDateTo);
+                    if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
+                        _establishment = result;
+                    }
+                }
+                else {
+                    _establishment = null;
+                }
+                _establishmentSet = true;
+            }
+            return _establishment;
+        }
+        set {
+            _establishment = value;
+        }
+    }
+    private bool _terminationSet;
+    private FuzzyDate? _termination;
+    public FuzzyDate? Termination {
+        get {
+            if (!_terminationSet) {
+                if (TerminationDateFrom is not null && TerminationDateTo is not null) {
+                    var dateTimeRange = new DateTimeRange(TerminationDateFrom, TerminationDateTo);
+                    if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
+                        _termination = result;
+                    }
+                }
+                else {
+                    _termination = null;
+                }
+                _terminationSet = true;
+            }
+            return _termination;
+        }
+        set {
+            _termination = value;
+        }
+    }
 
     public List<DocumentableDocument> documents = new();
     public List<DocumentableDocument> Documents {

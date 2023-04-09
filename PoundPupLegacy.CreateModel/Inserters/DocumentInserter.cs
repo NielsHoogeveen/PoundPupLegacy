@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document>
 {
     public override async Task<IDatabaseInserter<Document>> CreateAsync(IDbConnection connection)
