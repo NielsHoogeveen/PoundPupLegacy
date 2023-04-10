@@ -12,8 +12,8 @@ public sealed record BasicOrganization : Organization
     public required string? WebsiteUrl { get; init; }
     public required string? EmailAddress { get; init; }
     public required string Description { get; init; }
-    public required DateTimeRange? Established { get; init; }
-    public required DateTimeRange? Terminated { get; init; }
+    public required FuzzyDate? Established { get; init; }
+    public required FuzzyDate? Terminated { get; init; }
     public required List<VocabularyName> VocabularyNames { get; init; }
     public required int? FileIdTileImage { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }

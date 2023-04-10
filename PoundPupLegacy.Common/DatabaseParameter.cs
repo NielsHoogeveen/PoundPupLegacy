@@ -138,3 +138,15 @@ public record NonNullableTimeStampRangeDatabaseParameter : DatabaseParameter<Dat
 
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Unknown;
 }
+public record NullableFuzzyDateDatabaseParameter : DatabaseParameter<FuzzyDate?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Unknown;
+}
+
+public record NonNullableFuzzyDateDatabaseParameter : DatabaseParameter<FuzzyDate>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Unknown;
+}

@@ -90,7 +90,7 @@ internal sealed class DocumentMigratorPPL : MigratorPPL
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") ? null : reader.GetString("publication_date"));
+            var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") ? null : reader.GetString("publication_date"))?.ToFuzzyDate();
             var id = reader.GetInt32("id");
             yield return new Document {
                 Id = null,

@@ -4,7 +4,7 @@ public interface Organization : Party
 {
     string? WebsiteUrl { get; }
     string? EmailAddress { get; }
-    DateTimeRange? Established { get; }
-    DateTimeRange? Terminated { get; }
+    FuzzyDate? Established { get; }
+    FuzzyDate? Terminated { get; }
     List<OrganizationOrganizationType> OrganizationTypes { get; }
 }

@@ -4,8 +4,8 @@ internal sealed class OrganizationInserterFactory : DatabaseInserterFactory<Orga
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableStringDatabaseParameter WebsiteURL = new() { Name = "website_url" };
     internal static NullableStringDatabaseParameter EmailAddress = new() { Name = "email_address" };
-    internal static NullableTimeStampRangeDatabaseParameter Established = new() { Name = "established" };
-    internal static NullableTimeStampRangeDatabaseParameter Terminated = new() { Name = "terminated" };
+    internal static NullableFuzzyDateDatabaseParameter Established = new() { Name = "established" };
+    internal static NullableFuzzyDateDatabaseParameter Terminated = new() { Name = "terminated" };
 
 
     public override async Task<IDatabaseInserter<Organization>> CreateAsync(IDbConnection connection)

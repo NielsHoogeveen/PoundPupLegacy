@@ -2,7 +2,7 @@
 internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
-    internal static NullableTimeStampRangeDatabaseParameter Published = new() { Name = "published" };
+    internal static NullableFuzzyDateDatabaseParameter Published = new() { Name = "published" };
     internal static NullableStringDatabaseParameter SourceUrl = new() { Name = "source_url" };
     internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
     internal static NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };

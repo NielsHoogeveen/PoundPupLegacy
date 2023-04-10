@@ -166,6 +166,12 @@ public abstract class DatabaseWriter
         else if (parameter is NonNullableTimeStampRangeDatabaseParameter) {
             SetTimeStampRangeParameter(value as DateTimeRange, parameter.Name, command);
         }
+        else if (parameter is NullableFuzzyDateDatabaseParameter) {
+            SetTimeStampRangeParameter(value as DateTimeRange, parameter.Name, command);
+        }
+        else if (parameter is NonNullableFuzzyDateDatabaseParameter) {
+            SetTimeStampRangeParameter(value as DateTimeRange, parameter.Name, command);
+        }
         else {
             if (parameter.IsNullable) {
                 SetNullableParameter(value, parameter.Name, command);
