@@ -94,7 +94,9 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
 
 
         while (await reader.ReadAsync()) {
-            var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") ? null : reader.GetString("publication_date"));
+            var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") 
+                ? null 
+                : reader.GetString("publication_date"));
             var id = reader.GetInt32("id");
             var text = reader.GetString("text");
 

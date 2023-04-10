@@ -4,55 +4,38 @@ namespace PoundPupLegacy.CreateModel.Inserters;
 
 public class UserGroupInserterFactory : DatabaseInserterFactory<UserGroup>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    internal static NonNullableIntegerDatabaseParameter AdministratorRoleId = new() { Name = "administrator_role_id" };
+
     public override async Task<IDatabaseInserter<UserGroup>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var columnDefinitions = new ColumnDefinition[] {
-            new ColumnDefinition
-            {
-                Name = UserGroupInserter.NAME,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-            new ColumnDefinition
-            {
-                Name = UserGroupInserter.DESCRIPTION,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-            new ColumnDefinition{
-                Name = UserGroupInserter.ADMINISTRATOR_ROLE_ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-
+        var databaseParameters = new DatabaseParameter[] {
+            Name,
+            Description,
+            AdministratorRoleId
         };
 
         var identityInsertCommand = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "user_group",
-            columnDefinitions
+            databaseParameters
         );
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "user_group",
-            columnDefinitions.ToImmutableList().Add(
-                new ColumnDefinition {
-                    Name = UserGroupInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                })
+            databaseParameters.ToImmutableList().Add(Id)
         );
         return new UserGroupInserter(command, identityInsertCommand);
     }
 }
 public class UserGroupInserter : DatabaseInserter<UserGroup>
 {
-    internal const string ID = "id";
-    internal const string NAME = "name";
-    internal const string DESCRIPTION = "description";
-    internal const string ADMINISTRATOR_ROLE_ID = "administrator_role_id";
-
-
     private NpgsqlCommand _identityInsertCommand;
     internal UserGroupInserter(NpgsqlCommand command, NpgsqlCommand identityInsertCommand) : base(command)
     {
@@ -61,17 +44,19 @@ public class UserGroupInserter : DatabaseInserter<UserGroup>
 
     public override async Task InsertAsync(UserGroup userGroup)
     {
+        if (userGroup.AdministratorRole.Id is null)
+            throw new ArgumentNullException(nameof(userGroup.AdministratorRole.Id));
         if (userGroup.Id is not null) {
-            SetParameter(userGroup.Id, ID);
-            SetParameter(userGroup.Name, NAME);
-            SetParameter(userGroup.Description, DESCRIPTION);
-            SetParameter(userGroup.AdministratorRole.Id, ADMINISTRATOR_ROLE_ID);
+            Set(UserGroupInserterFactory.Id,userGroup.Id.Value);
+            Set(UserGroupInserterFactory.Name, userGroup.Name);
+            Set(UserGroupInserterFactory.Description, userGroup.Description);
+            Set(UserGroupInserterFactory.AdministratorRoleId, userGroup.AdministratorRole.Id.Value);
             await _command.ExecuteNonQueryAsync();
         }
         else {
-            SetParameter(userGroup.Name, NAME, _identityInsertCommand);
-            SetParameter(userGroup.Description, DESCRIPTION, _identityInsertCommand);
-            SetParameter(userGroup.AdministratorRole.Id, ADMINISTRATOR_ROLE_ID);
+            Set(UserGroupInserterFactory.Name, userGroup.Name);
+            Set(UserGroupInserterFactory.Description, userGroup.Description);
+            Set(UserGroupInserterFactory.AdministratorRoleId, userGroup.AdministratorRole.Id.Value);
             userGroup.Id = await _command.ExecuteScalarAsync() switch {
                 int i => i,
                 _ => throw new Exception("Insert of userGroup does not return an id.")

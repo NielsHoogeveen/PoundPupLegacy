@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class TermHierarchyInserterFactory : DatabaseInserterFactory<TermHierarchy>
 {
+    internal static NonNullableIntegerDatabaseParameter TermIdParent = new() { Name = "term_id_parent" };
+    internal static NonNullableIntegerDatabaseParameter TermIdChild = new() { Name = "term_id_child" };
+
     public override async Task<IDatabaseInserter<TermHierarchy>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class TermHierarchyInserterFactory : DatabaseInserterFactory<Ter
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "term_hierarchy",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = TermHierarchyInserter.TERM_ID_PARENT,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = TermHierarchyInserter.TERM_ID_CHILD,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                TermIdParent,
+                TermIdChild
             }
         );
         return new TermHierarchyInserter(command);
@@ -26,16 +23,14 @@ internal sealed class TermHierarchyInserterFactory : DatabaseInserterFactory<Ter
 }
 internal sealed class TermHierarchyInserter : DatabaseInserter<TermHierarchy>
 {
-    internal const string TERM_ID_PARENT = "term_id_parent";
-    internal const string TERM_ID_CHILD = "term_id_child";
     internal TermHierarchyInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(TermHierarchy termHierarchy)
     {
-        SetParameter(termHierarchy.TermIdPartent, TERM_ID_PARENT);
-        SetParameter(termHierarchy.TermIdChild, TERM_ID_CHILD);
+        Set(TermHierarchyInserterFactory.TermIdParent, termHierarchy.TermIdPartent);
+        Set(TermHierarchyInserterFactory.TermIdChild, termHierarchy.TermIdChild);
         await _command.ExecuteNonQueryAsync();
     }
 }

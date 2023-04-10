@@ -1,6 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class SenateTermInserterFactory : DatabaseInserterFactory<SenateTerm>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter SenatorId = new() { Name = "senator_id" };
+    internal static NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
+    internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+
+
     public override async Task<IDatabaseInserter<SenateTerm>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,23 +16,11 @@ internal sealed class SenateTermInserterFactory : DatabaseInserterFactory<Senate
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "senate_term",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = SenateTermInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SenateTermInserter.SENATOR_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SenateTermInserter.SUBDIVISION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SenateTermInserter.DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
+            new DatabaseParameter[] {
+                Id,
+                SenatorId,
+                SubdivisionId,
+                DateRange
             }
         );
         return new SenateTermInserter(command);
@@ -34,10 +28,6 @@ internal sealed class SenateTermInserterFactory : DatabaseInserterFactory<Senate
 }
 internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>
 {
-    internal const string ID = "id";
-    internal const string SENATOR_ID = "senator_id";
-    internal const string SUBDIVISION_ID = "subdivision_id";
-    internal const string DATE_RANGE = "date_range";
 
     internal SenateTermInserter(NpgsqlCommand command) : base(command)
     {
@@ -49,10 +39,10 @@ internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>
             throw new NullReferenceException();
         if (senateTerm.SenatorId is null)
             throw new NullReferenceException();
-        SetParameter(senateTerm.Id, ID);
-        SetParameter(senateTerm.SenatorId, SENATOR_ID);
-        SetParameter(senateTerm.SubdivisionId, SUBDIVISION_ID);
-        SetDateTimeRangeParameter(senateTerm.DateTimeRange, DATE_RANGE);
+        Set(SenateTermInserterFactory.Id, senateTerm.Id.Value);
+        Set(SenateTermInserterFactory.SenatorId, senateTerm.SenatorId.Value);
+        Set(SenateTermInserterFactory.SubdivisionId, senateTerm.SubdivisionId);
+        Set(SenateTermInserterFactory.DateRange, senateTerm.DateTimeRange);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -30,6 +30,18 @@ public abstract record DatabaseParameter
 public abstract record DatabaseParameter<T>: DatabaseParameter
 {
 }
+public record NullableBooleanDatabaseParameter : DatabaseParameter<bool?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Boolean;
+}
+public record NonNullableBooleanDatabaseParameter : DatabaseParameter<bool>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Boolean;
+}
+
 
 public record NullableIntegerDatabaseParameter : DatabaseParameter<int?>
 {
@@ -41,6 +53,17 @@ public record NonNullableIntegerDatabaseParameter : DatabaseParameter<int>
     public override bool IsNullable => false;
 
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
+}
+public record NullableDoubleDatabaseParameter : DatabaseParameter<double?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Double;
+}
+public record NonNullableDoubleDatabaseParameter : DatabaseParameter<double>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Double;
 }
 
 public record NullableStringDatabaseParameter : DatabaseParameter<string?>
@@ -54,6 +77,18 @@ public record NonNullableStringDatabaseParameter : DatabaseParameter<string>
     public override bool IsNullable => false;
 
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Varchar;
+}
+public record NullableFixedStringDatabaseParameter : DatabaseParameter<string?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Char;
+}
+
+public record NonNullableFixedStringDatabaseParameter : DatabaseParameter<string>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Char;
 }
 public record NullableDecimalDatabaseParameter : DatabaseParameter<decimal?>
 {
@@ -79,13 +114,25 @@ public record NonNullableDateTimeDatabaseParameter : DatabaseParameter<DateTime>
 
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Timestamp;
 }
-public record NullableDateTimeRangeDatabaseParameter : DatabaseParameter<DateTimeRange?>
+public record NullableDateRangeDatabaseParameter : DatabaseParameter<DateTimeRange?>
 {
     public override bool IsNullable => true;
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Unknown;
 }
 
-public record NonNullableDateTimeRangeDatabaseParameter : DatabaseParameter<DateTimeRange>
+public record NonNullableDateRangeDatabaseParameter : DatabaseParameter<DateTimeRange>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Unknown;
+}
+public record NullableTimeStampRangeDatabaseParameter : DatabaseParameter<DateTimeRange?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Unknown;
+}
+
+public record NonNullableTimeStampRangeDatabaseParameter : DatabaseParameter<DateTimeRange>
 {
     public override bool IsNullable => false;
 

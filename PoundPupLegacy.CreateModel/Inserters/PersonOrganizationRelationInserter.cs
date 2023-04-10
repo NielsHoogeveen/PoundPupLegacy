@@ -3,56 +3,41 @@
 namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class PersonOrganizationRelationInserterFactory : DatabaseInserterFactory<PersonOrganizationRelation>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
+    internal static NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
+    internal static NullableIntegerDatabaseParameter GeographicalEntityId = new() { Name = "geographical_entity_id" };
+    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    internal static NonNullableIntegerDatabaseParameter PersonOrganizationRelationTypeId = new() { Name = "person_organization_relation_type_id" };
+    internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    internal static NullableStringDatabaseParameter Description = new() { Name = "description" };
+
     public override async Task<IDatabaseInserter<PersonOrganizationRelation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var columnDefinitions = new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationInserter.PERSON_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationInserter.ORGANIZATION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationInserter.GEOGRAPHICAL_ENTITY_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationInserter.PERSON_ORGANIZATION_RELATION_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationInserter.DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationInserter.DOCUMENT_ID_PROOF,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationInserter.DESCRIPTION,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
+        var databaseParameters = new DatabaseParameter[] {
+            PersonId,
+            OrganizationId,
+            GeographicalEntityId,
+            DateRange,
+            PersonOrganizationRelationTypeId,
+            DocumentIdProof,
+            Description
             };
 
         var generateIdCommand = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "person_organization_relation",
-            columnDefinitions
+            databaseParameters
         );
 
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "person_organization_relation",
-            columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
-                Name = PersonOrganizationRelationInserter.ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            })
+            databaseParameters.ToImmutableList().Add(Id)
         );
         return new PersonOrganizationRelationInserter(command, generateIdCommand);
     }
@@ -60,14 +45,6 @@ internal sealed class PersonOrganizationRelationInserterFactory : DatabaseInsert
 internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<PersonOrganizationRelation>
 {
 
-    internal const string ID = "id";
-    internal const string PERSON_ID = "person_id";
-    internal const string ORGANIZATION_ID = "organization_id";
-    internal const string GEOGRAPHICAL_ENTITY_ID = "geographical_entity_id";
-    internal const string DATE_RANGE = "date_range";
-    internal const string PERSON_ORGANIZATION_RELATION_TYPE_ID = "person_organization_relation_type_id";
-    internal const string DOCUMENT_ID_PROOF = "document_id_proof";
-    internal const string DESCRIPTION = "description";
     private readonly NpgsqlCommand _generateIdCommand;
     internal PersonOrganizationRelationInserter(NpgsqlCommand command, NpgsqlCommand generateIdCommand) : base(command)
     {
@@ -80,13 +57,13 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
         if (personOrganizationRelation.PersonId is null) {
             throw new NullReferenceException(nameof(personOrganizationRelation.PersonId));
         }
-        SetParameter(personOrganizationRelation.PersonId, PERSON_ID, command);
-        SetParameter(personOrganizationRelation.OrganizationId, ORGANIZATION_ID, command);
-        SetNullableParameter(personOrganizationRelation.GeographicalEntityId, GEOGRAPHICAL_ENTITY_ID, command);
-        SetParameter(personOrganizationRelation.PersonOrganizationRelationTypeId, PERSON_ORGANIZATION_RELATION_TYPE_ID, command);
-        SetDateTimeRangeParameter(personOrganizationRelation.DateRange, DATE_RANGE, command);
-        SetNullableParameter(personOrganizationRelation.DocumentIdProof, DOCUMENT_ID_PROOF, command);
-        SetNullableParameter(personOrganizationRelation.Description, DESCRIPTION, command);
+        Set(PersonOrganizationRelationInserterFactory.PersonId, personOrganizationRelation.PersonId.Value, command);
+        Set(PersonOrganizationRelationInserterFactory.OrganizationId, personOrganizationRelation.OrganizationId, command);
+        Set(PersonOrganizationRelationInserterFactory.GeographicalEntityId, personOrganizationRelation.GeographicalEntityId, command);
+        Set(PersonOrganizationRelationInserterFactory.PersonOrganizationRelationTypeId, personOrganizationRelation.PersonOrganizationRelationTypeId, command);
+        Set(PersonOrganizationRelationInserterFactory.DateRange, personOrganizationRelation.DateRange, command);
+        Set(PersonOrganizationRelationInserterFactory.DocumentIdProof, personOrganizationRelation.DocumentIdProof, command);
+        Set(PersonOrganizationRelationInserterFactory.Description, personOrganizationRelation.Description, command);
     }
     public override async Task InsertAsync(PersonOrganizationRelation personOrganizationRelation)
     {
@@ -98,7 +75,7 @@ internal sealed class PersonOrganizationRelationInserter : DatabaseInserter<Pers
             };
         }
         else {
-            SetParameter(personOrganizationRelation.Id, ID);
+            Set(PersonOrganizationRelationInserterFactory.Id, personOrganizationRelation.Id.Value);
             DoWrites(personOrganizationRelation, _command);
             await _command.ExecuteNonQueryAsync();
         }

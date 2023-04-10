@@ -17,7 +17,7 @@ public sealed record AbuseCase : Case
     public required bool? HomeschoolingInvolved { get; init; }
     public required bool? FundamentalFaithInvolved { get; init; }
     public required bool? DisabilitiesInvolved { get; init; }
-    public required int? OwnerId { get; init; }
+    public required int OwnerId { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
 
 }

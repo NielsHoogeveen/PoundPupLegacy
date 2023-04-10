@@ -1,6 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class InterCountryRelationInserterFactory : DatabaseInserterFactory<InterCountryRelation>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter CountryIdFrom = new() { Name = "country_id_from" };
+    internal static NonNullableIntegerDatabaseParameter CountryIdTo = new() { Name = "country_id_to" };
+    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    internal static NullableIntegerDatabaseParameter NumberOfChildrenInvolved = new() { Name = "number_of_children_involved" };
+    internal static NullableDecimalDatabaseParameter MoneyInvolved = new() { Name = "money_involved" };
+    internal static NonNullableIntegerDatabaseParameter InterCountryRelationTypeId = new() { Name = "inter_country_relation_type_id" };
+    internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+
     public override async Task<IDatabaseInserter<InterCountryRelation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,57 +19,22 @@ internal sealed class InterCountryRelationInserterFactory : DatabaseInserterFact
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "inter_country_relation",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = InterCountryRelationInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterCountryRelationInserter.COUNTRY_ID_FROM,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterCountryRelationInserter.COUNTRY_ID_TO,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterCountryRelationInserter.NUMBER_OF_CHILDREN_INVOLVED,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterCountryRelationInserter.MONEY_INVOLVED,
-                    NpgsqlDbType = NpgsqlDbType.Numeric
-                },
-                new ColumnDefinition{
-                    Name = InterCountryRelationInserter.DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
-                new ColumnDefinition{
-                    Name = InterCountryRelationInserter.DOCUMENT_ID_PROOF,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterCountryRelationInserter.INTER_COUNTRY_RELATION_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                CountryIdFrom,
+                CountryIdTo,
+                DateRange,
+                NumberOfChildrenInvolved,
+                MoneyInvolved,
+                InterCountryRelationTypeId,
+                DocumentIdProof
             }
         );
         return new InterCountryRelationInserter(command);
     }
-
 }
 internal sealed class InterCountryRelationInserter : DatabaseInserter<InterCountryRelation>
 {
-
-    internal const string ID = "id";
-    internal const string COUNTRY_ID_FROM = "country_id_from";
-    internal const string COUNTRY_ID_TO = "country_id_to";
-    internal const string DATE_RANGE = "date_range";
-    internal const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
-    internal const string MONEY_INVOLVED = "money_involved";
-    internal const string INTER_COUNTRY_RELATION_TYPE_ID = "inter_country_relation_type_id";
-    internal const string DOCUMENT_ID_PROOF = "document_id_proof";
-
     internal InterCountryRelationInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -69,15 +43,14 @@ internal sealed class InterCountryRelationInserter : DatabaseInserter<InterCount
     {
         if (interCountryRelation.Id is null)
             throw new NullReferenceException();
-        SetParameter(interCountryRelation.Id, ID);
-        SetParameter(interCountryRelation.CountryIdFrom, COUNTRY_ID_FROM);
-        SetParameter(interCountryRelation.CountryIdTo, COUNTRY_ID_TO);
-        SetDateTimeRangeParameter(interCountryRelation.DateTimeRange, DATE_RANGE);
-        SetParameter(interCountryRelation.InterCountryRelationTypeId, INTER_COUNTRY_RELATION_TYPE_ID);
-        SetNullableParameter(interCountryRelation.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
-        SetNullableParameter(interCountryRelation.MoneyInvolved, MONEY_INVOLVED);
-        SetNullableParameter(interCountryRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
+        Set(InterCountryRelationInserterFactory.Id, interCountryRelation.Id.Value);
+        Set(InterCountryRelationInserterFactory.CountryIdFrom, interCountryRelation.CountryIdFrom);
+        Set(InterCountryRelationInserterFactory.CountryIdTo, interCountryRelation.CountryIdTo);
+        Set(InterCountryRelationInserterFactory.DateRange, interCountryRelation.DateTimeRange);
+        Set(InterCountryRelationInserterFactory.InterCountryRelationTypeId, interCountryRelation.InterCountryRelationTypeId);
+        Set(InterCountryRelationInserterFactory.NumberOfChildrenInvolved, interCountryRelation.NumberOfChildrenInvolved);
+        Set(InterCountryRelationInserterFactory.MoneyInvolved, interCountryRelation.MoneyInvolved);
+        Set(InterCountryRelationInserterFactory.DocumentIdProof, interCountryRelation.DocumentIdProof);
         await _command.ExecuteNonQueryAsync();
     }
-
 }

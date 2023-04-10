@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class PersonOrganizationRelationTypeInserterFactory : DatabaseInserterFactory<PersonOrganizationRelationType>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
+
     public override async Task<IDatabaseInserter<PersonOrganizationRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class PersonOrganizationRelationTypeInserterFactory : DatabaseIn
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "person_organization_relation_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationTypeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonOrganizationRelationTypeInserter.HAS_CONCRETE_SUBTYPE,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
+            new DatabaseParameter[] {
+                Id,
+                HasConcreteSubtype
             }
         );
         return new PersonOrganizationRelationTypeInserter(command);
@@ -26,9 +23,6 @@ internal sealed class PersonOrganizationRelationTypeInserterFactory : DatabaseIn
 }
 internal sealed class PersonOrganizationRelationTypeInserter : DatabaseInserter<PersonOrganizationRelationType>
 {
-    internal const string ID = "id";
-    internal const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
-
     internal PersonOrganizationRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -38,8 +32,8 @@ internal sealed class PersonOrganizationRelationTypeInserter : DatabaseInserter<
         if (personOrganizationRelationType.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(personOrganizationRelationType.Id, ID);
-        SetParameter(personOrganizationRelationType.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
+        Set(PersonOrganizationRelationTypeInserterFactory.Id, personOrganizationRelationType.Id.Value);
+        Set(PersonOrganizationRelationTypeInserterFactory.HasConcreteSubtype, personOrganizationRelationType.HasConcreteSubtype);
         await _command.ExecuteNonQueryAsync();
     }
 }

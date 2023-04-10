@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class TopLevelCountryInserterFactory : DatabaseInserterFactory<TopLevelCountry> 
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableFixedStringDatabaseParameter ISO3166_1_code = new() { Name = "iso_3166_1_code" };
+    internal static NonNullableIntegerDatabaseParameter GlobalRegionId = new() { Name = "global_region_id" };
+
     public override async Task<IDatabaseInserter<TopLevelCountry>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class TopLevelCountryInserterFactory : DatabaseInserterFactory<T
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "top_level_country",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = TopLevelCountryInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = TopLevelCountryInserter.ISO_3166_1_CODE,
-                    NpgsqlDbType = NpgsqlDbType.Char
-                },
-                new ColumnDefinition{
-                    Name = TopLevelCountryInserter.GLOBAL_REGION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                ISO3166_1_code,
+                GlobalRegionId
             }
         );
         return new TopLevelCountryInserter(command);
@@ -30,9 +25,6 @@ internal sealed class TopLevelCountryInserterFactory : DatabaseInserterFactory<T
 }
 internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry>
 {
-    internal const string ID = "id";
-    internal const string ISO_3166_1_CODE = "iso_3166_1_code";
-    internal const string GLOBAL_REGION_ID = "global_region_id";
 
     internal TopLevelCountryInserter(NpgsqlCommand command) : base(command)
     {
@@ -42,9 +34,9 @@ internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry
     {
         if (country.Id is null)
             throw new NullReferenceException();
-        SetParameter(country.Id, ID);
-        SetParameter(country.ISO3166_1_Code, ISO_3166_1_CODE);
-        SetParameter(country.SecondLevelRegionId, GLOBAL_REGION_ID);
+        Set(TopLevelCountryInserterFactory.Id, country.Id.Value);
+        Set(TopLevelCountryInserterFactory.ISO3166_1_code, country.ISO3166_1_Code);
+        Set(TopLevelCountryInserterFactory.GlobalRegionId, country.SecondLevelRegionId);
         await _command.ExecuteNonQueryAsync();
     }
 }

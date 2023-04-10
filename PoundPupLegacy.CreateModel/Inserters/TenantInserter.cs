@@ -1,6 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class TenantInserterFactory : DatabaseInserterFactory<Tenant>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter DomainName = new() { Name = "domain_name" };
+    internal static NullableIntegerDatabaseParameter VocabularyIdTagging = new() { Name = "vocabulary_id_tagging" };
+    internal static NonNullableIntegerDatabaseParameter AccessRoleIdNotLoggedIn = new() { Name = "access_role_id_not_logged_in" };
+
     public override async Task<IDatabaseInserter<Tenant>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,23 +15,11 @@ internal sealed class TenantInserterFactory : DatabaseInserterFactory<Tenant>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "tenant",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = TenantInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = TenantInserter.DOMAIN_NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = TenantInserter.VOCABULARY_ID_TAGGING,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = TenantInserter.ACCESS_ROLE_ID_NOT_LOGGED_IN,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                DomainName,
+                VocabularyIdTagging,
+                AccessRoleIdNotLoggedIn
             }
         );
         return new TenantInserter(command);
@@ -34,12 +27,6 @@ internal sealed class TenantInserterFactory : DatabaseInserterFactory<Tenant>
 }
 internal sealed class TenantInserter : DatabaseInserter<Tenant>
 {
-    internal const string ID = "id";
-    internal const string DOMAIN_NAME = "domain_name";
-    internal const string VOCABULARY_ID_TAGGING = "vocabulary_id_tagging";
-    internal const string ACCESS_ROLE_ID_NOT_LOGGED_IN = "access_role_id_not_logged_in";
-
-
     internal TenantInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -48,10 +35,13 @@ internal sealed class TenantInserter : DatabaseInserter<Tenant>
     {
         if (@tenant.Id is null)
             throw new NullReferenceException();
-        SetParameter(@tenant.Id, ID);
-        SetParameter(@tenant.DomainName, DOMAIN_NAME);
-        SetNullableParameter(@tenant.VocabularyIdTagging, VOCABULARY_ID_TAGGING);
-        SetParameter(@tenant.AccessRoleNotLoggedIn.Id, ACCESS_ROLE_ID_NOT_LOGGED_IN);
+        if (@tenant.AccessRoleNotLoggedIn.Id is null)
+            throw new NullReferenceException();
+
+        Set(TenantInserterFactory.Id, @tenant.Id.Value);
+        Set(TenantInserterFactory.DomainName, @tenant.DomainName);
+        Set(TenantInserterFactory.VocabularyIdTagging, @tenant.VocabularyIdTagging);
+        Set(TenantInserterFactory.AccessRoleIdNotLoggedIn, @tenant.AccessRoleNotLoggedIn.Id.Value);
         await _command.ExecuteNonQueryAsync();
     }
 }

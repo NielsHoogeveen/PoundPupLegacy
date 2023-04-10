@@ -1,6 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class HouseTermInserterFactory : DatabaseInserterFactory<HouseTerm>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
+    internal static NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
+    internal static NullableIntegerDatabaseParameter District = new() { Name = "district" };
+    internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+
     public override async Task<IDatabaseInserter<HouseTerm>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,27 +16,12 @@ internal sealed class HouseTermInserterFactory : DatabaseInserterFactory<HouseTe
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "house_term",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = HouseTermInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = HouseTermInserter.REPRESENTATIVE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = HouseTermInserter.SUBDIVISION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = HouseTermInserter.DISTRICT,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = HouseTermInserter.DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
+            new DatabaseParameter[] {
+                Id,
+                RepresentativeId,
+                SubdivisionId,
+                District,
+                DateRange
             }
         );
         return new HouseTermInserter(command);
@@ -40,11 +31,6 @@ internal sealed class HouseTermInserterFactory : DatabaseInserterFactory<HouseTe
 }
 internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>
 {
-    internal const string ID = "id";
-    internal const string REPRESENTATIVE_ID = "representative_id";
-    internal const string SUBDIVISION_ID = "subdivision_id";
-    internal const string DISTRICT = "district";
-    internal const string DATE_RANGE = "date_range";
 
     internal HouseTermInserter(NpgsqlCommand command) : base(command)
     {
@@ -56,11 +42,11 @@ internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>
             throw new NullReferenceException();
         if (houseTerm.RepresentativeId is null)
             throw new NullReferenceException();
-        SetParameter(houseTerm.Id, ID);
-        SetParameter(houseTerm.RepresentativeId, REPRESENTATIVE_ID);
-        SetParameter(houseTerm.SubdivisionId, SUBDIVISION_ID);
-        SetNullableParameter(houseTerm.District, DISTRICT);
-        SetDateTimeRangeParameter(houseTerm.DateTimeRange, DATE_RANGE);
+        Set(HouseTermInserterFactory.Id, houseTerm.Id.Value);
+        Set(HouseTermInserterFactory.RepresentativeId, houseTerm.RepresentativeId.Value);
+        Set(HouseTermInserterFactory.SubdivisionId, houseTerm.SubdivisionId);
+        Set(HouseTermInserterFactory.District, houseTerm.District);
+        Set(HouseTermInserterFactory.DateRange, houseTerm.DateTimeRange);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -2,6 +2,13 @@
 
 internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCase>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter ChildPlacementTypeId = new() { Name = "child_placement_type_id" };
+    internal static NullableIntegerDatabaseParameter FamilySizeId = new() { Name = "family_size_id" };
+    internal static NullableBooleanDatabaseParameter HomeSchoolingInvolved = new() { Name = "home_schooling_involved" };
+    internal static NullableBooleanDatabaseParameter FundamentalFaithInvolved = new() { Name = "fundamental_faith_involved" };
+    internal static NullableBooleanDatabaseParameter DisabilitiesInvolved = new() { Name = "disabilities_involved" };
+
     public override async Task<IDatabaseInserter<AbuseCase>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -11,31 +18,13 @@ internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCa
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "abuse_case",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = AbuseCaseInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = AbuseCaseInserter.CHILD_PLACEMENT_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = AbuseCaseInserter.FAMILY_SIZE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = AbuseCaseInserter.HOME_SCHOOLING_INVOLVED,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
-                new ColumnDefinition{
-                    Name = AbuseCaseInserter.FUNDAMENTAL_FAITH_INVOLVED,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
-                new ColumnDefinition{
-                    Name = AbuseCaseInserter.DISABILITIES_INVOLVED,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
+            new DatabaseParameter[] {
+                Id, 
+                ChildPlacementTypeId, 
+                FamilySizeId, 
+                HomeSchoolingInvolved, 
+                FundamentalFaithInvolved, 
+                DisabilitiesInvolved
             }
         );
         return new AbuseCaseInserter(command);
@@ -45,12 +34,6 @@ internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCa
 }
 internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>
 {
-    internal const string ID = "id";
-    internal const string CHILD_PLACEMENT_TYPE_ID = "child_placement_type_id";
-    internal const string FAMILY_SIZE_ID = "family_size_id";
-    internal const string HOME_SCHOOLING_INVOLVED = "home_schooling_involved";
-    internal const string FUNDAMENTAL_FAITH_INVOLVED = "fundamental_faith_involved";
-    internal const string DISABILITIES_INVOLVED = "disabilities_involved";
 
     internal AbuseCaseInserter(NpgsqlCommand command) : base(command)
     {
@@ -60,12 +43,12 @@ internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>
     {
         if (abuseCase.Id is null)
             throw new NullReferenceException();
-        SetParameter(abuseCase.Id, ID);
-        SetParameter(abuseCase.ChildPlacementTypeId, CHILD_PLACEMENT_TYPE_ID);
-        SetNullableParameter(abuseCase.FamilySizeId, FAMILY_SIZE_ID);
-        SetNullableParameter(abuseCase.HomeschoolingInvolved, HOME_SCHOOLING_INVOLVED);
-        SetNullableParameter(abuseCase.FundamentalFaithInvolved, FUNDAMENTAL_FAITH_INVOLVED);
-        SetNullableParameter(abuseCase.DisabilitiesInvolved, DISABILITIES_INVOLVED);
+        Set(AbuseCaseInserterFactory.Id, abuseCase.Id.Value);
+        Set(AbuseCaseInserterFactory.ChildPlacementTypeId,abuseCase.ChildPlacementTypeId);
+        Set(AbuseCaseInserterFactory.FamilySizeId, abuseCase.FamilySizeId);
+        Set(AbuseCaseInserterFactory.HomeSchoolingInvolved, abuseCase.HomeschoolingInvolved);
+        Set(AbuseCaseInserterFactory.FundamentalFaithInvolved, abuseCase.FundamentalFaithInvolved);
+        Set(AbuseCaseInserterFactory.DisabilitiesInvolved, abuseCase.DisabilitiesInvolved);
         await _command.ExecuteNonQueryAsync();
     }
 }

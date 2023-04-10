@@ -7,7 +7,7 @@ public record PersonOrganizationRelation : Node
     public required DateTime CreatedDateTime { get; init; }
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
-    public required int? OwnerId { get; init; }
+    public required int OwnerId { get; init; }
     public required int NodeTypeId { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
     public required int? PersonId { get; set; }

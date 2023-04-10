@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class DeportationCaseInserterFactory : DatabaseInserterFactory<DeportationCase>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullableIntegerDatabaseParameter SubdivisionIdFrom = new() { Name = "subdivision_id_from" };
+    internal static NullableIntegerDatabaseParameter CountryIdTo = new() { Name = "country_id_to" };
+
     public override async Task<IDatabaseInserter<DeportationCase>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class DeportationCaseInserterFactory : DatabaseInserterFactory<D
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "deportation_case",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = DeportationCaseInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = DeportationCaseInserter.SUBDIVISION_ID_FROM,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = DeportationCaseInserter.COUNTRY_ID_TO,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                SubdivisionIdFrom,
+                CountryIdTo
             }
         );
         return new DeportationCaseInserter(command);
@@ -31,9 +26,6 @@ internal sealed class DeportationCaseInserterFactory : DatabaseInserterFactory<D
 
 internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase>
 {
-    internal const string ID = "id";
-    internal const string SUBDIVISION_ID_FROM = "subdivision_id_from";
-    internal const string COUNTRY_ID_TO = "country_id_to";
 
     internal DeportationCaseInserter(NpgsqlCommand command) : base(command)
     {
@@ -44,9 +36,9 @@ internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase
         if (deportationCase.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(deportationCase.Id, ID);
-        SetNullableParameter(deportationCase.SubdivisionIdFrom, SUBDIVISION_ID_FROM);
-        SetNullableParameter(deportationCase.CountryIdTo, COUNTRY_ID_TO);
+        Set(DeportationCaseInserterFactory.Id, deportationCase.Id.Value);
+        Set(DeportationCaseInserterFactory.SubdivisionIdFrom, deportationCase.SubdivisionIdFrom);
+        Set(DeportationCaseInserterFactory.CountryIdTo, deportationCase.CountryIdTo);
         await _command.ExecuteNonQueryAsync();
     }
 }

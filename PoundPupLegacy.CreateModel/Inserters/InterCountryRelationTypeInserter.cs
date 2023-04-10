@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class InterCountryRelationTypeInserterFactory : DatabaseInserterFactory<InterCountryRelationType>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
+
     public override async Task<IDatabaseInserter<InterCountryRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class InterCountryRelationTypeInserterFactory : DatabaseInserter
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "inter_country_relation_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = InterCountryRelationTypeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterCountryRelationTypeInserter.IS_SYMMETRIC,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
+            new DatabaseParameter[] {
+                Id,
+                IsSymmetric
             }
         );
         return new InterCountryRelationTypeInserter(command);
@@ -27,10 +24,6 @@ internal sealed class InterCountryRelationTypeInserterFactory : DatabaseInserter
 }
 internal sealed class InterCountryRelationTypeInserter : DatabaseInserter<InterCountryRelationType>
 {
-    internal const string ID = "id";
-    internal const string IS_SYMMETRIC = "is_symmetric";
-
-
     internal InterCountryRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -39,8 +32,8 @@ internal sealed class InterCountryRelationTypeInserter : DatabaseInserter<InterC
     {
         if (interCountryRelationType.Id is null)
             throw new NullReferenceException();
-        SetParameter(interCountryRelationType.Id, ID);
-        SetParameter(interCountryRelationType.IsSymmetric, IS_SYMMETRIC);
+        Set(InterCountryRelationTypeInserterFactory.Id, interCountryRelationType.Id.Value);
+        Set(InterCountryRelationTypeInserterFactory.IsSymmetric, interCountryRelationType.IsSymmetric);
         await _command.ExecuteNonQueryAsync();
     }
 

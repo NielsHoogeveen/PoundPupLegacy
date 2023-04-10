@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class TenantNodeMenuItemInserterFactory : DatabaseInserterFactory<TenantNodeMenuItem>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static NonNullableIntegerDatabaseParameter TenantNodeId = new() { Name = "tenant_node_id" };
+
     public override async Task<IDatabaseInserter<TenantNodeMenuItem>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class TenantNodeMenuItemInserterFactory : DatabaseInserterFactor
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "tenant_node_menu_item",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = TenantNodeMenuItemInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = TenantNodeMenuItemInserter.NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = TenantNodeMenuItemInserter.TENANT_NODE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                Name,
+                TenantNodeId
             }
         );
         return new TenantNodeMenuItemInserter(command);
@@ -30,20 +25,17 @@ internal sealed class TenantNodeMenuItemInserterFactory : DatabaseInserterFactor
 }
 internal sealed class TenantNodeMenuItemInserter : DatabaseInserter<TenantNodeMenuItem>
 {
-
-    internal const string ID = "id";
-    internal const string NAME = "name";
-    internal const string TENANT_NODE_ID = "tenant_node_id";
-
     internal TenantNodeMenuItemInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(TenantNodeMenuItem tenantNodeMenuItem)
     {
-        SetParameter(tenantNodeMenuItem.Id, ID);
-        SetParameter(tenantNodeMenuItem.Name, NAME);
-        SetParameter(tenantNodeMenuItem.TenantNodeId, TENANT_NODE_ID);
+        if (tenantNodeMenuItem.Id is null)
+            throw new NullReferenceException();
+        Set(TenantNodeMenuItemInserterFactory.Id, tenantNodeMenuItem.Id.Value);
+        Set(TenantNodeMenuItemInserterFactory.Name, tenantNodeMenuItem.Name);
+        Set(TenantNodeMenuItemInserterFactory.TenantNodeId, tenantNodeMenuItem.TenantNodeId);
         await _command.ExecuteNonQueryAsync();
     }
 }

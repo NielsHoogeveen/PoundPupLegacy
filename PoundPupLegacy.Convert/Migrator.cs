@@ -146,20 +146,22 @@ internal abstract class Migrator
             return null;
         }
         if (DateTime.TryParse(str, out var dt)) {
-            return new DateTimeRange(dt, dt);
+            var dateFrom = dt.Date;
+            var dateTo = dateFrom.AddDays(1).AddMilliseconds(-1);
+            return new DateTimeRange(dateFrom, dateTo);
         }
         else {
             if (str.Substring(5, 2) == "00") {
-                var year = str.Substring(0, 4);
-                var dateFrom = DateTime.Parse($"{year}-01-01");
-                var dateTo = DateTime.Parse($"{year}-12-31");
+                var year = int.Parse(str.Substring(0, 4));
+                var dateFrom = new DateTime(year, 1, 1);
+                var dateTo = dateFrom.AddYears(1).AddMilliseconds(-1);
                 return new DateTimeRange(dateFrom, dateTo);
             }
             if (str.Substring(8, 2) == "00") {
-                var year = str.Substring(0, 4);
-                var month = str.Substring(5, 2);
-                var dateFrom = DateTime.Parse($"{year}-{month}-01");
-                var dateTo = DateTime.Parse($"{year}-{month}-{LastDayOfMonth(month, int.Parse(year))}");
+                var year = int.Parse(str.Substring(0, 4));
+                var month = int.Parse(str.Substring(5, 2));
+                var dateFrom = new DateTime(year, month,1);
+                var dateTo = dateFrom.AddMonths(1).AddMilliseconds(-1);
                 return new DateTimeRange(dateFrom, dateTo);
             }
             throw new NotSupportedException($"Cannot convert {str} to a date time range");

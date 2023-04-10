@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class SimpleTextNodeInserterFactory : DatabaseInserterFactory<SimpleTextNode>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    internal static NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
+
     public override async Task<IDatabaseInserter<SimpleTextNode>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class SimpleTextNodeInserterFactory : DatabaseInserterFactory<Si
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "simple_text_node",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = SimpleTextNodeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SimpleTextNodeInserter.TEXT,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = SimpleTextNodeInserter.TEASER,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
+            new DatabaseParameter[] {
+                Id,
+                Text,
+                Teaser
             }
         );
         return new SimpleTextNodeInserter(command);
@@ -30,9 +25,6 @@ internal sealed class SimpleTextNodeInserterFactory : DatabaseInserterFactory<Si
 }
 internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>
 {
-    internal const string ID = "id";
-    internal const string TEXT = "text";
-    internal const string TEASER = "teaser";
 
     internal SimpleTextNodeInserter(NpgsqlCommand command) : base(command)
     {
@@ -43,9 +35,9 @@ internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>
         if (simpleTextNode.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(simpleTextNode.Id, ID);
-        SetParameter(simpleTextNode.Text, TEXT);
-        SetParameter(simpleTextNode.Teaser, TEASER);
+        Set(SimpleTextNodeInserterFactory.Id, simpleTextNode.Id.Value);
+        Set(SimpleTextNodeInserterFactory.Text, simpleTextNode.Text);
+        Set(SimpleTextNodeInserterFactory.Teaser, simpleTextNode.Teaser);
         await _command.ExecuteNonQueryAsync();
     }
 }

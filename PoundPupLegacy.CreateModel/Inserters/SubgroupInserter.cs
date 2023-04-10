@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class SubgroupInserterFactory : DatabaseInserterFactory<Subgroup>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+
     public override async Task<IDatabaseInserter<Subgroup>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class SubgroupInserterFactory : DatabaseInserterFactory<Subgroup
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "subgroup",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = SubgroupInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SubgroupInserter.TENANT_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                TenantId
             }
         );
         return new SubgroupInserter(command);
@@ -26,9 +23,6 @@ internal sealed class SubgroupInserterFactory : DatabaseInserterFactory<Subgroup
 }
 internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>
 {
-    internal const string ID = "id";
-    internal const string TENANT_ID = "tenant_id";
-
     internal SubgroupInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -37,8 +31,8 @@ internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>
     {
         if (subgroup.Id is null)
             throw new NullReferenceException();
-        SetParameter(subgroup.Id, ID);
-        SetParameter(subgroup.TenantId, TENANT_ID);
+        Set(SubgroupInserterFactory.Id, subgroup.Id.Value);
+        Set(SubgroupInserterFactory.TenantId, subgroup.TenantId);
         await _command.ExecuteNonQueryAsync();
     }
 }

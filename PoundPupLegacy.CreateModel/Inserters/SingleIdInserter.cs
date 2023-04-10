@@ -1,10 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
+internal static class SingleIdInserterFactory
+{
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+}
 internal abstract class SingleIdInserterFactory<T> : DatabaseInserterFactory<T>
     where T : Identifiable
 {
-    internal const string ID = "id";
-
     protected abstract string TableName { get; }
 
     protected abstract bool AutoGenerateIdentity { get; } 
@@ -15,22 +17,19 @@ internal abstract class SingleIdInserterFactory<T> : DatabaseInserterFactory<T>
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var columnDefinitions = new List<ColumnDefinition>();
+        var databaseParameters = new List<DatabaseParameter>();
         if (!AutoGenerateIdentity) {
-            columnDefinitions.Add(new ColumnDefinition {
-                Name = ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            });
+            databaseParameters.Add(SingleIdInserterFactory.Id);
         }
         var command = !AutoGenerateIdentity ?
             await CreateInsertStatementAsync(
             postgresConnection,
             TableName,
-            columnDefinitions
+            databaseParameters
         ) : await CreateIdentityInsertStatementAsync(
             postgresConnection,
             TableName,
-            columnDefinitions
+            databaseParameters
         );
         return new SingleIdInserter<T>(command, AutoGenerateIdentity, TableName);
 
@@ -40,7 +39,6 @@ internal abstract class SingleIdInserterFactory<T> : DatabaseInserterFactory<T>
 }
 internal sealed class SingleIdInserter<T> : DatabaseInserter<T> where T : Identifiable
 {
-    internal const string ID = "id";
 
     private readonly bool _autoGenerateIdentity;
     private readonly string _tableName;
@@ -55,7 +53,7 @@ internal sealed class SingleIdInserter<T> : DatabaseInserter<T> where T : Identi
         if (!_autoGenerateIdentity) {
             if (identifiable.Id is null)
                 throw new NullReferenceException($"Id for {_tableName} should not be null");
-            SetParameter(identifiable.Id, ID);
+            Set(SingleIdInserterFactory.Id, identifiable.Id.Value);
             await _command.ExecuteNonQueryAsync();
         }
         else {

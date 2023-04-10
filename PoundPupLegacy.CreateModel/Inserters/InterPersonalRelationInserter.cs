@@ -1,6 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class InterPersonalRelationInserterFactory : DatabaseInserterFactory<InterPersonalRelation>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter PersonIdFrom = new() { Name = "person_id_from" };
+    internal static NonNullableIntegerDatabaseParameter PersonIdTo = new() { Name = "person_id_to" };
+    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    internal static NonNullableIntegerDatabaseParameter InterPersonalRelationTypeId = new() { Name = "inter_personal_relation_type_id" };
+    internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+
     public override async Task<IDatabaseInserter<InterPersonalRelation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,31 +17,13 @@ internal sealed class InterPersonalRelationInserterFactory : DatabaseInserterFac
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "inter_personal_relation",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = InterPersonalRelationInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterPersonalRelationInserter.PERSON_ID_FROM,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterPersonalRelationInserter.PERSON_ID_TO,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterPersonalRelationInserter.INTER_ORGANIZATIONAL_RELATION_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterPersonalRelationInserter.DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
-                new ColumnDefinition{
-                    Name = InterPersonalRelationInserter.DOCUMENT_ID_PROOF,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                PersonIdFrom,
+                PersonIdTo,
+                DateRange,
+                InterPersonalRelationTypeId,
+                DocumentIdProof
             }
         );
         return new InterPersonalRelationInserter(command);
@@ -43,27 +32,20 @@ internal sealed class InterPersonalRelationInserterFactory : DatabaseInserterFac
 }
 internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPersonalRelation>
 {
-
-    internal const string ID = "id";
-    internal const string PERSON_ID_FROM = "person_id_from";
-    internal const string PERSON_ID_TO = "person_id_to";
-    internal const string DATE_RANGE = "date_range";
-    internal const string INTER_ORGANIZATIONAL_RELATION_TYPE_ID = "inter_personal_relation_type_id";
-    internal const string DOCUMENT_ID_PROOF = "document_id_proof";
-
-
     internal InterPersonalRelationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(InterPersonalRelation interPersonalRelation)
     {
-        SetParameter(interPersonalRelation.Id, ID);
-        SetParameter(interPersonalRelation.PersonIdFrom, PERSON_ID_FROM);
-        SetParameter(interPersonalRelation.PersonIdTo, PERSON_ID_TO);
-        SetParameter(interPersonalRelation.InterPersonalRelationTypeId, INTER_ORGANIZATIONAL_RELATION_TYPE_ID);
-        SetDateTimeRangeParameter(interPersonalRelation.DateRange, DATE_RANGE);
-        SetNullableParameter(interPersonalRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
+        if (interPersonalRelation.Id is null)
+            throw new NullReferenceException();
+        Set(InterPersonalRelationInserterFactory.Id, interPersonalRelation.Id.Value);
+        Set(InterPersonalRelationInserterFactory.PersonIdFrom, interPersonalRelation.PersonIdFrom);
+        Set(InterPersonalRelationInserterFactory.PersonIdTo, interPersonalRelation.PersonIdTo);
+        Set(InterPersonalRelationInserterFactory.InterPersonalRelationTypeId, interPersonalRelation.InterPersonalRelationTypeId);
+        Set(InterPersonalRelationInserterFactory.DateRange, interPersonalRelation.DateRange);
+        Set(InterPersonalRelationInserterFactory.DocumentIdProof, interPersonalRelation.DocumentIdProof);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -10,7 +10,7 @@ internal partial class MySqlToPostgresConverter
     {
 
         await TruncateDatabase();
-               
+
         await _serviceProvider.Migrate<PollStatusMigrator>();
         await _serviceProvider.Migrate<PublicationStatusMigrator>();
         await _serviceProvider.Migrate<NodeTypeMigrator>();

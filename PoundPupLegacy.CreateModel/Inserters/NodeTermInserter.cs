@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 public sealed class NodeTermInserterFactory : DatabaseInserterFactory<NodeTerm>
 {
+    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    internal static NonNullableIntegerDatabaseParameter TermId = new() { Name = "term_id" };
+
     public override async Task<IDatabaseInserter<NodeTerm>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ public sealed class NodeTermInserterFactory : DatabaseInserterFactory<NodeTerm>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "node_term",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = NodeTermInserter.NODE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = NodeTermInserter.TERM_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                NodeId,
+                TermId
             }
         );
         return new NodeTermInserter(command);
@@ -35,8 +32,8 @@ public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>
 
     public override async Task InsertAsync(NodeTerm nodeTerm)
     {
-        SetParameter(nodeTerm.NodeId, NODE_ID);
-        SetParameter(nodeTerm.TermId, TERM_ID);
+        Set(NodeTermInserterFactory.NodeId, nodeTerm.NodeId);
+        Set(NodeTermInserterFactory.TermId, nodeTerm.TermId);
         await _command.ExecuteNonQueryAsync();
     }
 }

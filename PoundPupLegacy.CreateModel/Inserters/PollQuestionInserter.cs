@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class PollQuestionInserterFactory : DatabaseInserterFactory<PollQuestion>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Question = new() { Name = "question" };
+
     public override async Task<IDatabaseInserter<PollQuestion>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class PollQuestionInserterFactory : DatabaseInserterFactory<Poll
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "poll_question",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PollQuestionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PollQuestionInserter.QUESTION,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
+            new DatabaseParameter[] {
+                Id,
+                Question
             }
         );
         return new PollQuestionInserter(command);
@@ -26,10 +23,6 @@ internal sealed class PollQuestionInserterFactory : DatabaseInserterFactory<Poll
 }
 internal sealed class PollQuestionInserter : DatabaseInserter<PollQuestion>
 {
-    internal const string ID = "id";
-    internal const string QUESTION = "question";
-
-    
     internal PollQuestionInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -38,8 +31,8 @@ internal sealed class PollQuestionInserter : DatabaseInserter<PollQuestion>
     {
         if (pollQuestion.Id is null)
             throw new NullReferenceException();
-        SetParameter(pollQuestion.Id, ID);
-        SetParameter(pollQuestion.Question, QUESTION);
+        Set(PollQuestionInserterFactory.Id, pollQuestion.Id.Value);
+        Set(PollQuestionInserterFactory.Question, pollQuestion.Question);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -33,7 +33,6 @@ internal partial class Program
         .Build();
         var converter = host.Services.GetRequiredService<MySqlToPostgresConverter>();
         await converter.Convert();
-        await host.RunAsync();
     }
 
 }

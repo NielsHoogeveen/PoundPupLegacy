@@ -1,9 +1,12 @@
-﻿using System.IO;
-
-namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
 internal sealed class BasicActionInserterFactory : DatabaseInserterFactory<BasicAction>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+
+
     public override async Task<IDatabaseInserter<BasicAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -13,19 +16,10 @@ internal sealed class BasicActionInserterFactory : DatabaseInserterFactory<Basic
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "basic_action",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = BasicActionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = BasicActionInserter.PATH,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = BasicActionInserter.DESCRIPTION,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
+            new DatabaseParameter[] {
+                Id,
+                Path,
+                Description
             }
         );
         return new BasicActionInserter(command);
@@ -36,9 +30,6 @@ internal sealed class BasicActionInserterFactory : DatabaseInserterFactory<Basic
 internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>
 {
 
-    internal const string ID = "id";
-    internal const string PATH = "path";
-    internal const string DESCRIPTION = "description";
 
     internal BasicActionInserter(NpgsqlCommand command) : base(command)
     {
@@ -49,9 +40,9 @@ internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>
         if (!actionAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();
         }
-        SetParameter(actionAccessPrivilege.Id!.Value, ID);
-        SetNullableParameter(actionAccessPrivilege.Path, PATH);
-        SetNullableParameter(actionAccessPrivilege.Description, DESCRIPTION);
+        Set(BasicActionInserterFactory.Id, actionAccessPrivilege.Id.Value);
+        Set(BasicActionInserterFactory.Path, actionAccessPrivilege.Path);
+        Set(BasicActionInserterFactory.Description, actionAccessPrivilege.Description);
         await _command.ExecuteNonQueryAsync();
     }
 }

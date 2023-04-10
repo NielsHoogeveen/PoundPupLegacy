@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class ProfessionalRoleInserterFactory : DatabaseInserterFactory<ProfessionalRole> 
 {
+    internal static NonNullableIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
+    internal static NonNullableIntegerDatabaseParameter ProfessionId = new() { Name = "profession_id" };
+    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "daterange" };
+
     public override async Task<IDatabaseInserter<ProfessionalRole>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class ProfessionalRoleInserterFactory : DatabaseInserterFactory<
         var command = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "professional_role",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ProfessionalRoleInserter.PERSON_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ProfessionalRoleInserter.PROFESSION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ProfessionalRoleInserter.DATERANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
+            new DatabaseParameter[] {
+                PersonId,
+                ProfessionId,
+                DateRange
             }
         );
         return new ProfessionalRoleInserter(command);
@@ -30,21 +25,17 @@ internal sealed class ProfessionalRoleInserterFactory : DatabaseInserterFactory<
 }
 internal sealed class ProfessionalRoleInserter : DatabaseInserter<ProfessionalRole>
 {
-    internal const string PERSON_ID = "person_id";
-    internal const string PROFESSION_ID = "profession_id";
-    internal const string DATERANGE = "daterange";
-
     internal ProfessionalRoleInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(ProfessionalRole professionalRole)
     {
-        if (professionalRole.Id is null)
+        if (professionalRole.PersonId is null)
             throw new NullReferenceException(nameof(professionalRole.Id));
-        SetParameter(professionalRole.PersonId, PERSON_ID);
-        SetParameter(professionalRole.ProfessionId, PROFESSION_ID);
-        SetDateTimeRangeParameter(professionalRole.DateTimeRange, DATERANGE);
+        Set(ProfessionalRoleInserterFactory.PersonId, professionalRole.PersonId.Value);
+        Set(ProfessionalRoleInserterFactory.ProfessionId, professionalRole.ProfessionId);
+        Set(ProfessionalRoleInserterFactory.DateRange, professionalRole.DateTimeRange);
         professionalRole.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("Insert of professional role does not return an id.")

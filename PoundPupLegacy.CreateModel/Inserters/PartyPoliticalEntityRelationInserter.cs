@@ -1,6 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class PartyPoliticalEntityRelationInserterFactory : DatabaseInserterFactory<PartyPoliticalEntityRelation>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter PoliticalEntityId = new() { Name = "political_entity_id" };
+    internal static NonNullableIntegerDatabaseParameter PartyId = new() { Name = "party_id" };
+    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    internal static NonNullableIntegerDatabaseParameter PartyPoliticalEntityRelationTypeId = new() { Name = "party_political_entity_relation_type_id" };
+    internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+
     public override async Task<IDatabaseInserter<PartyPoliticalEntityRelation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,31 +17,13 @@ internal sealed class PartyPoliticalEntityRelationInserterFactory : DatabaseInse
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "party_political_entity_relation",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PartyPoliticalEntityRelationInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PartyPoliticalEntityRelationInserter.PARTY_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PartyPoliticalEntityRelationInserter.POLITICAL_ENTITY_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PartyPoliticalEntityRelationInserter.PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PartyPoliticalEntityRelationInserter.DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
-                new ColumnDefinition{
-                    Name = PartyPoliticalEntityRelationInserter.DOCUMENT_ID_PROOF,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                PoliticalEntityId,
+                PartyId,
+                DateRange,
+                PartyPoliticalEntityRelationTypeId,
+                DocumentIdProof
             }
         );
         return new PartyPoliticalEntityRelationInserter(command);
@@ -44,26 +33,20 @@ internal sealed class PartyPoliticalEntityRelationInserterFactory : DatabaseInse
 }
 internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<PartyPoliticalEntityRelation>
 {
-
-    internal const string ID = "id";
-    internal const string POLITICAL_ENTITY_ID = "political_entity_id";
-    internal const string PARTY_ID = "party_id";
-    internal const string DATE_RANGE = "date_range";
-    internal const string PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID = "party_political_entity_relation_type_id";
-    internal const string DOCUMENT_ID_PROOF = "document_id_proof";
-
     internal PartyPoliticalEntityRelationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(PartyPoliticalEntityRelation partyPoliticalEntityRelation)
     {
-        SetParameter(partyPoliticalEntityRelation.Id, ID);
-        SetParameter(partyPoliticalEntityRelation.PartyId, PARTY_ID);
-        SetParameter(partyPoliticalEntityRelation.PoliticalEntityId, POLITICAL_ENTITY_ID);
-        SetParameter(partyPoliticalEntityRelation.PartyPoliticalEntityRelationTypeId, PARTY_POLITICAL_ENTITY_RELATION_TYPE_ID);
-        SetDateTimeRangeParameter(partyPoliticalEntityRelation.DateRange, DATE_RANGE);
-        SetNullableParameter(partyPoliticalEntityRelation.DocumentIdProof, DOCUMENT_ID_PROOF);
+        if (partyPoliticalEntityRelation.Id is null)
+            throw new NullReferenceException();
+        Set(PartyPoliticalEntityRelationInserterFactory.Id, partyPoliticalEntityRelation.Id.Value);
+        Set(PartyPoliticalEntityRelationInserterFactory.PartyId, partyPoliticalEntityRelation.PartyId);
+        Set(PartyPoliticalEntityRelationInserterFactory.PoliticalEntityId, partyPoliticalEntityRelation.PoliticalEntityId);
+        Set(PartyPoliticalEntityRelationInserterFactory.PartyPoliticalEntityRelationTypeId, partyPoliticalEntityRelation.PartyPoliticalEntityRelationTypeId);
+        Set(PartyPoliticalEntityRelationInserterFactory.DateRange, partyPoliticalEntityRelation.DateRange);
+        Set(PartyPoliticalEntityRelationInserterFactory.DocumentIdProof,partyPoliticalEntityRelation.DocumentIdProof);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class EditNodeActionInserterFactory : DatabaseInserterFactory<EditNodeAction>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+
     public override async Task<IDatabaseInserter<EditNodeAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class EditNodeActionInserterFactory : DatabaseInserterFactory<Ed
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "edit_node_action",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = EditNodeActionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = EditNodeActionInserter.NODE_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                NodeTypeId
             }
         );
         return new EditNodeActionInserter(command);
@@ -26,10 +23,6 @@ internal sealed class EditNodeActionInserterFactory : DatabaseInserterFactory<Ed
 }
 internal sealed class EditNodeActionInserter : DatabaseInserter<EditNodeAction>
 {
-
-    internal const string ID = "id";
-    internal const string NODE_TYPE_ID = "node_type_id";
-
     internal EditNodeActionInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -39,8 +32,8 @@ internal sealed class EditNodeActionInserter : DatabaseInserter<EditNodeAction>
         if (!editNodeAction.Id.HasValue) {
             throw new NullReferenceException();
         }
-        SetParameter(editNodeAction.Id.Value, ID);
-        SetNullableParameter(editNodeAction.NodeTypeId, NODE_TYPE_ID);
+        Set(EditNodeActionInserterFactory.Id, editNodeAction.Id.Value);
+        Set(EditNodeActionInserterFactory.NodeTypeId, editNodeAction.NodeTypeId);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -4,60 +4,42 @@ namespace PoundPupLegacy.CreateModel.Inserters;
 
 public class CommentInserterFactory : DatabaseInserterFactory<Comment>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    internal static NullableIntegerDatabaseParameter CommentIdParent = new() { Name = "comment_id_parent" };
+    internal static NonNullableIntegerDatabaseParameter PublisherId = new() { Name = "publisher_id" };
+    internal static NonNullableIntegerDatabaseParameter NodeStatusId = new() { Name = "node_status_id" };
+    internal static NonNullableStringDatabaseParameter IPAddress = new() { Name = "ip_address" };
+    internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
+    internal static NonNullableStringDatabaseParameter Title = new() { Name = "title" };
+    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+
     public override async Task<IDatabaseInserter<Comment>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var columnDefinitions = new ColumnDefinition[] {
-            new ColumnDefinition{
-                Name = CommentInserter.PUBLISHER_ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-            new ColumnDefinition{
-                Name = CommentInserter.NODE_ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-            new ColumnDefinition{
-                Name = CommentInserter.COMMENT_ID_PARENT,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-            new ColumnDefinition{
-                Name = CommentInserter.NODE_STATUS_ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-            new ColumnDefinition{
-                Name = CommentInserter.IP_ADDRESS,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-            new ColumnDefinition{
-                Name = CommentInserter.CREATED_DATE_TIME,
-                NpgsqlDbType = NpgsqlDbType.Timestamp
-            },
-            new ColumnDefinition{
-                Name = CommentInserter.TITLE,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-            new ColumnDefinition{
-                Name = CommentInserter.TEXT,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
+        var parameterDefinitions = new DatabaseParameter[] {
+            NodeId,
+            CommentIdParent,
+            PublisherId,
+            NodeStatusId,
+            IPAddress,
+            CreatedDateTime,
+            Title,
+            Text
         };
 
         var commandWithId = await CreateInsertStatementAsync(
             postgresConnection,
             "comment",
-            columnDefinitions.ToImmutableList().Prepend(
-                new ColumnDefinition {
-                    Name = CommentInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                })
+            parameterDefinitions.ToImmutableList().Prepend(Id)
         );
         var commandWithoutId = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "comment",
-            columnDefinitions
+            parameterDefinitions
         );
         return new CommentInserter(commandWithId, commandWithoutId);
     }
@@ -67,17 +49,6 @@ public class CommentInserterFactory : DatabaseInserterFactory<Comment>
 }
 public class CommentInserter : DatabaseInserter<Comment>
 {
-    internal const string ID = "id";
-    internal const string NODE_ID = "node_id";
-    internal const string COMMENT_ID_PARENT = "comment_id_parent";
-    internal const string PUBLISHER_ID = "publisher_id";
-    internal const string NODE_STATUS_ID = "node_status_id";
-    internal const string IP_ADDRESS = "ip_address";
-    internal const string CREATED_DATE_TIME = "created_date_time";
-    internal const string TITLE = "title";
-    internal const string TEXT = "text";
-
-
 
     private NpgsqlCommand _identityCommand { get; }
     internal CommentInserter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)
@@ -88,29 +59,29 @@ public class CommentInserter : DatabaseInserter<Comment>
     public override async Task InsertAsync(Comment node)
     {
         if (node.Id is null) {
-            SetParameter(node.NodeId, NODE_ID, _identityCommand);
-            SetNullableParameter(node.CommentIdParent, COMMENT_ID_PARENT, _identityCommand);
-            SetParameter(node.PublisherId, PUBLISHER_ID, _identityCommand);
-            SetParameter(node.NodeStatusId, NODE_STATUS_ID, _identityCommand);
-            SetParameter(node.IPAddress, IP_ADDRESS, _identityCommand);
-            SetParameter(node.CreatedDateTime, CREATED_DATE_TIME, _identityCommand);
-            SetParameter(node.Title, TITLE, _identityCommand);
-            SetParameter(node.Text, TEXT, _identityCommand);
+            Set(CommentInserterFactory.NodeId, node.NodeId, _identityCommand);
+            Set(CommentInserterFactory.CommentIdParent, node.CommentIdParent, _identityCommand);
+            Set(CommentInserterFactory.PublisherId, node.PublisherId, _identityCommand);
+            Set(CommentInserterFactory.NodeStatusId, node.NodeStatusId, _identityCommand);
+            Set(CommentInserterFactory.IPAddress, node.IPAddress, _identityCommand);
+            Set(CommentInserterFactory.CreatedDateTime, node.CreatedDateTime, _identityCommand);
+            Set(CommentInserterFactory.Title, node.Title, _identityCommand);
+            Set(CommentInserterFactory.Text, node.Text, _identityCommand);
             node.Id = await _identityCommand.ExecuteScalarAsync() switch {
                 int i => i,
                 _ => throw new Exception("Insert of node does not return an id.")
             };
         }
         else {
-            SetParameter(node.Id, ID);
-            SetParameter(node.NodeId, NODE_ID);
-            SetNullableParameter(node.CommentIdParent, COMMENT_ID_PARENT);
-            SetParameter(node.PublisherId, PUBLISHER_ID);
-            SetParameter(node.NodeStatusId, NODE_STATUS_ID);
-            SetParameter(node.IPAddress, IP_ADDRESS);
-            SetParameter(node.CreatedDateTime, CREATED_DATE_TIME);
-            SetParameter(node.Title, TITLE);
-            SetParameter(node.Text, TEXT);
+            Set(CommentInserterFactory.Id, node.Id.Value);
+            Set(CommentInserterFactory.NodeId, node.NodeId);
+            Set(CommentInserterFactory.CommentIdParent, node.CommentIdParent);
+            Set(CommentInserterFactory.PublisherId, node.PublisherId);
+            Set(CommentInserterFactory.NodeStatusId, node.NodeStatusId);
+            Set(CommentInserterFactory.IPAddress, node.IPAddress);
+            Set(CommentInserterFactory.CreatedDateTime, node.CreatedDateTime);
+            Set(CommentInserterFactory.Title, node.Title);
+            Set(CommentInserterFactory.Text, node.Text);
             await _command.ExecuteNonQueryAsync();
         }
     }

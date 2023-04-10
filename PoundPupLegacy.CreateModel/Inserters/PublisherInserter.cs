@@ -2,6 +2,9 @@
 
 public class PublisherInserterFactory : DatabaseInserterFactory<Publisher>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+
     public override async Task<IDatabaseInserter<Publisher>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -11,35 +14,27 @@ public class PublisherInserterFactory : DatabaseInserterFactory<Publisher>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "publisher",
-            new ColumnDefinition[] {
-            new ColumnDefinition
-            {
-                Name = PublisherInserter.ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-            new ColumnDefinition
-            {
-                Name = PublisherInserter.NAME,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-        });
+            new DatabaseParameter[] {
+                Id,
+                Name
+            }
+        );
         return new PublisherInserter(command);
     }
 
 }
 public class PublisherInserter : DatabaseInserter<Publisher>
 {
-    internal const string ID = "id";
-    internal const string NAME = "name";
-
     internal PublisherInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(Publisher publisher)
     {
-        SetParameter(publisher.Id, ID);
-        SetParameter(publisher.Name, NAME);
+        if (publisher.Id is null)
+            throw new NullReferenceException();
+        Set(PublisherInserterFactory.Id, publisher.Id.Value);
+        Set(PublisherInserterFactory.Name, publisher.Name);
         await _command.ExecuteNonQueryAsync();
     }
 }

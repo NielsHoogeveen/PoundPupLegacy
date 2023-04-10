@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class LocationLocatableInserterFactory : DatabaseInserterFactory<LocationLocatable>
 {
+    internal static NonNullableIntegerDatabaseParameter LocationId = new() { Name = "location_id" };
+    internal static NonNullableIntegerDatabaseParameter LocatableId = new() { Name = "locatable_id" };
+
     public override async Task<IDatabaseInserter<LocationLocatable>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class LocationLocatableInserterFactory : DatabaseInserterFactory
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "location_locatable",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = LocationLocatableInserter.LOCATION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = LocationLocatableInserter.LOCATABLE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                LocationId,
+                LocatableId
             }
         );
         return new LocationLocatableInserter(command);
@@ -26,17 +23,16 @@ internal sealed class LocationLocatableInserterFactory : DatabaseInserterFactory
 }
 internal sealed class LocationLocatableInserter : DatabaseInserter<LocationLocatable>
 {
-    internal const string LOCATION_ID = "location_id";
-    internal const string LOCATABLE_ID = "locatable_id";
-
     internal LocationLocatableInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(LocationLocatable locationLocatable)
     {
-        SetParameter(locationLocatable.LocationId, LOCATION_ID);
-        SetParameter(locationLocatable.LocatableId, LOCATABLE_ID);
+        if(locationLocatable.LocationId == null)
+            throw new NullReferenceException();
+        Set(LocationLocatableInserterFactory.LocationId, locationLocatable.LocationId.Value);
+        Set(LocationLocatableInserterFactory.LocatableId, locationLocatable.LocatableId);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -1,6 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class UserInserterFactory : DatabaseInserterFactory<User>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
+    internal static NullableStringDatabaseParameter AboutMe = new() { Name = "about_me" };
+    internal static NullableStringDatabaseParameter AnimalWithin = new() { Name = "animal_within" };
+    internal static NonNullableStringDatabaseParameter RelationToChildPlacement = new() { Name = "relation_to_child_placement" };
+    internal static NonNullableStringDatabaseParameter Email = new() { Name = "email" };
+    internal static NonNullableStringDatabaseParameter Password = new() { Name = "password" };
+    internal static NullableStringDatabaseParameter Avatar = new() { Name = "avatar" };
+    internal static NonNullableIntegerDatabaseParameter UserStatusId = new() { Name = "user_status_id" };
+
     public override async Task<IDatabaseInserter<User>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,43 +20,16 @@ internal sealed class UserInserterFactory : DatabaseInserterFactory<User>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "user",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = UserInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = UserInserter.CREATED_DATE_TIME,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
-                },
-                new ColumnDefinition{
-                    Name = UserInserter.ABOUT_ME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = UserInserter.ANIMAL_WITHIN,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = UserInserter.RELATION_TO_CHILD_PLACEMENT,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = UserInserter.EMAIL,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = UserInserter.PASSWORD,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = UserInserter.AVATAR,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = UserInserter.USER_STATUS_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                CreatedDateTime,
+                AboutMe,
+                AnimalWithin,
+                RelationToChildPlacement,
+                Email,
+                Password,
+                Avatar,
+                UserStatusId
             }
         );
         return new UserInserter(command);
@@ -54,16 +37,6 @@ internal sealed class UserInserterFactory : DatabaseInserterFactory<User>
 }
 internal sealed class UserInserter : DatabaseInserter<User>
 {
-    internal const string ID = "id";
-    internal const string CREATED_DATE_TIME = "created_date_time";
-    internal const string ABOUT_ME = "about_me";
-    internal const string ANIMAL_WITHIN = "animal_within";
-    internal const string RELATION_TO_CHILD_PLACEMENT = "relation_to_child_placement";
-    internal const string EMAIL = "email";
-    internal const string PASSWORD = "password";
-    internal const string AVATAR = "avatar";
-    internal const string USER_STATUS_ID = "user_status_id";
-
     internal UserInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -72,15 +45,15 @@ internal sealed class UserInserter : DatabaseInserter<User>
     {
         if (user.Id is null)
             throw new NullReferenceException();
-        SetParameter(user.Id, ID);
-        SetParameter(user.CreatedDateTime, CREATED_DATE_TIME);
-        SetParameter(user.Email, EMAIL);
-        SetParameter(user.Password, PASSWORD);
-        SetNullableParameter(user.AboutMe, ABOUT_ME);
-        SetNullableParameter(user.AnimalWithin, ANIMAL_WITHIN);
-        SetNullableParameter(user.RelationToChildPlacement, RELATION_TO_CHILD_PLACEMENT);
-        SetNullableParameter(user.Avatar, AVATAR);
-        SetParameter(user.UserStatusId, USER_STATUS_ID);
+        Set(UserInserterFactory.Id, user.Id.Value);
+        Set(UserInserterFactory.CreatedDateTime, user.CreatedDateTime);
+        Set(UserInserterFactory.Email, user.Email);
+        Set(UserInserterFactory.Password, user.Password);
+        Set(UserInserterFactory.AboutMe, user.AboutMe);
+        Set(UserInserterFactory.AnimalWithin, user.AnimalWithin);
+        Set(UserInserterFactory.RelationToChildPlacement, user.RelationToChildPlacement);
+        Set(UserInserterFactory.Avatar, user.Avatar);
+        Set(UserInserterFactory.UserStatusId, user.UserStatusId);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -1,8 +1,11 @@
-﻿using System.Xml.Linq;
-
-namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class SubdivisionInserterFactory : DatabaseInserterFactory<Subdivision>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    internal static NonNullableIntegerDatabaseParameter SubdivisionTypeId = new() { Name = "subdivision_type_id" };
+
     public override async Task<IDatabaseInserter<Subdivision>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -12,23 +15,11 @@ internal sealed class SubdivisionInserterFactory : DatabaseInserterFactory<Subdi
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "subdivision",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = SubdivisionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SubdivisionInserter.NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = SubdivisionInserter.COUNTRY_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SubdivisionInserter.SUBDIVISION_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                Name,
+                CountryId,
+                SubdivisionTypeId
             }
         );
         return new SubdivisionInserter(command);
@@ -36,12 +27,6 @@ internal sealed class SubdivisionInserterFactory : DatabaseInserterFactory<Subdi
 }
 internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>
 {
-    internal const string ID = "id";
-    internal const string NAME = "name";
-    internal const string COUNTRY_ID = "country_id";
-    internal const string SUBDIVISION_TYPE_ID = "subdivision_type_id";
-
-
     internal SubdivisionInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -51,10 +36,10 @@ internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>
         if (subdivision.Id is null)
             throw new NullReferenceException();
         try {
-            SetParameter(subdivision.Id, ID);
-            SetParameter(subdivision.Name.Trim(), NAME);
-            SetParameter(subdivision.CountryId, COUNTRY_ID);
-            SetParameter(subdivision.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
+            Set(SubdivisionInserterFactory.Id, subdivision.Id.Value);
+            Set(SubdivisionInserterFactory.Name, subdivision.Name.Trim());
+            Set(SubdivisionInserterFactory.CountryId, subdivision.CountryId);
+            Set(SubdivisionInserterFactory.SubdivisionTypeId, subdivision.SubdivisionTypeId);
             await _command.ExecuteNonQueryAsync();
         }
         catch (Exception ex) {

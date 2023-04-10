@@ -1,8 +1,11 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class PollOptionInserterFactory : DatabaseInserterFactory<PollOption>
 {
+    internal static NonNullableIntegerDatabaseParameter PollQuesyionId = new() { Name = "poll_question_id" };
+    internal static NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
+    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    internal static NonNullableIntegerDatabaseParameter NumberOfVotes = new() { Name = "number_of_votes" };
+
     public override async Task<IDatabaseInserter<PollOption>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -12,23 +15,11 @@ internal sealed class PollOptionInserterFactory : DatabaseInserterFactory<PollOp
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "poll_option",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PollOptionInserter.POLL_QUESTION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PollOptionInserter.DELTA,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PollOptionInserter.TEXT,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = PollOptionInserter.NUMBER_OF_VOTES,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                PollQuesyionId,
+                Delta,
+                Text,
+                NumberOfVotes
             }
         );
         return new PollOptionInserter(command);
@@ -36,11 +27,6 @@ internal sealed class PollOptionInserterFactory : DatabaseInserterFactory<PollOp
 }
 internal sealed class PollOptionInserter : DatabaseInserter<PollOption>
 {
-    internal const string POLL_QUESTION_ID = "poll_question_id";
-    internal const string DELTA = "delta";
-    internal const string TEXT = "text";
-    internal const string NUMBER_OF_VOTES = "number_of_votes";
-
     internal PollOptionInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -49,10 +35,10 @@ internal sealed class PollOptionInserter : DatabaseInserter<PollOption>
     {
         if (pollOption.PollQuestionId is null)
             throw new NullReferenceException();
-        SetParameter(pollOption.PollQuestionId, POLL_QUESTION_ID);
-        SetParameter(pollOption.Delta, DELTA);
-        SetNullableParameter(pollOption.Text, TEXT);
-        SetNullableParameter(pollOption.NumberOfVotes, NUMBER_OF_VOTES);
+        Set(PollOptionInserterFactory.PollQuesyionId, pollOption.PollQuestionId.Value);
+        Set(PollOptionInserterFactory.Delta, pollOption.Delta);
+        Set(PollOptionInserterFactory.Text, pollOption.Text);
+        Set(PollOptionInserterFactory.NumberOfVotes, pollOption.NumberOfVotes);
         await _command.ExecuteNonQueryAsync();
     }
 }

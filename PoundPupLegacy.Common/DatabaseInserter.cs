@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-using NpgsqlTypes;
 using System.Data;
 
 namespace PoundPupLegacy.Common;
@@ -21,12 +20,7 @@ public abstract class DatabaseInserterFactory<T> : IDatabaseInserterFactory<T>
 
     public abstract Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection);
 
-    protected struct ColumnDefinition
-    {
-        public required string Name { get; init; }
-        public required NpgsqlDbType NpgsqlDbType { get; init; }
-    }
-    protected static async Task<NpgsqlCommand> CreateIdentityInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
+    protected static async Task<NpgsqlCommand> CreateIdentityInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<DatabaseParameter> columnDefinitions)
     {
         var sql = $"""
             INSERT INTO public."{tableName}"(
@@ -45,7 +39,7 @@ public abstract class DatabaseInserterFactory<T> : IDatabaseInserterFactory<T>
         return await CreatePreparedStatementAsync(connection, columnDefinitions, columnDefinitions.Any() ? sql : sqlEmpty);
     }
 
-    protected static async Task<NpgsqlCommand> CreateInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<ColumnDefinition> columnDefinitions)
+    protected static async Task<NpgsqlCommand> CreateInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<DatabaseParameter> columnDefinitions)
     {
         var sql = $"""
             INSERT INTO public."{tableName}"(
@@ -57,7 +51,7 @@ public abstract class DatabaseInserterFactory<T> : IDatabaseInserterFactory<T>
             """;
         return await CreatePreparedStatementAsync(connection, columnDefinitions, sql);
     }
-    protected static async Task<NpgsqlCommand> CreatePreparedStatementAsync(NpgsqlConnection connection, IEnumerable<ColumnDefinition> columnDefinitions, string sql)
+    protected static async Task<NpgsqlCommand> CreatePreparedStatementAsync(NpgsqlConnection connection, IEnumerable<DatabaseParameter> columnDefinitions, string sql)
     {
 
         var command = connection.CreateCommand();
@@ -65,7 +59,7 @@ public abstract class DatabaseInserterFactory<T> : IDatabaseInserterFactory<T>
         command.CommandTimeout = 300;
         command.CommandText = sql;
         foreach (var column in columnDefinitions) {
-            command.Parameters.Add(column.Name, column.NpgsqlDbType);
+            command.Parameters.Add(column.Name, column.ParameterType);
         }
         await command.PrepareAsync();
         return command;

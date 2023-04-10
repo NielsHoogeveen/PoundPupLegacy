@@ -1,6 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class PollVoteInserterFactory : DatabaseInserterFactory<PollVote> 
 {
+    internal static NonNullableIntegerDatabaseParameter PollId = new() { Name = "poll_id" };
+    internal static NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
+    internal static NullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NullableStringDatabaseParameter IPAddress = new() { Name = "ip_address" };
+
     public override async Task<IDatabaseInserter<PollVote>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,23 +15,11 @@ internal sealed class PollVoteInserterFactory : DatabaseInserterFactory<PollVote
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "poll_vote",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PollVoteInserter.POLL_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PollVoteInserter.DELTA,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PollVoteInserter.USER_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PollVoteInserter.IP_ADDRESS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
+            new DatabaseParameter[] {
+                PollId,
+                Delta,
+                UserId,
+                IPAddress
             }
         );
         return new PollVoteInserter(command);
@@ -34,10 +27,6 @@ internal sealed class PollVoteInserterFactory : DatabaseInserterFactory<PollVote
 }
 internal sealed class PollVoteInserter : DatabaseInserter<PollVote>
 {
-    internal const string POLL_ID = "poll_id";
-    internal const string DELTA = "delta";
-    internal const string USER_ID = "user_id";
-    internal const string IP_ADDRESS = "ip_address";
 
     internal PollVoteInserter(NpgsqlCommand command) : base(command)
     {
@@ -47,10 +36,10 @@ internal sealed class PollVoteInserter : DatabaseInserter<PollVote>
     {
         if (pollVote.PollId is null)
             throw new NullReferenceException();
-        SetParameter(pollVote.PollId, POLL_ID);
-        SetParameter(pollVote.Delta, DELTA);
-        SetNullableParameter(pollVote.UserId, USER_ID);
-        SetNullableParameter(pollVote.IpAddress, IP_ADDRESS);
+        Set(PollVoteInserterFactory.PollId, pollVote.PollId.Value);
+        Set(PollVoteInserterFactory.Delta, pollVote.Delta);
+        Set(PollVoteInserterFactory.UserId, pollVote.UserId);
+        Set(PollVoteInserterFactory.IPAddress, pollVote.IpAddress);
         await _command.ExecuteNonQueryAsync();
     }
 }

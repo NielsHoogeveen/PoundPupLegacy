@@ -1,6 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class CountryInserterFactory : DatabaseInserterFactory<Country>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter HagueStatusId = new() { Name = "hague_status_id" };
+    internal static NullableStringDatabaseParameter ResidencyRequirements = new() { Name = "residency_requirements" };
+    internal static NullableStringDatabaseParameter AgeRequirements = new() { Name = "age_requirements" };
+    internal static NullableStringDatabaseParameter MarriageRequirements = new() { Name = "marriage_requirements" };
+    internal static NullableStringDatabaseParameter IncomeRequirements = new() { Name = "income_requirements" };
+    internal static NullableStringDatabaseParameter HealthRequirements = new() { Name = "health_requirements" };
+    internal static NullableStringDatabaseParameter OtherRequirements = new() { Name = "other_requirements" };
+
     public override async Task<IDatabaseInserter<Country>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,39 +19,15 @@ internal sealed class CountryInserterFactory : DatabaseInserterFactory<Country>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "country",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = CountryInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CountryInserter.HAGUE_STATUS_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CountryInserter.RESIDENCY_REQUIREMENTS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = CountryInserter.AGE_REQUIREMENTS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = CountryInserter.MARRIAGE_REQUIREMENTS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = CountryInserter.INCOME_REQUIREMENTS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = CountryInserter.HEALTH_REQUIREMENTS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = CountryInserter.OTHER_REQUIREMENTS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
+            new DatabaseParameter[] {
+                Id,
+                HagueStatusId,
+                ResidencyRequirements,
+                AgeRequirements,
+                MarriageRequirements,
+                IncomeRequirements,
+                HealthRequirements,
+                OtherRequirements
             }
         );
         return new CountryInserter(command);
@@ -52,14 +37,6 @@ internal sealed class CountryInserterFactory : DatabaseInserterFactory<Country>
 }
 internal sealed class CountryInserter : DatabaseInserter<Country>
 {
-    internal const string ID = "id";
-    internal const string HAGUE_STATUS_ID = "hague_status_id";
-    internal const string RESIDENCY_REQUIREMENTS = "residency_requirements";
-    internal const string AGE_REQUIREMENTS = "age_requirements";
-    internal const string MARRIAGE_REQUIREMENTS = "marriage_requirements";
-    internal const string INCOME_REQUIREMENTS = "income_requirements";
-    internal const string HEALTH_REQUIREMENTS = "health_requirements";
-    internal const string OTHER_REQUIREMENTS = "other_requirements";
 
     internal CountryInserter(NpgsqlCommand command) : base(command)
     {
@@ -70,14 +47,14 @@ internal sealed class CountryInserter : DatabaseInserter<Country>
         if (country.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(country.Id, ID);
-        SetParameter(country.HagueStatusId, HAGUE_STATUS_ID);
-        SetNullableParameter(country.ResidencyRequirements, RESIDENCY_REQUIREMENTS);
-        SetNullableParameter(country.AgeRequirements, AGE_REQUIREMENTS);
-        SetNullableParameter(country.MarriageRequirements, MARRIAGE_REQUIREMENTS);
-        SetNullableParameter(country.IncomeRequirements, INCOME_REQUIREMENTS);
-        SetNullableParameter(country.HealthRequirements, HEALTH_REQUIREMENTS);
-        SetNullableParameter(country.OtherRequirements, OTHER_REQUIREMENTS);
+        Set(CountryInserterFactory.Id, country.Id.Value);
+        Set(CountryInserterFactory.HagueStatusId, country.HagueStatusId);
+        Set(CountryInserterFactory.ResidencyRequirements, country.ResidencyRequirements);
+        Set(CountryInserterFactory.AgeRequirements, country.AgeRequirements);
+        Set(CountryInserterFactory.MarriageRequirements, country.MarriageRequirements);
+        Set(CountryInserterFactory.IncomeRequirements, country.IncomeRequirements);
+        Set(CountryInserterFactory.HealthRequirements, country.HealthRequirements);
+        Set(CountryInserterFactory.OtherRequirements, country.OtherRequirements);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class MultiQuestionPollPollQuestionInserterFactory : DatabaseInserterFactory<MultiQuestionPollPollQuestion>
 {
+    internal static NonNullableIntegerDatabaseParameter MultiQuestionPollId = new() { Name = "multi_question_poll_id" };
+    internal static NonNullableIntegerDatabaseParameter PollQuesionId = new() { Name = "poll_question_id" };
+    internal static NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
+
     public override async Task<IDatabaseInserter<MultiQuestionPollPollQuestion>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class MultiQuestionPollPollQuestionInserterFactory : DatabaseIns
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "multi_question_poll_poll_question",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = MultiQuestionPollPollQuestionInserter.MULTI_QUESTION_POLL_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = MultiQuestionPollPollQuestionInserter.POLL_QUESTION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = MultiQuestionPollPollQuestionInserter.DELTA,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                MultiQuestionPollId,
+                PollQuesionId,
+                Delta
             }
         );
         return new MultiQuestionPollPollQuestionInserter(command);
@@ -30,20 +25,15 @@ internal sealed class MultiQuestionPollPollQuestionInserterFactory : DatabaseIns
 }
 internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<MultiQuestionPollPollQuestion>
 {
-
-    internal const string MULTI_QUESTION_POLL_ID = "multi_question_poll_id";
-    internal const string POLL_QUESTION_ID = "poll_question_id";
-    internal const string DELTA = "delta";
-
     internal MultiQuestionPollPollQuestionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(MultiQuestionPollPollQuestion question)
     {
-        SetParameter(question.MultiQuestionPollId, MULTI_QUESTION_POLL_ID);
-        SetNullableParameter(question.PollQuestionId, POLL_QUESTION_ID);
-        SetNullableParameter(question.Delta, DELTA);
+        Set(MultiQuestionPollPollQuestionInserterFactory.MultiQuestionPollId, question.MultiQuestionPollId);
+        Set(MultiQuestionPollPollQuestionInserterFactory.PollQuesionId, question.PollQuestionId);
+        Set(MultiQuestionPollPollQuestionInserterFactory.Delta, question.Delta);
         await _command.ExecuteNonQueryAsync();
     }
 }

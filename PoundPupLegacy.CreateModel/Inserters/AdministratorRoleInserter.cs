@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class AdministratorRoleInserterFactory : DatabaseInserterFactory<AdministratorRole>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter UserGroupId = new() { Name = "user_group_id" };
+
+
     public override async Task<IDatabaseInserter<AdministratorRole>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,27 +14,17 @@ internal sealed class AdministratorRoleInserterFactory : DatabaseInserterFactory
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "administrator_role",
-            new ColumnDefinition[] {
-            new ColumnDefinition
-            {
-                Name = AdministratorRoleInserter.ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-            new ColumnDefinition
-            {
-                Name = AdministratorRoleInserter.USER_GROUP_ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-
-        });
+            new DatabaseParameter[] {
+                Id,
+                UserGroupId
+            }
+        );
         return new AdministratorRoleInserter(command);
     }
 
 }
 internal class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>
 {
-    internal const string ID = "id";
-    internal const string USER_GROUP_ID = "user_group_id";
 
     internal AdministratorRoleInserter(NpgsqlCommand command) : base(command)
     {
@@ -38,8 +32,12 @@ internal class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>
 
     public override async Task InsertAsync(AdministratorRole administratorRole)
     {
-        SetParameter(administratorRole.Id, ID);
-        SetParameter(administratorRole.UserGroupId, USER_GROUP_ID);
+        if (administratorRole.Id is null)
+            throw new ArgumentNullException(nameof(administratorRole.Id));
+        if (administratorRole.UserGroupId is null)
+            throw new ArgumentNullException(nameof(administratorRole.UserGroupId));
+        Set(AdministratorRoleInserterFactory.Id, administratorRole.Id.Value);
+        Set(AdministratorRoleInserterFactory.UserGroupId, administratorRole.UserGroupId.Value);
         await _command.ExecuteNonQueryAsync();
     }
 }

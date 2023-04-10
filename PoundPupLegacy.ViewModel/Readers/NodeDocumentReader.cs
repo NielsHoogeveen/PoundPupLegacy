@@ -1529,7 +1529,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     jsonb_build_object(
                         'Path', path,
                         'Title', title,
-                        'PublicationDate', publication_date,
+                        'PublicationDateFrom', publication_date_from,
+                        'PublicationDateTo', publication_date_to,
                         'SortOrder', sort_order
                     )
                 ) document
@@ -1537,7 +1538,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                 select
                     path,
                     title,
-                    publication_date,
+                    publication_date_from,
+                    publication_date_to,
                     row_number() over(order by sort_date desc) sort_order
                 from(
                     select
@@ -1546,19 +1548,9 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
         	                else '/' || tn2.url_path
                         end path,
                         n2.title,
-                        case 
-        	                when d.publication_date is not null then d.publication_date
-        	                else lower(d.publication_date_range)
-                        end sort_date,
-                        case 
-        	                when d.publication_date is not null 
-        		                then extract(year from d.publication_date) || ' ' || to_char(d.publication_date, 'Month') || ' ' || extract(DAY FROM d.publication_date)
-        	                when extract(month from lower(d.publication_date_range)) = extract(month from upper(d.publication_date_range)) 
-        		                then extract(year from lower(d.publication_date_range)) || ' ' || to_char(lower(d.publication_date_range), 'Month') 
-        	                when extract(year from lower(d.publication_date_range)) = extract(year from upper(d.publication_date_range)) 
-        		                then extract(year from lower(d.publication_date_range))  || ''
-        	                else ''
-                        end publication_date
+        	            lower(d.published) sort_date,
+                        lower(d.published) publication_date_from,
+                        upper(d.published) publication_date_to  
                     from documentable_document dd
                     join tenant_node tn on tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.node_id = dd.documentable_id
                     join tenant_node tn2 on tn2.node_id = dd.document_id and tn2.tenant_id = @tenant_id
@@ -2971,9 +2963,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'ChangedDateTime', n.changed_date_time
                     ),
                     'HasBeenPublished', n.has_been_published,
-                    'DateTime', publication_date,
-                    'DateTimeFrom', lower(publication_date_range),
-                    'DateTimeTo', upper(publication_date_range),
+                    'PublicationDateFrom', lower(published),
+                    'PublicationDateTo', upper(published),
                     'SourceUrl', source_url,
                     'DocumentType', document_type,
                     'BreadCrumElements', (SELECT document FROM document_bread_crum_document),
@@ -2994,8 +2985,7 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     an.publisher_id,
                     p.name publisher_name,
                     an.has_been_published,
-                    stn.publication_date,
-                    stn.publication_date_range,
+                    stn.published,
                     stn.source_url,
                     case 
                         when dt.id is null then null
@@ -3611,7 +3601,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
+                    'DateFrom', n.date_from,
+                    'DateTo', n.date_to,
                     'BreadCrumElements', (SELECT document FROM abuse_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3633,8 +3624,11 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     n.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to
                 FROM authenticated_node an
+                join "case" c on c.id = an.node_id 
                 join abuse_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
@@ -3658,7 +3652,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
+                    'DateFrom', n.date_from,
+                    'DateTo', n.date_to,
                     'BreadCrumElements', (SELECT document FROM child_trafficking_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3680,8 +3675,11 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     n.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to
                 FROM authenticated_node an
+                join "case" c on c.id = an.node_id 
                 join child_trafficking_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
@@ -3705,7 +3703,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
+                    'DateFrom', n.date_from,
+                    'DateTo', n.date_to,
                     'BreadCrumElements', (SELECT document FROM coerced_adoption_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3727,8 +3726,11 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     n.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to
                 FROM authenticated_node an
+                join "case" c on c.id = an.node_id 
                 join coerced_adoption_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
@@ -3752,7 +3754,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
+                    'DateFrom', n.date_from,
+                    'DateTo', n.date_to,
                     'BreadCrumElements', (SELECT document FROM deportation_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3774,8 +3777,11 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     n.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to
                 FROM authenticated_node an
+                join "case" c on c.id = an.node_id 
                 join deportation_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
@@ -3799,7 +3805,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
+                    'DateFrom', n.date_from,
+                    'DateTo', n.date_to,
                     'BreadCrumElements', (SELECT document FROM disrupted_placement_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3821,8 +3828,11 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     n.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to
                 FROM authenticated_node an
+                join "case" c on c.id = an.node_id 
                 join disrupted_placement_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
@@ -3845,7 +3855,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
+                    'DateFrom', n.date_from,
+                    'DateTo', n.date_to,
                     'BreadCrumElements', (SELECT document FROM fathers_rights_violation_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3867,8 +3878,11 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     n.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to
                 FROM authenticated_node an
+                join "case" c on c.id = an.node_id 
                 join fathers_rights_violation_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
@@ -3891,7 +3905,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
+                    'DateFrom', n.date_from,
+                    'DateTo', n.date_to,
                     'BreadCrumElements', (SELECT document FROM wrongful_medication_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3913,8 +3928,11 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     n.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to
                 FROM authenticated_node an
+                join "case" c on c.id = an.node_id 
                 join wrongful_medication_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
@@ -3937,7 +3955,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
+                    'DateFrom', n.date_from,
+                    'DateTo', n.date_to,
                     'BreadCrumElements', (SELECT document FROM wrongful_removal_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3959,8 +3978,11 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     n.description, 
                     an.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
+                    an.has_been_published,
+                    lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to
                 FROM authenticated_node an
+                join "case" c on c.id = an.node_id 
                 join wrongful_removal_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id

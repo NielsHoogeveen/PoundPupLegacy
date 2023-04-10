@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class CountrySubdivisionTypeInserterFactory : DatabaseInserterFactory<CountrySubdivisionType>
 {
+    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    internal static NonNullableIntegerDatabaseParameter SubdivisionTypeId = new() { Name = "subdivision_type_id" };
+
+
     public override async Task<IDatabaseInserter<CountrySubdivisionType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +14,9 @@ internal sealed class CountrySubdivisionTypeInserterFactory : DatabaseInserterFa
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "country_subdivision_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = CountrySubdivisionTypeInserter.COUNTRY_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CountrySubdivisionTypeInserter.SUBDIVISION_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                CountryId,
+                SubdivisionTypeId
             }
         );
         return new CountrySubdivisionTypeInserter(command);
@@ -29,17 +27,14 @@ internal sealed class CountrySubdivisionTypeInserterFactory : DatabaseInserterFa
 internal sealed class CountrySubdivisionTypeInserter : DatabaseInserter<CountrySubdivisionType>
 {
 
-    internal const string COUNTRY_ID = "country_id";
-    internal const string SUBDIVISION_TYPE_ID = "subdivision_type_id";
-
     internal CountrySubdivisionTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(CountrySubdivisionType countrySubdivisionType)
     {
-        SetParameter(countrySubdivisionType.CountryId, COUNTRY_ID);
-        SetParameter(countrySubdivisionType.SubdivisionTypeId, SUBDIVISION_TYPE_ID);
+        Set(CountrySubdivisionTypeInserterFactory.CountryId, countrySubdivisionType.CountryId);
+        Set(CountrySubdivisionTypeInserterFactory.SubdivisionTypeId, countrySubdivisionType.SubdivisionTypeId);
         await _command.ExecuteNonQueryAsync();
     }
 }

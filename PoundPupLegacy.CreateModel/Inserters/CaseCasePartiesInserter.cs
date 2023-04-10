@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class CaseCasePartiesInserterFactory : DatabaseInserterFactory<CaseCaseParties>
 {
+    internal static NonNullableIntegerDatabaseParameter CaseId = new() { Name = "case_id" };
+    internal static NonNullableIntegerDatabaseParameter CasePartiesId = new() { Name = "case_parties_id" };
+    internal static NonNullableIntegerDatabaseParameter CasePartyTypeId = new() { Name = "case_party_type_id" };
+
     public override async Task<IDatabaseInserter<CaseCaseParties>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class CaseCasePartiesInserterFactory : DatabaseInserterFactory<C
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "case_case_parties",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = CaseCasePartiesInserter.CASE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CaseCasePartiesInserter.CASE_PARTIES_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CaseCasePartiesInserter.CASE_PARTY_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                CaseId,
+                CasePartiesId,
+                CasePartyTypeId
             }
         );
         return new CaseCasePartiesInserter(command);
@@ -33,19 +28,18 @@ internal sealed class CaseCasePartiesInserterFactory : DatabaseInserterFactory<C
 internal sealed class CaseCasePartiesInserter : DatabaseInserter<CaseCaseParties>
 {
 
-    internal const string CASE_ID = "case_id";
-    internal const string CASE_PARTIES_ID = "case_parties_id";
-    internal const string CASE_PARTY_TYPE_ID = "case_party_type_id";
-
     internal CaseCasePartiesInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(CaseCaseParties caseCaseParties)
     {
-        SetParameter(caseCaseParties.CaseId, CASE_ID);
-        SetParameter(caseCaseParties.CaseParties.Id, CASE_PARTIES_ID);
-        SetParameter(caseCaseParties.CasePartyTypeId, CASE_PARTY_TYPE_ID);
+        if (caseCaseParties.CaseParties.Id is null)
+            throw new NullReferenceException();
+        Set(CaseCasePartiesInserterFactory.CaseId, caseCaseParties.CaseId);
+        Set(CaseCasePartiesInserterFactory.CasePartiesId, caseCaseParties.CaseParties.Id.Value);
+        Set(CaseCasePartiesInserterFactory.CasePartyTypeId, caseCaseParties.CasePartyTypeId);
+        
         await _command.ExecuteNonQueryAsync();
     }
 }

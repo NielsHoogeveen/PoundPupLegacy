@@ -14,7 +14,7 @@
                 {
                     <tr>
                         <td><a href="@document.Path">@document.Title</a></td>
-                        <td>@document.PublicationDate</td>
+                        <td>@document.Published?.ToDisplayString()</td>
                     </tr>
                 }
             </table>

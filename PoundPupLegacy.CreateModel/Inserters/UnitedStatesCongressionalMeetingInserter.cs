@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class UnitedStatesCongressionalMeetingInserterFactory : DatabaseInserterFactory<UnitedStatesCongressionalMeeting>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    internal static NonNullableIntegerDatabaseParameter Number = new() { Name = "number" };
+
     public override async Task<IDatabaseInserter<UnitedStatesCongressionalMeeting>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class UnitedStatesCongressionalMeetingInserterFactory : Database
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "united_states_congressional_meeting",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = UnitedStatesCongressionalMeetingInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = UnitedStatesCongressionalMeetingInserter.DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
-                new ColumnDefinition{
-                    Name = UnitedStatesCongressionalMeetingInserter.NUMBER,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                DateRange,
+                Number
             }
         );
         return new UnitedStatesCongressionalMeetingInserter(command);
@@ -32,10 +27,6 @@ internal sealed class UnitedStatesCongressionalMeetingInserterFactory : Database
 internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserter<UnitedStatesCongressionalMeeting>
 {
 
-    internal const string ID = "id";
-    internal const string DATE_RANGE = "date_range";
-    internal const string NUMBER = "number";
-
     internal UnitedStatesCongressionalMeetingInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -44,9 +35,9 @@ internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserte
     {
         if (unitedStatesCongressionalMeeting.Id is null)
             throw new NullReferenceException();
-        SetParameter(unitedStatesCongressionalMeeting.Id, ID);
-        SetDateTimeRangeParameter(unitedStatesCongressionalMeeting.DateRange, DATE_RANGE);
-        SetParameter(unitedStatesCongressionalMeeting.Number, NUMBER);
+        Set(UnitedStatesCongressionalMeetingInserterFactory.Id, unitedStatesCongressionalMeeting.Id.Value);
+        Set(UnitedStatesCongressionalMeetingInserterFactory.DateRange, unitedStatesCongressionalMeeting.DateRange);
+        Set(UnitedStatesCongressionalMeetingInserterFactory.Number, unitedStatesCongressionalMeeting.Number);
         await _command.ExecuteNonQueryAsync();
     }
 

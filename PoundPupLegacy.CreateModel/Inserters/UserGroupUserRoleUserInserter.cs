@@ -1,6 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class UserGroupUserRoleUserInserterFactory : DatabaseInserterFactory<UserGroupUserRoleUser>
 {
+    internal static NonNullableIntegerDatabaseParameter UserGroupId = new() { Name = "user_group_id" };
+    internal static NonNullableIntegerDatabaseParameter UserRoleId = new() { Name = "user_role_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    
+
     public override async Task<IDatabaseInserter<UserGroupUserRoleUser>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +15,10 @@ internal sealed class UserGroupUserRoleUserInserterFactory : DatabaseInserterFac
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "user_group_user_role_user",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = UserGroupUserRoleUserInserter.USER_GROUP_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = UserGroupUserRoleUserInserter.USER_ROLE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = UserGroupUserRoleUserInserter.USER_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                UserGroupId,
+                UserRoleId,
+                UserId
             }
         );
         return new UserGroupUserRoleUserInserter(command);
@@ -30,19 +26,15 @@ internal sealed class UserGroupUserRoleUserInserterFactory : DatabaseInserterFac
 }
 internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroupUserRoleUser>
 {
-    internal const string USER_GROUP_ID = "user_group_id";
-    internal const string USER_ROLE_ID = "user_role_id";
-    internal const string USER_ID = "user_id";
-
     internal UserGroupUserRoleUserInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(UserGroupUserRoleUser userGroupUserRoleUser)
     {
-        SetParameter(userGroupUserRoleUser.UserGroupId, USER_GROUP_ID);
-        SetParameter(userGroupUserRoleUser.UserRoleId, USER_ROLE_ID);
-        SetParameter(userGroupUserRoleUser.UserId, USER_ID);
+        Set(UserGroupUserRoleUserInserterFactory.UserGroupId, userGroupUserRoleUser.UserGroupId);
+        Set(UserGroupUserRoleUserInserterFactory.UserRoleId, userGroupUserRoleUser.UserRoleId);
+        Set(UserGroupUserRoleUserInserterFactory.UserId, userGroupUserRoleUser.UserId);
         await _command.ExecuteNonQueryAsync();
     }
 }

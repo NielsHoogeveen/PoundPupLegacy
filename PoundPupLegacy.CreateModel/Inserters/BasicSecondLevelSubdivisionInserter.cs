@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class BasicSecondLevelSubdivisionInserterFactory : DatabaseInserterFactory<BasicSecondLevelSubdivision>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter IntermediateLevelSubdivisionId = new() { Name = "intermediate_level_subdivision_id" };
+
     public override async Task<IDatabaseInserter<BasicSecondLevelSubdivision>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class BasicSecondLevelSubdivisionInserterFactory : DatabaseInser
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "basic_second_level_subdivision",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = BasicSecondLevelSubdivisionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = BasicSecondLevelSubdivisionInserter.INTERMEDIATE_LEVEL_SUBDIVISION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                IntermediateLevelSubdivisionId
             }
         );
         return new BasicSecondLevelSubdivisionInserter(command);
@@ -27,8 +24,6 @@ internal sealed class BasicSecondLevelSubdivisionInserterFactory : DatabaseInser
 }
 internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<BasicSecondLevelSubdivision>
 {
-    internal const string ID = "id";
-    internal const string INTERMEDIATE_LEVEL_SUBDIVISION_ID = "intermediate_level_subdivision_id";
 
     internal BasicSecondLevelSubdivisionInserter(NpgsqlCommand command) : base(command)
     {
@@ -38,8 +33,8 @@ internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<Bas
     {
         if (country.Id is null)
             throw new NullReferenceException();
-        SetParameter(country.Id, ID);
-        SetParameter(country.IntermediateLevelSubdivisionId, INTERMEDIATE_LEVEL_SUBDIVISION_ID);
+        Set(BasicSecondLevelSubdivisionInserterFactory.Id, country.Id.Value);
+        Set(BasicSecondLevelSubdivisionInserterFactory.IntermediateLevelSubdivisionId, country.IntermediateLevelSubdivisionId);
         await _command.ExecuteNonQueryAsync();
     }
 }

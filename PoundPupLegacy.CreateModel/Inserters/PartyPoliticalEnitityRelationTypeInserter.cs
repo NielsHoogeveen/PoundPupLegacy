@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : DatabaseInserterFactory<PartyPoliticalEntityRelationType>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
+
     public override async Task<IDatabaseInserter<PartyPoliticalEntityRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : Database
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "party_political_entity_relation_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PartyPoliticalEntityRelationTypeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PartyPoliticalEntityRelationTypeInserter.HAS_CONCRETE_SUBTYPE,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
+            new DatabaseParameter[] {
+                Id,
+                HasConcreteSubtype
             }
         );
         return new PartyPoliticalEntityRelationTypeInserter(command);
@@ -28,9 +25,6 @@ internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : Database
 }
 internal sealed class PartyPoliticalEntityRelationTypeInserter : DatabaseInserter<PartyPoliticalEntityRelationType>
 {
-    internal const string ID = "id";
-    internal const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
-
     internal PartyPoliticalEntityRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -40,8 +34,8 @@ internal sealed class PartyPoliticalEntityRelationTypeInserter : DatabaseInserte
         if (politicalEntityRelationType.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(politicalEntityRelationType.Id, ID);
-        SetParameter(politicalEntityRelationType.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
+        Set(PartyPoliticalEntityRelationTypeInserterFactory.Id, politicalEntityRelationType.Id.Value);
+        Set(PartyPoliticalEntityRelationTypeInserterFactory.HasConcreteSubtype, politicalEntityRelationType.HasConcreteSubtype);
         await _command.ExecuteNonQueryAsync();
     }
 }

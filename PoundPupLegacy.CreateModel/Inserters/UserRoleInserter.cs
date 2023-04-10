@@ -2,6 +2,10 @@
 
 public class UserRoleInserterFactory : DatabaseInserterFactory<UserRole>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter UserGroupId = new() { Name = "user_group_id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+
     public override async Task<IDatabaseInserter<UserRole>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -11,32 +15,17 @@ public class UserRoleInserterFactory : DatabaseInserterFactory<UserRole>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "user_role",
-            new ColumnDefinition[] {
-            new ColumnDefinition
-            {
-                Name = UserRoleInserter.ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-            new ColumnDefinition
-            {
-                Name = UserRoleInserter.USER_GROUP_ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
-            new ColumnDefinition
-            {
-                Name = UserRoleInserter.NAME,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-
-        });
+            new DatabaseParameter[] {
+                Id,
+                UserGroupId,
+                Name
+            }
+        );
         return new UserRoleInserter(command);
     }
 }
 public class UserRoleInserter : DatabaseInserter<UserRole>
 {
-    internal const string ID = "id";
-    internal const string USER_GROUP_ID = "user_group_id";
-    internal const string NAME = "name";
 
     internal UserRoleInserter(NpgsqlCommand command) : base(command)
     {
@@ -44,9 +33,13 @@ public class UserRoleInserter : DatabaseInserter<UserRole>
 
     public override async Task InsertAsync(UserRole userRole)
     {
-        SetParameter(userRole.Id, ID);
-        SetParameter(userRole.UserGroupId, USER_GROUP_ID);
-        SetParameter(userRole.Name, NAME);
+        if (userRole.Id is null)
+            throw new NullReferenceException();
+        if(userRole.UserGroupId is null)
+            throw new NullReferenceException();
+        Set(UserRoleInserterFactory.Id, userRole.Id.Value);
+        Set(UserRoleInserterFactory.UserGroupId, userRole.UserGroupId.Value);
+        Set(UserRoleInserterFactory.Name, userRole.Name);
         await _command.ExecuteNonQueryAsync();
     }
 }

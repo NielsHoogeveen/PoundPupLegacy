@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class CaseInserterFactory : DatabaseInserterFactory<Case>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    internal static NullableTimeStampRangeDatabaseParameter FuzzyDate = new() { Name = "fuzzy_date" };
+
     public override async Task<IDatabaseInserter<Case>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,23 +14,10 @@ internal sealed class CaseInserterFactory : DatabaseInserterFactory<Case>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "case",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = CaseInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CaseInserter.DESCRIPTION,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = CaseInserter.DATE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
-                new ColumnDefinition{
-                    Name = CaseInserter.DATERANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
+            new DatabaseParameter[] {
+                Id,
+                Description,
+                FuzzyDate
             }
         );
         return new CaseInserter(command);
@@ -36,11 +27,6 @@ internal sealed class CaseInserterFactory : DatabaseInserterFactory<Case>
 }
 internal sealed class CaseInserter : DatabaseInserter<Case>
 {
-    internal const string ID = "id";
-    internal const string DESCRIPTION = "description";
-    internal const string DATE = "date";
-    internal const string DATERANGE = "date_range";
-    
     internal CaseInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -49,9 +35,9 @@ internal sealed class CaseInserter : DatabaseInserter<Case>
     {
         if (@case.Id is null)
             throw new NullReferenceException();
-        SetParameter(@case.Id, ID);
-        SetParameter(@case.Description, DESCRIPTION);
-        SetDateTimeRangeParameter(@case.Date, DATE, DATERANGE);
+        Set(CaseInserterFactory.Id, @case.Id.Value);
+        Set(CaseInserterFactory.Description,@case.Description);
+        Set(CaseInserterFactory.FuzzyDate, @case.Date);
         await _command.ExecuteNonQueryAsync();
     }
 }

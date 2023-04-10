@@ -1,8 +1,10 @@
-﻿using System.Xml.Linq;
-
-namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class ActionMenuItemInserterFactory : DatabaseInserterFactory<ActionMenuItem>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static NonNullableIntegerDatabaseParameter ActionId = new() { Name = "action_id" };
+
     public override async Task<IDatabaseInserter<ActionMenuItem>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -12,42 +14,27 @@ internal sealed class ActionMenuItemInserterFactory : DatabaseInserterFactory<Ac
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "action_menu_item",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ActionMenuItemInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ActionMenuItemInserter.NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = ActionMenuItemInserter.ACTION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                Name,
+                ActionId
             }
         );
         return new ActionMenuItemInserter(command);
-
     }
-
 }
 internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>
 {
-
-    internal const string ID = "id";
-    internal const string NAME = "name";
-    internal const string ACTION_ID = "action_id";
-
     internal ActionMenuItemInserter(NpgsqlCommand command) : base(command)
     {
     }
-
     public override async Task InsertAsync(ActionMenuItem actionMenuItem)
     {
-        SetParameter(actionMenuItem.Id, ID);
-        SetParameter(actionMenuItem.Name.Trim(), NAME);
-        SetParameter(actionMenuItem.ActionId, ACTION_ID);
+        if (actionMenuItem.Id is null)
+            throw new NullReferenceException();
+        Set(ActionMenuItemInserterFactory.Id, actionMenuItem.Id.Value);
+        Set(ActionMenuItemInserterFactory.Name, actionMenuItem.Name.Trim());
+        Set(ActionMenuItemInserterFactory.ActionId, actionMenuItem.ActionId);
         await _command.ExecuteNonQueryAsync();
     }
 }

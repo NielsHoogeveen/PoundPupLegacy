@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class ProfessionInserterFactory : DatabaseInserterFactory<Profession>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
+
     public override async Task<IDatabaseInserter<Profession>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class ProfessionInserterFactory : DatabaseInserterFactory<Profes
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "profession",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ProfessionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ProfessionInserter.HAS_CONCRETE_SUBTYPE,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
+            new DatabaseParameter[] {
+                Id,
+                HasConcreteSubtype
             }
         );
         return new ProfessionInserter(command);
@@ -26,8 +23,6 @@ internal sealed class ProfessionInserterFactory : DatabaseInserterFactory<Profes
 }
 internal sealed class ProfessionInserter : DatabaseInserter<Profession>
 {
-    internal const string ID = "id";
-    internal const string HAS_CONCRETE_SUBTYPE = "has_concrete_subtype";
 
     internal ProfessionInserter(NpgsqlCommand command) : base(command)
     {
@@ -38,8 +33,8 @@ internal sealed class ProfessionInserter : DatabaseInserter<Profession>
         if (profession.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(profession.Id, ID);
-        SetParameter(profession.HasConcreteSubtype, HAS_CONCRETE_SUBTYPE);
+        Set(ProfessionInserterFactory.Id, profession.Id.Value);
+        Set(ProfessionInserterFactory.HasConcreteSubtype, profession.HasConcreteSubtype);
         await _command.ExecuteNonQueryAsync();
     }
 }

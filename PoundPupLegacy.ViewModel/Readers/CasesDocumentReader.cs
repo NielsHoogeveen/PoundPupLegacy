@@ -40,8 +40,10 @@ public class CasesDocumentReaderFactory : IDatabaseReaderFactory<CasesDocumentRe
                             url_path,
             				'Text', 
                             description,
-            				'Date', 
-                            date,
+            				'DateFrom', 
+                            date_from,
+            				'DateTo', 
+                            date_to,
             				'CaseType',	
                             node_type_name,
             				'HasBeenPublished', 
@@ -66,10 +68,8 @@ public class CasesDocumentReaderFactory : IDatabaseReaderFactory<CasesDocumentRe
             			when tn.url_path is null then '/node/' || tn.url_id
             			else '/' || url_path
             		end url_path,
-            		case 
-            			when c.date is not null then c.date
-            			else lower(c.date_range)
-            		end date,
+            		lower(c.fuzzy_date) date_from,
+                    upper(c.fuzzy_date) date_to,
             		case
             			when tn.publication_status_id = 0 then (
             				select
@@ -111,7 +111,7 @@ public class CasesDocumentReaderFactory : IDatabaseReaderFactory<CasesDocumentRe
             		WHERE tn.tenant_id = @tenant_id
                     AND (@node_type_id is null or n.node_type_id = @node_type_id)
             	) an
-            	order by date desc
+            	order by date_from desc
             	LIMIT @limit OFFSET @offset
             ) an
             where an.status <> -1

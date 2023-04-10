@@ -4,6 +4,11 @@ namespace PoundPupLegacy.CreateModel.Inserters;
 
 internal sealed class FileInserterFactory: DatabaseInserterFactory<File>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static NonNullableStringDatabaseParameter MimeType = new() { Name = "mime_type" };
+    internal static NonNullableIntegerDatabaseParameter Size = new() { Name = "size" };
 
     public override async Task<IDatabaseInserter<File>> CreateAsync(IDbConnection connection)
     {
@@ -11,42 +16,25 @@ internal sealed class FileInserterFactory: DatabaseInserterFactory<File>
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var collumnDefinitions = new ColumnDefinition[]
+        var databaseParameters = new DatabaseParameter[]
         {
-            new ColumnDefinition{
-                Name = FileInserter.PATH,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-            new ColumnDefinition{
-                Name = FileInserter.NAME,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-            new ColumnDefinition{
-                Name = FileInserter.MIME_TYPE,
-                NpgsqlDbType = NpgsqlDbType.Varchar
-            },
-            new ColumnDefinition{
-                Name = FileInserter.SIZE,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            },
+            Path,
+            Name,
+            MimeType,
+            Size
         };
 
         var commandWithId = await CreateInsertStatementAsync(
             postgresConnection,
             "file",
-            collumnDefinitions.ToImmutableList().Prepend(
-                new ColumnDefinition {
-                    Name = FileInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                })
+            databaseParameters.ToImmutableList().Prepend(Id)
         );
         var commandWithoutId = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "file",
-            collumnDefinitions
+            databaseParameters
         );
         return new FileInserter(commandWithId, commandWithoutId);
-
     }
 }
 
@@ -68,21 +56,21 @@ internal sealed class FileInserter : DatabaseInserter<File>
     public override async Task InsertAsync(File file)
     {
         if (file.Id is null) {
-            SetParameter(file.Path, PATH, _identityCommand);
-            SetParameter(file.Name,   NAME, _identityCommand);
-            SetParameter(file.MimeType, MIME_TYPE, _identityCommand);
-            SetParameter(file.Size, SIZE, _identityCommand);
+            Set(FileInserterFactory.Path, file.Path, _identityCommand);
+            Set(FileInserterFactory.Name, file.Name, _identityCommand);
+            Set(FileInserterFactory.MimeType, file.MimeType, _identityCommand);
+            Set(FileInserterFactory.Size, file.Size, _identityCommand);
             file.Id = await _identityCommand.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception("No id has been assigned when adding a file"),
             };
         }
         else {
-            SetParameter(file.Id, ID);
-            SetParameter(file.Path, PATH);
-            SetParameter(file.Name, NAME);
-            SetParameter(file.MimeType, MIME_TYPE);
-            SetParameter(file.Size, SIZE);
+            Set(FileInserterFactory.Id, file.Id.Value);
+            Set(FileInserterFactory.Path, file.Path);
+            Set(FileInserterFactory.Name, file.Name);
+            Set(FileInserterFactory.MimeType, file.MimeType);
+            Set(FileInserterFactory.Size, file.Size);
             await _command.ExecuteNonQueryAsync();
         }
     }

@@ -2,6 +2,10 @@
 
 internal sealed class NameableInserterFactory : DatabaseInserterFactory<Nameable>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullableStringDatabaseParameter Description = new() { Name = "description" };
+    internal static NullableIntegerDatabaseParameter FileIdTileImage = new() { Name = "file_id_tile_image" };
+
     public override async Task<IDatabaseInserter<Nameable>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -11,19 +15,10 @@ internal sealed class NameableInserterFactory : DatabaseInserterFactory<Nameable
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "nameable",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = NameableInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = NameableInserter.DESCRIPTION,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = NameableInserter.FILE_ID_TILE_IMAGE,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                Description,
+                FileIdTileImage
             }
         );
         return new NameableInserter(command);
@@ -31,10 +26,6 @@ internal sealed class NameableInserterFactory : DatabaseInserterFactory<Nameable
 }
 internal sealed class NameableInserter : DatabaseInserter<Nameable>
 {
-    internal const string ID = "id";
-    internal const string DESCRIPTION = "description";
-    internal const string FILE_ID_TILE_IMAGE = "file_id_tile_image";
-
     internal NameableInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -44,9 +35,9 @@ internal sealed class NameableInserter : DatabaseInserter<Nameable>
         if (nameable.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(nameable.Id, ID);
-        SetParameter(nameable.Description, DESCRIPTION);
-        SetNullableParameter(nameable.FileIdTileImage, FILE_ID_TILE_IMAGE);
+        Set(NameableInserterFactory.Id,nameable.Id.Value);
+        Set(NameableInserterFactory.Description, nameable.Description);
+        Set(NameableInserterFactory.FileIdTileImage,nameable.FileIdTileImage);
         await _command.ExecuteNonQueryAsync();
     }
 }

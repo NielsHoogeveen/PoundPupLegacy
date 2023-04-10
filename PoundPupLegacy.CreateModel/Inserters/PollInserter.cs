@@ -2,6 +2,10 @@
 
 internal sealed class PollInserterFactory : DatabaseInserterFactory<Poll>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableDateTimeDatabaseParameter DateTimeClosure = new() { Name = "date_time_closure" };
+    internal static NonNullableIntegerDatabaseParameter PollStatusId = new() { Name = "poll_status_id" };
+
     public override async Task<IDatabaseInserter<Poll>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -11,19 +15,10 @@ internal sealed class PollInserterFactory : DatabaseInserterFactory<Poll>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "poll",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PollInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PollInserter.DATE_TIME_CLOSURE,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
-                },
-                new ColumnDefinition{
-                    Name = PollInserter.POLL_STATUS_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                DateTimeClosure,
+                PollStatusId
             }
         );
         return new PollInserter(command);
@@ -31,10 +26,6 @@ internal sealed class PollInserterFactory : DatabaseInserterFactory<Poll>
 }
 internal sealed class PollInserter : DatabaseInserter<Poll>
 {
-    internal const string ID = "id";
-    internal const string DATE_TIME_CLOSURE = "date_time_closure";
-    internal const string POLL_STATUS_ID = "poll_status_id";
-
     internal PollInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -43,9 +34,9 @@ internal sealed class PollInserter : DatabaseInserter<Poll>
     {
         if (poll.Id is null)
             throw new NullReferenceException();
-        SetParameter(poll.Id, ID);
-        SetParameter(poll.DateTimeClosure, DATE_TIME_CLOSURE);
-        SetParameter(poll.PollStatusId, POLL_STATUS_ID);
+        Set(PollInserterFactory.Id, poll.Id.Value);
+        Set(PollInserterFactory.DateTimeClosure, poll.DateTimeClosure);
+        Set(PollInserterFactory.PollStatusId, poll.PollStatusId);
         await _command.ExecuteNonQueryAsync();
     }
 }

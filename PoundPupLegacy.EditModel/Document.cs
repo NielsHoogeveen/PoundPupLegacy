@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using PoundPupLegacy.Common;
+
+namespace PoundPupLegacy.EditModel;
 
 public record Document : Node
 {
@@ -13,9 +15,32 @@ public record Document : Node
     public int? DocumentTypeId { get; set; }
 
     public DateTime? PublicationDateFrom { get; set; }
-
     public DateTime? PublicationDateTo { get; set; }
-    public DateTime? PublicationDate { get; set; }
+    
+
+    private bool _publishedSet;
+    private FuzzyDate? _published;
+    public FuzzyDate? Published {
+        get {
+            if (!_publishedSet) {
+                if (PublicationDateFrom is not null && PublicationDateTo is not null) {
+                    var dateTimeRange = new DateTimeRange(PublicationDateFrom, PublicationDateTo);
+                    if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
+                        _published = result;
+                    }
+                }
+                else {
+                    _published = null;
+                }
+                _publishedSet = true;
+            }
+            return _published;
+        }
+        set {
+            _published = value;
+        }
+    }
+
 
     public List<DocumentableDocument> documentableDocuments = new();
     public required List<DocumentableDocument> DocumentableDocuments {

@@ -1,6 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory : DatabaseInserterFactory<CongressionalTermPoliticalPartyAffiliation>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter CongressionalTermId = new() { Name = "congressional_term_id" };
+    internal static NonNullableIntegerDatabaseParameter UnitedStatesPoliticalPartyAffiliationId = new() { Name = "united_states_political_party_affiliation_id" };
+    internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+
     public override async Task<IDatabaseInserter<CongressionalTermPoliticalPartyAffiliation>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,23 +15,11 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory 
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "congressional_term_political_party_affiliation",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = CongressionalTermPoliticalPartyAffiliationInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CongressionalTermPoliticalPartyAffiliationInserter.CONGRESSIONAL_TERM_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CongressionalTermPoliticalPartyAffiliationInserter.UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CongressionalTermPoliticalPartyAffiliationInserter.DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
+            new DatabaseParameter[] {
+                Id,
+                CongressionalTermId,
+                UnitedStatesPoliticalPartyAffiliationId,
+                DateRange
             }
         );
         return new CongressionalTermPoliticalPartyAffiliationInserter(command);
@@ -36,10 +29,6 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory 
 }
 internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : DatabaseInserter<CongressionalTermPoliticalPartyAffiliation>
 {
-    internal const string ID = "id";
-    internal const string CONGRESSIONAL_TERM_ID = "congressional_term_id";
-    internal const string UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID = "united_states_political_party_affiliation_id";
-    internal const string DATE_RANGE = "date_range";
 
     internal CongressionalTermPoliticalPartyAffiliationInserter(NpgsqlCommand command) : base(command)
     {
@@ -49,10 +38,13 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : Datab
     {
         if (congressionalTermPoliticalPartyAffiliation.Id is null)
             throw new NullReferenceException();
-        SetParameter(congressionalTermPoliticalPartyAffiliation.Id, ID);
-        SetParameter(congressionalTermPoliticalPartyAffiliation.CongressionalTermId, CONGRESSIONAL_TERM_ID);
-        SetParameter(congressionalTermPoliticalPartyAffiliation.PoliticalPartyAffiliationId, UNITED_STATES_POLITICAL_PARTY_AFFLIATION_ID);
-        SetDateTimeRangeParameter(congressionalTermPoliticalPartyAffiliation.DateTimeRange, DATE_RANGE);
+        if(congressionalTermPoliticalPartyAffiliation.CongressionalTermId is null)
+            throw new NullReferenceException();
+
+        Set(CongressionalTermPoliticalPartyAffiliationInserterFactory.Id, congressionalTermPoliticalPartyAffiliation.Id.Value);
+        Set(CongressionalTermPoliticalPartyAffiliationInserterFactory.CongressionalTermId, congressionalTermPoliticalPartyAffiliation.CongressionalTermId.Value);
+        Set(CongressionalTermPoliticalPartyAffiliationInserterFactory.UnitedStatesPoliticalPartyAffiliationId, congressionalTermPoliticalPartyAffiliation.PoliticalPartyAffiliationId);
+        Set(CongressionalTermPoliticalPartyAffiliationInserterFactory.DateRange, congressionalTermPoliticalPartyAffiliation.DateTimeRange);
         await _command.ExecuteNonQueryAsync();
     }
 }

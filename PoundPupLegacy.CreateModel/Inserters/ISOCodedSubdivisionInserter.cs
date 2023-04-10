@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class ISOCodedSubdivisionInserterFactory : DatabaseInserterFactory<ISOCodedSubdivision>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableFixedStringDatabaseParameter ISO31661_2_Code = new() { Name = "iso_3166_2_code" };
+
     public override async Task<IDatabaseInserter<ISOCodedSubdivision>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class ISOCodedSubdivisionInserterFactory : DatabaseInserterFacto
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "iso_coded_subdivision",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ISOCodedSubdivisionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ISOCodedSubdivisionInserter.ISO_3166_2_CODE,
-                    NpgsqlDbType = NpgsqlDbType.Char
-                },
+            new DatabaseParameter[] {
+                Id,
+                ISO31661_2_Code
             }
         );
         return new ISOCodedSubdivisionInserter(command);
@@ -26,8 +23,6 @@ internal sealed class ISOCodedSubdivisionInserterFactory : DatabaseInserterFacto
 }
 internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSubdivision>
 {
-    internal const string ID = "id";
-    internal const string ISO_3166_2_CODE = "iso_3166_2_code";
     internal ISOCodedSubdivisionInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -37,8 +32,8 @@ internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSub
         if (country.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(country.Id, ID);
-        SetParameter(country.ISO3166_2_Code, ISO_3166_2_CODE);
+        Set(ISOCodedSubdivisionInserterFactory.Id, country.Id.Value);
+        Set(ISOCodedSubdivisionInserterFactory.ISO31661_2_Code, country.ISO3166_2_Code);
         await _command.ExecuteScalarAsync();
     }
 }

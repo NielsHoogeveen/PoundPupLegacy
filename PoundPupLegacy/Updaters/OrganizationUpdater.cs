@@ -20,10 +20,10 @@ internal sealed class OrganizationUpdaterFactory : DatabaseUpdaterFactory<Organi
     internal static NullableStringDatabaseParameter EmailAddress = new() {
         Name = "email_address"
     };
-    internal static NullableDateTimeRangeDatabaseParameter Established = new() {
+    internal static NullableDateRangeDatabaseParameter Established = new() {
         Name = "established"
     };
-    internal static NullableDateTimeRangeDatabaseParameter Terminated = new() {
+    internal static NullableDateRangeDatabaseParameter Terminated = new() {
         Name = "terminated"
     };
 

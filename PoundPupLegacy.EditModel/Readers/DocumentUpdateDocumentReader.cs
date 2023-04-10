@@ -36,11 +36,9 @@ public class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFacto
                     else d.document_type_id
                 end,
         	    'PublicationDateFrom',
-        	    lower(publication_date_range),
+        	    lower(published),
         	    'PublicationDateTo',
-        	    upper(publication_date_range),
-        	    'PublicationDate',
-        	    publication_date,
+        	    upper(published),
                 'DocumentableDocuments',
                 (select document from document_documentables_document),
                 'DocumentTypes',

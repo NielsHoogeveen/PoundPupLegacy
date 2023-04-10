@@ -1,6 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullableDateTimeDatabaseParameter DateOfBirth = new() { Name = "date_of_birth" };
+    internal static NullableDateTimeDatabaseParameter DateOfDeath = new() { Name = "date_of_death" };
+    internal static NullableIntegerDatabaseParameter FileIdPortrait = new() { Name = "file_id_portrait" };
+    internal static NullableStringDatabaseParameter FirstName = new() { Name = "first_name" };
+    internal static NullableStringDatabaseParameter MiddleName = new() { Name = "middle_name" };
+    internal static NullableStringDatabaseParameter LastName = new() { Name = "last_name" };
+    internal static NullableStringDatabaseParameter FullName = new() { Name = "full_name" };
+    internal static NullableStringDatabaseParameter Suffix = new() { Name = "suffix" };
+    internal static NullableIntegerDatabaseParameter GovtrackId = new() { Name = "govtrack_id" };
+    internal static NullableStringDatabaseParameter Bioguide = new() { Name = "bioguide" };
+
     public override async Task<IDatabaseInserter<Person>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,51 +22,18 @@ internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "person",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = PersonInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.DATE_OF_BIRTH,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.DATE_OF_DEATH,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.FILE_ID_PORTRAIT,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.GOVTRACK_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.FIRST_NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.MIDDLE_NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.LAST_NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.FULL_NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.SUFFIX,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = PersonInserter.BIOGUIDE,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
+            new DatabaseParameter[] {
+                Id,
+                DateOfBirth,
+                DateOfDeath,
+                FileIdPortrait,
+                FirstName,
+                MiddleName,
+                LastName,
+                FullName,
+                Suffix,
+                GovtrackId,
+                Bioguide
             }
         );
         return new PersonInserter(command);
@@ -62,19 +41,6 @@ internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person>
 }
 internal sealed class PersonInserter : DatabaseInserter<Person>
 {
-    internal const string ID = "id";
-    internal const string DATE_OF_BIRTH = "date_of_birth";
-    internal const string DATE_OF_DEATH = "date_of_death";
-    internal const string FILE_ID_PORTRAIT = "file_id_portrait";
-    internal const string FIRST_NAME = "first_name";
-    internal const string MIDDLE_NAME = "middle_name";
-    internal const string LAST_NAME = "last_name";
-    internal const string FULL_NAME = "full_name";
-    internal const string SUFFIX = "suffix";
-    internal const string GOVTRACK_ID = "govtrack_id";
-    internal const string BIOGUIDE = "bioguide";
-
-
     internal PersonInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -83,17 +49,17 @@ internal sealed class PersonInserter : DatabaseInserter<Person>
     {
         if (person.Id is null)
             throw new NullReferenceException();
-        SetParameter(person.Id, ID);
-        SetNullableParameter(person.DateOfBirth, DATE_OF_BIRTH);
-        SetNullableParameter(person.DateOfDeath, DATE_OF_DEATH);
-        SetNullableParameter(person.FileIdPortrait, FILE_ID_PORTRAIT);
-        SetNullableParameter(person.GovtrackId, GOVTRACK_ID);
-        SetNullableParameter(person.FirstName, FIRST_NAME);
-        SetNullableParameter(person.MiddleName, MIDDLE_NAME);
-        SetNullableParameter(person.LastName, LAST_NAME);
-        SetNullableParameter(person.Suffix, SUFFIX);
-        SetNullableParameter(person.FullName, FULL_NAME);
-        SetNullableParameter(person.Bioguide, BIOGUIDE);
+        Set(PersonInserterFactory.Id, person.Id.Value);
+        Set(PersonInserterFactory.DateOfBirth, person.DateOfBirth);
+        Set(PersonInserterFactory.DateOfDeath, person.DateOfDeath);
+        Set(PersonInserterFactory.FileIdPortrait, person.FileIdPortrait);
+        Set(PersonInserterFactory.GovtrackId, person.GovtrackId);
+        Set(PersonInserterFactory.FirstName, person.FirstName);
+        Set(PersonInserterFactory.MiddleName, person.MiddleName);
+        Set(PersonInserterFactory.LastName, person.LastName);
+        Set(PersonInserterFactory.Suffix, person.Suffix);
+        Set(PersonInserterFactory.FullName, person.FullName);
+        Set(PersonInserterFactory.Bioguide, person.Bioguide) ;
         await _command.ExecuteNonQueryAsync();
     }
 }

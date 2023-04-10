@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class DocumentableDocumentInserterFactory : DatabaseInserterFactory<DocumentableDocument>
 {
+    internal static NonNullableIntegerDatabaseParameter DocumentableId = new() { Name = "documentable_id" };
+    internal static NonNullableIntegerDatabaseParameter DocumentId = new() { Name = "document_id" };
+
     public override async Task<IDatabaseInserter<DocumentableDocument>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class DocumentableDocumentInserterFactory : DatabaseInserterFact
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "documentable_document",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = DocumentableDocumentInserter.DOCUMENTABLE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = DocumentableDocumentInserter.DOCUMENT_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                DocumentableId,
+                DocumentId
             }
         );
         return new DocumentableDocumentInserter(command);
@@ -26,18 +23,14 @@ internal sealed class DocumentableDocumentInserterFactory : DatabaseInserterFact
 }
 internal sealed class DocumentableDocumentInserter : DatabaseInserter<DocumentableDocument>
 {
-
-    internal const string DOCUMENTABLE_ID = "documentable_id";
-    internal const string DOCUMENT_ID = "document_id";
-
     internal DocumentableDocumentInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(DocumentableDocument documentableDocument)
     {
-        SetParameter(documentableDocument.DocumentableId, DOCUMENTABLE_ID);
-        SetNullableParameter(documentableDocument.DocumentId, DOCUMENT_ID);
+        Set(DocumentableDocumentInserterFactory.DocumentableId, documentableDocument.DocumentableId);
+        Set(DocumentableDocumentInserterFactory.DocumentId, documentableDocument.DocumentId);
         await _command.ExecuteNonQueryAsync();
     }
 }

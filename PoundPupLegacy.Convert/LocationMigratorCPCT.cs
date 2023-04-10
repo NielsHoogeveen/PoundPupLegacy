@@ -354,7 +354,7 @@ internal sealed class LocationMigratorCPCT : MigratorCPCT
                 City = GetCity(id, reader.IsDBNull("city") ? null : reader.GetString("city")),
                 PostalCode = GetPostalCode(id, reader.IsDBNull("postal_code") ? null : reader.GetString("postal_code")),
                 SubdivisionId = await GetSubdivisionId(id, subDivisionId, countryId, code, nodeIdReader, subdivisionIdReaderByIso3166Code),
-                CountryId = await GetCountryId(id, countryId),
+                CountryId = (int)await GetCountryId(id, countryId),
                 Latitude = GetLatitude(id, reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
                 Longitude = GetLongitude(id, reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
                 Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = renamedId, LocatableId = locatableId } }

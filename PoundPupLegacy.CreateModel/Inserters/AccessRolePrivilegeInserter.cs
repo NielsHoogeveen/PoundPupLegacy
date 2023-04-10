@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class AccessRolePrivilegeInserterFactory : DatabaseInserterFactory<AccessRolePrivilege>
 {
+    internal static NonNullableIntegerDatabaseParameter AccessRoleId = new() { Name = "access_role_id" };
+    internal static NonNullableIntegerDatabaseParameter ActionId = new() { Name = "action_id" };
+
     public override async Task<IDatabaseInserter<AccessRolePrivilege>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class AccessRolePrivilegeInserterFactory : DatabaseInserterFacto
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "access_role_privilege",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = AccessRolePrivilegeInserter.ACCESS_ROLE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = AccessRolePrivilegeInserter.ACTION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                AccessRoleId,
+                ActionId
             }
         );
         return new AccessRolePrivilegeInserter(command);
@@ -29,8 +26,6 @@ internal sealed class AccessRolePrivilegeInserterFactory : DatabaseInserterFacto
 internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRolePrivilege>
 {
 
-    internal const string ACCESS_ROLE_ID = "access_role_id";
-    internal const string ACTION_ID = "action_id";
 
     internal AccessRolePrivilegeInserter(NpgsqlCommand command) : base(command)
     {
@@ -38,8 +33,9 @@ internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRoleP
 
     public override async Task InsertAsync(AccessRolePrivilege createNodeAccessPrivilege)
     {
-        SetParameter(createNodeAccessPrivilege.AccessRoleId, ACCESS_ROLE_ID);
-        SetNullableParameter(createNodeAccessPrivilege.ActionId, ACTION_ID);
+
+        Set(AccessRolePrivilegeInserterFactory.AccessRoleId, createNodeAccessPrivilege.AccessRoleId);
+        Set(AccessRolePrivilegeInserterFactory.ActionId, createNodeAccessPrivilege.ActionId);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class TermInserterFactory : DatabaseInserterFactory<Term>
 {
+    internal static NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static NonNullableIntegerDatabaseParameter NameableId = new() { Name = "nameable_id" };
+
     public override async Task<IDatabaseInserter<Term>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class TermInserterFactory : DatabaseInserterFactory<Term>
         var command = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "term",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = TermInserter.NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = TermInserter.VOCABULARY_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = TermInserter.NAMEABLE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                VocabularyId,
+                Name,
+                NameableId
             }
         );
         return new TermInserter(command);
@@ -30,9 +25,6 @@ internal sealed class TermInserterFactory : DatabaseInserterFactory<Term>
 }
 internal sealed class TermInserter : DatabaseInserter<Term>
 {
-    internal const string VOCABULARY_ID = "vocabulary_id";
-    internal const string NAME = "name";
-    internal const string NAMEABLE_ID = "nameable_id";
 
     internal TermInserter(NpgsqlCommand command) : base(command)
     {
@@ -40,9 +32,9 @@ internal sealed class TermInserter : DatabaseInserter<Term>
 
     public override async Task InsertAsync(Term term)
     {
-        SetParameter(term.VocabularyId, VOCABULARY_ID);
-        SetParameter(term.Name.Trim(), NAME);
-        SetParameter(term.NameableId, NAMEABLE_ID);
+        Set(TermInserterFactory.VocabularyId, term.VocabularyId);
+        Set(TermInserterFactory.Name, term.Name.Trim());
+        Set(TermInserterFactory.NameableId, term.NameableId);
         var retval = await _command.ExecuteScalarAsync();
         term.Id = retval switch {
             int i => i,

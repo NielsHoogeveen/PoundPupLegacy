@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class TenantFileInserterFactory : DatabaseInserterFactory<TenantFile>
 {
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter FileId = new() { Name = "file_id" };
+    internal static NonNullableIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
+
     public override async Task<IDatabaseInserter<TenantFile>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,19 +14,10 @@ internal sealed class TenantFileInserterFactory : DatabaseInserterFactory<Tenant
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "tenant_file",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = TenantFileInserter.TENANT_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = TenantFileInserter.FILE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = TenantFileInserter.TENANT_FILE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                TenantId,
+                FileId,
+                TenantFileId
             }
         );
         return new TenantFileInserter(command);
@@ -31,10 +26,6 @@ internal sealed class TenantFileInserterFactory : DatabaseInserterFactory<Tenant
 
 internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>
 {
-    internal const string TENANT_ID = "tenant_id";
-    internal const string FILE_ID = "file_id";
-    internal const string TENANT_FILE_ID = "tenant_file_id";
-
     internal TenantFileInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -43,9 +34,11 @@ internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>
     {
         if (tenantFile.FileId == null)
             throw new ArgumentNullException(nameof(tenantFile.FileId));
-        SetParameter(tenantFile.TenantId, TENANT_ID);
-        SetParameter(tenantFile.FileId, FILE_ID);
-        SetParameter(tenantFile.TenantFileId, TENANT_FILE_ID);
+        if (tenantFile.TenantFileId == null)
+            throw new ArgumentNullException(nameof(tenantFile.TenantFileId));
+        Set(TenantFileInserterFactory.TenantId, tenantFile.TenantId);
+        Set(TenantFileInserterFactory.FileId, tenantFile.FileId.Value);
+        Set(TenantFileInserterFactory.TenantFileId, tenantFile.TenantFileId.Value);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class CasePartyTypeInserterFactory : DatabaseInserterFactory<CasePartyType>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     public override async Task<IDatabaseInserter<CasePartyType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,11 +11,8 @@ internal sealed class CasePartyTypeInserterFactory : DatabaseInserterFactory<Cas
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "case_party_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = CasePartyTypeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id
             }
         );
         return new CasePartyTypeInserter(command);
@@ -24,9 +22,6 @@ internal sealed class CasePartyTypeInserterFactory : DatabaseInserterFactory<Cas
 }
 internal sealed class CasePartyTypeInserter : DatabaseInserter<CasePartyType>
 {
-
-    internal const string ID = "id";
-
     internal CasePartyTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -36,7 +31,7 @@ internal sealed class CasePartyTypeInserter : DatabaseInserter<CasePartyType>
         if (casePartyType.Id is null) {
             throw new ArgumentNullException(nameof(casePartyType));
         }
-        SetParameter(casePartyType.Id, ID);
+        Set(CasePartyTypeInserterFactory.Id, casePartyType.Id.Value);
         await _command.ExecuteNonQueryAsync();
     }
 }

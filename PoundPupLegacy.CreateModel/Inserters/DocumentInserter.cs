@@ -1,6 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullableTimeStampRangeDatabaseParameter Published = new() { Name = "published" };
+    internal static NullableStringDatabaseParameter SourceUrl = new() { Name = "source_url" };
+    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    internal static NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
+    internal static NullableIntegerDatabaseParameter DocumentTypeId = new() { Name = "document_type_id" };
+
     public override async Task<IDatabaseInserter<Document>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,35 +17,13 @@ internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "document",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = DocumentInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = DocumentInserter.SOURCE_URL,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = DocumentInserter.TEXT,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = DocumentInserter.TEASER,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = DocumentInserter.DOCUMENT_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = DocumentInserter.PUBLICATION_DATE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
-                new ColumnDefinition{
-                    Name = DocumentInserter.PUBLICATION_DATE_RANGE,
-                    NpgsqlDbType = NpgsqlDbType.Unknown
-                },
+            new DatabaseParameter[] {
+                Id,
+                Published,
+                SourceUrl,
+                Text,
+                Teaser,
+                DocumentTypeId
             }
         );
         return new DocumentInserter(command);
@@ -47,15 +32,6 @@ internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document
 }
 internal sealed class DocumentInserter : DatabaseInserter<Document>
 {
-
-    internal const string ID = "id";
-    internal const string PUBLICATION_DATE = "publication_date";
-    internal const string PUBLICATION_DATE_RANGE = "publication_date_range";
-    internal const string SOURCE_URL = "source_url";
-    internal const string TEXT = "text";
-    internal const string TEASER = "teaser";
-    internal const string DOCUMENT_TYPE_ID = "document_type_id";
-
     internal DocumentInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -64,12 +40,12 @@ internal sealed class DocumentInserter : DatabaseInserter<Document>
     {
         if (document.Id is null)
             throw new NullReferenceException();
-        SetParameter(document.Id, ID);
-        SetParameter(document.Text, TEXT);
-        SetParameter(document.Teaser, TEASER);
-        SetDateTimeRangeParameter(document.PublicationDate, PUBLICATION_DATE, PUBLICATION_DATE_RANGE);
-        SetNullableParameter(document.SourceUrl, SOURCE_URL);
-        SetNullableParameter(document.DocumentTypeId, DOCUMENT_TYPE_ID);
+        Set(DocumentInserterFactory.Id, document.Id.Value);
+        Set(DocumentInserterFactory.Text, document.Text);
+        Set(DocumentInserterFactory.Teaser, document.Teaser);
+        Set(DocumentInserterFactory.Published, document.PublicationDate);
+        Set(DocumentInserterFactory.SourceUrl, document.SourceUrl);
+        Set(DocumentInserterFactory.DocumentTypeId, document.DocumentTypeId);
         await _command.ExecuteNonQueryAsync();
     }
 

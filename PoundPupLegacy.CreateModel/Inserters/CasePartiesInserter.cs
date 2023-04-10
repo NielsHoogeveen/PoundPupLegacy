@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class CasePartiesInserterFactory : DatabaseInserterFactory<CaseParties>
 {
+    internal static NullableStringDatabaseParameter Organizations = new() { Name = "organizations" };
+    internal static NullableStringDatabaseParameter Persons = new() { Name = "persons" };
+
     public override async Task<IDatabaseInserter<CaseParties>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class CasePartiesInserterFactory : DatabaseInserterFactory<CaseP
         var command = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "case_parties",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = CasePartiesInserter.ORGANIZATIONS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = CasePartiesInserter.PERSONS,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
+            new DatabaseParameter[] {
+                Organizations,
+                Persons
             }
         );
         return new CasePartiesInserter(command);
@@ -29,8 +26,6 @@ internal sealed class CasePartiesInserterFactory : DatabaseInserterFactory<CaseP
 internal sealed class CasePartiesInserter : DatabaseInserter<CaseParties>
 {
 
-    internal const string ORGANIZATIONS = "organizations";
-    internal const string PERSONS = "persons";
 
     internal CasePartiesInserter(NpgsqlCommand command) : base(command)
     {
@@ -41,8 +36,8 @@ internal sealed class CasePartiesInserter : DatabaseInserter<CaseParties>
         if (caseParties.Id.HasValue) {
             throw new Exception($"case parties id should be null upon creation");
         }
-        SetNullableParameter(caseParties.Organizations, ORGANIZATIONS);
-        SetNullableParameter(caseParties.Persons, PERSONS);
+        Set(CasePartiesInserterFactory.Organizations, caseParties.Organizations);
+        Set(CasePartiesInserterFactory.Persons, caseParties.Persons);
         caseParties.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception("Insert of case parties does not return an id.")

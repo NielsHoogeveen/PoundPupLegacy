@@ -2,57 +2,41 @@
 namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class SenatorSenateBillActionInserterFactory : DatabaseInserterFactory<SenatorSenateBillAction>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter SenatorId = new() { Name = "senator_id" };
+    internal static NonNullableIntegerDatabaseParameter SenateBillId = new() { Name = "senate_bill_id" };
+    internal static NonNullableDateTimeDatabaseParameter Date = new() { Name = "date" };
+    internal static NonNullableIntegerDatabaseParameter BillActionTypeId = new() { Name = "bill_action_type_id" };
+
     public override async Task<IDatabaseInserter<SenatorSenateBillAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var columnDefinitions = new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = SenatorSenateBillActionInserter.SENATOR_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SenatorSenateBillActionInserter.SENATE_BILL_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SenatorSenateBillActionInserter.BILL_ACTION_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SenatorSenateBillActionInserter.DATE,
-                    NpgsqlDbType = NpgsqlDbType.Timestamp
-                },
-            };
+        var databaseParameters = new DatabaseParameter[] {
+            SenatorId,
+            SenateBillId,
+            Date,
+            BillActionTypeId
+        };
 
         var genarateIdCommand = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "senator_senate_bill_action",
-            columnDefinitions
+            databaseParameters
         );
 
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "senator_senate_bill_action",
-            columnDefinitions.ToImmutableList().Add(new ColumnDefinition {
-                Name = SenatorSenateBillActionInserter.ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            })
+            databaseParameters.ToImmutableList().Add(Id)
         );
         return new SenatorSenateBillActionInserter(command, genarateIdCommand);
     }
 }
 internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<SenatorSenateBillAction>
 {
-
-    internal const string ID = "id";
-    internal const string SENATOR_ID = "senator_id";
-    internal const string SENATE_BILL_ID = "senate_bill_id";
-    internal const string DATE = "date";
-    internal const string BILL_ACTION_TYPE_ID = "bill_action_type_id";
-
     private NpgsqlCommand _generateIdCommand;
 
     internal SenatorSenateBillActionInserter(NpgsqlCommand command, NpgsqlCommand generateIdCommand) : base(command)
@@ -62,11 +46,10 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
 
     private void DoWrites(SenatorSenateBillAction senatorSenateBillAction, NpgsqlCommand command)
     {
-        SetParameter(senatorSenateBillAction.SenatorId, SENATOR_ID, command);
-        SetParameter(senatorSenateBillAction.SenateBillId, SENATE_BILL_ID, command);
-        SetParameter(senatorSenateBillAction.BillActionTypeId, BILL_ACTION_TYPE_ID, command);
-        SetParameter(senatorSenateBillAction.Date, DATE, command);
-
+        Set(SenatorSenateBillActionInserterFactory.SenatorId, senatorSenateBillAction.SenatorId, command);
+        Set(SenatorSenateBillActionInserterFactory.SenateBillId, senatorSenateBillAction.SenateBillId, command);
+        Set(SenatorSenateBillActionInserterFactory.BillActionTypeId, senatorSenateBillAction.BillActionTypeId, command);
+        Set(SenatorSenateBillActionInserterFactory.Date, senatorSenateBillAction.Date, command);
     }
 
     public override async Task InsertAsync(SenatorSenateBillAction senatorSenateBillAction)
@@ -79,7 +62,7 @@ internal sealed class SenatorSenateBillActionInserter : DatabaseInserter<Senator
             };
         }
         else {
-            SetParameter(senatorSenateBillAction.Id, ID);
+            Set(SenatorSenateBillActionInserterFactory.Id, senatorSenateBillAction.Id.Value);
             DoWrites(senatorSenateBillAction, _command);
             await _command.ExecuteNonQueryAsync();
         }

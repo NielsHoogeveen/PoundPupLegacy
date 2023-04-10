@@ -2,6 +2,9 @@
 
 internal sealed class ActInserterFactory : DatabaseInserterFactory<Act>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullableDateTimeDatabaseParameter EnactmentDate = new() { Name = "enactment_date" };
+    
     public override async Task<IDatabaseInserter<Act>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -11,15 +14,8 @@ internal sealed class ActInserterFactory : DatabaseInserterFactory<Act>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "act",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ActInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ActInserter.ENACTMENT_DATE,
-                    NpgsqlDbType = NpgsqlDbType.Date
-                },
+            new DatabaseParameter[] {
+                Id, EnactmentDate
             }
         );
         return new ActInserter(command);
@@ -28,18 +24,16 @@ internal sealed class ActInserterFactory : DatabaseInserterFactory<Act>
 }
 internal sealed class ActInserter : DatabaseInserter<Act>
 {
-
-    public const string ID = "id";
-    public const string ENACTMENT_DATE = "enactment_date";
-
     internal ActInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(Act act)
     {
-        SetParameter(act.Id, ID);
-        SetNullableParameter(act.EnactmentDate, ENACTMENT_DATE);
+        if (act.Id is null)
+            throw new ArgumentNullException(nameof(act.Id));
+        Set(ActInserterFactory.Id, act.Id.Value);
+        Set(ActInserterFactory.EnactmentDate, act.EnactmentDate);
         await _command.ExecuteNonQueryAsync();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.ViewModel;
+﻿using PoundPupLegacy.Common;
+
+namespace PoundPupLegacy.ViewModel;
 
 public record Document : Node
 {
@@ -7,27 +9,21 @@ public record Document : Node
     public required int NodeTypeId { get; init; }
     public required string Title { get; init; }
     public required string Text { get; init; }
-    public DateTime? DateTime { get; init; }
-    public DateTime? DateTimeFrom { get; init; }
-    public DateTime? DateTimeTo { get; init; }
-    public Link? DocumentType { get; init; }
-    public string? PublicationDate {
+    public DateTime? PublicationDateFrom { get; set; }
+    public DateTime? PublicationDateTo { get; set; }
+    public FuzzyDate? Published {
         get {
-            if (DateTime.HasValue) {
-                return DateTime.Value.ToString("yyyy MMMM dd");
-            }
-            if (DateTimeFrom.HasValue && DateTimeTo.HasValue) {
-                if (DateTimeFrom.Value.Month == DateTimeTo.Value.Month) {
-                    return DateTimeFrom.Value.ToString("yyyy MMMM");
-                }
-                else {
-                    return DateTimeFrom.Value.ToString("yyyy");
+            if (PublicationDateFrom is not null && PublicationDateTo is not null) {
+                var dateTimeRange = new DateTimeRange(PublicationDateFrom, PublicationDateTo);
+                if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
+                    return result;
                 }
             }
             return null;
         }
     }
 
+    public Link? DocumentType { get; init; }
     public string? SourceUrl { get; init; }
     public string? SourceUrlHost => SourceUrl is null ? null : new Uri(SourceUrl).Host;
     public required Authoring Authoring { get; init; }

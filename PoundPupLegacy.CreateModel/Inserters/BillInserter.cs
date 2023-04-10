@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class BillInserterFactory : DatabaseInserterFactory<Bill>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullableDateTimeDatabaseParameter IntroductionDate = new() { Name = "introduction_date" };
+
     public override async Task<IDatabaseInserter<Bill>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class BillInserterFactory : DatabaseInserterFactory<Bill>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "bill",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = BillInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = BillInserter.INTRODUCTION_DATE,
-                    NpgsqlDbType = NpgsqlDbType.Date
-                },
+            new DatabaseParameter[] {
+                Id,
+                IntroductionDate
             }
         );
         return new BillInserter(command);
@@ -29,8 +26,6 @@ internal sealed class BillInserterFactory : DatabaseInserterFactory<Bill>
 internal sealed class BillInserter : DatabaseInserter<Bill>
 {
 
-    internal const string ID = "id";
-    internal const string INTRODUCTION_DATE = "introduction_date";
 
     internal BillInserter(NpgsqlCommand command) : base(command)
     {
@@ -38,8 +33,10 @@ internal sealed class BillInserter : DatabaseInserter<Bill>
 
     public override async Task InsertAsync(Bill bill)
     {
-        SetParameter(bill.Id, ID);
-        SetNullableParameter(bill.IntroductionDate, INTRODUCTION_DATE);
+        if (bill.Id is null)
+            throw new ArgumentNullException(nameof(bill.Id));
+        Set(BillInserterFactory.Id, bill.Id.Value);
+        Set(BillInserterFactory.IntroductionDate, bill.IntroductionDate);
         await _command.ExecuteNonQueryAsync();
     }
 }

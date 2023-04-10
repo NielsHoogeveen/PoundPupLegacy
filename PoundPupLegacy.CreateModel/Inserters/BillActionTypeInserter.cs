@@ -2,6 +2,7 @@
 
 internal sealed class BillActionTypeInserterFactory : DatabaseInserterFactory<BillActionType>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     public override async Task<IDatabaseInserter<BillActionType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -11,22 +12,15 @@ internal sealed class BillActionTypeInserterFactory : DatabaseInserterFactory<Bi
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "bill_action_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = BillActionTypeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                }
+            new DatabaseParameter[] {
+                Id
             }
         );
         return new BillActionTypeInserter(command);
-
     }
-
 }
 internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>
 {
-    internal const string ID = "id";
-
     internal BillActionTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -36,7 +30,7 @@ internal sealed class BillActionTypeInserter : DatabaseInserter<BillActionType>
         if (billActionType.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(billActionType.Id, ID);
+        Set(BillActionTypeInserterFactory.Id, billActionType.Id.Value);
         await _command.ExecuteNonQueryAsync();
     }
 }

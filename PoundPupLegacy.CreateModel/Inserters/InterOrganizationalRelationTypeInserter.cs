@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class InterOrganizationalRelationTypeInserterFactory : DatabaseInserterFactory<InterOrganizationalRelationType>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
+
     public override async Task<IDatabaseInserter<InterOrganizationalRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class InterOrganizationalRelationTypeInserterFactory : DatabaseI
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "inter_organizational_relation_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = InterOrganizationalRelationTypeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterOrganizationalRelationTypeInserter.IS_SYMMETRIC,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
+            new DatabaseParameter[] {
+                Id,
+                IsSymmetric
             }
         );
         return new InterOrganizationalRelationTypeInserter(command);
@@ -27,10 +24,6 @@ internal sealed class InterOrganizationalRelationTypeInserterFactory : DatabaseI
 }
 internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter<InterOrganizationalRelationType>
 {
-    internal const string ID = "id";
-    internal const string IS_SYMMETRIC = "is_symmetric";
-
-
     internal InterOrganizationalRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -39,8 +32,8 @@ internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter
     {
         if (interOrganizationalRelationType.Id is null)
             throw new NullReferenceException();
-        SetParameter(interOrganizationalRelationType.Id, ID);
-        SetParameter(interOrganizationalRelationType.IsSymmetric, IS_SYMMETRIC);
+        Set(InterOrganizationalRelationTypeInserterFactory.Id, interOrganizationalRelationType.Id.Value);
+        Set(InterOrganizationalRelationTypeInserterFactory.IsSymmetric, interOrganizationalRelationType.IsSymmetric);
         await _command.ExecuteNonQueryAsync();
     }
 

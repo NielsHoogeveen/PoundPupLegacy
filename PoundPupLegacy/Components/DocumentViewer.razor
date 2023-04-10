@@ -14,11 +14,11 @@
             <a href="@Model.SourceUrl">@Model.SourceUrlHost</a>    
         </div>
     }
-    @if (Model.PublicationDate is not null)
+    @if (Model.Published is not null)
     {
         <div>
             <label>Publication date:</label>
-            @Model.PublicationDate
+            @Model.Published.ToDisplayString()
         </div>
     }
     

@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 public class SecondLevelGlobalRegionInserterFactory : DatabaseInserterFactory<SecondLevelGlobalRegion>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter FirstLevelGlobalRegionId = new() { Name = "first_level_global_region_id" };
+
     public override async Task<IDatabaseInserter<SecondLevelGlobalRegion>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ public class SecondLevelGlobalRegionInserterFactory : DatabaseInserterFactory<Se
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "second_level_global_region",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = SecondLevelGlobalRegionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = SecondLevelGlobalRegionInserter.FIRST_LEVEL_GLOBAL_REGION_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                FirstLevelGlobalRegionId
             }
         );
         return new SecondLevelGlobalRegionInserter(command);
@@ -26,8 +23,6 @@ public class SecondLevelGlobalRegionInserterFactory : DatabaseInserterFactory<Se
 }
 public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGlobalRegion>
 {
-    internal const string ID = "id";
-    internal const string FIRST_LEVEL_GLOBAL_REGION_ID = "first_level_global_region_id";
 
     public SecondLevelGlobalRegionInserter(NpgsqlCommand command) : base(command)
     {
@@ -38,8 +33,8 @@ public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGloba
         if (region.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(region.Id, ID);
-        SetParameter(region.FirstLevelGlobalRegionId, FIRST_LEVEL_GLOBAL_REGION_ID);
+        Set(SecondLevelGlobalRegionInserterFactory.Id, region.Id.Value);
+        Set(SecondLevelGlobalRegionInserterFactory.FirstLevelGlobalRegionId, region.FirstLevelGlobalRegionId);
         await _command.ExecuteNonQueryAsync();
     }
 }

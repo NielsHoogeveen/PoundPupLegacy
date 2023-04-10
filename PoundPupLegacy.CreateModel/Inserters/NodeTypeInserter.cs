@@ -1,6 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class NodeTypeInserterFactory : DatabaseInserterFactory<NodeType>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    internal static NonNullableBooleanDatabaseParameter AuthorSpecific = new() { Name = "author_specific" };
+
     public override async Task<IDatabaseInserter<NodeType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,23 +15,11 @@ internal sealed class NodeTypeInserterFactory : DatabaseInserterFactory<NodeType
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "node_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = NodeTypeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = NodeTypeInserter.NAME,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = NodeTypeInserter.DESCRIPTION,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = NodeTypeInserter.AUTHOR_SPECIFIC,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
+            new DatabaseParameter[] {
+                Id,
+                Name,
+                Description,
+                AuthorSpecific
             }
         );
         return new NodeTypeInserter(command);
@@ -34,22 +27,18 @@ internal sealed class NodeTypeInserterFactory : DatabaseInserterFactory<NodeType
 }
 internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>
 {
-
-    internal const string ID = "id";
-    internal const string NAME = "name";
-    internal const string DESCRIPTION = "description";
-    internal const string AUTHOR_SPECIFIC = "author_specific";
-
     internal NodeTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
     public override async Task InsertAsync(NodeType nodeType)
     {
-        SetParameter(nodeType.Id, ID);
-        SetNullableParameter(nodeType.Name, NAME);
-        SetNullableParameter(nodeType.Description, DESCRIPTION);
-        SetParameter(nodeType.AuthorSpecific, AUTHOR_SPECIFIC);
+        if (nodeType.Id is null)
+            throw new NullReferenceException();
+        Set(NodeTypeInserterFactory.Id, nodeType.Id.Value);
+        Set(NodeTypeInserterFactory.Name, nodeType.Name);
+        Set(NodeTypeInserterFactory.Description, nodeType.Description);
+        Set(NodeTypeInserterFactory.AuthorSpecific, nodeType.AuthorSpecific);
         await _command.ExecuteNonQueryAsync();
     }
 }

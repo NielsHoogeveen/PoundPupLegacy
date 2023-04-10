@@ -1,6 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class ChildTraffickingCaseInserterFactory : DatabaseInserterFactory<ChildTraffickingCase>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullableIntegerDatabaseParameter NumberOfChildrenInvolved = new() { Name = "number_of_children_involved" };
+    internal static NonNullableIntegerDatabaseParameter CountryIdFrom = new() { Name = "country_id_from" };
+
     public override async Task<IDatabaseInserter<ChildTraffickingCase>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,20 +14,10 @@ internal sealed class ChildTraffickingCaseInserterFactory : DatabaseInserterFact
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "child_trafficking_case",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = ChildTraffickingCaseInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ChildTraffickingCaseInserter.NUMBER_OF_CHILDREN_INVOLVED,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = ChildTraffickingCaseInserter.COUNTRY_ID_FROM,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-
+            new DatabaseParameter[] {
+                Id,
+                NumberOfChildrenInvolved,
+                CountryIdFrom
             }
         );
         return new ChildTraffickingCaseInserter(command);
@@ -32,10 +26,6 @@ internal sealed class ChildTraffickingCaseInserterFactory : DatabaseInserterFact
 
 internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraffickingCase>
 {
-    internal const string ID = "id";
-    internal const string NUMBER_OF_CHILDREN_INVOLVED = "number_of_children_involved";
-    internal const string COUNTRY_ID_FROM = "country_id_from";
-
     internal ChildTraffickingCaseInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -45,9 +35,9 @@ internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraff
         if (abuseCase.Id is null)
             throw new NullReferenceException();
 
-        SetParameter(abuseCase.Id, ID);
-        SetNullableParameter(abuseCase.NumberOfChildrenInvolved, NUMBER_OF_CHILDREN_INVOLVED);
-        SetParameter(abuseCase.CountryIdFrom, COUNTRY_ID_FROM);
+        Set(ChildTraffickingCaseInserterFactory.Id, abuseCase.Id.Value);
+        Set(ChildTraffickingCaseInserterFactory.NumberOfChildrenInvolved, abuseCase.NumberOfChildrenInvolved);
+        Set(ChildTraffickingCaseInserterFactory.CountryIdFrom, abuseCase.CountryIdFrom);
         await _command.ExecuteNonQueryAsync();
     }
 }

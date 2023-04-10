@@ -4,13 +4,15 @@ namespace PoundPupLegacy.CreateModel.Inserters;
 
 public class PrincipalInserterFactory : DatabaseInserterFactory<Principal>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+
     public override async Task<IDatabaseInserter<Principal>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var columnDefinitions = new ColumnDefinition[] {
+        var columnDefinitions = new DatabaseParameter[] {
         };
 
         var identityInsertCommand = await CreateIdentityInsertStatementAsync(
@@ -21,11 +23,7 @@ public class PrincipalInserterFactory : DatabaseInserterFactory<Principal>
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "principal",
-            columnDefinitions.ToImmutableList().Add(
-                new ColumnDefinition {
-                    Name = PrincipalInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                })
+            columnDefinitions.ToImmutableList().Add(Id)
 
         );
         return new PrincipalInserter(command, identityInsertCommand);
@@ -45,7 +43,7 @@ public class PrincipalInserter : DatabaseInserter<Principal>
     public override async Task InsertAsync(Principal principal)
     {
         if (principal.Id is not null) {
-            SetParameter(principal.Id, ID);
+            Set(PrincipalInserterFactory.Id, principal.Id.Value);
             await _command.ExecuteNonQueryAsync();
         }
         else {

@@ -7,7 +7,7 @@ public interface Node : Identifiable
     public DateTime ChangedDateTime { get; }
     public string Title { get; }
     public int NodeTypeId { get; }
-    public int? OwnerId { get; }
+    public int OwnerId { get; }
     public List<TenantNode> TenantNodes { get; }
 
 }

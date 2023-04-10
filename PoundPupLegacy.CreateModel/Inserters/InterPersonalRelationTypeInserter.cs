@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class InterPersonalRelationTypeInserterFactory : DatabaseInserterFactory<InterPersonalRelationType>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
+
     public override async Task<IDatabaseInserter<InterPersonalRelationType>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class InterPersonalRelationTypeInserterFactory : DatabaseInserte
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "inter_personal_relation_type",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = InterPersonalRelationTypeInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = InterPersonalRelationTypeInserter.IS_SYMMETRIC,
-                    NpgsqlDbType = NpgsqlDbType.Boolean
-                },
+            new DatabaseParameter[] {
+                Id,
+                IsSymmetric
             }
         );
         return new InterPersonalRelationTypeInserter(command);
@@ -27,8 +24,6 @@ internal sealed class InterPersonalRelationTypeInserterFactory : DatabaseInserte
 }
 internal sealed class InterPersonalRelationTypeInserter : DatabaseInserter<InterPersonalRelationType>
 {
-    internal const string ID = "id";
-    internal const string IS_SYMMETRIC = "is_symmetric";
 
 
     internal InterPersonalRelationTypeInserter(NpgsqlCommand command) : base(command)
@@ -39,8 +34,8 @@ internal sealed class InterPersonalRelationTypeInserter : DatabaseInserter<Inter
     {
         if (interPersonalRelationType.Id is null)
             throw new NullReferenceException();
-        SetParameter(interPersonalRelationType.Id, ID);
-        SetParameter(interPersonalRelationType.IsSymmetric, IS_SYMMETRIC);
+        Set(InterPersonalRelationTypeInserterFactory.Id, interPersonalRelationType.Id.Value);
+        Set(InterPersonalRelationTypeInserterFactory.IsSymmetric,interPersonalRelationType.IsSymmetric);
         await _command.ExecuteNonQueryAsync();
     }
 

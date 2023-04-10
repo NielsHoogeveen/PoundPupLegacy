@@ -3,80 +3,47 @@
 namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class LocationInserterFactory : DatabaseInserterFactory<Location>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullableStringDatabaseParameter Street = new() { Name = "street" };
+    internal static NullableStringDatabaseParameter Additional = new() { Name = "additional" };
+    internal static NullableStringDatabaseParameter City = new() { Name = "city" };
+    internal static NullableStringDatabaseParameter PostalCode = new() { Name = "postal_code" };
+    internal static NullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
+    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    internal static NullableDecimalDatabaseParameter Latitude = new() { Name = "latitude" };
+    internal static NullableDecimalDatabaseParameter Longitude = new() { Name = "longitude" };
     public override async Task<IDatabaseInserter<Location>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var columnDefitions = new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = LocationInserter.STREET,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = LocationInserter.ADDITIONAL,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-
-                new ColumnDefinition{
-                    Name = LocationInserter.CITY,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = LocationInserter.POSTAL_CODE,
-                    NpgsqlDbType = NpgsqlDbType.Varchar
-                },
-                new ColumnDefinition{
-                    Name = LocationInserter.SUBDIVIONS_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = LocationInserter.COUNTRY_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = LocationInserter.LATITUDE,
-                    NpgsqlDbType = NpgsqlDbType.Numeric
-                },
-                new ColumnDefinition{
-                    Name = LocationInserter.LONGITUDE,
-                    NpgsqlDbType = NpgsqlDbType.Numeric
-                },
-
+        var databaseParameters = new DatabaseParameter[] {
+            Street,
+            Additional,
+            City,
+            PostalCode,
+            SubdivisionId,
+            CountryId,
+            Latitude,
+            Longitude
             };
 
         var commandWithId = await CreateInsertStatementAsync(
             postgresConnection,
             "location",
-            columnDefitions.ToImmutableList().Prepend(new ColumnDefinition {
-                Name = LocationInserter.ID,
-                NpgsqlDbType = NpgsqlDbType.Integer
-            })
+            databaseParameters.ToImmutableList().Prepend(Id)
         );
         var commandWithoutId = await CreateIdentityInsertStatementAsync(
             postgresConnection,
             "location",
-            columnDefitions
+            databaseParameters
         );
-
         return new LocationInserter(commandWithId, commandWithoutId);
-
     }
-
 }
 internal sealed class LocationInserter : DatabaseInserter<Location>
 {
-    internal const string ID = "id";
-    internal const string STREET = "street";
-    internal const string ADDITIONAL = "additional";
-    internal const string CITY = "city";
-    internal const string POSTAL_CODE = "postal_code";
-    internal const string SUBDIVIONS_ID = "subdivision_id";
-    internal const string COUNTRY_ID = "country_id";
-    internal const string LATITUDE = "latitude";
-    internal const string LONGITUDE = "longitude";
-
     private NpgsqlCommand _identityCommand;
     internal LocationInserter(NpgsqlCommand command, NpgsqlCommand identityCommand) : base(command)
     {
@@ -87,26 +54,26 @@ internal sealed class LocationInserter : DatabaseInserter<Location>
     public override async Task InsertAsync(Location location)
     {
         if (location.Id is null) {
-            SetNullableParameter(location.Street, STREET, _identityCommand);
-            SetNullableParameter(location.Additional, ADDITIONAL, _identityCommand);
-            SetNullableParameter(location.City, CITY, _identityCommand);
-            SetNullableParameter(location.PostalCode, POSTAL_CODE, _identityCommand);
-            SetNullableParameter(location.SubdivisionId, SUBDIVIONS_ID, _identityCommand);
-            SetParameter(location.CountryId, COUNTRY_ID, _identityCommand);
-            SetNullableParameter(location.Latitude, LATITUDE, _identityCommand);
-            SetNullableParameter(location.Longitude, LONGITUDE, _identityCommand);
+            Set(LocationInserterFactory.Street, location.Street, _identityCommand);
+            Set(LocationInserterFactory.Additional, location.Additional, _identityCommand);
+            Set(LocationInserterFactory.City, location.City, _identityCommand);
+            Set(LocationInserterFactory.PostalCode, location.PostalCode, _identityCommand);
+            Set(LocationInserterFactory.SubdivisionId, location.SubdivisionId, _identityCommand);
+            Set(LocationInserterFactory.CountryId, location.CountryId, _identityCommand);
+            Set(LocationInserterFactory.Latitude, location.Latitude, _identityCommand);
+            Set(LocationInserterFactory.Longitude, location.Longitude, _identityCommand);
             location.Id = await _command.ExecuteNonQueryAsync();
         }
         else {
-            SetParameter(location.Id, ID);
-            SetNullableParameter(location.Street, STREET);
-            SetNullableParameter(location.Additional, ADDITIONAL);
-            SetNullableParameter(location.City, CITY);
-            SetNullableParameter(location.PostalCode, POSTAL_CODE);
-            SetNullableParameter(location.SubdivisionId, SUBDIVIONS_ID);
-            SetParameter(location.CountryId, COUNTRY_ID);
-            SetNullableParameter(location.Latitude, LATITUDE);
-            SetNullableParameter(location.Longitude, LONGITUDE);
+            Set(LocationInserterFactory.Id,location.Id.Value);
+            Set(LocationInserterFactory.Street, location.Street);
+            Set(LocationInserterFactory.Additional, location.Additional);
+            Set(LocationInserterFactory.City, location.City);
+            Set(LocationInserterFactory.PostalCode, location.PostalCode);
+            Set(LocationInserterFactory.SubdivisionId, location.SubdivisionId);
+            Set(LocationInserterFactory.CountryId, location.CountryId);
+            Set(LocationInserterFactory.Latitude, location.Latitude);
+            Set(LocationInserterFactory.Longitude, location.Longitude);
             await _command.ExecuteNonQueryAsync();
         }
     }

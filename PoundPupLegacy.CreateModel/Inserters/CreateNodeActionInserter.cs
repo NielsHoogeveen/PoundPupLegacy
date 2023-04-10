@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 internal sealed class CreateNodeActionInserterFactory : DatabaseInserterFactory<CreateNodeAction>
 {
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+
     public override async Task<IDatabaseInserter<CreateNodeAction>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -10,15 +13,9 @@ internal sealed class CreateNodeActionInserterFactory : DatabaseInserterFactory<
         var command = await CreateInsertStatementAsync(
             postgresConnection,
             "create_node_action",
-            new ColumnDefinition[] {
-                new ColumnDefinition{
-                    Name = CreateNodeActionInserter.ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
-                new ColumnDefinition{
-                    Name = CreateNodeActionInserter.NODE_TYPE_ID,
-                    NpgsqlDbType = NpgsqlDbType.Integer
-                },
+            new DatabaseParameter[] {
+                Id,
+                NodeTypeId
             }
         );
         return new CreateNodeActionInserter(command);
@@ -26,9 +23,6 @@ internal sealed class CreateNodeActionInserterFactory : DatabaseInserterFactory<
 }
 internal sealed class CreateNodeActionInserter : DatabaseInserter<CreateNodeAction>
 {
-
-    internal const string ID = "id";
-    internal const string NODE_TYPE_ID = "node_type_id";
 
     internal CreateNodeActionInserter(NpgsqlCommand command) : base(command)
     {
@@ -39,8 +33,8 @@ internal sealed class CreateNodeActionInserter : DatabaseInserter<CreateNodeActi
         if (!createNodeAccessPrivilege.Id.HasValue) {
             throw new NullReferenceException();
         }
-        SetParameter(createNodeAccessPrivilege.Id.Value, ID);
-        SetNullableParameter(createNodeAccessPrivilege.NodeTypeId, NODE_TYPE_ID);
+        Set(CreateNodeActionInserterFactory.Id, createNodeAccessPrivilege.Id.Value);
+        Set(CreateNodeActionInserterFactory.NodeTypeId, createNodeAccessPrivilege.NodeTypeId);
         await _command.ExecuteNonQueryAsync();
     }
 }
