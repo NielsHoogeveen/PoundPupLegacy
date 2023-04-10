@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class DeleteNodeActionInserterFactory : BasicDatabaseInserterFactory<DeleteNodeAction, DeleteNodeActionInserter>
+internal sealed class DeleteNodeActionInserterFactory : DatabaseInserterFactory<DeleteNodeAction, DeleteNodeActionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
     public override string TableName => "delete_node_action";
 }
-internal sealed class DeleteNodeActionInserter : BasicDatabaseInserter<DeleteNodeAction>
+internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeAction>
 {
 
     public DeleteNodeActionInserter(NpgsqlCommand command) : base(command)

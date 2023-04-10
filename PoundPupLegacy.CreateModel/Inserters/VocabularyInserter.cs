@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class VocabularyInserterFactory : BasicDatabaseInserterFactory<Vocabulary, VocabularyInserter>
+internal sealed class VocabularyInserterFactory : DatabaseInserterFactory<Vocabulary, VocabularyInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
@@ -9,7 +9,7 @@ internal sealed class VocabularyInserterFactory : BasicDatabaseInserterFactory<V
     public override string TableName => "vocabulary";
 
 }
-internal sealed class VocabularyInserter : BasicDatabaseInserter<Vocabulary>
+internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>
 {
     public VocabularyInserter(NpgsqlCommand command) : base(command)
     {

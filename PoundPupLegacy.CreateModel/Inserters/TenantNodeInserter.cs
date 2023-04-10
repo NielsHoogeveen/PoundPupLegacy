@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public sealed class TenantNodeInserterFactory : DatabaseInserterFactory<TenantNode>
+public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<TenantNode, TenantNodeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -8,53 +8,30 @@ public sealed class TenantNodeInserterFactory : DatabaseInserterFactory<TenantNo
     internal static NullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
     internal static NonNullableIntegerDatabaseParameter PublicationStatusId = new() { Name = "publication_status_id" };
 
-    public override async Task<IDatabaseInserter<TenantNode>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "tenant_node";
 
-        var command = await CreateAutoGenerateIdentityInsertStatementAsync(
-            postgresConnection,
-            "tenant_node",
-            new DatabaseParameter[]
-            {
-                TenantId,
-                UrlId,
-                UrlPath,
-                NodeId,
-                SubgroupId,
-                PublicationStatusId
-            }
-        );
-        return new TenantNodeInserter(command);
-    }
 }
-public sealed class TenantNodeInserter : DatabaseInserter<TenantNode>
+public sealed class TenantNodeInserter : AutoGenerateIdDatabaseInserter<TenantNode>
 {
 
-    internal TenantNodeInserter(NpgsqlCommand command) : base(command)
+    public TenantNodeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(TenantNode tenantNode)
+    public override IEnumerable<ParameterValue> GetParameterValues(TenantNode tenantNode)
     {
-        if (tenantNode.Id != null) {
-            throw new Exception($"Id of tenant node needs to be null");
+        if (tenantNode.Id.HasValue) {
+            throw new Exception($"tenant node id should be null upon creation");
         }
-        if(tenantNode.NodeId == null) {
-            throw new NullReferenceException();
-        }
-
-        Set(TenantNodeInserterFactory.TenantId, tenantNode.TenantId);
-        Set(TenantNodeInserterFactory.UrlId, tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value : tenantNode.NodeId.Value);
-        Set(TenantNodeInserterFactory.UrlPath, tenantNode.UrlPath?.Trim());
-        Set(TenantNodeInserterFactory.NodeId, tenantNode.NodeId.Value);
-        Set(TenantNodeInserterFactory.SubgroupId, tenantNode.SubgroupId);
-        Set(TenantNodeInserterFactory.PublicationStatusId, tenantNode.PublicationStatusId);
-        tenantNode.Id = await _command.ExecuteScalarAsync() switch {
-            long i => (int)i,
-            _ => throw new Exception("No id was generated for tenant node")
+        if (tenantNode.NodeId is null)
+            throw new NullReferenceException(nameof(tenantNode.NodeId));
+        return new ParameterValue[] {
+            ParameterValue.Create(TenantNodeInserterFactory.TenantId, tenantNode.TenantId),
+            ParameterValue.Create(TenantNodeInserterFactory.UrlId, tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value : tenantNode.NodeId.Value),
+            ParameterValue.Create(TenantNodeInserterFactory.UrlPath, tenantNode.UrlPath?.Trim()),
+            ParameterValue.Create(TenantNodeInserterFactory.NodeId, tenantNode.NodeId.Value),
+            ParameterValue.Create(TenantNodeInserterFactory.SubgroupId, tenantNode.SubgroupId),
+            ParameterValue.Create(TenantNodeInserterFactory.PublicationStatusId, tenantNode.PublicationStatusId)
         };
     }
 }

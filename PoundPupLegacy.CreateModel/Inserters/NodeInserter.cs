@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public class NodeInserterFactory : DatabaseInserterFactory<Node>
+public class NodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Node, NodeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter PublisherId = new() { Name = "publisher_id" };
     internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
@@ -8,49 +8,27 @@ public class NodeInserterFactory : DatabaseInserterFactory<Node>
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
     internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
 
-    public override async Task<IDatabaseInserter<Node>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "node";
 
-        var databaseParameters = new DatabaseParameter[] {
-            PublisherId,
-            CreatedDateTime,
-            ChangedDateTime,
-            Title,
-            NodeTypeId,
-            OwnerId
-        };
-
-        var command = await CreateAutoGenerateIdentityInsertStatementAsync(
-            postgresConnection,
-            "node",
-            databaseParameters
-        );
-        return new NodeInserter(command);
-    }
 }
-public class NodeInserter : DatabaseInserter<Node>
+public class NodeInserter : AutoGenerateIdDatabaseInserter<Node>
 {
-    internal NodeInserter(NpgsqlCommand command) : base(command)
+    public NodeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Node node)
+    public override IEnumerable<ParameterValue> GetParameterValues(Node node)
     {
         if (node.Id is not null) {
             throw new Exception("Node id must be null upon creation");
         }
-        Set(NodeInserterFactory.PublisherId,node.PublisherId);
-        Set(NodeInserterFactory.CreatedDateTime, node.CreatedDateTime);
-        Set(NodeInserterFactory.ChangedDateTime, node.ChangedDateTime);
-        Set(NodeInserterFactory.Title, node.Title.Trim());
-        Set(NodeInserterFactory.NodeTypeId, node.NodeTypeId);
-        Set(NodeInserterFactory.OwnerId, node.OwnerId);
-        node.Id = await _command.ExecuteScalarAsync() switch {
-            long i => (int)i,
-            _ => throw new Exception("Insert of node does not return an id.")
+        return new ParameterValue[] {
+            ParameterValue.Create(NodeInserterFactory.PublisherId,node.PublisherId),
+            ParameterValue.Create(NodeInserterFactory.CreatedDateTime, node.CreatedDateTime),
+            ParameterValue.Create(NodeInserterFactory.ChangedDateTime, node.ChangedDateTime),
+            ParameterValue.Create(NodeInserterFactory.Title, node.Title.Trim()),
+            ParameterValue.Create(NodeInserterFactory.NodeTypeId, node.NodeTypeId),
+            ParameterValue.Create(NodeInserterFactory.OwnerId, node.OwnerId)
         };
     }
 }

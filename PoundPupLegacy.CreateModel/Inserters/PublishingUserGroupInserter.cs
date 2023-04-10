@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PublishingUserGroupInserterFactory : BasicDatabaseInserterFactory<PublishingUserGroup, PublishingUserGroupInserter>
+internal sealed class PublishingUserGroupInserterFactory : DatabaseInserterFactory<PublishingUserGroup, PublishingUserGroupInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter PublicationStatusIdDefault = new() { Name = "publication_status_id_default" };
 
     public override string TableName => "publishing_user_group";
 }
-internal sealed class PublishingUserGroupInserter : BasicDatabaseInserter<PublishingUserGroup>
+internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingUserGroup>
 {
 
     public PublishingUserGroupInserter(NpgsqlCommand command) : base(command)

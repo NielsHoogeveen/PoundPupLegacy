@@ -1,11 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class AccessRolePrivilegeInserterFactory : BasicDatabaseInserterFactory<AccessRolePrivilege, AccessRolePrivilegeInserter>
+internal sealed class AccessRolePrivilegeInserterFactory : DatabaseInserterFactory<AccessRolePrivilege, AccessRolePrivilegeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter AccessRoleId = new() { Name = "access_role_id" };
     internal static NonNullableIntegerDatabaseParameter ActionId = new() { Name = "action_id" };
     public override string TableName => "access_role_privilege";
 }
-internal sealed class AccessRolePrivilegeInserter : BasicDatabaseInserter<AccessRolePrivilege>
+internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRolePrivilege>
 {
 
     public AccessRolePrivilegeInserter(NpgsqlCommand command) : base(command)

@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public class SecondLevelGlobalRegionInserterFactory : BasicDatabaseInserterFactory<SecondLevelGlobalRegion, SecondLevelGlobalRegionInserter>
+public class SecondLevelGlobalRegionInserterFactory : DatabaseInserterFactory<SecondLevelGlobalRegion, SecondLevelGlobalRegionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter FirstLevelGlobalRegionId = new() { Name = "first_level_global_region_id" };
 
     public override string TableName => "second_level_global_region";
 }
-public class SecondLevelGlobalRegionInserter : BasicDatabaseInserter<SecondLevelGlobalRegion>
+public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGlobalRegion>
 {
 
     public SecondLevelGlobalRegionInserter(NpgsqlCommand command) : base(command)

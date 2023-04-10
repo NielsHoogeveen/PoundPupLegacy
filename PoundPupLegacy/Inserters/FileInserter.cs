@@ -4,7 +4,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Inserters;
 
-internal sealed class FileInserter : DatabaseInserter<FileInserter.Request>, IDatabaseInserter<FileInserter.Request>
+internal sealed class FileInserter : DatabaseWriter, IDatabaseInserter<FileInserter.Request>
 {
     public record Request
     {
@@ -15,7 +15,7 @@ internal sealed class FileInserter : DatabaseInserter<FileInserter.Request>, IDa
         public required long Size { get; init; }
     }
 
-    public static async Task<DatabaseInserter<Request>> CreateAsync(IDbConnection connection)
+    public static async Task<IDatabaseInserter<Request>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -43,7 +43,7 @@ internal sealed class FileInserter : DatabaseInserter<FileInserter.Request>, IDa
     {
     }
 
-    public override async Task InsertAsync(Request request)
+    public async Task InsertAsync(Request request)
     {
         _command.Parameters["name"].Value = request.Name;
         _command.Parameters["size"].Value = request.Size;

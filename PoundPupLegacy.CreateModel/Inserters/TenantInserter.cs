@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TenantInserterFactory : BasicDatabaseInserterFactory<Tenant, TenantInserter>
+internal sealed class TenantInserterFactory : DatabaseInserterFactory<Tenant, TenantInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter DomainName = new() { Name = "domain_name" };
@@ -8,7 +8,7 @@ internal sealed class TenantInserterFactory : BasicDatabaseInserterFactory<Tenan
 
     public override string TableName => "tenant";
 }
-internal sealed class TenantInserter : BasicDatabaseInserter<Tenant>
+internal sealed class TenantInserter : DatabaseInserter<Tenant>
 {
     public TenantInserter(NpgsqlCommand command) : base(command)
     {

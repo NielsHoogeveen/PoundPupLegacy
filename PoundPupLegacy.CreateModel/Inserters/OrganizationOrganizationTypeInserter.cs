@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class OrganizationOrganizationTypeInserterFactory : BasicDatabaseInserterFactory<OrganizationOrganizationType, OrganizationOrganizationTypeInserter>
+internal sealed class OrganizationOrganizationTypeInserterFactory : DatabaseInserterFactory<OrganizationOrganizationType, OrganizationOrganizationTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
     internal static NonNullableIntegerDatabaseParameter OrganizationTypeId = new() { Name = "organization_type_id" };
@@ -7,7 +7,7 @@ internal sealed class OrganizationOrganizationTypeInserterFactory : BasicDatabas
     public override string TableName => "organization_organization_type";
 
 }
-internal sealed class OrganizationOrganizationTypeInserter : BasicDatabaseInserter<OrganizationOrganizationType>
+internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<OrganizationOrganizationType>
 {
     public OrganizationOrganizationTypeInserter(NpgsqlCommand command) : base(command)
     {

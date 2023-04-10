@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class BoundCountryInserterFactory : BasicDatabaseInserterFactory<BoundCountry, BoundCountryInserter>
+internal sealed class BoundCountryInserterFactory : DatabaseInserterFactory<BoundCountry, BoundCountryInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter BindingCountryId = new() { Name = "binding_country_id" };
 
     public override string TableName => "bound_country";
 }
-internal sealed class BoundCountryInserter : BasicDatabaseInserter<BoundCountry>
+internal sealed class BoundCountryInserter : DatabaseInserter<BoundCountry>
 {
     public BoundCountryInserter(NpgsqlCommand command) : base(command)
     {

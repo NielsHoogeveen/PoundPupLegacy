@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class AbuseCaseInserterFactory : BasicDatabaseInserterFactory<AbuseCase, AbuseCaseInserter>
+internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCase, AbuseCaseInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter ChildPlacementTypeId = new() { Name = "child_placement_type_id" };
@@ -10,7 +10,7 @@ internal sealed class AbuseCaseInserterFactory : BasicDatabaseInserterFactory<Ab
     internal static NullableBooleanDatabaseParameter DisabilitiesInvolved = new() { Name = "disabilities_involved" };
     public override string TableName => "abuse_case";
 }
-internal sealed class AbuseCaseInserter : BasicDatabaseInserter<AbuseCase>
+internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>
 {
 
     public AbuseCaseInserter(NpgsqlCommand command) : base(command)

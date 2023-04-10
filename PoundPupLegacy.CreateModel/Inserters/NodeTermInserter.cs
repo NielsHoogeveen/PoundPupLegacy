@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public sealed class NodeTermInserterFactory : BasicDatabaseInserterFactory<NodeTerm, NodeTermInserter>
+public sealed class NodeTermInserterFactory : DatabaseInserterFactory<NodeTerm, NodeTermInserter>
 {
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NonNullableIntegerDatabaseParameter TermId = new() { Name = "term_id" };
@@ -7,7 +7,7 @@ public sealed class NodeTermInserterFactory : BasicDatabaseInserterFactory<NodeT
     public override string TableName => "node_term";
 
 }
-public sealed class NodeTermInserter : BasicDatabaseInserter<NodeTerm>
+public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>
 {
     internal const string NODE_ID = "node_id";
     internal const string TERM_ID = "term_id";

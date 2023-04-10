@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UserGroupUserRoleUserInserterFactory : BasicDatabaseInserterFactory<UserGroupUserRoleUser, UserGroupUserRoleUserInserter>
+internal sealed class UserGroupUserRoleUserInserterFactory : DatabaseInserterFactory<UserGroupUserRoleUser, UserGroupUserRoleUserInserter>
 {
     internal static NonNullableIntegerDatabaseParameter UserGroupId = new() { Name = "user_group_id" };
     internal static NonNullableIntegerDatabaseParameter UserRoleId = new() { Name = "user_role_id" };
@@ -7,7 +7,7 @@ internal sealed class UserGroupUserRoleUserInserterFactory : BasicDatabaseInsert
 
     public override string TableName => "user_group_user_role_user";
 }
-internal sealed class UserGroupUserRoleUserInserter : BasicDatabaseInserter<UserGroupUserRoleUser>
+internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroupUserRoleUser>
 {
     public UserGroupUserRoleUserInserter(NpgsqlCommand command) : base(command)
     {

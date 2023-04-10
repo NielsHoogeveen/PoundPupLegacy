@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CollectiveUserInserterFactory : BasicDatabaseInserterFactory<CollectiveUser, CollectiveUserInserter>
+internal sealed class CollectiveUserInserterFactory : DatabaseInserterFactory<CollectiveUser, CollectiveUserInserter>
 {
     internal static NonNullableIntegerDatabaseParameter CollectiveId = new() { Name = "collective_id" };
     internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
@@ -7,7 +7,7 @@ internal sealed class CollectiveUserInserterFactory : BasicDatabaseInserterFacto
     public override string TableName => "collective_user";
 
 }
-internal sealed class CollectiveUserInserter : BasicDatabaseInserter<CollectiveUser>
+internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>
 {
     public CollectiveUserInserter(NpgsqlCommand command) : base(command)
     {

@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class InterPersonalRelationInserterFactory : BasicDatabaseInserterFactory<InterPersonalRelation, InterPersonalRelationInserter>
+internal sealed class InterPersonalRelationInserterFactory : DatabaseInserterFactory<InterPersonalRelation, InterPersonalRelationInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter PersonIdFrom = new() { Name = "person_id_from" };
@@ -11,7 +11,7 @@ internal sealed class InterPersonalRelationInserterFactory : BasicDatabaseInsert
     public override string TableName => "inter_personal_relation";
 
 }
-internal sealed class InterPersonalRelationInserter : BasicDatabaseInserter<InterPersonalRelation>
+internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPersonalRelation>
 {
     public InterPersonalRelationInserter(NpgsqlCommand command) : base(command)
     {

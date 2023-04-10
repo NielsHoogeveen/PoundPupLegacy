@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PollVoteInserterFactory : BasicDatabaseInserterFactory<PollVote, PollVoteInserter> 
+internal sealed class PollVoteInserterFactory : DatabaseInserterFactory<PollVote, PollVoteInserter> 
 {
     internal static NonNullableIntegerDatabaseParameter PollId = new() { Name = "poll_id" };
     internal static NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
@@ -8,7 +8,7 @@ internal sealed class PollVoteInserterFactory : BasicDatabaseInserterFactory<Pol
 
     public override string TableName => "poll_vote";
 }
-internal sealed class PollVoteInserter : BasicDatabaseInserter<PollVote>
+internal sealed class PollVoteInserter : DatabaseInserter<PollVote>
 {
 
     public PollVoteInserter(NpgsqlCommand command) : base(command)

@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-public class PublisherInserterFactory : BasicDatabaseInserterFactory<Publisher, PublisherInserter>
+public class PublisherInserterFactory : DatabaseInserterFactory<Publisher, PublisherInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
     public override string TableName => "publisher";
 }
-public class PublisherInserter : BasicDatabaseInserter<Publisher>
+public class PublisherInserter : DatabaseInserter<Publisher>
 {
     public PublisherInserter(NpgsqlCommand command) : base(command)
     {

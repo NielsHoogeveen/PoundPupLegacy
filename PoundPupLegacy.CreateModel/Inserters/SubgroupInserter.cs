@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class SubgroupInserterFactory : BasicDatabaseInserterFactory<Subgroup, SubgroupInserter>
+internal sealed class SubgroupInserterFactory : DatabaseInserterFactory<Subgroup, SubgroupInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
 
     public override string TableName => "subgroup";
 }
-internal sealed class SubgroupInserter : BasicDatabaseInserter<Subgroup>
+internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>
 {
     public SubgroupInserter(NpgsqlCommand command) : base(command)
     {

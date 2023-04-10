@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PersonInserterFactory : BasicDatabaseInserterFactory<Person, PersonInserter>
+internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person, PersonInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableDateTimeDatabaseParameter DateOfBirth = new() { Name = "date_of_birth" };
@@ -15,7 +15,7 @@ internal sealed class PersonInserterFactory : BasicDatabaseInserterFactory<Perso
 
     public override string TableName => "person";
 }
-internal sealed class PersonInserter : BasicDatabaseInserter<Person>
+internal sealed class PersonInserter : DatabaseInserter<Person>
 {
     public PersonInserter(NpgsqlCommand command) : base(command)
     {

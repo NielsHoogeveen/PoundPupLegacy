@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class OrganizationTypeInserterFactory : BasicDatabaseInserterFactory<OrganizationType, OrganizationTypeInserter>
+internal sealed class OrganizationTypeInserterFactory : DatabaseInserterFactory<OrganizationType, OrganizationTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
@@ -7,7 +7,7 @@ internal sealed class OrganizationTypeInserterFactory : BasicDatabaseInserterFac
     public override string TableName => "organization_type";
 
 }
-internal sealed class OrganizationTypeInserter : BasicDatabaseInserter<OrganizationType>
+internal sealed class OrganizationTypeInserter : DatabaseInserter<OrganizationType>
 {
     public OrganizationTypeInserter(NpgsqlCommand command) : base(command)
     {

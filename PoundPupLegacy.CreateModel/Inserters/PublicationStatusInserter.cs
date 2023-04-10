@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PublicationStatusInserterFactory : BasicDatabaseInserterFactory<PublicationStatus, PublicationStatusInserter>
+internal sealed class PublicationStatusInserterFactory : DatabaseInserterFactory<PublicationStatus, PublicationStatusInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
@@ -7,7 +7,7 @@ internal sealed class PublicationStatusInserterFactory : BasicDatabaseInserterFa
     public override string TableName => "publication_status";
 
 }
-internal sealed class PublicationStatusInserter : BasicDatabaseInserter<PublicationStatus>
+internal sealed class PublicationStatusInserter : DatabaseInserter<PublicationStatus>
 {
 
     public PublicationStatusInserter(NpgsqlCommand command) : base(command)

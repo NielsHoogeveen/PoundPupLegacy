@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class NodeFileInserterFactory : BasicDatabaseInserterFactory<NodeFile, NodeFileInserter>
+internal sealed class NodeFileInserterFactory : DatabaseInserterFactory<NodeFile, NodeFileInserter>
 {
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NonNullableIntegerDatabaseParameter FileId = new() { Name = "file_id" };
 
     public override string TableName => "node_file";
 }
-internal sealed class NodeFileInserter : BasicDatabaseInserter<NodeFile>
+internal sealed class NodeFileInserter : DatabaseInserter<NodeFile>
 {
     public NodeFileInserter(NpgsqlCommand command) : base(command)
     {

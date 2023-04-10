@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class InterCountryRelationInserterFactory : BasicDatabaseInserterFactory<InterCountryRelation, InterCountryRelationInserter>
+internal sealed class InterCountryRelationInserterFactory : DatabaseInserterFactory<InterCountryRelation, InterCountryRelationInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter CountryIdFrom = new() { Name = "country_id_from" };
@@ -13,7 +13,7 @@ internal sealed class InterCountryRelationInserterFactory : BasicDatabaseInserte
     public override string TableName => "inter_country_relation";
 
 }
-internal sealed class InterCountryRelationInserter : BasicDatabaseInserter<InterCountryRelation>
+internal sealed class InterCountryRelationInserter : DatabaseInserter<InterCountryRelation>
 {
     public InterCountryRelationInserter(NpgsqlCommand command) : base(command)
     {

@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UnitedStatesCongressionalMeetingInserterFactory : BasicDatabaseInserterFactory<UnitedStatesCongressionalMeeting, UnitedStatesCongressionalMeetingInserter>
+internal sealed class UnitedStatesCongressionalMeetingInserterFactory : DatabaseInserterFactory<UnitedStatesCongressionalMeeting, UnitedStatesCongressionalMeetingInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
@@ -7,7 +7,7 @@ internal sealed class UnitedStatesCongressionalMeetingInserterFactory : BasicDat
 
     public override string TableName => "united_states_congressional_meeting";
 }
-internal sealed class UnitedStatesCongressionalMeetingInserter : BasicDatabaseInserter<UnitedStatesCongressionalMeeting>
+internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserter<UnitedStatesCongressionalMeeting>
 {
     public UnitedStatesCongressionalMeetingInserter(NpgsqlCommand command) : base(command)
     {

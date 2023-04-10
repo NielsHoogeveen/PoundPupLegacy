@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class ISOCodedSubdivisionInserterFactory : BasicDatabaseInserterFactory<ISOCodedSubdivision, ISOCodedSubdivisionInserter>
+internal sealed class ISOCodedSubdivisionInserterFactory : DatabaseInserterFactory<ISOCodedSubdivision, ISOCodedSubdivisionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableFixedStringDatabaseParameter ISO31661_2_Code = new() { Name = "iso_3166_2_code" };
 
     public override string TableName => "iso_coded_subdivision";
 }
-internal sealed class ISOCodedSubdivisionInserter : BasicDatabaseInserter<ISOCodedSubdivision>
+internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSubdivision>
 {
     public ISOCodedSubdivisionInserter(NpgsqlCommand command) : base(command)
     {

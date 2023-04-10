@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CountryInserterFactory : BasicDatabaseInserterFactory<Country, CountryInserter>
+internal sealed class CountryInserterFactory : DatabaseInserterFactory<Country, CountryInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter HagueStatusId = new() { Name = "hague_status_id" };
@@ -13,7 +13,7 @@ internal sealed class CountryInserterFactory : BasicDatabaseInserterFactory<Coun
     public override string TableName => "country";
 
 }
-internal sealed class CountryInserter : BasicDatabaseInserter<Country>
+internal sealed class CountryInserter : DatabaseInserter<Country>
 {
 
     public CountryInserter(NpgsqlCommand command) : base(command)

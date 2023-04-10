@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class PollInserterFactory : BasicDatabaseInserterFactory<Poll, PollInserter>
+internal sealed class PollInserterFactory : DatabaseInserterFactory<Poll, PollInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableDateTimeDatabaseParameter DateTimeClosure = new() { Name = "date_time_closure" };
@@ -10,7 +10,7 @@ internal sealed class PollInserterFactory : BasicDatabaseInserterFactory<Poll, P
 
 
 }
-internal sealed class PollInserter : BasicDatabaseInserter<Poll>
+internal sealed class PollInserter : DatabaseInserter<Poll>
 {
     public PollInserter(NpgsqlCommand command) : base(command)
     {

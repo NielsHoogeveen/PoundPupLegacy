@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class LocationLocatableInserterFactory : BasicDatabaseInserterFactory<LocationLocatable, LocationLocatableInserter>
+internal sealed class LocationLocatableInserterFactory : DatabaseInserterFactory<LocationLocatable, LocationLocatableInserter>
 {
     internal static NonNullableIntegerDatabaseParameter LocationId = new() { Name = "location_id" };
     internal static NonNullableIntegerDatabaseParameter LocatableId = new() { Name = "locatable_id" };
@@ -7,7 +7,7 @@ internal sealed class LocationLocatableInserterFactory : BasicDatabaseInserterFa
     public override string TableName => "location_locatable";
 
 }
-internal sealed class LocationLocatableInserter : BasicDatabaseInserter<LocationLocatable>
+internal sealed class LocationLocatableInserter : DatabaseInserter<LocationLocatable>
 {
     public LocationLocatableInserter(NpgsqlCommand command) : base(command)
     {

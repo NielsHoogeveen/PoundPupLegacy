@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class SubdivisionInserterFactory : BasicDatabaseInserterFactory<Subdivision, SubdivisionInserter>
+internal sealed class SubdivisionInserterFactory : DatabaseInserterFactory<Subdivision, SubdivisionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
@@ -8,7 +8,7 @@ internal sealed class SubdivisionInserterFactory : BasicDatabaseInserterFactory<
 
     public override string TableName => "subdivision";
 }
-internal sealed class SubdivisionInserter : BasicDatabaseInserter<Subdivision>
+internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>
 {
     public SubdivisionInserter(NpgsqlCommand command) : base(command)
     {

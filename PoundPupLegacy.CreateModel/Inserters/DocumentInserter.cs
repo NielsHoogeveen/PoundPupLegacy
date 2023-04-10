@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class DocumentInserterFactory : BasicDatabaseInserterFactory<Document, DocumentInserter>
+internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document, DocumentInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableFuzzyDateDatabaseParameter Published = new() { Name = "published" };
@@ -10,7 +10,7 @@ internal sealed class DocumentInserterFactory : BasicDatabaseInserterFactory<Doc
 
     public override string TableName => "document";
 }
-internal sealed class DocumentInserter : BasicDatabaseInserter<Document>
+internal sealed class DocumentInserter : DatabaseInserter<Document>
 {
     public DocumentInserter(NpgsqlCommand command) : base(command)
     {

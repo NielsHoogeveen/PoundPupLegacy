@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class BasicActionInserterFactory : BasicDatabaseInserterFactory<BasicAction, BasicActionInserter>
+internal sealed class BasicActionInserterFactory : DatabaseInserterFactory<BasicAction, BasicActionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
     internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
     public override string TableName => "basic_action";
 }
-internal sealed class BasicActionInserter : BasicDatabaseInserter<BasicAction>
+internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>
 {
     public BasicActionInserter(NpgsqlCommand command) : base(command)
     {

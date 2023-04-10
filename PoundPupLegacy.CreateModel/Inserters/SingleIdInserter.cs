@@ -4,14 +4,14 @@ internal static class SingleIdInserterFactory
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
 }
-internal abstract class SingleIdInserterFactory<T> : DatabaseInserterFactory<T>
+internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
     where T : Identifiable
 {
     protected abstract string TableName { get; }
 
     protected abstract bool AutoGenerateIdentity { get; } 
 
-    public override async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
+    public async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -34,10 +34,53 @@ internal abstract class SingleIdInserterFactory<T> : DatabaseInserterFactory<T>
         return new SingleIdInserter<T>(command, AutoGenerateIdentity, TableName);
 
     }
+    private static async Task<NpgsqlCommand> CreateAutoGenerateIdentityInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<DatabaseParameter> databaseParameters)
+    {
+        var sql = $"""
+            INSERT INTO public."{tableName}"(
+                {string.Join(',', databaseParameters.Select(x => x.Name))}
+            ) 
+            VALUES(
+                {string.Join(',', databaseParameters.Select(x => $"@{x.Name}"))}
+            );
+            SELECT lastval();
+            """;
+        var sqlEmpty = $"""
+            INSERT INTO public."{tableName}" DEFAULT VALUES;
+            SELECT lastval();
+            """;
 
+        return await CreatePreparedStatementAsync(connection, databaseParameters, databaseParameters.Any() ? sql : sqlEmpty);
+    }
+
+    private static async Task<NpgsqlCommand> CreateInsertStatementAsync(NpgsqlConnection connection, string tableName, IEnumerable<DatabaseParameter> databaseParameters)
+    {
+        var sql = $"""
+            INSERT INTO public."{tableName}"(
+                {string.Join(',', databaseParameters.Select(x => x.Name))}
+            ) 
+            VALUES(
+                {string.Join(',', databaseParameters.Select(x => $"@{x.Name}"))}
+            )
+            """;
+        return await CreatePreparedStatementAsync(connection, databaseParameters, sql);
+    }
+    protected static async Task<NpgsqlCommand> CreatePreparedStatementAsync(NpgsqlConnection connection, IEnumerable<DatabaseParameter> columnDefinitions, string sql)
+    {
+
+        var command = connection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = sql;
+        foreach (var column in columnDefinitions) {
+            command.Parameters.Add(column.Name, column.ParameterType);
+        }
+        await command.PrepareAsync();
+        return command;
+    }
 
 }
-internal sealed class SingleIdInserter<T> : DatabaseInserter<T> where T : Identifiable
+internal sealed class SingleIdInserter<T> : DatabaseWriter, IDatabaseInserter<T> where T : Identifiable
 {
 
     private readonly bool _autoGenerateIdentity;
@@ -48,7 +91,7 @@ internal sealed class SingleIdInserter<T> : DatabaseInserter<T> where T : Identi
         _tableName = tableName;
     }
 
-    public override async Task InsertAsync(T identifiable)
+    public async Task InsertAsync(T identifiable)
     {
         if (!_autoGenerateIdentity) {
             if (identifiable.Id is null)

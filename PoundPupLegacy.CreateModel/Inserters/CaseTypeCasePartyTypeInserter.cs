@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CaseTypeCasePartyTypeInserterFactory : BasicDatabaseInserterFactory<CaseTypeCasePartyType, CaseTypeCasePartyTypeInserter>
+internal sealed class CaseTypeCasePartyTypeInserterFactory : DatabaseInserterFactory<CaseTypeCasePartyType, CaseTypeCasePartyTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter CaseTypeId = new() { Name = "case_type_id" };
     internal static NonNullableIntegerDatabaseParameter CasePartyTypeId = new() { Name = "case_party_type_id" };
@@ -7,7 +7,7 @@ internal sealed class CaseTypeCasePartyTypeInserterFactory : BasicDatabaseInsert
     public override string TableName => "case_type_case_party_type";
 
 }
-internal sealed class CaseTypeCasePartyTypeInserter : BasicDatabaseInserter<CaseTypeCasePartyType>
+internal sealed class CaseTypeCasePartyTypeInserter : DatabaseInserter<CaseTypeCasePartyType>
 {
     public CaseTypeCasePartyTypeInserter(NpgsqlCommand command) : base(command)
     {

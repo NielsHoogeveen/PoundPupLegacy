@@ -1,41 +1,23 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class MenuItemInserterFactory : DatabaseInserterFactory<MenuItem>
+internal sealed class MenuItemInserterFactory : AutoGenerateIdDatabaseInserterFactory<MenuItem, MenuItemInserter>
 {
     internal static NonNullableDoubleDatabaseParameter Weight = new() { Name = "weight" };
-
-    public override async Task<IDatabaseInserter<MenuItem>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateAutoGenerateIdentityInsertStatementAsync(
-            postgresConnection,
-            "menu_item",
-            new DatabaseParameter[]
-            {
-                Weight
-            }
-        );
-        return new MenuItemInserter(command);
-    }
+    public override string TableName => "menu_item";
 
 }
-internal sealed class MenuItemInserter : DatabaseInserter<MenuItem>
+internal sealed class MenuItemInserter : AutoGenerateIdDatabaseInserter<MenuItem>
 {
-    internal MenuItemInserter(NpgsqlCommand command) : base(command)
+    public MenuItemInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(MenuItem menuItem)
+    public override IEnumerable<ParameterValue> GetParameterValues(MenuItem item)
     {
-        if (menuItem.Id is not null) {
-            throw new Exception($"Id of menu item needs to be null");
+        if (item.Id.HasValue) {
+            throw new Exception($"menu item id should be null upon creation");
         }
-        Set(MenuItemInserterFactory.Weight, menuItem.Weight);
-        menuItem.Id = await _command.ExecuteScalarAsync() switch {
-            long i => (int)i,
-            _ => throw new Exception("No id was generated for menu item")
+        return new ParameterValue[] {
+            ParameterValue.Create(MenuItemInserterFactory.Weight, item.Weight)
         };
     }
 }

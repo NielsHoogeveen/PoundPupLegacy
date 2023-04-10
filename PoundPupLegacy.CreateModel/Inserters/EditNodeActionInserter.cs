@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class EditNodeActionInserterFactory : BasicDatabaseInserterFactory<EditNodeAction, EditNodeActionInserter>
+internal sealed class EditNodeActionInserterFactory : DatabaseInserterFactory<EditNodeAction, EditNodeActionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
     public override string TableName => "edit_node_action";
 }
-internal sealed class EditNodeActionInserter : BasicDatabaseInserter<EditNodeAction>
+internal sealed class EditNodeActionInserter : DatabaseInserter<EditNodeAction>
 {
     public EditNodeActionInserter(NpgsqlCommand command) : base(command)
     {

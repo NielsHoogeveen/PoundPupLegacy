@@ -1,11 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class BasicSecondLevelSubdivisionInserterFactory : BasicDatabaseInserterFactory<BasicSecondLevelSubdivision, BasicSecondLevelSubdivisionInserter>
+internal sealed class BasicSecondLevelSubdivisionInserterFactory : DatabaseInserterFactory<BasicSecondLevelSubdivision, BasicSecondLevelSubdivisionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter IntermediateLevelSubdivisionId = new() { Name = "intermediate_level_subdivision_id" };
     public override string TableName => "basic_second_level_subdivision";
 }
-internal sealed class BasicSecondLevelSubdivisionInserter : BasicDatabaseInserter<BasicSecondLevelSubdivision>
+internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<BasicSecondLevelSubdivision>
 {
     public BasicSecondLevelSubdivisionInserter(NpgsqlCommand command) : base(command)
     {

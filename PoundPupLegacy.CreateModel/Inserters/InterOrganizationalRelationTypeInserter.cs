@@ -1,11 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class InterOrganizationalRelationTypeInserterFactory : BasicDatabaseInserterFactory<InterOrganizationalRelationType, InterOrganizationalRelationTypeInserter>
+internal sealed class InterOrganizationalRelationTypeInserterFactory : DatabaseInserterFactory<InterOrganizationalRelationType, InterOrganizationalRelationTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
     public override string TableName => "inter_organizational_relation_type";
 }
-internal sealed class InterOrganizationalRelationTypeInserter : BasicDatabaseInserter<InterOrganizationalRelationType>
+internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter<InterOrganizationalRelationType>
 {
     public InterOrganizationalRelationTypeInserter(NpgsqlCommand command) : base(command)
     {

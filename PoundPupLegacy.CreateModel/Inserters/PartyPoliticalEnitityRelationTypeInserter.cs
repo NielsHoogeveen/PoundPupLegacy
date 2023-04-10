@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : BasicDatabaseInserterFactory<PartyPoliticalEntityRelationType, PartyPoliticalEntityRelationTypeInserter>
+internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : DatabaseInserterFactory<PartyPoliticalEntityRelationType, PartyPoliticalEntityRelationTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
 
     public override string TableName => "party_political_entity_relation_type";
 }
-internal sealed class PartyPoliticalEntityRelationTypeInserter : BasicDatabaseInserter<PartyPoliticalEntityRelationType>
+internal sealed class PartyPoliticalEntityRelationTypeInserter : DatabaseInserter<PartyPoliticalEntityRelationType>
 {
     public PartyPoliticalEntityRelationTypeInserter(NpgsqlCommand command) : base(command)
     {

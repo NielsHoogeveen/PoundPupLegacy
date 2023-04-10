@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class ChildTraffickingCaseInserterFactory : BasicDatabaseInserterFactory<ChildTraffickingCase, ChildTraffickingCaseInserter>
+internal sealed class ChildTraffickingCaseInserterFactory : DatabaseInserterFactory<ChildTraffickingCase, ChildTraffickingCaseInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableIntegerDatabaseParameter NumberOfChildrenInvolved = new() { Name = "number_of_children_involved" };
@@ -8,7 +8,7 @@ internal sealed class ChildTraffickingCaseInserterFactory : BasicDatabaseInserte
     public override string TableName => "child_trafficking_case";
 }
 
-internal sealed class ChildTraffickingCaseInserter : BasicDatabaseInserter<ChildTraffickingCase>
+internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraffickingCase>
 {
     public ChildTraffickingCaseInserter(NpgsqlCommand command) : base(command)
     {

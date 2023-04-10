@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class HouseTermInserterFactory : BasicDatabaseInserterFactory<HouseTerm, HouseTermInserter>
+internal sealed class HouseTermInserterFactory : DatabaseInserterFactory<HouseTerm, HouseTermInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
@@ -9,7 +9,7 @@ internal sealed class HouseTermInserterFactory : BasicDatabaseInserterFactory<Ho
 
     public override string TableName => "house_term";
 }
-internal sealed class HouseTermInserter : BasicDatabaseInserter<HouseTerm>
+internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>
 {
 
     public HouseTermInserter(NpgsqlCommand command) : base(command)

@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class DeportationCaseInserterFactory : BasicDatabaseInserterFactory<DeportationCase, DeportationCaseInserter>
+internal sealed class DeportationCaseInserterFactory : DatabaseInserterFactory<DeportationCase, DeportationCaseInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableIntegerDatabaseParameter SubdivisionIdFrom = new() { Name = "subdivision_id_from" };
@@ -9,7 +9,7 @@ internal sealed class DeportationCaseInserterFactory : BasicDatabaseInserterFact
 
 }
 
-internal sealed class DeportationCaseInserter : BasicDatabaseInserter<DeportationCase>
+internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase>
 {
 
     public DeportationCaseInserter(NpgsqlCommand command) : base(command)

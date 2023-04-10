@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class MultiQuestionPollPollQuestionInserterFactory : BasicDatabaseInserterFactory<MultiQuestionPollPollQuestion, MultiQuestionPollPollQuestionInserter>
+internal sealed class MultiQuestionPollPollQuestionInserterFactory : DatabaseInserterFactory<MultiQuestionPollPollQuestion, MultiQuestionPollPollQuestionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter MultiQuestionPollId = new() { Name = "multi_question_poll_id" };
     internal static NonNullableIntegerDatabaseParameter PollQuesionId = new() { Name = "poll_question_id" };
@@ -7,7 +7,7 @@ internal sealed class MultiQuestionPollPollQuestionInserterFactory : BasicDataba
 
     public override string TableName => "multi_question_poll_poll_question";
 }
-internal sealed class MultiQuestionPollPollQuestionInserter : BasicDatabaseInserter<MultiQuestionPollPollQuestion>
+internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<MultiQuestionPollPollQuestion>
 {
     public MultiQuestionPollPollQuestionInserter(NpgsqlCommand command) : base(command)
     {

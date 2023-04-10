@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class AdministratorRoleInserterFactory : BasicDatabaseInserterFactory<AdministratorRole, AdministratorRoleInserter>
+internal sealed class AdministratorRoleInserterFactory : DatabaseInserterFactory<AdministratorRole, AdministratorRoleInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter UserGroupId = new() { Name = "user_group_id" };
@@ -7,7 +7,7 @@ internal sealed class AdministratorRoleInserterFactory : BasicDatabaseInserterFa
     public override string TableName => "administrator_role";
 
 }
-internal class AdministratorRoleInserter : BasicDatabaseInserter<AdministratorRole>
+internal class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>
 {
 
     public AdministratorRoleInserter(NpgsqlCommand command) : base(command)
