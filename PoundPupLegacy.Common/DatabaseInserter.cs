@@ -208,7 +208,7 @@ public abstract class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseWri
     {
         if (item.Id is null) {
             Set(GetParameterValues(item).Where(x => x.DatabaseParameter is not AutoGenerateIntegerDatabaseParameter), _commandAutoGenerate);
-            item.Id = await _command.ExecuteScalarAsync() switch {
+            item.Id = await _commandAutoGenerate.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception($"Insert action did not return an id.")
             };

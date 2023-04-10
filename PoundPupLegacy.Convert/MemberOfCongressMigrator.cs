@@ -616,8 +616,6 @@ internal class MemberOfCongressMigrator : MigratorPPL
                 else {
 
                     if (isSenator) {
-
-
                         professionalRoles.Add(new Senator {
                             Id = null,
                             PublisherId = 2,

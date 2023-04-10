@@ -2,9 +2,6 @@
 
 internal sealed class ProfessionalRoleCreator : EntityCreator<ProfessionalRole>
 {
-    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
-    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
-    private readonly IDatabaseInserterFactory<Documentable> _documentableInserterFactory;
     private readonly IDatabaseInserterFactory<ProfessionalRole> _professionalRoleInserterFactory;
     private readonly IDatabaseInserterFactory<MemberOfCongress> _memberOfCongressInserterFactory;
     private readonly IDatabaseInserterFactory<Representative> _representativeInserterFactory;
@@ -12,9 +9,6 @@ internal sealed class ProfessionalRoleCreator : EntityCreator<ProfessionalRole>
     private readonly IEntityCreator<SenateTerm> _senateTermCreator;
     private readonly IEntityCreator<HouseTerm> _houseTermCreator;
     public ProfessionalRoleCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
         IDatabaseInserterFactory<ProfessionalRole> professionalRoleInserterFactory, 
         IDatabaseInserterFactory<MemberOfCongress> memberOfCongressInserterFactory, 
         IDatabaseInserterFactory<Representative> representativeInserterFactory, 
@@ -23,9 +17,6 @@ internal sealed class ProfessionalRoleCreator : EntityCreator<ProfessionalRole>
         IEntityCreator<HouseTerm> houseTermCreator
     )
     {
-        _nodeInserterFactory = nodeInserterFactory;
-        _searchableInserterFactory = searchableInserterFactory;
-        _documentableInserterFactory = documentableInserterFactory;
         _professionalRoleInserterFactory = professionalRoleInserterFactory;
         _memberOfCongressInserterFactory = memberOfCongressInserterFactory;
         _representativeInserterFactory = representativeInserterFactory;
@@ -37,18 +28,12 @@ internal sealed class ProfessionalRoleCreator : EntityCreator<ProfessionalRole>
     public override async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, IDbConnection connection)
     {
 
-        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);
         await using var professionalRoleWriter = await _professionalRoleInserterFactory.CreateAsync(connection);
         await using var memberOfCongressWriter = await _memberOfCongressInserterFactory.CreateAsync(connection);
         await using var representativeWriter = await _representativeInserterFactory.CreateAsync(connection);
         await using var senatorWriter = await _senatorInserterFactory.CreateAsync(connection);
 
         await foreach (var professionalRole in professionalRoles) {
-            await nodeWriter.InsertAsync(professionalRole);
-            await searchableWriter.InsertAsync(professionalRole);
-            await documentableWriter.InsertAsync(professionalRole);
             await professionalRoleWriter.InsertAsync(professionalRole);
             if (professionalRole is Representative representative) {
                 await memberOfCongressWriter.InsertAsync(representative);

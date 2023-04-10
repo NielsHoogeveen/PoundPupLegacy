@@ -1,6 +1,8 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿using PoundPupLegacy.Common;
 
-public interface ProfessionalRole : Documentable
+namespace PoundPupLegacy.CreateModel;
+
+public interface ProfessionalRole : Identifiable
 {
     int? PersonId { get; set; }
     DateTimeRange? DateTimeRange { get; }
