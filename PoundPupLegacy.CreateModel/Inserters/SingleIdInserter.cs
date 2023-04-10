@@ -26,7 +26,7 @@ internal abstract class SingleIdInserterFactory<T> : DatabaseInserterFactory<T>
             postgresConnection,
             TableName,
             databaseParameters
-        ) : await CreateIdentityInsertStatementAsync(
+        ) : await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             TableName,
             databaseParameters

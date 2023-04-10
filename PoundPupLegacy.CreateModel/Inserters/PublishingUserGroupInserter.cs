@@ -1,39 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PublishingUserGroupInserterFactory : DatabaseInserterFactory<PublishingUserGroup>
+internal sealed class PublishingUserGroupInserterFactory : BasicDatabaseInserterFactory<PublishingUserGroup, PublishingUserGroupInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter PublicationStatusIdDefault = new() { Name = "publication_status_id_default" };
 
-    public override async Task<IDatabaseInserter<PublishingUserGroup>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "publishing_user_group",
-            new DatabaseParameter[] {
-                Id,
-                PublicationStatusIdDefault
-            }
-        );
-        return new PublishingUserGroupInserter(command);
-    }
+    public override string TableName => "publishing_user_group";
 }
-internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingUserGroup>
+internal sealed class PublishingUserGroupInserter : BasicDatabaseInserter<PublishingUserGroup>
 {
 
-    internal PublishingUserGroupInserter(NpgsqlCommand command) : base(command)
+    public PublishingUserGroupInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(PublishingUserGroup publishingUserGroup)
+    public override IEnumerable<ParameterValue> GetParameterValues(PublishingUserGroup item)
     {
-        if (publishingUserGroup.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(PublishingUserGroupInserterFactory.Id, publishingUserGroup.Id.Value);
-        Set(PublishingUserGroupInserterFactory.PublicationStatusIdDefault, publishingUserGroup.PublicationStatusIdDefault);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(PublishingUserGroupInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(PublishingUserGroupInserterFactory.PublicationStatusIdDefault, item.PublicationStatusIdDefault),
+        };
     }
 }

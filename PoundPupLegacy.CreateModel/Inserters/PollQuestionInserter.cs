@@ -1,38 +1,24 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PollQuestionInserterFactory : DatabaseInserterFactory<PollQuestion>
+internal sealed class PollQuestionInserterFactory : BasicDatabaseInserterFactory<PollQuestion, PollQuestionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Question = new() { Name = "question" };
 
-    public override async Task<IDatabaseInserter<PollQuestion>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "poll_question",
-            new DatabaseParameter[] {
-                Id,
-                Question
-            }
-        );
-        return new PollQuestionInserter(command);
-    }
+    public override string TableName => "poll_question";
 }
-internal sealed class PollQuestionInserter : DatabaseInserter<PollQuestion>
+internal sealed class PollQuestionInserter : BasicDatabaseInserter<PollQuestion>
 {
-    internal PollQuestionInserter(NpgsqlCommand command) : base(command)
+    public PollQuestionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(PollQuestion pollQuestion)
+    public override IEnumerable<ParameterValue> GetParameterValues(PollQuestion item)
     {
-        if (pollQuestion.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(PollQuestionInserterFactory.Id, pollQuestion.Id.Value);
-        Set(PollQuestionInserterFactory.Question, pollQuestion.Question);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(PollQuestionInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(PollQuestionInserterFactory.Question, item.Question),
+        };
     }
 }

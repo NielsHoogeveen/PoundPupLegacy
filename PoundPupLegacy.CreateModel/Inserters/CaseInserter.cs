@@ -1,43 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CaseInserterFactory : DatabaseInserterFactory<Case>
+internal sealed class CaseInserterFactory : BasicDatabaseInserterFactory<Case, CaseInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
     internal static NullableTimeStampRangeDatabaseParameter FuzzyDate = new() { Name = "fuzzy_date" };
 
-    public override async Task<IDatabaseInserter<Case>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "case",
-            new DatabaseParameter[] {
-                Id,
-                Description,
-                FuzzyDate
-            }
-        );
-        return new CaseInserter(command);
-
-    }
-
+    public override string TableName => "case";
 }
-internal sealed class CaseInserter : DatabaseInserter<Case>
+internal sealed class CaseInserter : BasicDatabaseInserter<Case>
 {
-    internal CaseInserter(NpgsqlCommand command) : base(command)
+    public CaseInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Case @case)
+    public override IEnumerable<ParameterValue> GetParameterValues(Case item)
     {
-        if (@case.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(CaseInserterFactory.Id, @case.Id.Value);
-        Set(CaseInserterFactory.Description,@case.Description);
-        Set(CaseInserterFactory.FuzzyDate, @case.Date);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(CaseInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(CaseInserterFactory.Description, item.Description),
+            ParameterValue.Create(CaseInserterFactory.FuzzyDate, item.Date),
+        };
     }
 }

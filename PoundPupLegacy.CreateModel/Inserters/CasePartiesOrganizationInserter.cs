@@ -1,38 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CasePartiesOrganizationInserterFactory : DatabaseInserterFactory<CasePartiesOrganization>
+internal sealed class CasePartiesOrganizationInserterFactory : BasicDatabaseInserterFactory<CasePartiesOrganization, CasePartiesOrganizationInserter>
 {
     internal static NonNullableIntegerDatabaseParameter CasePartiesId = new() { Name = "case_parties_id" };
     internal static NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
 
-    public override async Task<IDatabaseInserter<CasePartiesOrganization>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "case_parties_organization",
-            new DatabaseParameter[] {
-                CasePartiesId,
-                OrganizationId
-            }
-        );
-        return new CasePartiesOrganizationInserter(command);
-
-    }
-
+    public override string TableName => "case_parties_organization";
 }
-internal sealed class CasePartiesOrganizationInserter : DatabaseInserter<CasePartiesOrganization>
+internal sealed class CasePartiesOrganizationInserter : BasicDatabaseInserter<CasePartiesOrganization>
 {
-    internal CasePartiesOrganizationInserter(NpgsqlCommand command) : base(command)
+    public CasePartiesOrganizationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(CasePartiesOrganization casePartiesOrganization)
+    public override IEnumerable<ParameterValue> GetParameterValues(CasePartiesOrganization item)
     {
-        Set(CasePartiesOrganizationInserterFactory.CasePartiesId, casePartiesOrganization.CasePartiesId);
-        Set(CasePartiesOrganizationInserterFactory.OrganizationId, casePartiesOrganization.OrganizationId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(CasePartiesOrganizationInserterFactory.CasePartiesId, item.CasePartiesId),
+            ParameterValue.Create(CasePartiesOrganizationInserterFactory.OrganizationId, item.OrganizationId)
+        };
     }
 }

@@ -1,39 +1,24 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class EditNodeActionInserterFactory : DatabaseInserterFactory<EditNodeAction>
+internal sealed class EditNodeActionInserterFactory : BasicDatabaseInserterFactory<EditNodeAction, EditNodeActionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
-    public override async Task<IDatabaseInserter<EditNodeAction>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "edit_node_action",
-            new DatabaseParameter[] {
-                Id,
-                NodeTypeId
-            }
-        );
-        return new EditNodeActionInserter(command);
-    }
+    public override string TableName => "edit_node_action";
 }
-internal sealed class EditNodeActionInserter : DatabaseInserter<EditNodeAction>
+internal sealed class EditNodeActionInserter : BasicDatabaseInserter<EditNodeAction>
 {
-    internal EditNodeActionInserter(NpgsqlCommand command) : base(command)
+    public EditNodeActionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(EditNodeAction editNodeAction)
+    public override IEnumerable<ParameterValue> GetParameterValues(EditNodeAction item)
     {
-        if (!editNodeAction.Id.HasValue) {
+        if (item.Id is null)
             throw new NullReferenceException();
-        }
-        Set(EditNodeActionInserterFactory.Id, editNodeAction.Id.Value);
-        Set(EditNodeActionInserterFactory.NodeTypeId, editNodeAction.NodeTypeId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(EditNodeActionInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(EditNodeActionInserterFactory.NodeTypeId, item.NodeTypeId),
+        };
     }
 }

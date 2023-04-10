@@ -1,40 +1,23 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class InterCountryRelationTypeInserterFactory : DatabaseInserterFactory<InterCountryRelationType>
+internal sealed class InterCountryRelationTypeInserterFactory : BasicDatabaseInserterFactory<InterCountryRelationType, InterCountryRelationTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
-
-    public override async Task<IDatabaseInserter<InterCountryRelationType>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "inter_country_relation_type",
-            new DatabaseParameter[] {
-                Id,
-                IsSymmetric
-            }
-        );
-        return new InterCountryRelationTypeInserter(command);
-    }
-
+    public override string TableName => "inter_country_relation_type";
 }
-internal sealed class InterCountryRelationTypeInserter : DatabaseInserter<InterCountryRelationType>
+internal sealed class InterCountryRelationTypeInserter : BasicDatabaseInserter<InterCountryRelationType>
 {
-    internal InterCountryRelationTypeInserter(NpgsqlCommand command) : base(command)
+    public InterCountryRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(InterCountryRelationType interCountryRelationType)
+    public override IEnumerable<ParameterValue> GetParameterValues(InterCountryRelationType item)
     {
-        if (interCountryRelationType.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(InterCountryRelationTypeInserterFactory.Id, interCountryRelationType.Id.Value);
-        Set(InterCountryRelationTypeInserterFactory.IsSymmetric, interCountryRelationType.IsSymmetric);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(InterCountryRelationTypeInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(InterCountryRelationTypeInserterFactory.IsSymmetric, item.IsSymmetric),
+        };
     }
-
 }

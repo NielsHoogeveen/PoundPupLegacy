@@ -1,40 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PollStatusInserterFactory : DatabaseInserterFactory<PollStatus>
+internal sealed class PollStatusInserterFactory : BasicDatabaseInserterFactory<PollStatus, PollStatusInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-    public override async Task<IDatabaseInserter<PollStatus>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "poll_status";
 
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "poll_status",
-            new DatabaseParameter[] {
-                Id,
-                Name
-            }
-        );
-        return new PollStatusInserter(command);
-    }
 }
-internal sealed class PollStatusInserter : DatabaseInserter<PollStatus>
+internal sealed class PollStatusInserter : BasicDatabaseInserter<PollStatus>
 {
-    internal const string ID = "id";
-    internal const string NAME = "name";
-    internal PollStatusInserter(NpgsqlCommand command) : base(command)
+    public PollStatusInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(PollStatus pollStatus)
+    public override IEnumerable<ParameterValue> GetParameterValues(PollStatus item)
     {
-        if (pollStatus.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(PollStatusInserterFactory.Id, pollStatus.Id.Value);
-        Set(PollStatusInserterFactory.Name, pollStatus.Name);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(PollStatusInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(PollStatusInserterFactory.Name, item.Name),
+        };
     }
 }

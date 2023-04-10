@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UserInserterFactory : DatabaseInserterFactory<User>
+internal sealed class UserInserterFactory : BasicDatabaseInserterFactory<User, UserInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
@@ -11,49 +11,27 @@ internal sealed class UserInserterFactory : DatabaseInserterFactory<User>
     internal static NullableStringDatabaseParameter Avatar = new() { Name = "avatar" };
     internal static NonNullableIntegerDatabaseParameter UserStatusId = new() { Name = "user_status_id" };
 
-    public override async Task<IDatabaseInserter<User>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "user",
-            new DatabaseParameter[] {
-                Id,
-                CreatedDateTime,
-                AboutMe,
-                AnimalWithin,
-                RelationToChildPlacement,
-                Email,
-                Password,
-                Avatar,
-                UserStatusId
-            }
-        );
-        return new UserInserter(command);
-    }
+    public override string TableName => "user";
 }
-internal sealed class UserInserter : DatabaseInserter<User>
+internal sealed class UserInserter : BasicDatabaseInserter<User>
 {
-    internal UserInserter(NpgsqlCommand command) : base(command)
+    public UserInserter(NpgsqlCommand command) : base(command)
     {
     }
-
-    public override async Task InsertAsync(User user)
+    public override IEnumerable<ParameterValue> GetParameterValues(User item)
     {
-        if (user.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(UserInserterFactory.Id, user.Id.Value);
-        Set(UserInserterFactory.CreatedDateTime, user.CreatedDateTime);
-        Set(UserInserterFactory.Email, user.Email);
-        Set(UserInserterFactory.Password, user.Password);
-        Set(UserInserterFactory.AboutMe, user.AboutMe);
-        Set(UserInserterFactory.AnimalWithin, user.AnimalWithin);
-        Set(UserInserterFactory.RelationToChildPlacement, user.RelationToChildPlacement);
-        Set(UserInserterFactory.Avatar, user.Avatar);
-        Set(UserInserterFactory.UserStatusId, user.UserStatusId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(UserInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(UserInserterFactory.CreatedDateTime, item.CreatedDateTime),
+            ParameterValue.Create(UserInserterFactory.Email, item.Email),
+            ParameterValue.Create(UserInserterFactory.Password, item.Password),
+            ParameterValue.Create(UserInserterFactory.AboutMe, item.AboutMe),
+            ParameterValue.Create(UserInserterFactory.AnimalWithin, item.AnimalWithin),
+            ParameterValue.Create(UserInserterFactory.RelationToChildPlacement, item.RelationToChildPlacement),
+            ParameterValue.Create(UserInserterFactory.Avatar, item.Avatar),
+            ParameterValue.Create(UserInserterFactory.UserStatusId, item.UserStatusId),
+        };
     }
 }

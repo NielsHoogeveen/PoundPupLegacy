@@ -34,7 +34,7 @@ internal sealed class LocationInserterFactory : DatabaseInserterFactory<Location
             "location",
             databaseParameters.ToImmutableList().Prepend(Id)
         );
-        var commandWithoutId = await CreateIdentityInsertStatementAsync(
+        var commandWithoutId = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "location",
             databaseParameters

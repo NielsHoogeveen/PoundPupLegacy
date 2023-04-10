@@ -23,7 +23,7 @@ public class NodeInserterFactory : DatabaseInserterFactory<Node>
             OwnerId
         };
 
-        var command = await CreateIdentityInsertStatementAsync(
+        var command = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "node",
             databaseParameters

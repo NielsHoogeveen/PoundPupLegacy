@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class OrganizationInserterFactory : DatabaseInserterFactory<Organization>
+internal sealed class OrganizationInserterFactory : BasicDatabaseInserterFactory<Organization, OrganizationInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableStringDatabaseParameter WebsiteURL = new() { Name = "website_url" };
@@ -7,43 +7,25 @@ internal sealed class OrganizationInserterFactory : DatabaseInserterFactory<Orga
     internal static NullableFuzzyDateDatabaseParameter Established = new() { Name = "established" };
     internal static NullableFuzzyDateDatabaseParameter Terminated = new() { Name = "terminated" };
 
+    public override string TableName => "organization";
 
-    public override async Task<IDatabaseInserter<Organization>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "organization",
-            new DatabaseParameter[] {
-                Id,
-                WebsiteURL,
-                EmailAddress,
-                Established,
-                Terminated
-            }
-        );
-        return new OrganizationInserter(command);
-    }
 }
-internal sealed class OrganizationInserter : DatabaseInserter<Organization>
+internal sealed class OrganizationInserter : BasicDatabaseInserter<Organization>
 {
-    internal OrganizationInserter(NpgsqlCommand command) : base(command)
+    public OrganizationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Organization organization)
+    public override IEnumerable<ParameterValue> GetParameterValues(Organization item)
     {
-        if (organization.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-
-        Set(OrganizationInserterFactory.Id, organization.Id.Value);
-        Set(OrganizationInserterFactory.WebsiteURL, organization.WebsiteUrl);
-        Set(OrganizationInserterFactory.EmailAddress, organization.EmailAddress);
-        Set(OrganizationInserterFactory.Established, organization.Established);
-        Set(OrganizationInserterFactory.Terminated, organization.Terminated);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(OrganizationInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(OrganizationInserterFactory.WebsiteURL, item.WebsiteUrl),
+            ParameterValue.Create(OrganizationInserterFactory.EmailAddress, item.EmailAddress),
+            ParameterValue.Create(OrganizationInserterFactory.Established, item.Established),
+            ParameterValue.Create(OrganizationInserterFactory.Terminated, item.Terminated),
+        };
     }
 }

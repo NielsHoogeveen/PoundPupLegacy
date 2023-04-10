@@ -1,40 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-public class PublisherInserterFactory : DatabaseInserterFactory<Publisher>
+public class PublisherInserterFactory : BasicDatabaseInserterFactory<Publisher, PublisherInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-    public override async Task<IDatabaseInserter<Publisher>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "publisher",
-            new DatabaseParameter[] {
-                Id,
-                Name
-            }
-        );
-        return new PublisherInserter(command);
-    }
-
+    public override string TableName => "publisher";
 }
-public class PublisherInserter : DatabaseInserter<Publisher>
+public class PublisherInserter : BasicDatabaseInserter<Publisher>
 {
-    internal PublisherInserter(NpgsqlCommand command) : base(command)
+    public PublisherInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Publisher publisher)
+    public override IEnumerable<ParameterValue> GetParameterValues(Publisher item)
     {
-        if (publisher.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(PublisherInserterFactory.Id, publisher.Id.Value);
-        Set(PublisherInserterFactory.Name, publisher.Name);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(PublisherInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(PublisherInserterFactory.Name, item.Name),
+        };
     }
 }

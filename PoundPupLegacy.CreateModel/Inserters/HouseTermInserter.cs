@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class HouseTermInserterFactory : DatabaseInserterFactory<HouseTerm>
+internal sealed class HouseTermInserterFactory : BasicDatabaseInserterFactory<HouseTerm, HouseTermInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
@@ -7,46 +7,27 @@ internal sealed class HouseTermInserterFactory : DatabaseInserterFactory<HouseTe
     internal static NullableIntegerDatabaseParameter District = new() { Name = "district" };
     internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
 
-    public override async Task<IDatabaseInserter<HouseTerm>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "house_term",
-            new DatabaseParameter[] {
-                Id,
-                RepresentativeId,
-                SubdivisionId,
-                District,
-                DateRange
-            }
-        );
-        return new HouseTermInserter(command);
-
-    }
-
+    public override string TableName => "house_term";
 }
-internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>
+internal sealed class HouseTermInserter : BasicDatabaseInserter<HouseTerm>
 {
 
-    internal HouseTermInserter(NpgsqlCommand command) : base(command)
+    public HouseTermInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(HouseTerm houseTerm)
+    public override IEnumerable<ParameterValue> GetParameterValues(HouseTerm item)
     {
-        if (houseTerm.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        if (houseTerm.RepresentativeId is null)
+        if (item.RepresentativeId is null)
             throw new NullReferenceException();
-        Set(HouseTermInserterFactory.Id, houseTerm.Id.Value);
-        Set(HouseTermInserterFactory.RepresentativeId, houseTerm.RepresentativeId.Value);
-        Set(HouseTermInserterFactory.SubdivisionId, houseTerm.SubdivisionId);
-        Set(HouseTermInserterFactory.District, houseTerm.District);
-        Set(HouseTermInserterFactory.DateRange, houseTerm.DateTimeRange);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(HouseTermInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(HouseTermInserterFactory.RepresentativeId, item.RepresentativeId.Value),
+            ParameterValue.Create(HouseTermInserterFactory.SubdivisionId, item.SubdivisionId),
+            ParameterValue.Create(HouseTermInserterFactory.District, item.District),
+            ParameterValue.Create(HouseTermInserterFactory.DateRange, item.DateTimeRange),
+        };
     }
 }

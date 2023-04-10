@@ -1,36 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class NodeFileInserterFactory : DatabaseInserterFactory<NodeFile>
+internal sealed class NodeFileInserterFactory : BasicDatabaseInserterFactory<NodeFile, NodeFileInserter>
 {
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NonNullableIntegerDatabaseParameter FileId = new() { Name = "file_id" };
 
-    public override async Task<IDatabaseInserter<NodeFile>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "node_file",
-            new DatabaseParameter[] {
-                NodeId,
-                FileId
-            }
-        );
-        return new NodeFileInserter(command);
-    }
+    public override string TableName => "node_file";
 }
-internal sealed class NodeFileInserter : DatabaseInserter<NodeFile>
+internal sealed class NodeFileInserter : BasicDatabaseInserter<NodeFile>
 {
-    internal NodeFileInserter(NpgsqlCommand command) : base(command)
+    public NodeFileInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(NodeFile nodeFile)
+    public override IEnumerable<ParameterValue> GetParameterValues(NodeFile item)
     {
-        Set(NodeFileInserterFactory.NodeId, nodeFile.NodeId);
-        Set(NodeFileInserterFactory.FileId, nodeFile.FileId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(NodeFileInserterFactory.NodeId, item.NodeId),
+            ParameterValue.Create(NodeFileInserterFactory.FileId, item.FileId),
+        };
     }
 }

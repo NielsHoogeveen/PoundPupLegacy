@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCase>
+internal sealed class AbuseCaseInserterFactory : BasicDatabaseInserterFactory<AbuseCase, AbuseCaseInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter ChildPlacementTypeId = new() { Name = "child_placement_type_id" };
@@ -8,47 +8,27 @@ internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCa
     internal static NullableBooleanDatabaseParameter HomeSchoolingInvolved = new() { Name = "home_schooling_involved" };
     internal static NullableBooleanDatabaseParameter FundamentalFaithInvolved = new() { Name = "fundamental_faith_involved" };
     internal static NullableBooleanDatabaseParameter DisabilitiesInvolved = new() { Name = "disabilities_involved" };
-
-    public override async Task<IDatabaseInserter<AbuseCase>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "abuse_case",
-            new DatabaseParameter[] {
-                Id, 
-                ChildPlacementTypeId, 
-                FamilySizeId, 
-                HomeSchoolingInvolved, 
-                FundamentalFaithInvolved, 
-                DisabilitiesInvolved
-            }
-        );
-        return new AbuseCaseInserter(command);
-
-    }
-
+    public override string TableName => "abuse_case";
 }
-internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>
+internal sealed class AbuseCaseInserter : BasicDatabaseInserter<AbuseCase>
 {
 
-    internal AbuseCaseInserter(NpgsqlCommand command) : base(command)
+    public AbuseCaseInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(AbuseCase abuseCase)
+    public override IEnumerable<ParameterValue> GetParameterValues(AbuseCase abuseCase)
     {
         if (abuseCase.Id is null)
             throw new NullReferenceException();
-        Set(AbuseCaseInserterFactory.Id, abuseCase.Id.Value);
-        Set(AbuseCaseInserterFactory.ChildPlacementTypeId,abuseCase.ChildPlacementTypeId);
-        Set(AbuseCaseInserterFactory.FamilySizeId, abuseCase.FamilySizeId);
-        Set(AbuseCaseInserterFactory.HomeSchoolingInvolved, abuseCase.HomeschoolingInvolved);
-        Set(AbuseCaseInserterFactory.FundamentalFaithInvolved, abuseCase.FundamentalFaithInvolved);
-        Set(AbuseCaseInserterFactory.DisabilitiesInvolved, abuseCase.DisabilitiesInvolved);
-        await _command.ExecuteNonQueryAsync();
+
+        return new ParameterValue[] {
+            ParameterValue.Create(AbuseCaseInserterFactory.Id, abuseCase.Id.Value),
+            ParameterValue.Create(AbuseCaseInserterFactory.ChildPlacementTypeId, abuseCase.ChildPlacementTypeId),
+            ParameterValue.Create(AbuseCaseInserterFactory.FamilySizeId, abuseCase.FamilySizeId),
+            ParameterValue.Create(AbuseCaseInserterFactory.HomeSchoolingInvolved, abuseCase.HomeschoolingInvolved),
+            ParameterValue.Create(AbuseCaseInserterFactory.FundamentalFaithInvolved, abuseCase.FundamentalFaithInvolved),
+            ParameterValue.Create(AbuseCaseInserterFactory.DisabilitiesInvolved, abuseCase.DisabilitiesInvolved),
+        };
     }
 }

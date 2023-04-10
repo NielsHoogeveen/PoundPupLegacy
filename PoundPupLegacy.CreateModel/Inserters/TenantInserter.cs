@@ -1,47 +1,30 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TenantInserterFactory : DatabaseInserterFactory<Tenant>
+internal sealed class TenantInserterFactory : BasicDatabaseInserterFactory<Tenant, TenantInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter DomainName = new() { Name = "domain_name" };
     internal static NullableIntegerDatabaseParameter VocabularyIdTagging = new() { Name = "vocabulary_id_tagging" };
     internal static NonNullableIntegerDatabaseParameter AccessRoleIdNotLoggedIn = new() { Name = "access_role_id_not_logged_in" };
 
-    public override async Task<IDatabaseInserter<Tenant>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "tenant",
-            new DatabaseParameter[] {
-                Id,
-                DomainName,
-                VocabularyIdTagging,
-                AccessRoleIdNotLoggedIn
-            }
-        );
-        return new TenantInserter(command);
-    }
+    public override string TableName => "tenant";
 }
-internal sealed class TenantInserter : DatabaseInserter<Tenant>
+internal sealed class TenantInserter : BasicDatabaseInserter<Tenant>
 {
-    internal TenantInserter(NpgsqlCommand command) : base(command)
+    public TenantInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Tenant @tenant)
+    public override IEnumerable<ParameterValue> GetParameterValues(Tenant item)
     {
-        if (@tenant.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        if (@tenant.AccessRoleNotLoggedIn.Id is null)
+        if (item.AccessRoleNotLoggedIn.Id is null)
             throw new NullReferenceException();
-
-        Set(TenantInserterFactory.Id, @tenant.Id.Value);
-        Set(TenantInserterFactory.DomainName, @tenant.DomainName);
-        Set(TenantInserterFactory.VocabularyIdTagging, @tenant.VocabularyIdTagging);
-        Set(TenantInserterFactory.AccessRoleIdNotLoggedIn, @tenant.AccessRoleNotLoggedIn.Id.Value);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(TenantInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(TenantInserterFactory.DomainName, item.DomainName),
+            ParameterValue.Create(TenantInserterFactory.VocabularyIdTagging, item.VocabularyIdTagging),
+            ParameterValue.Create(TenantInserterFactory.AccessRoleIdNotLoggedIn, item.AccessRoleNotLoggedIn.Id.Value),
+        };
     }
 }

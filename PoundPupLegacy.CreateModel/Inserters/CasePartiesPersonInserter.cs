@@ -1,39 +1,24 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class CasePartiesPersonInserterFactory : DatabaseInserterFactory<CasePartiesPerson>
+internal sealed class CasePartiesPersonInserterFactory : BasicDatabaseInserterFactory<CasePartiesPerson, CasePartiesPersonInserter>
 {
     internal static NonNullableIntegerDatabaseParameter CasePartiesId = new() { Name = "case_parties_id" };
     internal static NonNullableIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
 
-    public override async Task<IDatabaseInserter<CasePartiesPerson>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "case_parties_person",
-            new DatabaseParameter[] {
-                CasePartiesId,
-                PersonId
-            }
-        );
-        return new CasePartiesPersonInserter(command);
-
-    }
+    public override string TableName => "case_parties_person";
 
 }
-internal sealed class CasePartiesPersonInserter : DatabaseInserter<CasePartiesPerson>
+internal sealed class CasePartiesPersonInserter : BasicDatabaseInserter<CasePartiesPerson>
 {
-    internal CasePartiesPersonInserter(NpgsqlCommand command) : base(command)
+    public CasePartiesPersonInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(CasePartiesPerson casePartiesPerson)
+    public override IEnumerable<ParameterValue> GetParameterValues(CasePartiesPerson item)
     {
-        Set(CasePartiesPersonInserterFactory.CasePartiesId, casePartiesPerson.CasePartiesId);
-        Set(CasePartiesPersonInserterFactory.PersonId, casePartiesPerson.PersonId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(CasePartiesPersonInserterFactory.CasePartiesId, item.CasePartiesId),
+            ParameterValue.Create(CasePartiesPersonInserterFactory.PersonId, item.PersonId)
+        };
     }
 }

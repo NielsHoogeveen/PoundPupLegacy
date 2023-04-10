@@ -1,39 +1,24 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class MultiQuestionPollPollQuestionInserterFactory : DatabaseInserterFactory<MultiQuestionPollPollQuestion>
+internal sealed class MultiQuestionPollPollQuestionInserterFactory : BasicDatabaseInserterFactory<MultiQuestionPollPollQuestion, MultiQuestionPollPollQuestionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter MultiQuestionPollId = new() { Name = "multi_question_poll_id" };
     internal static NonNullableIntegerDatabaseParameter PollQuesionId = new() { Name = "poll_question_id" };
     internal static NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
 
-    public override async Task<IDatabaseInserter<MultiQuestionPollPollQuestion>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "multi_question_poll_poll_question",
-            new DatabaseParameter[] {
-                MultiQuestionPollId,
-                PollQuesionId,
-                Delta
-            }
-        );
-        return new MultiQuestionPollPollQuestionInserter(command);
-    }
+    public override string TableName => "multi_question_poll_poll_question";
 }
-internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<MultiQuestionPollPollQuestion>
+internal sealed class MultiQuestionPollPollQuestionInserter : BasicDatabaseInserter<MultiQuestionPollPollQuestion>
 {
-    internal MultiQuestionPollPollQuestionInserter(NpgsqlCommand command) : base(command)
+    public MultiQuestionPollPollQuestionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(MultiQuestionPollPollQuestion question)
+    public override IEnumerable<ParameterValue> GetParameterValues(MultiQuestionPollPollQuestion item)
     {
-        Set(MultiQuestionPollPollQuestionInserterFactory.MultiQuestionPollId, question.MultiQuestionPollId);
-        Set(MultiQuestionPollPollQuestionInserterFactory.PollQuesionId, question.PollQuestionId);
-        Set(MultiQuestionPollPollQuestionInserterFactory.Delta, question.Delta);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(MultiQuestionPollPollQuestionInserterFactory.MultiQuestionPollId, item.MultiQuestionPollId),
+            ParameterValue.Create(MultiQuestionPollPollQuestionInserterFactory.PollQuesionId, item.PollQuestionId),
+            ParameterValue.Create(MultiQuestionPollPollQuestionInserterFactory.Delta, item.Delta),
+        };
     }
 }

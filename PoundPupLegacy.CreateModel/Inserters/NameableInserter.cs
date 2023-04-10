@@ -1,43 +1,28 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class NameableInserterFactory : DatabaseInserterFactory<Nameable>
+internal sealed class NameableInserterFactory : BasicDatabaseInserterFactory<Nameable, NameableInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableStringDatabaseParameter Description = new() { Name = "description" };
     internal static NullableIntegerDatabaseParameter FileIdTileImage = new() { Name = "file_id_tile_image" };
 
-    public override async Task<IDatabaseInserter<Nameable>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "nameable";
 
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "nameable",
-            new DatabaseParameter[] {
-                Id,
-                Description,
-                FileIdTileImage
-            }
-        );
-        return new NameableInserter(command);
-    }
 }
-internal sealed class NameableInserter : DatabaseInserter<Nameable>
+internal sealed class NameableInserter : BasicDatabaseInserter<Nameable>
 {
-    internal NameableInserter(NpgsqlCommand command) : base(command)
+    public NameableInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Nameable nameable)
+    public override IEnumerable<ParameterValue> GetParameterValues(Nameable item)
     {
-        if (nameable.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-
-        Set(NameableInserterFactory.Id,nameable.Id.Value);
-        Set(NameableInserterFactory.Description, nameable.Description);
-        Set(NameableInserterFactory.FileIdTileImage,nameable.FileIdTileImage);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(NameableInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(NameableInserterFactory.Description, item.Description),
+            ParameterValue.Create(NameableInserterFactory.FileIdTileImage, item.FileIdTileImage),
+        };
     }
 }

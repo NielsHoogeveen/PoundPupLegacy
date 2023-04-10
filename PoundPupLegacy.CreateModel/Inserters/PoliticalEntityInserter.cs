@@ -1,40 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PoliticalEntityInserterFactory : DatabaseInserterFactory<PoliticalEntity>
+internal sealed class PoliticalEntityInserterFactory : BasicDatabaseInserterFactory<PoliticalEntity, PoliticalEntityInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableIntegerDatabaseParameter FileIdFlag = new() { Name = "file_id_flag" };
 
-    public override async Task<IDatabaseInserter<PoliticalEntity>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "political_entity",
-            new DatabaseParameter[] {
-                Id,
-                FileIdFlag
-            }
-        );
-        return new PoliticalEntityInserter(command);
-    }
+    public override string TableName => "political_entity";
 }
-internal sealed class PoliticalEntityInserter : DatabaseInserter<PoliticalEntity>
+internal sealed class PoliticalEntityInserter : BasicDatabaseInserter<PoliticalEntity>
 {
 
-    internal PoliticalEntityInserter(NpgsqlCommand command) : base(command)
+    public PoliticalEntityInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(PoliticalEntity entity)
+    public override IEnumerable<ParameterValue> GetParameterValues(PoliticalEntity item)
     {
-        if (entity.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-
-        Set(PoliticalEntityInserterFactory.Id, entity.Id.Value);
-        Set(PoliticalEntityInserterFactory.FileIdFlag, entity.FileIdFlag);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(PoliticalEntityInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(PoliticalEntityInserterFactory.FileIdFlag, item.FileIdFlag),
+        };
     }
 }

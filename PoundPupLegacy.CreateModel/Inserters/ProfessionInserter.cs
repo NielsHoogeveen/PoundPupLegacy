@@ -1,40 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class ProfessionInserterFactory : DatabaseInserterFactory<Profession>
+internal sealed class ProfessionInserterFactory : BasicDatabaseInserterFactory<Profession, ProfessionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
 
-    public override async Task<IDatabaseInserter<Profession>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "profession";
 
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "profession",
-            new DatabaseParameter[] {
-                Id,
-                HasConcreteSubtype
-            }
-        );
-        return new ProfessionInserter(command);
-    }
 }
-internal sealed class ProfessionInserter : DatabaseInserter<Profession>
+internal sealed class ProfessionInserter : BasicDatabaseInserter<Profession>
 {
 
-    internal ProfessionInserter(NpgsqlCommand command) : base(command)
+    public ProfessionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Profession profession)
+    public override IEnumerable<ParameterValue> GetParameterValues(Profession item)
     {
-        if (profession.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-
-        Set(ProfessionInserterFactory.Id, profession.Id.Value);
-        Set(ProfessionInserterFactory.HasConcreteSubtype, profession.HasConcreteSubtype);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(ProfessionInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(ProfessionInserterFactory.HasConcreteSubtype, item.HasConcreteSubtype),
+        };
     }
 }

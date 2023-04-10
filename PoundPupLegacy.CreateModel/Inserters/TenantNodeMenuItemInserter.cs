@@ -1,41 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TenantNodeMenuItemInserterFactory : DatabaseInserterFactory<TenantNodeMenuItem>
+internal sealed class TenantNodeMenuItemInserterFactory : BasicDatabaseInserterFactory<TenantNodeMenuItem, TenantNodeMenuItemInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static NonNullableIntegerDatabaseParameter TenantNodeId = new() { Name = "tenant_node_id" };
 
-    public override async Task<IDatabaseInserter<TenantNodeMenuItem>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "tenant_node_menu_item",
-            new DatabaseParameter[] {
-                Id,
-                Name,
-                TenantNodeId
-            }
-        );
-        return new TenantNodeMenuItemInserter(command);
-    }
+    public override string TableName => "tenant_node_menu_item";
 }
-internal sealed class TenantNodeMenuItemInserter : DatabaseInserter<TenantNodeMenuItem>
+internal sealed class TenantNodeMenuItemInserter : BasicDatabaseInserter<TenantNodeMenuItem>
 {
-    internal TenantNodeMenuItemInserter(NpgsqlCommand command) : base(command)
+    public TenantNodeMenuItemInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(TenantNodeMenuItem tenantNodeMenuItem)
+    public override IEnumerable<ParameterValue> GetParameterValues(TenantNodeMenuItem item)
     {
-        if (tenantNodeMenuItem.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(TenantNodeMenuItemInserterFactory.Id, tenantNodeMenuItem.Id.Value);
-        Set(TenantNodeMenuItemInserterFactory.Name, tenantNodeMenuItem.Name);
-        Set(TenantNodeMenuItemInserterFactory.TenantNodeId, tenantNodeMenuItem.TenantNodeId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(TenantNodeMenuItemInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(TenantNodeMenuItemInserterFactory.Name, item.Name),
+            ParameterValue.Create(TenantNodeMenuItemInserterFactory.TenantNodeId, item.TenantNodeId),
+        };
     }
 }

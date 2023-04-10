@@ -1,42 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class BillInserterFactory : DatabaseInserterFactory<Bill>
+internal sealed class BillInserterFactory : BasicDatabaseInserterFactory<Bill, BillInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableDateTimeDatabaseParameter IntroductionDate = new() { Name = "introduction_date" };
 
-    public override async Task<IDatabaseInserter<Bill>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "bill",
-            new DatabaseParameter[] {
-                Id,
-                IntroductionDate
-            }
-        );
-        return new BillInserter(command);
-
-    }
+    public override string TableName => "bill";
 
 }
-internal sealed class BillInserter : DatabaseInserter<Bill>
+internal sealed class BillInserter : BasicDatabaseInserter<Bill>
 {
-
-
-    internal BillInserter(NpgsqlCommand command) : base(command)
+    public BillInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Bill bill)
+    public override IEnumerable<ParameterValue> GetParameterValues(Bill item)
     {
-        if (bill.Id is null)
-            throw new ArgumentNullException(nameof(bill.Id));
-        Set(BillInserterFactory.Id, bill.Id.Value);
-        Set(BillInserterFactory.IntroductionDate, bill.IntroductionDate);
-        await _command.ExecuteNonQueryAsync();
+        if (item.Id is null)
+            throw new ArgumentNullException(nameof(item.Id));
+        return new ParameterValue[] {
+            ParameterValue.Create(BillInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(BillInserterFactory.IntroductionDate, item.IntroductionDate)
+        };
     }
 }

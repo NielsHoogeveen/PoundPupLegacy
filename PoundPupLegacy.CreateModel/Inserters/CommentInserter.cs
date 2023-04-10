@@ -36,7 +36,7 @@ public class CommentInserterFactory : DatabaseInserterFactory<Comment>
             "comment",
             parameterDefinitions.ToImmutableList().Prepend(Id)
         );
-        var commandWithoutId = await CreateIdentityInsertStatementAsync(
+        var commandWithoutId = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "comment",
             parameterDefinitions

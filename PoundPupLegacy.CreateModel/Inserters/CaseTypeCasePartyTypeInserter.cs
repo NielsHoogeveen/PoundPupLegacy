@@ -1,38 +1,23 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CaseTypeCasePartyTypeInserterFactory : DatabaseInserterFactory<CaseTypeCasePartyType>
+internal sealed class CaseTypeCasePartyTypeInserterFactory : BasicDatabaseInserterFactory<CaseTypeCasePartyType, CaseTypeCasePartyTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter CaseTypeId = new() { Name = "case_type_id" };
     internal static NonNullableIntegerDatabaseParameter CasePartyTypeId = new() { Name = "case_party_type_id" };
 
-    public override async Task<IDatabaseInserter<CaseTypeCasePartyType>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "case_type_case_party_type";
 
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "case_type_case_party_type",
-            new DatabaseParameter[] {
-                CaseTypeId,
-                CasePartyTypeId
-            }
-        );
-        return new CaseTypeCasePartyTypeInserter(command);
-    }
 }
-internal sealed class CaseTypeCasePartyTypeInserter : DatabaseInserter<CaseTypeCasePartyType>
+internal sealed class CaseTypeCasePartyTypeInserter : BasicDatabaseInserter<CaseTypeCasePartyType>
 {
-
-
-    internal CaseTypeCasePartyTypeInserter(NpgsqlCommand command) : base(command)
+    public CaseTypeCasePartyTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(CaseTypeCasePartyType caseTypeCasePartyType)
+    public override IEnumerable<ParameterValue> GetParameterValues(CaseTypeCasePartyType item)
     {
-        Set(CaseTypeCasePartyTypeInserterFactory.CaseTypeId, caseTypeCasePartyType.CaseTypeId);
-        Set(CaseTypeCasePartyTypeInserterFactory.CasePartyTypeId, caseTypeCasePartyType.CasePartyTypeId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(CaseTypeCasePartyTypeInserterFactory.CaseTypeId, item.CaseTypeId),
+            ParameterValue.Create(CaseTypeCasePartyTypeInserterFactory.CasePartyTypeId, item.CasePartyTypeId),
+        };
     }
 }

@@ -1,42 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class DeleteNodeActionInserterFactory : DatabaseInserterFactory<DeleteNodeAction>
+internal sealed class DeleteNodeActionInserterFactory : BasicDatabaseInserterFactory<DeleteNodeAction, DeleteNodeActionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
-    public override async Task<IDatabaseInserter<DeleteNodeAction>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "delete_node_action",
-            new DatabaseParameter[] {
-                Id,
-                NodeTypeId
-            }
-        );
-        return new DeleteNodeActionInserter(command);
-
-    }
-
+    public override string TableName => "delete_node_action";
 }
-internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeAction>
+internal sealed class DeleteNodeActionInserter : BasicDatabaseInserter<DeleteNodeAction>
 {
 
-    internal DeleteNodeActionInserter(NpgsqlCommand command) : base(command)
+    public DeleteNodeActionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(DeleteNodeAction deleteNodeAccessPrivilege)
+    public override IEnumerable<ParameterValue> GetParameterValues(DeleteNodeAction item)
     {
-        if (!deleteNodeAccessPrivilege.Id.HasValue) {
+        if (item.Id is null)
             throw new NullReferenceException();
-        }
-        Set(CreateNodeActionInserterFactory.Id, deleteNodeAccessPrivilege.Id.Value);
-        Set(CreateNodeActionInserterFactory.NodeTypeId, deleteNodeAccessPrivilege.NodeTypeId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(DeleteNodeActionInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(DeleteNodeActionInserterFactory.NodeTypeId, item.NodeTypeId),
+        };
     }
 }

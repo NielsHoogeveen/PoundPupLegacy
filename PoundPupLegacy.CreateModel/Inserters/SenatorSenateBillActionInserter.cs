@@ -21,7 +21,7 @@ internal sealed class SenatorSenateBillActionInserterFactory : DatabaseInserterF
             BillActionTypeId
         };
 
-        var genarateIdCommand = await CreateIdentityInsertStatementAsync(
+        var genarateIdCommand = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "senator_senate_bill_action",
             databaseParameters

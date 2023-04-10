@@ -1,36 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class DocumentableDocumentInserterFactory : DatabaseInserterFactory<DocumentableDocument>
+internal sealed class DocumentableDocumentInserterFactory : BasicDatabaseInserterFactory<DocumentableDocument, DocumentableDocumentInserter>
 {
     internal static NonNullableIntegerDatabaseParameter DocumentableId = new() { Name = "documentable_id" };
     internal static NonNullableIntegerDatabaseParameter DocumentId = new() { Name = "document_id" };
 
-    public override async Task<IDatabaseInserter<DocumentableDocument>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "documentable_document",
-            new DatabaseParameter[] {
-                DocumentableId,
-                DocumentId
-            }
-        );
-        return new DocumentableDocumentInserter(command);
-    }
+    public override string TableName => "documentable_document";
 }
-internal sealed class DocumentableDocumentInserter : DatabaseInserter<DocumentableDocument>
+internal sealed class DocumentableDocumentInserter : BasicDatabaseInserter<DocumentableDocument>
 {
-    internal DocumentableDocumentInserter(NpgsqlCommand command) : base(command)
+    public DocumentableDocumentInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(DocumentableDocument documentableDocument)
+    public override IEnumerable<ParameterValue> GetParameterValues(DocumentableDocument item)
     {
-        Set(DocumentableDocumentInserterFactory.DocumentableId, documentableDocument.DocumentableId);
-        Set(DocumentableDocumentInserterFactory.DocumentId, documentableDocument.DocumentId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(DocumentableDocumentInserterFactory.DocumentableId, item.DocumentableId),
+            ParameterValue.Create(DocumentableDocumentInserterFactory.DocumentId, item.DocumentId),
+        };
     }
 }

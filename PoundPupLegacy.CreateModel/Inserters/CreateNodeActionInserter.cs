@@ -1,40 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CreateNodeActionInserterFactory : DatabaseInserterFactory<CreateNodeAction>
+internal sealed class CreateNodeActionInserterFactory : BasicDatabaseInserterFactory<CreateNodeAction, CreateNodeActionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
-    public override async Task<IDatabaseInserter<CreateNodeAction>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "create_node_action";
 
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "create_node_action",
-            new DatabaseParameter[] {
-                Id,
-                NodeTypeId
-            }
-        );
-        return new CreateNodeActionInserter(command);
-    }
 }
-internal sealed class CreateNodeActionInserter : DatabaseInserter<CreateNodeAction>
+internal sealed class CreateNodeActionInserter : BasicDatabaseInserter<CreateNodeAction>
 {
-
-    internal CreateNodeActionInserter(NpgsqlCommand command) : base(command)
+    public CreateNodeActionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(CreateNodeAction createNodeAccessPrivilege)
+    public override IEnumerable<ParameterValue> GetParameterValues(CreateNodeAction item)
     {
-        if (!createNodeAccessPrivilege.Id.HasValue) {
+        if (item.Id is null)
             throw new NullReferenceException();
-        }
-        Set(CreateNodeActionInserterFactory.Id, createNodeAccessPrivilege.Id.Value);
-        Set(CreateNodeActionInserterFactory.NodeTypeId, createNodeAccessPrivilege.NodeTypeId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(CreateNodeActionInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(CreateNodeActionInserterFactory.NodeTypeId, item.NodeTypeId),
+        };
     }
 }

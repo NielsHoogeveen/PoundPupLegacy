@@ -11,7 +11,7 @@ internal sealed class TermInserterFactory : DatabaseInserterFactory<Term>
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var command = await CreateIdentityInsertStatementAsync(
+        var command = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "term",
             new DatabaseParameter[] {

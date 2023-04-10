@@ -1,48 +1,30 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class SenateTermInserterFactory : DatabaseInserterFactory<SenateTerm>
+internal sealed class SenateTermInserterFactory : BasicDatabaseInserterFactory<SenateTerm, SenateTermInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter SenatorId = new() { Name = "senator_id" };
     internal static NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
     internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
 
-
-    public override async Task<IDatabaseInserter<SenateTerm>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "senate_term",
-            new DatabaseParameter[] {
-                Id,
-                SenatorId,
-                SubdivisionId,
-                DateRange
-            }
-        );
-        return new SenateTermInserter(command);
-    }
+    public override string TableName => "senate_term";
 }
-internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>
+internal sealed class SenateTermInserter : BasicDatabaseInserter<SenateTerm>
 {
-
-    internal SenateTermInserter(NpgsqlCommand command) : base(command)
+    public SenateTermInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(SenateTerm senateTerm)
+    public override IEnumerable<ParameterValue> GetParameterValues(SenateTerm item)
     {
-        if (senateTerm.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        if (senateTerm.SenatorId is null)
+        if (item.SenatorId is null)
             throw new NullReferenceException();
-        Set(SenateTermInserterFactory.Id, senateTerm.Id.Value);
-        Set(SenateTermInserterFactory.SenatorId, senateTerm.SenatorId.Value);
-        Set(SenateTermInserterFactory.SubdivisionId, senateTerm.SubdivisionId);
-        Set(SenateTermInserterFactory.DateRange, senateTerm.DateTimeRange);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(SenateTermInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(SenateTermInserterFactory.SenatorId, item.SenatorId.Value),
+            ParameterValue.Create(SenateTermInserterFactory.SubdivisionId, item.SubdivisionId),
+            ParameterValue.Create(SenateTermInserterFactory.DateRange, item.DateTimeRange),
+        };
     }
 }

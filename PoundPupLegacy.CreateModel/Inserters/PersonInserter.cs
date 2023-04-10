@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person>
+internal sealed class PersonInserterFactory : BasicDatabaseInserterFactory<Person, PersonInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableDateTimeDatabaseParameter DateOfBirth = new() { Name = "date_of_birth" };
@@ -13,53 +13,30 @@ internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person>
     internal static NullableIntegerDatabaseParameter GovtrackId = new() { Name = "govtrack_id" };
     internal static NullableStringDatabaseParameter Bioguide = new() { Name = "bioguide" };
 
-    public override async Task<IDatabaseInserter<Person>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "person",
-            new DatabaseParameter[] {
-                Id,
-                DateOfBirth,
-                DateOfDeath,
-                FileIdPortrait,
-                FirstName,
-                MiddleName,
-                LastName,
-                FullName,
-                Suffix,
-                GovtrackId,
-                Bioguide
-            }
-        );
-        return new PersonInserter(command);
-    }
+    public override string TableName => "person";
 }
-internal sealed class PersonInserter : DatabaseInserter<Person>
+internal sealed class PersonInserter : BasicDatabaseInserter<Person>
 {
-    internal PersonInserter(NpgsqlCommand command) : base(command)
+    public PersonInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Person person)
+    public override IEnumerable<ParameterValue> GetParameterValues(Person item)
     {
-        if (person.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(PersonInserterFactory.Id, person.Id.Value);
-        Set(PersonInserterFactory.DateOfBirth, person.DateOfBirth);
-        Set(PersonInserterFactory.DateOfDeath, person.DateOfDeath);
-        Set(PersonInserterFactory.FileIdPortrait, person.FileIdPortrait);
-        Set(PersonInserterFactory.GovtrackId, person.GovtrackId);
-        Set(PersonInserterFactory.FirstName, person.FirstName);
-        Set(PersonInserterFactory.MiddleName, person.MiddleName);
-        Set(PersonInserterFactory.LastName, person.LastName);
-        Set(PersonInserterFactory.Suffix, person.Suffix);
-        Set(PersonInserterFactory.FullName, person.FullName);
-        Set(PersonInserterFactory.Bioguide, person.Bioguide) ;
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(PersonInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(PersonInserterFactory.DateOfBirth, item.DateOfBirth),
+            ParameterValue.Create(PersonInserterFactory.DateOfDeath, item.DateOfDeath),
+            ParameterValue.Create(PersonInserterFactory.FileIdPortrait, item.FileIdPortrait),
+            ParameterValue.Create(PersonInserterFactory.GovtrackId, item.GovtrackId),
+            ParameterValue.Create(PersonInserterFactory.FirstName, item.FirstName),
+            ParameterValue.Create(PersonInserterFactory.MiddleName, item.MiddleName),
+            ParameterValue.Create(PersonInserterFactory.LastName, item.LastName),
+            ParameterValue.Create(PersonInserterFactory.Suffix, item.Suffix),
+            ParameterValue.Create(PersonInserterFactory.FullName, item.FullName),
+            ParameterValue.Create(PersonInserterFactory.Bioguide, item.Bioguide),
+        };
     }
 }

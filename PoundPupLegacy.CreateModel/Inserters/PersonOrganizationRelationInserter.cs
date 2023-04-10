@@ -28,7 +28,7 @@ internal sealed class PersonOrganizationRelationInserterFactory : DatabaseInsert
             Description
             };
 
-        var generateIdCommand = await CreateIdentityInsertStatementAsync(
+        var generateIdCommand = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "person_organization_relation",
             databaseParameters

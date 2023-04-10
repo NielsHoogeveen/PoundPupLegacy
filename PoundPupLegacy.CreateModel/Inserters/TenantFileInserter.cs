@@ -1,44 +1,29 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TenantFileInserterFactory : DatabaseInserterFactory<TenantFile>
+internal sealed class TenantFileInserterFactory : BasicDatabaseInserterFactory<TenantFile, TenantFileInserter>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter FileId = new() { Name = "file_id" };
     internal static NonNullableIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
 
-    public override async Task<IDatabaseInserter<TenantFile>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "tenant_file",
-            new DatabaseParameter[] {
-                TenantId,
-                FileId,
-                TenantFileId
-            }
-        );
-        return new TenantFileInserter(command);
-    }
+    public override string TableName => "tenant_file";
 }
 
-internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>
+internal sealed class TenantFileInserter : BasicDatabaseInserter<TenantFile>
 {
-    internal TenantFileInserter(NpgsqlCommand command) : base(command)
+    public TenantFileInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(TenantFile tenantFile)
+    public override IEnumerable<ParameterValue> GetParameterValues(TenantFile item)
     {
-        if (tenantFile.FileId == null)
-            throw new ArgumentNullException(nameof(tenantFile.FileId));
-        if (tenantFile.TenantFileId == null)
-            throw new ArgumentNullException(nameof(tenantFile.TenantFileId));
-        Set(TenantFileInserterFactory.TenantId, tenantFile.TenantId);
-        Set(TenantFileInserterFactory.FileId, tenantFile.FileId.Value);
-        Set(TenantFileInserterFactory.TenantFileId, tenantFile.TenantFileId.Value);
-        await _command.ExecuteNonQueryAsync();
+        if (item.FileId == null)
+            throw new ArgumentNullException(nameof(item.FileId));
+        if (item.TenantFileId == null)
+            throw new ArgumentNullException(nameof(item.TenantFileId));
+        return new ParameterValue[] {
+            ParameterValue.Create(TenantFileInserterFactory.TenantId, item.TenantId),
+            ParameterValue.Create(TenantFileInserterFactory.FileId, item.FileId.Value),
+            ParameterValue.Create(TenantFileInserterFactory.TenantFileId, item.TenantFileId.Value),
+        };
     }
 }

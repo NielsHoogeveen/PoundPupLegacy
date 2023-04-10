@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class InterCountryRelationInserterFactory : DatabaseInserterFactory<InterCountryRelation>
+internal sealed class InterCountryRelationInserterFactory : BasicDatabaseInserterFactory<InterCountryRelation, InterCountryRelationInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter CountryIdFrom = new() { Name = "country_id_from" };
@@ -10,47 +10,28 @@ internal sealed class InterCountryRelationInserterFactory : DatabaseInserterFact
     internal static NonNullableIntegerDatabaseParameter InterCountryRelationTypeId = new() { Name = "inter_country_relation_type_id" };
     internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
 
-    public override async Task<IDatabaseInserter<InterCountryRelation>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "inter_country_relation";
 
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "inter_country_relation",
-            new DatabaseParameter[] {
-                Id,
-                CountryIdFrom,
-                CountryIdTo,
-                DateRange,
-                NumberOfChildrenInvolved,
-                MoneyInvolved,
-                InterCountryRelationTypeId,
-                DocumentIdProof
-            }
-        );
-        return new InterCountryRelationInserter(command);
-    }
 }
-internal sealed class InterCountryRelationInserter : DatabaseInserter<InterCountryRelation>
+internal sealed class InterCountryRelationInserter : BasicDatabaseInserter<InterCountryRelation>
 {
-    internal InterCountryRelationInserter(NpgsqlCommand command) : base(command)
+    public InterCountryRelationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(InterCountryRelation interCountryRelation)
+    public override IEnumerable<ParameterValue> GetParameterValues(InterCountryRelation item)
     {
-        if (interCountryRelation.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(InterCountryRelationInserterFactory.Id, interCountryRelation.Id.Value);
-        Set(InterCountryRelationInserterFactory.CountryIdFrom, interCountryRelation.CountryIdFrom);
-        Set(InterCountryRelationInserterFactory.CountryIdTo, interCountryRelation.CountryIdTo);
-        Set(InterCountryRelationInserterFactory.DateRange, interCountryRelation.DateTimeRange);
-        Set(InterCountryRelationInserterFactory.InterCountryRelationTypeId, interCountryRelation.InterCountryRelationTypeId);
-        Set(InterCountryRelationInserterFactory.NumberOfChildrenInvolved, interCountryRelation.NumberOfChildrenInvolved);
-        Set(InterCountryRelationInserterFactory.MoneyInvolved, interCountryRelation.MoneyInvolved);
-        Set(InterCountryRelationInserterFactory.DocumentIdProof, interCountryRelation.DocumentIdProof);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(InterCountryRelationInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(InterCountryRelationInserterFactory.CountryIdFrom, item.CountryIdFrom),
+            ParameterValue.Create(InterCountryRelationInserterFactory.CountryIdTo, item.CountryIdTo),
+            ParameterValue.Create(InterCountryRelationInserterFactory.DateRange, item.DateTimeRange),
+            ParameterValue.Create(InterCountryRelationInserterFactory.InterCountryRelationTypeId, item.InterCountryRelationTypeId),
+            ParameterValue.Create(InterCountryRelationInserterFactory.NumberOfChildrenInvolved, item.NumberOfChildrenInvolved),
+            ParameterValue.Create(InterCountryRelationInserterFactory.MoneyInvolved, item.MoneyInvolved),
+            ParameterValue.Create(InterCountryRelationInserterFactory.DocumentIdProof, item.DocumentIdProof),
+        };
     }
 }

@@ -14,7 +14,7 @@ public sealed class TenantNodeInserterFactory : DatabaseInserterFactory<TenantNo
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var command = await CreateIdentityInsertStatementAsync(
+        var command = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "tenant_node",
             new DatabaseParameter[]

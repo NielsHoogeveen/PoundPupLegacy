@@ -11,7 +11,7 @@ internal sealed class ProfessionalRoleInserterFactory : DatabaseInserterFactory<
             throw new Exception("Application only works with a Postgres database");
         var postgresConnection = (NpgsqlConnection)connection;
 
-        var command = await CreateIdentityInsertStatementAsync(
+        var command = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "professional_role",
             new DatabaseParameter[] {

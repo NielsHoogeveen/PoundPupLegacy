@@ -1,40 +1,24 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UserGroupUserRoleUserInserterFactory : DatabaseInserterFactory<UserGroupUserRoleUser>
+internal sealed class UserGroupUserRoleUserInserterFactory : BasicDatabaseInserterFactory<UserGroupUserRoleUser, UserGroupUserRoleUserInserter>
 {
     internal static NonNullableIntegerDatabaseParameter UserGroupId = new() { Name = "user_group_id" };
     internal static NonNullableIntegerDatabaseParameter UserRoleId = new() { Name = "user_role_id" };
     internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
-    
 
-    public override async Task<IDatabaseInserter<UserGroupUserRoleUser>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "user_group_user_role_user",
-            new DatabaseParameter[] {
-                UserGroupId,
-                UserRoleId,
-                UserId
-            }
-        );
-        return new UserGroupUserRoleUserInserter(command);
-    }
+    public override string TableName => "user_group_user_role_user";
 }
-internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroupUserRoleUser>
+internal sealed class UserGroupUserRoleUserInserter : BasicDatabaseInserter<UserGroupUserRoleUser>
 {
-    internal UserGroupUserRoleUserInserter(NpgsqlCommand command) : base(command)
+    public UserGroupUserRoleUserInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(UserGroupUserRoleUser userGroupUserRoleUser)
+    public override IEnumerable<ParameterValue> GetParameterValues(UserGroupUserRoleUser item)
     {
-        Set(UserGroupUserRoleUserInserterFactory.UserGroupId, userGroupUserRoleUser.UserGroupId);
-        Set(UserGroupUserRoleUserInserterFactory.UserRoleId, userGroupUserRoleUser.UserRoleId);
-        Set(UserGroupUserRoleUserInserterFactory.UserId, userGroupUserRoleUser.UserId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(UserGroupUserRoleUserInserterFactory.UserGroupId, item.UserGroupId),
+            ParameterValue.Create(UserGroupUserRoleUserInserterFactory.UserRoleId, item.UserRoleId),
+            ParameterValue.Create(UserGroupUserRoleUserInserterFactory.UserId, item.UserId),
+        };
     }
 }

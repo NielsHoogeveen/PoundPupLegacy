@@ -1,39 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class OrganizationTypeInserterFactory : DatabaseInserterFactory<OrganizationType>
+internal sealed class OrganizationTypeInserterFactory : BasicDatabaseInserterFactory<OrganizationType, OrganizationTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
 
-    public override async Task<IDatabaseInserter<OrganizationType>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
+    public override string TableName => "organization_type";
 
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "organization_type",
-            new DatabaseParameter[] {
-                Id,
-                HasConcreteSubtype
-            }
-        );
-        return new OrganizationTypeInserter(command);
-    }
 }
-internal sealed class OrganizationTypeInserter : DatabaseInserter<OrganizationType>
+internal sealed class OrganizationTypeInserter : BasicDatabaseInserter<OrganizationType>
 {
-    internal OrganizationTypeInserter(NpgsqlCommand command) : base(command)
+    public OrganizationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(OrganizationType organizationType)
+    public override IEnumerable<ParameterValue> GetParameterValues(OrganizationType item)
     {
-        if (organizationType.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-
-        Set(OrganizationTypeInserterFactory.Id,organizationType.Id.Value);
-        Set(OrganizationTypeInserterFactory.HasConcreteSubtype,organizationType.HasConcreteSubtype);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(OrganizationTypeInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(OrganizationTypeInserterFactory.HasConcreteSubtype, item.HasConcreteSubtype),
+        };
     }
 }

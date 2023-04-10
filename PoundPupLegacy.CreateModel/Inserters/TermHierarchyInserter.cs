@@ -1,36 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TermHierarchyInserterFactory : DatabaseInserterFactory<TermHierarchy>
+internal sealed class TermHierarchyInserterFactory : BasicDatabaseInserterFactory<TermHierarchy, TermHierarchyInserter>
 {
     internal static NonNullableIntegerDatabaseParameter TermIdParent = new() { Name = "term_id_parent" };
     internal static NonNullableIntegerDatabaseParameter TermIdChild = new() { Name = "term_id_child" };
 
-    public override async Task<IDatabaseInserter<TermHierarchy>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "term_hierarchy",
-            new DatabaseParameter[] {
-                TermIdParent,
-                TermIdChild
-            }
-        );
-        return new TermHierarchyInserter(command);
-    }
+    public override string TableName => "term_hierarchy";
 }
-internal sealed class TermHierarchyInserter : DatabaseInserter<TermHierarchy>
+internal sealed class TermHierarchyInserter : BasicDatabaseInserter<TermHierarchy>
 {
-    internal TermHierarchyInserter(NpgsqlCommand command) : base(command)
+    public TermHierarchyInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(TermHierarchy termHierarchy)
+    public override IEnumerable<ParameterValue> GetParameterValues(TermHierarchy item)
     {
-        Set(TermHierarchyInserterFactory.TermIdParent, termHierarchy.TermIdPartent);
-        Set(TermHierarchyInserterFactory.TermIdChild, termHierarchy.TermIdChild);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(TermHierarchyInserterFactory.TermIdParent, item.TermIdPartent),
+            ParameterValue.Create(TermHierarchyInserterFactory.TermIdChild, item.TermIdChild),
+        };
     }
 }

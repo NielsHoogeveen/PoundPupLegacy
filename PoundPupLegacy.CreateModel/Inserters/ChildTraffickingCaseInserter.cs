@@ -1,43 +1,27 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class ChildTraffickingCaseInserterFactory : DatabaseInserterFactory<ChildTraffickingCase>
+internal sealed class ChildTraffickingCaseInserterFactory : BasicDatabaseInserterFactory<ChildTraffickingCase, ChildTraffickingCaseInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableIntegerDatabaseParameter NumberOfChildrenInvolved = new() { Name = "number_of_children_involved" };
     internal static NonNullableIntegerDatabaseParameter CountryIdFrom = new() { Name = "country_id_from" };
 
-    public override async Task<IDatabaseInserter<ChildTraffickingCase>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "child_trafficking_case",
-            new DatabaseParameter[] {
-                Id,
-                NumberOfChildrenInvolved,
-                CountryIdFrom
-            }
-        );
-        return new ChildTraffickingCaseInserter(command);
-    }
+    public override string TableName => "child_trafficking_case";
 }
 
-internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraffickingCase>
+internal sealed class ChildTraffickingCaseInserter : BasicDatabaseInserter<ChildTraffickingCase>
 {
-    internal ChildTraffickingCaseInserter(NpgsqlCommand command) : base(command)
+    public ChildTraffickingCaseInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(ChildTraffickingCase abuseCase)
+    public override IEnumerable<ParameterValue> GetParameterValues(ChildTraffickingCase item)
     {
-        if (abuseCase.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-
-        Set(ChildTraffickingCaseInserterFactory.Id, abuseCase.Id.Value);
-        Set(ChildTraffickingCaseInserterFactory.NumberOfChildrenInvolved, abuseCase.NumberOfChildrenInvolved);
-        Set(ChildTraffickingCaseInserterFactory.CountryIdFrom, abuseCase.CountryIdFrom);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(ChildTraffickingCaseInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(ChildTraffickingCaseInserterFactory.NumberOfChildrenInvolved, item.NumberOfChildrenInvolved),
+            ParameterValue.Create(ChildTraffickingCaseInserterFactory.CountryIdFrom, item.CountryIdFrom),
+        };
     }
 }

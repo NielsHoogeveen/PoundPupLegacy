@@ -22,7 +22,7 @@ internal sealed class RepresentativeHouseBillActionInserterFactory : DatabaseIns
             BillActionTypeId
         };
 
-        var genarateIdCommand = await CreateIdentityInsertStatementAsync(
+        var genarateIdCommand = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "representative_house_bill_action",
             databaseParameters

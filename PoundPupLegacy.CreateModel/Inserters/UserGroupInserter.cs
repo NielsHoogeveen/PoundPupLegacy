@@ -21,7 +21,7 @@ public class UserGroupInserterFactory : DatabaseInserterFactory<UserGroup>
             AdministratorRoleId
         };
 
-        var identityInsertCommand = await CreateIdentityInsertStatementAsync(
+        var identityInsertCommand = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "user_group",
             databaseParameters

@@ -15,7 +15,7 @@ public class PrincipalInserterFactory : DatabaseInserterFactory<Principal>
         var columnDefinitions = new DatabaseParameter[] {
         };
 
-        var identityInsertCommand = await CreateIdentityInsertStatementAsync(
+        var identityInsertCommand = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "principal",
             columnDefinitions

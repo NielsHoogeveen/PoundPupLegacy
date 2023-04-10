@@ -1,40 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public class SecondLevelGlobalRegionInserterFactory : DatabaseInserterFactory<SecondLevelGlobalRegion>
+public class SecondLevelGlobalRegionInserterFactory : BasicDatabaseInserterFactory<SecondLevelGlobalRegion, SecondLevelGlobalRegionInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter FirstLevelGlobalRegionId = new() { Name = "first_level_global_region_id" };
 
-    public override async Task<IDatabaseInserter<SecondLevelGlobalRegion>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "second_level_global_region",
-            new DatabaseParameter[] {
-                Id,
-                FirstLevelGlobalRegionId
-            }
-        );
-        return new SecondLevelGlobalRegionInserter(command);
-    }
+    public override string TableName => "second_level_global_region";
 }
-public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGlobalRegion>
+public class SecondLevelGlobalRegionInserter : BasicDatabaseInserter<SecondLevelGlobalRegion>
 {
 
     public SecondLevelGlobalRegionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(SecondLevelGlobalRegion region)
+    public override IEnumerable<ParameterValue> GetParameterValues(SecondLevelGlobalRegion item)
     {
-        if (region.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-
-        Set(SecondLevelGlobalRegionInserterFactory.Id, region.Id.Value);
-        Set(SecondLevelGlobalRegionInserterFactory.FirstLevelGlobalRegionId, region.FirstLevelGlobalRegionId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(SecondLevelGlobalRegionInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(SecondLevelGlobalRegionInserterFactory.FirstLevelGlobalRegionId, item.FirstLevelGlobalRegionId),
+        };
     }
 }

@@ -1,40 +1,23 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class InterOrganizationalRelationTypeInserterFactory : DatabaseInserterFactory<InterOrganizationalRelationType>
+internal sealed class InterOrganizationalRelationTypeInserterFactory : BasicDatabaseInserterFactory<InterOrganizationalRelationType, InterOrganizationalRelationTypeInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
-
-    public override async Task<IDatabaseInserter<InterOrganizationalRelationType>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "inter_organizational_relation_type",
-            new DatabaseParameter[] {
-                Id,
-                IsSymmetric
-            }
-        );
-        return new InterOrganizationalRelationTypeInserter(command);
-    }
-
+    public override string TableName => "inter_organizational_relation_type";
 }
-internal sealed class InterOrganizationalRelationTypeInserter : DatabaseInserter<InterOrganizationalRelationType>
+internal sealed class InterOrganizationalRelationTypeInserter : BasicDatabaseInserter<InterOrganizationalRelationType>
 {
-    internal InterOrganizationalRelationTypeInserter(NpgsqlCommand command) : base(command)
+    public InterOrganizationalRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(InterOrganizationalRelationType interOrganizationalRelationType)
+    public override IEnumerable<ParameterValue> GetParameterValues(InterOrganizationalRelationType item)
     {
-        if (interOrganizationalRelationType.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(InterOrganizationalRelationTypeInserterFactory.Id, interOrganizationalRelationType.Id.Value);
-        Set(InterOrganizationalRelationTypeInserterFactory.IsSymmetric, interOrganizationalRelationType.IsSymmetric);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(InterOrganizationalRelationTypeInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(InterOrganizationalRelationTypeInserterFactory.IsSymmetric, item.IsSymmetric),
+        };
     }
-
 }

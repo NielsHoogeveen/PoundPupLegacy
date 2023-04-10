@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document>
+internal sealed class DocumentInserterFactory : BasicDatabaseInserterFactory<Document, DocumentInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableFuzzyDateDatabaseParameter Published = new() { Name = "published" };
@@ -8,45 +8,25 @@ internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document
     internal static NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
     internal static NullableIntegerDatabaseParameter DocumentTypeId = new() { Name = "document_type_id" };
 
-    public override async Task<IDatabaseInserter<Document>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = await CreateInsertStatementAsync(
-            postgresConnection,
-            "document",
-            new DatabaseParameter[] {
-                Id,
-                Published,
-                SourceUrl,
-                Text,
-                Teaser,
-                DocumentTypeId
-            }
-        );
-        return new DocumentInserter(command);
-    }
-
+    public override string TableName => "document";
 }
-internal sealed class DocumentInserter : DatabaseInserter<Document>
+internal sealed class DocumentInserter : BasicDatabaseInserter<Document>
 {
-    internal DocumentInserter(NpgsqlCommand command) : base(command)
+    public DocumentInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task InsertAsync(Document document)
+    public override IEnumerable<ParameterValue> GetParameterValues(Document item)
     {
-        if (document.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
-        Set(DocumentInserterFactory.Id, document.Id.Value);
-        Set(DocumentInserterFactory.Text, document.Text);
-        Set(DocumentInserterFactory.Teaser, document.Teaser);
-        Set(DocumentInserterFactory.Published, document.PublicationDate);
-        Set(DocumentInserterFactory.SourceUrl, document.SourceUrl);
-        Set(DocumentInserterFactory.DocumentTypeId, document.DocumentTypeId);
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(DocumentInserterFactory.Id, item.Id.Value),
+            ParameterValue.Create(DocumentInserterFactory.Text, item.Text),
+            ParameterValue.Create(DocumentInserterFactory.Teaser, item.Teaser),
+            ParameterValue.Create(DocumentInserterFactory.Published, item.PublicationDate),
+            ParameterValue.Create(DocumentInserterFactory.SourceUrl, item.SourceUrl),
+            ParameterValue.Create(DocumentInserterFactory.DocumentTypeId, item.DocumentTypeId),
+        };
     }
-
 }

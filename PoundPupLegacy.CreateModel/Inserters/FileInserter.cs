@@ -29,7 +29,7 @@ internal sealed class FileInserterFactory: DatabaseInserterFactory<File>
             "file",
             databaseParameters.ToImmutableList().Prepend(Id)
         );
-        var commandWithoutId = await CreateIdentityInsertStatementAsync(
+        var commandWithoutId = await CreateAutoGenerateIdentityInsertStatementAsync(
             postgresConnection,
             "file",
             databaseParameters
