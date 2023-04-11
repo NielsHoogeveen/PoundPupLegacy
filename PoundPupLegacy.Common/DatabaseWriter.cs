@@ -155,10 +155,12 @@ public abstract class DatabaseWriter
             SetTimeStampRangeParameter(value as DateTimeRange, parameter.Name, command);
         }
         else if (parameter is NullableFuzzyDateDatabaseParameter) {
-            SetTimeStampRangeParameter(value as DateTimeRange, parameter.Name, command);
+            var fuzzyDate = value as FuzzyDate;
+            SetTimeStampRangeParameter(fuzzyDate?.ToDateTimeRange(), parameter.Name, command);
         }
         else if (parameter is NonNullableFuzzyDateDatabaseParameter) {
-            SetTimeStampRangeParameter(value as DateTimeRange, parameter.Name, command);
+            var fuzzyDate = value as FuzzyDate;
+            SetTimeStampRangeParameter(fuzzyDate!.ToDateTimeRange(), parameter.Name, command);
         }
         else {
             if (parameter.IsNullable) {
