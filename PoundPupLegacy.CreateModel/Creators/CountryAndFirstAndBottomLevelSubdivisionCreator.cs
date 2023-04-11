@@ -23,17 +23,17 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator : EntityCr
     private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderByOwnerAndNameFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public CountryAndFirstAndBottomLevelSubdivisionCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
-        IDatabaseInserterFactory<Nameable> nameableInserterFactory, 
-        IDatabaseInserterFactory<GeographicalEntity> geographicalEntityInserterFactory, 
-        IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory, 
-        IDatabaseInserterFactory<Country> countryInserterFactory, 
-        IDatabaseInserterFactory<TopLevelCountry> topLevelCountryInserterFactory, 
-        IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory, 
-        IDatabaseInserterFactory<ISOCodedSubdivision> isoCodedSubdivisionInserterFactory, 
-        IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<Documentable> documentableInserterFactory,
+        IDatabaseInserterFactory<Nameable> nameableInserterFactory,
+        IDatabaseInserterFactory<GeographicalEntity> geographicalEntityInserterFactory,
+        IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory,
+        IDatabaseInserterFactory<Country> countryInserterFactory,
+        IDatabaseInserterFactory<TopLevelCountry> topLevelCountryInserterFactory,
+        IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory,
+        IDatabaseInserterFactory<ISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
+        IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isofirstLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<CountryAndFirstLevelSubdivision> countryAndFirstLevelSubdivisionFactory,
@@ -68,7 +68,7 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator : EntityCr
 
     public override async Task CreateAsync(IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision> countries, IDbConnection connection)
     {
-        
+
 
         await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);

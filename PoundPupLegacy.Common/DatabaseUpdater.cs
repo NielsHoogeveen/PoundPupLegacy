@@ -13,13 +13,13 @@ public interface IDatabaseUpdaterFactory
 {
 
 }
-public interface IDatabaseUpdaterFactory<T>: IDatabaseUpdaterFactory
+public interface IDatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory
     where T : IDatabaseUpdater
 {
     Task<T> CreateAsync(IDbConnection connection);
     IEnumerable<DatabaseParameter> DatabaseParameters { get; }
     string Sql { get; }
-    
+
 }
 
 public abstract class DatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory<T>
@@ -30,7 +30,7 @@ public abstract class DatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory<T>
     private List<DatabaseParameter> GetDatabaseParameters()
     {
         var t = GetType();
-        var fields = t.GetFields(System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static);
+        var fields = t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
         return fields.Select(x => x.GetValue(null) as DatabaseParameter).Where(x => x is not null).Select(x => (DatabaseParameter)x!).ToList();
     }
 
@@ -49,7 +49,7 @@ public abstract class DatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory<T>
             command.AddParameter(parameter);
         }
         await command.PrepareAsync();
-        return (T)Activator.CreateInstance(typeof(T), new object[] { command})!;
+        return (T)Activator.CreateInstance(typeof(T), new object[] { command })!;
     }
 
     public abstract string Sql { get; }
@@ -57,8 +57,8 @@ public abstract class DatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory<T>
 }
 public abstract class DatabaseUpdater<TRequest> : DatabaseWriter, IDatabaseUpdater
 {
-    protected DatabaseUpdater(NpgsqlCommand command) : base(command) 
-    { 
+    protected DatabaseUpdater(NpgsqlCommand command) : base(command)
+    {
     }
     public string Sql => _command.CommandText;
     public bool HasBeenPrepared => _command.IsPrepared;

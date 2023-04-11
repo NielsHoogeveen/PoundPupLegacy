@@ -192,14 +192,14 @@ public class UnitTest1
     [Theory]
     [InlineData("2023-2", 2023, 2)]
     [InlineData("2023-12", 2023, 12)]
-    public void FuzzyDateCreatesCorrectDateRangeForMonthOnlyDate(string dateString, int year,int month )
+    public void FuzzyDateCreatesCorrectDateRangeForMonthOnlyDate(string dateString, int year, int month)
     {
         var success = FuzzyDate.TryParse(dateString, out var result);
         Assert.True(success);
         Assert.NotNull(result);
         var dateRange = result.ToDateTimeRange();
         Assert.NotNull(dateRange);
-        var startDate = new DateTime(year,month, 1);
+        var startDate = new DateTime(year, month, 1);
         var endDate = startDate.AddMonths(1).AddMilliseconds(-1);
         Assert.Equal(startDate, dateRange.Start);
         Assert.Equal(endDate, dateRange.End);
@@ -214,7 +214,7 @@ public class UnitTest1
         Assert.NotNull(result);
         var dateRange = result.ToDateTimeRange();
         Assert.NotNull(dateRange);
-        var startDate = new DateTime(2023,1,1);
+        var startDate = new DateTime(2023, 1, 1);
         var endDate = startDate.AddYears(1).AddMilliseconds(-1);
         Assert.Equal(startDate, dateRange.Start);
         Assert.Equal(endDate, dateRange.End);

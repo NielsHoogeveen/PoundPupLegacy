@@ -1,7 +1,4 @@
-﻿using PoundPupLegacy.CreateModel.Readers;
-using System.Runtime.CompilerServices;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class FirstLevelGlobalRegionMigrator : MigratorPPL
 {
@@ -11,7 +8,7 @@ internal sealed class FirstLevelGlobalRegionMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<FirstLevelGlobalRegion> firstLevelGlobalRegionCreator
-    ) : base(databaseConnections) 
+    ) : base(databaseConnections)
     {
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _firstLevelGlobalRegionCreator = firstLevelGlobalRegionCreator;

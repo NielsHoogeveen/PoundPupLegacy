@@ -10,7 +10,7 @@ internal sealed class TenantCreator : EntityCreator<Tenant>
     private readonly IDatabaseInserterFactory<UserGroup> _userGroupInserterFactory;
     private readonly IDatabaseInserterFactory<Owner> _ownerInserterFactory;
     private readonly IDatabaseInserterFactory<PublishingUserGroup> _publishingUserGroupInserterFactory;
-    
+
     public TenantCreator(
         IDatabaseInserterFactory<Tenant> tenantInserterFactory,
         IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,

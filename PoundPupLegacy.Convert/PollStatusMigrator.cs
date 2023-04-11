@@ -8,7 +8,7 @@ internal sealed class PollStatusMigrator : MigratorPPL
     public PollStatusMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<PollStatus> pollStatusCreator
-    ) : base(databaseConnections) 
+    ) : base(databaseConnections)
     {
         _pollStatusCreator = pollStatusCreator;
     }

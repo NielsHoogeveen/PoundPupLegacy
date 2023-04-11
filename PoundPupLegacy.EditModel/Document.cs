@@ -16,7 +16,7 @@ public record Document : Node
 
     public DateTime? PublicationDateFrom { get; set; }
     public DateTime? PublicationDateTo { get; set; }
-    
+
 
     private bool _publishedSet;
     private FuzzyDate? _published;

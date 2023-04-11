@@ -2,7 +2,6 @@
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using System.Data;
-using System.Data.Common;
 
 namespace PoundPupLegacy.Readers;
 internal sealed class MenuItemsReaderFactory : IDatabaseReaderFactory<MenuItemsReader>

@@ -36,13 +36,13 @@ internal sealed class BasicCountryCreator : EntityCreator<BasicCountry>
     {
         _nodeInserterFactory = nodeInserterFactory;
         _searchableInserterFactory = searchableInserterFactory;
-        _documentableInserterFactory= documentableInserterFactory;
+        _documentableInserterFactory = documentableInserterFactory;
         _nameableInserterFactory = nameableInserterFactory;
         _geographicalEntityInserterFactory = geographicalEntityInserterFactory;
-        _politicalEntityInserterFactory= politicalEntityInserterFactory;
+        _politicalEntityInserterFactory = politicalEntityInserterFactory;
         _countryInserterFactory = countryInserterFactory;
         _topLevelCountryInserterFactory = topLevelCountryInserterFactory;
-        _basicCountryInserterFactory= basicCountryInserterFactory;
+        _basicCountryInserterFactory = basicCountryInserterFactory;
         _termInserterFactory = termInserterFactory;
         _termReaderFactory = termReaderFactory;
         _termHierarchyInserterFactory = termHierarchyInserterFactory;

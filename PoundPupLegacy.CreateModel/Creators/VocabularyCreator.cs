@@ -6,8 +6,8 @@ internal sealed class VocabularyCreator : EntityCreator<Vocabulary>
     private readonly IDatabaseInserterFactory<Vocabulary> _vocabularyInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public VocabularyCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Vocabulary> vocabularyInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Vocabulary> vocabularyInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

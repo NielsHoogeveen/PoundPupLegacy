@@ -26,12 +26,12 @@ internal sealed class CasePartyTypeCreator : EntityCreator<CasePartyType>
     {
         _nodeInserterFactory = nodeInserterFactory;
         _searchableInserterFactory = searchableInserterFactory;
-        _nameableInserterFactory= nameableInserterFactory;
+        _nameableInserterFactory = nameableInserterFactory;
         _casePartyTypeInserterFactory = casePartyTypeInserterFactory;
         _termInserterFactory = termInserterFactory;
         _termReaderFactory = termReaderFactory;
         _termHierarchyInserterFactory = termHierarchyInserterFactory;
-        _vocabularyIdReaderFactory = vocabularyIdReaderFactory; 
+        _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
         _tenantNodeInserterFactory = tenantNodeInserterFactory;
 
     }

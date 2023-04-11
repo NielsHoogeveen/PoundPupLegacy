@@ -5,7 +5,7 @@ internal sealed class ActInserterFactory : DatabaseInserterFactory<Act, ActInser
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableDateTimeDatabaseParameter EnactmentDate = new() { Name = "enactment_date" };
 
-    public override string TableName => "act"; 
+    public override string TableName => "act";
 }
 internal sealed class ActInserter : DatabaseInserter<Act>
 {

@@ -9,9 +9,9 @@ internal sealed class ProfessionalRoleCreator : EntityCreator<ProfessionalRole>
     private readonly IEntityCreator<SenateTerm> _senateTermCreator;
     private readonly IEntityCreator<HouseTerm> _houseTermCreator;
     public ProfessionalRoleCreator(
-        IDatabaseInserterFactory<ProfessionalRole> professionalRoleInserterFactory, 
-        IDatabaseInserterFactory<MemberOfCongress> memberOfCongressInserterFactory, 
-        IDatabaseInserterFactory<Representative> representativeInserterFactory, 
+        IDatabaseInserterFactory<ProfessionalRole> professionalRoleInserterFactory,
+        IDatabaseInserterFactory<MemberOfCongress> memberOfCongressInserterFactory,
+        IDatabaseInserterFactory<Representative> representativeInserterFactory,
         IDatabaseInserterFactory<Senator> senatorInserterFactory,
         IEntityCreator<SenateTerm> senateTermCreator,
         IEntityCreator<HouseTerm> houseTermCreator
@@ -24,7 +24,7 @@ internal sealed class ProfessionalRoleCreator : EntityCreator<ProfessionalRole>
         _senateTermCreator = senateTermCreator;
         _houseTermCreator = houseTermCreator;
     }
-        
+
     public override async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, IDbConnection connection)
     {
 

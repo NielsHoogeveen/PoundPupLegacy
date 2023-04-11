@@ -1,6 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
-using PoundPupLegacy.CreateModel.Inserters;
+﻿using PoundPupLegacy.Common;
 using PoundPupLegacy.Deleters;
 using PoundPupLegacy.EditModel;
 using System.Data;

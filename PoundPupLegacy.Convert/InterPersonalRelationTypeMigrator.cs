@@ -9,8 +9,8 @@ internal sealed class InterPersonalRelationTypeMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<InterPersonalRelationType> interPersonalRelationTypeCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _interPersonalRelationTypeCreator = interPersonalRelationTypeCreator;
     }

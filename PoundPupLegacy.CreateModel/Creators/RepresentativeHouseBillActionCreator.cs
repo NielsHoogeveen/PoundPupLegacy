@@ -6,8 +6,8 @@ internal sealed class RepresentativeHouseBillActionCreator : EntityCreator<Repre
     private readonly IDatabaseInserterFactory<RepresentativeHouseBillAction> _representativeHouseBillActionInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public RepresentativeHouseBillActionCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<RepresentativeHouseBillAction> representativeHouseBillActionInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<RepresentativeHouseBillAction> representativeHouseBillActionInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

@@ -11,7 +11,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator : MigratorPPL
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<PersonOrganizationRelationType> personOrganizationRelationTypeCreator
     ) : base(databaseConnections)
-    { 
+    {
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _personOrganizationRelationTypeCreator = personOrganizationRelationTypeCreator;
     }

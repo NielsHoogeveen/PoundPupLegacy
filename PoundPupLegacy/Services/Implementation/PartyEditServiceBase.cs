@@ -1,11 +1,11 @@
-﻿using System.Data;
-using PoundPupLegacy.EditModel;
+﻿using PoundPupLegacy.EditModel;
+using System.Data;
 using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal abstract class PartyEditServiceBase<T,TCreate>: NodeEditServiceBase<T,TCreate>
-    where T: Party
+internal abstract class PartyEditServiceBase<T, TCreate> : NodeEditServiceBase<T, TCreate>
+    where T : Party
     where TCreate : CreateModel.Party
 {
     protected readonly ITextService _textService;
@@ -18,13 +18,13 @@ internal abstract class PartyEditServiceBase<T,TCreate>: NodeEditServiceBase<T,T
         ISaveService<IEnumerable<File>> filesSaveService,
         ITextService textService,
         ILogger logger
-        ): base(
-            connection, 
-            siteDataService, 
-            nodeCacheService, 
-            tagSaveService, 
-            tenantNodesSaveService, 
-            filesSaveService, 
+        ) : base(
+            connection,
+            siteDataService,
+            nodeCacheService,
+            tagSaveService,
+            tenantNodesSaveService,
+            filesSaveService,
             logger)
     {
         _textService = textService;

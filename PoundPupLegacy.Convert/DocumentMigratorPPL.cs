@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class DocumentMigratorPPL : MigratorPPL
 {
@@ -26,7 +24,7 @@ internal sealed class DocumentMigratorPPL : MigratorPPL
 
     private async IAsyncEnumerable<Document> ReadDocuments(NodeIdReaderByUrlId nodeIdReader)
     {
-        
+
 
         var sql = $"""
                 SELECT

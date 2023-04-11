@@ -41,15 +41,14 @@ public sealed class FileInserterFactory : IDatabaseInserterFactory<FileInserterF
             Path,
             NodeId
         };
-        foreach (var parameter in parameters) 
-        { 
+        foreach (var parameter in parameters) {
             command.AddParameter(parameter);
         }
         await command.PrepareAsync();
         return new FileInserter(command);
     }
 
-}   
+}
 
 internal sealed class FileInserter : DatabaseWriter, IDatabaseInserter<FileInserterFactory.Request>
 {

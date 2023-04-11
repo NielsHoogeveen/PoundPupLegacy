@@ -34,6 +34,6 @@ internal sealed class TenantNodeDeleter : DatabaseDeleter<int>
     public override async Task DeleteAsync(int id)
     {
         _command.Parameters["id"].Value = id;
-         await _command.ExecuteNonQueryAsync();
+        await _command.ExecuteNonQueryAsync();
     }
 }

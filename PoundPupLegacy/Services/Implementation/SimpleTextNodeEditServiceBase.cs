@@ -1,15 +1,15 @@
-﻿using PoundPupLegacy.Updaters;
-using System.Data;
-using Npgsql;
-using PoundPupLegacy.EditModel;
-using PoundPupLegacy.CreateModel.Creators;
+﻿using Npgsql;
 using PoundPupLegacy.Common;
+using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.EditModel;
+using PoundPupLegacy.Updaters;
+using System.Data;
 using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal abstract class SimpleTextNodeEditServiceBase<T,TCreate>: NodeEditServiceBase<T,TCreate>
-    where T: SimpleTextNode
+internal abstract class SimpleTextNodeEditServiceBase<T, TCreate> : NodeEditServiceBase<T, TCreate>
+    where T : SimpleTextNode
     where TCreate : CreateModel.SimpleTextNode
 {
     private readonly IDatabaseUpdaterFactory<SimpleTextNodeUpdater> _simpleTextNodeUpdaterFactory;
@@ -26,13 +26,13 @@ internal abstract class SimpleTextNodeEditServiceBase<T,TCreate>: NodeEditServic
         ISaveService<IEnumerable<File>> filesSaveService,
         ITextService textService,
         ILogger logger
-        ): base(
-            connection, 
-            siteDataService, 
-            nodeCacheService, 
-            tagSaveService, 
-            tenantNodesSaveService, 
-            filesSaveService, 
+        ) : base(
+            connection,
+            siteDataService,
+            nodeCacheService,
+            tagSaveService,
+            tenantNodesSaveService,
+            filesSaveService,
             logger)
     {
         _simpleTextNodeUpdaterFactory = simpleTextNodeUpdaterFactory;
@@ -45,7 +45,7 @@ internal abstract class SimpleTextNodeEditServiceBase<T,TCreate>: NodeEditServic
 
     protected sealed override async Task StoreNew(T simpleTextNode, NpgsqlConnection connection)
     {
-        
+
         var item = Map(simpleTextNode);
         var items = new List<TCreate> { item };
         await EntityCreator.CreateAsync(items.ToAsyncEnumerable(), connection);

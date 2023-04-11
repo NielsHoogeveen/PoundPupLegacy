@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseInserterFactory<ProfessionalRole, ProfessionalRoleInserter> 
+internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseInserterFactory<ProfessionalRole, ProfessionalRoleInserter>
 {
     internal static NonNullableIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
     internal static NonNullableIntegerDatabaseParameter ProfessionId = new() { Name = "profession_id" };

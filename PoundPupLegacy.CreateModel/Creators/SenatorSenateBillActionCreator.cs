@@ -6,8 +6,8 @@ internal sealed class SenatorSenateBillActionCreator : EntityCreator<SenatorSena
     private readonly IDatabaseInserterFactory<SenatorSenateBillAction> _senatorSenateBillActionInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public SenatorSenateBillActionCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<SenatorSenateBillAction> senatorSenateBillActionInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<SenatorSenateBillAction> senatorSenateBillActionInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

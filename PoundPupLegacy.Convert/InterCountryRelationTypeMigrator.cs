@@ -9,7 +9,7 @@ internal sealed class InterCountryRelationTypeMigrator : MigratorPPL
     IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<InterCountryRelationType> interCountryRelationTypeCreator
-    ) : base(databaseConnections) 
+    ) : base(databaseConnections)
     {
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _interCountryRelationTypeCreator = interCountryRelationTypeCreator;

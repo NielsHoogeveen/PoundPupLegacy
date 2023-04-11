@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.EditModel;
 using System.Data;
 
 namespace PoundPupLegacy.Deleters;

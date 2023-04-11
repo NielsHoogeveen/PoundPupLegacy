@@ -27,7 +27,7 @@ public abstract record DatabaseParameter
     public abstract NpgsqlDbType ParameterType { get; }
 
 }
-public abstract record DatabaseParameter<T>: DatabaseParameter
+public abstract record DatabaseParameter<T> : DatabaseParameter
 {
 }
 public record NullableBooleanDatabaseParameter : DatabaseParameter<bool?>

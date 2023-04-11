@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.CreateModel;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
 {
@@ -17,7 +15,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IEntityCreator<CountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionCreator
-    ) : base(databaseConnections) 
+    ) : base(databaseConnections)
     {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;

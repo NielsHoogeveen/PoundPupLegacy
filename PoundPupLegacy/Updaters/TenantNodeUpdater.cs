@@ -28,7 +28,7 @@ internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<TenantNo
         """;
 }
 
-    
+
 
 internal sealed class TenantNodeUpdater : DatabaseUpdater<TenantNodeUpdater.Request>
 {

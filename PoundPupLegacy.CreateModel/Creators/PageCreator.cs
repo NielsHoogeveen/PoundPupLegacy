@@ -8,10 +8,10 @@ internal sealed class PageCreator : EntityCreator<Page>
     private readonly IDatabaseInserterFactory<Page> _pageInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public PageCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory, 
-        IDatabaseInserterFactory<Page> pageInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
+        IDatabaseInserterFactory<Page> pageInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
     {
         _nodeInserterFactory = nodeInserterFactory;

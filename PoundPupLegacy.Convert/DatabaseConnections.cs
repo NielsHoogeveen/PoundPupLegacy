@@ -10,7 +10,7 @@ public interface IDatabaseConnections
     MySqlConnection MysqlConnectionCPCT { get; }
 }
 
-internal class DatabaseConnections: IDatabaseConnections
+internal class DatabaseConnections : IDatabaseConnections
 {
     public required NpgsqlConnection PostgressConnection { get; init; }
     public required MySqlConnection MysqlConnectionPPL { get; init; }

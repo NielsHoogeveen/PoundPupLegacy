@@ -38,13 +38,13 @@ internal sealed class BindingCountryCreator : EntityCreator<BindingCountry>
         //initialize fields with constructor arguments
         _nodeInserterFactory = nodeInserterFactory;
         _searchableInserterFactory = searchableInserterFactory;
-        _documentableInserterFactory= documentableInserterFactory;
+        _documentableInserterFactory = documentableInserterFactory;
         _nameableInserterFactory = nameableInserterFactory;
         _geographicalEntityInserterFactory = geographicalEntityInserterFactory;
-        _politicalEntityInserterFactory= politicalEntityInserterFactory;
+        _politicalEntityInserterFactory = politicalEntityInserterFactory;
         _countryInserterFactory = countryInserterFactory;
         _topLevelCountryInserterFactory = topLevelCountryInserterFactory;
-        _bindingCountryInserterFactory= bindingCountryInserterFactory;
+        _bindingCountryInserterFactory = bindingCountryInserterFactory;
         _termInserterFactory = termInserterFactory;
         _termReaderFactory = termReaderFactory;
         _termHierarchyInserterFactory = termHierarchyInserterFactory;

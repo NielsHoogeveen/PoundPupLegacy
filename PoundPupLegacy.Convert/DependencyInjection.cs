@@ -4,7 +4,7 @@ internal static class DependencyInjection
 {
 
     public static async Task Migrate<T>(this IServiceProvider serviceProvider)
-        where T: Migrator
+        where T : Migrator
     {
         await serviceProvider.GetService<T>()!.Migrate();
     }
@@ -14,7 +14,7 @@ internal static class DependencyInjection
     {
         services.AddTransient<T>();
     }
-    public static void AddMigrators(this IServiceCollection services) 
+    public static void AddMigrators(this IServiceCollection services)
     {
         services.AddMigrator<AbuseCaseMigrator>();
         services.AddMigrator<AccessRolePrivilegeMigrator>();

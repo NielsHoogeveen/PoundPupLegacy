@@ -6,8 +6,8 @@ internal sealed class BasicNameableMigrator : MigratorPPL
     public BasicNameableMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<BasicNameable> basicNameableCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _basicNameableCreator = basicNameableCreator;
     }
 

@@ -6,7 +6,7 @@ public interface IEntityCreator<T>
     Task CreateAsync(T element, IDbConnection connection);
 }
 
-internal abstract class EntityCreator<T>: IEntityCreator<T>
+internal abstract class EntityCreator<T> : IEntityCreator<T>
 {
     public abstract Task CreateAsync(IAsyncEnumerable<T> elements, IDbConnection connection);
     public async Task CreateAsync(T element, IDbConnection connection)

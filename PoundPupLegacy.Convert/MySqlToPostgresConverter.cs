@@ -275,7 +275,7 @@ internal partial class MySqlToPostgresConverter
 
     private static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
     {
-        foreach (DirectoryInfo dir in source.GetDirectories()){
+        foreach (DirectoryInfo dir in source.GetDirectories()) {
             CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
         }
         foreach (FileInfo file in source.GetFiles()) {

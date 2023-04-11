@@ -35,7 +35,7 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
     private async IAsyncEnumerable<Document> ReadDocuments(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader)
     {
 
-        
+
         var sql = $"""
             SELECT
                 n.nid id,
@@ -94,8 +94,8 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
 
 
         while (await reader.ReadAsync()) {
-            var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") 
-                ? null 
+            var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date")
+                ? null
                 : reader.GetString("publication_date"))?.ToFuzzyDate();
             var id = reader.GetInt32("id");
             var text = reader.GetString("text");

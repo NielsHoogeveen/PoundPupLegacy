@@ -9,8 +9,8 @@ internal sealed class BillActionTypeMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileId,
         IEntityCreator<BillActionType> billActionTypeCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _fileIdReaderByTenantFileId = fileIdReaderByTenantFileId;
         _billActionTypeCreator = billActionTypeCreator;
     }
@@ -21,7 +21,7 @@ internal sealed class BillActionTypeMigrator : MigratorPPL
     }
     private async IAsyncEnumerable<BillActionType> ReadBillActionTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
-        
+
         var sql = $"""
                 SELECT
                     n.nid id,

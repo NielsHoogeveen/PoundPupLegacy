@@ -3,8 +3,8 @@ internal abstract class CountryMigrator : MigratorPPL
 {
     public CountryMigrator(
         IDatabaseConnections databaseConnections
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
     }
     protected static string GetISO3166Code2ForCountry(int id)
     {

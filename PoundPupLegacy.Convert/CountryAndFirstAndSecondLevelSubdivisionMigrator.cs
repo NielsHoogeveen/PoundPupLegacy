@@ -14,8 +14,8 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IEntityCreator<CountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
         _termReaderByNameFactory = termReaderByNameFactory;

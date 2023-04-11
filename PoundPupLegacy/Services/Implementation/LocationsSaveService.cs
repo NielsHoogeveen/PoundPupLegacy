@@ -26,9 +26,8 @@ internal class LocationsSaveService : ISaveService<IEnumerable<Location>>
     {
         await using var deleter = await _locationDeleterFactory.CreateAsync(connection);
         await using var updater = await _locationUpdaterFactory.CreateAsync(connection);
-        
-        foreach (var location in item.Where(x => x.HasBeenDeleted)) 
-        {
+
+        foreach (var location in item.Where(x => x.HasBeenDeleted)) {
             if (!location.LocatableId.HasValue)
                 throw new Exception("locatable id of location should be set in order to delete");
             if (!location.LocationId.HasValue)
@@ -38,10 +37,8 @@ internal class LocationsSaveService : ISaveService<IEnumerable<Location>>
                 LocationId = location.LocationId.Value
             });
         }
-        foreach (var location in item.Where(x => x.LocationId.HasValue && !x.HasBeenDeleted)) 
-        {
-            await updater.UpdateAsync(new LocationUpdater.Request 
-            {
+        foreach (var location in item.Where(x => x.LocationId.HasValue && !x.HasBeenDeleted)) {
+            await updater.UpdateAsync(new LocationUpdater.Request {
                 Street = location.Street,
                 Additional = location.Addition,
                 City = location.City,
@@ -67,7 +64,7 @@ internal class LocationsSaveService : ISaveService<IEnumerable<Location>>
                     SubdivisionId = location.SubdivisionId,
                     CountryId = location.CountryId,
                     Locatables = new List<CreateModel.LocationLocatable>
-                    { 
+                    {
                         new CreateModel.LocationLocatable
                         {
                             LocatableId = location.LocatableId!.Value,
@@ -76,7 +73,7 @@ internal class LocationsSaveService : ISaveService<IEnumerable<Location>>
                     }
                 };
             }
-            
+
         }
         await _locationCreator.CreateAsync(GetLocationsToInsert().ToAsyncEnumerable(), connection);
     }

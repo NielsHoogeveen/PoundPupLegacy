@@ -19,7 +19,7 @@ public class UserRoleInserter : DatabaseInserter<UserRole>
     {
         if (item.Id is null)
             throw new NullReferenceException();
-        if(item.UserGroupId is null)
+        if (item.UserGroupId is null)
             throw new NullReferenceException();
         return new ParameterValue[] {
             ParameterValue.Create(UserRoleInserterFactory.Id, item.Id.Value),

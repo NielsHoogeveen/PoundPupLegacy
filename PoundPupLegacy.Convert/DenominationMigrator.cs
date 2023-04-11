@@ -9,8 +9,8 @@ internal sealed class DenominationMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<Denomination> denominationCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _denominationCreator = denominationCreator;
     }
@@ -24,7 +24,7 @@ internal sealed class DenominationMigrator : MigratorPPL
     }
     private async IAsyncEnumerable<Denomination> ReadDenominations(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
-       var sql = $"""
+        var sql = $"""
                 SELECT
                     n.nid id,
                     n.uid access_role_id,

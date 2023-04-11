@@ -12,7 +12,7 @@ public interface IDatabaseDeleter : IAsyncDisposable
 public interface IDatabaseDeleterFactory
 {
 }
-public interface IDatabaseDeleterFactory<T>: IDatabaseDeleterFactory
+public interface IDatabaseDeleterFactory<T> : IDatabaseDeleterFactory
     where T : IDatabaseDeleter
 {
     public Task<T> CreateAsync(IDbConnection connection);

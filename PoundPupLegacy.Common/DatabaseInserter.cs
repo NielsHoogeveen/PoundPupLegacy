@@ -3,19 +3,19 @@ using System.Data;
 
 namespace PoundPupLegacy.Common;
 public interface IDatabaseInserter : IAsyncDisposable { }
-public interface IDatabaseInserter<T>: IDatabaseInserter
+public interface IDatabaseInserter<T> : IDatabaseInserter
 {
     Task InsertAsync(T item);
 }
-public interface IDatabaseInserterFactory 
-{ 
+public interface IDatabaseInserterFactory
+{
 }
-public interface IDatabaseInserterFactory<T>: IDatabaseInserterFactory
+public interface IDatabaseInserterFactory<T> : IDatabaseInserterFactory
 {
     Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection);
 }
 
-public abstract class DatabaseInserterFactory<T, T2>: IDatabaseInserterFactory<T>
+public abstract class DatabaseInserterFactory<T, T2> : IDatabaseInserterFactory<T>
     where T2 : DatabaseInserter<T>
 {
     public abstract string TableName { get; }
@@ -55,7 +55,7 @@ public abstract class DatabaseInserterFactory<T, T2>: IDatabaseInserterFactory<T
 }
 
 public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T, T2> : IDatabaseInserterFactory<T>
-    where T: Identifiable
+    where T : Identifiable
     where T2 : ConditionalAutoGenerateIdDatabaseInserter<T>
 {
     public abstract string TableName { get; }
@@ -179,7 +179,7 @@ public abstract class DatabaseInserter<T> : DatabaseWriter, IDatabaseInserter<T>
     }
 }
 public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseWriter, IDatabaseInserter<T>
-    where T: Identifiable
+    where T : Identifiable
 {
     public abstract IEnumerable<ParameterValue> GetParameterValues(T item);
     protected AutoGenerateIdDatabaseInserter(NpgsqlCommand command) : base(command)

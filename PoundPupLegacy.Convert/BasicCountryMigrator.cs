@@ -10,8 +10,8 @@ internal sealed class BasicCountryMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
         IEntityCreator<BasicCountry> basicCountryCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _basicCountryCreator = basicCountryCreator;
     }
@@ -133,7 +133,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
 
     private async IAsyncEnumerable<BasicCountry> GetBasicCountries(NodeIdReaderByUrlId nodeIdReader)
     {
-        
+
         yield return new BasicCountry {
             Id = null,
             PublisherId = 1,

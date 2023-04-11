@@ -23,7 +23,7 @@ internal sealed class DeportationCaseMigrator : MigratorPPL
     }
     private async IAsyncEnumerable<DeportationCase> ReadDeportationCases(NodeIdReaderByUrlId nodeIdReader)
     {
-        
+
         var sql = $"""
                 SELECT
                      n.nid id,

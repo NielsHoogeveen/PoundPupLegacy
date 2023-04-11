@@ -11,11 +11,11 @@ internal sealed class SenateTermCreator : EntityCreator<SenateTerm>
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     private readonly IEntityCreator<CongressionalTermPoliticalPartyAffiliation> _congressionalTermPoliticalPartyAffiliationCreator;
     public SenateTermCreator(
-        IDatabaseInserterFactory<SenateTerm> senateTermInserterFactory, 
-        IDatabaseInserterFactory<CongressionalTerm> congressionalTermInserterFactory, 
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
+        IDatabaseInserterFactory<SenateTerm> senateTermInserterFactory,
+        IDatabaseInserterFactory<CongressionalTerm> congressionalTermInserterFactory,
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<Documentable> documentableInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
         IEntityCreator<CongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
     )

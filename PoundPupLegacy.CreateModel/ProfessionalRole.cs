@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Common;
-
-namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.CreateModel;
 
 public interface ProfessionalRole : Identifiable
 {

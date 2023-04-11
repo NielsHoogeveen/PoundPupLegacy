@@ -16,8 +16,8 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
         IDatabaseReaderFactory<TermReaderByNameableId> termReaderByNameableIdFactory,
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IEntityCreator<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
         _termReaderByNameableIdFactory = termReaderByNameableIdFactory;

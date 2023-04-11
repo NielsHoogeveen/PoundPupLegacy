@@ -27,7 +27,7 @@ internal sealed class AbuseCaseCreator : EntityCreator<AbuseCase>
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-        ) 
+        )
     {
         _nodeInserterFactory = nodeInserterFactory;
         _searchableInserterFactory = searchableInserterFactory;

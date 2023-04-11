@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.CreateModel.Readers;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class BoundCountryMigrator : CountryMigrator
 {
@@ -14,8 +12,8 @@ internal sealed class BoundCountryMigrator : CountryMigrator
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IEntityCreator<BoundCountry> boundCountryCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
         _termReaderByNameFactory = termReaderByNameFactory;

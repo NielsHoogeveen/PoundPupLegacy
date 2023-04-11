@@ -26,5 +26,5 @@ internal sealed class PollInserter : DatabaseInserter<Poll>
                    ParameterValue.Create(PollInserterFactory.PollStatusId, item.PollStatusId),
                };
     }
-   
+
 }

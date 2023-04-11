@@ -3,11 +3,11 @@
 internal sealed class FamilySizeMigrator : MigratorPPL
 {
     private readonly IEntityCreator<FamilySize> _familySizeCreator;
-   public FamilySizeMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<FamilySize> familySizeCreator
-    ) : base(databaseConnections) 
-    { 
+    public FamilySizeMigrator(
+         IDatabaseConnections databaseConnections,
+         IEntityCreator<FamilySize> familySizeCreator
+     ) : base(databaseConnections)
+    {
         _familySizeCreator = familySizeCreator;
     }
 

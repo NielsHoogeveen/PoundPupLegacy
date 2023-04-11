@@ -35,7 +35,7 @@ internal sealed class CaseTypeMigrator : MigratorPPL
     }
     internal async IAsyncEnumerable<CaseType> GetCaseTypes(NodeIdReaderByUrlId nodeIdReader)
     {
-        
+
         yield return new CaseType(Constants.ABUSE_CASE, "abuse case", "Abuse case of a child that has been placed by court", new List<int>
         {
 

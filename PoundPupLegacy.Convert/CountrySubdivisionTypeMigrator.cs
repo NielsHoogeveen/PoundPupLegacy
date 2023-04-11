@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.CreateModel.Readers;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class CountrySubdivisionTypeMigratorPartOne : CountrySubdivisionTypeMigrator
 {
@@ -10,8 +8,8 @@ internal sealed class CountrySubdivisionTypeMigratorPartOne : CountrySubdivision
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator) 
-    { 
+    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator)
+    {
     }
 
     protected override string FileName => "country_subdivision_types_part1.csv";
@@ -23,8 +21,8 @@ internal sealed class CountrySubdivisionTypeMigratorPartTwo : CountrySubdivision
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator) 
-    { 
+    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator)
+    {
     }
 
     protected override string FileName => "country_subdivision_types_part2.csv";
@@ -36,8 +34,8 @@ internal sealed class CountrySubdivisionTypeMigratorPartThree : CountrySubdivisi
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator) 
-    { 
+    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator)
+    {
     }
 
     protected override string FileName => "country_subdivision_types_part3.csv";
@@ -60,8 +58,8 @@ internal abstract class CountrySubdivisionTypeMigrator : MigratorPPL
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
         _termReaderByNameFactory = termReaderByNameFactory;

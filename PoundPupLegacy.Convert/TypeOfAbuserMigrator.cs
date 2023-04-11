@@ -9,8 +9,8 @@ internal sealed class TypeOfAbuserMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<TypeOfAbuser> typeOfAbuserCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _typeOfAbuserCreator = typeOfAbuserCreator;
     }

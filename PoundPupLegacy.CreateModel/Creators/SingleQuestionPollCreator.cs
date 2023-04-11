@@ -12,14 +12,14 @@ internal sealed class SingleQuestionPollCreator : EntityCreator<SingleQuestionPo
     private readonly IDatabaseInserterFactory<PollVote> _pollVoteInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public SingleQuestionPollCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory, 
-        IDatabaseInserterFactory<Poll> pollInserterFactory, 
-        IDatabaseInserterFactory<SingleQuestionPoll> singleQuestionPollInserterFactory, 
-        IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory, 
-        IDatabaseInserterFactory<PollOption> pollOptionInserterFactory, 
-        IDatabaseInserterFactory<PollVote> pollVoteInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
+        IDatabaseInserterFactory<Poll> pollInserterFactory,
+        IDatabaseInserterFactory<SingleQuestionPoll> singleQuestionPollInserterFactory,
+        IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory,
+        IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
+        IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

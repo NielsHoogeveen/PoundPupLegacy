@@ -6,8 +6,8 @@ internal sealed class SubdivisionTypeMigrator : MigratorPPL
     public SubdivisionTypeMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<SubdivisionType> subdivisionTypeCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _subdivisionTypeCreator = subdivisionTypeCreator;
     }
 

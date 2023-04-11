@@ -6,8 +6,8 @@ internal sealed class HagueStatusMigrator : MigratorPPL
     public HagueStatusMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<HagueStatus> hagueStatusCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _hagueStatusCreator = hagueStatusCreator;
     }
 

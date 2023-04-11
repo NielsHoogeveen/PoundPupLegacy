@@ -13,15 +13,15 @@ internal sealed class MultiQuestionPollCreator : EntityCreator<MultiQuestionPoll
     private readonly IDatabaseInserterFactory<PollVote> _pollVoteInserterFactory;
     private readonly IDatabaseInserterFactory<MultiQuestionPollPollQuestion> _multiQuestionPollPollQuestionInserterFactory;
     public MultiQuestionPollCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory, 
-        IDatabaseInserterFactory<Poll> pollInserterFactory, 
-        IDatabaseInserterFactory<MultiQuestionPoll> multiQuestionPollInserterFactory, 
-        IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory, 
-        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory, 
-        IDatabaseInserterFactory<PollOption> pollOptionInserterFactory, 
-        IDatabaseInserterFactory<PollVote> pollVoteInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
+        IDatabaseInserterFactory<Poll> pollInserterFactory,
+        IDatabaseInserterFactory<MultiQuestionPoll> multiQuestionPollInserterFactory,
+        IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory,
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
+        IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
+        IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
         IDatabaseInserterFactory<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserterFactory
     )
     {

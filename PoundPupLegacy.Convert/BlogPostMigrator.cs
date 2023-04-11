@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class BlogPostMigrator : MigratorPPL
 {

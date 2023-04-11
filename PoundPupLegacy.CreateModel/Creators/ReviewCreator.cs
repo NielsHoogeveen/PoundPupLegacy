@@ -8,10 +8,10 @@ internal sealed class ReviewCreator : EntityCreator<Review>
     private readonly IDatabaseInserterFactory<Review> _reviewInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public ReviewCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory, 
-        IDatabaseInserterFactory<Review> reviewInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
+        IDatabaseInserterFactory<Review> reviewInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

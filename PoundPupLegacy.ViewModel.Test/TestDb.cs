@@ -1,6 +1,5 @@
 using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.ViewModel;
 using System.Reflection;
 
 namespace PoundPupLegacy.ViewModel.Test

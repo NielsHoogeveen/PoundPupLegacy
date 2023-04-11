@@ -1,11 +1,11 @@
-﻿using PoundPupLegacy.EditModel;
-using PoundPupLegacy.EditModel.Readers;
-using System.Data;
+﻿using Npgsql;
 using PoundPupLegacy.Common;
-using Npgsql;
-using File = PoundPupLegacy.EditModel.File;
-using PoundPupLegacy.Updaters;
 using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.EditModel;
+using PoundPupLegacy.EditModel.Readers;
+using PoundPupLegacy.Updaters;
+using System.Data;
+using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -30,7 +30,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         ITextService textService,
         ILogger<OrganizationEditService> logger
 
-    ): base(
+    ) : base(
         connection,
         siteDataService,
         nodeCacheService,
@@ -75,8 +75,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
     protected sealed override async Task StoreNew(Organization organization, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        await _organizationEntityCreator.CreateAsync(new CreateModel.BasicOrganization 
-        {
+        await _organizationEntityCreator.CreateAsync(new CreateModel.BasicOrganization {
             Id = null,
             Title = organization.Title,
             Description = organization.Description,
@@ -89,15 +88,13 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
             ChangedDateTime = now,
             FileIdTileImage = null,
             NodeTypeId = Constants.ORGANIZATION,
-            OrganizationTypes = organization.OrganizationOrganizationTypes.Select(x => new CreateModel.OrganizationOrganizationType 
-            { 
-                OrganizationId = null, 
-                OrganizationTypeId = x.OrganizationTypeId 
+            OrganizationTypes = organization.OrganizationOrganizationTypes.Select(x => new CreateModel.OrganizationOrganizationType {
+                OrganizationId = null,
+                OrganizationTypeId = x.OrganizationTypeId
             }).ToList(),
             OwnerId = organization.OwnerId,
-            TenantNodes = organization.TenantNodes.Select(x => new CreateModel.TenantNode 
-            { 
-                NodeId = null, 
+            TenantNodes = organization.TenantNodes.Select(x => new CreateModel.TenantNode {
+                NodeId = null,
                 TenantId = x.TenantId,
                 UrlPath = x.UrlPath,
                 PublicationStatusId = x.PublicationStatusId,
@@ -113,7 +110,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
 
     protected sealed override async Task StoreExisting(Organization organization, NpgsqlConnection connection)
     {
-        if(!organization.NodeId.HasValue) {
+        if (!organization.NodeId.HasValue) {
             throw new Exception("NodeId of organization should have a value");
         }
         var updater = await _organizationUpdateFactory.CreateAsync(connection);

@@ -116,13 +116,13 @@ internal sealed class AdoptionImportMigrator : MigratorPPL
     }
 
     private async Task<InterCountryRelation> GetInterCountryRelation(
-        int countryIdFrom, 
-        int countryIdTo, 
-        int year, int numberOfChildren, 
+        int countryIdFrom,
+        int countryIdTo,
+        int year, int numberOfChildren,
         NodeReaderByUrlId nodeReader,
         NodeIdReaderByUrlId nodeIdReader)
     {
-        
+
         var nodeFrom = await nodeReader.ReadAsync(new NodeReaderByUrlId.Request {
             UrlId = countryIdFrom,
             TenantId = Constants.PPL
@@ -170,7 +170,7 @@ internal sealed class AdoptionImportMigrator : MigratorPPL
                 },
         };
     }
-    private async IAsyncEnumerable<InterCountryRelation> ReadAdoptionExportYears(NodeReaderByUrlId nodeReader, NodeIdReaderByUrlId  nodeIdReader)
+    private async IAsyncEnumerable<InterCountryRelation> ReadAdoptionExportYears(NodeReaderByUrlId nodeReader, NodeIdReaderByUrlId nodeIdReader)
     {
 
         var sql = $"""

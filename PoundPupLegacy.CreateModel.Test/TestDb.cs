@@ -1,7 +1,6 @@
 using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.CreateModel;
-using PoundPupLegacy.CreateModel.Inserters;
 using System.Reflection;
 
 namespace PoundPupLegacy.Db.Test

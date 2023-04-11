@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.CreateModel.Readers;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
 {
@@ -23,8 +21,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IDatabaseReaderFactory<SubdivisionIdReaderByIso3166Code> subdivisionIdReaderByIso3166CodeFactory,
         IEntityCreator<BasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _subdivisionIdByNameReaderFactory = subdivisionIdByNameReaderFactory;
         _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;

@@ -22,7 +22,7 @@ internal sealed class DocumentTypeCreator : EntityCreator<DocumentType>
         IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-        IDatabaseInserterFactory<Nameable> nameableInserterFactory           
+        IDatabaseInserterFactory<Nameable> nameableInserterFactory
     )
     {
         _documentTypeInserterFactory = documentTypeInserterFactory;

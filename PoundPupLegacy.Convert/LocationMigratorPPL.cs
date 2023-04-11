@@ -29,7 +29,7 @@ internal sealed class LocationMigratorPPL : MigratorPPL
 
     private async IAsyncEnumerable<Location> GetLocations(NodeIdReaderByUrlId nodeIdReader)
     {
-        
+
         yield return new Location {
             Id = 18,
             Street = "8010 S County Road 5 Suite 205",
@@ -363,7 +363,7 @@ internal sealed class LocationMigratorPPL : MigratorPPL
 
     private async Task<int?> GetSubdivisionId(int id, int? stateId, NodeIdReaderByUrlId nodeIdReader, SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code)
     {
-    
+
         if (stateId == null) {
             var stateCode = id switch {
                 1071 => "DO-01",

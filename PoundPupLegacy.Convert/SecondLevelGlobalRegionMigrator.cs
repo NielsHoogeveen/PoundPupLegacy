@@ -11,8 +11,8 @@ internal sealed class SecondLevelGlobalRegionMigrator : MigratorPPL
         IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<SecondLevelGlobalRegion> secondLevelGlobalRegionCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _secondLevelGlobalRegionCreator = secondLevelGlobalRegionCreator;

@@ -3,7 +3,7 @@ public interface ISystemGroupCreator
 {
     Task CreateAsync(IDbConnection connection);
 }
-internal sealed class SystemGroupCreator: ISystemGroupCreator
+internal sealed class SystemGroupCreator : ISystemGroupCreator
 {
     private readonly IDatabaseInserterFactory<SystemGroup> _systemGroupInserterFactory;
     private readonly IDatabaseInserterFactory<UserGroup> _userGroupInserterFactory;

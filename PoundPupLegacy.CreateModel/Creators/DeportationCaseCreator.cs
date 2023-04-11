@@ -14,7 +14,7 @@ internal sealed class DeportationCaseCreator : EntityCreator<DeportationCase>
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
     private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
-    
+
     public DeportationCaseCreator(IDatabaseInserterFactory<DeportationCase> deportationCaseInserterFactory,
         IDatabaseInserterFactory<Case> caseInserterFactory,
         IDatabaseInserterFactory<Nameable> nameableInserterFactory,

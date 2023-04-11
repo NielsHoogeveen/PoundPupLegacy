@@ -15,7 +15,7 @@ internal sealed class BoundCountryInserter : DatabaseInserter<BoundCountry>
 
     public override IEnumerable<ParameterValue> GetParameterValues(BoundCountry item)
     {
-        if(item.Id is null)
+        if (item.Id is null)
             throw new NullReferenceException();
         return new ParameterValue[] {
             ParameterValue.Create(BoundCountryInserterFactory.Id, item.Id.Value),

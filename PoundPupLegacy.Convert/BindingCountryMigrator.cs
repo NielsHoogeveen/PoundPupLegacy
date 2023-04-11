@@ -8,8 +8,8 @@ internal sealed class BindingCountryMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
         IEntityCreator<BindingCountry> bindingCountryCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _bindingCountryCreator = bindingCountryCreator;
     }

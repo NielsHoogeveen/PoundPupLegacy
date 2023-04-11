@@ -9,7 +9,7 @@ internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
 {
     protected abstract string TableName { get; }
 
-    protected abstract bool AutoGenerateIdentity { get; } 
+    protected abstract bool AutoGenerateIdentity { get; }
 
     public async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
     {

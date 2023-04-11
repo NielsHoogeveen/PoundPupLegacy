@@ -8,8 +8,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
         IEntityCreator<UnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
         _unitedStatesPoliticalPartyAffliationCreator = unitedStatesPoliticalPartyAffliationCreator;
     }

@@ -10,7 +10,7 @@ internal sealed class FileMigratorPPL : MigratorPPL
         IEntityCreator<File> fileCreator
     ) : base(databaseConnections)
     {
-        _fileCreator = fileCreator; 
+        _fileCreator = fileCreator;
     }
 
     protected override string Name => "files (ppl)";

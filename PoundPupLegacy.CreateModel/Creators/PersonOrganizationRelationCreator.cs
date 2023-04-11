@@ -6,8 +6,8 @@ internal sealed class PersonOrganizationRelationCreator : EntityCreator<PersonOr
     private readonly IDatabaseInserterFactory<PersonOrganizationRelation> _personOrganizationRelationInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public PersonOrganizationRelationCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<PersonOrganizationRelation> personOrganizationRelationInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<PersonOrganizationRelation> personOrganizationRelationInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
     {
         _nodeInserterFactory = nodeInserterFactory;

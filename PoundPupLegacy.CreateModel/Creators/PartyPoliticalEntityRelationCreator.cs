@@ -6,8 +6,8 @@ internal sealed class PartyPoliticalEntityRelationCreator : EntityCreator<PartyP
     private readonly IDatabaseInserterFactory<PartyPoliticalEntityRelation> _partyPoliticalEntityRelationInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public PartyPoliticalEntityRelationCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<PartyPoliticalEntityRelation> partyPoliticalEntityRelationInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<PartyPoliticalEntityRelation> partyPoliticalEntityRelationInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PoundPupLegacy.CreateModel.Updater;
 using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.CreateModel.Updater;
 
 namespace PoundPupLegacy.CreateModel;
 

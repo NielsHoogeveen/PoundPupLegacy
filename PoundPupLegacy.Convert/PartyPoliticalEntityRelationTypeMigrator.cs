@@ -9,7 +9,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator : MigratorPPL
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<PartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreator
     ) : base(databaseConnections)
-    { 
+    {
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _partyPoliticalEntityRelationTypeCreator = partyPoliticalEntityRelationTypeCreator;
     }

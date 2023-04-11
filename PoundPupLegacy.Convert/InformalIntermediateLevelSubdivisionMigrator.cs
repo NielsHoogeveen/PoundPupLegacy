@@ -17,7 +17,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : MigratorPPL
         IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
         IDatabaseReaderFactory<TermReaderByNameableId> termReaderByNameableIdFactory,
         IEntityCreator<InformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionCreator
-    ) : base(databaseConnections) 
+    ) : base(databaseConnections)
     {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;

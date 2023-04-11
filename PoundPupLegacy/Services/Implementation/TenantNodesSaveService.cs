@@ -1,5 +1,4 @@
 ﻿using PoundPupLegacy.Common;
-using PoundPupLegacy.CreateModel.Inserters;
 using PoundPupLegacy.Deleters;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.Updaters;
@@ -24,7 +23,7 @@ internal sealed class TenantNodesSaveService : ISaveService<IEnumerable<TenantNo
         _tenantNodeInserterFactory = tenantNodeInserterFactory;
     }
     public async Task SaveAsync(
-        IEnumerable<TenantNode> tenantNodes, 
+        IEnumerable<TenantNode> tenantNodes,
         IDbConnection connection
         )
     {

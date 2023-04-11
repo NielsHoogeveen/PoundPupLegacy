@@ -9,7 +9,7 @@ namespace PoundPupLegacy.Common
         bool HasBeenPrepared { get; }
     }
     public interface IDatabaseReaderFactory { }
-    public interface IDatabaseReaderFactory<T>: IDatabaseReaderFactory 
+    public interface IDatabaseReaderFactory<T> : IDatabaseReaderFactory
         where T : IDatabaseReader
     {
         public Task<T> CreateAsync(IDbConnection connection);

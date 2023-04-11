@@ -7,8 +7,8 @@ internal sealed class PublicationStatusMigrator : MigratorPPL
     public PublicationStatusMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<PublicationStatus> publicationStatusCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _publicationStatusCreator = publicationStatusCreator;
     }
 

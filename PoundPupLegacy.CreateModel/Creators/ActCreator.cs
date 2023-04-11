@@ -33,7 +33,7 @@ internal sealed class ActCreator : EntityCreator<Act>
         _searchableInserterFactory = searchableInserterFactory;
         _tenantNodeInserterFactory = tenantNodeInserterFactory;
         _termHierarchyInserterFactory = termHierarchyInserterFactory;
-        _termInserterFactory = termInserterFactory; 
+        _termInserterFactory = termInserterFactory;
         _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
         _termReaderFactory = termReaderFactory;
 
@@ -41,7 +41,7 @@ internal sealed class ActCreator : EntityCreator<Act>
     public override async Task CreateAsync(IAsyncEnumerable<Act> acts, IDbConnection connection)
     {
 
-        await using var nodeWriter = await  _nodeInserterFactory.CreateAsync(connection);
+        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
         await using var nameableWriter = await _nameableInserterFactory.CreateAsync(connection);
         await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);

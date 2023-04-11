@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TopLevelCountryInserterFactory : DatabaseInserterFactory<TopLevelCountry, TopLevelCountryInserter> 
+internal sealed class TopLevelCountryInserterFactory : DatabaseInserterFactory<TopLevelCountry, TopLevelCountryInserter>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableFixedStringDatabaseParameter ISO3166_1_code = new() { Name = "iso_3166_1_code" };

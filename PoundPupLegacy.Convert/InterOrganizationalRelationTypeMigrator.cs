@@ -8,8 +8,8 @@ internal sealed class InterOrganizationalRelationTypeMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<InterOrganizationalRelationType> interOrganizationalRelationTypeCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
         _interOrganizationalRelationTypeCreator = interOrganizationalRelationTypeCreator;
     }
@@ -23,7 +23,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator : MigratorPPL
     }
     private async IAsyncEnumerable<InterOrganizationalRelationType> ReadInterOrganizationalRelationTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
     {
-        
+
 
         var sql = $"""
                 SELECT

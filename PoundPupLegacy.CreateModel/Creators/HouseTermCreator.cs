@@ -11,11 +11,11 @@ internal sealed class HouseTermCreator : EntityCreator<HouseTerm>
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     private readonly IEntityCreator<CongressionalTermPoliticalPartyAffiliation> _CongressionalTermPoliticalPartyAffiliationCreator;
     public HouseTermCreator(
-        IDatabaseInserterFactory<HouseTerm> houseTermInserterFactory, 
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
-        IDatabaseInserterFactory<CongressionalTerm> congressionalTermInserterFactory, 
+        IDatabaseInserterFactory<HouseTerm> houseTermInserterFactory,
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<Documentable> documentableInserterFactory,
+        IDatabaseInserterFactory<CongressionalTerm> congressionalTermInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
         IEntityCreator<CongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
     )
@@ -29,7 +29,7 @@ internal sealed class HouseTermCreator : EntityCreator<HouseTerm>
         _CongressionalTermPoliticalPartyAffiliationCreator = congressionalTermPoliticalPartyAffiliationCreator;
     }
 
-    
+
     public override async Task CreateAsync(IAsyncEnumerable<HouseTerm> houseTerms, IDbConnection connection)
     {
 

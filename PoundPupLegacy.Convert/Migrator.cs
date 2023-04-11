@@ -9,12 +9,12 @@ internal abstract class MigratorPPL : Migrator
 {
     public MigratorPPL(
         IDatabaseConnections databaseConnections
-    ): base(databaseConnections.PostgressConnection, databaseConnections.MysqlConnectionPPL)
+    ) : base(databaseConnections.PostgressConnection, databaseConnections.MysqlConnectionPPL)
     {
 
     }
 }
-internal abstract class MigratorCPCT: Migrator
+internal abstract class MigratorCPCT : Migrator
 {
     protected readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
     protected readonly IDatabaseReaderFactory<TenantNodeReaderByUrlId> _tenantNodeReaderByUrlIdFactory;
@@ -27,9 +27,9 @@ internal abstract class MigratorCPCT: Migrator
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _tenantNodeReaderByUrlIdFactory = tenantNodeReaderByUrlIdFactory;
     }
-    protected async Task<(int, int)> GetNodeId(int urlId, NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader )
+    protected async Task<(int, int)> GetNodeId(int urlId, NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader)
     {
-        
+
         var (id, ownerId) = GetUrlIdAndTenant(urlId);
         if (urlId >= 33162 && ownerId == Constants.CPCT) {
             var nodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
@@ -94,7 +94,7 @@ internal abstract class Migrator
     private readonly Stopwatch stopwatch = new Stopwatch();
 
     protected Migrator(
-        NpgsqlConnection postgresConnection, 
+        NpgsqlConnection postgresConnection,
         MySqlConnection mySqlConnection
         )
     {
@@ -160,7 +160,7 @@ internal abstract class Migrator
             if (str.Substring(8, 2) == "00") {
                 var year = int.Parse(str.Substring(0, 4));
                 var month = int.Parse(str.Substring(5, 2));
-                var dateFrom = new DateTime(year, month,1);
+                var dateFrom = new DateTime(year, month, 1);
                 var dateTo = dateFrom.AddMonths(1).AddMilliseconds(-1);
                 return new DateTimeRange(dateFrom, dateTo);
             }

@@ -9,8 +9,8 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator : MigratorPPL
     public UnitedStatesCongressionalMeetingMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<UnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _unitedStatesCongressionalMeetingCreator = unitedStatesCongressionalMeetingCreator;
     }
     private async IAsyncEnumerable<UnitedStatesCongressionalMeeting> ReadUnitedStatesCongressionalMeetingCsv()

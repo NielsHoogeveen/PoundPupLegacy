@@ -6,8 +6,8 @@ internal sealed class DocumentTypeMigrator : MigratorPPL
     public DocumentTypeMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<DocumentType> documentTypeCreator
-    ) : base(databaseConnections) 
-    { 
+    ) : base(databaseConnections)
+    {
         _documentTypeCreator = documentTypeCreator;
     }
 

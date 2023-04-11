@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.Updaters;
 
@@ -24,7 +23,7 @@ internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Simp
         where id = @node_id;
         update simple_text_node set text=@text, teaser=@teaser
         where id = @node_id;
-        """;  
+        """;
 
 }
 
@@ -52,5 +51,5 @@ internal sealed class SimpleTextNodeUpdater : DatabaseUpdater<SimpleTextNodeUpda
         public required string Title { get; init; }
         public required string Text { get; init; }
         public required string Teaser { get; init; }
-   }
+    }
 }

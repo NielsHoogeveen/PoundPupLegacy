@@ -10,7 +10,7 @@ internal sealed class ActionMenuItemCreator : EntityCreator<ActionMenuItem>
     )
     {
         _menuItemInserterFactory = menuItemInserterFactory;
-        _actionMenuItemInserterFactory = actionMenuItemInserterFactory; 
+        _actionMenuItemInserterFactory = actionMenuItemInserterFactory;
     }
     public override async Task CreateAsync(IAsyncEnumerable<ActionMenuItem> actionMenuItems, IDbConnection connection)
     {

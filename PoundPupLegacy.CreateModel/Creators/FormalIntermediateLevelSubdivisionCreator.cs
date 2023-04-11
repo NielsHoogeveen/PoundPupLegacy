@@ -22,22 +22,22 @@ internal sealed class FormalIntermediateLevelSubdivisionCreator : EntityCreator<
 
     //Add constructor
     public FormalIntermediateLevelSubdivisionCreator(
-        IDatabaseInserterFactory<FormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionInserterFactory, 
-        IDatabaseInserterFactory<IntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory, 
-        IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory, 
-        IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory, 
-        IDatabaseInserterFactory<ISOCodedSubdivision> isoCodedSubdivisionInserterFactory, 
-        IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory, 
-        IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory, 
-        IDatabaseInserterFactory<GeographicalEntity> geographicalEntityInserterFactory, 
-        IDatabaseInserterFactory<Nameable> nameableInserterFactory, 
-        IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
-        IDatabaseInserterFactory<Term> termInserterFactory, 
-        IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory, 
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory, 
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory, 
+        IDatabaseInserterFactory<FormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionInserterFactory,
+        IDatabaseInserterFactory<IntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
+        IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
+        IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
+        IDatabaseInserterFactory<ISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
+        IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory,
+        IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory,
+        IDatabaseInserterFactory<GeographicalEntity> geographicalEntityInserterFactory,
+        IDatabaseInserterFactory<Nameable> nameableInserterFactory,
+        IDatabaseInserterFactory<Documentable> documentableInserterFactory,
+        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
+        IDatabaseInserterFactory<Term> termInserterFactory,
+        IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
+        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
     {
         _formalIntermediateLevelSubdivisionInserterFactory = formalIntermediateLevelSubdivisionInserterFactory;
