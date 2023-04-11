@@ -2,13 +2,13 @@
 
 public record User
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public DateTime Created { get; set; }
-    public string? AboutMe { get; set; }
-    public string? AnimalWithin { get; set; }
-    public string RelationToChildPlacement { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string? Avatar { get; set; }
+    public required int Id { get; init; }
+    public required string Name { get; init; }
+    public required DateTime Created { get; init; }
+    public required string? AboutMe { get; init; }
+    public required string? AnimalWithin { get; init; }
+    public required string RelationToChildPlacement { get; init; }
+    public required string Email { get; init; }
+    public required string Password { get; init; }
+    public required string? Avatar { get; init; }
 }

@@ -4,9 +4,9 @@ public record OrganizationOrganizationType
 {
     public int? OrganizationId { get; set; }
 
-    public int OrganizationTypeId { get; init; }
+    public required int OrganizationTypeId { get; init; }
 
-    public string Name { get; init; }
-    public bool HasBeenStored { get; init; }
-    public bool HasBeenDeleted { get; init; }
+    public required string Name { get; init; }
+    public required bool HasBeenStored { get; init; }
+    public required bool HasBeenDeleted { get; init; }
 }

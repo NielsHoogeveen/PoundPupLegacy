@@ -57,7 +57,7 @@
     private List<int> years = Enumerable.Range(1900, DateTime.Now.Year - 1900 + 1).Reverse().ToList();
     private List<(int, string)> months = Enumerable.Range(1, 12).Select(x => (x, System.Globalization.CultureInfo.CurrentCulture.
     DateTimeFormat.GetMonthName(x))).ToList();
-    protected override bool TryParseValueFromString(string value, [MaybeNullWhen(false)] out FuzzyDate result, [NotNullWhen(false)] out string validationErrorMessage)
+    protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out FuzzyDate result, [NotNullWhen(false)] out string validationErrorMessage)
     {
         if(FuzzyDate.TryParse(value, out var fuzzyDate))
         {

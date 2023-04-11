@@ -285,31 +285,31 @@ internal partial class MySqlToPostgresConverter
 
     private async Task AddTenantDefaultCountry()
     {
-        using (var command = _databaseConnections.PostgressConnection.CreateCommand()) {
-            command.CommandType = System.Data.CommandType.Text;
-            command.CommandText = """
-            update tenant
-                set country_id_default = subquery.country_id
-                from(
-                    select
-                    6 tenant_id,
-                    c.id country_id
-                    from country c
-                    join tenant_node tn on tn.tenant_id = 1 and tn.node_id = c.id
-                    where tn.url_id = 4023
-                    union
-                    select
-                    1 tenant_id,
-                    c.id country_id
-                    from country c
-                    join node n on c.id = n.id and n.title ilike 'United State%'
-                    join tenant_node tn on tn.tenant_id = 1 and tn.node_id = c.id
-                    where tn.url_id = 3805
-            	) subquery
-            	where tenant.id = subquery.tenant_id;
-            alter table tenant alter column country_id_default SET NOT NULL;	
-            """;
-            await command.ExecuteNonQueryAsync();
-        }
+        using var command = _databaseConnections.PostgressConnection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandText = """
+        update tenant
+            set country_id_default = subquery.country_id
+            from(
+                select
+                6 tenant_id,
+                c.id country_id
+                from country c
+                join tenant_node tn on tn.tenant_id = 1 and tn.node_id = c.id
+                where tn.url_id = 4023
+                union
+                select
+                1 tenant_id,
+                c.id country_id
+                from country c
+                join node n on c.id = n.id and n.title ilike 'United State%'
+                join tenant_node tn on tn.tenant_id = 1 and tn.node_id = c.id
+                where tn.url_id = 3805
+            ) subquery
+            where tenant.id = subquery.tenant_id;
+        alter table tenant alter column country_id_default SET NOT NULL;	
+        """;
+        await command.ExecuteNonQueryAsync();
+        
     }
 }

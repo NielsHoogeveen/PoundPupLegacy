@@ -47,7 +47,7 @@ internal sealed class ContentSharingGroupCreator : EntityCreator<ContentSharingG
             await contentSharingGroupWriter.InsertAsync(contentSharingGroup);
 
             var administratorRole = contentSharingGroup.AdministratorRole;
-            administratorRole.UserGroupId = contentSharingGroup.Id.Value;
+            administratorRole.UserGroupId = contentSharingGroup.Id;
             await principalWriter.InsertAsync(administratorRole);
             await userRoleWriter.InsertAsync(administratorRole);
             await administratorRoleWriter.InsertAsync(administratorRole);

@@ -2,7 +2,7 @@
 
 public record SubdivisionListItem
 {
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
-    public string Path { get; set; }
+    public required string Path { get; init; }
 }

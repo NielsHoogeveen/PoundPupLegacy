@@ -2,12 +2,12 @@
 
 public record ArticleListEntry
 {
-    public int Id { get; set; }
-    public string Title { get; set; }
+    public required int Id { get; init; }
+    public required string Title { get; init; }
 
-    public string Text { get; set; }
+    public required string Text { get; init; }
 
-    public Authoring Authoring { get; set; }
+    public required Authoring Authoring { get; init; }
 
-    public Link[] Tags { get; set; }
+    public required Link[] Tags { get; init; }
 }

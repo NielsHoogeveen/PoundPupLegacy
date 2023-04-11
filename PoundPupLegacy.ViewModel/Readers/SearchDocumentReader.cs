@@ -198,6 +198,8 @@ public class SearchDocumentReader : SingleItemDatabaseReader<SearchDocumentReade
         }
         else {
             return new SearchResult {
+                NumberOfEntries = 0,
+                Entries = Array.Empty<SearchResultListEntry>()
             };
         }
     }

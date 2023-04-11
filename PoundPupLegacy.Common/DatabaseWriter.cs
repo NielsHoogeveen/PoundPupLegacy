@@ -10,15 +10,7 @@ public abstract class DatabaseWriter
     {
         _command = command;
     }
-    private void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange)
-    {
-        SetDateTimeRangeParameter(dateTimeRange, parameterDateRange, _command);
-    }
-    private void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange)
-    {
-        SetTimeStampRangeParameter(dateTimeRange, parameterDateRange, _command);
-    }
-    private void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
+    private static void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
     {
         if (dateTimeRange is null) {
             command.Parameters[parameterDateRange].Value = DBNull.Value;
@@ -49,7 +41,7 @@ public abstract class DatabaseWriter
         }
     }
 
-    private void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
+    private static void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
     {
         if (dateTimeRange is null) {
             command.Parameters[parameterDateRange].Value = DBNull.Value;
@@ -80,48 +72,8 @@ public abstract class DatabaseWriter
         }
     }
 
-    private void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange)
-    {
-        SetDateTimeRange(dateTimeRange, parameterDate, parameterDateRange, _command);
-    }
-    private void SetDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange, NpgsqlCommand command)
-    {
-        if (dateTimeRange is null) {
-            command.Parameters[parameterDateRange].Value = DBNull.Value;
-            command.Parameters[parameterDate].Value = DBNull.Value;
-        }
-        else {
-            if (dateTimeRange.Start.HasValue && dateTimeRange.End.HasValue) {
-                if (dateTimeRange.Start.Equals(dateTimeRange.End.Value)) {
-                    command.Parameters[parameterDateRange].Value = DBNull.Value;
-                    command.Parameters[parameterDate].Value = dateTimeRange.Start;
 
-                }
-                else {
-                    command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")}, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
-                    command.Parameters[parameterDate].Value = DBNull.Value;
-                }
-
-            }
-            else if (!dateTimeRange.Start.HasValue && dateTimeRange.End.HasValue) {
-                command.Parameters[parameterDateRange].Value = $"(, {dateTimeRange.End.Value.ToString("yyyy-MM-dd")})";
-                command.Parameters[parameterDate].Value = DBNull.Value;
-
-            }
-            else if (dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue) {
-                command.Parameters[parameterDateRange].Value = $"[{dateTimeRange.Start.Value.ToString("yyyy-MM-dd")},)";
-                command.Parameters[parameterDate].Value = DBNull.Value;
-
-            }
-            else if (!dateTimeRange.Start.HasValue && !dateTimeRange.End.HasValue) {
-                command.Parameters[parameterDateRange].Value = $"(,)";
-                command.Parameters[parameterDate].Value = DBNull.Value;
-
-            }
-        }
-    }
-
-    private void SetNullableParameter<T2>(T2? value, string parameter, NpgsqlCommand command)
+    private static void SetNullableParameter<T2>(T2? value, string parameter, NpgsqlCommand command)
     {
         if (value is not null) {
             command.Parameters[parameter].Value = value;
@@ -131,7 +83,7 @@ public abstract class DatabaseWriter
         }
     }
 
-    private void SetParameter<T2>(T2 value, string parameter, NpgsqlCommand command)
+    private static void SetParameter<T2>(T2 value, string parameter, NpgsqlCommand command)
     {
         command.Parameters[parameter].Value = value;
     }
@@ -140,7 +92,7 @@ public abstract class DatabaseWriter
         await _command.DisposeAsync();
     }
 
-    private void SetUnchecked(DatabaseParameter parameter, object? value, NpgsqlCommand command)
+    private static void SetUnchecked(DatabaseParameter parameter, object? value, NpgsqlCommand command)
     {
         if (parameter is NullableDateRangeDatabaseParameter) {
             SetDateTimeRangeParameter(value as DateTimeRange, parameter.Name, command);
@@ -175,7 +127,7 @@ public abstract class DatabaseWriter
     {
         Set(parameterValues, _command);
     }
-    protected void Set(IEnumerable<ParameterValue> parameterValues, NpgsqlCommand command)
+    protected static void Set(IEnumerable<ParameterValue> parameterValues, NpgsqlCommand command)
     {
         foreach (var parameterValue in parameterValues) {
             SetUnchecked(parameterValue.DatabaseParameter, parameterValue.Value, command);

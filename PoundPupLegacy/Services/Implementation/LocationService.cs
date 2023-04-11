@@ -60,7 +60,7 @@ internal sealed class LocationService : ILocationService
     private const string GOOGLE_API_KEY = "AIzaSyDz40b_l25vytdmQGVnOFTqHVakmaZ6QCE";
     public async Task<Location> ValidateLocationAsync(Location location)
     {
-        HttpClient client = new HttpClient();
+        HttpClient client = new();
         var addressBuilder = new StringBuilder();
         if (location.Street is not null) {
             addressBuilder.Append(location.Street.Replace(" ", "%20"));

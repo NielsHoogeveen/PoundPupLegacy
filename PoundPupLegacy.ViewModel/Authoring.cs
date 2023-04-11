@@ -2,9 +2,8 @@
 
 public record Authoring
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-
-    public DateTime CreatedDateTime { get; set; }
-    public DateTime ChangedDateTime { get; set; }
+    public required int Id { get; init; }
+    public required string Name { get; init; }
+    public required DateTime CreatedDateTime { get; init; }
+    public required DateTime ChangedDateTime { get; init; }
 }

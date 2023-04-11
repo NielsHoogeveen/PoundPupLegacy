@@ -109,7 +109,8 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
                     'Id', f.id,
                     'Name', f.name,
                     'Size', f.size,
-                    'MimeType', f.mime_type
+                    'MimeType', f.mime_type,
+                    'Path', f.path
                 )
             ) document
             from node_file nf
@@ -4048,7 +4049,7 @@ public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentRead
         """;
 
 }
-public class NodeDocumentReader : SingleItemDatabaseReader<NodeDocumentReader.NodeDocumentRequest, Node>
+public class NodeDocumentReader : SingleItemDatabaseReader<NodeDocumentReader.NodeDocumentRequest, Node?>
 {
 
     public record NodeDocumentRequest
@@ -4061,7 +4062,7 @@ public class NodeDocumentReader : SingleItemDatabaseReader<NodeDocumentReader.No
     {
     }
 
-    public override async Task<Node> ReadAsync(NodeDocumentRequest request)
+    public override async Task<Node?> ReadAsync(NodeDocumentRequest request)
     {
         _command.Parameters["url_id"].Value = request.UrlId;
         _command.Parameters["tenant_id"].Value = request.TenantId;

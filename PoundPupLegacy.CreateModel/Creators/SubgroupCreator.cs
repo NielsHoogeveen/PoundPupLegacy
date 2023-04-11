@@ -44,7 +44,7 @@ internal sealed class SubgroupCreator : EntityCreator<Subgroup>
             await subgroupWriter.InsertAsync(subgroup);
 
             var administratorRole = subgroup.AdministratorRole;
-            administratorRole.UserGroupId = subgroup.Id.Value;
+            administratorRole.UserGroupId = subgroup.Id;
             await principalWriter.InsertAsync(administratorRole);
             await userRoleWriter.InsertAsync(administratorRole);
             await administratorRoleWriter.InsertAsync(administratorRole);

@@ -44,7 +44,6 @@
         </div>
     
         <FuzzyDateEditor @bind-Value="organization.Establishment" />
-
         <FuzzyDateEditor @bind-Value="organization.Termination" />
         
         <Tags Elems="@organization.Tags" />
@@ -61,10 +60,6 @@
     Organization? organization;
 
     string url = "";
-
-    private FuzzyDate? Establishment;
-
-    private FuzzyDate? Termination;
 
     [CascadingParameter(Name = "UrlId")]
     public int UrlId { get; set; }
@@ -87,7 +82,6 @@
                 var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
                 tenant.TenantNode = tenantNode;
             }
-            Establishment = organization.Establishment;
         }
     }
 

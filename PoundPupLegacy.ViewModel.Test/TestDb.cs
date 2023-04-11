@@ -19,10 +19,10 @@ namespace PoundPupLegacy.ViewModel.Test
             foreach (var type in types) {
                 var i = Activator.CreateInstance(type);
                 var m = type.GetMethod("CreateAsync", new Type[] { typeof(NpgsqlConnection) });
-                var task = (Task)m!.Invoke(i, new object[] { connection });
+                var task = (Task)m!.Invoke(i, new object[] { connection })!;
                 await task.ConfigureAwait(false);
                 var result = task.GetType().GetProperty("Result");
-                var reader = (IDatabaseReader)result.GetValue(task);
+                var reader = (IDatabaseReader)result!.GetValue(task)!;
                 Assert.True(reader.HasBeenPrepared);
                 Assert.NotEqual(string.Empty, reader.Sql);
                 await reader.DisposeAsync();
@@ -39,10 +39,10 @@ namespace PoundPupLegacy.ViewModel.Test
             foreach (var type in types) {
                 var i = Activator.CreateInstance(type);
                 var m = type.GetMethod("CreateAsync", new Type[] { typeof(NpgsqlConnection) });
-                var task = (Task)m!.Invoke(i, new object[] { connection });
+                var task = (Task)m!.Invoke(i, new object[] { connection })!;
                 await task.ConfigureAwait(false);
                 var result = task.GetType().GetProperty("Result");
-                var reader = (IDatabaseUpdater)result.GetValue(task);
+                var reader = (IDatabaseUpdater)result!.GetValue(task)!;
                 Assert.True(reader.HasBeenPrepared);
                 Assert.NotEqual(string.Empty, reader.Sql);
                 await reader.DisposeAsync();
@@ -59,10 +59,10 @@ namespace PoundPupLegacy.ViewModel.Test
             foreach (var type in types) {
                 var i = Activator.CreateInstance(type);
                 var m = type.GetMethod("CreateAsync", new Type[] { typeof(NpgsqlConnection) });
-                var task = (Task)m!.Invoke(i, new object[] { connection });
+                var task = (Task)m!.Invoke(i, new object[] { connection })!;
                 await task.ConfigureAwait(false);
                 var result = task.GetType().GetProperty("Result");
-                var reader = (IDatabaseDeleter)result.GetValue(task);
+                var reader = (IDatabaseDeleter)result!.GetValue(task)!;
                 Assert.True(reader.HasBeenPrepared);
                 Assert.NotEqual(string.Empty, reader.Sql);
                 await reader.DisposeAsync();

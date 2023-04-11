@@ -4,9 +4,9 @@ namespace PoundPupLegacy.ViewModel;
 
 public record DocumentListItem
 {
-    public string Path { get; set; }
+    public required string Path { get; init; }
 
-    public string Title { get; set; }
+    public required string Title { get; init; }
 
     public DateTime? PublicationDateFrom { get; set; }
 

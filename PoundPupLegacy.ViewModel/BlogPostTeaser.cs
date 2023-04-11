@@ -2,10 +2,10 @@
 
 public record BlogPostTeaser
 {
-    public int Id { get; set; }
-    public string Title { get; set; }
+    public required int Id { get; init; }
+    public required string Title { get; init; }
 
-    public Authoring Authoring { get; set; }
+    public required Authoring Authoring { get; init; }
 
-    public string Text { get; set; }
+    public required string Text { get; init; }
 }

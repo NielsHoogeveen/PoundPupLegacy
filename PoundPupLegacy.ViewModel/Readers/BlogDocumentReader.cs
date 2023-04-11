@@ -69,8 +69,13 @@ public class BlogDocumentReaderFactory : IDatabaseReaderFactory<BlogDocumentRead
             ) 
             SELECT 
                 jsonb_build_object(
+                    'Id',
+                    p.id,
                     'Name', 
-                    p.name,
+                    case
+                        when SUBSTRING(p.name, char_length(p.name)) = 's' then p.name || '''' || ' blog'
+                        else p.name || '''' || 's blog' 
+                    end,
                     'NumberOfEntries', 
                     COUNT(n.id),
                     'BlogPostTeasers', 
@@ -81,7 +86,7 @@ public class BlogDocumentReaderFactory : IDatabaseReaderFactory<BlogDocumentRead
                 JOIN blog_post b on b.id = n.id
                 JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = @tenant_id
                 WHERE p.id = @publisher_id AND tn.publication_status_id = 1
-                GROUP BY p.name
+                GROUP BY p.id, p.name
             """;
 
 }
@@ -99,13 +104,6 @@ public class BlogDocumentReader : SingleItemDatabaseReader<BlogDocumentReader.Bl
     }
     public override async Task<Blog> ReadAsync(BlogDocumentRequest request)
     {
-        string MakeName(string name)
-        {
-            if (name.EndsWith("s")) {
-                return $"{name}' blog";
-            }
-            return $"{name}'s blog";
-        }
         _command.Parameters["publisher_id"].Value = request.PublisherId;
         _command.Parameters["tenant_id"].Value = request.TenantId;
         _command.Parameters["length"].Value = request.Length;
@@ -113,16 +111,6 @@ public class BlogDocumentReader : SingleItemDatabaseReader<BlogDocumentReader.Bl
         await using var reader = await _command.ExecuteReaderAsync();
         await reader.ReadAsync();
         var blog = reader.GetFieldValue<Blog>(0);
-        var entries = blog.BlogPostTeasers.Select(x => new BlogPostTeaser {
-            Id = x.Id,
-            Authoring = x.Authoring,
-            Title = x.Title,
-            Text = x.Text
-        });
-        blog.Name = MakeName(blog.Name);
-        blog.BlogPostTeasers = entries.ToList();
         return blog!;
     }
-
-
 }

@@ -60,12 +60,12 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
 
     protected sealed override async Task StoreNew(Document document, NpgsqlConnection connection)
     {
-
+        await Task.CompletedTask;
     }
 
     protected sealed override async Task StoreExisting(Document document, NpgsqlConnection connection)
     {
-
+        await Task.CompletedTask;
     }
 
 }

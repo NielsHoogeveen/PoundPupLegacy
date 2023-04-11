@@ -2,14 +2,14 @@
 
 public record SearchResultListEntry : ListEntry
 {
-    public string Path { get; set; }
+    public required string Path { get; init; }
 
-    public string Title { get; set; }
+    public required string Title { get; init; }
 
-    public string Teaser { get; set; }
+    public required string Teaser { get; init; }
 
-    public string NodeTypeName { get; set; }
+    public required string NodeTypeName { get; init; }
 
-    public int Status { get; set; }
+    public required int Status { get; init; }
 
 }

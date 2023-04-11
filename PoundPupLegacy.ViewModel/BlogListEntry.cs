@@ -2,10 +2,10 @@
 
 public record BlogListEntry
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string? FilePathAvatar { get; set; }
-    public int NumberOfEntries { get; set; }
-    public string LatestEntryTitle { get; set; }
-    public int LatestEntryId { get; set; }
+    public required int Id { get; init; }
+    public required string Name { get; init; }
+    public required string? FilePathAvatar { get; init; }
+    public required int NumberOfEntries { get; init; }
+    public required string LatestEntryTitle { get; init; }
+    public required int LatestEntryId { get; init; }
 }
