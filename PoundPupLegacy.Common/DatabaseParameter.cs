@@ -54,6 +54,17 @@ public record NonNullableIntegerDatabaseParameter : DatabaseParameter<int>
 
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
 }
+public record NullableLongDatabaseParameter : DatabaseParameter<long?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
+}
+public record NonNullableLongDatabaseParameter : DatabaseParameter<long>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
+}
 public record AutoGenerateIntegerDatabaseParameter : DatabaseParameter<int?>
 {
     public override bool IsNullable => false;

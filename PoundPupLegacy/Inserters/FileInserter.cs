@@ -3,8 +3,7 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.Inserters;
-
-internal sealed class FileInserter : DatabaseWriter, IDatabaseInserter<FileInserter.Request>
+public sealed class FileInserterFactory : IDatabaseInserterFactory<FileInserterFactory.Request>
 {
     public record Request
     {
@@ -15,7 +14,13 @@ internal sealed class FileInserter : DatabaseWriter, IDatabaseInserter<FileInser
         public required long Size { get; init; }
     }
 
-    public static async Task<IDatabaseInserter<Request>> CreateAsync(IDbConnection connection)
+    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static NonNullableStringDatabaseParameter MimeType = new() { Name = "mime_type" };
+    internal static NonNullableLongDatabaseParameter Size = new() { Name = "size" };
+
+    public async Task<IDatabaseInserter<Request>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -29,29 +34,39 @@ internal sealed class FileInserter : DatabaseWriter, IDatabaseInserter<FileInser
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
         command.CommandText = sql;
-        command.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);
-        command.Parameters.Add("size", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("mime_type", NpgsqlTypes.NpgsqlDbType.Varchar);
-        command.Parameters.Add("path", NpgsqlTypes.NpgsqlDbType.Varchar);
-        command.Parameters.Add("node_id", NpgsqlTypes.NpgsqlDbType.Integer);
+        var parameters = new DatabaseParameter[] {
+            Name,
+            Size,
+            MimeType,
+            Path,
+            NodeId
+        };
+        foreach (var parameter in parameters) 
+        { 
+            command.AddParameter(parameter);
+        }
         await command.PrepareAsync();
         return new FileInserter(command);
-
     }
 
+}   
+
+internal sealed class FileInserter : DatabaseWriter, IDatabaseInserter<FileInserterFactory.Request>
+{
     internal FileInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public async Task InsertAsync(Request request)
+    public async Task InsertAsync(FileInserterFactory.Request request)
     {
-        _command.Parameters["name"].Value = request.Name;
-        _command.Parameters["size"].Value = request.Size;
-        _command.Parameters["mime_type"].Value = request.MimeType;
-        _command.Parameters["path"].Value = request.Path;
-        _command.Parameters["node_id"].Value = request.NodeId;
+        var parameterValues = new ParameterValue[] {
+            ParameterValue.Create(FileInserterFactory.Name, request.Name),
+            ParameterValue.Create(FileInserterFactory.Size, request.Size),
+            ParameterValue.Create(FileInserterFactory.MimeType, request.MimeType),
+            ParameterValue.Create(FileInserterFactory.Path, request.Path),
+            ParameterValue.Create(FileInserterFactory.NodeId, request.NodeId)
+        };
+        Set(parameterValues);
         await _command.ExecuteNonQueryAsync();
-
     }
-
 }

@@ -5,6 +5,7 @@ using PoundPupLegacy.Readers;
 using PoundPupLegacy.Updaters;
 using PoundPupLegacy.ViewModel.Readers;
 using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.Inserters;
 
 namespace PoundPupLegacy.Services;
 
@@ -16,6 +17,7 @@ public static class DependencyInjection
         services.AddSystemReaders();
         services.AddSystemDeleters();
         services.AddSystemUpdaters();
+        services.AddSystemInserters();
         services.AddViewModelReaders();
         services.AddCreateModelAccessors();
 

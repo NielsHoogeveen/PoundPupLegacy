@@ -10,15 +10,15 @@ public abstract class DatabaseWriter
     {
         _command = command;
     }
-    protected void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange)
+    private void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange)
     {
         SetDateTimeRangeParameter(dateTimeRange, parameterDateRange, _command);
     }
-    protected void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange)
+    private void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange)
     {
         SetTimeStampRangeParameter(dateTimeRange, parameterDateRange, _command);
     }
-    protected void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
+    private void SetTimeStampRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
     {
         if (dateTimeRange is null) {
             command.Parameters[parameterDateRange].Value = DBNull.Value;
@@ -49,7 +49,7 @@ public abstract class DatabaseWriter
         }
     }
 
-    protected void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
+    private void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDateRange, NpgsqlCommand command)
     {
         if (dateTimeRange is null) {
             command.Parameters[parameterDateRange].Value = DBNull.Value;
@@ -80,11 +80,11 @@ public abstract class DatabaseWriter
         }
     }
 
-    protected void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange)
+    private void SetDateTimeRangeParameter(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange)
     {
         SetDateTimeRange(dateTimeRange, parameterDate, parameterDateRange, _command);
     }
-    protected void SetDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange, NpgsqlCommand command)
+    private void SetDateTimeRange(DateTimeRange? dateTimeRange, string parameterDate, string parameterDateRange, NpgsqlCommand command)
     {
         if (dateTimeRange is null) {
             command.Parameters[parameterDateRange].Value = DBNull.Value;
@@ -121,11 +121,7 @@ public abstract class DatabaseWriter
         }
     }
 
-    protected void SetNullableParameter<T2>(T2? value, string parameter)
-    {
-        SetNullableParameter(value, parameter, _command);
-    }
-    protected void SetNullableParameter<T2>(T2? value, string parameter, NpgsqlCommand command)
+    private void SetNullableParameter<T2>(T2? value, string parameter, NpgsqlCommand command)
     {
         if (value is not null) {
             command.Parameters[parameter].Value = value;
@@ -134,12 +130,8 @@ public abstract class DatabaseWriter
             command.Parameters[parameter].Value = DBNull.Value;
         }
     }
-    protected void SetParameter<T2>(T2 value, string parameter)
-    {
-        SetParameter(value, parameter, _command);
-    }
 
-    protected void SetParameter<T2>(T2 value, string parameter, NpgsqlCommand command)
+    private void SetParameter<T2>(T2 value, string parameter, NpgsqlCommand command)
     {
         command.Parameters[parameter].Value = value;
     }
@@ -148,10 +140,6 @@ public abstract class DatabaseWriter
         await _command.DisposeAsync();
     }
 
-    protected void Set<T2>(DatabaseParameter<T2> parameter, T2 value)
-    {
-        SetUnchecked(parameter, value, _command);
-    }
     private void SetUnchecked(DatabaseParameter parameter, object? value, NpgsqlCommand command)
     {
         if (parameter is NullableDateRangeDatabaseParameter) {
@@ -181,11 +169,6 @@ public abstract class DatabaseWriter
             }
         }
     }
-    protected void Set<T2>(DatabaseParameter<T2> parameter, T2 value, NpgsqlCommand command)
-    {
-        SetUnchecked(parameter, value, command);
-    }
-
     protected void Set(IEnumerable<ParameterValue> parameterValues)
     {
         Set(parameterValues, _command);

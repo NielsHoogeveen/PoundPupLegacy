@@ -96,7 +96,10 @@ internal sealed class SingleIdInserter<T> : DatabaseWriter, IDatabaseInserter<T>
         if (!_autoGenerateIdentity) {
             if (identifiable.Id is null)
                 throw new NullReferenceException($"Id for {_tableName} should not be null");
-            Set(SingleIdInserterFactory.Id, identifiable.Id.Value);
+            var parameterValues = new ParameterValue[] {
+                ParameterValue.Create(SingleIdInserterFactory.Id, identifiable.Id.Value),
+            };
+            Set(parameterValues);
             await _command.ExecuteNonQueryAsync();
         }
         else {
