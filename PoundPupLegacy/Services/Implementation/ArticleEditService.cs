@@ -42,7 +42,7 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
         try {
             await _connection.OpenAsync();
             await using var reader = await _createDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeCreateDocumentRequest {
+            return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.ARTICLE,
                 UserId = userId,
                 TenantId = tenantId
@@ -59,7 +59,7 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
         try {
             await _connection.OpenAsync();
             await using var reader = await _updateDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
+            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId

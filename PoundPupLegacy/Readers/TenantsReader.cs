@@ -4,20 +4,9 @@ using PoundPupLegacy.Models;
 using System.Data;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class TenantsReaderFactory : IDatabaseReaderFactory<TenantsReader>
+internal sealed class TenantsReaderFactory : DatabaseReaderFactory<TenantsReader>
 {
-    public async Task<TenantsReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        await command.PrepareAsync();
-        return new TenantsReader(command);
-    }
+    public override string Sql => SQL;
 
     const string SQL = """
         select
@@ -36,7 +25,7 @@ internal sealed class TenantsReader : EnumerableDatabaseReader<TenantsReader.Req
     {
     }
 
-    internal TenantsReader(NpgsqlCommand command) : base(command)
+    public TenantsReader(NpgsqlCommand command) : base(command)
     {
     }
 

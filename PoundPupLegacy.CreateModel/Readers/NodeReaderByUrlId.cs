@@ -1,9 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class NodeReaderByUrlIdFactory : IDatabaseReaderFactory<NodeReaderByUrlId>
+public sealed class NodeReaderByUrlIdFactory : DatabaseReaderFactory<NodeReaderByUrlId>
 {
-    public async Task<NodeReaderByUrlId> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+
+    public override string Sql => SQL;
+
+    const string SQL = """
         SELECT 
         n.id,
         n.publisher_id,
@@ -16,24 +19,6 @@ public sealed class NodeReaderByUrlIdFactory : IDatabaseReaderFactory<NodeReader
         join node n on n.id = t.node_id
         WHERE t.tenant_id= @tenant_id AND t.url_id = @url_id
         """;
-
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("tenant_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("url_id", NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-
-        return new NodeReaderByUrlId(command);
-
-    }
-
 }
 public sealed class NodeReaderByUrlId : SingleItemDatabaseReader<NodeReaderByUrlId.Request, Node>
 {

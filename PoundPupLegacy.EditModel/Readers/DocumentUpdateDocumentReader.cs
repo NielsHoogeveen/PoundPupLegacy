@@ -1,16 +1,11 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
 public class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<DocumentUpdateDocumentReader>
 {
-    public override async Task<DocumentUpdateDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        var command = await CreateCommand(connection, SQL);
-        return new DocumentUpdateDocumentReader(command);
-    }
+    public override string Sql => SQL;
 
     const string SQL = $"""
         {CTE_EDIT}

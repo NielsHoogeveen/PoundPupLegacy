@@ -1,23 +1,12 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
-using System.Data;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class UserTenantEditOwnActionReaderFactory : IDatabaseReaderFactory<UserTenantEditOwnActionReader>
+internal sealed class UserTenantEditOwnActionReaderFactory : DatabaseReaderFactory<UserTenantEditOwnActionReader>
 {
-    public async Task<UserTenantEditOwnActionReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        await command.PrepareAsync();
-        return new UserTenantEditOwnActionReader(command);
-    }
+    public override string Sql => SQL;
+
     const string SQL = """
         select
             distinct
@@ -55,8 +44,6 @@ internal sealed class UserTenantEditOwnActionReaderFactory : IDatabaseReaderFact
             join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
         ) x
         """;
-
-
 }
 internal sealed class UserTenantEditOwnActionReader : EnumerableDatabaseReader<UserTenantEditOwnActionReader.Request, UserTenantEditOwnAction>
 {
@@ -64,7 +51,7 @@ internal sealed class UserTenantEditOwnActionReader : EnumerableDatabaseReader<U
     {
 
     }
-    internal UserTenantEditOwnActionReader(NpgsqlCommand command) : base(command)
+    public UserTenantEditOwnActionReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async IAsyncEnumerable<UserTenantEditOwnAction> ReadAsync(Request request)

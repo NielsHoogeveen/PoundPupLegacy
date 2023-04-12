@@ -3,22 +3,12 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class CountriesDocumentReaderFactory : IDatabaseReaderFactory<CountriesDocumentReader>
+public class CountriesDocumentReaderFactory : DatabaseReaderFactory<CountriesDocumentReader>
 {
-    public async Task<CountriesDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new CountriesDocumentReader(command);
-    }
+    public override string Sql => SQL;
+
     const string SQL = $"""
         select
             jsonb_agg(
@@ -129,7 +119,7 @@ public class CountriesDocumentReaderFactory : IDatabaseReaderFactory<CountriesDo
 }
 public class CountriesDocumentReader : SingleItemDatabaseReader<int, FirstLevelRegionListEntry[]>
 {
-    internal CountriesDocumentReader(NpgsqlCommand command) : base(command)
+    public CountriesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

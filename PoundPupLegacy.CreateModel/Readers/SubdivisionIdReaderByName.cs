@@ -1,31 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class SubdivisionIdReaderByNameFactory : IDatabaseReaderFactory<SubdivisionIdReaderByName>
+public sealed class SubdivisionIdReaderByNameFactory : DatabaseReaderFactory<SubdivisionIdReaderByName>
 {
-    public async Task<SubdivisionIdReaderByName> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
-            SELECT id
-            FROM public.subdivision 
-            WHERE country_id = @country_id
-            AND name = @name 
-            """;
+    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    public override string Sql => SQL;
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("country_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("name", NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-
-        return new SubdivisionIdReaderByName(command);
-
-    }
+    const string SQL = """
+        SELECT id
+        FROM public.subdivision 
+        WHERE country_id = @country_id
+        AND name = @name 
+        """;
 
 }
 public sealed class SubdivisionIdReaderByName : SingleItemDatabaseReader<SubdivisionIdReaderByName.Request, int>

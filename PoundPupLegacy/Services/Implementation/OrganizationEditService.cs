@@ -50,7 +50,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         try {
             await _connection.OpenAsync();
             await using var reader = await _organizationUpdateDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeEditDocumentReader.NodeUpdateDocumentRequest {
+            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId

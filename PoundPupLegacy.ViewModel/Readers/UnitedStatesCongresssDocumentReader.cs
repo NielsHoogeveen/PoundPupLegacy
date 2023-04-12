@@ -1,24 +1,11 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class UnitedStatesCongresssDocumentReaderFactory : IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader>
+public class UnitedStatesCongresssDocumentReaderFactory : DatabaseReaderFactory<UnitedStatesCongresssDocumentReader>
 {
-    public async Task<UnitedStatesCongresssDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    public override string Sql => SQL;
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        await command.PrepareAsync();
-        return new UnitedStatesCongresssDocumentReader(command);
-
-    }
     private const string SQL = """
         select
         	jsonb_build_object(
@@ -84,7 +71,7 @@ public class UnitedStatesCongresssDocumentReader : SingleItemDatabaseReader<Unit
     public record UnitedStatesCongresssDocumentRequest
     {
     }
-    internal UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
+    public UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async Task<UnitedStatesCongress> ReadAsync(UnitedStatesCongresssDocumentRequest request)

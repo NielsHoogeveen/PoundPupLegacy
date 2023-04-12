@@ -1,29 +1,15 @@
 ﻿using Npgsql;
-using NpgsqlTypes;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class BlogDocumentReaderFactory : IDatabaseReaderFactory<BlogDocumentReader>
+public class BlogDocumentReaderFactory : DatabaseReaderFactory<BlogDocumentReader>
 {
-    public async Task<BlogDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter Length = new() { Name = "length" };
+    internal static NonNullableIntegerDatabaseParameter StartIndex = new() { Name = "start_index" };
+    internal static NullableIntegerArrayDatabaseParameter Terms = new() { Name = "terms" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("publisher_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("tenant_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("length", NpgsqlDbType.Integer);
-        command.Parameters.Add("start_index", NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new BlogDocumentReader(command);
-
-    }
+    public override string Sql => SQL;
 
     const string SQL = $"""
             WITH 
@@ -99,7 +85,7 @@ public class BlogDocumentReader : SingleItemDatabaseReader<BlogDocumentReader.Bl
         public int StartIndex { get; init; }
         public int Length { get; init; }
     }
-    internal BlogDocumentReader(NpgsqlCommand command) : base(command)
+    public BlogDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async Task<Blog> ReadAsync(BlogDocumentRequest request)

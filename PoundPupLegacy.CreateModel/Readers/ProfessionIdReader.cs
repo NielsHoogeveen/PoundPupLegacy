@@ -1,37 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class ProfessionIdReaderFactory : IDatabaseReaderFactory<ProfessionIdReader>
+public sealed class ProfessionIdReaderFactory : DatabaseReaderFactory<ProfessionIdReader>
 {
-    public async Task<ProfessionIdReader> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
-            select
-            pr.id
-            from person p
-            join tenant_node tn on tn.node_id = p.id
-            join professional_role pr on pr.person_id = p.id
-            left join profession prt on prt.id = pr.profession_id
-            left join node n on n.id = prt.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.title = @profession_name
-            """;
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    internal static NonNullableStringDatabaseParameter ProfessionName = new() { Name = "profession_name" };
 
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    public override string Sql => SQL;
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("tenant_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("url_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("profession_name", NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-
-        return new ProfessionIdReader(command);
-
-    }
-
+    const string SQL = """
+        select
+        pr.id
+        from person p
+        join tenant_node tn on tn.node_id = p.id
+        join professional_role pr on pr.person_id = p.id
+        left join profession prt on prt.id = pr.profession_id
+        left join node n on n.id = prt.id
+        where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.title = @profession_name
+        """;
 }
 public sealed class ProfessionIdReader : SingleItemDatabaseReader<ProfessionIdReader.Request, int>
 {

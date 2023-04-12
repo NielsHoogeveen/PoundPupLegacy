@@ -3,39 +3,57 @@ using System.Data;
 
 namespace PoundPupLegacy.Common
 {
-    public interface IDatabaseReader : IAsyncDisposable
-    {
+    public interface IDatabaseReaderFactory {
         string Sql { get; }
-        bool HasBeenPrepared { get; }
     }
-    public interface IDatabaseReaderFactory { }
     public interface IDatabaseReaderFactory<T> : IDatabaseReaderFactory
         where T : IDatabaseReader
     {
         public Task<T> CreateAsync(IDbConnection connection);
     }
 
+    public interface IDatabaseReader: IDatabaseAccessor 
+    { 
+        
+    }
+
     public interface ISingleItemDatabaseReader<TRequest, TResponse> : IDatabaseReader
     {
         public Task<TResponse> ReadAsync(TRequest request);
     }
-    public interface IEnumerableDatabaseReader<TRequest, TResponse>
+    public interface IEnumerableDatabaseReader<TRequest, TResponse>: IDatabaseReader
     {
         public IAsyncEnumerable<TResponse> ReadAsync(TRequest request);
     }
 
-    public abstract class DatabaseReader : IDatabaseReader
+    public abstract class DatabaseReaderFactory<T> : DatabaseAccessorFactory, IDatabaseReaderFactory<T>
+        where T : IDatabaseReader
     {
-        protected NpgsqlCommand _command;
-        protected DatabaseReader(NpgsqlCommand command)
+        public abstract string Sql { get; }
+
+        public async Task<T> CreateAsync(IDbConnection connection)
         {
-            _command = command;
+            if (connection is not NpgsqlConnection)
+                throw new Exception("Application only works with a Postgres database");
+            var postgresConnection = (NpgsqlConnection)connection;
+            var command = postgresConnection.CreateCommand();
+            command.CommandType = CommandType.Text;
+            command.CommandTimeout = 300;
+            command.CommandText = Sql;
+            foreach (var parameter in DatabaseParameters) {
+                command.AddParameter(parameter);
+            }
+            await command.PrepareAsync();
+            return (T)Activator.CreateInstance(typeof(T), new object[] { command })!;
         }
-        public string Sql => _command.CommandText;
-        public bool HasBeenPrepared => _command.IsPrepared;
-        public virtual async ValueTask DisposeAsync()
+
+
+    }
+
+    public abstract class DatabaseReader : DatabaseAccessor, IDatabaseReader
+    {
+        protected DatabaseReader(NpgsqlCommand command): base(command)
         {
-            await _command.DisposeAsync();
         }
     }
 

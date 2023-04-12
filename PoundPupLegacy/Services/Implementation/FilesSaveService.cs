@@ -9,11 +9,11 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class FilesSaveService : ISaveService<IEnumerable<File>>
 {
     private readonly IDatabaseDeleterFactory<FileDeleter> _fileDeleterFactory;
-    private readonly IDatabaseInserterFactory<FileInserterFactory.Request> _fileInserterFactory;
+    private readonly IDatabaseInserterFactory<FileInserterRequest> _fileInserterFactory;
 
     public FilesSaveService(
         IDatabaseDeleterFactory<FileDeleter> fileDeleterFactory,
-        IDatabaseInserterFactory<FileInserterFactory.Request> fileInserterFactory
+        IDatabaseInserterFactory<FileInserterRequest> fileInserterFactory
         )
     {
         _fileDeleterFactory = fileDeleterFactory;
@@ -33,7 +33,7 @@ internal sealed class FilesSaveService : ISaveService<IEnumerable<File>>
         if (attachments.Any(x => x.Id is null)) {
             await using var inserter = await _fileInserterFactory.CreateAsync(connection);
             foreach (var attachment in attachments.Where(x => x.Id is null)) {
-                await inserter.InsertAsync(new FileInserterFactory.Request {
+                await inserter.InsertAsync(new FileInserterRequest {
                     MimeType = attachment.MimeType,
                     Path = attachment.Path,
                     Size = attachment.Size,

@@ -1,29 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
-public sealed class ActionIdReaderByPathFactory : IDatabaseReaderFactory<ActionIdReaderByPath>
+public sealed class ActionIdReaderByPathFactory : DatabaseReaderFactory<ActionIdReaderByPath>
 {
-    public async Task<ActionIdReaderByPath> CreateAsync(IDbConnection connection)
-    {
+    internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+    public override string Sql => SQL;
 
-        var sql = """
-            SELECT id FROM basic_action WHERE path = @path
-            """;
-
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("path", NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-
-        return new ActionIdReaderByPath(command);
-
-    }
+    private const string SQL = """
+        SELECT id FROM basic_action WHERE path = @path
+        """;
 }
 public sealed class ActionIdReaderByPath : SingleItemDatabaseReader<string, int>
 {

@@ -1,31 +1,17 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
 public abstract class NodeCreateDocumentReaderFactory<T> : NodeEditDocumentReaderFactory<T>
 where T : class, IDatabaseReader
 {
-    protected async Task<NpgsqlCommand> CreateCommand(IDbConnection connection, string sql)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return command;
-    }
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
 }
 
-public class NodeCreateDocumentReader<T> : NodeEditDocumentReader, ISingleItemDatabaseReader<NodeEditDocumentReader.NodeCreateDocumentRequest, T>
+public class NodeCreateDocumentReader<T> : NodeEditDocumentReader<NodeCreateDocumentRequest, T>
 where T : class, Node
 {
 
@@ -35,7 +21,7 @@ where T : class, Node
         _nodeTypeId = nodeTypeId;
     }
 
-    public async Task<T> ReadAsync(NodeCreateDocumentRequest request)
+    public override async Task<T> ReadAsync(NodeCreateDocumentRequest request)
     {
         _command.Parameters["tenant_id"].Value = request.TenantId;
         _command.Parameters["node_type_id"].Value = request.NodeTypeId;

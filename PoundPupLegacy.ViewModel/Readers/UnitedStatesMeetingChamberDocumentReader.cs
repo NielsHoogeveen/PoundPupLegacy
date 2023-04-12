@@ -1,25 +1,14 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class UnitedStatesMeetingChamberDocumentReaderFactory : IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader>
+public class UnitedStatesMeetingChamberDocumentReaderFactory : DatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader>
 {
-    public async Task<UnitedStatesMeetingChamberDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter MeetingNumber = new() { Name = "meeting_number" };
+    internal static NonNullableIntegerDatabaseParameter ChamberType = new() { Name = "chamber_type" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("meeting_number", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("chamber_type", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new UnitedStatesMeetingChamberDocumentReader(command);
-    }
+    public override string Sql => SQL;
+
     const string SQL = """
         select
         	jsonb_build_object(
@@ -266,7 +255,7 @@ public class UnitedStatesMeetingChamberDocumentReader : SingleItemDatabaseReader
         public required int Type { get; init; }
 
     }
-    internal UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
+    public UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async Task<CongressionalMeetingChamber> ReadAsync(UnitedStatesMeetingChamberRequest request)

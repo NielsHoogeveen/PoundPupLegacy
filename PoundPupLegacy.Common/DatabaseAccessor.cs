@@ -2,11 +2,35 @@
 
 namespace PoundPupLegacy.Common;
 
-public abstract class DatabaseWriter
+public interface IDatabaseAccessorFactory
+{
+    IEnumerable<DatabaseParameter> DatabaseParameters { get; }
+}
+public abstract class DatabaseAccessorFactory : IDatabaseAccessorFactory
+{
+    public IEnumerable<DatabaseParameter> DatabaseParameters => GetDatabaseParameters();
+    private List<DatabaseParameter> GetDatabaseParameters()
+    {
+        var t = GetType();
+        var fields = t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        return fields.Select(x => x.GetValue(null) as DatabaseParameter).Where(x => x is not null).Select(x => (DatabaseParameter)x!).ToList();
+    }
+
+}
+
+public interface IDatabaseAccessor : IAsyncDisposable
+{
+    string Sql { get; }
+    bool HasBeenPrepared { get; }
+}
+
+public abstract class DatabaseAccessor: IDatabaseAccessor
 {
     protected readonly NpgsqlCommand _command;
+    public string Sql => _command.CommandText;
+    public bool HasBeenPrepared => _command.IsPrepared;
 
-    protected DatabaseWriter(NpgsqlCommand command)
+    protected DatabaseAccessor(NpgsqlCommand command)
     {
         _command = command;
     }

@@ -1,27 +1,15 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class NodeDocumentReaderFactory : IDatabaseReaderFactory<NodeDocumentReader>
+public class NodeDocumentReaderFactory : DatabaseReaderFactory<NodeDocumentReader>
 {
-    public async Task<NodeDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new NodeDocumentReader(command);
+    public override string Sql => SQL;
 
-    }
     const string SQL = $"""
             WITH 
             {AUTHENTICATED_NODE},
@@ -4058,7 +4046,7 @@ public class NodeDocumentReader : SingleItemDatabaseReader<NodeDocumentReader.No
         public int UserId { get; init; }
         public int TenantId { get; init; }
     }
-    internal NodeDocumentReader(NpgsqlCommand command) : base(command)
+    public NodeDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

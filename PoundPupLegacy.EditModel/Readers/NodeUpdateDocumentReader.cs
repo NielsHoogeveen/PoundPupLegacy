@@ -1,32 +1,18 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
 public abstract class NodeUpdateDocumentReaderFactory<T> : NodeEditDocumentReaderFactory<T>
 where T : class, IDatabaseReader
 {
-    protected async Task<NpgsqlCommand> CreateCommand(IDbConnection connection, string sql)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-        command.Parameters.Add("url_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return command;
-    }
+    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
 }
 
-public class NodeUpdateDocumentReader<T> : NodeEditDocumentReader, ISingleItemDatabaseReader<NodeEditDocumentReader.NodeUpdateDocumentRequest, T>
+public class NodeUpdateDocumentReader<T> : NodeEditDocumentReader<NodeUpdateDocumentRequest, T>
 where T : class, Node
 {
 
@@ -37,7 +23,7 @@ where T : class, Node
     }
 
 
-    public async Task<T> ReadAsync(NodeUpdateDocumentRequest request)
+    public override async Task<T> ReadAsync(NodeUpdateDocumentRequest request)
     {
         _command.Parameters["url_id"].Value = request.UrlId;
         _command.Parameters["user_id"].Value = request.UserId;

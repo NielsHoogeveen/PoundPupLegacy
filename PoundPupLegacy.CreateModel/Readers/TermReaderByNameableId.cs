@@ -1,36 +1,21 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
-public sealed class TermReaderByNameableIdFactory : IDatabaseReaderFactory<TermReaderByNameableId>
+public sealed class TermReaderByNameableIdFactory : DatabaseReaderFactory<TermReaderByNameableId>
 {
-    public async Task<TermReaderByNameableId> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
-            SELECT 
-                t.id, 
-                t.name 
-            FROM term t
-            JOIN vocabulary v on v.id = t.vocabulary_id
-            WHERE v.owner_id = @owner_id AND v.name = @vocabulary_name AND nameable_id = @nameable_id
-            """;
+    internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
+    internal static NonNullableStringDatabaseParameter VocabularyName = new() { Name = "vocabulary_name" };
+    internal static NonNullableIntegerDatabaseParameter NameableId = new() { Name = "nameable_id" };
 
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    public override string Sql => SQL;
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("owner_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("vocabulary_name", NpgsqlDbType.Varchar);
-        command.Parameters.Add("nameable_id", NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-
-        return new TermReaderByNameableId(command);
-
-    }
-
+    const string SQL = """
+        SELECT 
+            t.id, 
+            t.name 
+        FROM term t
+        JOIN vocabulary v on v.id = t.vocabulary_id
+        WHERE v.owner_id = @owner_id AND v.name = @vocabulary_name AND nameable_id = @nameable_id
+        """;
 }
 public sealed class TermReaderByNameableId : SingleItemDatabaseReader<TermReaderByNameableId.Request, Term>
 {

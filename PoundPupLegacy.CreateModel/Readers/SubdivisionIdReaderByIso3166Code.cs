@@ -1,29 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class SubdivisionIdReaderByIso3166CodeFactory : IDatabaseReaderFactory<SubdivisionIdReaderByIso3166Code>
+public sealed class SubdivisionIdReaderByIso3166CodeFactory : DatabaseReaderFactory<SubdivisionIdReaderByIso3166Code>
 {
-    public async Task<SubdivisionIdReaderByIso3166Code> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
-            SELECT id
-            FROM public.iso_coded_subdivision 
-            WHERE iso_3166_2_code = @iso_3166_2_code 
-            """;
+    internal static NonNullableStringDatabaseParameter Iso3166Code = new() { Name = "iso_3166_2_code" };
 
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    public override string Sql => SQL;
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("iso_3166_2_code", NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-
-        return new SubdivisionIdReaderByIso3166Code(command);
-
-    }
+    const string SQL = """
+        SELECT id
+        FROM public.iso_coded_subdivision 
+        WHERE iso_3166_2_code = @iso_3166_2_code 
+        """;
 
 }
 public sealed class SubdivisionIdReaderByIso3166Code : SingleItemDatabaseReader<string, int>

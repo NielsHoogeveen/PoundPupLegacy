@@ -1,29 +1,14 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class VocabularyIdReaderByOwnerAndNameFactory : IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName>
+public sealed class VocabularyIdReaderByOwnerAndNameFactory : DatabaseReaderFactory<VocabularyIdReaderByOwnerAndName>
 {
-    public async Task<VocabularyIdReaderByOwnerAndName> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
-            SELECT id FROM vocabulary WHERE owner_id = @owner_id AND name = @name
-            """;
+    internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    public override string Sql => SQL;
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("owner_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("name", NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-
-        return new VocabularyIdReaderByOwnerAndName(command);
-
-    }
-
+    const string SQL = """
+        SELECT id FROM vocabulary WHERE owner_id = @owner_id AND name = @name
+        """;
 }
 public sealed class VocabularyIdReaderByOwnerAndName : SingleItemDatabaseReader<VocabularyIdReaderByOwnerAndName.Request, int>
 {

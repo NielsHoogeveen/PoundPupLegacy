@@ -1,24 +1,13 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class PasswordValidationReaderFactory : IDatabaseReaderFactory<PasswordValidationReader>
+internal sealed class PasswordValidationReaderFactory : DatabaseReaderFactory<PasswordValidationReader>
 {
-    public async Task<PasswordValidationReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);
-        command.Parameters.Add("password", NpgsqlTypes.NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-        return new PasswordValidationReader(command);
-    }
+    internal static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static readonly NonNullableStringDatabaseParameter Password = new() { Name = "password" };
+
+    public override string Sql => SQL;
 
     const string SQL = """
         select 
@@ -37,8 +26,14 @@ internal sealed class PasswordValidationReader : SingleItemDatabaseReader<Passwo
         public required string UserName { get; init; }
         public required string Password { get; init; }
     }
-    internal PasswordValidationReader(NpgsqlCommand command) : base(command)
+    public PasswordValidationReader(NpgsqlCommand command) : base(command)
     {
+    }
+
+    public IEnumerable<ParameterValue> GetParameterValues(Request request)
+    {
+        yield return ParameterValue.Create(PasswordValidationReaderFactory.Name, request.UserName);
+        yield return ParameterValue.Create(PasswordValidationReaderFactory.Password, request.Password);
     }
 
     public override async Task<int?> ReadAsync(Request request)

@@ -1,23 +1,11 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
-using System.Data;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class TenantNodesReaderFactory : IDatabaseReaderFactory<TenantNodesReader>
+internal sealed class TenantNodesReaderFactory : DatabaseReaderFactory<TenantNodesReader>
 {
-    public async Task<TenantNodesReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        await command.PrepareAsync();
-        return new TenantNodesReader(command);
-    }
+    public override string Sql => SQL;
     const string SQL = """
         select
         tn.tenant_id,
@@ -26,8 +14,6 @@ internal sealed class TenantNodesReaderFactory : IDatabaseReaderFactory<TenantNo
         from tenant_node tn 
         where tn.url_path is not null
         """;
-
-
 }
 internal sealed class TenantNodesReader : EnumerableDatabaseReader<TenantNodesReader.Request, TenantNode>
 {
@@ -35,7 +21,7 @@ internal sealed class TenantNodesReader : EnumerableDatabaseReader<TenantNodesRe
     {
 
     }
-    internal TenantNodesReader(NpgsqlCommand command) : base(command)
+    public TenantNodesReader(NpgsqlCommand command) : base(command)
     {
     }
 

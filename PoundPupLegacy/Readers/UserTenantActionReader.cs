@@ -1,23 +1,12 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
-using System.Data;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class UserTenantActionReaderFactory : IDatabaseReaderFactory<UserTenantActionReader>
+internal sealed class UserTenantActionReaderFactory : DatabaseReaderFactory<UserTenantActionReader>
 {
-    public async Task<UserTenantActionReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        await command.PrepareAsync();
-        return new UserTenantActionReader(command);
-    }
+    public override string Sql => SQL;
+
     const string SQL = """
         select
             distinct
@@ -48,7 +37,7 @@ internal sealed class UserTenantActionReader : EnumerableDatabaseReader<UserTena
     {
 
     }
-    internal UserTenantActionReader(NpgsqlCommand command) : base(command)
+    public UserTenantActionReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async IAsyncEnumerable<UserTenantAction> ReadAsync(Request request)

@@ -1,29 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class TermReaderByNameFactory : IDatabaseReaderFactory<TermReaderByName>
+public sealed class TermReaderByNameFactory : DatabaseReaderFactory<TermReaderByName>
 {
-    public async Task<TermReaderByName> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
-            SELECT id, nameable_id FROM term WHERE vocabulary_id = @vocabulary_id AND name = @name
-            """;
+    internal static NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
+    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    public override string Sql => SQL;
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("vocabulary_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("name", NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-
-        return new TermReaderByName(command);
-
-    }
-
+    const string SQL = """
+        SELECT id, nameable_id
+        FROM term 
+        WHERE vocabulary_id = @vocabulary_id
+        AND name = @name 
+        """;
 }
 public sealed class TermReaderByName : SingleItemDatabaseReader<TermReaderByName.Request, Term>
 {

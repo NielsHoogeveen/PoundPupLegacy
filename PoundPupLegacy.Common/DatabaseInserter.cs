@@ -7,26 +7,18 @@ public interface IDatabaseInserter<T> : IDatabaseInserter
 {
     Task InsertAsync(T item);
 }
-public interface IDatabaseInserterFactory
+
+public interface IDatabaseInserterFactory: IDatabaseAccessorFactory
 {
 }
 public interface IDatabaseInserterFactory<T> : IDatabaseInserterFactory
 {
     Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection);
 }
-
-public abstract class DatabaseInserterFactory<T, T2> : IDatabaseInserterFactory<T>
-    where T2 : DatabaseInserter<T>
+public abstract class DatabaseInserterFactoryBase<T, T2> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
+    where T2 : IDatabaseInserter<T>
 {
-    public abstract string TableName { get; }
-
-    public IEnumerable<DatabaseParameter> DatabaseParameters => GetDatabaseParameters();
-    private List<DatabaseParameter> GetDatabaseParameters()
-    {
-        var t = GetType();
-        var fields = t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-        return fields.Select(x => x.GetValue(null) as DatabaseParameter).Where(x => x is not null).Select(x => (DatabaseParameter)x!).ToList();
-    }
+    protected abstract string Sql { get; }
 
     public async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
     {
@@ -37,14 +29,7 @@ public abstract class DatabaseInserterFactory<T, T2> : IDatabaseInserterFactory<
 
         command.CommandType = CommandType.Text;
         command.CommandTimeout = 300;
-        command.CommandText = $"""
-            INSERT INTO public."{TableName}"(
-                {string.Join(',', DatabaseParameters.Select(x => x.Name))}
-            ) 
-            VALUES(
-                {string.Join(',', DatabaseParameters.Select(x => $"@{x.Name}"))}
-            )
-            """;
+        command.CommandText = Sql;
 
         foreach (var parameter in DatabaseParameters) {
             command.AddParameter(parameter);
@@ -52,6 +37,21 @@ public abstract class DatabaseInserterFactory<T, T2> : IDatabaseInserterFactory<
         await command.PrepareAsync();
         return (IDatabaseInserter<T>)Activator.CreateInstance(typeof(T2), new object[] { command })!;
     }
+}
+
+public abstract class DatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBase<T, T2>
+    where T2 : DatabaseInserter<T>
+{
+    public abstract string TableName { get; }
+
+    protected override string Sql => $"""
+        INSERT INTO public."{TableName}"(
+            {string.Join(',', DatabaseParameters.Select(x => x.Name))}
+        ) 
+        VALUES(
+            {string.Join(',', DatabaseParameters.Select(x => $"@{x.Name}"))}
+        )
+        """;
 }
 
 public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T, T2> : IDatabaseInserterFactory<T>
@@ -120,30 +120,13 @@ public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T, T2> : 
     }
 }
 
-public abstract class AutoGenerateIdDatabaseInserterFactory<T, T2> : IDatabaseInserterFactory<T>
+public abstract class AutoGenerateIdDatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBase<T, T2>
     where T : Identifiable
     where T2 : AutoGenerateIdDatabaseInserter<T>
 {
     public abstract string TableName { get; }
 
-    public IEnumerable<DatabaseParameter> DatabaseParameters => GetDatabaseParameters();
-    private List<DatabaseParameter> GetDatabaseParameters()
-    {
-        var t = GetType();
-        var fields = t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-        return fields.Select(x => x.GetValue(null) as DatabaseParameter).Where(x => x is not null).Select(x => (DatabaseParameter)x!).ToList();
-    }
-
-    public async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = DatabaseParameters.Any()
+    protected override string Sql => DatabaseParameters.Any()
             ? $"""
                 INSERT INTO public."{TableName}"(
                     {string.Join(',', DatabaseParameters.Select(x => x.Name))}
@@ -157,16 +140,9 @@ public abstract class AutoGenerateIdDatabaseInserterFactory<T, T2> : IDatabaseIn
                 INSERT INTO public."{TableName}" DEFAULT VALUES;
                 SELECT lastval();
                 """;
-
-        foreach (var parameter in DatabaseParameters) {
-            command.AddParameter(parameter);
-        }
-        await command.PrepareAsync();
-        return (IDatabaseInserter<T>)Activator.CreateInstance(typeof(T2), new object[] { command })!;
-    }
 }
 
-public abstract class DatabaseInserter<T> : DatabaseWriter, IDatabaseInserter<T>
+public abstract class DatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<T>
 {
     public abstract IEnumerable<ParameterValue> GetParameterValues(T item);
     protected DatabaseInserter(NpgsqlCommand command) : base(command)
@@ -178,7 +154,7 @@ public abstract class DatabaseInserter<T> : DatabaseWriter, IDatabaseInserter<T>
         await _command.ExecuteNonQueryAsync();
     }
 }
-public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseWriter, IDatabaseInserter<T>
+public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<T>
     where T : Identifiable
 {
     public abstract IEnumerable<ParameterValue> GetParameterValues(T item);
@@ -194,7 +170,7 @@ public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseWriter, IDatab
         };
     }
 }
-public abstract class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseWriter, IDatabaseInserter<T>
+public abstract class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<T>
     where T : Identifiable
 {
     public abstract IEnumerable<ParameterValue> GetParameterValues(T item);

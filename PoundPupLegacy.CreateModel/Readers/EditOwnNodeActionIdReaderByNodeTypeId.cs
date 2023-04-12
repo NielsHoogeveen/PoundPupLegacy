@@ -1,27 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : IDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeId>
+public sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : DatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeId>
 {
-    public async Task<EditOwnNodeActionIdReaderByNodeTypeId> CreateAsync(IDbConnection connection)
-    {
-        var sql = """
-            SELECT id FROM edit_own_node_action WHERE node_type_id = @node_type_id
-            """;
+    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-
-        command.Parameters.Add("node_type_id", NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-
-        return new EditOwnNodeActionIdReaderByNodeTypeId(command);
-    }
-
+    public override string Sql => SQL;
+    const string SQL = """
+        SELECT id FROM edit_own_node_action WHERE node_type_id = @node_type_id
+        """;
 }
 public sealed class EditOwnNodeActionIdReaderByNodeTypeId : SingleItemDatabaseReader<int, int>
 {

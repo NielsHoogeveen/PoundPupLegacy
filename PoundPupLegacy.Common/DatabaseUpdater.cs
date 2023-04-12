@@ -9,7 +9,7 @@ public interface IDatabaseUpdater : IAsyncDisposable
     bool HasBeenPrepared { get; }
 
 }
-public interface IDatabaseUpdaterFactory
+public interface IDatabaseUpdaterFactory: IDatabaseAccessorFactory
 {
 
 }
@@ -17,22 +17,13 @@ public interface IDatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory
     where T : IDatabaseUpdater
 {
     Task<T> CreateAsync(IDbConnection connection);
-    IEnumerable<DatabaseParameter> DatabaseParameters { get; }
     string Sql { get; }
 
 }
 
-public abstract class DatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory<T>
+public abstract class DatabaseUpdaterFactory<T> : DatabaseAccessorFactory, IDatabaseUpdaterFactory<T>
     where T : IDatabaseUpdater
 {
-    public IEnumerable<DatabaseParameter> DatabaseParameters => GetDatabaseParameters();
-
-    private List<DatabaseParameter> GetDatabaseParameters()
-    {
-        var t = GetType();
-        var fields = t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-        return fields.Select(x => x.GetValue(null) as DatabaseParameter).Where(x => x is not null).Select(x => (DatabaseParameter)x!).ToList();
-    }
 
     public async Task<T> CreateAsync(IDbConnection connection)
     {
@@ -55,7 +46,7 @@ public abstract class DatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory<T>
     public abstract string Sql { get; }
 
 }
-public abstract class DatabaseUpdater<TRequest> : DatabaseWriter, IDatabaseUpdater
+public abstract class DatabaseUpdater<TRequest> : DatabaseAccessor, IDatabaseUpdater
 {
     protected DatabaseUpdater(NpgsqlCommand command) : base(command)
     {

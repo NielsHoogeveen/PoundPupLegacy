@@ -1,27 +1,15 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class DocumentableDocumentsDocumentReaderFactory : IDatabaseReaderFactory<DocumentableDocumentsDocumentReader>
+public class DocumentableDocumentsDocumentReaderFactory : DatabaseReaderFactory<DocumentableDocumentsDocumentReader>
 {
-    public async Task<DocumentableDocumentsDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    public override string Sql => SQL;
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableStringDatabaseParameter SearchString = new() { Name = "search_string" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("search_string", NpgsqlTypes.NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-        return new DocumentableDocumentsDocumentReader(command);
-    }
     const string SQL = """
         select
             id,
@@ -74,7 +62,7 @@ public class DocumentableDocumentsDocumentReaderFactory : IDatabaseReaderFactory
 
 }
 
-public class DocumentableDocumentsDocumentReader : DatabaseReader, IEnumerableDatabaseReader<DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest, DocumentableDocument>
+public class DocumentableDocumentsDocumentReader : EnumerableDatabaseReader<DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest, DocumentableDocument>
 {
     public record DocumentableDocumentsDocumentRequest
     {
@@ -87,7 +75,7 @@ public class DocumentableDocumentsDocumentReader : DatabaseReader, IEnumerableDa
     internal DocumentableDocumentsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public async IAsyncEnumerable<DocumentableDocument> ReadAsync(DocumentableDocumentsDocumentRequest request)
+    public override async IAsyncEnumerable<DocumentableDocument> ReadAsync(DocumentableDocumentsDocumentRequest request)
     {
         _command.Parameters["user_id"].Value = request.UserId;
         _command.Parameters["tenant_id"].Value = request.TenantId;

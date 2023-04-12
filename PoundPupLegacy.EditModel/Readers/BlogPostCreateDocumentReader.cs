@@ -6,12 +6,6 @@ namespace PoundPupLegacy.EditModel.Readers;
 
 public class BlogPostCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<BlogPostCreateDocumentReader>
 {
-    public override async Task<BlogPostCreateDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        var command = await CreateCommand(connection, SQL);
-        return new BlogPostCreateDocumentReader(command);
-    }
-
 }
 public class BlogPostCreateDocumentReader : SimpleTextNodeCreateDocumentReader<BlogPost>
 {

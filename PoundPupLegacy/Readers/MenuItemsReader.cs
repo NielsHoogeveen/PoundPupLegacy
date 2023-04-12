@@ -1,23 +1,11 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
-using System.Data;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class MenuItemsReaderFactory : IDatabaseReaderFactory<MenuItemsReader>
+internal sealed class MenuItemsReaderFactory : DatabaseReaderFactory<MenuItemsReader>
 {
-    public async Task<MenuItemsReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        await command.PrepareAsync();
-        return new MenuItemsReader(command);
-    }
+    public override string Sql => SQL;
 
     const string SQL = """
         with 
@@ -130,7 +118,7 @@ internal sealed class MenuItemsReader : EnumerableDatabaseReader<MenuItemsReader
     public record Request
     {
     }
-    internal MenuItemsReader(NpgsqlCommand command) : base(command)
+    public MenuItemsReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async IAsyncEnumerable<UserTenantMenuItems> ReadAsync(Request request)

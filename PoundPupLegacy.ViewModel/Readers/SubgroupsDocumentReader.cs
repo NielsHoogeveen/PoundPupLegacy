@@ -1,27 +1,15 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class SubgroupsDocumentReaderFactory : IDatabaseReaderFactory<SubgroupsDocumentReader>
+public class SubgroupsDocumentReaderFactory : DatabaseReaderFactory<SubgroupsDocumentReader>
 {
-    public async Task<SubgroupsDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
+    internal static NullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("subgroup_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new SubgroupsDocumentReader(command);
-    }
+    public override string Sql => SQL;
 
     const string SQL = """
             select
@@ -149,7 +137,7 @@ public class SubgroupsDocumentReader : SingleItemDatabaseReader<SubgroupsDocumen
         public required int Offset { get; init; }
 
     }
-    internal SubgroupsDocumentReader(NpgsqlCommand command) : base(command)
+    public SubgroupsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async Task<SubgroupPagedList> ReadAsync(SubgroupDocumentRequest request)

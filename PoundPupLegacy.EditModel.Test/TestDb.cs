@@ -23,7 +23,7 @@ namespace PoundPupLegacy.Edit.Test
                 var task = (Task)m!.Invoke(i, new object[] { connection })!;
                 await task.ConfigureAwait(false);
                 var result = task.GetType().GetProperty("Result");
-                var reader = (IDatabaseReader)result!.GetValue(task)!;
+                var reader = (IDatabaseAccessor)result!.GetValue(task)!;
                 Assert.True(reader.HasBeenPrepared);
                 Assert.NotEqual(string.Empty, reader.Sql);
                 await reader.DisposeAsync();

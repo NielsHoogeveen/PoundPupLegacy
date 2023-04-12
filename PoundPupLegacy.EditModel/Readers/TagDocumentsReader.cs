@@ -1,26 +1,15 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-public class TagDocumentsReaderFactory : IDatabaseReaderFactory<TagDocumentsReader>
+public class TagDocumentsReaderFactory : DatabaseReaderFactory<TagDocumentsReader>
 {
-    public async Task<TagDocumentsReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableStringDatabaseParameter SearchString = new() { Name = "search_string" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("search_string", NpgsqlTypes.NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-        return new TagDocumentsReader(command);
-    }
+    public override string Sql => SQL;
+
     const string SQL = """
         select
         distinct
@@ -44,7 +33,7 @@ public class TagDocumentsReaderFactory : IDatabaseReaderFactory<TagDocumentsRead
         """;
 
 }
-public class TagDocumentsReader : DatabaseReader, IEnumerableDatabaseReader<TagDocumentsReader.TagDocumentsRequest, Tag>
+public class TagDocumentsReader : EnumerableDatabaseReader<TagDocumentsReader.TagDocumentsRequest, Tag>
 {
     public record TagDocumentsRequest
     {
@@ -56,7 +45,7 @@ public class TagDocumentsReader : DatabaseReader, IEnumerableDatabaseReader<TagD
     internal TagDocumentsReader(NpgsqlCommand command) : base(command)
     {
     }
-    public async IAsyncEnumerable<Tag> ReadAsync(TagDocumentsRequest request)
+    public override async IAsyncEnumerable<Tag> ReadAsync(TagDocumentsRequest request)
     {
         _command.Parameters["tenant_id"].Value = request.TenantId;
         _command.Parameters["search_string"].Value = $"%{request.SearchString}%";

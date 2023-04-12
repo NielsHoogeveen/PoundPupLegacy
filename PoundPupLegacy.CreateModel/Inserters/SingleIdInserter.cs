@@ -11,6 +11,8 @@ internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
 
     protected abstract bool AutoGenerateIdentity { get; }
 
+    public IEnumerable<DatabaseParameter> DatabaseParameters => new List<DatabaseParameter> { SingleIdInserterFactory.Id };
+
     public async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -80,7 +82,7 @@ internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
     }
 
 }
-internal sealed class SingleIdInserter<T> : DatabaseWriter, IDatabaseInserter<T> where T : Identifiable
+internal sealed class SingleIdInserter<T> : DatabaseAccessor, IDatabaseInserter<T> where T : Identifiable
 {
 
     private readonly bool _autoGenerateIdentity;

@@ -3,12 +3,11 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
-
-
 public abstract class SimpleTextNodeCreateDocumentReaderFactory<T> : NodeCreateDocumentReaderFactory<T>
     where T : class, IDatabaseReader
 {
-    protected const string SQL = $"""
+    public override string Sql => SQL;  
+    private const string SQL = $"""
             {CTE_CREATE}
             select
                 jsonb_build_object(

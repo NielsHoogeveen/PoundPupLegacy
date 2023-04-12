@@ -1,30 +1,17 @@
 ﻿using Npgsql;
-using NpgsqlTypes;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-public class ArticlesDocumentReaderFactory : IDatabaseReaderFactory<ArticlesDocumentReader>
+public class ArticlesDocumentReaderFactory : DatabaseReaderFactory<ArticlesDocumentReader>
 {
-    public async Task<ArticlesDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NullableIntegerDatabaseParameter Length = new() { Name = "length" };
+    internal static NullableIntegerDatabaseParameter StartIndex = new() { Name = "start_index" };
+    internal static NullableIntegerArrayDatabaseParameter Terms = new() { Name = "terms" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlDbType.Integer);
-        command.Parameters.Add("length", NpgsqlDbType.Integer);
-        command.Parameters.Add("start_index", NpgsqlDbType.Integer);
-        command.Parameters.Add("terms", NpgsqlDbType.Array | NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new ArticlesDocumentReader(command);
+    public override string Sql => SQL;
 
-    }
     const string SQL = $"""
             WITH
             {FETCH_TERMS_UNFILTERED},
@@ -52,6 +39,7 @@ public class ArticlesDocumentReaderFactory : IDatabaseReaderFactory<ArticlesDocu
                 end "NumberOfEntries"
             	) ta
             """;
+
 
     const string FETCH_TERMS_UNFILTERED = """
          fetch_terms_unfiltered as (
@@ -271,7 +259,7 @@ public class ArticlesDocumentReader : SingleItemDatabaseReader<ArticlesDocumentR
         public required int StartIndex { get; init; }
         public required int Length { get; init; }
     }
-    internal ArticlesDocumentReader(NpgsqlCommand command) : base(command)
+    public ArticlesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 
@@ -291,7 +279,4 @@ public class ArticlesDocumentReader : SingleItemDatabaseReader<ArticlesDocumentR
         var articles = reader.GetFieldValue<Articles>(0);
         return articles;
     }
-
-
-
 }

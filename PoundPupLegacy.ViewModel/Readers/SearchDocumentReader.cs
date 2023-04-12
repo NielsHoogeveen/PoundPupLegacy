@@ -1,28 +1,16 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class SearchDocumentReaderFactory : IDatabaseReaderFactory<SearchDocumentReader>
+public class SearchDocumentReaderFactory : DatabaseReaderFactory<SearchDocumentReader>
 {
-    public async Task<SearchDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NonNullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
+    internal static NonNullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
+    internal static NonNullableStringDatabaseParameter SearchString = new() { Name = "search_string" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("search_string", NpgsqlTypes.NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-        return new SearchDocumentReader(command);
-    }
+    public override string Sql => SQL;
 
     const string SQL = """
              with 
@@ -180,7 +168,7 @@ public class SearchDocumentReader : SingleItemDatabaseReader<SearchDocumentReade
         public required string SearchString { get; init; }
 
     }
-    internal SearchDocumentReader(NpgsqlCommand command) : base(command)
+    public SearchDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async Task<SearchResult> ReadAsync(SearchDocumentRequest request)

@@ -3,26 +3,15 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class TopicsDocumentReaderFactory : IDatabaseReaderFactory<TopicsDocumentReader>
+public class TopicsDocumentReaderFactory : DatabaseReaderFactory<TopicsDocumentReader>
 {
-    public async Task<TopicsDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
+    internal static NullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
+    internal static NullableStringDatabaseParameter Pattern = new() { Name = "pattern" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("pattern", NpgsqlTypes.NpgsqlDbType.Varchar);
-        await command.PrepareAsync();
-        return new TopicsDocumentReader(command);
-    }
+    public override string Sql => SQL;
 
     const string SQL = """
         select
@@ -117,7 +106,7 @@ public class TopicsDocumentReader : SingleItemDatabaseReader<TopicsDocumentReade
         public required string SearchTerm { get; init; }
         public required SearchOption SearchOption { get; init; }
     }
-    internal TopicsDocumentReader(NpgsqlCommand command) : base(command)
+    public TopicsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async Task<Topics> ReadAsync(TopicsDocumentRequest request)

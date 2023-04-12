@@ -3,27 +3,15 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class CasesDocumentReaderFactory : IDatabaseReaderFactory<CasesDocumentReader>
+public class CasesDocumentReaderFactory : DatabaseReaderFactory<CasesDocumentReader>
 {
-    public async Task<CasesDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NonNullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
+    internal static NonNullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
+    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("limit", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("offset", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("node_type_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new CasesDocumentReader(command);
-    }
-
+    public override string Sql => SQL;
 
     private const string SQL = """
             select
@@ -129,7 +117,7 @@ public class CasesDocumentReader : SingleItemDatabaseReader<CasesDocumentReader.
         public int Offset { get; init; }
         public CaseType CaseType { get; init; }
     }
-    internal CasesDocumentReader(NpgsqlCommand command) : base(command)
+    public CasesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     public override async Task<Cases> ReadAsync(CasesDocumentRequest request)

@@ -3,23 +3,11 @@ using PoundPupLegacy.Common;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class BlogsDocumentReaderFactory : IDatabaseReaderFactory<BlogsDocumentReader>
+public class BlogsDocumentReaderFactory : DatabaseReaderFactory<BlogsDocumentReader>
 {
-    public async Task<BlogsDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = SQL;
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new BlogsDocumentReader(command);
-
-    }
+    public override string Sql => SQL;
 
     const string SQL = """
             select 
@@ -55,7 +43,7 @@ public class BlogsDocumentReaderFactory : IDatabaseReaderFactory<BlogsDocumentRe
 }
 public class BlogsDocumentReader : SingleItemDatabaseReader<int, List<BlogListEntry>>
 {
-    internal BlogsDocumentReader(NpgsqlCommand command) : base(command)
+    public BlogsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

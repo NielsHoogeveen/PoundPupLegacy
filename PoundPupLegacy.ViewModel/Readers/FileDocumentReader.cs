@@ -1,27 +1,14 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.ViewModel.Readers;
-public class FileDocumentReaderFactory : IDatabaseReaderFactory<FileDocumentReader>
+public class FileDocumentReaderFactory : DatabaseReaderFactory<FileDocumentReader>
 {
-    public async Task<FileDocumentReader> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-        var command = postgresConnection.CreateCommand();
+    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NonNullableIntegerDatabaseParameter FileId = new() { Name = "file_id" };
 
-        command.CommandType = CommandType.Text;
-        command.CommandText = SQL;
-
-        command.Parameters.Add("file_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("tenant_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-
-        return new FileDocumentReader(command);
-    }
+    public override string Sql => SQL;
 
     const string SQL = """
                     select
@@ -125,7 +112,7 @@ public class FileDocumentReader : SingleItemDatabaseReader<FileDocumentReader.Fi
         public int TenantId { get; init; }
 
     }
-    internal FileDocumentReader(NpgsqlCommand command) : base(command)
+    public FileDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 
