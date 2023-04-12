@@ -40,7 +40,7 @@ public sealed class TermReaderByName : MandatorySingleItemDatabaseReader<Reader.
     {
         return new ParameterValue[] {
             ParameterValue.Create(Factory.VocabularyId, request.VocabularyId),
-            ParameterValue.Create(Factory.Name, request.Name)
+            ParameterValue.Create(Factory.Name, request.Name.Trim())
         };
     }
 
