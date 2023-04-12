@@ -73,7 +73,7 @@ public class UnitedStatesCongresssDocumentReader : SingleItemDatabaseReader<Read
     public record Request
     {
     }
-    public UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
+    internal UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

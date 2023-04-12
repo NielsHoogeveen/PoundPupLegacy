@@ -4047,7 +4047,7 @@ public class NodeDocumentReader : SingleItemDatabaseReader<Reader.Request, Node>
         public int UserId { get; init; }
         public int TenantId { get; init; }
     }
-    public NodeDocumentReader(NpgsqlCommand command) : base(command)
+    internal NodeDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

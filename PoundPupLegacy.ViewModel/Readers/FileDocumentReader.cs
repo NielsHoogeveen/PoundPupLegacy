@@ -115,7 +115,7 @@ public class FileDocumentReader : SingleItemDatabaseReader<Reader.Request, File>
         public int TenantId { get; init; }
 
     }
-    public FileDocumentReader(NpgsqlCommand command) : base(command)
+    internal FileDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

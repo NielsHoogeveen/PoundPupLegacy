@@ -261,7 +261,7 @@ public class ArticlesDocumentReader : SingleItemDatabaseReader<Reader.Request, A
         public required int StartIndex { get; init; }
         public required int Length { get; init; }
     }
-    public ArticlesDocumentReader(NpgsqlCommand command) : base(command)
+    internal ArticlesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

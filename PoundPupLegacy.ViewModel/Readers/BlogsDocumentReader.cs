@@ -44,7 +44,7 @@ public class BlogsDocumentReaderFactory : DatabaseReaderFactory<Reader>
 }
 public class BlogsDocumentReader : SingleItemDatabaseReader<int, List<BlogListEntry>>
 {
-    public BlogsDocumentReader(NpgsqlCommand command) : base(command)
+    internal BlogsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

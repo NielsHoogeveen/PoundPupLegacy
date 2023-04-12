@@ -7,7 +7,7 @@ public sealed class ArticleUpdateDocumentReaderFactory : SimpleTextNodeUpdateDoc
 
 public sealed class ArticleUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<Article>
 {
-    public ArticleUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
+    internal ArticleUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
     {
     }
 }

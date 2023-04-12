@@ -7,7 +7,7 @@ public sealed class BlogPostCreateDocumentReaderFactory : SimpleTextNodeCreateDo
 }
 public sealed class BlogPostCreateDocumentReader : SimpleTextNodeCreateDocumentReader<BlogPost>
 {
-    public BlogPostCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
+    internal BlogPostCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
     {
     }
 

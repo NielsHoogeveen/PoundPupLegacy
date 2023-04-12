@@ -106,7 +106,7 @@ public class PersonsDocumentReader : SingleItemDatabaseReader<Reader.Request, Pe
         public required SearchOption SearchOption { get; init; }
 
     }
-    public PersonsDocumentReader(NpgsqlCommand command) : base(command)
+    internal PersonsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

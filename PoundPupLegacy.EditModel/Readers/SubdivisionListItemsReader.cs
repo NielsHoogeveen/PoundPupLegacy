@@ -22,7 +22,7 @@ public class SubdivisionListItemsReaderFactory : DatabaseReaderFactory<Reader>
 }
 public class SubdivisionListItemsReader : EnumerableDatabaseReader<int, SubdivisionListItem>
 {
-    public SubdivisionListItemsReader(NpgsqlCommand command) : base(command)
+    internal SubdivisionListItemsReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(int request)

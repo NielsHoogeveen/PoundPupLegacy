@@ -78,7 +78,7 @@ public class DocumentableDocumentsDocumentReader : EnumerableDatabaseReader<Read
         public required string SearchString { get; init; }
 
     }
-    public DocumentableDocumentsDocumentReader(NpgsqlCommand command) : base(command)
+    internal DocumentableDocumentsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

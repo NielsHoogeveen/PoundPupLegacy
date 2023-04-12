@@ -121,7 +121,7 @@ public class CountriesDocumentReaderFactory : DatabaseReaderFactory<Reader>
 }
 public class CountriesDocumentReader : SingleItemDatabaseReader<int, FirstLevelRegionListEntry[]>
 {
-    public CountriesDocumentReader(NpgsqlCommand command) : base(command)
+    internal CountriesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

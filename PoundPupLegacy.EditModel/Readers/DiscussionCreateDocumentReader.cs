@@ -7,7 +7,7 @@ public class DiscussionCreateDocumentReaderFactory : SimpleTextNodeCreateDocumen
 }
 public class DiscussionCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Discussion>
 {
-    public DiscussionCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
+    internal DiscussionCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
     {
     }
 }

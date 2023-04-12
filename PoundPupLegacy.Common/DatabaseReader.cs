@@ -44,7 +44,13 @@ namespace PoundPupLegacy.Common
                 command.AddParameter(parameter);
             }
             await command.PrepareAsync();
-            return (T)Activator.CreateInstance(typeof(T), new object[] { command })!;
+            return (T)Activator.CreateInstance(
+                typeof(T),
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
+                Type.DefaultBinder, 
+                new object[] { command }, 
+                null, 
+                null)!;
         }
 
 

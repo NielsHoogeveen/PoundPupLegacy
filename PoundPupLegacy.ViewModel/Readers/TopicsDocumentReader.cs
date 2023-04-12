@@ -108,7 +108,7 @@ public class TopicsDocumentReader : SingleItemDatabaseReader<Reader.Request, Top
         public required string SearchTerm { get; init; }
         public required SearchOption SearchOption { get; init; }
     }
-    public TopicsDocumentReader(NpgsqlCommand command) : base(command)
+    internal TopicsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

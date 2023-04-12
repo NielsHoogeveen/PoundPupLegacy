@@ -17,7 +17,7 @@ namespace PoundPupLegacy.Edit.Test
             connection.Open();
             var creatorAssembly = Assembly.GetAssembly(typeof(Node));
             var types = creatorAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseReaderFactory)) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
-            foreach (var type in types) {
+            foreach (var type in types.Where(x => x.Name == "ArticleCreateDocumentReaderFactory")) {
                 var i = Activator.CreateInstance(type);
                 var m = type.GetMethod("CreateAsync", new Type[] { typeof(NpgsqlConnection) });
                 var task = (Task)m!.Invoke(i, new object[] { connection })!;

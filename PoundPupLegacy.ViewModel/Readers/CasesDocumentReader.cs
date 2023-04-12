@@ -118,7 +118,7 @@ public class CasesDocumentReader : SingleItemDatabaseReader<Reader.Request, Case
         public int Offset { get; init; }
         public CaseType CaseType { get; init; }
     }
-    public CasesDocumentReader(NpgsqlCommand command) : base(command)
+    internal CasesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

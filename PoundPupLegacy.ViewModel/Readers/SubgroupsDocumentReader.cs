@@ -139,7 +139,7 @@ public class SubgroupsDocumentReader : SingleItemDatabaseReader<Reader.Request, 
         public required int Offset { get; init; }
 
     }
-    public SubgroupsDocumentReader(NpgsqlCommand command) : base(command)
+    internal SubgroupsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

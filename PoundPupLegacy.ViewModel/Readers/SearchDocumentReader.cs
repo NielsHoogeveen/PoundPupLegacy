@@ -170,7 +170,7 @@ public class SearchDocumentReader : SingleItemDatabaseReader<Reader.Request, Sea
         public required string SearchString { get; init; }
 
     }
-    public SearchDocumentReader(NpgsqlCommand command) : base(command)
+    internal SearchDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

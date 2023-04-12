@@ -12,8 +12,21 @@ public abstract class DatabaseAccessorFactory : IDatabaseAccessorFactory
     private List<DatabaseParameter> GetDatabaseParameters()
     {
         var t = GetType();
-        var fields = t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        var fields = GetStaticNonPublicFields(t);
         return fields.Select(x => x.GetValue(null) as DatabaseParameter).Where(x => x is not null).Select(x => (DatabaseParameter)x!).ToList();
+    }
+
+    private IEnumerable<System.Reflection.FieldInfo> GetStaticNonPublicFields(Type t)
+    {
+        foreach(var elem in t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)) {
+            yield return elem;
+        }
+        if(t.BaseType is not null) {
+
+            foreach(var elem in GetStaticNonPublicFields((Type)t.BaseType)) {
+                yield return elem;
+            }
+        }
     }
 
 }

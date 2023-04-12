@@ -77,7 +77,7 @@ public class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderF
 
 public class OrganizationUpdateDocumentReader : NodeUpdateDocumentReader<Organization>
 {
-    public OrganizationUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ORGANIZATION)
+    internal OrganizationUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ORGANIZATION)
     {
     }
 }

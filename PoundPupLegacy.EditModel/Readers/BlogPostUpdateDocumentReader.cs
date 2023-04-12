@@ -8,7 +8,7 @@ public sealed class BlogPostUpdateDocumentReaderFactory : SimpleTextNodeUpdateDo
 
 public sealed class BlogPostUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<BlogPost>
 {
-    public BlogPostUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
+    internal BlogPostUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
     {
     }
 }

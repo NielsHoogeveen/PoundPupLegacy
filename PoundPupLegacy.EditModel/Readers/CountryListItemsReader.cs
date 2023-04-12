@@ -23,7 +23,7 @@ public sealed class CountryListItemsReaderFactory : DatabaseReaderFactory<Reader
 public sealed class CountryListItemsReader : EnumerableDatabaseReader<Reader.Request, CountryListItem>
 {
     public record Request { }
-    public CountryListItemsReader(NpgsqlCommand command) : base(command)
+    internal CountryListItemsReader(NpgsqlCommand command) : base(command)
     {
     }
 

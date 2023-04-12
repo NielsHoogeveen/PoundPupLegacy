@@ -174,7 +174,7 @@ public class OrganizationsDocumentReader : SingleItemDatabaseReader<Reader.Reque
         public required int? OrganizationTypeId { get; init; }
         public required int? CountryId { get; init; }
     }
-    public OrganizationsDocumentReader(NpgsqlCommand command) : base(command)
+    internal OrganizationsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

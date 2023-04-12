@@ -8,7 +8,7 @@ public sealed class ArticleCreateDocumentReaderFactory : SimpleTextNodeCreateDoc
 }
 public sealed class ArticleCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Article>
 {
-    public ArticleCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
+    internal ArticleCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
     {
     }
 }

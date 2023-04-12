@@ -104,7 +104,7 @@ public class PollsDocumentReader : SingleItemDatabaseReader<Reader.Request, Poll
         public required int Offset { get; init; }
     }
 
-    public PollsDocumentReader(NpgsqlCommand command) : base(command)
+    internal PollsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

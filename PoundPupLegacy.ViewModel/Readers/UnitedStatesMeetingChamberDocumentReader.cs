@@ -256,7 +256,7 @@ public class UnitedStatesMeetingChamberDocumentReader : SingleItemDatabaseReader
         public required int Type { get; init; }
 
     }
-    public UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
+    internal UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

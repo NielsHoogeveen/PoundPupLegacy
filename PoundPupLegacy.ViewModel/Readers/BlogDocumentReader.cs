@@ -88,7 +88,7 @@ public class BlogDocumentReader : SingleItemDatabaseReader<Reader.Request, Blog>
         public int StartIndex { get; init; }
         public int Length { get; init; }
     }
-    public BlogDocumentReader(NpgsqlCommand command) : base(command)
+    internal BlogDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 
