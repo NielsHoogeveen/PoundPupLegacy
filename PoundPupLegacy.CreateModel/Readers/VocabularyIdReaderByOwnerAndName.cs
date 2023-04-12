@@ -1,8 +1,14 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class VocabularyIdReaderByOwnerAndNameFactory : DatabaseReaderFactory<VocabularyIdReaderByOwnerAndName>
+
+using Factory  = VocabularyIdReaderByOwnerAndNameFactory;
+using Reader   = VocabularyIdReaderByOwnerAndName;
+
+public sealed class VocabularyIdReaderByOwnerAndNameFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+
+    internal static IntValueReader IdReader = new() { Name = "id"};
 
     public override string Sql => SQL;
 
@@ -10,7 +16,7 @@ public sealed class VocabularyIdReaderByOwnerAndNameFactory : DatabaseReaderFact
         SELECT id FROM vocabulary WHERE owner_id = @owner_id AND name = @name
         """;
 }
-public sealed class VocabularyIdReaderByOwnerAndName : SingleItemDatabaseReader<VocabularyIdReaderByOwnerAndName.Request, int>
+public sealed class VocabularyIdReaderByOwnerAndName : IntDatabaseReader<Reader.Request>
 {
     public record Request
     {
@@ -21,19 +27,17 @@ public sealed class VocabularyIdReaderByOwnerAndName : SingleItemDatabaseReader<
 
     internal VocabularyIdReaderByOwnerAndName(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["owner_id"].Value = request.OwnerId;
-        _command.Parameters["name"].Value = request.Name;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.OwnerId, request.OwnerId),
+            ParameterValue.Create(Factory.Name, request.Name)
+        };
+    }
+    protected override IntValueReader IntValueReader => Factory.IdReader;
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var id = reader.GetInt32("id");
-            await reader.CloseAsync();
-            return id;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"vocabulary {request.Name} cannot be found for owner {request.OwnerId}");
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"vocabulary {request.Name} cannot be found for owner {request.OwnerId}";
     }
 }

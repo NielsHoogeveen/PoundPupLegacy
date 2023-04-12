@@ -1,8 +1,14 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class TenantNodeIdReaderByUrlIdFactory : DatabaseReaderFactory<TenantNodeIdReaderByUrlId>
+
+using Factory = TenantNodeIdReaderByUrlIdFactory;
+using Reader = TenantNodeIdReaderByUrlId;
+
+public sealed class TenantNodeIdReaderByUrlIdFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+
+    internal static IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 
@@ -10,31 +16,31 @@ public sealed class TenantNodeIdReaderByUrlIdFactory : DatabaseReaderFactory<Ten
         SELECT id FROM tenant_node WHERE tenant_id= @tenant_id AND url_id = @url_id
         """;
 }
-public sealed class TenantNodeIdReaderByUrlId : SingleItemDatabaseReader<TenantNodeIdReaderByUrlId.Request, int>
+public sealed class TenantNodeIdReaderByUrlId : IntDatabaseReader<Reader.Request>
 {
     public record Request
     {
         public int TenantId { get; init; }
+
         public int UrlId { get; init; }
     }
 
     internal TenantNodeIdReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["url_id"].Value = request.UrlId;
-
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var id = reader.GetInt32("id");
-            await reader.CloseAsync();
-            return id;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"tenant node cannot be found in for url_id {request.UrlId} and tenant {request.TenantId}");
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.UrlId, request.UrlId)
+        };
     }
+
+    protected override IntValueReader IntValueReader => Factory.IdReader;
+
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"tenant node cannot be found in for url_id {request.UrlId} and tenant {request.TenantId}";
+    }
+
 }
 

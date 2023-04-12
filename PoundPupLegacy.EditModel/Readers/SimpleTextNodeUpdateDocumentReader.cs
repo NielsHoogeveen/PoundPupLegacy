@@ -1,7 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
-
-namespace PoundPupLegacy.EditModel.Readers;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
 public abstract class SimpleTextNodeUpdateDocumentReaderFactory<T> : NodeUpdateDocumentReaderFactory<T>
     where T : class, IDatabaseReader
@@ -58,8 +55,6 @@ public class SimpleTextNodeUpdateDocumentReader<T> : NodeUpdateDocumentReader<T>
     protected SimpleTextNodeUpdateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
     {
     }
-
-
 }
 
 

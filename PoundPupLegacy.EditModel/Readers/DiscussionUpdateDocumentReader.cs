@@ -1,16 +1,14 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
-using System.Data;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
-namespace PoundPupLegacy.EditModel.Readers;
+using Reader = DiscussionUpdateDocumentReader;
 
-public class DiscussionUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumentReaderFactory<DiscussionUpdateDocumentReader>
+public class DiscussionUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumentReaderFactory<Reader>
 {
 }
 
 public class DiscussionUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<Discussion>
 {
-    internal DiscussionUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
+    public DiscussionUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
     {
     }
 }

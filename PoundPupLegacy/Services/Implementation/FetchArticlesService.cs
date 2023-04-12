@@ -26,12 +26,18 @@ internal sealed class FetchArticlesService : IFetchArticlesService
         try {
             await _connection.OpenAsync();
             await using var reader = await _articlesDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new ArticlesDocumentReader.ArticlesDocumentRequest {
+            var articles = await reader.ReadAsync(new ArticlesDocumentReader.Request {
                 TenantId = tenantId,
                 SelectedTerms = selectedTerms,
                 StartIndex = startIndex,
                 Length = length
             });
+            if(articles is not null)
+                return articles;
+            return new Articles {
+                ArticleListEntries = Array.Empty<ArticleListEntry>(),
+                NumberOfEntries = 0
+            };
 
         }
         finally {

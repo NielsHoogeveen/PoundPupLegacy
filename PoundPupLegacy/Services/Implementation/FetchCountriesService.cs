@@ -27,7 +27,10 @@ internal sealed class FetchCountriesService : IFetchCountriesService
         try {
             await _connection.OpenAsync();
             await using var reader = await _countriesDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(tenantId);
+            var countries = await reader.ReadAsync(tenantId);
+            if(countries is not null) 
+                return countries;
+            return Array.Empty<FirstLevelRegionListEntry>();
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

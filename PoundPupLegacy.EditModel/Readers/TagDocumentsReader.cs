@@ -1,19 +1,26 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
-namespace PoundPupLegacy.EditModel.Readers;
+using Factory = TagDocumentsReaderFactory;
+using Reader = TagDocumentsReader;
 
-public class TagDocumentsReaderFactory : DatabaseReaderFactory<TagDocumentsReader>
+public class TagDocumentsReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableStringDatabaseParameter SearchString = new() { Name = "search_string" };
+    internal static readonly NonNullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
+    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal static readonly NonNullableStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
+
+    internal static readonly IntValueReader NodeIdReader = new() { Name = "node_id" };
+    internal static readonly IntValueReader TermIdReader = new() { Name = "term_id" };
+    internal static readonly StringValueReader NameReader = new() { Name = "name" };
 
     public override string Sql => SQL;
 
     const string SQL = """
         select
         distinct
-        *
+        id term_id,
+        name,
+        @node_id node_id
         from(
             select
             t.id,
@@ -33,11 +40,11 @@ public class TagDocumentsReaderFactory : DatabaseReaderFactory<TagDocumentsReade
         """;
 
 }
-public class TagDocumentsReader : EnumerableDatabaseReader<TagDocumentsReader.TagDocumentsRequest, Tag>
+public class TagDocumentsReader : EnumerableDatabaseReader<Reader.Request, Tag>
 {
-    public record TagDocumentsRequest
+    public record Request
     {
-        public required int? NodeId { get; init; }
+        public required int NodeId { get; init; }
         public required int TenantId { get; init; }
         public required string SearchString { get; init; }
 
@@ -45,20 +52,25 @@ public class TagDocumentsReader : EnumerableDatabaseReader<TagDocumentsReader.Ta
     internal TagDocumentsReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async IAsyncEnumerable<Tag> ReadAsync(TagDocumentsRequest request)
+
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["search_string"].Value = $"%{request.SearchString}%";
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            yield return new Tag {
-                Name = reader.GetString(1),
-                NodeId = request.NodeId,
-                TermId = reader.GetInt32(0),
-                HasBeenDeleted = false,
-                IsStored = false,
-            };
-        }
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.NodeIdParameter, request.NodeId),
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.SearchStringParameter, request.SearchString)
+        };
+    }
+
+    protected override Tag Read(NpgsqlDataReader reader)
+    {
+        return new Tag {
+            Name = Factory.NameReader.GetValue(reader),
+            NodeId = Factory.NodeIdReader.GetValue(reader),
+            TermId = Factory.TermIdReader.GetValue(reader),
+            HasBeenDeleted = false,
+            IsStored = false,
+        };
     }
 
 }

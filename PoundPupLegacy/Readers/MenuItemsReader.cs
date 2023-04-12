@@ -3,8 +3,13 @@ using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class MenuItemsReaderFactory : DatabaseReaderFactory<MenuItemsReader>
+
+using Factory = MenuItemsReaderFactory;
+using Reader = MenuItemsReader;
+
+internal sealed class MenuItemsReaderFactory : DatabaseReaderFactory<Reader>
 {
+    internal readonly static FieldValueReader<UserTenantMenuItems> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
 
     const string SQL = """
@@ -113,7 +118,7 @@ internal sealed class MenuItemsReaderFactory : DatabaseReaderFactory<MenuItemsRe
 
 }
 
-internal sealed class MenuItemsReader : EnumerableDatabaseReader<MenuItemsReader.Request, UserTenantMenuItems>
+internal sealed class MenuItemsReader : EnumerableDatabaseReader<Reader.Request, UserTenantMenuItems>
 {
     public record Request
     {
@@ -121,12 +126,13 @@ internal sealed class MenuItemsReader : EnumerableDatabaseReader<MenuItemsReader
     public MenuItemsReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async IAsyncEnumerable<UserTenantMenuItems> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            yield return reader.GetFieldValue<UserTenantMenuItems>(0);
-        }
+        return new ParameterValue[] {
+        };
     }
-
+    protected override UserTenantMenuItems Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+    }
 }

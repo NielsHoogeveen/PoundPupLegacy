@@ -1,14 +1,16 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
+using Reader = ArticlesDocumentReader;
+using Factory = ArticlesDocumentReaderFactory;
 
-public class ArticlesDocumentReaderFactory : DatabaseReaderFactory<ArticlesDocumentReader>
+public class ArticlesDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NullableIntegerDatabaseParameter Length = new() { Name = "length" };
-    internal static NullableIntegerDatabaseParameter StartIndex = new() { Name = "start_index" };
-    internal static NullableIntegerArrayDatabaseParameter Terms = new() { Name = "terms" };
+    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal static readonly NullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
+    internal static readonly NullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
+    internal static readonly NullableIntegerArrayDatabaseParameter TermsParameter = new() { Name = "terms" };
+
+    internal static readonly FieldValueReader<Articles> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -22,7 +24,7 @@ public class ArticlesDocumentReaderFactory : DatabaseReaderFactory<ArticlesDocum
             {COUNT_ARTICLES_FILTERED},
             {FETCHS_ARTICLES_DOCUMENTS_FILTERED},
             {FETCHS_ARTICLES_DOCUMENTS_UNFILTERED}
-            select to_jsonb(ta)
+            select to_jsonb(ta) document
             from(
             select 
                 case 
@@ -250,9 +252,9 @@ public class ArticlesDocumentReaderFactory : DatabaseReaderFactory<ArticlesDocum
         """;
 
 }
-public class ArticlesDocumentReader : SingleItemDatabaseReader<ArticlesDocumentReader.ArticlesDocumentRequest, Articles>
+public class ArticlesDocumentReader : SingleItemDatabaseReader<Reader.Request, Articles>
 {
-    public record ArticlesDocumentRequest
+    public record Request
     {
         public required int TenantId { get; init; }
         public required List<int> SelectedTerms { get; init; }
@@ -263,20 +265,18 @@ public class ArticlesDocumentReader : SingleItemDatabaseReader<ArticlesDocumentR
     {
     }
 
-    public override async Task<Articles> ReadAsync(ArticlesDocumentRequest request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["length"].Value = request.Length;
-        _command.Parameters["start_index"].Value = request.StartIndex;
-        if (request.SelectedTerms.Any()) {
-            _command.Parameters["terms"].Value = request.SelectedTerms.ToArray();
-        }
-        else {
-            _command.Parameters["terms"].Value = DBNull.Value;
-        }
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var articles = reader.GetFieldValue<Articles>(0);
-        return articles;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.LengthParameter, request.Length),
+            ParameterValue.Create(Factory.StartIndexParameter, request.StartIndex),
+            ParameterValue.Create(Factory.TermsParameter, request.SelectedTerms.Any() ? request.SelectedTerms.ToArray(): null)
+        };
+    }
+
+    protected override Articles Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
     }
 }

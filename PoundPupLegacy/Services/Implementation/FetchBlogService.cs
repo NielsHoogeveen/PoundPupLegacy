@@ -28,7 +28,7 @@ internal sealed class FetchBlogService : IFetchBlogService
         try {
             await _connection.OpenAsync();
             await using var reader = await _blogDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new BlogDocumentReader.BlogDocumentRequest {
+            return await reader.ReadAsync(new BlogDocumentReader.Request {
                 PublisherId = publisherId,
                 TenantId = tenantId,
                 StartIndex = startIndex,

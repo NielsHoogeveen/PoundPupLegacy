@@ -1,12 +1,13 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class NodeDocumentReaderFactory : DatabaseReaderFactory<NodeDocumentReader>
+using Factory = NodeDocumentReaderFactory;
+using Reader = NodeDocumentReader;
+
+public class NodeDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
-    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UrlIdParameter = new() { Name = "url_id" };
 
     public override string Sql => SQL;
 
@@ -4037,10 +4038,10 @@ public class NodeDocumentReaderFactory : DatabaseReaderFactory<NodeDocumentReade
         """;
 
 }
-public class NodeDocumentReader : SingleItemDatabaseReader<NodeDocumentReader.NodeDocumentRequest, Node?>
+public class NodeDocumentReader : SingleItemDatabaseReader<Reader.Request, Node>
 {
 
-    public record NodeDocumentRequest
+    public record Request
     {
         public int UrlId { get; init; }
         public int UserId { get; init; }
@@ -4050,19 +4051,19 @@ public class NodeDocumentReader : SingleItemDatabaseReader<NodeDocumentReader.No
     {
     }
 
-    public override async Task<Node?> ReadAsync(NodeDocumentRequest request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["url_id"].Value = request.UrlId;
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        if (!reader.HasRows) {
-            return null;
-        }
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.UrlIdParameter, request.UrlId),
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
+        };
+    }
+
+    protected override Node? Read(NpgsqlDataReader reader)
+    {
         var node_type_id = reader.GetInt32(0);
-        var text = reader.IsDBNull(1) ? null : reader.GetString(1);
-        Node? node = node_type_id switch {
+        return node_type_id switch {
             1 => reader.GetFieldValue<BasicNameable>(1),
             2 => reader.GetFieldValue<BasicNameable>(1),
             3 => reader.GetFieldValue<BasicNameable>(1),
@@ -4111,8 +4112,5 @@ public class NodeDocumentReader : SingleItemDatabaseReader<NodeDocumentReader.No
             58 => reader.GetFieldValue<BasicNameable>(1),
             _ => null
         };
-        return node!;
     }
-
-
 }

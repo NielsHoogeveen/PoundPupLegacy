@@ -28,7 +28,7 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
         try {
             await _connection.OpenAsync();
             await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new OrganizationsDocumentReader.OrganizationsDocumentRequest {
+            var organizations = await reader.ReadAsync(new OrganizationsDocumentReader.Request {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,
@@ -38,6 +38,16 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
                 OrganizationTypeId = organizationTypeId,
                 CountryId = countryId
             });
+            if (organizations is not null)
+                return organizations;
+            return new OrganizationSearch {
+                Organizations = new Organizations {
+                    Entries = Array.Empty<BasicListEntry>(),
+                    NumberOfEntries = 0
+                },
+                Countries = Array.Empty<SelectionItem>(),
+                OrganizationTypes = Array.Empty<SelectionItem>(),
+            };
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

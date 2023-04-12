@@ -3,8 +3,15 @@ using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class UserTenantActionReaderFactory : DatabaseReaderFactory<UserTenantActionReader>
+
+using Factory = UserTenantActionReaderFactory;
+using Reader = UserTenantActionReader;
+internal sealed class UserTenantActionReaderFactory : DatabaseReaderFactory<Reader>
 {
+    internal static readonly IntValueReader UserIdReader = new() { Name = "user_id" };
+    internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    internal static readonly StringValueReader ActionReader = new() { Name = "action" };
+
     public override string Sql => SQL;
 
     const string SQL = """
@@ -12,7 +19,7 @@ internal sealed class UserTenantActionReaderFactory : DatabaseReaderFactory<User
             distinct
             ugur.user_id,
             t.id tenant_id,
-            ba.path
+            ba.path action
         from basic_action ba
         join access_role_privilege arp on arp.action_id = ba.id
         join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
@@ -31,7 +38,7 @@ internal sealed class UserTenantActionReaderFactory : DatabaseReaderFactory<User
         """;
 
 }
-internal sealed class UserTenantActionReader : EnumerableDatabaseReader<UserTenantActionReader.Request, UserTenantAction>
+internal sealed class UserTenantActionReader : EnumerableDatabaseReader<Reader.Request, UserTenantAction>
 {
     public record Request
     {
@@ -40,21 +47,18 @@ internal sealed class UserTenantActionReader : EnumerableDatabaseReader<UserTena
     public UserTenantActionReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async IAsyncEnumerable<UserTenantAction> ReadAsync(Request request)
-    {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            var userId = reader.GetInt32(0);
-            var tenantId = reader.GetInt32(1);
-            var action = reader.GetFieldValue<string>(2);
-            yield return new UserTenantAction {
-                UserId = userId,
-                TenantId = tenantId,
-                Action = action,
-            };
-        }
 
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
+    {
+        return new ParameterValue[] { };
     }
 
-
+    protected override UserTenantAction Read(NpgsqlDataReader reader)
+    {
+        return new UserTenantAction {
+            UserId = Factory.UserIdReader.GetValue(reader),
+            TenantId = Factory.TenantIdReader.GetValue(reader),
+            Action = Factory.ActionReader.GetValue(reader),
+        };
+    }
 }

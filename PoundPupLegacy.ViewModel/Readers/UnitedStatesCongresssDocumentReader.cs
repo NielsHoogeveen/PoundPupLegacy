@@ -1,9 +1,11 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class UnitedStatesCongresssDocumentReaderFactory : DatabaseReaderFactory<UnitedStatesCongresssDocumentReader>
+using Factory = UnitedStatesCongresssDocumentReaderFactory;
+using Reader = UnitedStatesCongresssDocumentReader;
+
+public class UnitedStatesCongresssDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
+    internal readonly static FieldValueReader<UnitedStatesCongress> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
 
     private const string SQL = """
@@ -66,20 +68,21 @@ public class UnitedStatesCongresssDocumentReaderFactory : DatabaseReaderFactory<
         """;
 
 }
-public class UnitedStatesCongresssDocumentReader : SingleItemDatabaseReader<UnitedStatesCongresssDocumentReader.UnitedStatesCongresssDocumentRequest, UnitedStatesCongress>
+public class UnitedStatesCongresssDocumentReader : SingleItemDatabaseReader<Reader.Request, UnitedStatesCongress>
 {
-    public record UnitedStatesCongresssDocumentRequest
+    public record Request
     {
     }
     public UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async Task<UnitedStatesCongress> ReadAsync(UnitedStatesCongresssDocumentRequest request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        return reader.GetFieldValue<UnitedStatesCongress>(0);
-
+        return new ParameterValue[] {
+        };
     }
-
+    protected override UnitedStatesCongress Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+    }
 }

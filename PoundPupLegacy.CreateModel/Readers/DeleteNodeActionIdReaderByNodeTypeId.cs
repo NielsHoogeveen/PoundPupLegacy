@@ -1,30 +1,36 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : DatabaseReaderFactory<DeleteNodeActionIdReaderByNodeTypeId>
+
+using Factory = DeleteNodeActionIdReaderByNodeTypeIdFactory;
+using Reader = DeleteNodeActionIdReaderByNodeTypeId;
+
+public sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+
+    internal static IntValueReader IdReader = new() { Name = "id" };
     public override string Sql => SQL;
     
     private const string SQL = """
         SELECT id FROM delete_node_action WHERE node_type_id = @node_type_id
         """;
 }
-public sealed class DeleteNodeActionIdReaderByNodeTypeId : SingleItemDatabaseReader<int, int>
+
+public sealed class DeleteNodeActionIdReaderByNodeTypeId : IntDatabaseReader<int>
 {
 
     internal DeleteNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(int nodeTypeId)
+    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
     {
-        _command.Parameters["node_type_id"].Value = nodeTypeId;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.NodeTypeId, request)
+        };
+    }
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var id = reader.GetInt32("id");
-            await reader.CloseAsync();
-            return id;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"delete node action cannot be found for node type  {nodeTypeId}");
+    protected override IntValueReader IntValueReader => Factory.IdReader;
+
+    protected override string GetErrorMessage(int request)
+    {
+        return $"delete node action cannot be found for node type {request}";
     }
 }

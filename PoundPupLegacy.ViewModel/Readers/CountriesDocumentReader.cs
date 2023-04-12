@@ -1,11 +1,13 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
-using System.Data;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class CountriesDocumentReaderFactory : DatabaseReaderFactory<CountriesDocumentReader>
+using Factory = CountriesDocumentReaderFactory;
+using Reader = CountriesDocumentReader;
+
+public class CountriesDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+
+    internal readonly static FieldValueReader<FirstLevelRegionListEntry[]> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -103,7 +105,7 @@ public class CountriesDocumentReaderFactory : DatabaseReaderFactory<CountriesDoc
                         ) x
                     )
                 )
-            )
+            ) document
         from (
             select 
             	n.id,
@@ -123,18 +125,16 @@ public class CountriesDocumentReader : SingleItemDatabaseReader<int, FirstLevelR
     {
     }
 
-    public override async Task<FirstLevelRegionListEntry[]> ReadAsync(int tenantId)
+    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
     {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<FirstLevelRegionListEntry[]>(0);
-            return organizations!;
-        }
-        else {
-            return new FirstLevelRegionListEntry[] { };
-        }
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantIdParameter, request)
+        };
     }
 
+    protected override FirstLevelRegionListEntry[] Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+
+    }
 }

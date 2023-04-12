@@ -26,14 +26,20 @@ internal sealed class FetchSearchService : IFetchSearchService
         try {
             await _connection.OpenAsync();
             await using var reader = await _searchDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new SearchDocumentReader.SearchDocumentRequest {
+            var searchResult =  await reader.ReadAsync(new SearchDocumentReader.Request {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,
                 Offset = offset,
                 SearchString = searchString
             });
-
+            if (searchResult is not null)
+                return searchResult;
+            return new SearchResult {
+                Entries = Array.Empty<SearchResultListEntry>(),
+                NumberOfEntries = 0,
+            };
+            
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

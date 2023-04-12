@@ -28,12 +28,18 @@ internal sealed class FetchPollsService : IFetchPollsService
         try {
             await _connection.OpenAsync();
             await using var reader = await _pollsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new PollsDocumentReader.PollsDocumentRequest {
+            var polls = await reader.ReadAsync(new PollsDocumentReader.Request {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,
                 Offset = offset
             });
+            if (polls is not null) 
+                return polls;
+            return new Polls {
+                Entries = Array.Empty<PollListEntry>(),
+                NumberOfEntries = 0
+            };
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

@@ -27,13 +27,19 @@ internal sealed class FetchCasesService : IFetchCasesService
         try {
             await _connection.OpenAsync();
             await using var reader = await _casesDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new CasesDocumentReader.CasesDocumentRequest {
+            var cases =  await reader.ReadAsync(new CasesDocumentReader.Request {
                 Limit = limit,
                 Offset = offset,
                 TenantId = tenantId,
                 UserId = userId,
                 CaseType = caseType
             });
+            if(cases is not null)
+                return cases;
+            return new Cases {
+                CaseListEntries = Array.Empty<CaseListEntry>(),
+                NumberOfEntries = 0,
+            };
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

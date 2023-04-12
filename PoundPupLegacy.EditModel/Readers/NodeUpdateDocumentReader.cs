@@ -1,15 +1,21 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
-namespace PoundPupLegacy.EditModel.Readers;
+using Factory = NodeUpdateDocumentReaderFactory;
+public static class NodeUpdateDocumentReaderFactory
+{
+    internal readonly static NonNullableIntegerDatabaseParameter UrlIdParameter = new() { Name = "url_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
 
+}
 public abstract class NodeUpdateDocumentReaderFactory<T> : NodeEditDocumentReaderFactory<T>
 where T : class, IDatabaseReader
 {
-    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UrlIdParameter = Factory.UrlIdParameter;
+    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = Factory.TenantIdParameter;
+    internal readonly static NonNullableIntegerDatabaseParameter NodeTypeIdParameter = Factory.NodeTypeIdParameter;
+    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = Factory.UserIdParameter;
 }
 
 public class NodeUpdateDocumentReader<T> : NodeEditDocumentReader<NodeUpdateDocumentRequest, T>
@@ -22,17 +28,20 @@ where T : class, Node
         _nodeTypeId = nodeTypeId;
     }
 
+    private readonly FieldValueReader<T> Document = new() { Name = "document" };
 
-    public override async Task<T> ReadAsync(NodeUpdateDocumentRequest request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(NodeUpdateDocumentRequest request)
     {
-        _command.Parameters["url_id"].Value = request.UrlId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["node_type_id"].Value = _nodeTypeId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var text = reader.GetString(0); ;
-        var node = reader.GetFieldValue<T>(0);
-        return node;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.UrlIdParameter, request.UrlId),
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.NodeTypeIdParameter, _nodeTypeId),
+            ParameterValue.Create(Factory.UserIdParameter, request.UserId)
+        };
+    }
+
+    protected override T Read(NpgsqlDataReader reader)
+    {
+        return Document.GetValue(reader);
     }
 }

@@ -1,14 +1,16 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class SearchDocumentReaderFactory : DatabaseReaderFactory<SearchDocumentReader>
+using Factory = SearchDocumentReaderFactory;
+using Reader = SearchDocumentReader;
+public class SearchDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
-    internal static NonNullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
-    internal static NonNullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
-    internal static NonNullableStringDatabaseParameter SearchString = new() { Name = "search_string" };
+    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+    internal readonly static NonNullableStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
+
+    internal readonly static FieldValueReader<SearchResult> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -44,7 +46,7 @@ public class SearchDocumentReaderFactory : DatabaseReaderFactory<SearchDocumentR
                         		'Status', status
                         	)
                         )
-                    )
+                    ) document
                 from(
                     select
                         title,
@@ -157,9 +159,9 @@ public class SearchDocumentReaderFactory : DatabaseReaderFactory<SearchDocumentR
             """;
 
 }
-public class SearchDocumentReader : SingleItemDatabaseReader<SearchDocumentReader.SearchDocumentRequest, SearchResult>
+public class SearchDocumentReader : SingleItemDatabaseReader<Reader.Request, SearchResult>
 {
-    public record SearchDocumentRequest
+    public record Request
     {
         public required int UserId { get; init; }
         public required int TenantId { get; init; }
@@ -171,26 +173,19 @@ public class SearchDocumentReader : SingleItemDatabaseReader<SearchDocumentReade
     public SearchDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async Task<SearchResult> ReadAsync(SearchDocumentRequest request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        _command.Parameters["search_string"].Value = request.SearchString;
-        await using var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<SearchResult>(0);
-            return organizations!;
-        }
-        else {
-            return new SearchResult {
-                NumberOfEntries = 0,
-                Entries = Array.Empty<SearchResultListEntry>()
-            };
-        }
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
+            ParameterValue.Create(Factory.LimitParameter, request.Limit),
+            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
+            ParameterValue.Create(Factory.SearchStringParameter, request.SearchString)
+            
+        };
     }
-
-
+    protected override SearchResult Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+    }
 }

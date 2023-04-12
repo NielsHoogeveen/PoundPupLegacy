@@ -28,7 +28,7 @@ internal sealed class TopicService : ITopicService
         try {
             await _connection.OpenAsync();
             await using var reader = await _topicsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new TopicsDocumentReader.TopicsDocumentRequest {
+            return await reader.ReadAsync(new TopicsDocumentReader.Request {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,

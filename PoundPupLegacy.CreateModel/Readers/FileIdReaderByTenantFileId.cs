@@ -1,17 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class FileIdReaderByTenantFileIdFactory : DatabaseReaderFactory<FileIdReaderByTenantFileId>
+
+using Factory = FileIdReaderByTenantFileIdFactory;
+using Reader = FileIdReaderByTenantFileId;
+public sealed class FileIdReaderByTenantFileIdFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
 
+    internal static IntValueReader IdReader = new() { Name = "id" };
+
     public override string Sql => SQL;
 
     const string SQL = """
-        SELECT file_id FROM tenant_file WHERE tenant_id = @tenant_id and tenant_file_id = @tenant_file_id
+        SELECT file_id id FROM tenant_file WHERE tenant_id = @tenant_id and tenant_file_id = @tenant_file_id
         """;
 }
 
-public sealed class FileIdReaderByTenantFileId : SingleItemDatabaseReader<FileIdReaderByTenantFileId.Request, int>
+public sealed class FileIdReaderByTenantFileId : IntDatabaseReader<Reader.Request>
 {
     public record Request
     {
@@ -21,19 +26,18 @@ public sealed class FileIdReaderByTenantFileId : SingleItemDatabaseReader<FileId
 
     internal FileIdReaderByTenantFileId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["tenant_file_id"].Value = request.TenantFileId;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.TenantFileId, request.TenantFileId)
+        };
+    }
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var id = reader.GetInt32("file_id");
-            await reader.CloseAsync();
-            return id;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"File id cannot be found for tenant {request.TenantId} and file id {request.TenantFileId}");
+    protected override IntValueReader IntValueReader => Factory.IdReader;
+
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"File id cannot be found for tenant {request.TenantId} and file id {request.TenantFileId}";
     }
 }

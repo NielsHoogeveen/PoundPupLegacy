@@ -3,8 +3,17 @@ using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class UserTenantEditOwnActionReaderFactory : DatabaseReaderFactory<UserTenantEditOwnActionReader>
+
+using Factory = UserTenantEditOwnActionReaderFactory;
+using Reader = UserTenantEditOwnActionReader;
+
+internal sealed class UserTenantEditOwnActionReaderFactory : DatabaseReaderFactory<Reader>
 {
+
+    internal static readonly IntValueReader UserIdReader = new() { Name = "user_id" };
+    internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    internal static readonly IntValueReader NodeTypeIdReader = new() { Name = "node_type_id" };
+
     public override string Sql => SQL;
 
     const string SQL = """
@@ -45,7 +54,7 @@ internal sealed class UserTenantEditOwnActionReaderFactory : DatabaseReaderFacto
         ) x
         """;
 }
-internal sealed class UserTenantEditOwnActionReader : EnumerableDatabaseReader<UserTenantEditOwnActionReader.Request, UserTenantEditOwnAction>
+internal sealed class UserTenantEditOwnActionReader : EnumerableDatabaseReader<Reader.Request, UserTenantEditOwnAction>
 {
     public record Request
     {
@@ -54,20 +63,18 @@ internal sealed class UserTenantEditOwnActionReader : EnumerableDatabaseReader<U
     public UserTenantEditOwnActionReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async IAsyncEnumerable<UserTenantEditOwnAction> ReadAsync(Request request)
-    {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            var userId = reader.GetInt32(0);
-            var tenantId = reader.GetInt32(1);
-            var nodeTypeId = reader.GetInt32(2);
-            yield return new UserTenantEditOwnAction {
-                UserId = userId,
-                TenantId = tenantId,
-                NodeTypeId = nodeTypeId,
-            };
-        }
 
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
+    {
+        return Array.Empty<ParameterValue>();
     }
 
+    protected override UserTenantEditOwnAction Read(NpgsqlDataReader reader)
+    {
+        return new UserTenantEditOwnAction {
+            UserId = Factory.UserIdReader.GetValue(reader),
+            TenantId = Factory.TenantIdReader.GetValue(reader),
+            NodeTypeId = Factory.NodeTypeIdReader.GetValue(reader),
+        };
+    }
 }

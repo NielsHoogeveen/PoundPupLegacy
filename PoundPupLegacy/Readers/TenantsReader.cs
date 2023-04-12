@@ -1,16 +1,24 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
-using System.Data;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class TenantsReaderFactory : DatabaseReaderFactory<TenantsReader>
+
+using Factory = TenantsReaderFactory;
+using Reader = TenantsReader;
+internal sealed class TenantsReaderFactory : DatabaseReaderFactory<Reader>
 {
+    internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    internal static readonly StringValueReader DomainNameReader = new() { Name = "domain_name" };
+    internal static readonly IntValueReader CountryIdDefaultReader = new() { Name = "country_id_default" };
+    internal static readonly StringValueReader CountryNameDefault = new() { Name = "country_name" };
+
+
     public override string Sql => SQL;
 
     const string SQL = """
         select
-        t.id,
+        t.id tenant_id,
         t.domain_name,
         t.country_id_default,
         n.title country_name
@@ -19,7 +27,7 @@ internal sealed class TenantsReaderFactory : DatabaseReaderFactory<TenantsReader
         """;
 
 }
-internal sealed class TenantsReader : EnumerableDatabaseReader<TenantsReader.Request, Tenant>
+internal sealed class TenantsReader : EnumerableDatabaseReader<Reader.Request, Tenant>
 {
     public record Request
     {
@@ -28,27 +36,20 @@ internal sealed class TenantsReader : EnumerableDatabaseReader<TenantsReader.Req
     public TenantsReader(NpgsqlCommand command) : base(command)
     {
     }
-
-    public override async IAsyncEnumerable<Tenant> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            var tenantId = reader.GetInt32(0);
-            var domainName = reader.GetString(1);
-            var countryIdDefault = reader.GetInt32(2);
-            var countryNameDefault = reader.GetString(3);
-            yield return new Tenant {
-                Id = tenantId,
-                DomainName = domainName,
-                CountryIdDefault = countryIdDefault,
-                CountryNameDefault = countryNameDefault,
-                IdToUrl = new Dictionary<int, string>(),
-                UrlToId = new Dictionary<string, int>()
-
-            };
-        }
-
+        return new ParameterValue[] { };
     }
 
-
+    protected override Tenant Read(NpgsqlDataReader reader)
+    {
+        return new Tenant {
+            Id = Factory.TenantIdReader.GetValue(reader),
+            DomainName = Factory.DomainNameReader.GetValue(reader),
+            CountryIdDefault = Factory.CountryIdDefaultReader.GetValue(reader),
+            CountryNameDefault = Factory.CountryNameDefault.GetValue(reader),
+            IdToUrl = new Dictionary<int, string>(),
+            UrlToId = new Dictionary<string, int>()
+        };
+    }
 }

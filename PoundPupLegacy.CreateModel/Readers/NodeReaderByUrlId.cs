@@ -1,8 +1,19 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class NodeReaderByUrlIdFactory : DatabaseReaderFactory<NodeReaderByUrlId>
+
+using Factory = NodeReaderByUrlIdFactory;
+using Reader = NodeReaderByUrlId;
+public sealed class NodeReaderByUrlIdFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+
+    internal static IntValueReader IdReader = new() { Name = "id" };
+    internal static IntValueReader PublisherIdReader = new() { Name = "publisher_id" };
+    internal static StringValueReader TitleReader = new() { Name = "title" };
+    internal static DateTimeValueReader CreatedDateTimeReader = new() { Name = "created_date_time" };
+    internal static DateTimeValueReader ChangedDateTimeReader = new() { Name = "changed_date_time" };
+    internal static IntValueReader NodeTypeIdReader = new() { Name = "node_type_id" };
+    internal static IntValueReader OwnerIdReader = new() { Name = "owner_id" };
 
     public override string Sql => SQL;
 
@@ -20,7 +31,7 @@ public sealed class NodeReaderByUrlIdFactory : DatabaseReaderFactory<NodeReaderB
         WHERE t.tenant_id= @tenant_id AND t.url_id = @url_id
         """;
 }
-public sealed class NodeReaderByUrlId : SingleItemDatabaseReader<NodeReaderByUrlId.Request, Node>
+public sealed class NodeReaderByUrlId : MandatorySingleItemDatabaseReader<Reader.Request, Node>
 {
     public record Request
     {
@@ -31,30 +42,32 @@ public sealed class NodeReaderByUrlId : SingleItemDatabaseReader<NodeReaderByUrl
 
     internal NodeReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<Node> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["url_id"].Value = request.UrlId;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.UrlId, request.UrlId),
+        };
+    }
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var node = new BasicNode {
-                Id = reader.GetInt32("id"),
-                PublisherId = reader.GetInt32("publisher_id"),
-                Title = reader.GetString("title"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                NodeTypeId = reader.GetInt32("node_type_id"),
-                OwnerId = reader.GetInt32("owner_id"),
-                TenantNodes = new List<TenantNode>(),
-            };
-            await reader.CloseAsync();
-            return node;
-        }
-        await reader.CloseAsync();
-        var error = $"node cannot be found in for url_id {request.UrlId} and tenant {request.TenantId}";
-        throw new Exception(error);
+    protected override Node Read(NpgsqlDataReader reader)
+    {
+        var node = new BasicNode {
+            Id = Factory.IdReader.GetValue(reader),
+            PublisherId = Factory.PublisherIdReader.GetValue(reader),
+            Title = Factory.TitleReader.GetValue(reader),
+            CreatedDateTime = Factory.CreatedDateTimeReader.GetValue(reader),
+            ChangedDateTime = Factory.ChangedDateTimeReader.GetValue(reader),
+            NodeTypeId = Factory.NodeTypeIdReader.GetValue(reader),
+            OwnerId = Factory.OwnerIdReader.GetValue(reader),
+            TenantNodes = new List<TenantNode>(),
+        };
+        return node;
+    }
+
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"node cannot be found in for url_id {request.UrlId} and tenant {request.TenantId}";
     }
 }
 

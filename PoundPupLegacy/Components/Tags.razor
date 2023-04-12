@@ -72,9 +72,9 @@
     {
         termOptions.Clear();
         var str = args.Value?.ToString() ?? string.Empty;
-        if (!string.IsNullOrEmpty(str))
+        if (!string.IsNullOrEmpty(str) && NodeId.HasValue)
         {
-            termOptions = await topicSearchService.GetTerms(NodeId, TenantId, str);
+            termOptions = await topicSearchService.GetTerms(NodeId.Value, TenantId, str);
         }
         StateHasChanged();
     }

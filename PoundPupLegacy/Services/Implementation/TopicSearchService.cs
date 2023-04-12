@@ -22,14 +22,14 @@ internal sealed class TopicSearchService : ITopicSearchService
         _connection = (NpgsqlConnection)connection;
         _tagDocumentsReaderFactory = tagDocumentsReaderFactory;
     }
-    public async Task<List<Tag>> GetTerms(int? nodeId, int tenantId, string str)
+    public async Task<List<Tag>> GetTerms(int nodeId, int tenantId, string str)
     {
         await semaphore.WaitAsync(TimeSpan.FromMilliseconds(100));
         List<Tag> tags = new();
         try {
             await _connection.OpenAsync();
             await using var reader = await _tagDocumentsReaderFactory.CreateAsync(_connection);
-            await foreach (var elem in reader.ReadAsync(new TagDocumentsReader.TagDocumentsRequest {
+            await foreach (var elem in reader.ReadAsync(new TagDocumentsReader.Request {
                 NodeId = nodeId,
                 TenantId = tenantId,
                 SearchString = str

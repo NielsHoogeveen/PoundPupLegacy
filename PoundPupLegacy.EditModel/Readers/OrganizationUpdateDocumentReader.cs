@@ -1,9 +1,8 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
-namespace PoundPupLegacy.EditModel.Readers;
+using Reader = OrganizationUpdateDocumentReader;
 
-public class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<OrganizationUpdateDocumentReader>
+public class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<Reader>
 {
     public override string Sql => SQL;
 
@@ -78,7 +77,7 @@ public class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderF
 
 public class OrganizationUpdateDocumentReader : NodeUpdateDocumentReader<Organization>
 {
-    internal OrganizationUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ORGANIZATION)
+    public OrganizationUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ORGANIZATION)
     {
     }
 }

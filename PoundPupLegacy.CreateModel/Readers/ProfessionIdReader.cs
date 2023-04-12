@@ -1,9 +1,14 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class ProfessionIdReaderFactory : DatabaseReaderFactory<ProfessionIdReader>
+
+using Factory = ProfessionIdReaderFactory;
+using Reader = ProfessionIdReader;
+public sealed class ProfessionIdReaderFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
     internal static NonNullableStringDatabaseParameter ProfessionName = new() { Name = "profession_name" };
+
+    internal static IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 
@@ -18,7 +23,7 @@ public sealed class ProfessionIdReaderFactory : DatabaseReaderFactory<Profession
         where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.title = @profession_name
         """;
 }
-public sealed class ProfessionIdReader : SingleItemDatabaseReader<ProfessionIdReader.Request, int>
+public sealed class ProfessionIdReader : IntDatabaseReader<Reader.Request>
 {
     public record Request
     {
@@ -46,20 +51,19 @@ public sealed class ProfessionIdReader : SingleItemDatabaseReader<ProfessionIdRe
         };
     }
 
-    public override async Task<int> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["url_id"].Value = request.UrlId;
-        _command.Parameters["profession_name"].Value = GetProfessionName(request.ProfessionType);
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.UrlId, request.UrlId),
+            ParameterValue.Create(Factory.ProfessionName, GetProfessionName(request.ProfessionType))
+        };
+    }
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var id = reader.GetInt32("id");
-            await reader.CloseAsync();
-            return id;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"profession role {request.ProfessionType} cannot be found");
+    protected override IntValueReader IntValueReader => Factory.IdReader;
+
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"profession role {request.ProfessionType} cannot be found";
     }
 }

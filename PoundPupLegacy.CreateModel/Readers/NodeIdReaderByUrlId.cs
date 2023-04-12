@@ -1,16 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class NodeIdReaderByUrlIdFactory : DatabaseReaderFactory<NodeIdReaderByUrlId>
+
+using Factory = NodeIdReaderByUrlIdFactory;
+using Reader = NodeIdReaderByUrlId;
+
+public sealed class NodeIdReaderByUrlIdFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
 
+    internal static IntValueReader IdReader = new() { Name = "id" };
+
     public override string Sql => SQL;
 
     const string SQL = """
-        SELECT node_id FROM tenant_node WHERE tenant_id= @tenant_id AND url_id = @url_id
+        SELECT node_id id FROM tenant_node WHERE tenant_id= @tenant_id AND url_id = @url_id
         """;
 }
-public sealed class NodeIdReaderByUrlId : SingleItemDatabaseReader<NodeIdReaderByUrlId.Request, int>
+public sealed class NodeIdReaderByUrlId : IntDatabaseReader<Reader.Request>
 {
     public record Request
     {
@@ -21,21 +27,19 @@ public sealed class NodeIdReaderByUrlId : SingleItemDatabaseReader<NodeIdReaderB
 
     internal NodeIdReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.UrlId, request.UrlId)
+        };
+    }
 
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["url_id"].Value = request.UrlId;
+    protected override IntValueReader IntValueReader => Factory.IdReader;
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var term = reader.GetInt32("node_id");
-            await reader.CloseAsync();
-            return term;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"node cannot be found in for url_id {request.UrlId} and tenant {request.TenantId}");
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"node cannot be found in for url_id {request.UrlId} and tenant {request.TenantId}";
     }
 }
 

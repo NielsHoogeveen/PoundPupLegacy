@@ -1,9 +1,8 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
-namespace PoundPupLegacy.EditModel.Readers;
+using Reader = DocumentUpdateDocumentReader;
 
-public class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<DocumentUpdateDocumentReader>
+public class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<Reader>
 {
     public override string Sql => SQL;
 

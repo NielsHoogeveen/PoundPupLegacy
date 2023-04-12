@@ -1,15 +1,13 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
-using System.Data;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
-namespace PoundPupLegacy.EditModel.Readers;
+using Reader = BlogPostCreateDocumentReader;
 
-public class BlogPostCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<BlogPostCreateDocumentReader>
+public sealed class BlogPostCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<Reader>
 {
 }
-public class BlogPostCreateDocumentReader : SimpleTextNodeCreateDocumentReader<BlogPost>
+public sealed class BlogPostCreateDocumentReader : SimpleTextNodeCreateDocumentReader<BlogPost>
 {
-    internal BlogPostCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
+    public BlogPostCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
     {
     }
 

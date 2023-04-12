@@ -55,7 +55,7 @@ public record NonNullableIntegerDatabaseParameter : DatabaseParameter<int>
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
 }
 
-public record NullableIntegerArrayDatabaseParameter : DatabaseParameter<int?[]>
+public record NullableIntegerArrayDatabaseParameter : DatabaseParameter<int[]?>
 {
     public override bool IsNullable => true;
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Array | NpgsqlDbType.Integer;

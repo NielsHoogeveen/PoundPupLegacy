@@ -110,7 +110,7 @@ internal sealed class AttachmentService : IAttachmentService
                 return new None();
             }
             await using var reader = await _fileDocumentReaderFactory.CreateAsync(_connection);
-            var file = await reader.ReadAsync(new FileDocumentReader.FileDocumentRequest {
+            var file = await reader.ReadAsync(new FileDocumentReader.Request {
                 FileId = fileId,
                 UserId = userId,
                 TenantId = tenantId

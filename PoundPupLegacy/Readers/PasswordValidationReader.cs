@@ -2,7 +2,11 @@
 using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class PasswordValidationReaderFactory : DatabaseReaderFactory<PasswordValidationReader>
+
+using Factory = PasswordValidationReaderFactory;
+using Reader = PasswordValidationReader;
+
+internal sealed class PasswordValidationReaderFactory : DatabaseReaderFactory<Reader>
 {
     internal static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static readonly NonNullableStringDatabaseParameter Password = new() { Name = "password" };
@@ -19,8 +23,12 @@ internal sealed class PasswordValidationReaderFactory : DatabaseReaderFactory<Pa
 
 
 }
-internal sealed class PasswordValidationReader : SingleItemDatabaseReader<PasswordValidationReader.Request, int?>
+internal sealed class PasswordValidationReader : SingleItemDatabaseReader<Reader.Request, Reader.Response>
 {
+    public record Response
+    {
+    }
+
     public record Request
     {
         public required string UserName { get; init; }
@@ -30,23 +38,14 @@ internal sealed class PasswordValidationReader : SingleItemDatabaseReader<Passwo
     {
     }
 
-    public IEnumerable<ParameterValue> GetParameterValues(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        yield return ParameterValue.Create(PasswordValidationReaderFactory.Name, request.UserName);
-        yield return ParameterValue.Create(PasswordValidationReaderFactory.Password, request.Password);
+        yield return ParameterValue.Create(Factory.Name, request.UserName);
+        yield return ParameterValue.Create(Factory.Password, request.Password);
     }
 
-    public override async Task<int?> ReadAsync(Request request)
+    protected override Response Read(NpgsqlDataReader reader)
     {
-        _command.Parameters["name"].Value = request.UserName;
-        _command.Parameters["password"].Value = request.Password;
-        await using var reader = await _command.ExecuteReaderAsync();
-        if (reader.Read()) {
-            return reader.GetInt32(0);
-        }
-        else {
-            return null;
-        }
+        return new Response();
     }
-
 }

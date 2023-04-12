@@ -1,9 +1,13 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
-namespace PoundPupLegacy.EditModel.Readers;
-public class CountryListItemsReaderFactory : DatabaseReaderFactory<CountryListItemsReader>
+using Factory = CountryListItemsReaderFactory;
+using Reader = CountryListItemsReader;
+
+public sealed class CountryListItemsReaderFactory : DatabaseReaderFactory<Reader>
 {
+    internal static readonly IntValueReader IdReader = new() { Name = "id" };
+    internal static readonly StringValueReader NameReader = new() { Name = "name" };
+
     public override string Sql => SQL;
     private const string SQL = $"""
         select
@@ -16,23 +20,24 @@ public class CountryListItemsReaderFactory : DatabaseReaderFactory<CountryListIt
             
         """;
 }
-public class CountryListItemsReader : EnumerableDatabaseReader<CountryListItemsReader.Request, CountryListItem>
+public sealed class CountryListItemsReader : EnumerableDatabaseReader<Reader.Request, CountryListItem>
 {
     public record Request { }
-    internal CountryListItemsReader(NpgsqlCommand command) : base(command)
+    public CountryListItemsReader(NpgsqlCommand command) : base(command)
     {
     }
-    
-    public override async IAsyncEnumerable<CountryListItem> ReadAsync(Request request)
+
+
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            var id = reader.GetInt32(0);
-            var name = reader.GetString(1);
-            yield return new CountryListItem {
-                Id = id,
-                Name = name
-            };
-        }
+        return new ParameterValue[] { };
+    }
+
+    protected override CountryListItem Read(NpgsqlDataReader reader)
+    {
+        return new CountryListItem {
+            Id = Factory.IdReader.GetValue(reader),
+            Name = Factory.NameReader.GetValue(reader)
+        };
     }
 }

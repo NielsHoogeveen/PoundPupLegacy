@@ -28,7 +28,7 @@ internal sealed class FetchNodeService : IFetchNodeService
         try {
             await _connection.OpenAsync();
             await using var reader = await _nodeDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeDocumentReader.NodeDocumentRequest {
+            return await reader.ReadAsync(new NodeDocumentReader.Request {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId

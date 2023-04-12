@@ -1,33 +1,39 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
-public sealed class ActionIdReaderByPathFactory : DatabaseReaderFactory<ActionIdReaderByPath>
+using Factory = ActionIdReaderByPathFactory;
+using Reader = ActionIdReaderByPath;
+
+public sealed class ActionIdReaderByPathFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+
+    internal static IntValueReader IdReader = new() { Name = "id" };
     public override string Sql => SQL;
 
     private const string SQL = """
         SELECT id FROM basic_action WHERE path = @path
         """;
 }
-public sealed class ActionIdReaderByPath : SingleItemDatabaseReader<string, int>
+
+public sealed class ActionIdReaderByPath : IntDatabaseReader<string>
 {
 
     internal ActionIdReaderByPath(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(string path)
+    protected override string GetErrorMessage(string request)
     {
-        if (path is null) {
-            throw new ArgumentNullException(nameof(path));
-        }
-        _command.Parameters["path"].Value = path;
+        return $"action {request} cannot be found";
+    }
 
-        using var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var id = reader.GetInt32("id");
-            await reader.CloseAsync();
-            return id;
+    protected override IntValueReader IntValueReader => Factory.IdReader;
+
+    protected override IEnumerable<ParameterValue> GetParameterValues(string request)
+    {
+        if (request is null) {
+            throw new ArgumentNullException(nameof(request));
         }
-        throw new Exception($"action {path} cannot be found");
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.Path, request)
+        };
     }
 }

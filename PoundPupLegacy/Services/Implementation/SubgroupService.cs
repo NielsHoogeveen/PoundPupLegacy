@@ -28,7 +28,7 @@ internal sealed class SubgroupService : ISubgroupService
         try {
             await _connection.OpenAsync();
             await using var reader = await _subgroupsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new SubgroupsDocumentReader.SubgroupDocumentRequest {
+            return await reader.ReadAsync(new SubgroupsDocumentReader.Request {
                 UserId = userId,
                 SubgroupId = subgroupId,
                 Limit = limit,

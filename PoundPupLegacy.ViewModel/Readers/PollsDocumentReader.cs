@@ -1,13 +1,15 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class PollsDocumentReaderFactory : DatabaseReaderFactory<PollsDocumentReader>
+using Factory = PollsDocumentReaderFactory;
+using Reader = PollsDocumentReader;
+public class PollsDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
-    internal static NonNullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
-    internal static NonNullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
+    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+
+    internal readonly static FieldValueReader<Polls> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -92,9 +94,9 @@ public class PollsDocumentReaderFactory : DatabaseReaderFactory<PollsDocumentRea
             group by number_of_entries
         """;
 }
-public class PollsDocumentReader : SingleItemDatabaseReader<PollsDocumentReader.PollsDocumentRequest, Polls>
+public class PollsDocumentReader : SingleItemDatabaseReader<Reader.Request, Polls>
 {
-    public record PollsDocumentRequest
+    public record Request
     {
         public required int UserId { get; init; }
         public required int TenantId { get; init; }
@@ -105,17 +107,18 @@ public class PollsDocumentReader : SingleItemDatabaseReader<PollsDocumentReader.
     public PollsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async Task<Polls> ReadAsync(PollsDocumentRequest request)
+
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var organizations = reader.GetFieldValue<Polls>(0);
-        return organizations;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
+            ParameterValue.Create(Factory.LimitParameter, request.Limit),
+            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
+        };
     }
-
-
+    protected override Polls Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+    }
 }

@@ -1,17 +1,18 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
-using System.Data;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class BlogsDocumentReaderFactory : DatabaseReaderFactory<BlogsDocumentReader>
+using Factory = BlogsDocumentReaderFactory;
+using Reader = BlogsDocumentReader;
+
+public class BlogsDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal static readonly FieldValueReader<List<BlogListEntry>> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
     const string SQL = """
             select 
-                jsonb_agg(to_jsonb(b))
+                jsonb_agg(to_jsonb(b)) document
             from(
                 select 
                     p.name "Name",
@@ -47,13 +48,14 @@ public class BlogsDocumentReader : SingleItemDatabaseReader<int, List<BlogListEn
     {
     }
 
-    public override async Task<List<BlogListEntry>> ReadAsync(int tenantId)
+    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
     {
-        _command.Parameters["tenant_id"].Value = tenantId;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var blogs = reader.GetFieldValue<List<BlogListEntry>>(0);
-        return blogs!;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantIdParameter, request),
+        };
     }
-
+    protected override List<BlogListEntry> Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+    }
 }

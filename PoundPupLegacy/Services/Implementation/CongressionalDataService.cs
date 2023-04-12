@@ -75,7 +75,7 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         try {
             await _connection.OpenAsync();
             await using var reader = await _unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(_connection);
-            var document = await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReader.UnitedStatesMeetingChamberRequest {
+            var document = await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReader.Request {
                 Type = (int)congressionalMeetingChamber.ChamberType,
                 Number = congressionalMeetingChamber.Number
             });
@@ -91,7 +91,7 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         try {
             await _connection.OpenAsync();
             await using var reader = await _unitedStatesCongresssDocumentReaderFactory.CreateAsync(_connection);
-            var document = await reader.ReadAsync(new UnitedStatesCongresssDocumentReader.UnitedStatesCongresssDocumentRequest());
+            var document = await reader.ReadAsync(new UnitedStatesCongresssDocumentReader.Request());
             return await _razorViewToStringService.GetFromView("/Views/Shared/UnitedStatesCongress.cshtml", document, context);
         }
         finally {

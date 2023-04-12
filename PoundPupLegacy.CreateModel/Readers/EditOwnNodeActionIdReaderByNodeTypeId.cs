@@ -1,30 +1,34 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : DatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeId>
+
+using Factory = EditOwnNodeActionIdReaderByNodeTypeIdFactory;
+using Reader = EditOwnNodeActionIdReaderByNodeTypeId;
+
+public sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+
+    internal static IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
     const string SQL = """
         SELECT id FROM edit_own_node_action WHERE node_type_id = @node_type_id
         """;
 }
-public sealed class EditOwnNodeActionIdReaderByNodeTypeId : SingleItemDatabaseReader<int, int>
+public sealed class EditOwnNodeActionIdReaderByNodeTypeId : IntDatabaseReader<int>
 {
-
     internal EditOwnNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(int nodeTypeId)
+    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
     {
-        _command.Parameters["node_type_id"].Value = nodeTypeId;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.NodeTypeId, request)
+        };
+    }
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var id = reader.GetInt32("id");
-            await reader.CloseAsync();
-            return id;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"edit own node action cannot be found for node type  {nodeTypeId}");
+    protected override IntValueReader IntValueReader => Factory.IdReader;
+
+    protected override string GetErrorMessage(int request)
+    {
+        return $"edit own node action cannot be found for node type {request}";
     }
 }

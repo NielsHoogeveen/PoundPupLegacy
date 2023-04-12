@@ -1,15 +1,17 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
-using System.Data;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class TopicsDocumentReaderFactory : DatabaseReaderFactory<TopicsDocumentReader>
+using Factory = TopicsDocumentReaderFactory;
+using Reader = TopicsDocumentReader;
+
+public class TopicsDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
-    internal static NullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
-    internal static NullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
-    internal static NullableStringDatabaseParameter Pattern = new() { Name = "pattern" };
+    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    internal readonly static NullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    internal readonly static NullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+    internal readonly static NullableStringDatabaseParameter PatternParameter = new() { Name = "pattern" };
+
+    internal readonly static FieldValueReader<Topics> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -95,9 +97,9 @@ public class TopicsDocumentReaderFactory : DatabaseReaderFactory<TopicsDocumentR
 
 
 }
-public class TopicsDocumentReader : SingleItemDatabaseReader<TopicsDocumentReader.TopicsDocumentRequest, Topics>
+public class TopicsDocumentReader : SingleItemDatabaseReader<Reader.Request, Topics>
 {
-    public record TopicsDocumentRequest
+    public record Request
     {
         public required int UserId { get; init; }
         public required int TenantId { get; init; }
@@ -109,7 +111,8 @@ public class TopicsDocumentReader : SingleItemDatabaseReader<TopicsDocumentReade
     public TopicsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async Task<Topics> ReadAsync(TopicsDocumentRequest request)
+
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         string GetPattern(string searchTerm, SearchOption searchOption)
         {
@@ -124,15 +127,18 @@ public class TopicsDocumentReader : SingleItemDatabaseReader<TopicsDocumentReade
                 _ => throw new Exception("Cannot reach")
             };
         }
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        _command.Parameters["pattern"].Value = GetPattern(request.SearchTerm, request.SearchOption);
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var topics = reader.GetFieldValue<Topics>(0);
-        return topics;
+
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
+            ParameterValue.Create(Factory.LimitParameter, request.Limit),
+            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
+            ParameterValue.Create(Factory.PatternParameter, GetPattern(request.SearchTerm, request.SearchOption)),
+        };
     }
 
+    protected override Topics Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+    }
 }

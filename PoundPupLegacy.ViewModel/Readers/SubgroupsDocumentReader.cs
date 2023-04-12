@@ -1,13 +1,15 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class SubgroupsDocumentReaderFactory : DatabaseReaderFactory<SubgroupsDocumentReader>
+using Factory = SubgroupsDocumentReaderFactory;
+using Reader = SubgroupsDocumentReader;
+public class SubgroupsDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
-    internal static NullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
-    internal static NullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
+    internal readonly static NonNullableIntegerDatabaseParameter SubgroupIdParameter = new() { Name = "subgroup_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    internal readonly static NullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    internal readonly static NullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+
+    internal readonly static FieldValueReader<SubgroupPagedList> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -127,9 +129,9 @@ public class SubgroupsDocumentReaderFactory : DatabaseReaderFactory<SubgroupsDoc
             ;
 
 }
-public class SubgroupsDocumentReader : SingleItemDatabaseReader<SubgroupsDocumentReader.SubgroupDocumentRequest, SubgroupPagedList>
+public class SubgroupsDocumentReader : SingleItemDatabaseReader<Reader.Request, SubgroupPagedList>
 {
-    public record SubgroupDocumentRequest
+    public record Request
     {
         public required int UserId { get; init; }
         public required int SubgroupId { get; init; }
@@ -140,17 +142,17 @@ public class SubgroupsDocumentReader : SingleItemDatabaseReader<SubgroupsDocumen
     public SubgroupsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async Task<SubgroupPagedList> ReadAsync(SubgroupDocumentRequest request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["subgroup_id"].Value = request.SubgroupId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var subgroupPagedList = reader.GetFieldValue<SubgroupPagedList>(0);
-        return subgroupPagedList;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.SubgroupIdParameter, request.SubgroupId),
+            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
+            ParameterValue.Create(Factory.LimitParameter, request.Limit),
+            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
+        };
     }
-
-
+    protected override SubgroupPagedList Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+    }
 }

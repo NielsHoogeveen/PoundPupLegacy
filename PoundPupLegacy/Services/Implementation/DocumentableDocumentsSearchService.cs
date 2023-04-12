@@ -33,7 +33,7 @@ internal sealed class DocumentableDocumentsSearchService : IDocumentableDocument
         try {
             await _connection.OpenAsync();
             await using var reader = await _documentableDocumentsDocumentReaderFactory.CreateAsync(_connection);
-            await foreach (var elem in reader.ReadAsync(new DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest {
+            await foreach (var elem in reader.ReadAsync(new DocumentableDocumentsDocumentReader.Request {
                 NodeId = nodeId,
                 UserId = userId,
                 TenantId = tenantId,

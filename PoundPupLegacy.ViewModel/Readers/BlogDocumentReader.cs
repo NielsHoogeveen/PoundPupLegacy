@@ -1,13 +1,16 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class BlogDocumentReaderFactory : DatabaseReaderFactory<BlogDocumentReader>
+using Factory = BlogDocumentReaderFactory;
+using Reader = BlogDocumentReader;
+
+public class BlogDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter Length = new() { Name = "length" };
-    internal static NonNullableIntegerDatabaseParameter StartIndex = new() { Name = "start_index" };
-    internal static NullableIntegerArrayDatabaseParameter Terms = new() { Name = "terms" };
+    internal static readonly NonNullableIntegerDatabaseParameter PublishedIdParameter = new() { Name = "publisher_id" };
+    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal static readonly NonNullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
+    internal static readonly NonNullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
+
+    internal static readonly FieldValueReader<Blog> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -66,7 +69,7 @@ public class BlogDocumentReaderFactory : DatabaseReaderFactory<BlogDocumentReade
                     COUNT(n.id),
                     'BlogPostTeasers', 
                     (select jsonb_agg(document) from fetch_blog_post_documents)
-                )
+                ) document
                 FROM publisher p
                 JOIN node n on n.publisher_id = p.id
                 JOIN blog_post b on b.id = n.id
@@ -76,9 +79,9 @@ public class BlogDocumentReaderFactory : DatabaseReaderFactory<BlogDocumentReade
             """;
 
 }
-public class BlogDocumentReader : SingleItemDatabaseReader<BlogDocumentReader.BlogDocumentRequest, Blog>
+public class BlogDocumentReader : SingleItemDatabaseReader<Reader.Request, Blog>
 {
-    public record BlogDocumentRequest
+    public record Request
     {
         public int PublisherId { get; init; }
         public int TenantId { get; init; }
@@ -88,15 +91,19 @@ public class BlogDocumentReader : SingleItemDatabaseReader<BlogDocumentReader.Bl
     public BlogDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async Task<Blog> ReadAsync(BlogDocumentRequest request)
+
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["publisher_id"].Value = request.PublisherId;
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["length"].Value = request.Length;
-        _command.Parameters["start_index"].Value = request.StartIndex;
-        await using var reader = await _command.ExecuteReaderAsync();
-        await reader.ReadAsync();
-        var blog = reader.GetFieldValue<Blog>(0);
-        return blog!;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.PublishedIdParameter, request.PublisherId),
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.StartIndexParameter, request.StartIndex),
+            ParameterValue.Create(Factory.LengthParameter, request.Length),
+        };
+    }
+
+    protected override Blog Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
     }
 }

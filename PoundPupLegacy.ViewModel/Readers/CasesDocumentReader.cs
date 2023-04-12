@@ -1,15 +1,16 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
-using System.Data;
+﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-namespace PoundPupLegacy.ViewModel.Readers;
-public class CasesDocumentReaderFactory : DatabaseReaderFactory<CasesDocumentReader>
+using Factory = CasesDocumentReaderFactory;
+using Reader = CasesDocumentReader;
+public class CasesDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
-    internal static NonNullableIntegerDatabaseParameter Limit = new() { Name = "limit" };
-    internal static NonNullableIntegerDatabaseParameter Offset = new() { Name = "offset" };
-    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    internal readonly static NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+    internal readonly static NullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
+
+    internal readonly static FieldValueReader<Cases> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -107,9 +108,9 @@ public class CasesDocumentReaderFactory : DatabaseReaderFactory<CasesDocumentRea
             """;
 
 }
-public class CasesDocumentReader : SingleItemDatabaseReader<CasesDocumentReader.CasesDocumentRequest, Cases>
+public class CasesDocumentReader : SingleItemDatabaseReader<Reader.Request, Cases>
 {
-    public record CasesDocumentRequest
+    public record Request
     {
         public int TenantId { get; init; }
         public int UserId { get; init; }
@@ -120,32 +121,20 @@ public class CasesDocumentReader : SingleItemDatabaseReader<CasesDocumentReader.
     public CasesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async Task<Cases> ReadAsync(CasesDocumentRequest request)
+
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["limit"].Value = request.Limit;
-        _command.Parameters["offset"].Value = request.Offset;
-        if (request.CaseType == CaseType.Any) {
-            _command.Parameters["node_type_id"].Value = DBNull.Value;
-        }
-        else {
-            _command.Parameters["node_type_id"].Value = (int)request.CaseType;
-        }
-        await using var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var organizations = reader.GetFieldValue<Cases>(0);
-            return organizations!;
-        }
-        else {
-
-            return new Cases {
-                CaseListEntries = new CaseListEntry[] { },
-                NumberOfEntries = 0,
-            };
-        }
-
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
+            ParameterValue.Create(Factory.LimitParameter, request.Limit),
+            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
+            ParameterValue.Create(Factory.NodeTypeIdParameter, request.CaseType == CaseType.Any ? null: (int)request.CaseType)
+        };
     }
 
+    protected override Cases Read(NpgsqlDataReader reader)
+    {
+        return Factory.DocumentReader.GetValue(reader);
+    }
 }

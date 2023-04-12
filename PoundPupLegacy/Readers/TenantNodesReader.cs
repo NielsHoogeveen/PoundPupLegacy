@@ -3,8 +3,16 @@ using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
-internal sealed class TenantNodesReaderFactory : DatabaseReaderFactory<TenantNodesReader>
+
+using Factory = TenantNodesReaderFactory;
+using Reader = TenantNodesReader;
+
+internal sealed class TenantNodesReaderFactory : DatabaseReaderFactory<Reader>
 {
+    internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    internal static readonly IntValueReader UrlIdReader = new() { Name = "url_id" };
+    internal static readonly StringValueReader UrlPathReader = new() { Name = "url_path" };
+
     public override string Sql => SQL;
     const string SQL = """
         select
@@ -24,18 +32,17 @@ internal sealed class TenantNodesReader : EnumerableDatabaseReader<TenantNodesRe
     public TenantNodesReader(NpgsqlCommand command) : base(command)
     {
     }
-
-    public override async IAsyncEnumerable<TenantNode> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            yield return new TenantNode {
-                TenantId = reader.GetInt32(0),
-                UrlId = reader.GetInt32(1),
-                UrlPath = reader.GetString(2)
-            };
-
-        }
+        return new ParameterValue[] { };
     }
 
+    protected override TenantNode Read(NpgsqlDataReader reader)
+    {
+        return new TenantNode {
+            TenantId = Factory.TenantIdReader.GetValue(reader),
+            UrlId = Factory.UrlIdReader.GetValue(reader),
+            UrlPath = Factory.UrlPathReader.GetValue(reader),
+        };
+    }
 }

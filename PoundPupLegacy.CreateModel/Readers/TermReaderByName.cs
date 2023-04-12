@@ -1,19 +1,31 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class TermReaderByNameFactory : DatabaseReaderFactory<TermReaderByName>
+
+using Factory = TermReaderByNameFactory;
+using Reader = TermReaderByName;
+public sealed class TermReaderByNameFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
+    internal static IntValueReader IdReader = new() { Name = "id" };
+    internal static StringValueReader NameReader = new() { Name = "name" };
+    internal static IntValueReader NameableIdReader = new() { Name = "nameable_id" };
+    internal static IntValueReader VocabularyIdReader = new() { Name = "vocabulary_id" };
+
     public override string Sql => SQL;
 
     const string SQL = """
-        SELECT id, nameable_id
+        SELECT 
+        id, 
+        name,
+        nameable_id,
+        vocabulary_id
         FROM term 
         WHERE vocabulary_id = @vocabulary_id
         AND name = @name 
         """;
 }
-public sealed class TermReaderByName : SingleItemDatabaseReader<TermReaderByName.Request, Term>
+public sealed class TermReaderByName : MandatorySingleItemDatabaseReader<Reader.Request, Term>
 {
     public record Request
     {
@@ -24,27 +36,25 @@ public sealed class TermReaderByName : SingleItemDatabaseReader<TermReaderByName
 
     internal TermReaderByName(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<Term> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (request.Name is null) {
-            throw new ArgumentNullException(nameof(request.Name));
-        }
-        _command.Parameters["vocabulary_id"].Value = request.VocabularyId;
-        _command.Parameters["name"].Value = request.Name.Trim();
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.VocabularyId, request.VocabularyId),
+            ParameterValue.Create(Factory.Name, request.Name)
+        };
+    }
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var term = new Term {
-                Id = reader.GetInt32("id"),
-                Name = request.Name,
-                VocabularyId = request.VocabularyId,
-                NameableId = reader.GetInt32("nameable_id")
-            };
-            await reader.CloseAsync();
-            return term;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"term {request.Name} cannot be found in vocabulary {request.VocabularyId}");
+    protected override Term Read(NpgsqlDataReader reader)
+    {
+        return new Term {
+            Id = Factory.IdReader.GetValue(reader),
+            Name = Factory.NameReader.GetValue(reader),
+            VocabularyId = Factory.VocabularyIdReader.GetValue(reader),
+            NameableId = Factory.NameableIdReader.GetValue(reader)
+        };
+    }
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"term {request.Name} cannot be found in vocabulary {request.VocabularyId}";
     }
 }

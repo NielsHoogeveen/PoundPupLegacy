@@ -1,8 +1,20 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class TenantNodeReaderByUrlIdFactory : DatabaseReaderFactory<TenantNodeReaderByUrlId>
+
+using Factory = TenantNodeReaderByUrlIdFactory;
+using Reader = TenantNodeReaderByUrlId;
+
+public sealed class TenantNodeReaderByUrlIdFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+
+    internal static IntValueReader IdReader = new() { Name = "id" };
+    internal static IntValueReader NodeIdReader = new() { Name = "node_id" };
+    internal static IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    internal static IntValueReader UrlIdReader = new() { Name = "url_id" };
+    internal static IntValueReader PublicationStatusIdReader = new() { Name = "publication_status_id" };
+    internal static NullableIntValueReader SubgroupIdReader = new() { Name = "subgroup_id" };
+    internal static NullableStringValueReader UrlPathReader = new() { Name = "url_path" };
 
     public override string Sql => SQL;
 
@@ -20,7 +32,7 @@ public sealed class TenantNodeReaderByUrlIdFactory : DatabaseReaderFactory<Tenan
         """;
 
 }
-public sealed class TenantNodeReaderByUrlId : SingleItemDatabaseReader<TenantNodeReaderByUrlId.Request, TenantNode?>
+public sealed class TenantNodeReaderByUrlId : SingleItemDatabaseReader<Reader.Request, TenantNode>
 {
     public record Request
     {
@@ -31,31 +43,25 @@ public sealed class TenantNodeReaderByUrlId : SingleItemDatabaseReader<TenantNod
 
     internal TenantNodeReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<TenantNode?> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.UrlId, request.UrlId),
+        };
+    }
 
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["url_id"].Value = request.UrlId;
-
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var tenantNode = new TenantNode {
-                Id = reader.GetInt32("id"),
-                TenantId = reader.GetInt32("tenant_id"),
-                UrlId = reader.GetInt32("url_id"),
-                NodeId = reader.GetInt32("node_id"),
-                UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                PublicationStatusId = reader.GetInt32("publication_status_id"),
-                SubgroupId = reader.IsDBNull("subgroup_id") ? null : reader.GetInt32("subgroup_id"),
-            };
-            await reader.CloseAsync();
-            return tenantNode;
-        }
-        else {
-            await reader.CloseAsync();
-            return null;
-        }
+    protected override TenantNode? Read(NpgsqlDataReader reader)
+    {
+        return new TenantNode {
+            Id = Factory.IdReader.GetValue(reader),
+            TenantId = Factory.TenantIdReader.GetValue(reader),
+            UrlId = Factory.UrlIdReader.GetValue(reader),
+            NodeId = Factory.NodeIdReader.GetValue(reader),
+            UrlPath = Factory.UrlPathReader.GetValue(reader),
+            PublicationStatusId = Factory.PublicationStatusIdReader.GetValue(reader),
+            SubgroupId = Factory.SubgroupIdReader.GetValue(reader),
+        };
     }
 }
 

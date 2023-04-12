@@ -1,8 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
-public sealed class SubdivisionIdReaderByNameFactory : DatabaseReaderFactory<SubdivisionIdReaderByName>
+
+using Factory = SubdivisionIdReaderByNameFactory;
+using Reader = SubdivisionIdReaderByName;
+public sealed class SubdivisionIdReaderByNameFactory : DatabaseReaderFactory<Reader>
 {
     internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+
+    internal static IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 
@@ -14,7 +19,7 @@ public sealed class SubdivisionIdReaderByNameFactory : DatabaseReaderFactory<Sub
         """;
 
 }
-public sealed class SubdivisionIdReaderByName : SingleItemDatabaseReader<SubdivisionIdReaderByName.Request, int>
+public sealed class SubdivisionIdReaderByName : IntDatabaseReader<Reader.Request>
 {
     public record Request
     {
@@ -24,22 +29,18 @@ public sealed class SubdivisionIdReaderByName : SingleItemDatabaseReader<Subdivi
     }
     internal SubdivisionIdReaderByName(NpgsqlCommand command) : base(command) { }
 
-    public override async Task<int> ReadAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (request.Name is null) {
-            throw new ArgumentNullException(nameof(request.Name));
-        }
-        _command.Parameters["country_id"].Value = request.CountryId;
-        _command.Parameters["name"].Value = request.Name;
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.CountryId, request.CountryId),
+            ParameterValue.Create(Factory.Name, request.Name)
+        };
+    }
 
-        var reader = await _command.ExecuteReaderAsync();
-        if (reader.HasRows) {
-            await reader.ReadAsync();
-            var result = reader.GetInt32("id");
-            await reader.CloseAsync();
-            return result;
-        }
-        await reader.CloseAsync();
-        throw new Exception($"subdivision with code {request.Name} cannot be found");
+    protected override IntValueReader IntValueReader => Factory.IdReader;
+
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"subdivision with code {request.Name} cannot be found";
     }
 }

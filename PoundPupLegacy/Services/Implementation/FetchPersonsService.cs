@@ -29,7 +29,7 @@ internal sealed class FetchPersonsService : IPersonService
         try {
             await _connection.OpenAsync();
             await using var reader = await _personsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new PersonsDocumentReader.PersonsDocumentRequest {
+            var persons =  await reader.ReadAsync(new PersonsDocumentReader.Request {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,
@@ -37,6 +37,12 @@ internal sealed class FetchPersonsService : IPersonService
                 SearchTerm = searchTerm,
                 SearchOption = searchOption
             });
+            if (persons is not null)
+                return persons;
+            return new Persons {
+                Entries = Array.Empty<PersonListEntry>(),
+                NumberOfEntries = 0
+            };
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

@@ -26,15 +26,15 @@ internal sealed class FetchBlogsService : IFetchBlogsService
         try {
             await _connection.OpenAsync();
             await using var reader = await _blogsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(tenantId);
-
+            var blogs =  await reader.ReadAsync(tenantId);
+            if (blogs is not null)
+                return blogs;
+            return new List<BlogListEntry>();
         }
         finally {
             if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
-
         }
     }
-
 }

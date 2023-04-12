@@ -1,19 +1,25 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
-namespace PoundPupLegacy.EditModel.Readers;
+using Factory = DocumentableDocumentsDocumentReaderFactory;
+using Reader = DocumentableDocumentsDocumentReader;
 
-public class DocumentableDocumentsDocumentReaderFactory : DatabaseReaderFactory<DocumentableDocumentsDocumentReader>
+public class DocumentableDocumentsDocumentReaderFactory : DatabaseReaderFactory<Reader>
 {
     public override string Sql => SQL;
+    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableStringDatabaseParameter SearchString = new() { Name = "search_string" };
 
+    internal static readonly IntValueReader DocumentableId = new() { Name = "documentable_id" };
+    internal static readonly IntValueReader DocumentId = new() { Name = "document_id" };
+    internal static readonly StringValueReader Title = new() { Name = "title" };
+
     const string SQL = """
         select
-            id,
-            title
+            id document_id,
+            title,
+            @node_id documentable_id
         from(
             select
             d.id,
@@ -62,9 +68,9 @@ public class DocumentableDocumentsDocumentReaderFactory : DatabaseReaderFactory<
 
 }
 
-public class DocumentableDocumentsDocumentReader : EnumerableDatabaseReader<DocumentableDocumentsDocumentReader.DocumentableDocumentsDocumentRequest, DocumentableDocument>
+public class DocumentableDocumentsDocumentReader : EnumerableDatabaseReader<Reader.Request, DocumentableDocument>
 {
-    public record DocumentableDocumentsDocumentRequest
+    public record Request
     {
         public required int NodeId { get; init; }
         public required int UserId { get; init; }
@@ -72,23 +78,29 @@ public class DocumentableDocumentsDocumentReader : EnumerableDatabaseReader<Docu
         public required string SearchString { get; init; }
 
     }
-    internal DocumentableDocumentsDocumentReader(NpgsqlCommand command) : base(command)
+    public DocumentableDocumentsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
-    public override async IAsyncEnumerable<DocumentableDocument> ReadAsync(DocumentableDocumentsDocumentRequest request)
+
+
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["user_id"].Value = request.UserId;
-        _command.Parameters["tenant_id"].Value = request.TenantId;
-        _command.Parameters["search_string"].Value = $"%{request.SearchString}%";
-        await using var reader = await _command.ExecuteReaderAsync();
-        while (await reader.ReadAsync()) {
-            yield return new DocumentableDocument {
-                DocumentableId = request.NodeId,
-                DocumentId = reader.GetInt32(0),
-                Title = reader.GetString(1),
-                HasBeenDeleted = false,
-                IsStored = false,
-            };
-        }
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.NodeId, request.NodeId),
+            ParameterValue.Create(Factory.UserId, request.UserId),
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.SearchString, $"%{request.SearchString}%"),
+        };
+    }
+
+    protected override DocumentableDocument Read(NpgsqlDataReader reader)
+    {
+        return new DocumentableDocument {
+            DocumentableId = Factory.DocumentableId.GetValue(reader),
+            DocumentId = Factory.DocumentId.GetValue(reader),
+            Title = Factory.Title.GetValue(reader),
+            HasBeenDeleted = false,
+            IsStored = false,
+        };
     }
 }
