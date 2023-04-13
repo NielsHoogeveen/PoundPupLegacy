@@ -6,7 +6,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
     public PartyPoliticalEntityRelationMigratorCPCT(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -25,7 +25,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
 
     private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
 
         var sql = $"""

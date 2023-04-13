@@ -6,7 +6,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
     public InterPersonalRelationMigratorCPCT(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<InterPersonalRelation> interPersonalRelationCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -25,7 +25,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
 
     private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlId
     )
     {
 

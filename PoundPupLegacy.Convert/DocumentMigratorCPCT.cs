@@ -6,7 +6,7 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
     public DocumentMigratorCPCT(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<Document> documentCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -25,7 +25,7 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(
         IEnumerable<int> documentableIds,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
         foreach (var urlId in documentableIds) {
             yield return await GetNodeId(urlId, nodeIdReader, tenantNodeReader);
@@ -34,7 +34,7 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
 
     private async IAsyncEnumerable<Document> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
 
 
