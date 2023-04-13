@@ -151,9 +151,12 @@ namespace PoundPupLegacy.Common
 
         protected abstract string GetErrorMessage(TRequest request);
 
-        public async Task<TResponse?> ReadAsync(TRequest request)
+        public async Task<TResponse> ReadAsync(TRequest request)
         {
-            Set(GetParameterValues(request));
+            foreach (var parameter in GetParameterValues(request)) 
+            {
+                parameter.Set(_command);
+            }
             await using var reader = await _command.ExecuteReaderAsync();
             if (!reader.HasRows)
                 throw new Exception(GetErrorMessage(request)); ;
@@ -171,7 +174,10 @@ namespace PoundPupLegacy.Common
         }
         public async Task<TResponse?> ReadAsync(TRequest request)
         {
-            Set(GetParameterValues(request));
+            foreach (var parameter in GetParameterValues(request)) 
+            { 
+                parameter.Set(_command);
+            }
             await using var reader = await _command.ExecuteReaderAsync();
             if (!reader.HasRows)
                 return null;
@@ -187,7 +193,10 @@ namespace PoundPupLegacy.Common
         }
         public async IAsyncEnumerable<TResponse> ReadAsync(TRequest request)
         {
-            Set(GetParameterValues(request));
+            foreach (var parameter in GetParameterValues(request)) 
+            {
+                parameter.Set(_command);
+            }
             await using var reader = await _command.ExecuteReaderAsync();
             while (await reader.ReadAsync()) {
                 yield return Read(reader);

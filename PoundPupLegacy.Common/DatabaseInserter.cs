@@ -129,19 +129,19 @@ public abstract class AutoGenerateIdDatabaseInserterFactory<T, T2> : DatabaseIns
     public abstract string TableName { get; }
 
     protected override string Sql => DatabaseParameters.Any()
-            ? $"""
-                INSERT INTO public."{TableName}"(
-                    {string.Join(',', DatabaseParameters.Select(x => x.Name))}
-                ) 
-                VALUES(
-                    {string.Join(',', DatabaseParameters.Select(x => $"@{x.Name}"))}
-                );
-                SELECT lastval();
-                """
-            : $"""
-                INSERT INTO public."{TableName}" DEFAULT VALUES;
-                SELECT lastval();
-                """;
+        ? $"""
+            INSERT INTO public."{TableName}"(
+                {string.Join(',', DatabaseParameters.Select(x => x.Name))}
+            ) 
+            VALUES(
+                {string.Join(',', DatabaseParameters.Select(x => $"@{x.Name}"))}
+            );
+            SELECT lastval();
+            """
+        : $"""
+            INSERT INTO public."{TableName}" DEFAULT VALUES;
+            SELECT lastval();
+            """;
 }
 
 public abstract class DatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<T>
@@ -152,7 +152,10 @@ public abstract class DatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<
     }
     public async Task InsertAsync(T item)
     {
-        Set(GetParameterValues(item));
+        foreach(var parameter in GetParameterValues(item)) 
+        {
+            parameter.Set(_command);
+        }
         await _command.ExecuteNonQueryAsync();
     }
 }
@@ -165,7 +168,10 @@ public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor, IDat
     }
     public async Task InsertAsync(T item)
     {
-        Set(GetParameterValues(item));
+        foreach (var parameter in GetParameterValues(item)) 
+        {
+            parameter.Set(_command);
+        }
         item.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception($"Insert action did not return an id.")
@@ -185,14 +191,20 @@ public abstract class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAcc
     public async Task InsertAsync(T item)
     {
         if (item.Id is null) {
-            Set(GetParameterValues(item).Where(x => x.DatabaseParameter is not AutoGenerateIntegerDatabaseParameter), _commandAutoGenerate);
+            foreach(var parameter in GetParameterValues(item).Where(x => x.DatabaseParameter is not AutoGenerateIntegerDatabaseParameter))
+            {
+                parameter.Set(_commandAutoGenerate);
+            };
             item.Id = await _commandAutoGenerate.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception($"Insert action did not return an id.")
             };
         }
         else {
-            Set(GetParameterValues(item), _command);
+            foreach(var parameter in GetParameterValues(item)) 
+            {
+                parameter.Set(_command);
+            }
             await _command.ExecuteNonQueryAsync();
         }
     }

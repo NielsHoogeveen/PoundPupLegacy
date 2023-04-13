@@ -20,7 +20,7 @@ internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFac
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
     internal readonly static NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
     internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
-    internal readonly static NullableStringDatabaseParameter PatternParameter = new() { Name = "pattern" };
+    internal readonly static SearchOptionDatabaseParameter PatternParameter = new() { Name = "pattern" };
 
     internal readonly static FieldValueReader<Persons> DocumentReader = new() { Name = "document" };
 
@@ -113,26 +113,12 @@ internal sealed class PersonsDocumentReader : SingleItemDatabaseReader<Request, 
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        string GetPattern(string searchTerm, SearchOption searchOption)
-        {
-            if (string.IsNullOrEmpty(searchTerm)) {
-                return "%";
-            }
-            return searchOption switch {
-                SearchOption.IsEqualTo => searchTerm,
-                SearchOption.Contains => $"%{searchTerm}%",
-                SearchOption.StartsWith => $"{searchTerm}%",
-                SearchOption.EndsWith => $"%{searchTerm}",
-                _ => throw new Exception("Cannot reach")
-            };
-        }
-
         return new ParameterValue[] {
             ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
             ParameterValue.Create(Factory.UserIdParameter, request.UserId),
             ParameterValue.Create(Factory.LimitParameter, request.Limit),
             ParameterValue.Create(Factory.OffsetParameter, request.Offset),
-            ParameterValue.Create(Factory.PatternParameter, GetPattern(request.SearchTerm, request.SearchOption)),
+            ParameterValue.Create(Factory.PatternParameter, (request.SearchTerm, request.SearchOption)),
         };
     }
 

@@ -57,7 +57,10 @@ public abstract class DatabaseUpdater<TRequest> : DatabaseAccessor, IDatabaseUpd
 
     public async Task UpdateAsync(TRequest request)
     {
-        Set(GetParameterValues(request));
+        foreach (var parameter in GetParameterValues(request)) 
+        {
+            parameter.Set(_command);
+        }
         await _command.ExecuteNonQueryAsync();
     }
 

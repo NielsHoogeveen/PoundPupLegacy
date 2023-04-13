@@ -25,7 +25,7 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
     internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
     internal readonly static NullableIntegerDatabaseParameter OrganizationTypeIdParameter = new() { Name = "organization_type_id" };
     internal readonly static NullableIntegerDatabaseParameter CountryIdParameter = new() { Name = "country_id" };
-    internal readonly static NullableStringDatabaseParameter PatternParameter = new() { Name = "pattern" };
+    internal readonly static SearchOptionDatabaseParameter PatternParameter = new() { Name = "pattern" };
 
     internal readonly static FieldValueReader<OrganizationSearch> DocumentReader = new() { Name = "document" };
 
@@ -183,26 +183,12 @@ internal sealed class OrganizationsDocumentReader : SingleItemDatabaseReader<Req
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        string GetPattern(string searchTerm, SearchOption searchOption)
-        {
-            if (string.IsNullOrEmpty(searchTerm)) {
-                return "%";
-            }
-            return searchOption switch {
-                SearchOption.IsEqualTo => searchTerm,
-                SearchOption.Contains => $"%{searchTerm}%",
-                SearchOption.StartsWith => $"{searchTerm}%",
-                SearchOption.EndsWith => $"%{searchTerm}",
-                _ => throw new Exception("Cannot reach")
-            };
-        }
-
         return new ParameterValue[] {
             ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
             ParameterValue.Create(Factory.UserIdParameter, request.UserId),
             ParameterValue.Create(Factory.LimitParameter, request.Limit),
             ParameterValue.Create(Factory.OffsetParameter, request.Offset),
-            ParameterValue.Create(Factory.PatternParameter, GetPattern(request.SearchTerm, request.SearchOption)),
+            ParameterValue.Create(Factory.PatternParameter, (request.SearchTerm, request.SearchOption)),
             ParameterValue.Create(Factory.OrganizationTypeIdParameter, request.OrganizationTypeId),
             ParameterValue.Create(Factory.CountryIdParameter, request.CountryId),
         };
