@@ -51,9 +51,6 @@ public abstract class DatabaseUpdater<TRequest> : DatabaseAccessor, IDatabaseUpd
     protected DatabaseUpdater(NpgsqlCommand command) : base(command)
     {
     }
-    public string Sql => _command.CommandText;
-    public bool HasBeenPrepared => _command.IsPrepared;
-
 
     public async Task UpdateAsync(TRequest request)
     {

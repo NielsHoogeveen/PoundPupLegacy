@@ -51,7 +51,7 @@ internal sealed class TenantNodeReaderByUrlId : SingleItemDatabaseReader<Request
         };
     }
 
-    protected override TenantNode? Read(NpgsqlDataReader reader)
+    protected override TenantNode Read(NpgsqlDataReader reader)
     {
         return new TenantNode {
             Id = Factory.IdReader.GetValue(reader),

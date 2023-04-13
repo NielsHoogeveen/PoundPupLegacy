@@ -124,7 +124,6 @@ namespace PoundPupLegacy.Common
         }
 
         protected abstract IEnumerable<ParameterValue> GetParameterValues(TRequest request);
-        protected abstract TResponse Read(NpgsqlDataReader reader);
 
     }
     public abstract class IntDatabaseReader<TRequest> : MandatorySingleItemDatabaseReader<TRequest, int>
@@ -151,6 +150,9 @@ namespace PoundPupLegacy.Common
 
         protected abstract string GetErrorMessage(TRequest request);
 
+        protected abstract TResponse Read(NpgsqlDataReader reader);
+
+
         public async Task<TResponse> ReadAsync(TRequest request)
         {
             foreach (var parameter in GetParameterValues(request)) 
@@ -172,6 +174,8 @@ namespace PoundPupLegacy.Common
         protected SingleItemDatabaseReader(NpgsqlCommand command) : base(command)
         {
         }
+        protected abstract TResponse? Read(NpgsqlDataReader reader);
+
         public async Task<TResponse?> ReadAsync(TRequest request)
         {
             foreach (var parameter in GetParameterValues(request)) 
@@ -191,6 +195,8 @@ namespace PoundPupLegacy.Common
         protected EnumerableDatabaseReader(NpgsqlCommand command) : base(command)
         {
         }
+        protected abstract TResponse Read(NpgsqlDataReader reader);
+
         public async IAsyncEnumerable<TResponse> ReadAsync(TRequest request)
         {
             foreach (var parameter in GetParameterValues(request)) 

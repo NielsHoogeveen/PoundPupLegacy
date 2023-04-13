@@ -31,7 +31,7 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
 
     public override string Sql => SQL;
 
-    protected const string SQL = """
+    const string SQL = """
         select
             jsonb_build_object(
                 'Countries', 
