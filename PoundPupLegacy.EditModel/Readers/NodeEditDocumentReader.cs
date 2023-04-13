@@ -1,15 +1,14 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using System.Data;
 
 namespace PoundPupLegacy.EditModel.Readers;
-public record NodeUpdateDocumentRequest
+public record NodeUpdateDocumentRequest: IRequest
 {
     public int UrlId { get; init; }
     public int UserId { get; init; }
     public int TenantId { get; init; }
 
 }
-public record NodeCreateDocumentRequest
+public record NodeCreateDocumentRequest: IRequest
 {
     public int NodeTypeId { get; init; }
     public int UserId { get; init; }
@@ -17,8 +16,10 @@ public record NodeCreateDocumentRequest
 
 }
 
-public abstract class NodeEditDocumentReaderFactory<T> : DatabaseReaderFactory<T>
-where T : class, IDatabaseReader
+public abstract class NodeEditDocumentReaderFactory<TRequest, TResponse, TReader> : SingleItemDatabaseReaderFactory<TRequest, TResponse, TReader>
+where TRequest : IRequest
+where TResponse : Node
+where TReader: ISingleItemDatabaseReader<TRequest, TResponse>
 {
     protected const string CTE_EDIT = $"""
         WITH
@@ -460,6 +461,7 @@ where T : class, IDatabaseReader
 }
 
 public abstract class NodeEditDocumentReader<TRequest,TResponse> : SingleItemDatabaseReader<TRequest,TResponse>
+    where TRequest : IRequest
     where TResponse : class, Node
 {
 

@@ -2,11 +2,11 @@
 
 internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
     private readonly IEntityCreator<UnitedStatesPoliticalPartyAffliation> _unitedStatesPoliticalPartyAffliationCreator;
     public UnitedStatesPoliticalPartyAffliationMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IEntityCreator<UnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreator
     ) : base(databaseConnections)
     {
@@ -16,7 +16,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
 
     protected override string Name => "united states political party affilition";
 
-    private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+    )
     {
 
         yield return new UnitedStatesPoliticalPartyAffliation {
@@ -62,7 +64,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.DEMOCRATIC_PARTY
             })
@@ -111,7 +113,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.REPUBLICAN_PARTY
             })
@@ -204,7 +206,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.POPULAR_DEMOCRAT_PARTY
             })
@@ -252,7 +254,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.LIBERTARIAN_PARTY
             })

@@ -18,9 +18,9 @@ internal sealed class CountryAndIntermediateLevelSubdivisionCreator : EntityCrea
     private readonly IDatabaseInserterFactory<CountryAndIntermediateLevelSubdivision> _countryAndIntermediateLevelSubdivisionInserterFactory;
     private readonly IDatabaseInserterFactory<IntermediateLevelSubdivision> _intermediateLevelSubdivisionInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderByNameInserterFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderByNameInserterFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderByOwnerAndNameFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public CountryAndIntermediateLevelSubdivisionCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
@@ -39,9 +39,9 @@ internal sealed class CountryAndIntermediateLevelSubdivisionCreator : EntityCrea
         IDatabaseInserterFactory<CountryAndIntermediateLevelSubdivision> countryAndIntermediateLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<IntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderByNameInserterFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderByNameInserterFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
     {
         _nodeInserterFactory = nodeInserterFactory;

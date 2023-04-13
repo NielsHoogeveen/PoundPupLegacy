@@ -5,8 +5,8 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
     private readonly IEntityCreator<Document> _documentCreator;
     public DocumentMigratorCPCT(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<Document> documentCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -24,15 +24,17 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
 
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(
         IEnumerable<int> documentableIds,
-        NodeIdReaderByUrlId nodeIdReader,
-        TenantNodeReaderByUrlId tenantNodeReader)
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
         foreach (var urlId in documentableIds) {
             yield return await GetNodeId(urlId, nodeIdReader, tenantNodeReader);
         }
     }
 
-    private async IAsyncEnumerable<Document> ReadDocuments(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader)
+    private async IAsyncEnumerable<Document> ReadDocuments(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
 
 
@@ -153,7 +155,7 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
                 Teaser = TextToTeaser(text),
                 DocumentTypeId = reader.IsDBNull("document_type_id")
                     ? null
-                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.CPCT,
                         UrlId = reader.GetInt32("document_type_id")
                     }),

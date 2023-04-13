@@ -2,12 +2,12 @@
 
 internal sealed class TypeOfAbuserMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
     private readonly IEntityCreator<TypeOfAbuser> _typeOfAbuserCreator;
 
     public TypeOfAbuserMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<TypeOfAbuser> typeOfAbuserCreator
     ) : base(databaseConnections)
     {
@@ -22,7 +22,9 @@ internal sealed class TypeOfAbuserMigrator : MigratorPPL
         await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await _typeOfAbuserCreator.CreateAsync(ReadTypesOfAbusers(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<TypeOfAbuser> ReadTypesOfAbusers(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    private async IAsyncEnumerable<TypeOfAbuser> ReadTypesOfAbusers(
+        IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
+    )
     {
 
         var sql = $"""
@@ -148,7 +150,7 @@ internal sealed class TypeOfAbuserMigrator : MigratorPPL
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image"),
                     }),

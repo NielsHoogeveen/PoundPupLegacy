@@ -7,8 +7,8 @@ internal sealed class FileMigratorCPCT : MigratorCPCT
     private readonly IEntityCreator<File> _fileCreator;
     public FileMigratorCPCT(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<File> fileCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {

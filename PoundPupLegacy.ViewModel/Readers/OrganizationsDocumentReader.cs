@@ -1,9 +1,23 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = OrganizationsDocumentReaderRequest;
 using Factory = OrganizationsDocumentReaderFactory;
 using Reader = OrganizationsDocumentReader;
+using PoundPupLegacy.Common;
 
-public class OrganizationsDocumentReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record OrganizationsDocumentReaderRequest : IRequest
+{
+    public required int UserId { get; init; }
+    public required int TenantId { get; init; }
+    public required int Limit { get; init; }
+    public required int Offset { get; init; }
+    public required string SearchTerm { get; init; }
+    public required SearchOption SearchOption { get; init; }
+    public required int? OrganizationTypeId { get; init; }
+    public required int? CountryId { get; init; }
+}
+
+internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, OrganizationSearch, Reader>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -161,20 +175,9 @@ public class OrganizationsDocumentReaderFactory : DatabaseReaderFactory<Reader>
         """;
 
 }
-public class OrganizationsDocumentReader : SingleItemDatabaseReader<Reader.Request, OrganizationSearch>
+internal sealed class OrganizationsDocumentReader : SingleItemDatabaseReader<Request, OrganizationSearch>
 {
-    public record Request
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-        public required string SearchTerm { get; init; }
-        public required SearchOption SearchOption { get; init; }
-        public required int? OrganizationTypeId { get; init; }
-        public required int? CountryId { get; init; }
-    }
-    internal OrganizationsDocumentReader(NpgsqlCommand command) : base(command)
+    public OrganizationsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

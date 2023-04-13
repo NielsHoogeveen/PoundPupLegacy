@@ -4,10 +4,15 @@ using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
 
+using Request = MenuItemsReaderRequest;
 using Factory = MenuItemsReaderFactory;
 using Reader = MenuItemsReader;
 
-internal sealed class MenuItemsReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record MenuItemsReaderRequest : IRequest
+{
+}
+
+internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<Request, UserTenantMenuItems, Reader>
 {
     internal readonly static FieldValueReader<UserTenantMenuItems> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
@@ -118,11 +123,8 @@ internal sealed class MenuItemsReaderFactory : DatabaseReaderFactory<Reader>
 
 }
 
-internal sealed class MenuItemsReader : EnumerableDatabaseReader<Reader.Request, UserTenantMenuItems>
+internal sealed class MenuItemsReader : EnumerableDatabaseReader<Request, UserTenantMenuItems>
 {
-    public record Request
-    {
-    }
     public MenuItemsReader(NpgsqlCommand command) : base(command)
     {
     }

@@ -10,10 +10,10 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class FetchOrganizationsService : IFetchOrganizationsService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<OrganizationsDocumentReader> _organizationsDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<OrganizationsDocumentReaderRequest, OrganizationSearch> _organizationsDocumentReaderFactory;
     public FetchOrganizationsService(
         IDbConnection connection,
-        IDatabaseReaderFactory<OrganizationsDocumentReader> organizationsDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<OrganizationsDocumentReaderRequest, OrganizationSearch> organizationsDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -28,7 +28,7 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
         try {
             await _connection.OpenAsync();
             await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection);
-            var organizations = await reader.ReadAsync(new OrganizationsDocumentReader.Request {
+            var organizations = await reader.ReadAsync(new OrganizationsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,

@@ -7,9 +7,9 @@ internal sealed class ChildPlacementTypeCreator : EntityCreator<ChildPlacementTy
     private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
     private readonly IDatabaseInserterFactory<ChildPlacementType> _childPlacementTypeInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
 
     public ChildPlacementTypeCreator(
@@ -18,9 +18,9 @@ internal sealed class ChildPlacementTypeCreator : EntityCreator<ChildPlacementTy
         IDatabaseInserterFactory<Nameable> nameableInserterFactory,
         IDatabaseInserterFactory<ChildPlacementType> childPlacementTypeInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
         )
     {
@@ -45,7 +45,7 @@ internal sealed class ChildPlacementTypeCreator : EntityCreator<ChildPlacementTy
         await using var termWriter = await _termInserterFactory.CreateAsync(connection);
         await using var termReader = await _termReaderFactory.CreateAsync(connection);
         await using var termHierarchyWriter = await _termHierarchyInserterFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await new VocabularyIdReaderByOwnerAndNameFactory().CreateAsync(connection);
+        await using var vocabularyIdReader = await _vocabularyIdReaderFactory.CreateAsync(connection);
         await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var childPlacementType in childPlacementTypes) {

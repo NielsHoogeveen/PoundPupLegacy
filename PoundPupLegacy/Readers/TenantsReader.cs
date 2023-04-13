@@ -4,9 +4,16 @@ using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
 
+using Request = TenantsReaderRequest;
 using Factory = TenantsReaderFactory;
 using Reader = TenantsReader;
-internal sealed class TenantsReaderFactory : DatabaseReaderFactory<Reader>
+
+internal sealed record TenantsReaderRequest: IRequest
+{
+
+}
+
+internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tenant, Reader>
 {
     internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
     internal static readonly StringValueReader DomainNameReader = new() { Name = "domain_name" };
@@ -27,11 +34,8 @@ internal sealed class TenantsReaderFactory : DatabaseReaderFactory<Reader>
         """;
 
 }
-internal sealed class TenantsReader : EnumerableDatabaseReader<Reader.Request, Tenant>
+internal sealed class TenantsReader : EnumerableDatabaseReader<Request, Tenant>
 {
-    public record Request
-    {
-    }
 
     public TenantsReader(NpgsqlCommand command) : base(command)
     {

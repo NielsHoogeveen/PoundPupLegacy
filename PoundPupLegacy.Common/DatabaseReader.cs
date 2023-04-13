@@ -6,32 +6,93 @@ namespace PoundPupLegacy.Common
     public interface IDatabaseReaderFactory {
         string Sql { get; }
     }
-    public interface IDatabaseReaderFactory<T> : IDatabaseReaderFactory
-        where T : IDatabaseReader
+    public interface IDatabaseReaderFactory<TRequest, TResponse> : IDatabaseReaderFactory
+        where TRequest : IRequest
     {
-        public Task<T> CreateAsync(IDbConnection connection);
+        
     }
 
     public interface IDatabaseReader: IDatabaseAccessor 
     { 
         
     }
+    public interface IDatabaseReader<TRequest, TResponse> : IDatabaseReader
+        where TRequest : IRequest
+    {
 
-    public interface ISingleItemDatabaseReader<TRequest, TResponse> : IDatabaseReader
+    }
+
+    public interface ISingleItemDatabaseReader<TRequest, TResponse> : IDatabaseReader<TRequest, TResponse>
+        where TRequest: IRequest
     {
         public Task<TResponse?> ReadAsync(TRequest request);
     }
-    public interface IEnumerableDatabaseReader<TRequest, TResponse>: IDatabaseReader
+    public interface IMandatorySingleItemDatabaseReader<TRequest, TResponse> : IDatabaseReader<TRequest, TResponse>
+    where TRequest : IRequest
+    {
+        public Task<TResponse> ReadAsync(TRequest request);
+    }
+
+    public interface IEnumerableDatabaseReader<TRequest, TResponse>: IDatabaseReader<TRequest, TResponse>
+        where TRequest: IRequest
     {
         public IAsyncEnumerable<TResponse> ReadAsync(TRequest request);
     }
 
-    public abstract class DatabaseReaderFactory<T> : DatabaseAccessorFactory, IDatabaseReaderFactory<T>
-        where T : IDatabaseReader
+    public interface ISingleItemDatabaseReaderFactory<TRequest, TResponse> : IDatabaseReaderFactory<TRequest, TResponse>
+        where TRequest: IRequest
+    {
+        public Task<ISingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
+    }
+
+    public abstract class SingleItemDatabaseReaderFactory<TRequest, TResponse, TReader>: DatabaseReaderFactory<TRequest, TResponse>, ISingleItemDatabaseReaderFactory<TRequest, TResponse>
+        where TRequest: IRequest
+        where TReader : ISingleItemDatabaseReader<TRequest, TResponse>
+    {
+        public async Task<ISingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection)
+        {
+            return (TReader)Activator.CreateInstance(typeof(TReader), new object[] { await GetCommand(connection) })!;
+        }
+
+    }
+    public interface IMandatorySingleItemDatabaseReaderFactory<TRequest, TResponse>: IDatabaseReaderFactory<TRequest, TResponse> 
+        where TRequest: IRequest
+    {
+        public Task<IMandatorySingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
+    }
+    public abstract class MandatorySingleItemDatabaseReaderFactory<TRequest, TResponse, TReader> : DatabaseReaderFactory<TRequest, TResponse>, IMandatorySingleItemDatabaseReaderFactory<TRequest, TResponse>
+        where TRequest : IRequest
+        where TReader : IMandatorySingleItemDatabaseReader<TRequest, TResponse>
+    {
+        public async Task<IMandatorySingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection)
+        {
+            return (TReader)Activator.CreateInstance(typeof(TReader), new object[] { await GetCommand(connection) })!;
+        }
+
+    }
+    public interface IEnumerableDatabaseReaderFactory<TRequest, TResponse> : IDatabaseReaderFactory<TRequest, TResponse>
+    where TRequest : IRequest
+    {
+        public Task<IEnumerableDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
+    }
+
+    public abstract class EnumerableDatabaseReaderFactory<TRequest, TResponse, TReader> : DatabaseReaderFactory<TRequest, TResponse>, IEnumerableDatabaseReaderFactory<TRequest, TResponse>
+        where TRequest : IRequest
+        where TReader : IEnumerableDatabaseReader<TRequest, TResponse>
+    {
+        public async Task<IEnumerableDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection)
+        {
+            return (TReader)Activator.CreateInstance(typeof(TReader), new object[] { await GetCommand(connection) })!;
+        }
+
+    }
+
+    public abstract class DatabaseReaderFactory<TRequest, TResponse> : DatabaseAccessorFactory, IDatabaseReaderFactory<TRequest, TResponse>
+        where TRequest: IRequest
     {
         public abstract string Sql { get; }
 
-        public async Task<T> CreateAsync(IDbConnection connection)
+        protected async Task<NpgsqlCommand> GetCommand(IDbConnection connection)
         {
             if (connection is not NpgsqlConnection)
                 throw new Exception("Application only works with a Postgres database");
@@ -44,15 +105,8 @@ namespace PoundPupLegacy.Common
                 command.AddParameter(parameter);
             }
             await command.PrepareAsync();
-            return (T)Activator.CreateInstance(
-                typeof(T),
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
-                Type.DefaultBinder, 
-                new object[] { command }, 
-                null, 
-                null)!;
+            return command;
         }
-
 
     }
 
@@ -61,7 +115,6 @@ namespace PoundPupLegacy.Common
         protected DatabaseReader(NpgsqlCommand command): base(command)
         {
         }
-
     }
 
     public abstract class DatabaseReaderBase<TRequest, TResponse>: DatabaseReader
@@ -74,7 +127,8 @@ namespace PoundPupLegacy.Common
         protected abstract TResponse Read(NpgsqlDataReader reader);
 
     }
-    public abstract class IntDatabaseReader<TRequest> : MandatorySingleItemDatabaseReader<TRequest, int>, ISingleItemDatabaseReader<TRequest, int>
+    public abstract class IntDatabaseReader<TRequest> : MandatorySingleItemDatabaseReader<TRequest, int>
+        where TRequest : IRequest
     {
         protected IntDatabaseReader(NpgsqlCommand command) : base(command)
         {
@@ -88,7 +142,8 @@ namespace PoundPupLegacy.Common
             return IntValueReader.GetValue(reader);
         }
     }
-    public abstract class MandatorySingleItemDatabaseReader<TRequest, TResponse> : DatabaseReaderBase<TRequest, TResponse>, ISingleItemDatabaseReader<TRequest, TResponse>
+    public abstract class MandatorySingleItemDatabaseReader<TRequest, TResponse> : DatabaseReaderBase<TRequest, TResponse>, IMandatorySingleItemDatabaseReader<TRequest, TResponse>
+        where TRequest : IRequest
     {
         protected MandatorySingleItemDatabaseReader(NpgsqlCommand command) : base(command)
         {
@@ -109,6 +164,7 @@ namespace PoundPupLegacy.Common
 
     public abstract class SingleItemDatabaseReader<TRequest, TResponse> : DatabaseReaderBase<TRequest, TResponse>, ISingleItemDatabaseReader<TRequest, TResponse>
         where TResponse : class
+        where TRequest : IRequest
     {
         protected SingleItemDatabaseReader(NpgsqlCommand command) : base(command)
         {
@@ -124,6 +180,7 @@ namespace PoundPupLegacy.Common
         }
     }
     public abstract class EnumerableDatabaseReader<TRequest, TResponse> : DatabaseReaderBase<TRequest, TResponse>, IEnumerableDatabaseReader<TRequest, TResponse>
+        where TRequest: IRequest
     {
         protected EnumerableDatabaseReader(NpgsqlCommand command) : base(command)
         {

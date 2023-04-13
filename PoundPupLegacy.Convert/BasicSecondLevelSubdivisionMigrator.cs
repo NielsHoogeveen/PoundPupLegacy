@@ -2,24 +2,24 @@
 
 internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
-    private readonly IDatabaseReaderFactory<SubdivisionIdReaderByName> _subdivisionIdByNameReaderFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByNameableId> _termReaderByNameableIdFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderByNameFactory;
-    private readonly IDatabaseReaderFactory<SubdivisionIdReaderByIso3166Code> _subdivisionIdReaderByIso3166CodeFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int> _subdivisionIdByNameReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> _subdivisionIdReaderByIso3166CodeFactory;
     private readonly IEntityCreator<BasicSecondLevelSubdivision> _basicSecondLevelSubdivisionCreator;
 
     protected override string Name => "basic second level subdivisions";
 
     public BasicSecondLevelSubdivisionMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<SubdivisionIdReaderByName> subdivisionIdByNameReaderFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
-        IDatabaseReaderFactory<TermReaderByNameableId> termReaderByNameableIdFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
-        IDatabaseReaderFactory<SubdivisionIdReaderByIso3166Code> subdivisionIdReaderByIso3166CodeFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest,  int> subdivisionIdReaderByIso3166CodeFactory,
         IEntityCreator<BasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreator
     ) : base(databaseConnections)
     {
@@ -33,14 +33,14 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
     }
 
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
-        NodeIdReaderByUrlId nodeIdReader,
-        SubdivisionIdReaderByName subdivisionIdByNameReader,
-        VocabularyIdReaderByOwnerAndName vocabularyIdReader,
-        TermReaderByNameableId termReaderByNameableId,
-        TermReaderByName termReaderByName
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReader,
+        IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
-        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
+        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
@@ -48,15 +48,15 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
-            var countryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var countryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = int.Parse(parts[7])
             });
-            var subdivisionId = await subdivisionIdByNameReader.ReadAsync(new SubdivisionIdReaderByName.Request {
+            var subdivisionId = await subdivisionIdByNameReader.ReadAsync(new SubdivisionIdReaderByNameRequest {
                 CountryId = countryId,
                 Name = parts[11]
             });
-            var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
+            var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 NameableId = subdivisionId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
@@ -109,7 +109,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 IntermediateLevelSubdivisionId = subdivisionId,
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByName.Request {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
                     VocabularyId = vocabularyId,
                     Name = parts[12].Trim()
                 })).NameableId
@@ -118,14 +118,14 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
     }
 
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionCsv(
-        NodeIdReaderByUrlId nodeIdReader,
-        SubdivisionIdReaderByIso3166Code subdivisionIdReaderByIso3166Code,
-        VocabularyIdReaderByOwnerAndName vocabularyIdReader,
-        TermReaderByNameableId termReaderByNameableId,
-        TermReaderByName termReaderByName
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code,
+        IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
-        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
+        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
@@ -134,8 +134,10 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
             var parts = line.Split(new char[] { ';' }).Select(x => x.TrimStart()).ToList();
             int? id = int.Parse(parts[0]) == 0 ? null : int.Parse(parts[0]);
             var title = parts[8];
-            var subdivisionId = await subdivisionIdReaderByIso3166Code.ReadAsync(parts[11]);
-            var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
+            var subdivisionId = await subdivisionIdReaderByIso3166Code.ReadAsync(new SubdivisionIdReaderByIso3166CodeRequest {
+                Iso3166Code = parts[11]
+            });
+            var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 NameableId = subdivisionId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
@@ -170,7 +172,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                     }
                 },
                 PublisherId = int.Parse(parts[6]),
-                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request() {
+                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest() {
                     TenantId = Constants.PPL,
                     UrlId = int.Parse(parts[7])
                 }),
@@ -191,7 +193,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 IntermediateLevelSubdivisionId = subdivisionId,
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByName.Request {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
                     VocabularyId = vocabularyId,
                     Name = parts[12].Trim()
                 })).NameableId
@@ -229,12 +231,12 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
 
     }
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(
-        NodeIdReaderByUrlId nodeIdReader,
-        VocabularyIdReaderByOwnerAndName vocabularyIdReader,
-        TermReaderByName termReaderByName
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
-        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
+        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
@@ -319,18 +321,18 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 NodeTypeId = 19,
                 Description = "",
                 VocabularyNames = vocabularyNames,
-                IntermediateLevelSubdivisionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                IntermediateLevelSubdivisionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("intermediate_level_subdivision_id")
                 }),
-                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("country_id")
                 }),
                 ISO3166_2_Code = reader.GetString("iso_3166_2_code"),
                 FileIdFlag = reader.IsDBNull("file_id_flag") ? null : reader.GetInt32("file_id_flag"),
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByName.Request {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
                     VocabularyId = vocabularyId,
                     Name = "State"
                 })).NameableId

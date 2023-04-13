@@ -1,8 +1,17 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = UnitedStatesMeetingChamberDocumentReaderRequest;
 using Factory = UnitedStatesMeetingChamberDocumentReaderFactory;
 using Reader = UnitedStatesMeetingChamberDocumentReader;
-public class UnitedStatesMeetingChamberDocumentReaderFactory : DatabaseReaderFactory<Reader>
+using PoundPupLegacy.Common;
+
+public sealed record UnitedStatesMeetingChamberDocumentReaderRequest : IRequest
+{
+    public required int Number { get; init; }
+
+    public required int Type { get; init; }
+}
+internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, CongressionalMeetingChamber, Reader>
 {
     internal readonly static NonNullableIntegerDatabaseParameter MeetingNumberParameter = new() { Name = "meeting_number" };
     internal readonly static NonNullableIntegerDatabaseParameter ChamberTypeParameter = new() { Name = "chamber_type" };
@@ -247,16 +256,10 @@ public class UnitedStatesMeetingChamberDocumentReaderFactory : DatabaseReaderFac
         """;
 
 }
-public class UnitedStatesMeetingChamberDocumentReader : SingleItemDatabaseReader<Reader.Request, CongressionalMeetingChamber>
+internal sealed class UnitedStatesMeetingChamberDocumentReader : SingleItemDatabaseReader<Request, CongressionalMeetingChamber>
 {
-    public record Request
-    {
-        public required int Number { get; init; }
-
-        public required int Type { get; init; }
-
-    }
-    internal UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
+ 
+    public UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

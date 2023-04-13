@@ -2,11 +2,11 @@
 
 internal class CaseCaseRelationsMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<CaseCaseParties> _caseCasePartiesCreator;
     public CaseCaseRelationsMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<CaseCaseParties> caseCasePartiesCreator
     ) : base(databaseConnections)
     {
@@ -38,7 +38,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
     private async IAsyncEnumerable<CaseCaseParties> ReadCaseCaseRelations(
         string sql,
         int casePartyTypeId,
-        NodeIdReaderByUrlId nodeIdReader)
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         using var readCommand = _mySqlConnection.CreateCommand();
@@ -54,21 +54,21 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             var id = reader.GetInt32("id");
             var organizationIds = new List<int>();
             foreach (var entry in reader.IsDBNull("organization_ids") ? new List<int>() : reader.GetString("organization_ids").Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x))) {
-                organizationIds.Add(await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                organizationIds.Add(await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = entry,
                     TenantId = Constants.PPL
                 }));
             }
             var personIds = new List<int>();
             foreach (var entry in reader.IsDBNull("person_ids") ? new List<int>() : reader.GetString("person_ids").Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x))) {
-                personIds.Add(await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                personIds.Add(await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = entry,
                     TenantId = Constants.PPL
                 }));
             }
 
             yield return new CaseCaseParties {
-                CaseId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                CaseId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = id,
                     TenantId = Constants.PPL
                 }),
@@ -86,7 +86,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
         await reader.CloseAsync();
 
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseHomestudyParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseHomestudyParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -129,7 +130,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.HOMESTUDY_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -138,7 +139,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCasePlacementParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -181,7 +183,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.PLACEMENT_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -191,7 +193,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCasePostPlacementParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCasePostPlacementParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -234,7 +237,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.POSTPLACEMENT_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -243,7 +246,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseFacilitatorParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseFacilitatorParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -287,7 +291,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.FACILITATION_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -297,7 +301,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseInstitutionParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseInstitutionParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -340,7 +345,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.INSTITUTION_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -349,7 +354,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseTherapyParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadAbuseCaseTherapyParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -378,7 +384,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.THERAPY_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -387,7 +393,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCasePlacementParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -431,7 +438,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.PLACEMENT_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -441,7 +448,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCaseFacilitatorParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCaseFacilitatorParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         var sql = $"""
@@ -486,7 +494,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.FACILITATION_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -496,7 +504,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCaseOrphanageParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadChildTraffickingCaseOrphanageParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -540,7 +549,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.INSTITUTION_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -550,7 +559,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
         }
     }
 
-    private async IAsyncEnumerable<CaseCaseParties> ReadDisruptedPlacementCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadDisruptedPlacementCasePlacementParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -592,7 +602,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.PLACEMENT_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -601,7 +611,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadDisruptedPlacementCaseFacilitatorParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadDisruptedPlacementCaseFacilitatorParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -645,7 +656,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.FACILITATION_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -654,7 +665,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadCoercedAdoptionCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadCoercedAdoptionCasePlacementParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -698,7 +710,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.PLACEMENT_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -707,7 +719,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadFathersRightsViolationCasePlacementParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadFathersRightsViolationCasePlacementParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -749,7 +762,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.PLACEMENT_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -758,7 +771,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadWrongfulRemovalCaseAuthorityParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadWrongfulRemovalCaseAuthorityParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -787,7 +801,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.AUTHORITIES_CASE_TYPE,
                 TenantId = Constants.PPL
             }),
@@ -796,7 +810,8 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseCaseParties> ReadWrongfulMedicationCaseAuthorityParties(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<CaseCaseParties> ReadWrongfulMedicationCaseAuthorityParties(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -825,7 +840,7 @@ internal class CaseCaseRelationsMigrator : MigratorPPL
                 """;
         await foreach (var elem in ReadCaseCaseRelations(
             sql,
-            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = Constants.AUTHORITIES_CASE_TYPE,
                 TenantId = Constants.PPL
             }),

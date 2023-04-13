@@ -1,8 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
+using Request = TermReaderByNameRequest;
 using Factory = TermReaderByNameFactory;
 using Reader = TermReaderByName;
-public sealed class TermReaderByNameFactory : DatabaseReaderFactory<Reader>
+
+public sealed class TermReaderByNameRequest : IRequest
+{
+    public required int VocabularyId { get; init; }
+    public required string Name { get; init; }
+}
+internal sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term, Reader>
 {
     internal static NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
@@ -25,16 +32,9 @@ public sealed class TermReaderByNameFactory : DatabaseReaderFactory<Reader>
         AND name = @name 
         """;
 }
-public sealed class TermReaderByName : MandatorySingleItemDatabaseReader<Reader.Request, Term>
+internal sealed class TermReaderByName : MandatorySingleItemDatabaseReader<Request, Term>
 {
-    public record Request
-    {
-        public required int VocabularyId { get; init; }
-        public required string Name { get; init; }
-
-    }
-
-    internal TermReaderByName(NpgsqlCommand command) : base(command) { }
+    public TermReaderByName(NpgsqlCommand command) : base(command) { }
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

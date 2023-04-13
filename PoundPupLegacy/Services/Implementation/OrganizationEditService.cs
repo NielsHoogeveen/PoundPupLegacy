@@ -12,7 +12,7 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class OrganizationEditService : PartyEditServiceBase<Organization, CreateModel.Organization>, IEditService<Organization>
 {
 
-    private readonly IDatabaseReaderFactory<OrganizationUpdateDocumentReader> _organizationUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest,Organization> _organizationUpdateDocumentReaderFactory;
     private readonly ISaveService<IEnumerable<Location>> _locationsSaveService;
     private readonly IDatabaseUpdaterFactory<OrganizationUpdater> _organizationUpdateFactory;
     private readonly IEntityCreator<CreateModel.Organization> _organizationEntityCreator;
@@ -20,7 +20,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         IDbConnection connection,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
-        IDatabaseReaderFactory<OrganizationUpdateDocumentReader> organizationUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization> organizationUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<OrganizationUpdater> organizationUpdateFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,

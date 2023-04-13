@@ -7,18 +7,18 @@ internal sealed class InterOrganizationalRelationTypeCreator : EntityCreator<Int
     private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
     private readonly IDatabaseInserterFactory<InterOrganizationalRelationType> _interOrganizationalRelationTypeInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public InterOrganizationalRelationTypeCreator(IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,
         IDatabaseInserterFactory<Nameable> nameableInserterFactory,
         IDatabaseInserterFactory<InterOrganizationalRelationType> interOrganizationalRelationTypeInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

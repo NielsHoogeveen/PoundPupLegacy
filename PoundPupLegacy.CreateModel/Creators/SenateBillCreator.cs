@@ -9,10 +9,10 @@ internal sealed class SenateBillCreator : EntityCreator<SenateBill>
     private readonly IDatabaseInserterFactory<Bill> _billInserterFactory;
     private readonly IDatabaseInserterFactory<SenateBill> _senateBillInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     public SenateBillCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,
@@ -21,10 +21,10 @@ internal sealed class SenateBillCreator : EntityCreator<SenateBill>
         IDatabaseInserterFactory<Bill> billInserterFactory,
         IDatabaseInserterFactory<SenateBill> senateBillInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory
     )
     {
         _nodeInserterFactory = nodeInserterFactory;

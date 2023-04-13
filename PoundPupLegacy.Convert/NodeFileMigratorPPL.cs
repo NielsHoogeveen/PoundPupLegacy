@@ -2,14 +2,14 @@
 
 internal sealed class NodeFileMigratorPPL : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
-    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
     private readonly IEntityCreator<NodeFile> _nodeFileCreator;
 
     public NodeFileMigratorPPL(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<NodeFile> nodeFileCreator
     ) : base(databaseConnections)
     {
@@ -26,7 +26,10 @@ internal sealed class NodeFileMigratorPPL : MigratorPPL
         await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await _nodeFileCreator.CreateAsync(ReadNodeFiles(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<NodeFile> ReadNodeFiles(NodeIdReaderByUrlId nodeIdReader, FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    private async IAsyncEnumerable<NodeFile> ReadNodeFiles(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
+    )
     {
         var sql = $"""
                 SELECT f.fid,
@@ -93,11 +96,11 @@ internal sealed class NodeFileMigratorPPL : MigratorPPL
         while (await reader.ReadAsync()) {
 
             yield return new NodeFile {
-                NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = reader.GetInt32("nid"),
                     TenantId = Constants.PPL
                 }),
-                FileId = await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                FileId = await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                     TenantId = Constants.PPL,
                     TenantFileId = reader.GetInt32("fid")
                 }),

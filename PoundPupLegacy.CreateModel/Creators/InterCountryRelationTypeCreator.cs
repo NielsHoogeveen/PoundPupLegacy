@@ -8,8 +8,8 @@ internal sealed class InterCountryRelationTypeCreator : EntityCreator<InterCount
     private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public InterCountryRelationTypeCreator(
         IDatabaseInserterFactory<InterCountryRelationType> interCountryRelationTypeInserterFactory,
@@ -18,8 +18,8 @@ internal sealed class InterCountryRelationTypeCreator : EntityCreator<InterCount
         IDatabaseInserterFactory<Nameable> nameableInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

@@ -11,9 +11,9 @@ internal sealed class OrganizationCreator : EntityCreator<Organization>
     private readonly IDatabaseInserterFactory<Organization> _organizationInserterFactory;
     private readonly IDatabaseInserterFactory<UnitedStatesPoliticalParty> _unitedStatesPoliticalPartyInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     private readonly IDatabaseInserterFactory<OrganizationOrganizationType> _organizationOrganizationTypeInserterFactory;
     //Add ctor
@@ -27,9 +27,9 @@ internal sealed class OrganizationCreator : EntityCreator<Organization>
         IDatabaseInserterFactory<Organization> organizationInserterFactory,
         IDatabaseInserterFactory<UnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
         IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory
     )

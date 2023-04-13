@@ -1,9 +1,17 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
+using Request = TagDocumentsReaderRequest;
 using Factory = TagDocumentsReaderFactory;
 using Reader = TagDocumentsReader;
 
-public class TagDocumentsReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record TagDocumentsReaderRequest : IRequest
+{
+    public required int NodeId { get; init; }
+    public required int TenantId { get; init; }
+    public required string SearchString { get; init; }
+}
+
+internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tag, Reader>
 {
     internal static readonly NonNullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
     internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
@@ -40,16 +48,9 @@ public class TagDocumentsReaderFactory : DatabaseReaderFactory<Reader>
         """;
 
 }
-public class TagDocumentsReader : EnumerableDatabaseReader<Reader.Request, Tag>
+internal sealed class TagDocumentsReader : EnumerableDatabaseReader<Request, Tag>
 {
-    public record Request
-    {
-        public required int NodeId { get; init; }
-        public required int TenantId { get; init; }
-        public required string SearchString { get; init; }
-
-    }
-    internal TagDocumentsReader(NpgsqlCommand command) : base(command)
+    public TagDocumentsReader(NpgsqlCommand command) : base(command)
     {
     }
 

@@ -10,10 +10,10 @@ internal sealed class FetchNodeService : IFetchNodeService
 {
     private readonly NpgsqlConnection _connection;
 
-    private readonly IDatabaseReaderFactory<NodeDocumentReader> _nodeDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Node> _nodeDocumentReaderFactory;
     public FetchNodeService(
         IDbConnection connection,
-        IDatabaseReaderFactory<NodeDocumentReader> nodeDocumentReaderFactory
+        ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Node> nodeDocumentReaderFactory
         )
     {
         if (connection is not NpgsqlConnection)
@@ -28,7 +28,7 @@ internal sealed class FetchNodeService : IFetchNodeService
         try {
             await _connection.OpenAsync();
             await using var reader = await _nodeDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeDocumentReader.Request {
+            return await reader.ReadAsync(new NodeDocumentReaderRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId

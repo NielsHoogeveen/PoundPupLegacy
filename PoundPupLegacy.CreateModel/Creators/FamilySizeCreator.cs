@@ -7,8 +7,8 @@ internal sealed class FamilySizeCreator : EntityCreator<FamilySize>
     private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
     private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public FamilySizeCreator(IDatabaseInserterFactory<FamilySize> familySizeInserterFactory,
@@ -16,8 +16,8 @@ internal sealed class FamilySizeCreator : EntityCreator<FamilySize>
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,
         IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )

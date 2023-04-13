@@ -4,17 +4,17 @@ internal sealed class MenuMigrator : MigratorPPL
 {
     protected override string Name => "menu items";
 
-    private readonly IDatabaseReaderFactory<ActionIdReaderByPath> _actionIdReaderByPathFactory;
-    private readonly IDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeId> _createNodeActionIdReaderByNodeTypeIdFactory;
-    private readonly IDatabaseReaderFactory<TenantNodeIdReaderByUrlId> _tenantNodeIdReaderByUrlIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> _actionIdReaderByPathFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> _createNodeActionIdReaderByNodeTypeIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TenantNodeIdReaderByUrlIdRequest, int> _tenantNodeIdReaderByUrlIdFactory;
     private readonly IEntityCreator<TenantNodeMenuItem> _tenantNodeMenuItemCreator;
     private readonly IEntityCreator<ActionMenuItem> _actionMenuItemCreator;
 
     public MenuMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<ActionIdReaderByPath> actionIdReaderByPathFactory,
-        IDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeId> createNodeActionIdReaderByNodeTypeIdFactory,
-        IDatabaseReaderFactory<TenantNodeIdReaderByUrlId> tenantNodeIdReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
+        IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeIdReaderByUrlIdRequest, int> tenantNodeIdReaderByUrlIdFactory,
         IEntityCreator<TenantNodeMenuItem> tenantNodeMenuItemCreator,
         IEntityCreator<ActionMenuItem> actionMenuItemCreator
 
@@ -35,101 +35,104 @@ internal sealed class MenuMigrator : MigratorPPL
         await _actionMenuItemCreator.CreateAsync(GetActionMenuItems(actionIdReaderByPath, createNodeActionIdReaderByNodeTypeId), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<ActionMenuItem> GetActionMenuItems(ActionIdReaderByPath actionIdReaderByPath, CreateNodeActionIdReaderByNodeTypeId createNodeActionIdReaderByNodeTypeId)
+    private async IAsyncEnumerable<ActionMenuItem> GetActionMenuItems(
+        IMandatorySingleItemDatabaseReader<ActionIdReaderByPathRequest, int> actionIdReaderByPath,
+        IMandatorySingleItemDatabaseReader<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeId
+        )
     {
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/contact"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/contact" }),
             Name = "Contact",
             Weight = 2,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/articles"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/articles" }),
             Name = "Articles",
             Weight = 3,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/blogs"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/blogs" }),
             Name = "Blogs",
             Weight = 4,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/cases"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/cases" }),
             Name = "Cases",
             Weight = 5,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/topics"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/topics" }),
             Name = "Topics",
             Weight = 6,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/countries"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/countries" }),
             Name = "Countries",
             Weight = 7,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/organizations"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/organizations" }),
             Name = "Organizations",
             Weight = 8,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/persons"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/persons" }),
             Name = "Persons",
             Weight = 9,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync("/polls"),
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/polls" }),
             Name = "Polls",
             Weight = 10,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(35),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 35 }),
             Name = "Create Blog",
             Weight = 11,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(36),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 36 }),
             Name = "Create Article",
             Weight = 12,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(37),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 37 }),
             Name = "Create Discussion",
             Weight = 13,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(26),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 26 }),
             Name = "Create Abuse Case",
             Weight = 14,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(29),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 29 }),
             Name = "Create Child Trafficking Case",
             Weight = 15,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(23),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 23 }),
             Name = "Create Organization",
             Weight = 16,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(24),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 24 }),
             Name = "Create Person",
             Weight = 17,
         };
@@ -139,7 +142,7 @@ internal sealed class MenuMigrator : MigratorPPL
         await using var tenantNodeIdByUrlIdReader = await _tenantNodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         yield return new TenantNodeMenuItem {
             Id = null,
-            TenantNodeId = await tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlId.Request {
+            TenantNodeId = await tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 1063,
             }),
@@ -148,7 +151,7 @@ internal sealed class MenuMigrator : MigratorPPL
         };
         yield return new TenantNodeMenuItem {
             Id = null,
-            TenantNodeId = await tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlId.Request {
+            TenantNodeId = await tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 34428,
             }),

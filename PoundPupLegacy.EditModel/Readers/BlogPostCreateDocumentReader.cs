@@ -2,12 +2,12 @@
 
 using Reader = BlogPostCreateDocumentReader;
 
-public sealed class BlogPostCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<Reader>
+internal sealed class BlogPostCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<BlogPost, Reader>
 {
 }
-public sealed class BlogPostCreateDocumentReader : SimpleTextNodeCreateDocumentReader<BlogPost>
+internal sealed class BlogPostCreateDocumentReader : SimpleTextNodeCreateDocumentReader<BlogPost>
 {
-    internal BlogPostCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
+    public BlogPostCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.BLOG_POST)
     {
     }
 

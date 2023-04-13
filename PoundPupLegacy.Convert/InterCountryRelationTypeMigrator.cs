@@ -3,11 +3,11 @@ namespace PoundPupLegacy.Convert;
 
 internal sealed class InterCountryRelationTypeMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
     private readonly IEntityCreator<InterCountryRelationType> _interCountryRelationTypeCreator;
     public InterCountryRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<InterCountryRelationType> interCountryRelationTypeCreator
     ) : base(databaseConnections)
     {
@@ -23,7 +23,8 @@ internal sealed class InterCountryRelationTypeMigrator : MigratorPPL
 
         await _interCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<InterCountryRelationType> ReadInterCountryRelationTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    private async IAsyncEnumerable<InterCountryRelationType> ReadInterCountryRelationTypes(
+        IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -100,7 +101,7 @@ internal sealed class InterCountryRelationTypeMigrator : MigratorPPL
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

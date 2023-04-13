@@ -12,9 +12,9 @@ internal sealed class InformalIntermediateLevelSubdivisionCreator : EntityCreato
     private readonly IDatabaseInserterFactory<IntermediateLevelSubdivision> _intermediateLevelSubdivisionInserterFactory;
     private readonly IDatabaseInserterFactory<InformalIntermediateLevelSubdivision> _informalIntermediateLevelSubdivisionInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
 
     public InformalIntermediateLevelSubdivisionCreator(
@@ -28,9 +28,9 @@ internal sealed class InformalIntermediateLevelSubdivisionCreator : EntityCreato
         IDatabaseInserterFactory<IntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<InformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

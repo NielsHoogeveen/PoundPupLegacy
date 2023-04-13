@@ -9,14 +9,14 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class DocumentEditService : NodeEditServiceBase<Document, CreateModel.Document>, IEditService<Document>
 {
-    private readonly IDatabaseReaderFactory<DocumentUpdateDocumentReader> _documentUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document> _documentUpdateDocumentReaderFactory;
 
 
     public DocumentEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
-        IDatabaseReaderFactory<DocumentUpdateDocumentReader> documentUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document> documentUpdateDocumentReaderFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
@@ -35,7 +35,7 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
             throw new Exception("Application only works with a Postgres database");
         _documentUpdateDocumentReaderFactory = documentUpdateDocumentReaderFactory;
     }
-    public async Task<Document> GetViewModelAsync(int urlId, int userId, int tenantId)
+    public async Task<Document?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();

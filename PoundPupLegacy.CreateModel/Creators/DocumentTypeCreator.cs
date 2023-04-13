@@ -7,8 +7,8 @@ internal sealed class DocumentTypeCreator : EntityCreator<DocumentType>
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
     private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
     private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
@@ -18,8 +18,8 @@ internal sealed class DocumentTypeCreator : EntityCreator<DocumentType>
         IDatabaseInserterFactory<Term> termInserterFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,
         IDatabaseInserterFactory<Nameable> nameableInserterFactory

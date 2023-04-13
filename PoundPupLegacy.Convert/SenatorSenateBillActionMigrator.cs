@@ -2,17 +2,21 @@
 
 internal sealed class SenatorSenateBillActionMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> _professionIdReaderFactory;
+
     private readonly IEntityCreator<SenatorSenateBillAction> _senatorSenateBillActionCreator;
 
     public SenatorSenateBillActionMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> professionIdReaderFactory,
         IEntityCreator<SenatorSenateBillAction> senatorSenateBillActionCreator
     ) : base(databaseConnections)
     {
         _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
         _senatorSenateBillActionCreator = senatorSenateBillActionCreator;
+        _professionIdReaderFactory = professionIdReaderFactory;
     }
 
     protected override string Name => "senator senate bill action";
@@ -20,12 +24,16 @@ internal sealed class SenatorSenateBillActionMigrator : MigratorPPL
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await _senatorSenateBillActionCreator.CreateAsync(ReadSenatorSenateBillActionsPPL(nodeIdReader), _postgresConnection);
+        await using var professionIdReader = await _professionIdReaderFactory.CreateAsync(_postgresConnection);
+        await _senatorSenateBillActionCreator.CreateAsync(ReadSenatorSenateBillActionsPPL(nodeIdReader, professionIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<SenatorSenateBillAction> ReadSenatorSenateBillActionsPPL(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<SenatorSenateBillAction> ReadSenatorSenateBillActionsPPL(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<ProfessionIdReaderRequest, int> professionIdReader
+    )
     {
-        await using var professionReader = await new ProfessionIdReaderFactory().CreateAsync(_postgresConnection);
+        
 
         var sql = $"""
             SELECT
@@ -63,16 +71,16 @@ internal sealed class SenatorSenateBillActionMigrator : MigratorPPL
 
             var id = reader.GetInt32("id");
 
-            int senatorId = await professionReader.ReadAsync(new ProfessionIdReader.Request() {
+            int senatorId = await professionIdReader.ReadAsync(new ProfessionIdReaderRequest() {
                 TenantId = Constants.PPL,
-                ProfessionType = ProfessionIdReader.ProfessionType.Senator,
+                ProfessionType = ProfessionType.Senator,
                 UrlId = reader.GetInt32("person_id")
             });
-            int billId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int billId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("bill_id")
             });
-            int billActionTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int billActionTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
             });

@@ -15,9 +15,9 @@ internal sealed class FirstAndBottomLevelSubdivisionCreator : EntityCreator<Firs
     private readonly IDatabaseInserterFactory<BottomLevelSubdivision> _bottomLevelSubdivisionInserterFactory;
     private readonly IDatabaseInserterFactory<FirstAndBottomLevelSubdivision> _firstAndBottomLevelSubdivisionInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     //Add constructor
     public FirstAndBottomLevelSubdivisionCreator(
@@ -34,9 +34,9 @@ internal sealed class FirstAndBottomLevelSubdivisionCreator : EntityCreator<Firs
         IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
     {
         _nodeInserterFactory = nodeInserterFactory;

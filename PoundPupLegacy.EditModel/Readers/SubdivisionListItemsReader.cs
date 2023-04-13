@@ -1,8 +1,15 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
+using Request = SubdivisionListItemsReaderRequest;
 using Factory = SubdivisionListItemsReaderFactory;
 using Reader = SubdivisionListItemsReader;
-public class SubdivisionListItemsReaderFactory : DatabaseReaderFactory<Reader>
+
+public sealed record SubdivisionListItemsReaderRequest: IRequest
+{
+    public required int CountryId { get; init; }
+}
+
+internal sealed class SubdivisionListItemsReaderFactory : EnumerableDatabaseReaderFactory<Request, SubdivisionListItem, Reader>
 {
     internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
 
@@ -20,15 +27,15 @@ public class SubdivisionListItemsReaderFactory : DatabaseReaderFactory<Reader>
             order by s.name
         """;
 }
-public class SubdivisionListItemsReader : EnumerableDatabaseReader<int, SubdivisionListItem>
+internal sealed class SubdivisionListItemsReader : EnumerableDatabaseReader<Request, SubdivisionListItem>
 {
-    internal SubdivisionListItemsReader(NpgsqlCommand command) : base(command)
+    public SubdivisionListItemsReader(NpgsqlCommand command) : base(command)
     {
     }
-    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.CountryId, request)
+            ParameterValue.Create(Factory.CountryId, request.CountryId)
         };
     }
 

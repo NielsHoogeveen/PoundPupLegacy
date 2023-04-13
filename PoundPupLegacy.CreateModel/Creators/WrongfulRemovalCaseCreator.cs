@@ -10,9 +10,9 @@ internal sealed class WrongfulRemovalCaseCreator : EntityCreator<WrongfulRemoval
     private readonly IDatabaseInserterFactory<Case> _caseInserterFactory;
     private readonly IDatabaseInserterFactory<WrongfulRemovalCase> _wrongfulRemovalCaseInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public WrongfulRemovalCaseCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
@@ -23,9 +23,9 @@ internal sealed class WrongfulRemovalCaseCreator : EntityCreator<WrongfulRemoval
         IDatabaseInserterFactory<Case> caseInserterFactory,
         IDatabaseInserterFactory<WrongfulRemovalCase> wrongfulRemovalCaseInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

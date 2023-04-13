@@ -2,12 +2,12 @@
 
 using Reader = DiscussionCreateDocumentReader;
 
-public class DiscussionCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<Reader>
+internal sealed class DiscussionCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<Discussion, Reader>
 {
 }
-public class DiscussionCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Discussion>
+internal sealed class DiscussionCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Discussion>
 {
-    internal DiscussionCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
+    public DiscussionCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
     {
     }
 }

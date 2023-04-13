@@ -2,11 +2,11 @@
 
 internal sealed class DocumentableDocumentMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<DocumentableDocument> _documentableDocumentCreator;
     public DocumentableDocumentMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<DocumentableDocument> documentableDocumentCreator
     ) : base(databaseConnections)
     {
@@ -23,7 +23,8 @@ internal sealed class DocumentableDocumentMigrator : MigratorPPL
 
     }
 
-    private async IAsyncEnumerable<DocumentableDocument> ReadArticles(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<DocumentableDocument> ReadArticles(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         var sql = $"""
@@ -59,11 +60,11 @@ internal sealed class DocumentableDocumentMigrator : MigratorPPL
         while (await reader.ReadAsync()) {
 
             yield return new DocumentableDocument {
-                DocumentableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                DocumentableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("documentable_id")
                 }),
-                DocumentId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                DocumentId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("document_id")
                 }),

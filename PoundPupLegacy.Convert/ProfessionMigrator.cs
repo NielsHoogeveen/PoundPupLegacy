@@ -5,10 +5,10 @@ internal sealed class ProfessionMigrator : MigratorPPL
 
     private readonly IEntityCreator<Profession> _professionCreator;
 
-    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
     public ProfessionMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<Profession> professionCreator
     ) : base(databaseConnections)
     {
@@ -23,7 +23,9 @@ internal sealed class ProfessionMigrator : MigratorPPL
         await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await _professionCreator.CreateAsync(ReadProfessions(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<Profession> ReadProfessions(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    private async IAsyncEnumerable<Profession> ReadProfessions(
+        IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
+    )
     {
 
         var sql = $"""
@@ -136,7 +138,7 @@ internal sealed class ProfessionMigrator : MigratorPPL
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

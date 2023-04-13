@@ -11,10 +11,10 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class AuthenticationService : IAuthenticationService
 {
     private NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<PasswordValidationReader> _passwordValidationReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse> _passwordValidationReaderFactory;
     public AuthenticationService(
         IDbConnection connection,
-        IDatabaseReaderFactory<PasswordValidationReader> passwordValidationReaderFactory)
+        ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse> passwordValidationReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -37,12 +37,12 @@ internal sealed class AuthenticationService : IAuthenticationService
             await _connection.OpenAsync();
 
             await using var reader = await _passwordValidationReaderFactory.CreateAsync(_connection);
-            var userId = await reader.ReadAsync(new PasswordValidationReader.Request {
+            var response = await reader.ReadAsync(new PasswordValidationReaderRequest {
                 Password = CreateMD5(password),
                 UserName = userName.ToLower()
             });
-            if (userId is not null) {
-                var id = userId;
+            if (response is not null) {
+                var id = response.UserId;
                 var identity = new GenericIdentity(userName);
                 var claims = new List<Claim> { new Claim("user_id", $"{id}") };
                 var claimsIdentity = new ClaimsIdentity(

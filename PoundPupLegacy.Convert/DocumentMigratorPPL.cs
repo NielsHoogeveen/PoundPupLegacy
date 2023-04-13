@@ -2,11 +2,11 @@
 
 internal sealed class DocumentMigratorPPL : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<Document> _documentCreator;
     public DocumentMigratorPPL(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<Document> documentCreator
     ) : base(databaseConnections)
     {
@@ -22,7 +22,8 @@ internal sealed class DocumentMigratorPPL : MigratorPPL
         await _documentCreator.CreateAsync(ReadDocuments(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<Document> ReadDocuments(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<Document> ReadDocuments(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
 
@@ -127,7 +128,7 @@ internal sealed class DocumentMigratorPPL : MigratorPPL
                 Teaser = TextToTeaser(reader.GetString("text")),
                 DocumentTypeId = reader.IsDBNull("document_type_id")
                     ? null
-                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         UrlId = reader.GetInt32("document_type_id"),
                         TenantId = Constants.PPL,
                     }),

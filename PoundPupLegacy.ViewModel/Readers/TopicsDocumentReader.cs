@@ -1,9 +1,21 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = TopicsDocumentReaderRequest;
 using Factory = TopicsDocumentReaderFactory;
 using Reader = TopicsDocumentReader;
+using PoundPupLegacy.Common;
 
-public class TopicsDocumentReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record TopicsDocumentReaderRequest : IRequest
+{
+    public required int UserId { get; init; }
+    public required int TenantId { get; init; }
+    public required int Limit { get; init; }
+    public required int Offset { get; init; }
+    public required string SearchTerm { get; init; }
+    public required SearchOption SearchOption { get; init; }
+}
+
+internal sealed class TopicsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Topics, Reader>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -97,18 +109,9 @@ public class TopicsDocumentReaderFactory : DatabaseReaderFactory<Reader>
 
 
 }
-public class TopicsDocumentReader : SingleItemDatabaseReader<Reader.Request, Topics>
+internal sealed class TopicsDocumentReader : SingleItemDatabaseReader<Request, Topics>
 {
-    public record Request
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-        public required string SearchTerm { get; init; }
-        public required SearchOption SearchOption { get; init; }
-    }
-    internal TopicsDocumentReader(NpgsqlCommand command) : base(command)
+    public TopicsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

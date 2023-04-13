@@ -2,12 +2,12 @@
 
 internal sealed class DenominationMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
     private readonly IEntityCreator<Denomination> _denominationCreator;
 
     public DenominationMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<Denomination> denominationCreator
     ) : base(databaseConnections)
     {
@@ -22,7 +22,8 @@ internal sealed class DenominationMigrator : MigratorPPL
         await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await _denominationCreator.CreateAsync(ReadDenominations(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<Denomination> ReadDenominations(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    private async IAsyncEnumerable<Denomination> ReadDenominations(
+        IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
         var sql = $"""
                 SELECT
@@ -128,7 +129,7 @@ internal sealed class DenominationMigrator : MigratorPPL
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                    : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),

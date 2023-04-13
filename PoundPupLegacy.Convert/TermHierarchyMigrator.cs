@@ -2,14 +2,14 @@
 
 internal sealed class TermHierarchyMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByNameableId> _termReaderByNameableIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
     private readonly IEntityCreator<TermHierarchy> _termHierarchyCreator;
 
     public TermHierarchyMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
-        IDatabaseReaderFactory<TermReaderByNameableId> termReaderByNameableIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IEntityCreator<TermHierarchy> termHierarchyCreator
     ) : base(databaseConnections)
     {
@@ -28,7 +28,10 @@ internal sealed class TermHierarchyMigrator : MigratorPPL
         await _termHierarchyCreator.CreateAsync(ReadTermHierarchys(nodeIdReader, termReaderByNameableId), _postgresConnection);
 
     }
-    private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys(NodeIdReaderByUrlId nodeIdReader, TermReaderByNameableId termReaderByNameableId)
+    private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
+    )
     {
 
         var sql = $"""
@@ -147,20 +150,20 @@ internal sealed class TermHierarchyMigrator : MigratorPPL
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var nodeIdChild = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var nodeIdChild = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id_child")
             });
-            var nodeIdParent = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var nodeIdParent = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id_parent")
             });
-            var termIdChild = await termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
+            var termIdChild = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdChild
             });
-            var termIdParent = await termReaderByNameableId.ReadAsync(new TermReaderByNameableId.Request {
+            var termIdParent = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdParent

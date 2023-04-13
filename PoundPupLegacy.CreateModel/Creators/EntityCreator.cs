@@ -14,10 +14,10 @@ internal abstract class EntityCreator<T> : IEntityCreator<T>
         await CreateAsync(new List<T> { element }.ToAsyncEnumerable(), connection);
     }
 
-    internal static async Task WriteTerms(Nameable nameable, IDatabaseInserter<Term> termWriter, TermReaderByName termReader, IDatabaseInserter<TermHierarchy> termHierarchyWriter, VocabularyIdReaderByOwnerAndName vocabularyIdReader)
+    internal static async Task WriteTerms(Nameable nameable, IDatabaseInserter<Term> termWriter, IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, Term> termReader, IDatabaseInserter<TermHierarchy> termHierarchyWriter, IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader)
     {
         foreach (var vocabularyName in nameable.VocabularyNames) {
-            var vocubularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
+            var vocubularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
                 OwnerId = vocabularyName.OwnerId,
                 Name = vocabularyName.Name
             });
@@ -29,11 +29,11 @@ internal abstract class EntityCreator<T> : IEntityCreator<T>
             };
             await termWriter.InsertAsync(term);
             foreach (var parent in vocabularyName.ParentNames) {
-                var parentTerm = await termReader.ReadAsync(new TermReaderByName.Request {
+                var parentTerm = await termReader.ReadAsync(new TermReaderByNameRequest {
                     Name = parent,
                     VocabularyId = vocubularyId
                 });
-                await termHierarchyWriter.InsertAsync(new TermHierarchy { TermIdPartent = (int)parentTerm.Id!, TermIdChild = (int)term.Id! });
+                await termHierarchyWriter.InsertAsync(new TermHierarchy { TermIdPartent = parentTerm.Id!.Value, TermIdChild = (int)term.Id! });
             }
         }
     }

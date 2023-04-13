@@ -9,8 +9,9 @@ public static class NodeUpdateDocumentReaderFactory
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
 
 }
-public abstract class NodeUpdateDocumentReaderFactory<T> : NodeEditDocumentReaderFactory<T>
-where T : class, IDatabaseReader
+public abstract class NodeUpdateDocumentReaderFactory<TResponse, TReader> : NodeEditDocumentReaderFactory<NodeUpdateDocumentRequest, TResponse, TReader>
+where TResponse : Node
+where TReader: ISingleItemDatabaseReader<NodeUpdateDocumentRequest, TResponse>
 {
     internal readonly static NonNullableIntegerDatabaseParameter UrlIdParameter = Factory.UrlIdParameter;
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = Factory.TenantIdParameter;

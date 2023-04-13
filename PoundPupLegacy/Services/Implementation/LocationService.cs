@@ -10,12 +10,12 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class LocationService : ILocationService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<SubdivisionListItemsReader> _subdivisionListItemReaderFactory;
-    private readonly IDatabaseReaderFactory<CountryListItemsReader> _countryListItemReaderFactory;
+    private readonly IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem> _subdivisionListItemReaderFactory;
+    private readonly IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem> _countryListItemReaderFactory;
     public LocationService(
         IDbConnection connection,
-        IDatabaseReaderFactory<SubdivisionListItemsReader> subdivisionListItemReaderFactory,
-        IDatabaseReaderFactory<CountryListItemsReader> countryListItemReaderFactory
+        IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem> subdivisionListItemReaderFactory,
+        IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem> countryListItemReaderFactory
         )
     {
         if (connection is not NpgsqlConnection)
@@ -30,7 +30,8 @@ internal sealed class LocationService : ILocationService
         try {
             await _connection.OpenAsync();
             await using var reader = await _subdivisionListItemReaderFactory.CreateAsync(_connection);
-            await foreach (var subdivision in reader.ReadAsync(countryId)) {
+            await foreach (var subdivision in reader.ReadAsync(new SubdivisionListItemsReaderRequest { CountryId = countryId }))
+            {
                 yield return subdivision;
             }
         }
@@ -47,7 +48,7 @@ internal sealed class LocationService : ILocationService
         try {
             await _connection.OpenAsync();
             await using var reader = await _countryListItemReaderFactory.CreateAsync(_connection);
-            await foreach (var country in reader.ReadAsync(new CountryListItemsReader.Request())) {
+            await foreach (var country in reader.ReadAsync(new CountryListItemsReaderRequest())) {
                 yield return country;
             }
         }

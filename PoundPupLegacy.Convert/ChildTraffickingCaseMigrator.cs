@@ -2,11 +2,11 @@
 
 internal sealed class ChildTraffickingCaseMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<ChildTraffickingCase> _childTraffickingCaseCreator;
     public ChildTraffickingCaseMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<ChildTraffickingCase> childTraffickingCaseCreator
     ) : base(databaseConnections)
     {
@@ -21,7 +21,8 @@ internal sealed class ChildTraffickingCaseMigrator : MigratorPPL
         await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await _childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -90,7 +91,7 @@ internal sealed class ChildTraffickingCaseMigrator : MigratorPPL
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
-                CountryIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                CountryIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("country_id_from")
                 }),

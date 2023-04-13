@@ -5,8 +5,8 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : MigratorCPCT
     private readonly IEntityCreator<InterOrganizationalRelation> _interOrganizationalRelationCreator;
     public InterOrganizationalRelationMigratorCPCT(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<InterOrganizationalRelation> interOrganizationalRelationCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -24,7 +24,10 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : MigratorCPCT
 
     }
 
-    private async IAsyncEnumerable<InterOrganizationalRelation> ReadInterOrganizationalRelations(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReaderByUrlId)
+    private async IAsyncEnumerable<InterOrganizationalRelation> ReadInterOrganizationalRelations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlId
+    )
     {
         var sql = $"""
                 select
@@ -95,7 +98,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : MigratorCPCT
 
             var (organizationIdFrom, organizationFromPublicationStatusId) = await GetNodeId(reader.GetInt32("organization_id_from"), nodeIdReader, tenantNodeReaderByUrlId);
             var (organizationIdTo, organizationToPublicationStatusId) = await GetNodeId(reader.GetInt32("organization_id_to"), nodeIdReader, tenantNodeReaderByUrlId);
-            int interOrganizationalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int interOrganizationalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.CPCT
             });

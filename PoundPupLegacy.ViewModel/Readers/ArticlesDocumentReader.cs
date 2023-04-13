@@ -1,9 +1,18 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = ArticlesDocumentReaderRequest;
 using Reader = ArticlesDocumentReader;
 using Factory = ArticlesDocumentReaderFactory;
 
-public class ArticlesDocumentReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record ArticlesDocumentReaderRequest : IRequest
+{
+    public required int TenantId { get; init; }
+    public required List<int> SelectedTerms { get; init; }
+    public required int StartIndex { get; init; }
+    public required int Length { get; init; }
+}
+
+internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Articles, Reader>
 {
     internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal static readonly NullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
@@ -24,23 +33,27 @@ public class ArticlesDocumentReaderFactory : DatabaseReaderFactory<Reader>
             {COUNT_ARTICLES_FILTERED},
             {FETCHS_ARTICLES_DOCUMENTS_FILTERED},
             {FETCHS_ARTICLES_DOCUMENTS_UNFILTERED}
-            select to_jsonb(ta) document
-            from(
-            select 
-                case 
-                    when @terms is null then (select * from fetch_terms_unfiltered)  
-                    else (select * from fetch_terms_filtered)  
-                end "TermNames",
-                case 
-                    when @terms is null then (select agg from fetch_articles_document_unfiltered) 
-                    else (select agg from fetch_articles_document_filtered) 
-                end "ArticleListEntries",
-                case
-                    when @terms is null then (select count from count_articles_unfiltered) 
-                    else (select count from count_articles_filtered) 
-                end "NumberOfEntries"
-            	) ta
+            {FETCH_DOCUMENT}
             """;
+
+    const string FETCH_DOCUMENT = """
+        select to_jsonb(ta) document
+        from(
+        select 
+            case 
+                when @terms is null then (select * from fetch_terms_unfiltered)  
+                else (select * from fetch_terms_filtered)  
+            end "TermNames",
+            case 
+                when @terms is null then (select agg from fetch_articles_document_unfiltered) 
+                else (select agg from fetch_articles_document_filtered) 
+            end "ArticleListEntries",
+            case
+                when @terms is null then (select count from count_articles_unfiltered) 
+                else (select count from count_articles_filtered) 
+            end "NumberOfEntries"
+        	) ta
+        """;
 
 
     const string FETCH_TERMS_UNFILTERED = """
@@ -252,16 +265,9 @@ public class ArticlesDocumentReaderFactory : DatabaseReaderFactory<Reader>
         """;
 
 }
-public class ArticlesDocumentReader : SingleItemDatabaseReader<Reader.Request, Articles>
+internal sealed class ArticlesDocumentReader : SingleItemDatabaseReader<Request, Articles>
 {
-    public record Request
-    {
-        public required int TenantId { get; init; }
-        public required List<int> SelectedTerms { get; init; }
-        public required int StartIndex { get; init; }
-        public required int Length { get; init; }
-    }
-    internal ArticlesDocumentReader(NpgsqlCommand command) : base(command)
+    public ArticlesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

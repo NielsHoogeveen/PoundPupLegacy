@@ -1,8 +1,19 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = CasesDocumentReaderRequest;
 using Factory = CasesDocumentReaderFactory;
 using Reader = CasesDocumentReader;
-public class CasesDocumentReaderFactory : DatabaseReaderFactory<Reader>
+using PoundPupLegacy.Common;
+
+public sealed record CasesDocumentReaderRequest : IRequest
+{
+    public required int TenantId { get; init; }
+    public required int UserId { get; init; }
+    public required int Limit { get; init; }
+    public required int Offset { get; init; }
+    public required CaseType CaseType { get; init; }
+}
+internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Cases, Reader>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -108,17 +119,9 @@ public class CasesDocumentReaderFactory : DatabaseReaderFactory<Reader>
             """;
 
 }
-public class CasesDocumentReader : SingleItemDatabaseReader<Reader.Request, Cases>
+internal sealed class CasesDocumentReader : SingleItemDatabaseReader<Request, Cases>
 {
-    public record Request
-    {
-        public int TenantId { get; init; }
-        public int UserId { get; init; }
-        public int Limit { get; init; }
-        public int Offset { get; init; }
-        public CaseType CaseType { get; init; }
-    }
-    internal CasesDocumentReader(NpgsqlCommand command) : base(command)
+    public CasesDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

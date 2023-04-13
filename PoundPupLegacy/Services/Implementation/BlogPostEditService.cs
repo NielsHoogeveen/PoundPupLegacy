@@ -10,16 +10,16 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPost, CreateModel.BlogPost>, IEditService<BlogPost>
 {
-    private readonly IDatabaseReaderFactory<BlogPostCreateDocumentReader> _createDocumentReaderFactory;
-    private readonly IDatabaseReaderFactory<BlogPostUpdateDocumentReader> _updateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost> _createDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost> _updateDocumentReaderFactory;
     private readonly IEntityCreator<CreateModel.BlogPost> _blogPostCreator;
 
     public BlogPostEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
-        IDatabaseReaderFactory<BlogPostCreateDocumentReader> createDocumentReaderFactory,
-        IDatabaseReaderFactory<BlogPostUpdateDocumentReader> updateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost> createDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -36,7 +36,7 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
 
     protected sealed override IEntityCreator<CreateModel.BlogPost> EntityCreator => _blogPostCreator;
 
-    public async Task<BlogPost> GetViewModelAsync(int userId, int tenantId)
+    public async Task<BlogPost?> GetViewModelAsync(int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
@@ -53,7 +53,7 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
             }
         }
     }
-    public async Task<BlogPost> GetViewModelAsync(int urlId, int userId, int tenantId)
+    public async Task<BlogPost?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();

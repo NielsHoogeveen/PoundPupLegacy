@@ -10,8 +10,8 @@ internal sealed class AbuseCaseCreator : EntityCreator<AbuseCase>
     private readonly IDatabaseInserterFactory<Case> _caseInserterFactory;
     private readonly IDatabaseInserterFactory<AbuseCase> _abuseCaseInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public AbuseCaseCreator(
@@ -23,8 +23,8 @@ internal sealed class AbuseCaseCreator : EntityCreator<AbuseCase>
         IDatabaseInserterFactory<Case> caseInserterFactory,
         IDatabaseInserterFactory<AbuseCase> abuseCaseInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
         )

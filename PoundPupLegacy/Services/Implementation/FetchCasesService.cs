@@ -8,11 +8,11 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class FetchCasesService : IFetchCasesService
 {
     private NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<CasesDocumentReader> _casesDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<CasesDocumentReaderRequest, Cases> _casesDocumentReaderFactory;
 
     public FetchCasesService(
         IDbConnection connection,
-        IDatabaseReaderFactory<CasesDocumentReader> casesDocumentReaderFactory
+        ISingleItemDatabaseReaderFactory<CasesDocumentReaderRequest, Cases> casesDocumentReaderFactory
         )
     {
         if (connection is not NpgsqlConnection)
@@ -27,7 +27,7 @@ internal sealed class FetchCasesService : IFetchCasesService
         try {
             await _connection.OpenAsync();
             await using var reader = await _casesDocumentReaderFactory.CreateAsync(_connection);
-            var cases =  await reader.ReadAsync(new CasesDocumentReader.Request {
+            var cases =  await reader.ReadAsync(new CasesDocumentReaderRequest {
                 Limit = limit,
                 Offset = offset,
                 TenantId = tenantId,

@@ -9,11 +9,11 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class FetchCountriesService : IFetchCountriesService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<CountriesDocumentReader> _countriesDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<CountriesDocumentReaderRequest, FirstLevelRegionListEntry[]> _countriesDocumentReaderFactory;
 
     public FetchCountriesService(
         IDbConnection connection,
-        IDatabaseReaderFactory<CountriesDocumentReader> countriesDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<CountriesDocumentReaderRequest, FirstLevelRegionListEntry[]> countriesDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -27,7 +27,7 @@ internal sealed class FetchCountriesService : IFetchCountriesService
         try {
             await _connection.OpenAsync();
             await using var reader = await _countriesDocumentReaderFactory.CreateAsync(_connection);
-            var countries = await reader.ReadAsync(tenantId);
+            var countries = await reader.ReadAsync(new CountriesDocumentReaderRequest { TenantId = tenantId});
             if(countries is not null) 
                 return countries;
             return Array.Empty<FirstLevelRegionListEntry>();

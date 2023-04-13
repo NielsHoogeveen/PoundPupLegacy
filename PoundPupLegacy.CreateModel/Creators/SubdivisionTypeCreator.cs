@@ -7,8 +7,8 @@ internal sealed class SubdivisionTypeCreator : EntityCreator<SubdivisionType>
     private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
     private readonly IDatabaseInserterFactory<SubdivisionType> _subdivisionTypeInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public SubdivisionTypeCreator(
@@ -17,8 +17,8 @@ internal sealed class SubdivisionTypeCreator : EntityCreator<SubdivisionType>
         IDatabaseInserterFactory<Nameable> nameableInserterFactory,
         IDatabaseInserterFactory<SubdivisionType> subdivisionTypeInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )

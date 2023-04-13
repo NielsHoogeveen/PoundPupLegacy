@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
 using Reader = ArticleUpdateDocumentReader;
-public sealed class ArticleUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumentReaderFactory<Reader>
+internal sealed class ArticleUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumentReaderFactory<Article, Reader>
 {
 }
 
-public sealed class ArticleUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<Article>
+internal sealed class ArticleUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<Article>
 {
-    internal ArticleUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
+    public ArticleUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
     {
     }
 }

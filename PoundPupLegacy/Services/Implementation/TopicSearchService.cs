@@ -11,11 +11,11 @@ internal sealed class TopicSearchService : ITopicSearchService
     private readonly NpgsqlConnection _connection;
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
-    private readonly IDatabaseReaderFactory<TagDocumentsReader> _tagDocumentsReaderFactory;
+    private readonly IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag> _tagDocumentsReaderFactory;
 
     public TopicSearchService(
         IDbConnection connection,
-        IDatabaseReaderFactory<TagDocumentsReader> tagDocumentsReaderFactory)
+        IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag> tagDocumentsReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -29,7 +29,7 @@ internal sealed class TopicSearchService : ITopicSearchService
         try {
             await _connection.OpenAsync();
             await using var reader = await _tagDocumentsReaderFactory.CreateAsync(_connection);
-            await foreach (var elem in reader.ReadAsync(new TagDocumentsReader.Request {
+            await foreach (var elem in reader.ReadAsync(new TagDocumentsReaderRequest {
                 NodeId = nodeId,
                 TenantId = tenantId,
                 SearchString = str

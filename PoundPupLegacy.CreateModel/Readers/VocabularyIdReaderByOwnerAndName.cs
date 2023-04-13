@@ -1,9 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
+using Request = VocabularyIdReaderByOwnerAndNameRequest;
 using Factory  = VocabularyIdReaderByOwnerAndNameFactory;
 using Reader   = VocabularyIdReaderByOwnerAndName;
 
-public sealed class VocabularyIdReaderByOwnerAndNameFactory : DatabaseReaderFactory<Reader>
+public sealed record VocabularyIdReaderByOwnerAndNameRequest : IRequest
+{
+    public required int OwnerId { get; init; }
+    public required string Name { get; init; }
+}
+
+internal sealed class VocabularyIdReaderByOwnerAndNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
 {
     internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
@@ -16,16 +23,10 @@ public sealed class VocabularyIdReaderByOwnerAndNameFactory : DatabaseReaderFact
         SELECT id FROM vocabulary WHERE owner_id = @owner_id AND name = @name
         """;
 }
-public sealed class VocabularyIdReaderByOwnerAndName : IntDatabaseReader<Reader.Request>
+internal sealed class VocabularyIdReaderByOwnerAndName : IntDatabaseReader<Request>
 {
-    public record Request
-    {
-        public required int OwnerId { get; init; }
-        public required string Name { get; init; }
 
-    }
-
-    internal VocabularyIdReaderByOwnerAndName(NpgsqlCommand command) : base(command) { }
+    public VocabularyIdReaderByOwnerAndName(NpgsqlCommand command) : base(command) { }
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

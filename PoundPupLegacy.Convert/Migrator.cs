@@ -16,27 +16,30 @@ internal abstract class MigratorPPL : Migrator
 }
 internal abstract class MigratorCPCT : Migrator
 {
-    protected readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
-    protected readonly IDatabaseReaderFactory<TenantNodeReaderByUrlId> _tenantNodeReaderByUrlIdFactory;
+    protected readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
+    protected readonly IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> _tenantNodeReaderByUrlIdFactory;
     public MigratorCPCT(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory
     ) : base(databaseConnections.PostgressConnection, databaseConnections.MysqlConnectionCPCT)
     {
         _nodeIdReaderFactory = nodeIdReaderFactory;
         _tenantNodeReaderByUrlIdFactory = tenantNodeReaderByUrlIdFactory;
     }
-    protected async Task<(int, int)> GetNodeId(int urlId, NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader)
+    protected async Task<(int, int)> GetNodeId(
+        int urlId, 
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
 
         var (id, ownerId) = GetUrlIdAndTenant(urlId);
         if (urlId >= 33162 && ownerId == Constants.CPCT) {
-            var nodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var nodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.CPCT,
                 UrlId = id
             });
-            var node = await tenantNodeReader.ReadAsync(new TenantNodeReaderByUrlId.Request {
+            var node = await tenantNodeReader.ReadAsync(new TenantNodeReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = id
             });
@@ -48,7 +51,7 @@ internal abstract class MigratorCPCT : Migrator
             }
 
         }
-        return (await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+        return (await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
             UrlId = id
         }), 1);

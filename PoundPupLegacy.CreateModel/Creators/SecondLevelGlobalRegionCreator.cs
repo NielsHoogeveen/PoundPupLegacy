@@ -10,9 +10,9 @@ internal sealed class SecondLevelGlobalRegionCreator : EntityCreator<SecondLevel
     private readonly IDatabaseInserterFactory<GlobalRegion> _globalRegionInserterFactory;
     private readonly IDatabaseInserterFactory<SecondLevelGlobalRegion> _secondLevelGlobalRegionInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public SecondLevelGlobalRegionCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
@@ -23,9 +23,9 @@ internal sealed class SecondLevelGlobalRegionCreator : EntityCreator<SecondLevel
         IDatabaseInserterFactory<GlobalRegion> globalRegionInserterFactory,
         IDatabaseInserterFactory<SecondLevelGlobalRegion> secondLevelGlobalRegionInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

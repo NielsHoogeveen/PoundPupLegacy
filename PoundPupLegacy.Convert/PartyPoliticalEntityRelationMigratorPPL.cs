@@ -2,11 +2,11 @@
 
 internal sealed class PartyPoliticalEntityRelationMigratorPPL : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
     private readonly IEntityCreator<PartyPoliticalEntityRelation> _partyPoliticalEntityRelationCreator;
     public PartyPoliticalEntityRelationMigratorPPL(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IEntityCreator<PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
     ) : base(databaseConnections)
     {
@@ -23,7 +23,9 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : MigratorPPL
 
     }
 
-    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+    )
     {
 
         var sql = $"""
@@ -101,15 +103,15 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : MigratorPPL
 
             var id = reader.GetInt32("id");
 
-            int partyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int partyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("party_id")
             });
-            int politicalEntityId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int politicalEntityId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("political_entity_id")
             });
-            int partyPpoliticalEntityTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int partyPpoliticalEntityTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
             });
@@ -151,7 +153,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL : MigratorPPL
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = reader.IsDBNull("document_id_proof")
                     ? null
-                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     })

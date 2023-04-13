@@ -2,7 +2,9 @@
 using System.Data;
 
 namespace PoundPupLegacy.Common;
-public interface IDatabaseInserter : IAsyncDisposable { }
+public interface IDatabaseInserter : IDatabaseAccessor 
+{ 
+}
 public interface IDatabaseInserter<T> : IDatabaseInserter
 {
     Task InsertAsync(T item);

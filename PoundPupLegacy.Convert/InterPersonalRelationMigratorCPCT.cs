@@ -5,8 +5,8 @@ internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
     private readonly IEntityCreator<InterPersonalRelation> _interPersonalRelationCreator;
     public InterPersonalRelationMigratorCPCT(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<InterPersonalRelation> interPersonalRelationCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -23,7 +23,10 @@ internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
 
     }
 
-    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReaderByUrlId)
+    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlId
+    )
     {
 
         var sql = $"""
@@ -85,7 +88,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
 
             var (personIdFrom, personFromPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id_from"), nodeIdReader, tenantNodeReaderByUrlId);
             var (personIdTo, personToPublicationStatusId) = await GetNodeId(reader.GetInt32("person_id_to"), nodeIdReader, tenantNodeReaderByUrlId);
-            int interPersonalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int interPersonalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.CPCT,
                 UrlId = reader.GetInt32("nameable_id")
             });

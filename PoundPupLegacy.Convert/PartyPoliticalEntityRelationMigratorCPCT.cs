@@ -5,8 +5,8 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
     private readonly IEntityCreator<PartyPoliticalEntityRelation> _partyPoliticalEntityRelationCreator;
     public PartyPoliticalEntityRelationMigratorCPCT(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -23,7 +23,9 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
 
     }
 
-    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(NodeIdReaderByUrlId nodeIdReader, TenantNodeReaderByUrlId tenantNodeReader)
+    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
 
         var sql = $"""
@@ -93,11 +95,11 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
             var id = reader.GetInt32("id");
 
             var (partyId, partyPublicationStatusId) = await GetNodeId(reader.GetInt32("party_id"), nodeIdReader, tenantNodeReader);
-            int politicalEntityId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int politicalEntityId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32("political_entity_id"),
                 TenantId = Constants.PPL
             });
-            int partyPpoliticalEntityTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int partyPpoliticalEntityTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.PPL
             });

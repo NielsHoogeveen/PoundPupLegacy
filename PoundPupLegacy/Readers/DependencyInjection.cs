@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.Common;
+using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
 
@@ -6,12 +7,12 @@ public static class DependencyInjection
 {
     public static void AddSystemReaders(this IServiceCollection services)
     {
-        services.AddTransient<IDatabaseReaderFactory<MenuItemsReader>, MenuItemsReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<PasswordValidationReader>, PasswordValidationReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<TenantNodesReader>, TenantNodesReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<TenantsReader>, TenantsReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<UserTenantActionReader>, UserTenantActionReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<UserTenantEditActionReader>, UserTenantEditActionReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<UserTenantEditOwnActionReader>, UserTenantEditOwnActionReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems>, MenuItemsReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse>, PasswordValidationReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode>, TenantNodesReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant>, TenantsReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantActionReaderRequest, UserTenantAction>, UserTenantActionReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantEditActionReaderRequest, UserTenantEditAction>, UserTenantEditActionReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantEditOwnActionReaderRequest, UserTenantEditOwnAction>, UserTenantEditOwnActionReaderFactory>();
     }
 }

@@ -10,10 +10,10 @@ internal sealed class FetchArticlesService : IFetchArticlesService
 {
     private readonly NpgsqlConnection _connection;
 
-    public readonly IDatabaseReaderFactory<ArticlesDocumentReader> _articlesDocumentReaderFactory;
+    public readonly ISingleItemDatabaseReaderFactory<ArticlesDocumentReaderRequest, Articles> _articlesDocumentReaderFactory;
     public FetchArticlesService(
         IDbConnection connection,
-        IDatabaseReaderFactory<ArticlesDocumentReader> articlesDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<ArticlesDocumentReaderRequest, Articles> articlesDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -26,7 +26,7 @@ internal sealed class FetchArticlesService : IFetchArticlesService
         try {
             await _connection.OpenAsync();
             await using var reader = await _articlesDocumentReaderFactory.CreateAsync(_connection);
-            var articles = await reader.ReadAsync(new ArticlesDocumentReader.Request {
+            var articles = await reader.ReadAsync(new ArticlesDocumentReaderRequest {
                 TenantId = tenantId,
                 SelectedTerms = selectedTerms,
                 StartIndex = startIndex,

@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.Convert;
 internal sealed class AdultAftermathMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     public AdultAftermathMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
     ) : base(databaseConnections)
     {
         _nodeIdReaderFactory = nodeIdReaderFactory;
@@ -43,7 +43,8 @@ internal sealed class AdultAftermathMigrator : MigratorPPL
 
     }
 
-    private async IAsyncEnumerable<(int, int)> ReadAdultAftermaths(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<(int, int)> ReadAdultAftermaths(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -71,7 +72,7 @@ internal sealed class AdultAftermathMigrator : MigratorPPL
         var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            var id = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            var id = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 UrlId = reader.GetInt32(0),
                 TenantId = Constants.PPL
             });

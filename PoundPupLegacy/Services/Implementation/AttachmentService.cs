@@ -16,14 +16,14 @@ internal sealed class AttachmentService : IAttachmentService
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<AttachmentService> _logger;
     private readonly IConfiguration _configuration;
-    private readonly IDatabaseReaderFactory<FileDocumentReader> _fileDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, ViewModel.File> _fileDocumentReaderFactory;
     private readonly IEntityCreator<File> _fileCreator;
 
     public AttachmentService(
         IDbConnection connection,
         IConfiguration configuration,
         ILogger<AttachmentService> logger,
-        IDatabaseReaderFactory<FileDocumentReader> fileDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, ViewModel.File> fileDocumentReaderFactory,
         IEntityCreator<File> fileCreator
         )
     {
@@ -110,7 +110,7 @@ internal sealed class AttachmentService : IAttachmentService
                 return new None();
             }
             await using var reader = await _fileDocumentReaderFactory.CreateAsync(_connection);
-            var file = await reader.ReadAsync(new FileDocumentReader.Request {
+            var file = await reader.ReadAsync(new FileDocumentReaderRequest {
                 FileId = fileId,
                 UserId = userId,
                 TenantId = tenantId

@@ -8,11 +8,11 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class FetchBlogsService : IFetchBlogsService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<BlogsDocumentReader> _blogsDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<BlogsDocumentReaderRequest, List<BlogListEntry>> _blogsDocumentReaderFactory;
 
     public FetchBlogsService(
         IDbConnection connection,
-        IDatabaseReaderFactory<BlogsDocumentReader> blogsDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<BlogsDocumentReaderRequest, List<BlogListEntry>> blogsDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -26,7 +26,7 @@ internal sealed class FetchBlogsService : IFetchBlogsService
         try {
             await _connection.OpenAsync();
             await using var reader = await _blogsDocumentReaderFactory.CreateAsync(_connection);
-            var blogs =  await reader.ReadAsync(tenantId);
+            var blogs =  await reader.ReadAsync(new BlogsDocumentReaderRequest { TenantId = tenantId });
             if (blogs is not null)
                 return blogs;
             return new List<BlogListEntry>();

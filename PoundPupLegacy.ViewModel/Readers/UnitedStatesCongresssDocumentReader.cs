@@ -1,9 +1,15 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = UnitedStatesCongresssDocumentReaderRequest;
 using Factory = UnitedStatesCongresssDocumentReaderFactory;
 using Reader = UnitedStatesCongresssDocumentReader;
+using PoundPupLegacy.Common;
 
-public class UnitedStatesCongresssDocumentReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record UnitedStatesCongresssDocumentReaderRequest : IRequest
+{
+}
+
+internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, UnitedStatesCongress, Reader>
 {
     internal readonly static FieldValueReader<UnitedStatesCongress> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
@@ -68,12 +74,9 @@ public class UnitedStatesCongresssDocumentReaderFactory : DatabaseReaderFactory<
         """;
 
 }
-public class UnitedStatesCongresssDocumentReader : SingleItemDatabaseReader<Reader.Request, UnitedStatesCongress>
+internal sealed class UnitedStatesCongresssDocumentReader : SingleItemDatabaseReader<Request, UnitedStatesCongress>
 {
-    public record Request
-    {
-    }
-    internal UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
+    public UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

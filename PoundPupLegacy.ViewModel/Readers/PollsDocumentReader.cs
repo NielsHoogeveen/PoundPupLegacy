@@ -1,8 +1,19 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = PollsDocumentReaderRequest;
 using Factory = PollsDocumentReaderFactory;
 using Reader = PollsDocumentReader;
-public class PollsDocumentReaderFactory : DatabaseReaderFactory<Reader>
+
+
+public sealed record PollsDocumentReaderRequest : IRequest
+{
+    public required int UserId { get; init; }
+    public required int TenantId { get; init; }
+    public required int Limit { get; init; }
+    public required int Offset { get; init; }
+}
+
+internal sealed class PollsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Polls, Reader>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -94,17 +105,10 @@ public class PollsDocumentReaderFactory : DatabaseReaderFactory<Reader>
             group by number_of_entries
         """;
 }
-public class PollsDocumentReader : SingleItemDatabaseReader<Reader.Request, Polls>
+internal sealed class PollsDocumentReader : SingleItemDatabaseReader<Request, Polls>
 {
-    public record Request
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-    }
 
-    internal PollsDocumentReader(NpgsqlCommand command) : base(command)
+    public PollsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

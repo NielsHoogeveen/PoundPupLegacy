@@ -10,9 +10,9 @@ internal sealed class PersonCreator : EntityCreator<Person>
     private readonly IDatabaseInserterFactory<Party> _partyInserterFactory;
     private readonly IDatabaseInserterFactory<Person> _personInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     private readonly IEntityCreator<ProfessionalRole> _professionalRoleCreator;
     private readonly IEntityCreator<PersonOrganizationRelation> _personOrganizationRelationCreator;
@@ -27,9 +27,9 @@ internal sealed class PersonCreator : EntityCreator<Person>
         IDatabaseInserterFactory<Party> partyInserterFactory,
         IDatabaseInserterFactory<Person> personInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
         IEntityCreator<ProfessionalRole> professionalRoleCreator,
         IEntityCreator<PersonOrganizationRelation> personOrganizationRelationCreator

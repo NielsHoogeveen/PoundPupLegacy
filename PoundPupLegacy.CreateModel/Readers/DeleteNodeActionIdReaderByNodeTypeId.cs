@@ -1,9 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
+using Request = DeleteNodeActionIdReaderByNodeTypeIdRequest;
 using Factory = DeleteNodeActionIdReaderByNodeTypeIdFactory;
 using Reader = DeleteNodeActionIdReaderByNodeTypeId;
 
-public sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : DatabaseReaderFactory<Reader>
+public sealed record DeleteNodeActionIdReaderByNodeTypeIdRequest: IRequest
+{
+    public required int NodeTypeId { get; init; }
+}
+
+internal sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
 {
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
@@ -15,22 +21,22 @@ public sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : DatabaseReader
         """;
 }
 
-public sealed class DeleteNodeActionIdReaderByNodeTypeId : IntDatabaseReader<int>
+internal sealed class DeleteNodeActionIdReaderByNodeTypeId : IntDatabaseReader<Request>
 {
 
-    internal DeleteNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
+    public DeleteNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.NodeTypeId, request)
+            ParameterValue.Create(Factory.NodeTypeId, request.NodeTypeId)
         };
     }
 
-    protected override IntValueReader IntValueReader => Factory.IdReader;
-
-    protected override string GetErrorMessage(int request)
+    protected override string GetErrorMessage(Request request)
     {
-        return $"delete node action cannot be found for node type {request}";
+        return $"delete node action cannot be found for node type {request.NodeTypeId}";
     }
+
+    protected override IntValueReader IntValueReader => Factory.IdReader;
 }

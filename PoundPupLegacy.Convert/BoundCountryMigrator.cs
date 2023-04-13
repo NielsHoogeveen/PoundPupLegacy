@@ -2,15 +2,15 @@
 
 internal sealed class BoundCountryMigrator : CountryMigrator
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderByNameFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
     private readonly IEntityCreator<BoundCountry> _boundCountryCreator;
     public BoundCountryMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderByNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IEntityCreator<BoundCountry> boundCountryCreator
     ) : base(databaseConnections)
     {
@@ -36,17 +36,17 @@ internal sealed class BoundCountryMigrator : CountryMigrator
     }
 
     private async IAsyncEnumerable<BoundCountry> ReadBoundCountries(
-        NodeIdReaderByUrlId nodeIdReader,
-        VocabularyIdReaderByOwnerAndName vocabularyReader,
-        TermReaderByName termReaderByName
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyReader,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
 
-        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndName.Request {
+        var vocabularyId = await vocabularyReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
             OwnerId = Constants.OWNER_GEOGRAPHY,
             Name = "Subdivision type"
         });
-        var subdivisionType = await termReaderByName.ReadAsync(new TermReaderByName.Request {
+        var subdivisionType = await termReaderByName.ReadAsync(new TermReaderByNameRequest {
             VocabularyId = vocabularyId,
             Name = "Country"
         });
@@ -126,19 +126,19 @@ internal sealed class BoundCountryMigrator : CountryMigrator
                 NodeTypeId = 14,
                 Description = "",
                 VocabularyNames = vocabularyNames,
-                BindingCountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                BindingCountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("binding_country_id")
                 }),
                 Name = name,
                 ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
-                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request() {
+                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest() {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("binding_country_id")
                 }),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = 41215
                 }),

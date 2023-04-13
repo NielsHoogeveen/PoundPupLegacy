@@ -5,8 +5,8 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
     private readonly IEntityCreator<Organization> _organizationCreator;
     public OrganizationMigratorCPCT(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
         IEntityCreator<Organization> organizationCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -22,7 +22,9 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
         await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<BasicOrganization> ReadOrganizations(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<BasicOrganization> ReadOrganizations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+    )
     {
 
         var sql = $"""
@@ -179,7 +181,7 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
 
 
         var reader = await readCommand.ExecuteReaderAsync();
-        var miscellaneous = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+        var miscellaneous = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
             UrlId = 12634
         });
@@ -195,7 +197,7 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
-                var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = typeId
                 });

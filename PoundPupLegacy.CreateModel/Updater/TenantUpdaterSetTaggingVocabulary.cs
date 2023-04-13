@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-internal sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary>
+public sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() {
         Name = "tenant_id"

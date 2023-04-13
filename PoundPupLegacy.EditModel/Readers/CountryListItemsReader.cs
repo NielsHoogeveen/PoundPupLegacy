@@ -1,9 +1,14 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
+using Request = CountryListItemsReaderRequest;
 using Factory = CountryListItemsReaderFactory;
 using Reader = CountryListItemsReader;
 
-public sealed class CountryListItemsReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record CountryListItemsReaderRequest: IRequest
+{
+}
+
+internal sealed class CountryListItemsReaderFactory : EnumerableDatabaseReaderFactory<Request, CountryListItem, Reader>
 {
     internal static readonly IntValueReader IdReader = new() { Name = "id" };
     internal static readonly StringValueReader NameReader = new() { Name = "name" };
@@ -20,10 +25,9 @@ public sealed class CountryListItemsReaderFactory : DatabaseReaderFactory<Reader
             
         """;
 }
-public sealed class CountryListItemsReader : EnumerableDatabaseReader<Reader.Request, CountryListItem>
+internal sealed class CountryListItemsReader : EnumerableDatabaseReader<Request, CountryListItem>
 {
-    public record Request { }
-    internal CountryListItemsReader(NpgsqlCommand command) : base(command)
+    public CountryListItemsReader(NpgsqlCommand command) : base(command)
     {
     }
 

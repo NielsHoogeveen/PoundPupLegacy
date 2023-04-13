@@ -2,13 +2,12 @@
 
 using Reader = ArticleCreateDocumentReader;
 
-public sealed class ArticleCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<Reader>
+internal sealed class ArticleCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<Article, Reader>
 {
-
 }
-public sealed class ArticleCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Article>
+internal sealed class ArticleCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Article>
 {
-    internal ArticleCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
+    public ArticleCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
     {
     }
 }

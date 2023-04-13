@@ -1,9 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
+using Request = TenantNodeIdReaderByUrlIdRequest;
 using Factory = TenantNodeIdReaderByUrlIdFactory;
 using Reader = TenantNodeIdReaderByUrlId;
 
-public sealed class TenantNodeIdReaderByUrlIdFactory : DatabaseReaderFactory<Reader>
+public sealed class TenantNodeIdReaderByUrlIdRequest : IRequest
+{
+    public required int TenantId { get; init; }
+    public required int UrlId { get; init; }
+}
+
+internal sealed class TenantNodeIdReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -16,16 +23,10 @@ public sealed class TenantNodeIdReaderByUrlIdFactory : DatabaseReaderFactory<Rea
         SELECT id FROM tenant_node WHERE tenant_id= @tenant_id AND url_id = @url_id
         """;
 }
-public sealed class TenantNodeIdReaderByUrlId : IntDatabaseReader<Reader.Request>
+internal sealed class TenantNodeIdReaderByUrlId : IntDatabaseReader<Request>
 {
-    public record Request
-    {
-        public int TenantId { get; init; }
 
-        public int UrlId { get; init; }
-    }
-
-    internal TenantNodeIdReaderByUrlId(NpgsqlCommand command) : base(command) { }
+    public TenantNodeIdReaderByUrlId(NpgsqlCommand command) : base(command) { }
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

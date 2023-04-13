@@ -1,8 +1,18 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = SubgroupsDocumentReaderRequest;
 using Factory = SubgroupsDocumentReaderFactory;
 using Reader = SubgroupsDocumentReader;
-public class SubgroupsDocumentReaderFactory : DatabaseReaderFactory<Reader>
+
+public sealed record SubgroupsDocumentReaderRequest : IRequest
+{
+    public required int UserId { get; init; }
+    public required int SubgroupId { get; init; }
+    public required int Limit { get; init; }
+    public required int Offset { get; init; }
+
+}
+internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, SubgroupPagedList, Reader>
 {
     internal readonly static NonNullableIntegerDatabaseParameter SubgroupIdParameter = new() { Name = "subgroup_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -129,17 +139,9 @@ public class SubgroupsDocumentReaderFactory : DatabaseReaderFactory<Reader>
             ;
 
 }
-public class SubgroupsDocumentReader : SingleItemDatabaseReader<Reader.Request, SubgroupPagedList>
+internal sealed class SubgroupsDocumentReader : SingleItemDatabaseReader<Request, SubgroupPagedList>
 {
-    public record Request
-    {
-        public required int UserId { get; init; }
-        public required int SubgroupId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-
-    }
-    internal SubgroupsDocumentReader(NpgsqlCommand command) : base(command)
+    public SubgroupsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
+using PoundPupLegacy.ViewModel;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -23,15 +24,15 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<CongressionalDataService> _logger;
     private readonly IRazorViewToStringService _razorViewToStringService;
-    private readonly IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader> _unitedStatesMeetingChamberDocumentReaderFactory;
-    private readonly IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader> _unitedStatesCongresssDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> _unitedStatesMeetingChamberDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> _unitedStatesCongresssDocumentReaderFactory;
 
     public CongressionalDataService(
         IDbConnection connection,
         ILogger<CongressionalDataService> logger,
         IRazorViewToStringService razorViewToStringService,
-        IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader> unitedStatesMeetingChamberDocumentReaderFactory,
-        IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader> unitedStatesCongresssDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> unitedStatesMeetingChamberDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> unitedStatesCongresssDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -75,7 +76,7 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         try {
             await _connection.OpenAsync();
             await using var reader = await _unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(_connection);
-            var document = await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReader.Request {
+            var document = await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReaderRequest {
                 Type = (int)congressionalMeetingChamber.ChamberType,
                 Number = congressionalMeetingChamber.Number
             });
@@ -91,7 +92,7 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         try {
             await _connection.OpenAsync();
             await using var reader = await _unitedStatesCongresssDocumentReaderFactory.CreateAsync(_connection);
-            var document = await reader.ReadAsync(new UnitedStatesCongresssDocumentReader.Request());
+            var document = await reader.ReadAsync(new UnitedStatesCongresssDocumentReaderRequest());
             return await _razorViewToStringService.GetFromView("/Views/Shared/UnitedStatesCongress.cshtml", document, context);
         }
         finally {

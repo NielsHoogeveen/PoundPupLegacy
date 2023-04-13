@@ -1,9 +1,17 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = NodeDocumentReaderRequest;
 using Factory = NodeDocumentReaderFactory;
 using Reader = NodeDocumentReader;
 
-public class NodeDocumentReaderFactory : DatabaseReaderFactory<Reader>
+public sealed class NodeDocumentReaderRequest : IRequest
+{
+    public required int TenantId { get; init; }
+    public required int UserId { get; init; }
+    public required int UrlId { get; init; }
+}
+
+internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Node, Reader>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -4038,16 +4046,10 @@ public class NodeDocumentReaderFactory : DatabaseReaderFactory<Reader>
         """;
 
 }
-public class NodeDocumentReader : SingleItemDatabaseReader<Reader.Request, Node>
+internal sealed class NodeDocumentReader : SingleItemDatabaseReader<Request, Node>
 {
 
-    public record Request
-    {
-        public int UrlId { get; init; }
-        public int UserId { get; init; }
-        public int TenantId { get; init; }
-    }
-    internal NodeDocumentReader(NpgsqlCommand command) : base(command)
+    public NodeDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

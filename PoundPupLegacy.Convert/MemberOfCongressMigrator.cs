@@ -119,7 +119,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
 {
 
     private List<MemberOfCongress> _membersOfCongress = new List<MemberOfCongress>();
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<Person> _personCreator;
     private readonly IEntityCreator<File> _fileCreator;
     private readonly IEntityCreator<NodeFile> _nodeFileCreator;
@@ -128,7 +128,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
 
     public MemberOfCongressMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<Person> personCreator,
         IEntityCreator<File> fileCreator,
         IEntityCreator<NodeFile> nodeFileCreator,
@@ -217,7 +217,9 @@ internal class MemberOfCongressMigrator : MigratorPPL
 
     }
 
-    private async Task<int?> FindIdByGovtackId(int govtrack, NodeIdReaderByUrlId nodeIdReader)
+    private async Task<int?> FindIdByGovtackId(
+        int govtrack,
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         int? id = govtrack switch {
             412236 => 60496,
@@ -287,13 +289,14 @@ internal class MemberOfCongressMigrator : MigratorPPL
         if (!id.HasValue) {
             return null;
         }
-        return await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+        return await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
             UrlId = id.Value,
             TenantId = Constants.PPL
         });
     }
 
-    private async IAsyncEnumerable<Person> GetMembersOfCongressAsync(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<Person> GetMembersOfCongressAsync(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         var states = await GetStates().ToListAsync();

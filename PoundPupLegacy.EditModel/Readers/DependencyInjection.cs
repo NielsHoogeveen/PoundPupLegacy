@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
@@ -7,17 +6,17 @@ public static class DependencyInjection
 {
     public static void AddEditReaders(this IServiceCollection services)
     {
-        services.AddTransient<IDatabaseReaderFactory<ArticleCreateDocumentReader>, ArticleCreateDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<BlogPostCreateDocumentReader>, BlogPostCreateDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<CountryListItemsReader>, CountryListItemsReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<DiscussionCreateDocumentReader>, DiscussionCreateDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<ArticleUpdateDocumentReader>, ArticleUpdateDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<BlogPostUpdateDocumentReader>, BlogPostUpdateDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<DiscussionUpdateDocumentReader>, DiscussionUpdateDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<DocumentUpdateDocumentReader>, DocumentUpdateDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<OrganizationUpdateDocumentReader>, OrganizationUpdateDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<SubdivisionListItemsReader>, SubdivisionListItemsReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<DocumentableDocumentsDocumentReader>, DocumentableDocumentsDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<TagDocumentsReader>, TagDocumentsReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Article>, ArticleCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost>, BlogPostCreateDocumentReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem>, CountryListItemsReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion>, DiscussionCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Article>, ArticleUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost>, BlogPostUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion>, DiscussionUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document>, DocumentUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization>, OrganizationUpdateDocumentReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem>, SubdivisionListItemsReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<DocumentableDocumentsDocumentReaderRequest, DocumentableDocument>, DocumentableDocumentsDocumentReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag>, TagDocumentsReaderFactory>();
     }
 }

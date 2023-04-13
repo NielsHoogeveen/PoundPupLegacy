@@ -3,11 +3,11 @@
 internal sealed class InterPersonalRelationTypeMigrator : MigratorPPL
 {
 
-    private readonly IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
     private readonly IEntityCreator<InterPersonalRelationType> _interPersonalRelationTypeCreator;
     public InterPersonalRelationTypeMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<InterPersonalRelationType> interPersonalRelationTypeCreator
     ) : base(databaseConnections)
     {
@@ -22,7 +22,8 @@ internal sealed class InterPersonalRelationTypeMigrator : MigratorPPL
         await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await _interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<InterPersonalRelationType> ReadInterPersonalRelationTypes(FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    private async IAsyncEnumerable<InterPersonalRelationType> ReadInterPersonalRelationTypes(
+        IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
 
         var sql = $"""
@@ -101,7 +102,7 @@ internal sealed class InterPersonalRelationTypeMigrator : MigratorPPL
                 Description = reader.GetString("description"),
                 FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
-                        : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+                        : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                             TenantId = Constants.PPL,
                             TenantFileId = reader.GetInt32("file_id_tile_image")
                         }),

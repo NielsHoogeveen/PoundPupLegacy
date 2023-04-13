@@ -3,12 +3,12 @@
 internal sealed class AbuseCaseMigrator : MigratorPPL
 {
     private readonly IEntityCreator<AbuseCase> _abuseCaseCreator;
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
 
     public AbuseCaseMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<AbuseCase> abuseCaseCreator,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
     ) : base(databaseConnections)
     {
         _abuseCaseCreator = abuseCaseCreator;
@@ -22,7 +22,7 @@ internal sealed class AbuseCaseMigrator : MigratorPPL
         await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await _abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<AbuseCase> ReadAbuseCases(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<AbuseCase> ReadAbuseCases(IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -178,11 +178,11 @@ internal sealed class AbuseCaseMigrator : MigratorPPL
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
-                ChildPlacementTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                ChildPlacementTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("child_placement_type_id")
                 }),
-                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("family_size_id")
                 }),

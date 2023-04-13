@@ -2,11 +2,11 @@
 
 internal sealed class OrganizationMigratorPPL : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
     private readonly IEntityCreator<Organization> _organizationCreator;
     public OrganizationMigratorPPL(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IEntityCreator<Organization> organizationCreator
     ) : base(databaseConnections)
     {
@@ -16,7 +16,9 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
 
     protected override string Name => "organizations (ppl)";
 
-    private async IAsyncEnumerable<Organization> GetOrganizations(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<Organization> GetOrganizations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+    )
     {
         yield return new BasicOrganization {
             Id = null,
@@ -61,7 +63,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                     {
                         TenantId = Constants.PPL,
                         UrlId = 12625
@@ -112,7 +114,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                     {
                         TenantId = Constants.PPL,
                         UrlId = Constants.POLITICAL_PARTY
@@ -163,7 +165,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                     {
                         TenantId = Constants.PPL,
                         UrlId = Constants.POLITICAL_PARTY
@@ -214,7 +216,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                 new OrganizationOrganizationType
                 {
                     OrganizationId = null,
-                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                     {
                         TenantId = Constants.PPL,
                         UrlId = 12630
@@ -230,7 +232,9 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
         await _organizationCreator.CreateAsync(GetOrganizations(nodeIdReader), _postgresConnection);
         await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<Organization> ReadOrganizations(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<Organization> ReadOrganizations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+    )
     {
 
         var sql = $"""
@@ -350,7 +354,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                             .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
-                var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = typeId,
                     TenantId = Constants.PPL
                 });
@@ -440,7 +444,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                         new OrganizationOrganizationType
                         {
                             OrganizationId = null,
-                            OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request
+                            OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                             {
                                 TenantId = Constants.PPL,
                                 UrlId = Constants.POLITICAL_PARTY

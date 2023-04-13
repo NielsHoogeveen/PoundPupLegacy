@@ -9,7 +9,7 @@ internal sealed class NodeTermCreator : EntityCreator<NodeTerm>
     private readonly IDatabaseInserterFactory<Case> _caseInserterFactory;
     private readonly IDatabaseInserterFactory<AbuseCase> _abuseCaseInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
     public NodeTermCreator(
         IDatabaseInserterFactory<NodeTerm> nodeTermInserterFactory,
@@ -19,7 +19,7 @@ internal sealed class NodeTermCreator : EntityCreator<NodeTerm>
         IDatabaseInserterFactory<Case> caseInserterFactory,
         IDatabaseInserterFactory<AbuseCase> abuseCaseInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory
     )
     {

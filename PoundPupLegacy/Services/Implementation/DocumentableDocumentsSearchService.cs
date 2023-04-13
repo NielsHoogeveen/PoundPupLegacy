@@ -10,14 +10,14 @@ internal sealed class DocumentableDocumentsSearchService : IDocumentableDocument
 {
 
     private readonly NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<DocumentableDocumentsDocumentReader> _documentableDocumentsDocumentReaderFactory;
+    private readonly IEnumerableDatabaseReaderFactory<DocumentableDocumentsDocumentReaderRequest, DocumentableDocument> _documentableDocumentsDocumentReaderFactory;
 
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
 
     public DocumentableDocumentsSearchService(
         IDbConnection connection,
-        IDatabaseReaderFactory<DocumentableDocumentsDocumentReader> documentableDocumentsDocumentReaderFactory)
+        IEnumerableDatabaseReaderFactory<DocumentableDocumentsDocumentReaderRequest, DocumentableDocument> documentableDocumentsDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -33,13 +33,14 @@ internal sealed class DocumentableDocumentsSearchService : IDocumentableDocument
         try {
             await _connection.OpenAsync();
             await using var reader = await _documentableDocumentsDocumentReaderFactory.CreateAsync(_connection);
-            await foreach (var elem in reader.ReadAsync(new DocumentableDocumentsDocumentReader.Request {
+            var request = new DocumentableDocumentsDocumentReaderRequest {
                 NodeId = nodeId,
                 UserId = userId,
                 TenantId = tenantId,
                 SearchString = str
 
-            })) {
+            };
+            await foreach (var elem in reader.ReadAsync(request)) {
                 tags.Add(elem);
             }
             return tags;

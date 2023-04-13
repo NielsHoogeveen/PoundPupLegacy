@@ -10,10 +10,10 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class TopicService : ITopicService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<TopicsDocumentReader> _topicsDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<TopicsDocumentReaderRequest, Topics> _topicsDocumentReaderFactory;
     public TopicService(
         IDbConnection connection,
-        IDatabaseReaderFactory<TopicsDocumentReader> topicsDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<TopicsDocumentReaderRequest, Topics> topicsDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -22,13 +22,13 @@ internal sealed class TopicService : ITopicService
         _topicsDocumentReaderFactory = topicsDocumentReaderFactory;
     }
 
-    public async Task<Topics> FetchTopics(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
+    public async Task<Topics?> FetchTopics(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
     {
 
         try {
             await _connection.OpenAsync();
             await using var reader = await _topicsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new TopicsDocumentReader.Request {
+            return await reader.ReadAsync(new TopicsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,

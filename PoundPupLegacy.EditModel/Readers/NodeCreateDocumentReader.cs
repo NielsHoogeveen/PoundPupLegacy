@@ -8,8 +8,9 @@ public static class NodeCreateDocumentReaderFactory
     internal static readonly NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
     internal static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
 }
-public abstract class NodeCreateDocumentReaderFactory<T> : NodeEditDocumentReaderFactory<T>
-where T : class, IDatabaseReader
+public abstract class NodeCreateDocumentReaderFactory<TResponse, TReader> : NodeEditDocumentReaderFactory<NodeCreateDocumentRequest, TResponse, TReader>
+where TResponse : Node
+where TReader: ISingleItemDatabaseReader<NodeCreateDocumentRequest, TResponse>
 {
     internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = Factory.TenantIdParameter;
     internal static readonly NonNullableIntegerDatabaseParameter NodeTypeIdParameter = Factory.NodeTypeIdParameter;

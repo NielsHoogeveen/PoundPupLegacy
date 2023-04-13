@@ -2,11 +2,11 @@
 
 internal sealed class InterPersonalRelationMigratorPPL : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<InterPersonalRelation> _interPersonalRelationCreator;
     public InterPersonalRelationMigratorPPL(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<InterPersonalRelation> interPersonalRelationCreator
     ) : base(databaseConnections)
     {
@@ -23,7 +23,8 @@ internal sealed class InterPersonalRelationMigratorPPL : MigratorPPL
 
     }
 
-    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 select
@@ -94,16 +95,16 @@ internal sealed class InterPersonalRelationMigratorPPL : MigratorPPL
 
             var id = reader.GetInt32("id");
 
-            int organizationIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int organizationIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("person_id_from")
             });
-            int organizationIdTo = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int organizationIdTo = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("person_id_to")
 
             });
-            int interPersonalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            int interPersonalRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("nameable_id")
 
@@ -145,7 +146,7 @@ internal sealed class InterPersonalRelationMigratorPPL : MigratorPPL
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = reader.IsDBNull("document_id_proof")
                     ? null
-                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     }),

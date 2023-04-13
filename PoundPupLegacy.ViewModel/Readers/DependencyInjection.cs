@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
@@ -7,20 +6,20 @@ public static class DependencyInjection
 {
     public static void AddViewModelReaders(this IServiceCollection services)
     {
-        services.AddTransient<IDatabaseReaderFactory<ArticlesDocumentReader>, ArticlesDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<BlogDocumentReader>, BlogDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<BlogsDocumentReader>, BlogsDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<CasesDocumentReader>, CasesDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<CountriesDocumentReader>, CountriesDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<FileDocumentReader>, FileDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<NodeDocumentReader>, NodeDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<OrganizationsDocumentReader>, OrganizationsDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<PersonsDocumentReader>, PersonsDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<PollsDocumentReader>, PollsDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<SearchDocumentReader>, SearchDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<SubgroupsDocumentReader>, SubgroupsDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<TopicsDocumentReader>, TopicsDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<UnitedStatesCongresssDocumentReader>, UnitedStatesCongresssDocumentReaderFactory>();
-        services.AddTransient<IDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReader>, UnitedStatesMeetingChamberDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<ArticlesDocumentReaderRequest, Articles>, ArticlesDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<BlogDocumentReaderRequest, Blog>, BlogDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<BlogsDocumentReaderRequest, List<BlogListEntry>>, BlogsDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<CasesDocumentReaderRequest, Cases>, CasesDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<CountriesDocumentReaderRequest, FirstLevelRegionListEntry[]>, CountriesDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, File>, FileDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Node>, NodeDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<OrganizationsDocumentReaderRequest, OrganizationSearch>, OrganizationsDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<PersonsDocumentReaderRequest, Persons>, PersonsDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<PollsDocumentReaderRequest, Polls>, PollsDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<SearchDocumentReaderRequest, SearchResult>, SearchDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<SubgroupsDocumentReaderRequest, SubgroupPagedList>, SubgroupsDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<TopicsDocumentReaderRequest, Topics>, TopicsDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress>, UnitedStatesCongresssDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesMeetingChamberDocumentReaderFactory>();
     }
 }

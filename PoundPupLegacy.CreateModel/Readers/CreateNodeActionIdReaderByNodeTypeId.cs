@@ -1,9 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
+using Request = CreateNodeActionIdReaderByNodeTypeIdRequest;
 using Factory = CreateNodeActionIdReaderByNodeTypeIdFactory;
 using Reader = CreateNodeActionIdReaderByNodeTypeId;
 
-public sealed class CreateNodeActionIdReaderByNodeTypeIdFactory : DatabaseReaderFactory<Reader>
+public sealed class CreateNodeActionIdReaderByNodeTypeIdRequest : IRequest
+{
+    public required int NodeTypeId { get; init; }
+}
+
+internal sealed class CreateNodeActionIdReaderByNodeTypeIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
 {
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
@@ -14,21 +20,21 @@ public sealed class CreateNodeActionIdReaderByNodeTypeIdFactory : DatabaseReader
         SELECT id FROM create_node_action WHERE node_type_id = @node_type_id
         ";
 }
-public sealed class CreateNodeActionIdReaderByNodeTypeId : IntDatabaseReader<int>
+internal sealed class CreateNodeActionIdReaderByNodeTypeId : IntDatabaseReader<Request>
 {
+    public CreateNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
 
-    internal CreateNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
-
-    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.NodeTypeId, request)
+            ParameterValue.Create(Factory.NodeTypeId, request.NodeTypeId)
         };
     }
-    protected override IntValueReader IntValueReader => Factory.IdReader;
 
-    protected override string GetErrorMessage(int request)
+    protected override string GetErrorMessage(Request request)
     {
         return $"create node action cannot be found for node type  {request}";
     }
+    protected override IntValueReader IntValueReader => Factory.IdReader;
+
 }

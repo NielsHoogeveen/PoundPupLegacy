@@ -4,14 +4,14 @@ namespace PoundPupLegacy.Convert;
 
 internal sealed class VocabularyMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderByUrlIdFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
     private readonly IEntityCreator<Vocabulary> _vocabularyCreator;
     private readonly IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary> _tenantUpdaterSetTaggingVocabularyFactory;
 
     protected override string Name => "vocabularies";
     public VocabularyMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IEntityCreator<Vocabulary> vocabularyCreator,
         IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary> tenantUpdaterSetTaggingVocabularyFactory
     ) : base(databaseConnections)
@@ -284,7 +284,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
         await using var tenantUpdater = await _tenantUpdaterSetTaggingVocabularyFactory.CreateAsync(_postgresConnection);
         await tenantUpdater.UpdateAsync(new TenantUpdaterSetTaggingVocabulary.Request {
             TenantId = Constants.PPL,
-            VocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+            VocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 4126
             })

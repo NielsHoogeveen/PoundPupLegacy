@@ -3,14 +3,14 @@
 internal sealed class NodeFileMigratorCPCT : MigratorCPCT
 {
 
-    private IDatabaseReaderFactory<FileIdReaderByTenantFileId> _fileIdReaderByTenantFileIdFactory;
+    private IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
 
     private readonly IEntityCreator<NodeFile> _nodeFileCreator;
     public NodeFileMigratorCPCT(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
-        IDatabaseReaderFactory<TenantNodeReaderByUrlId> tenantNodeReaderByUrlIdFactory,
-        IDatabaseReaderFactory<FileIdReaderByTenantFileId> fileIdReaderByTenantFileIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<NodeFile> nodeFileCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
@@ -27,7 +27,11 @@ internal sealed class NodeFileMigratorCPCT : MigratorCPCT
 
         await _nodeFileCreator.CreateAsync(ReadNodeFiles(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<NodeFile> ReadNodeFiles(NodeIdReaderByUrlId nodeIdReader, FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    private async IAsyncEnumerable<NodeFile> ReadNodeFiles(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
+      
+    )
     {
         var sql = $"""
                 SELECT f.fid,
@@ -48,7 +52,7 @@ internal sealed class NodeFileMigratorCPCT : MigratorCPCT
         while (await reader.ReadAsync()) {
 
             yield return new NodeFile {
-                NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = reader.GetInt32("nid"),
                     TenantId = Constants.CPCT
                 }),
@@ -59,7 +63,9 @@ internal sealed class NodeFileMigratorCPCT : MigratorCPCT
         await reader.CloseAsync();
     }
 
-    private async Task<int> GetFileId(int fid, FileIdReaderByTenantFileId fileIdReaderByTenantFileId)
+    private async Task<int> GetFileId(
+        int fid,
+        IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
         (int tenantId, int fileId) = fid switch {
             1200 => (Constants.PPL, 1293),
@@ -75,7 +81,7 @@ internal sealed class NodeFileMigratorCPCT : MigratorCPCT
             3968 => (Constants.PPL, 1801),
             _ => (Constants.CPCT, fid)
         };
-        return await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileId.Request {
+        return await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
             TenantId = tenantId,
             TenantFileId = fileId
         });

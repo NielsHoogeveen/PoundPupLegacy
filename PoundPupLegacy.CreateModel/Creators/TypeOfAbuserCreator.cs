@@ -7,9 +7,9 @@ internal class TypeOfAbuserCreator : EntityCreator<TypeOfAbuser>
     private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
     private readonly IDatabaseInserterFactory<TypeOfAbuser> _typeOfAbuserInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public TypeOfAbuserCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
@@ -17,9 +17,9 @@ internal class TypeOfAbuserCreator : EntityCreator<TypeOfAbuser>
         IDatabaseInserterFactory<Nameable> nameableInserterFactory,
         IDatabaseInserterFactory<TypeOfAbuser> typeOfAbuserInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
     )
     {

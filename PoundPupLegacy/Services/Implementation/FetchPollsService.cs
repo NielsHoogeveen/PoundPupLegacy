@@ -9,10 +9,10 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class FetchPollsService : IFetchPollsService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<PollsDocumentReader> _pollsDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<PollsDocumentReaderRequest, Polls> _pollsDocumentReaderFactory;
     public FetchPollsService(
         IDbConnection connection,
-        IDatabaseReaderFactory<PollsDocumentReader> pollsDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<PollsDocumentReaderRequest, Polls> pollsDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -28,7 +28,7 @@ internal sealed class FetchPollsService : IFetchPollsService
         try {
             await _connection.OpenAsync();
             await using var reader = await _pollsDocumentReaderFactory.CreateAsync(_connection);
-            var polls = await reader.ReadAsync(new PollsDocumentReader.Request {
+            var polls = await reader.ReadAsync(new PollsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,

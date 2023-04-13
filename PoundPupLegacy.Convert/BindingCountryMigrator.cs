@@ -2,11 +2,11 @@
 
 internal sealed class BindingCountryMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<BindingCountry> _bindingCountryCreator;
     public BindingCountryMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<BindingCountry> bindingCountryCreator
     ) : base(databaseConnections)
     {
@@ -21,7 +21,8 @@ internal sealed class BindingCountryMigrator : MigratorPPL
         await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await _bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<BindingCountry> ReadBindingCountries(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<BindingCountry> ReadBindingCountries(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -104,14 +105,14 @@ internal sealed class BindingCountryMigrator : MigratorPPL
                 Description = "",
                 VocabularyNames = vocabularyNames,
                 Name = name,
-                SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = reader.GetInt32("second_level_region_id"),
                     TenantId = Constants.PPL,
                 }),
                 ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = 41215,
                     TenantId = Constants.PPL,
                 }),

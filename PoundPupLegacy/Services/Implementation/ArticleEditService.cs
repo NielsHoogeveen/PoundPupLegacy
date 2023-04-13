@@ -10,8 +10,8 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article, CreateModel.Article>, IEditService<Article>
 {
-    private readonly IDatabaseReaderFactory<ArticleCreateDocumentReader> _createDocumentReaderFactory;
-    private readonly IDatabaseReaderFactory<ArticleUpdateDocumentReader> _updateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Article> _createDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Article> _updateDocumentReaderFactory;
 
     private readonly IEntityCreator<CreateModel.Article> _articleCreator;
 
@@ -19,8 +19,8 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
         IDbConnection connection,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
-        IDatabaseReaderFactory<ArticleCreateDocumentReader> createDocumentReaderFactory,
-        IDatabaseReaderFactory<ArticleUpdateDocumentReader> updateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Article> createDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Article> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -37,7 +37,7 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
 
     protected sealed override IEntityCreator<CreateModel.Article> EntityCreator => _articleCreator;
 
-    public async Task<Article> GetViewModelAsync(int userId, int tenantId)
+    public async Task<Article?> GetViewModelAsync(int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
@@ -54,7 +54,7 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
             }
         }
     }
-    public async Task<Article> GetViewModelAsync(int urlId, int userId, int tenantId)
+    public async Task<Article?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();

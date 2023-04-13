@@ -2,11 +2,11 @@
 
 internal sealed class DeportationCaseMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<DeportationCase> _deportationCaseCreator;
     public DeportationCaseMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<DeportationCase> deportationCaseCreator
     ) : base(databaseConnections)
     {
@@ -21,7 +21,8 @@ internal sealed class DeportationCaseMigrator : MigratorPPL
         await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await _deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<DeportationCase> ReadDeportationCases(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<DeportationCase> ReadDeportationCases(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         var sql = $"""
@@ -106,13 +107,13 @@ internal sealed class DeportationCaseMigrator : MigratorPPL
                 Description = reader.GetString("description"),
                 SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from")
                     ? null
-                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("subdivision_id_from")
                     }),
                 CountryIdTo = reader.IsDBNull("country_id_to")
                     ? null
-                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("country_id_to")
                     }),

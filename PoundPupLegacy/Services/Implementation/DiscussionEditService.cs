@@ -10,16 +10,16 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Discussion, CreateModel.Discussion>, IEditService<Discussion>
 {
-    private readonly IDatabaseReaderFactory<DiscussionCreateDocumentReader> _createDocumentReaderFactory;
-    private readonly IDatabaseReaderFactory<DiscussionUpdateDocumentReader> _updateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion> _createDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion> _updateDocumentReaderFactory;
     private readonly IEntityCreator<CreateModel.Discussion> _discussionCreator;
 
     public DiscussionEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
-        IDatabaseReaderFactory<DiscussionCreateDocumentReader> createDocumentReaderFactory,
-        IDatabaseReaderFactory<DiscussionUpdateDocumentReader> updateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion> createDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -36,7 +36,7 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
 
     protected sealed override IEntityCreator<CreateModel.Discussion> EntityCreator => _discussionCreator;
 
-    public async Task<Discussion> GetViewModelAsync(int userId, int tenantId)
+    public async Task<Discussion?> GetViewModelAsync(int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
@@ -53,7 +53,7 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
             }
         }
     }
-    public async Task<Discussion> GetViewModelAsync(int urlId, int userId, int tenantId)
+    public async Task<Discussion?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();

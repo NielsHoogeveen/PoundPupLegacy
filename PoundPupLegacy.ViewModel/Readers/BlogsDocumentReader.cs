@@ -1,9 +1,15 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = BlogsDocumentReaderRequest;
 using Factory = BlogsDocumentReaderFactory;
 using Reader = BlogsDocumentReader;
 
-public class BlogsDocumentReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record BlogsDocumentReaderRequest : IRequest
+{
+    public required int TenantId { get; init; }
+}
+
+internal sealed class BlogsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, List<BlogListEntry>, Reader>
 {
     internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal static readonly FieldValueReader<List<BlogListEntry>> DocumentReader = new() { Name = "document" };
@@ -42,16 +48,16 @@ public class BlogsDocumentReaderFactory : DatabaseReaderFactory<Reader>
 
 
 }
-public class BlogsDocumentReader : SingleItemDatabaseReader<int, List<BlogListEntry>>
+internal sealed class BlogsDocumentReader : SingleItemDatabaseReader<Request, List<BlogListEntry>>
 {
-    internal BlogsDocumentReader(NpgsqlCommand command) : base(command)
+    public BlogsDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request),
+            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
         };
     }
     protected override List<BlogListEntry> Read(NpgsqlDataReader reader)

@@ -2,11 +2,11 @@
 
 internal sealed class CommentMigrator : MigratorPPL
 {
-    private readonly IDatabaseReaderFactory<NodeIdReaderByUrlId> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IEntityCreator<Comment> _commentCreator;
     public CommentMigrator(
         IDatabaseConnections databaseConnections,
-        IDatabaseReaderFactory<NodeIdReaderByUrlId> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<Comment> commentCreator
     ) : base(databaseConnections)
     {
@@ -32,7 +32,8 @@ internal sealed class CommentMigrator : MigratorPPL
             _ => uid
         };
     }
-    private async IAsyncEnumerable<Comment> ReadComments(NodeIdReaderByUrlId nodeIdReader)
+    private async IAsyncEnumerable<Comment> ReadComments(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         var sql = $"""
@@ -80,7 +81,7 @@ internal sealed class CommentMigrator : MigratorPPL
         while (await reader.ReadAsync()) {
             var discussion = new Comment {
                 Id = reader.GetInt32("id"),
-                NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlId.Request {
+                NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("node_id")
 

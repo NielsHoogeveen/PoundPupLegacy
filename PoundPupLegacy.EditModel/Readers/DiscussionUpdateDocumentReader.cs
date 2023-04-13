@@ -2,13 +2,13 @@
 
 using Reader = DiscussionUpdateDocumentReader;
 
-public class DiscussionUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumentReaderFactory<Reader>
+internal sealed class DiscussionUpdateDocumentReaderFactory : SimpleTextNodeUpdateDocumentReaderFactory<Discussion, Reader>
 {
 }
 
-public class DiscussionUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<Discussion>
+internal sealed class DiscussionUpdateDocumentReader : SimpleTextNodeUpdateDocumentReader<Discussion>
 {
-    internal DiscussionUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
+    public DiscussionUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DISCUSSION)
     {
     }
 }

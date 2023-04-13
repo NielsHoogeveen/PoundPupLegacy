@@ -1,8 +1,18 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = SearchDocumentReaderRequest;
 using Factory = SearchDocumentReaderFactory;
 using Reader = SearchDocumentReader;
-public class SearchDocumentReaderFactory : DatabaseReaderFactory<Reader>
+
+public sealed record SearchDocumentReaderRequest : IRequest
+{
+    public required int UserId { get; init; }
+    public required int TenantId { get; init; }
+    public required int Limit { get; init; }
+    public required int Offset { get; init; }
+    public required string SearchString { get; init; }
+}
+internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, SearchResult, Reader>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -159,18 +169,9 @@ public class SearchDocumentReaderFactory : DatabaseReaderFactory<Reader>
             """;
 
 }
-public class SearchDocumentReader : SingleItemDatabaseReader<Reader.Request, SearchResult>
+internal sealed class SearchDocumentReader : SingleItemDatabaseReader<Request, SearchResult>
 {
-    public record Request
-    {
-        public required int UserId { get; init; }
-        public required int TenantId { get; init; }
-        public required int Limit { get; init; }
-        public required int Offset { get; init; }
-        public required string SearchString { get; init; }
-
-    }
-    internal SearchDocumentReader(NpgsqlCommand command) : base(command)
+    public SearchDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

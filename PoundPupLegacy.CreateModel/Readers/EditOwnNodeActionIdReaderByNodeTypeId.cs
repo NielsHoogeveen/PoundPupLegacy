@@ -1,9 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
+using Request = EditOwnNodeActionIdReaderByNodeTypeIdRequest;
 using Factory = EditOwnNodeActionIdReaderByNodeTypeIdFactory;
 using Reader = EditOwnNodeActionIdReaderByNodeTypeId;
 
-public sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : DatabaseReaderFactory<Reader>
+
+public sealed record EditOwnNodeActionIdReaderByNodeTypeIdRequest : IRequest
+{
+    public required int NodeTypeId { get; init; }
+}
+
+internal sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
 {
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
@@ -14,21 +21,20 @@ public sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : DatabaseReade
         SELECT id FROM edit_own_node_action WHERE node_type_id = @node_type_id
         """;
 }
-public sealed class EditOwnNodeActionIdReaderByNodeTypeId : IntDatabaseReader<int>
+internal sealed class EditOwnNodeActionIdReaderByNodeTypeId : IntDatabaseReader<Request>
 {
-    internal EditOwnNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
+    public EditOwnNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(int request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.NodeTypeId, request)
+            ParameterValue.Create(Factory.NodeTypeId, request.NodeTypeId)
         };
     }
 
-    protected override IntValueReader IntValueReader => Factory.IdReader;
-
-    protected override string GetErrorMessage(int request)
+    protected override string GetErrorMessage(Request request)
     {
-        return $"edit own node action cannot be found for node type {request}";
+        return $"edit own node action cannot be found for node type {request.NodeTypeId}";
     }
+    protected override IntValueReader IntValueReader => Factory.IdReader;
 }

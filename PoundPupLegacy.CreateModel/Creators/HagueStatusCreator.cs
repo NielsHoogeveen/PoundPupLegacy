@@ -5,8 +5,8 @@ internal sealed class HagueStatusCreator : EntityCreator<HagueStatus>
     private readonly IDatabaseInserterFactory<HagueStatus> _hagueStatusInserterFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
     private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
@@ -14,8 +14,8 @@ internal sealed class HagueStatusCreator : EntityCreator<HagueStatus>
     public HagueStatusCreator(IDatabaseInserterFactory<HagueStatus> hagueStatusInserterFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
         IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,

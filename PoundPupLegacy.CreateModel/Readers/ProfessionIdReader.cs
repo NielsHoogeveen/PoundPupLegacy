@@ -1,8 +1,24 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
+using Request = ProfessionIdReaderRequest;
 using Factory = ProfessionIdReaderFactory;
 using Reader = ProfessionIdReader;
-public sealed class ProfessionIdReaderFactory : DatabaseReaderFactory<Reader>
+
+public enum ProfessionType
+{
+    Senator,
+    Representative,
+    Lawyer,
+    Therapist
+}
+
+public sealed record ProfessionIdReaderRequest : IRequest
+{
+    public required int TenantId { get; init; }
+    public required int UrlId { get; init; }
+    public required ProfessionType ProfessionType { get; init; }
+}
+internal sealed class ProfessionIdReaderFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -23,22 +39,10 @@ public sealed class ProfessionIdReaderFactory : DatabaseReaderFactory<Reader>
         where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.title = @profession_name
         """;
 }
-public sealed class ProfessionIdReader : IntDatabaseReader<Reader.Request>
+internal sealed class ProfessionIdReader : IntDatabaseReader<Request>
 {
-    public record Request
-    {
-        public int TenantId { get; init; }
-        public int UrlId { get; init; }
-        public ProfessionType ProfessionType { get; init; }
-    }
-    public enum ProfessionType
-    {
-        Senator,
-        Representative,
-        Lawyer,
-        Therapist
-    }
-    internal ProfessionIdReader(NpgsqlCommand command) : base(command) { }
+
+    public ProfessionIdReader(NpgsqlCommand command) : base(command) { }
 
     private string GetProfessionName(ProfessionType type)
     {

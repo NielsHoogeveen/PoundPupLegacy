@@ -18,9 +18,9 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator : EntityCr
     private readonly IDatabaseInserterFactory<CountryAndFirstLevelSubdivision> _countryAndFirstLevelSubdivisionFactory;
     private readonly IDatabaseInserterFactory<CountryAndFirstAndBottomLevelSubdivision> _countryAndFirstAndBottomLevelSubdivisionFactory;
     private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseReaderFactory<TermReaderByName> _termReaderByNameInserterFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderByNameInserterFactory;
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyFactory;
-    private readonly IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> _vocabularyIdReaderByOwnerAndNameFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     public CountryAndFirstAndBottomLevelSubdivisionCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
@@ -40,8 +40,8 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator : EntityCr
         IDatabaseInserterFactory<CountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionFactory,
         IDatabaseInserterFactory<Term> termInserterFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyFactory,
-        IDatabaseReaderFactory<TermReaderByName> termReaderByNameInserterFactory,
-        IDatabaseReaderFactory<VocabularyIdReaderByOwnerAndName> vocabularyIdReaderByOwnerAndNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderByNameInserterFactory,
+        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
     {
         _nodeInserterFactory = nodeInserterFactory;

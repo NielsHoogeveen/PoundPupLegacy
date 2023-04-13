@@ -1,9 +1,18 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
+using Request = BlogDocumentReaderRequest;
 using Factory = BlogDocumentReaderFactory;
 using Reader = BlogDocumentReader;
 
-public class BlogDocumentReaderFactory : DatabaseReaderFactory<Reader>
+public sealed record BlogDocumentReaderRequest : IRequest
+{
+    public required int PublisherId { get; init; }
+    public required int TenantId { get; init; }
+    public required int Length { get; init; }
+    public required int StartIndex { get; init; }
+}
+
+internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Blog, Reader>
 {
     internal static readonly NonNullableIntegerDatabaseParameter PublishedIdParameter = new() { Name = "publisher_id" };
     internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
@@ -79,16 +88,9 @@ public class BlogDocumentReaderFactory : DatabaseReaderFactory<Reader>
             """;
 
 }
-public class BlogDocumentReader : SingleItemDatabaseReader<Reader.Request, Blog>
+internal sealed class BlogDocumentReader : SingleItemDatabaseReader<Request, Blog>
 {
-    public record Request
-    {
-        public int PublisherId { get; init; }
-        public int TenantId { get; init; }
-        public int StartIndex { get; init; }
-        public int Length { get; init; }
-    }
-    internal BlogDocumentReader(NpgsqlCommand command) : base(command)
+    public BlogDocumentReader(NpgsqlCommand command) : base(command)
     {
     }
 

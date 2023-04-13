@@ -2,7 +2,7 @@
 
 using Reader = DocumentUpdateDocumentReader;
 
-public class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<Reader>
+internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<Document, Reader>
 {
     public override string Sql => SQL;
 
@@ -52,9 +52,9 @@ public class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFacto
 
 }
 
-public class DocumentUpdateDocumentReader : NodeUpdateDocumentReader<Document>
+internal sealed class DocumentUpdateDocumentReader : NodeUpdateDocumentReader<Document>
 {
-    internal DocumentUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DOCUMENT)
+    public DocumentUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.DOCUMENT)
     {
     }
 }

@@ -9,11 +9,11 @@ namespace PoundPupLegacy.Services.Implementation;
 internal sealed class SubgroupService : ISubgroupService
 {
     private readonly NpgsqlConnection _connection;
-    private readonly IDatabaseReaderFactory<SubgroupsDocumentReader> _subgroupsDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<SubgroupsDocumentReaderRequest, SubgroupPagedList> _subgroupsDocumentReaderFactory;
 
     public SubgroupService(
         IDbConnection connection,
-        IDatabaseReaderFactory<SubgroupsDocumentReader> subgroupsDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<SubgroupsDocumentReaderRequest, SubgroupPagedList> subgroupsDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -28,7 +28,7 @@ internal sealed class SubgroupService : ISubgroupService
         try {
             await _connection.OpenAsync();
             await using var reader = await _subgroupsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new SubgroupsDocumentReader.Request {
+            return await reader.ReadAsync(new SubgroupsDocumentReaderRequest {
                 UserId = userId,
                 SubgroupId = subgroupId,
                 Limit = limit,
