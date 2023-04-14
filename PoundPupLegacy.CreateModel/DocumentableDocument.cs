@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record DocumentableDocument
+public sealed record DocumentableDocument: IRequest
 {
     public required int DocumentableId { get; init; }
 

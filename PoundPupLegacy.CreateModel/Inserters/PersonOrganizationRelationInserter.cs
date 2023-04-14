@@ -20,7 +20,7 @@ internal sealed class PersonOrganizationRelationInserter : ConditionalAutoGenera
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(PersonOrganizationRelation item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(PersonOrganizationRelation item)
     {
         if (item.PersonId is null) {
             throw new NullReferenceException(nameof(item.PersonId));

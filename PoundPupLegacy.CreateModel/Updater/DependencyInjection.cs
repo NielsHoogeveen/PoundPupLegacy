@@ -7,6 +7,6 @@ internal static class DependencyInjection
 {
     internal static void AddCreateModelUpdaters(this IServiceCollection services)
     {
-        services.AddTransient<IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary>, TenantUpdaterSetTaggingVocabularyFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabularyRequest>, TenantUpdaterSetTaggingVocabularyFactory>();
     }
 }

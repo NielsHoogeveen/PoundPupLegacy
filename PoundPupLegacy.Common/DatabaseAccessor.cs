@@ -37,7 +37,8 @@ public interface IDatabaseAccessor : IAsyncDisposable
     bool HasBeenPrepared { get; }
 }
 
-public abstract class DatabaseAccessor: IDatabaseAccessor
+public abstract class DatabaseAccessor<TRequest>: IDatabaseAccessor
+    where TRequest: IRequest
 {
     protected readonly NpgsqlCommand _command;
     public string Sql => _command.CommandText;
@@ -51,4 +52,6 @@ public abstract class DatabaseAccessor: IDatabaseAccessor
     {
         await _command.DisposeAsync();
     }
+    protected abstract IEnumerable<ParameterValue> GetParameterValues(TRequest request);
+
 }

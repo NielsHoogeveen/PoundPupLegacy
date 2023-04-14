@@ -1,6 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-public sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary>
+using Request = TenantUpdaterSetTaggingVocabularyRequest;
+using Factory = TenantUpdaterSetTaggingVocabularyFactory;
+using Updater = TenantUpdaterSetTaggingVocabulary;
+
+public record TenantUpdaterSetTaggingVocabularyRequest: IRequest
+{
+    public required int TenantId { get; init; }
+    public required int VocabularyId { get; init; }
+}
+
+public sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFactory<Request, Updater>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() {
         Name = "tenant_id"
@@ -16,21 +26,15 @@ public sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFa
         """;
 
 }
-public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<TenantUpdaterSetTaggingVocabulary.Request>
+public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<Request>
 {
-    public record Request
-    {
-        public required int TenantId { get; init; }
-        public required int VocabularyId { get; init; }
-    }
-
     public TenantUpdaterSetTaggingVocabulary(NpgsqlCommand command) : base(command) { }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(TenantUpdaterSetTaggingVocabularyFactory.TenantId, request.TenantId),
-            ParameterValue.Create(TenantUpdaterSetTaggingVocabularyFactory.VocabularyId, request.VocabularyId),
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.VocabularyId, request.VocabularyId),
         };
     }
 }

@@ -14,7 +14,7 @@ internal sealed class PublicationStatusInserter : DatabaseInserter<PublicationSt
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(PublicationStatus item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(PublicationStatus item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

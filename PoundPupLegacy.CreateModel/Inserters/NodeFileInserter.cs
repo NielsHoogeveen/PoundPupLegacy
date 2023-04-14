@@ -12,7 +12,7 @@ internal sealed class NodeFileInserter : DatabaseInserter<NodeFile>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(NodeFile item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(NodeFile item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(NodeFileInserterFactory.NodeId, item.NodeId),

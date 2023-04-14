@@ -12,7 +12,7 @@ internal sealed class TermHierarchyInserter : DatabaseInserter<TermHierarchy>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(TermHierarchy item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(TermHierarchy item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(TermHierarchyInserterFactory.TermIdParent, item.TermIdPartent),

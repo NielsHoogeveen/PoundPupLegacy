@@ -13,7 +13,7 @@ internal sealed class DeleteNodeActionInserter : DatabaseInserter<DeleteNodeActi
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(DeleteNodeAction item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(DeleteNodeAction item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

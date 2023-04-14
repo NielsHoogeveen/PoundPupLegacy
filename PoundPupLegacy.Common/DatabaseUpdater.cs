@@ -9,23 +9,30 @@ public interface IDatabaseUpdater : IAsyncDisposable
     bool HasBeenPrepared { get; }
 
 }
+
+public interface IDatabaseUpdater<TRequest>: IDatabaseUpdater
+    where TRequest: IRequest
+{
+    Task UpdateAsync(TRequest request);
+}
 public interface IDatabaseUpdaterFactory: IDatabaseAccessorFactory
 {
 
 }
-public interface IDatabaseUpdaterFactory<T> : IDatabaseUpdaterFactory
-    where T : IDatabaseUpdater
+public interface IDatabaseUpdaterFactory<TRequest> : IDatabaseUpdaterFactory
+    where TRequest : IRequest
 {
-    Task<T> CreateAsync(IDbConnection connection);
+    Task<IDatabaseUpdater<TRequest>> CreateAsync(IDbConnection connection);
     string Sql { get; }
 
 }
 
-public abstract class DatabaseUpdaterFactory<T> : DatabaseAccessorFactory, IDatabaseUpdaterFactory<T>
-    where T : IDatabaseUpdater
+public abstract class DatabaseUpdaterFactory<TRequest, TUpdater> : DatabaseAccessorFactory, IDatabaseUpdaterFactory<TRequest>
+    where TRequest : IRequest
+    where TUpdater : IDatabaseUpdater<TRequest>
 {
 
-    public async Task<T> CreateAsync(IDbConnection connection)
+    public async Task<IDatabaseUpdater<TRequest>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
@@ -40,13 +47,14 @@ public abstract class DatabaseUpdaterFactory<T> : DatabaseAccessorFactory, IData
             command.AddParameter(parameter);
         }
         await command.PrepareAsync();
-        return (T)Activator.CreateInstance(typeof(T), new object[] { command })!;
+        return (IDatabaseUpdater<TRequest>)Activator.CreateInstance(typeof(TUpdater), new object[] { command })!;
     }
 
     public abstract string Sql { get; }
 
 }
-public abstract class DatabaseUpdater<TRequest> : DatabaseAccessor, IDatabaseUpdater
+public abstract class DatabaseUpdater<TRequest> : DatabaseAccessor<TRequest>, IDatabaseUpdater<TRequest>
+    where TRequest: IRequest
 {
     protected DatabaseUpdater(NpgsqlCommand command) : base(command)
     {
@@ -60,7 +68,5 @@ public abstract class DatabaseUpdater<TRequest> : DatabaseAccessor, IDatabaseUpd
         }
         await _command.ExecuteNonQueryAsync();
     }
-
-    public abstract IEnumerable<ParameterValue> GetParameterValues(TRequest request);
 
 }

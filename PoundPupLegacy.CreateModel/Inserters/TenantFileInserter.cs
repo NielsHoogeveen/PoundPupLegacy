@@ -14,7 +14,7 @@ internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(TenantFile item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(TenantFile item)
     {
         if (item.FileId == null)
             throw new ArgumentNullException(nameof(item.FileId));

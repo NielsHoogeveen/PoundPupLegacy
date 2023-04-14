@@ -12,7 +12,7 @@ internal sealed class AccessRolePrivilegeInserter : DatabaseInserter<AccessRoleP
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(AccessRolePrivilege item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(AccessRolePrivilege item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(AccessRolePrivilegeInserterFactory.AccessRoleId, item.AccessRoleId),

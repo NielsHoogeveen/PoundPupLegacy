@@ -21,7 +21,7 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
         INodeCacheService nodeCacheService,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Article> createDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Article> updateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
+        IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,

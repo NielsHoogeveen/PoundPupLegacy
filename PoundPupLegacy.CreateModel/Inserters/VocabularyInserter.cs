@@ -15,7 +15,7 @@ internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Vocabulary item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Vocabulary item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

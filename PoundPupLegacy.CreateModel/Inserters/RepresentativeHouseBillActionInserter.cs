@@ -16,7 +16,7 @@ internal sealed class RepresentativeHouseBillActionInserter : ConditionalAutoGen
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(RepresentativeHouseBillAction item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(RepresentativeHouseBillAction item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(RepresentativeHouseBillActionInserterFactory.Id, item.Id),

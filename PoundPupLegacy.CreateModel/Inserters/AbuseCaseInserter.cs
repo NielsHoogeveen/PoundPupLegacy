@@ -17,7 +17,7 @@ internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(AbuseCase abuseCase)
+    protected override IEnumerable<ParameterValue> GetParameterValues(AbuseCase abuseCase)
     {
         if (abuseCase.Id is null)
             throw new NullReferenceException();

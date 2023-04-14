@@ -13,7 +13,7 @@ internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserte
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(UnitedStatesCongressionalMeeting item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(UnitedStatesCongressionalMeeting item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

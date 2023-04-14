@@ -13,7 +13,7 @@ internal sealed class UserGroupUserRoleUserInserter : DatabaseInserter<UserGroup
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(UserGroupUserRoleUser item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(UserGroupUserRoleUser item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(UserGroupUserRoleUserInserterFactory.UserGroupId, item.UserGroupId),

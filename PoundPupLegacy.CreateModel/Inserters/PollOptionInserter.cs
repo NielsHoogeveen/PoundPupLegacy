@@ -14,7 +14,7 @@ internal sealed class PollOptionInserter : DatabaseInserter<PollOption>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(PollOption item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(PollOption item)
     {
         if (item.PollQuestionId is null)
             throw new NullReferenceException();

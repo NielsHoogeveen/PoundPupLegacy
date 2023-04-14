@@ -14,7 +14,7 @@ internal class AdministratorRoleInserter : DatabaseInserter<AdministratorRole>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(AdministratorRole item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(AdministratorRole item)
     {
         if (item.Id is null)
             throw new ArgumentNullException(nameof(item.Id));

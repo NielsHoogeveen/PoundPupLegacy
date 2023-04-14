@@ -15,7 +15,7 @@ public class UserRoleInserter : DatabaseInserter<UserRole>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(UserRole item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(UserRole item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

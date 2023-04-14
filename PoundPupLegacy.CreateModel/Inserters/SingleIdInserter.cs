@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using PoundPupLegacy.Common;
+
+namespace PoundPupLegacy.CreateModel.Inserters;
 
 internal static class SingleIdInserterFactory
 {
@@ -82,7 +84,7 @@ internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
     }
 
 }
-internal sealed class SingleIdInserter<T> : DatabaseAccessor, IDatabaseInserter<T> where T : Identifiable
+internal sealed class SingleIdInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T> where T : Identifiable
 {
 
     private readonly bool _autoGenerateIdentity;
@@ -93,17 +95,22 @@ internal sealed class SingleIdInserter<T> : DatabaseAccessor, IDatabaseInserter<
         _tableName = tableName;
     }
 
+    protected override IEnumerable<ParameterValue> GetParameterValues(T request)
+    {
+        if (request.Id is null)
+            throw new NullReferenceException($"Id for {_tableName} should not be null");
+        return new ParameterValue[] { ParameterValue.Create(SingleIdInserterFactory.Id, request.Id.Value) };
+    }
+
     public async Task InsertAsync(T identifiable)
     {
         if (!_autoGenerateIdentity) {
-            if (identifiable.Id is null)
-                throw new NullReferenceException($"Id for {_tableName} should not be null");
-            SingleIdInserterFactory.Id.Set(identifiable.Id.Value, _command);
+            foreach(var parameterValue in GetParameterValues(identifiable)) {
+                parameterValue.Set(_command);
+            }
             await _command.ExecuteNonQueryAsync();
         }
         else {
-            if (identifiable.Id is not null)
-                throw new Exception($"Id for {_tableName} should be set to null");
             identifiable.Id = await _command.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception($"No id has been assigned when adding a {_tableName}"),

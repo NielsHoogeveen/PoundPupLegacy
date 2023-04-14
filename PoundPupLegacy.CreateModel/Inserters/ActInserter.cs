@@ -13,7 +13,7 @@ internal sealed class ActInserter : DatabaseInserter<Act>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Act act)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Act act)
     {
         if (act.Id is null)
             throw new ArgumentNullException(nameof(act.Id));

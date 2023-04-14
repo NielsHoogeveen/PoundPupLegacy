@@ -13,7 +13,7 @@ internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<Or
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(OrganizationOrganizationType item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(OrganizationOrganizationType item)
     {
         if (item.OrganizationId is null)
             throw new NullReferenceException();

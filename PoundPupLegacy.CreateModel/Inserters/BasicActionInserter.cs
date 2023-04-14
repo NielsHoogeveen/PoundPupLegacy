@@ -12,7 +12,7 @@ internal sealed class BasicActionInserter : DatabaseInserter<BasicAction>
     public BasicActionInserter(NpgsqlCommand command) : base(command)
     {
     }
-    public override IEnumerable<ParameterValue> GetParameterValues(BasicAction item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(BasicAction item)
     {
         if (!item.Id.HasValue) {
             throw new NullReferenceException();

@@ -13,7 +13,7 @@ internal sealed class CountrySubdivisionTypeInserter : DatabaseInserter<CountryS
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(CountrySubdivisionType item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(CountrySubdivisionType item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(CountrySubdivisionTypeInserterFactory.CountryId, item.CountryId),

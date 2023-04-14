@@ -21,7 +21,7 @@ internal sealed class PersonInserter : DatabaseInserter<Person>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Person item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Person item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -12,7 +12,7 @@ internal sealed class EditNodeActionInserter : DatabaseInserter<EditNodeAction>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(EditNodeAction item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(EditNodeAction item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

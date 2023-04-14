@@ -17,7 +17,7 @@ public class NodeInserter : AutoGenerateIdDatabaseInserter<Node>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Node node)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Node node)
     {
         if (node.Id is not null) {
             throw new Exception("Node id must be null upon creation");

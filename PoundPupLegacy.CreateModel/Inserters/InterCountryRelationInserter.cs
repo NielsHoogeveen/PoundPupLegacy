@@ -19,7 +19,7 @@ internal sealed class InterCountryRelationInserter : DatabaseInserter<InterCount
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(InterCountryRelation item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(InterCountryRelation item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -7,10 +7,10 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class TagsSaveService : ISaveService<IEnumerable<Tag>>
 {
-    private readonly IDatabaseDeleterFactory<NodeTermDeleter> _nodeTermDeleterFactory;
+    private readonly IDatabaseDeleterFactory<NodeTermDeleterRequest> _nodeTermDeleterFactory;
     private readonly IDatabaseInserterFactory<CreateModel.NodeTerm> _nodeTermInserterFactory;
     public TagsSaveService(
-        IDatabaseDeleterFactory<NodeTermDeleter> nodeTermDeleterFactory,
+        IDatabaseDeleterFactory<NodeTermDeleterRequest> nodeTermDeleterFactory,
         IDatabaseInserterFactory<CreateModel.NodeTerm> nodeTermInserterFactory
         )
     {
@@ -21,7 +21,7 @@ internal sealed class TagsSaveService : ISaveService<IEnumerable<Tag>>
     {
         await using var deleter = await _nodeTermDeleterFactory.CreateAsync(connection);
         foreach (var tag in tags.Where(x => x.HasBeenDeleted)) {
-            await deleter.DeleteAsync(new NodeTermDeleter.Request {
+            await deleter.DeleteAsync(new NodeTermDeleterRequest {
                 NodeId = tag.NodeId!.Value,
                 TermId = tag.TermId
             });

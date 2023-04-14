@@ -11,7 +11,7 @@ internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry
     public TopLevelCountryInserter(NpgsqlCommand command) : base(command)
     {
     }
-    public override IEnumerable<ParameterValue> GetParameterValues(TopLevelCountry country)
+    protected override IEnumerable<ParameterValue> GetParameterValues(TopLevelCountry country)
     {
         if (country.Id is null)
             throw new NullReferenceException();

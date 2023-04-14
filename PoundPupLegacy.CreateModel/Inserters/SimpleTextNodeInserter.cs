@@ -14,7 +14,7 @@ internal sealed class SimpleTextNodeInserter : DatabaseInserter<SimpleTextNode>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(SimpleTextNode item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(SimpleTextNode item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

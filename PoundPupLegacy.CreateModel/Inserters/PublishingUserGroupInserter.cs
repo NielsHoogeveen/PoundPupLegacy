@@ -13,7 +13,7 @@ internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingU
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(PublishingUserGroup item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(PublishingUserGroup item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

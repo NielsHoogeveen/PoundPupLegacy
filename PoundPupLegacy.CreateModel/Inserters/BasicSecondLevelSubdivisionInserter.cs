@@ -10,7 +10,7 @@ internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<Bas
     public BasicSecondLevelSubdivisionInserter(NpgsqlCommand command) : base(command)
     {
     }
-    public override IEnumerable<ParameterValue> GetParameterValues(BasicSecondLevelSubdivision item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(BasicSecondLevelSubdivision item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

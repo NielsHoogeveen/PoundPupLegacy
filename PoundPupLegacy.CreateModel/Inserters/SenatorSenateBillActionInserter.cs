@@ -16,7 +16,7 @@ internal sealed class SenatorSenateBillActionInserter : ConditionalAutoGenerateI
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(SenatorSenateBillAction item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(SenatorSenateBillAction item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(SenatorSenateBillActionInserterFactory.Id, item.Id),

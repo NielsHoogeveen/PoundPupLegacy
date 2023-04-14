@@ -9,12 +9,12 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal class LocationsSaveService : ISaveService<IEnumerable<Location>>
 {
-    private readonly IDatabaseDeleterFactory<LocationDeleter> _locationDeleterFactory;
-    private readonly IDatabaseUpdaterFactory<LocationUpdater> _locationUpdaterFactory;
+    private readonly IDatabaseDeleterFactory<LocationDeleterRequest> _locationDeleterFactory;
+    private readonly IDatabaseUpdaterFactory<LocationUpdaterRequest> _locationUpdaterFactory;
     private readonly IEntityCreator<CreateModel.Location> _locationCreator;
     public LocationsSaveService(
-        IDatabaseDeleterFactory<LocationDeleter> locationDeleterFactory,
-        IDatabaseUpdaterFactory<LocationUpdater> locationUpdaterFactory,
+        IDatabaseDeleterFactory<LocationDeleterRequest> locationDeleterFactory,
+        IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
         IEntityCreator<CreateModel.Location> locationCreator
     )
     {
@@ -32,13 +32,13 @@ internal class LocationsSaveService : ISaveService<IEnumerable<Location>>
                 throw new Exception("locatable id of location should be set in order to delete");
             if (!location.LocationId.HasValue)
                 throw new Exception("location id of location should be set in order to delete");
-            await deleter.DeleteAsync(new LocationDeleter.Request {
+            await deleter.DeleteAsync(new LocationDeleterRequest {
                 LocatableId = location.LocatableId.Value,
                 LocationId = location.LocationId.Value
             });
         }
         foreach (var location in item.Where(x => x.LocationId.HasValue && !x.HasBeenDeleted)) {
-            await updater.UpdateAsync(new LocationUpdater.Request {
+            await updater.UpdateAsync(new LocationUpdaterRequest {
                 Street = location.Street,
                 Additional = location.Addition,
                 City = location.City,

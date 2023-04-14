@@ -11,7 +11,7 @@ internal sealed class CasePartiesInserter : AutoGenerateIdDatabaseInserter<CaseP
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(CaseParties item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(CaseParties item)
     {
         if (item.Id.HasValue) {
             throw new Exception($"case parties id should be null upon creation");

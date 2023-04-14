@@ -13,7 +13,7 @@ internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(CollectiveUser item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(CollectiveUser item)
     {
         if (item.CollectiveId is null || item.UserId is null)
             throw new NullReferenceException();

@@ -16,7 +16,7 @@ public class UserGroupInserter : ConditionalAutoGenerateIdDatabaseInserter<UserG
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(UserGroup item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(UserGroup item)
     {
         if (item.AdministratorRole.Id is null)
             throw new ArgumentNullException(nameof(item.AdministratorRole.Id));

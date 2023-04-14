@@ -11,7 +11,7 @@ internal sealed class MenuItemInserter : AutoGenerateIdDatabaseInserter<MenuItem
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(MenuItem item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(MenuItem item)
     {
         if (item.Id.HasValue) {
             throw new Exception($"menu item id should be null upon creation");

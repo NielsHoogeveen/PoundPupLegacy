@@ -12,7 +12,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationInserter : DatabaseIns
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(UnitedStatesPoliticalPartyAffliation item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(UnitedStatesPoliticalPartyAffliation item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

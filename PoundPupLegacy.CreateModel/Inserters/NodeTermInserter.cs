@@ -16,7 +16,7 @@ public sealed class NodeTermInserter : DatabaseInserter<NodeTerm>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(NodeTerm item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(NodeTerm item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(NodeTermInserterFactory.NodeId, item.NodeId),

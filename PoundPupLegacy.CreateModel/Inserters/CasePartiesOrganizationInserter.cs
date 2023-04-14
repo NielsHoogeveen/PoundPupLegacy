@@ -12,7 +12,7 @@ internal sealed class CasePartiesOrganizationInserter : DatabaseInserter<CasePar
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(CasePartiesOrganization item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(CasePartiesOrganization item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(CasePartiesOrganizationInserterFactory.CasePartiesId, item.CasePartiesId),

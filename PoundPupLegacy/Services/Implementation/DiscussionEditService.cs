@@ -20,7 +20,7 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
         INodeCacheService nodeCacheService,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion> createDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion> updateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
+        IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,

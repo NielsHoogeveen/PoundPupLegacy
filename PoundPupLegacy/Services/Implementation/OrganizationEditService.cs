@@ -14,14 +14,14 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
 
     private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest,Organization> _organizationUpdateDocumentReaderFactory;
     private readonly ISaveService<IEnumerable<Location>> _locationsSaveService;
-    private readonly IDatabaseUpdaterFactory<OrganizationUpdater> _organizationUpdateFactory;
+    private readonly IDatabaseUpdaterFactory<OrganizationUpdaterRequest> _organizationUpdateFactory;
     private readonly IEntityCreator<CreateModel.Organization> _organizationEntityCreator;
     public OrganizationEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization> organizationUpdateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<OrganizationUpdater> organizationUpdateFactory,
+        IDatabaseUpdaterFactory<OrganizationUpdaterRequest> organizationUpdateFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
@@ -115,7 +115,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         }
         var updater = await _organizationUpdateFactory.CreateAsync(connection);
 
-        await updater.UpdateAsync(new OrganizationUpdater.Request {
+        await updater.UpdateAsync(new OrganizationUpdaterRequest {
             Title = organization.Title,
             Description = organization.Description,
             NodeId = organization.NodeId.Value,

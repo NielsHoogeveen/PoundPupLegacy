@@ -13,7 +13,7 @@ internal sealed class CaseInserter : DatabaseInserter<Case>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Case item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Case item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

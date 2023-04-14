@@ -13,7 +13,7 @@ internal sealed class LocationLocatableInserter : DatabaseInserter<LocationLocat
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(LocationLocatable item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(LocationLocatable item)
     {
         if (item.LocationId == null)
             throw new NullReferenceException();

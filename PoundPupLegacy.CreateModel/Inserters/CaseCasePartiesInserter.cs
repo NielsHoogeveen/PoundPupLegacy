@@ -14,7 +14,7 @@ internal sealed class CaseCasePartiesInserter : DatabaseInserter<CaseCaseParties
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(CaseCaseParties item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(CaseCaseParties item)
     {
         if (item.CaseParties.Id is null)
             throw new NullReferenceException();

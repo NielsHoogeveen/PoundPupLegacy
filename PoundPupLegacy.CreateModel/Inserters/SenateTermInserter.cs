@@ -14,7 +14,7 @@ internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(SenateTerm item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(SenateTerm item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

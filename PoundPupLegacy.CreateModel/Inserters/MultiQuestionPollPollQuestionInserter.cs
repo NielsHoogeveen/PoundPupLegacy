@@ -13,7 +13,7 @@ internal sealed class MultiQuestionPollPollQuestionInserter : DatabaseInserter<M
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(MultiQuestionPollPollQuestion item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(MultiQuestionPollPollQuestion item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(MultiQuestionPollPollQuestionInserterFactory.MultiQuestionPollId, item.MultiQuestionPollId),

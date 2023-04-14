@@ -6,6 +6,7 @@ public interface IDatabaseInserter : IDatabaseAccessor
 { 
 }
 public interface IDatabaseInserter<T> : IDatabaseInserter
+    where T: IRequest
 {
     Task InsertAsync(T item);
 }
@@ -14,10 +15,12 @@ public interface IDatabaseInserterFactory: IDatabaseAccessorFactory
 {
 }
 public interface IDatabaseInserterFactory<T> : IDatabaseInserterFactory
+    where T : IRequest
 {
     Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection);
 }
 public abstract class DatabaseInserterFactoryBase<T, T2> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
+    where T : IRequest
     where T2 : IDatabaseInserter<T>
 {
     protected abstract string Sql { get; }
@@ -42,6 +45,7 @@ public abstract class DatabaseInserterFactoryBase<T, T2> : DatabaseAccessorFacto
 }
 
 public abstract class DatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBase<T, T2>
+    where T : IRequest
     where T2 : DatabaseInserter<T>
 {
     public abstract string TableName { get; }
@@ -144,9 +148,9 @@ public abstract class AutoGenerateIdDatabaseInserterFactory<T, T2> : DatabaseIns
             """;
 }
 
-public abstract class DatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<T>
+public abstract class DatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
+    where T : IRequest
 {
-    public abstract IEnumerable<ParameterValue> GetParameterValues(T item);
     protected DatabaseInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -159,10 +163,9 @@ public abstract class DatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<
         await _command.ExecuteNonQueryAsync();
     }
 }
-public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<T>
+public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
     where T : Identifiable
 {
-    public abstract IEnumerable<ParameterValue> GetParameterValues(T item);
     protected AutoGenerateIdDatabaseInserter(NpgsqlCommand command) : base(command)
     {
     }
@@ -178,10 +181,9 @@ public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor, IDat
         };
     }
 }
-public abstract class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor, IDatabaseInserter<T>
+public abstract class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
     where T : Identifiable
 {
-    public abstract IEnumerable<ParameterValue> GetParameterValues(T item);
 
     private readonly NpgsqlCommand _commandAutoGenerate;
     protected ConditionalAutoGenerateIdDatabaseInserter(NpgsqlCommand command, NpgsqlCommand commandAutoGenerate) : base(command)

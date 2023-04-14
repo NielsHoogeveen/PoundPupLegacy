@@ -12,7 +12,7 @@ internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Subgroup item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Subgroup item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

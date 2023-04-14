@@ -1,54 +1,48 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.Deleters;
-internal sealed class LocationDeleterFactory : IDatabaseDeleterFactory<LocationDeleter>
+
+using Request = LocationDeleterRequest;
+using Factory = LocationDeleterFactory;
+using Deleter = LocationDeleter;
+
+public record LocationDeleterRequest: IRequest
 {
-    public async Task<LocationDeleter> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = postgresConnection.CreateCommand();
-
-        var sql = $"""
-                    delete from location_locatable
-                    where location_id = @location_id and locatable_id = @locatable_id;
-                    delete from location
-                    where id in (
-                        select
-                        l.id
-                        from location l 
-                        left join location_locatable ll on l.id = ll.location_id
-                        where ll.location_id is null
-                    )
-                    """;
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-        command.Parameters.Add("location_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        command.Parameters.Add("locatable_id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new LocationDeleter(command);
-    }
+    public required int LocationId { get; init; }
+    public required int LocatableId { get; init; }
 }
-internal sealed class LocationDeleter : DatabaseDeleter<LocationDeleter.Request>
+
+internal sealed class LocationDeleterFactory : DatabaseDeleterFactory<Request,Deleter>
 {
-    public record Request
-    {
-        public required int LocationId { get; init; }
-        public required int LocatableId { get; init; }
-    }
+    internal static NonNullableIntegerDatabaseParameter LocationId = new() { Name = "location_id" };
+    internal static NonNullableIntegerDatabaseParameter LocatableId = new() { Name = "locatable_id" };
+    public override string Sql => SQL;
+
+    const string SQL = $"""
+        delete from location_locatable
+        where location_id = @location_id and locatable_id = @locatable_id;
+        delete from location
+        where id in (
+            select
+            l.id
+            from location l 
+            left join location_locatable ll on l.id = ll.location_id
+            where ll.location_id is null
+        )
+        """;
+}
+internal sealed class LocationDeleter : DatabaseDeleter<Request>
+{
     public LocationDeleter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task DeleteAsync(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["location_id"].Value = request.LocationId;
-        _command.Parameters["locatable_id"].Value = request.LocatableId;
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.LocationId, request.LocationId),
+            ParameterValue.Create(Factory.LocatableId, request.LocatableId),
+        };
     }
 }

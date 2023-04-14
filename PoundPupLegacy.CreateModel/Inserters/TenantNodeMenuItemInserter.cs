@@ -13,7 +13,7 @@ internal sealed class TenantNodeMenuItemInserter : DatabaseInserter<TenantNodeMe
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(TenantNodeMenuItem item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(TenantNodeMenuItem item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -16,7 +16,7 @@ internal sealed class DocumentInserter : DatabaseInserter<Document>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Document item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Document item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

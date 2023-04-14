@@ -14,7 +14,7 @@ internal sealed class SubdivisionInserter : DatabaseInserter<Subdivision>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Subdivision item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Subdivision item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -12,7 +12,7 @@ internal sealed class DocumentableDocumentInserter : DatabaseInserter<Documentab
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(DocumentableDocument item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(DocumentableDocument item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(DocumentableDocumentInserterFactory.DocumentableId, item.DocumentableId),

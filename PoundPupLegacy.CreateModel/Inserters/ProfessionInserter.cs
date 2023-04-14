@@ -14,7 +14,7 @@ internal sealed class ProfessionInserter : DatabaseInserter<Profession>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Profession item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Profession item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

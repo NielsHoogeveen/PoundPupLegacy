@@ -1,39 +1,39 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using System.Data;
 
 namespace PoundPupLegacy.Deleters;
-internal sealed class TenantNodeDeleterFactory : IDatabaseDeleterFactory<TenantNodeDeleter>
+
+using Request = TenantNodeDeleterRequest;
+using Factory = TenantNodeDeleterFactory;
+using Deleter = TenantNodeDeleter;
+
+public record TenantNodeDeleterRequest: IRequest
 {
-    public async Task<TenantNodeDeleter> CreateAsync(IDbConnection connection)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        var postgresConnection = (NpgsqlConnection)connection;
-
-        var command = postgresConnection.CreateCommand();
-
-        var sql = $"""
-                delete from tenant_node
-                where id = @id;
-                """;
-        command.CommandType = CommandType.Text;
-        command.CommandTimeout = 300;
-        command.CommandText = sql;
-        command.Parameters.Add("id", NpgsqlTypes.NpgsqlDbType.Integer);
-        await command.PrepareAsync();
-        return new TenantNodeDeleter(command);
-    }
+    public required int Id { get; init; }
 }
-internal sealed class TenantNodeDeleter : DatabaseDeleter<int>
+
+internal sealed class TenantNodeDeleterFactory : DatabaseDeleterFactory<Request,Deleter>
+{
+
+    public static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+
+    public override string Sql => SQL;
+
+    const string SQL = $"""
+        delete from tenant_node
+        where id = @id;
+        """;
+}
+internal sealed class TenantNodeDeleter : DatabaseDeleter<Request>
 {
     public TenantNodeDeleter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override async Task DeleteAsync(int id)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        _command.Parameters["id"].Value = id;
-        await _command.ExecuteNonQueryAsync();
+        return new ParameterValue[] {
+            ParameterValue.Create(Factory.Id, request.Id),
+        };
     }
 }

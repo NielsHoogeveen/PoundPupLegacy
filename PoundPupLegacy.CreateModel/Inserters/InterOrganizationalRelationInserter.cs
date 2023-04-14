@@ -21,7 +21,7 @@ internal sealed class InterOrganizationalRelationInserter : DatabaseInserter<Int
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(InterOrganizationalRelation item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(InterOrganizationalRelation item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -20,7 +20,7 @@ internal sealed class LocationInserter : ConditionalAutoGenerateIdDatabaseInsert
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Location item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Location item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(LocationInserterFactory.Id, item.Id),

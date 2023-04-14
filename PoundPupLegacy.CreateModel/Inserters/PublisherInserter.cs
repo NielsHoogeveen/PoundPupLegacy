@@ -13,7 +13,7 @@ public class PublisherInserter : DatabaseInserter<Publisher>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Publisher item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Publisher item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -8,11 +8,11 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class FilesSaveService : ISaveService<IEnumerable<File>>
 {
-    private readonly IDatabaseDeleterFactory<FileDeleter> _fileDeleterFactory;
+    private readonly IDatabaseDeleterFactory<FileDeleterRequest> _fileDeleterFactory;
     private readonly IDatabaseInserterFactory<FileInserterRequest> _fileInserterFactory;
 
     public FilesSaveService(
-        IDatabaseDeleterFactory<FileDeleter> fileDeleterFactory,
+        IDatabaseDeleterFactory<FileDeleterRequest> fileDeleterFactory,
         IDatabaseInserterFactory<FileInserterRequest> fileInserterFactory
         )
     {
@@ -24,7 +24,7 @@ internal sealed class FilesSaveService : ISaveService<IEnumerable<File>>
         if (attachments.Any(x => x.HasBeenDeleted)) {
             await using var deleter = await _fileDeleterFactory.CreateAsync(connection);
             foreach (var attachment in attachments.Where(x => x.HasBeenDeleted)) {
-                await deleter.DeleteAsync(new FileDeleter.Request {
+                await deleter.DeleteAsync(new FileDeleterRequest {
                     FileId = attachment.Id!.Value,
                     NodeId = attachment.NodeId!.Value
                 });

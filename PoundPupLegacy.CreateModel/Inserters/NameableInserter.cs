@@ -15,7 +15,7 @@ internal sealed class NameableInserter : DatabaseInserter<Nameable>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Nameable item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Nameable item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -13,7 +13,7 @@ internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>
     public ActionMenuItemInserter(NpgsqlCommand command) : base(command)
     {
     }
-    public override IEnumerable<ParameterValue> GetParameterValues(ActionMenuItem item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(ActionMenuItem item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -3,20 +3,24 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Updaters;
 
-internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<SimpleTextNodeUpdater>
+using Request = SimpleTextNodeUpdaterRequest;
+using Factory = SimpleTextNodeUpdaterFactory;
+using Updater = SimpleTextNodeUpdater;
+
+public record SimpleTextNodeUpdaterRequest : IRequest
 {
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() {
-        Name = "node_id"
-    };
-    internal static NonNullableStringDatabaseParameter Text = new() {
-        Name = "text"
-    };
-    internal static NonNullableStringDatabaseParameter Teaser = new() {
-        Name = "teaser"
-    };
-    internal static NonNullableStringDatabaseParameter Title = new() {
-        Name = "title"
-    };
+    public required int NodeId { get; init; }
+    public required string Title { get; init; }
+    public required string Text { get; init; }
+    public required string Teaser { get; init; }
+}
+
+internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Request,Updater>
+{
+    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    internal static NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
+    internal static NonNullableStringDatabaseParameter Title = new() { Name = "title" };
 
     public override string Sql => $"""
         update node set title=@title
@@ -27,7 +31,7 @@ internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Simp
 
 }
 
-internal sealed class SimpleTextNodeUpdater : DatabaseUpdater<SimpleTextNodeUpdater.Request>
+internal sealed class SimpleTextNodeUpdater : DatabaseUpdater<Request>
 {
 
 
@@ -35,21 +39,13 @@ internal sealed class SimpleTextNodeUpdater : DatabaseUpdater<SimpleTextNodeUpda
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(SimpleTextNodeUpdaterFactory.Title, request.Title),
-            ParameterValue.Create(SimpleTextNodeUpdaterFactory.NodeId, request.NodeId),
-            ParameterValue.Create(SimpleTextNodeUpdaterFactory.Text, request.Text),
-            ParameterValue.Create(SimpleTextNodeUpdaterFactory.Teaser, request.Teaser),
+            ParameterValue.Create(Factory.Title, request.Title),
+            ParameterValue.Create(Factory.NodeId, request.NodeId),
+            ParameterValue.Create(Factory.Text, request.Text),
+            ParameterValue.Create(Factory.Teaser, request.Teaser),
         };
-    }
-
-    public record Request
-    {
-        public required int NodeId { get; init; }
-        public required string Title { get; init; }
-        public required string Text { get; init; }
-        public required string Teaser { get; init; }
     }
 }

@@ -12,7 +12,7 @@ internal sealed class ISOCodedSubdivisionInserter : DatabaseInserter<ISOCodedSub
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(ISOCodedSubdivision item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(ISOCodedSubdivision item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

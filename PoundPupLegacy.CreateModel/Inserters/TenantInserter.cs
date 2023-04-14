@@ -14,7 +14,7 @@ internal sealed class TenantInserter : DatabaseInserter<Tenant>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Tenant item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Tenant item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

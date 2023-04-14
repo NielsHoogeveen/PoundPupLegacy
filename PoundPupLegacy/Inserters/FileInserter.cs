@@ -3,7 +3,11 @@ using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Inserters;
 
-public record FileInserterRequest
+using Request = FileInserterRequest;
+using Factory = FileInserterFactory;
+using Inserter = FileInserter;
+
+public record FileInserterRequest: IRequest
 {
     public required string Name { get; init; }
     public required string MimeType { get; init; }
@@ -12,7 +16,7 @@ public record FileInserterRequest
     public required long Size { get; init; }
 }
 
-public sealed class FileInserterFactory : DatabaseInserterFactoryBase<FileInserterRequest, FileInserter>
+public sealed class FileInserterFactory : DatabaseInserterFactoryBase<Request, Inserter>
 {
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
@@ -28,20 +32,20 @@ public sealed class FileInserterFactory : DatabaseInserterFactoryBase<FileInsert
         """;
 }
 
-public sealed class FileInserter : DatabaseInserter<FileInserterRequest>
+public sealed class FileInserter : DatabaseInserter<Request>
 {
     public FileInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(FileInserterRequest request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(FileInserterFactory.Name, request.Name),
-            ParameterValue.Create(FileInserterFactory.Size, request.Size),
-            ParameterValue.Create(FileInserterFactory.MimeType, request.MimeType),
-            ParameterValue.Create(FileInserterFactory.Path, request.Path),
-            ParameterValue.Create(FileInserterFactory.NodeId, request.NodeId)
+            ParameterValue.Create(Factory.Name, request.Name),
+            ParameterValue.Create(Factory.Size, request.Size),
+            ParameterValue.Create(Factory.MimeType, request.MimeType),
+            ParameterValue.Create(Factory.Path, request.Path),
+            ParameterValue.Create(Factory.NodeId, request.NodeId)
         };
     }
 }

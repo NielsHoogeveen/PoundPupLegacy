@@ -16,7 +16,7 @@ internal sealed class OrganizationInserter : DatabaseInserter<Organization>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Organization item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Organization item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

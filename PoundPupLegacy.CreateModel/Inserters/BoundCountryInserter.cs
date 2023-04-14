@@ -13,7 +13,7 @@ internal sealed class BoundCountryInserter : DatabaseInserter<BoundCountry>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(BoundCountry item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(BoundCountry item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

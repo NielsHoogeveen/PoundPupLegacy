@@ -18,7 +18,7 @@ public sealed class TenantNodeInserter : AutoGenerateIdDatabaseInserter<TenantNo
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(TenantNode tenantNode)
+    protected override IEnumerable<ParameterValue> GetParameterValues(TenantNode tenantNode)
     {
         if (tenantNode.Id.HasValue) {
             throw new Exception($"tenant node id should be null upon creation");

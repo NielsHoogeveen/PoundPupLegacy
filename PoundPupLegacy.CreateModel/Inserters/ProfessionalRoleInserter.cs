@@ -13,7 +13,7 @@ internal sealed class ProfessionalRoleInserter : AutoGenerateIdDatabaseInserter<
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(ProfessionalRole professionalRole)
+    protected override IEnumerable<ParameterValue> GetParameterValues(ProfessionalRole professionalRole)
     {
         if (professionalRole.Id.HasValue) {
             throw new Exception($"professional role id should be null upon creation");

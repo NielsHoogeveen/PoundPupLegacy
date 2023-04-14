@@ -13,7 +13,7 @@ internal sealed class CreateNodeActionInserter : DatabaseInserter<CreateNodeActi
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(CreateNodeAction item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(CreateNodeAction item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -16,7 +16,7 @@ internal sealed class TermInserter : AutoGenerateIdDatabaseInserter<Term>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Term term)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Term term)
     {
         return new ParameterValue[] {
             ParameterValue.Create(TermInserterFactory.VocabularyId, term.VocabularyId),

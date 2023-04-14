@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record UserGroupUserRoleUser
+public sealed record UserGroupUserRoleUser: IRequest
 {
     public required int UserGroupId { get; init; }
 

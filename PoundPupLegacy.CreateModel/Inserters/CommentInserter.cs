@@ -22,7 +22,7 @@ public class CommentInserter : ConditionalAutoGenerateIdDatabaseInserter<Comment
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Comment item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Comment item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(CommentInserterFactory.Id, item.Id),

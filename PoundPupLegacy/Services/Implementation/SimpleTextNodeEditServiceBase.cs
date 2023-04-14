@@ -12,7 +12,7 @@ internal abstract class SimpleTextNodeEditServiceBase<T, TCreate> : NodeEditServ
     where T : SimpleTextNode
     where TCreate : CreateModel.SimpleTextNode
 {
-    private readonly IDatabaseUpdaterFactory<SimpleTextNodeUpdater> _simpleTextNodeUpdaterFactory;
+    private readonly IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> _simpleTextNodeUpdaterFactory;
     protected readonly ITextService _textService;
 
 
@@ -20,7 +20,7 @@ internal abstract class SimpleTextNodeEditServiceBase<T, TCreate> : NodeEditServ
         IDbConnection connection,
         ISiteDataService siteDataService,
         INodeCacheService nodeCacheService,
-        IDatabaseUpdaterFactory<SimpleTextNodeUpdater> simpleTextNodeUpdaterFactory,
+        IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
@@ -59,7 +59,7 @@ internal abstract class SimpleTextNodeEditServiceBase<T, TCreate> : NodeEditServ
     protected sealed override async Task StoreExisting(T article, NpgsqlConnection connection)
     {
         await using var updater = await _simpleTextNodeUpdaterFactory.CreateAsync(connection);
-        await updater.UpdateAsync(new SimpleTextNodeUpdater.Request {
+        await updater.UpdateAsync(new SimpleTextNodeUpdaterRequest {
             Title = article.Title,
             Text = _textService.FormatText(article.Text),
             Teaser = _textService.FormatTeaser(article.Text),

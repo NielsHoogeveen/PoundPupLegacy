@@ -18,7 +18,7 @@ internal sealed class UserInserter : DatabaseInserter<User>
     public UserInserter(NpgsqlCommand command) : base(command)
     {
     }
-    public override IEnumerable<ParameterValue> GetParameterValues(User item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(User item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

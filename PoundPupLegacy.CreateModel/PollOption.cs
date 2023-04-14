@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record PollOption
+public record PollOption: IRequest
 {
     public required int? PollQuestionId { get; set; }
 

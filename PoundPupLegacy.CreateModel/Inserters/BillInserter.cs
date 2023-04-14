@@ -13,7 +13,7 @@ internal sealed class BillInserter : DatabaseInserter<Bill>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Bill item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Bill item)
     {
         if (item.Id is null)
             throw new ArgumentNullException(nameof(item.Id));

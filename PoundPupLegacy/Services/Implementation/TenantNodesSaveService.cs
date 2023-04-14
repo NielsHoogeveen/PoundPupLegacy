@@ -8,13 +8,13 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class TenantNodesSaveService : ISaveService<IEnumerable<TenantNode>>
 {
-    private readonly IDatabaseDeleterFactory<TenantNodeDeleter> _tenantNodeDeleterFactory;
-    private readonly IDatabaseUpdaterFactory<TenantNodeUpdater> _tenantNodeUpdaterFactory;
+    private readonly IDatabaseDeleterFactory<TenantNodeDeleterRequest> _tenantNodeDeleterFactory;
+    private readonly IDatabaseUpdaterFactory<TenantNodeUpdaterRequest> _tenantNodeUpdaterFactory;
     private readonly IDatabaseInserterFactory<CreateModel.TenantNode> _tenantNodeInserterFactory;
 
     public TenantNodesSaveService(
-        IDatabaseDeleterFactory<TenantNodeDeleter> tenantNodeDeleterFactory,
-        IDatabaseUpdaterFactory<TenantNodeUpdater> tenantNodeUpdaterFactory,
+        IDatabaseDeleterFactory<TenantNodeDeleterRequest> tenantNodeDeleterFactory,
+        IDatabaseUpdaterFactory<TenantNodeUpdaterRequest> tenantNodeUpdaterFactory,
         IDatabaseInserterFactory<CreateModel.TenantNode> tenantNodeInserterFactory
     )
     {
@@ -31,7 +31,7 @@ internal sealed class TenantNodesSaveService : ISaveService<IEnumerable<TenantNo
             await using var deleter = await _tenantNodeDeleterFactory.CreateAsync(connection);
             foreach (var tenantNode in tenantNodes.Where(x => x.HasBeenDeleted)) {
                 if (tenantNode is not null && tenantNode.Id.HasValue) {
-                    await deleter.DeleteAsync(tenantNode.Id.Value);
+                    await deleter.DeleteAsync(new TenantNodeDeleterRequest { Id = tenantNode.Id.Value });
                 }
             }
         }
@@ -53,7 +53,7 @@ internal sealed class TenantNodesSaveService : ISaveService<IEnumerable<TenantNo
         if (tenantNodes.Any(x => x.Id.HasValue)) {
             await using var updater = await _tenantNodeUpdaterFactory.CreateAsync(connection);
             foreach (var tenantNode in tenantNodes.Where(x => x.Id.HasValue)) {
-                var tenantNodeUpdate = new TenantNodeUpdater.Request {
+                var tenantNodeUpdate = new TenantNodeUpdaterRequest {
                     Id = tenantNode.Id!.Value,
                     UrlPath = tenantNode.UrlPath,
                     SubgroupId = tenantNode.SubgroupId,

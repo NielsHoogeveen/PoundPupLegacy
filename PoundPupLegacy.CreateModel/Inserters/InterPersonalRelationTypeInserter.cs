@@ -12,7 +12,7 @@ internal sealed class InterPersonalRelationTypeInserter : DatabaseInserter<Inter
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(InterPersonalRelationType item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(InterPersonalRelationType item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

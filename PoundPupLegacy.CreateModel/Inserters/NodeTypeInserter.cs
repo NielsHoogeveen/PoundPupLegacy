@@ -15,7 +15,7 @@ internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(NodeType item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(NodeType item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

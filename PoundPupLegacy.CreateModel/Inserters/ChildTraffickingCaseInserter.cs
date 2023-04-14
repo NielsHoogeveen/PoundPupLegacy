@@ -14,7 +14,7 @@ internal sealed class ChildTraffickingCaseInserter : DatabaseInserter<ChildTraff
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(ChildTraffickingCase item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(ChildTraffickingCase item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

@@ -12,7 +12,7 @@ internal sealed class PollQuestionInserter : DatabaseInserter<PollQuestion>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(PollQuestion item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(PollQuestion item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

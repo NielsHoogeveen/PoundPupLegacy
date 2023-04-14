@@ -16,7 +16,7 @@ internal sealed class DeportationCaseInserter : DatabaseInserter<DeportationCase
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(DeportationCase item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(DeportationCase item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

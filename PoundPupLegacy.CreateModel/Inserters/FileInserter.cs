@@ -17,7 +17,7 @@ internal sealed class FileInserter : ConditionalAutoGenerateIdDatabaseInserter<F
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(File item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(File item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(FileInserterFactory.Id, item.Id),

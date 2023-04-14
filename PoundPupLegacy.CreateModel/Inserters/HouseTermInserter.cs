@@ -16,7 +16,7 @@ internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(HouseTerm item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(HouseTerm item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

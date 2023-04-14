@@ -13,7 +13,7 @@ public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGloba
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(SecondLevelGlobalRegion item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(SecondLevelGlobalRegion item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

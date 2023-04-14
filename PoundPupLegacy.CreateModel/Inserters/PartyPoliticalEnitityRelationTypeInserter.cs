@@ -12,7 +12,7 @@ internal sealed class PartyPoliticalEntityRelationTypeInserter : DatabaseInserte
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(PartyPoliticalEntityRelationType item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(PartyPoliticalEntityRelationType item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

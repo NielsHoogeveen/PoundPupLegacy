@@ -12,7 +12,7 @@ public class PrincipalInserter : ConditionalAutoGenerateIdDatabaseInserter<Princ
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(Principal item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Principal item)
     {
         return new ParameterValue[] {
             ParameterValue.Create(PrincipalInserterFactory.Id, item.Id)

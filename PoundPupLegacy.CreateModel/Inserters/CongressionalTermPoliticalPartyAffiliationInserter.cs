@@ -14,7 +14,7 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : Datab
     public CongressionalTermPoliticalPartyAffiliationInserter(NpgsqlCommand command) : base(command)
     {
     }
-    public override IEnumerable<ParameterValue> GetParameterValues(CongressionalTermPoliticalPartyAffiliation item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(CongressionalTermPoliticalPartyAffiliation item)
     {
         if (item.Id is null)
             throw new NullReferenceException();

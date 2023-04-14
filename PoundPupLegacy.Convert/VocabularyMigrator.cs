@@ -6,14 +6,14 @@ internal sealed class VocabularyMigrator : MigratorPPL
 {
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
     private readonly IEntityCreator<Vocabulary> _vocabularyCreator;
-    private readonly IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary> _tenantUpdaterSetTaggingVocabularyFactory;
+    private readonly IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabularyRequest> _tenantUpdaterSetTaggingVocabularyFactory;
 
     protected override string Name => "vocabularies";
     public VocabularyMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IEntityCreator<Vocabulary> vocabularyCreator,
-        IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabulary> tenantUpdaterSetTaggingVocabularyFactory
+        IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabularyRequest> tenantUpdaterSetTaggingVocabularyFactory
     ) : base(databaseConnections)
     {
         _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
@@ -282,7 +282,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
         await _vocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
         await _vocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
         await using var tenantUpdater = await _tenantUpdaterSetTaggingVocabularyFactory.CreateAsync(_postgresConnection);
-        await tenantUpdater.UpdateAsync(new TenantUpdaterSetTaggingVocabulary.Request {
+        await tenantUpdater.UpdateAsync(new TenantUpdaterSetTaggingVocabularyRequest {
             TenantId = Constants.PPL,
             VocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,

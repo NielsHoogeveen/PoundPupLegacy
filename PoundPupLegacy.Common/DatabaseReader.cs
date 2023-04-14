@@ -110,22 +110,7 @@ namespace PoundPupLegacy.Common
 
     }
 
-    public abstract class DatabaseReader : DatabaseAccessor, IDatabaseReader
-    {
-        protected DatabaseReader(NpgsqlCommand command): base(command)
-        {
-        }
-    }
 
-    public abstract class DatabaseReaderBase<TRequest, TResponse>: DatabaseReader
-    {
-        protected DatabaseReaderBase(NpgsqlCommand command) : base(command)
-        {
-        }
-
-        protected abstract IEnumerable<ParameterValue> GetParameterValues(TRequest request);
-
-    }
     public abstract class IntDatabaseReader<TRequest> : MandatorySingleItemDatabaseReader<TRequest, int>
         where TRequest : IRequest
     {
@@ -141,7 +126,7 @@ namespace PoundPupLegacy.Common
             return IntValueReader.GetValue(reader);
         }
     }
-    public abstract class MandatorySingleItemDatabaseReader<TRequest, TResponse> : DatabaseReaderBase<TRequest, TResponse>, IMandatorySingleItemDatabaseReader<TRequest, TResponse>
+    public abstract class MandatorySingleItemDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, IMandatorySingleItemDatabaseReader<TRequest, TResponse>
         where TRequest : IRequest
     {
         protected MandatorySingleItemDatabaseReader(NpgsqlCommand command) : base(command)
@@ -167,7 +152,7 @@ namespace PoundPupLegacy.Common
         }
     }
 
-    public abstract class SingleItemDatabaseReader<TRequest, TResponse> : DatabaseReaderBase<TRequest, TResponse>, ISingleItemDatabaseReader<TRequest, TResponse>
+    public abstract class SingleItemDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, ISingleItemDatabaseReader<TRequest, TResponse>
         where TResponse : class
         where TRequest : IRequest
     {
@@ -189,7 +174,7 @@ namespace PoundPupLegacy.Common
             return Read(reader);
         }
     }
-    public abstract class EnumerableDatabaseReader<TRequest, TResponse> : DatabaseReaderBase<TRequest, TResponse>, IEnumerableDatabaseReader<TRequest, TResponse>
+    public abstract class EnumerableDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, IEnumerableDatabaseReader<TRequest, TResponse>
         where TRequest: IRequest
     {
         protected EnumerableDatabaseReader(NpgsqlCommand command) : base(command)

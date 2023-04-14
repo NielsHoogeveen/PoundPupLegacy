@@ -12,7 +12,7 @@ internal sealed class PersonOrganizationRelationTypeInserter : DatabaseInserter<
     {
     }
 
-    public override IEnumerable<ParameterValue> GetParameterValues(PersonOrganizationRelationType item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(PersonOrganizationRelationType item)
     {
         if (item.Id is null)
             throw new NullReferenceException();
