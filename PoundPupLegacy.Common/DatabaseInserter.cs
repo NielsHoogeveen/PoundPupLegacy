@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 using System.Data;
-using System.Diagnostics;
 
 namespace PoundPupLegacy.Common;
 public interface IDatabaseInserter : IDatabaseAccessor 
@@ -86,14 +85,14 @@ public abstract class IdentifiableDatabaseInserterFactory<T, T2> : DatabaseInser
 
 internal static class ConditionalAutoGenerateIdDatabaseInserterFactory
 {
-    internal static readonly NullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static readonly AutoGenerateIntegerDatabaseParameter Id = new() { Name = "id" };
 }
 public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T, T2> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
     where T : Identifiable
     where T2 : ConditionalAutoGenerateIdDatabaseInserter<T>
 {
 
-    internal static readonly NullableIntegerDatabaseParameter Id = ConditionalAutoGenerateIdDatabaseInserterFactory.Id;
+    internal static readonly AutoGenerateIntegerDatabaseParameter Id = ConditionalAutoGenerateIdDatabaseInserterFactory.Id;
     public abstract string TableName { get; }
 
     public async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
