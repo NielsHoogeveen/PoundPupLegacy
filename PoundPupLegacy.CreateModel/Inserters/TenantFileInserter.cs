@@ -1,29 +1,30 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TenantFileInserterFactory : DatabaseInserterFactory<TenantFile, TenantFileInserter>
+
+using Factory = TenantFileInserterFactory;
+using Request = TenantFile;
+using Inserter = TenantFileInserter;
+
+internal sealed class TenantFileInserterFactory : DatabaseInserterFactory<Request, Inserter>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter FileId = new() { Name = "file_id" };
-    internal static NonNullableIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
+    internal static NullCheckingIntegerDatabaseParameter FileId = new() { Name = "file_id" };
+    internal static NullCheckingIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
 
     public override string TableName => "tenant_file";
 }
 
-internal sealed class TenantFileInserter : DatabaseInserter<TenantFile>
+internal sealed class TenantFileInserter : DatabaseInserter<Request>
 {
     public TenantFileInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(TenantFile item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (item.FileId == null)
-            throw new ArgumentNullException(nameof(item.FileId));
-        if (item.TenantFileId == null)
-            throw new ArgumentNullException(nameof(item.TenantFileId));
         return new ParameterValue[] {
-            ParameterValue.Create(TenantFileInserterFactory.TenantId, item.TenantId),
-            ParameterValue.Create(TenantFileInserterFactory.FileId, item.FileId.Value),
-            ParameterValue.Create(TenantFileInserterFactory.TenantFileId, item.TenantFileId.Value),
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.FileId, request.FileId),
+            ParameterValue.Create(Factory.TenantFileId, request.TenantFileId),
         };
     }
 }

@@ -1,26 +1,27 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UnitedStatesCongressionalMeetingInserterFactory : DatabaseInserterFactory<UnitedStatesCongressionalMeeting, UnitedStatesCongressionalMeetingInserter>
+
+using Factory = UnitedStatesCongressionalMeetingInserterFactory;
+using Request = UnitedStatesCongressionalMeeting;
+using Inserter = UnitedStatesCongressionalMeetingInserter;
+
+internal sealed class UnitedStatesCongressionalMeetingInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
     internal static NonNullableIntegerDatabaseParameter Number = new() { Name = "number" };
 
     public override string TableName => "united_states_congressional_meeting";
 }
-internal sealed class UnitedStatesCongressionalMeetingInserter : DatabaseInserter<UnitedStatesCongressionalMeeting>
+internal sealed class UnitedStatesCongressionalMeetingInserter : IdentifiableDatabaseInserter<Request>
 {
     public UnitedStatesCongressionalMeetingInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(UnitedStatesCongressionalMeeting item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(UnitedStatesCongressionalMeetingInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(UnitedStatesCongressionalMeetingInserterFactory.DateRange, item.DateRange),
-            ParameterValue.Create(UnitedStatesCongressionalMeetingInserterFactory.Number, item.Number),
+            ParameterValue.Create(Factory.DateRange, request.DateRange),
+            ParameterValue.Create(Factory.Number, request.Number),
         };
     }
 }

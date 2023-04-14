@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class LocationInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Location, LocationInserter>
+
+using Factory = LocationInserterFactory;
+using Request = Location;
+using Inserter = LocationInserter;
+
+internal sealed class LocationInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request, Inserter>
 {
-    internal static AutoGenerateIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableStringDatabaseParameter Street = new() { Name = "street" };
     internal static NullableStringDatabaseParameter Additional = new() { Name = "additional" };
     internal static NullableStringDatabaseParameter City = new() { Name = "city" };
@@ -14,24 +18,23 @@ internal sealed class LocationInserterFactory : ConditionalAutoGenerateIdDatabas
     public override string TableName => "location";
 }
 
-internal sealed class LocationInserter : ConditionalAutoGenerateIdDatabaseInserter<Location>
+internal sealed class LocationInserter : ConditionalAutoGenerateIdDatabaseInserter<Request>
 {
     public LocationInserter(NpgsqlCommand command, NpgsqlCommand autoGenerateIdCommand) : base(command, autoGenerateIdCommand)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Location item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(LocationInserterFactory.Id, item.Id),
-            ParameterValue.Create(LocationInserterFactory.Street, item.Street),
-            ParameterValue.Create(LocationInserterFactory.Additional, item.Additional),
-            ParameterValue.Create(LocationInserterFactory.City, item.City),
-            ParameterValue.Create(LocationInserterFactory.PostalCode, item.PostalCode),
-            ParameterValue.Create(LocationInserterFactory.SubdivisionId, item.SubdivisionId),
-            ParameterValue.Create(LocationInserterFactory.CountryId, item.CountryId),
-            ParameterValue.Create(LocationInserterFactory.Latitude, item.Latitude),
-            ParameterValue.Create(LocationInserterFactory.Longitude, item.Longitude)
+            ParameterValue.Create(Factory.Street, request.Street),
+            ParameterValue.Create(Factory.Additional, request.Additional),
+            ParameterValue.Create(Factory.City, request.City),
+            ParameterValue.Create(Factory.PostalCode, request.PostalCode),
+            ParameterValue.Create(Factory.SubdivisionId, request.SubdivisionId),
+            ParameterValue.Create(Factory.CountryId, request.CountryId),
+            ParameterValue.Create(Factory.Latitude, request.Latitude),
+            ParameterValue.Create(Factory.Longitude, request.Longitude)
         };
     }
 }

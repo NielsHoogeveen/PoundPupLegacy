@@ -1,25 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-public class PublisherInserterFactory : DatabaseInserterFactory<Publisher, PublisherInserter>
+using Factory = PublisherInserterFactory;
+using Request = Publisher;
+using Inserter = PublisherInserter;
+
+public class PublisherInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
     public override string TableName => "publisher";
 }
-public class PublisherInserter : DatabaseInserter<Publisher>
+public class PublisherInserter : IdentifiableDatabaseInserter<Request>
 {
     public PublisherInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Publisher item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(PublisherInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(PublisherInserterFactory.Name, item.Name),
+            ParameterValue.Create(Factory.Name, request.Name),
         };
     }
 }

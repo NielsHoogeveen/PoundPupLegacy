@@ -1,25 +1,28 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CollectiveUserInserterFactory : DatabaseInserterFactory<CollectiveUser, CollectiveUserInserter>
+
+using Factory = CollectiveUserInserterFactory;
+using Request = CollectiveUser;
+using Inserter = CollectiveUserInserter;
+
+internal sealed class CollectiveUserInserterFactory : DatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter CollectiveId = new() { Name = "collective_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    internal static NullCheckingIntegerDatabaseParameter CollectiveId = new() { Name = "collective_id" };
+    internal static NullCheckingIntegerDatabaseParameter UserId = new() { Name = "user_id" };
 
     public override string TableName => "collective_user";
 
 }
-internal sealed class CollectiveUserInserter : DatabaseInserter<CollectiveUser>
+internal sealed class CollectiveUserInserter : DatabaseInserter<Request>
 {
     public CollectiveUserInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(CollectiveUser item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (item.CollectiveId is null || item.UserId is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(CollectiveUserInserterFactory.CollectiveId, item.CollectiveId.Value),
-            ParameterValue.Create(CollectiveUserInserterFactory.UserId, item.UserId.Value)
+            ParameterValue.Create(Factory.CollectiveId, request.CollectiveId),
+            ParameterValue.Create(Factory.UserId, request.UserId)
         };
     }
 }

@@ -16,7 +16,7 @@ public interface IDatabaseDeleter<TRequest>: IDatabaseDeleter
     Task DeleteAsync(TRequest request);
 }
 
-public interface IDatabaseDeleterFactory
+public interface IDatabaseDeleterFactory: IDatabaseAccessorFactory
 {
 }
 public interface IDatabaseDeleterFactory<TRequest> : IDatabaseDeleterFactory

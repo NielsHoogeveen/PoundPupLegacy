@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PoundPupLegacy.Common.Test\PoundPupLegacy.Common.Test.csproj" />
     <ProjectReference Include="..\PoundPupLegacy\PoundPupLegacy.csproj" />
   </ItemGroup>
 

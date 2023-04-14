@@ -1,30 +1,29 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TenantInserterFactory : DatabaseInserterFactory<Tenant, TenantInserter>
+
+using Factory = TenantInserterFactory;
+using Request = Tenant;
+using Inserter = TenantInserter;
+
+internal sealed class TenantInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter DomainName = new() { Name = "domain_name" };
     internal static NullableIntegerDatabaseParameter VocabularyIdTagging = new() { Name = "vocabulary_id_tagging" };
-    internal static NonNullableIntegerDatabaseParameter AccessRoleIdNotLoggedIn = new() { Name = "access_role_id_not_logged_in" };
+    internal static NullCheckingIntegerDatabaseParameter AccessRoleIdNotLoggedIn = new() { Name = "access_role_id_not_logged_in" };
 
     public override string TableName => "tenant";
 }
-internal sealed class TenantInserter : DatabaseInserter<Tenant>
+internal sealed class TenantInserter : IdentifiableDatabaseInserter<Request>
 {
     public TenantInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Tenant item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
-        if (item.AccessRoleNotLoggedIn.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(TenantInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(TenantInserterFactory.DomainName, item.DomainName),
-            ParameterValue.Create(TenantInserterFactory.VocabularyIdTagging, item.VocabularyIdTagging),
-            ParameterValue.Create(TenantInserterFactory.AccessRoleIdNotLoggedIn, item.AccessRoleNotLoggedIn.Id.Value),
+            ParameterValue.Create(Factory.DomainName, request.DomainName),
+            ParameterValue.Create(Factory.VocabularyIdTagging, request.VocabularyIdTagging),
+            ParameterValue.Create(Factory.AccessRoleIdNotLoggedIn, request.AccessRoleNotLoggedIn?.Id),
         };
     }
 }

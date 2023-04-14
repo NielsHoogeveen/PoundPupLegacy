@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document, DocumentInserter>
+
+using Factory = DocumentInserterFactory;
+using Request = Document;
+using Inserter = DocumentInserter;
+
+internal sealed class DocumentInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableFuzzyDateDatabaseParameter Published = new() { Name = "published" };
     internal static NullableStringDatabaseParameter SourceUrl = new() { Name = "source_url" };
     internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
@@ -10,23 +14,20 @@ internal sealed class DocumentInserterFactory : DatabaseInserterFactory<Document
 
     public override string TableName => "document";
 }
-internal sealed class DocumentInserter : DatabaseInserter<Document>
+internal sealed class DocumentInserter : IdentifiableDatabaseInserter<Request>
 {
     public DocumentInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Document item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(DocumentInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(DocumentInserterFactory.Text, item.Text),
-            ParameterValue.Create(DocumentInserterFactory.Teaser, item.Teaser),
-            ParameterValue.Create(DocumentInserterFactory.Published, item.PublicationDate),
-            ParameterValue.Create(DocumentInserterFactory.SourceUrl, item.SourceUrl),
-            ParameterValue.Create(DocumentInserterFactory.DocumentTypeId, item.DocumentTypeId),
+            ParameterValue.Create(Factory.Text, request.Text),
+            ParameterValue.Create(Factory.Teaser, request.Teaser),
+            ParameterValue.Create(Factory.Published, request.PublicationDate),
+            ParameterValue.Create(Factory.SourceUrl, request.SourceUrl),
+            ParameterValue.Create(Factory.DocumentTypeId, request.DocumentTypeId),
         };
     }
 }

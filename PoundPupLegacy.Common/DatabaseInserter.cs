@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using System.Data;
+using System.Diagnostics;
 
 namespace PoundPupLegacy.Common;
 public interface IDatabaseInserter : IDatabaseAccessor 
@@ -43,7 +44,6 @@ public abstract class DatabaseInserterFactoryBase<T, T2> : DatabaseAccessorFacto
         return (IDatabaseInserter<T>)Activator.CreateInstance(typeof(T2), new object[] { command })!;
     }
 }
-
 public abstract class DatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBase<T, T2>
     where T : IRequest
     where T2 : DatabaseInserter<T>
@@ -60,19 +60,41 @@ public abstract class DatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBa
         """;
 }
 
-public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T, T2> : IDatabaseInserterFactory<T>
+internal static class IdentifiableDatabaseInserterFactory
+{
+    internal static readonly NullCheckingIntegerDatabaseParameter Id = new() { Name = "id" };
+}
+
+public abstract class IdentifiableDatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBase<T, T2>
+    where T : Identifiable
+    where T2 : IdentifiableDatabaseInserter<T>
+{
+
+    internal static readonly NullCheckingIntegerDatabaseParameter Id = IdentifiableDatabaseInserterFactory.Id;
+
+    public abstract string TableName { get; }
+
+    protected override string Sql => $"""
+        INSERT INTO public."{TableName}"(
+            {string.Join(',', DatabaseParameters.Select(x => x.Name))}
+        ) 
+        VALUES(
+            {string.Join(',', DatabaseParameters.Select(x => $"@{x.Name}"))}
+        )
+        """;
+}
+
+internal static class ConditionalAutoGenerateIdDatabaseInserterFactory
+{
+    internal static readonly NullableIntegerDatabaseParameter Id = new() { Name = "id" };
+}
+public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T, T2> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
     where T : Identifiable
     where T2 : ConditionalAutoGenerateIdDatabaseInserter<T>
 {
-    public abstract string TableName { get; }
 
-    public IEnumerable<DatabaseParameter> DatabaseParameters => GetDatabaseParameters();
-    private List<DatabaseParameter> GetDatabaseParameters()
-    {
-        var t = GetType();
-        var fields = t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-        return fields.Select(x => x.GetValue(null) as DatabaseParameter).Where(x => x is not null).Select(x => (DatabaseParameter)x!).ToList();
-    }
+    internal static readonly NullableIntegerDatabaseParameter Id = ConditionalAutoGenerateIdDatabaseInserterFactory.Id;
+    public abstract string TableName { get; }
 
     public async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
     {
@@ -156,6 +178,34 @@ public abstract class DatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInsert
     }
     public async Task InsertAsync(T item)
     {
+        foreach (var parameter in GetParameterValues(item)) {
+            parameter.Set(_command);
+        }
+        await _command.ExecuteNonQueryAsync();
+    }
+}
+
+
+public abstract class IdentifiableDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
+    where T : Identifiable
+{
+    protected IdentifiableDatabaseInserter(NpgsqlCommand command) : base(command)
+    {
+    }
+
+    protected abstract IEnumerable<ParameterValue> GetNonIdParameterValues(T request);
+
+    protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
+    {
+        yield return ParameterValue.Create(IdentifiableDatabaseInserterFactory.Id , request.Id);
+        foreach(var parameter in GetNonIdParameterValues(request)) 
+        {
+            yield return parameter;
+        }
+    }
+
+    public async Task InsertAsync(T item)
+    {
         foreach(var parameter in GetParameterValues(item)) 
         {
             parameter.Set(_command);
@@ -163,6 +213,7 @@ public abstract class DatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInsert
         await _command.ExecuteNonQueryAsync();
     }
 }
+
 public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
     where T : Identifiable
 {
@@ -171,6 +222,8 @@ public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, I
     }
     public async Task InsertAsync(T item)
     {
+        if(item.Id is not null) 
+            throw new ArgumentException("The Id property should be null");
         foreach (var parameter in GetParameterValues(item)) 
         {
             parameter.Set(_command);
@@ -190,20 +243,31 @@ public abstract class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAcc
     {
         _commandAutoGenerate = commandAutoGenerate;
     }
-    public async Task InsertAsync(T item)
+
+    protected abstract IEnumerable<ParameterValue> GetNonIdParameterValues(T request);
+
+    protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
     {
-        if (item.Id is null) {
-            foreach(var parameter in GetParameterValues(item).Where(x => x.DatabaseParameter is not AutoGenerateIntegerDatabaseParameter))
+        yield return ParameterValue.Create(ConditionalAutoGenerateIdDatabaseInserterFactory.Id, request.Id);
+        foreach (var parameter in GetNonIdParameterValues(request)) {
+            yield return parameter;
+        }
+    }
+
+    public async Task InsertAsync(T request)
+    {
+        if (request.Id is null) {
+            foreach(var parameter in GetNonIdParameterValues(request))
             {
                 parameter.Set(_commandAutoGenerate);
             };
-            item.Id = await _commandAutoGenerate.ExecuteScalarAsync() switch {
+            request.Id = await _commandAutoGenerate.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception($"Insert action did not return an id.")
             };
         }
         else {
-            foreach(var parameter in GetParameterValues(item)) 
+            foreach(var parameter in GetParameterValues(request)) 
             {
                 parameter.Set(_command);
             }

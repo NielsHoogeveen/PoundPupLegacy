@@ -1,22 +1,27 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class DocumentableDocumentInserterFactory : DatabaseInserterFactory<DocumentableDocument, DocumentableDocumentInserter>
+
+using Factory = DocumentableDocumentInserterFactory;
+using Request = DocumentableDocument;
+using Inserter = DocumentableDocumentInserter;
+
+internal sealed class DocumentableDocumentInserterFactory : DatabaseInserterFactory<Request, Inserter>
 {
     internal static NonNullableIntegerDatabaseParameter DocumentableId = new() { Name = "documentable_id" };
     internal static NonNullableIntegerDatabaseParameter DocumentId = new() { Name = "document_id" };
 
     public override string TableName => "documentable_document";
 }
-internal sealed class DocumentableDocumentInserter : DatabaseInserter<DocumentableDocument>
+internal sealed class DocumentableDocumentInserter : DatabaseInserter<Request>
 {
     public DocumentableDocumentInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(DocumentableDocument item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(DocumentableDocumentInserterFactory.DocumentableId, item.DocumentableId),
-            ParameterValue.Create(DocumentableDocumentInserterFactory.DocumentId, item.DocumentId),
+            ParameterValue.Create(Factory.DocumentableId, request.DocumentableId),
+            ParameterValue.Create(Factory.DocumentId, request.DocumentId),
         };
     }
 }

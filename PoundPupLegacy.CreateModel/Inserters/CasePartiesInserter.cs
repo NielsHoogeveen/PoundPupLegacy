@@ -1,24 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CasePartiesInserterFactory : AutoGenerateIdDatabaseInserterFactory<CaseParties, CasePartiesInserter>
+
+using Factory = CasePartiesInserterFactory;
+using Request = CaseParties;
+using Inserter = CasePartiesInserter;
+
+internal sealed class CasePartiesInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request, Inserter>
 {
     internal static NullableStringDatabaseParameter Organizations = new() { Name = "organizations" };
     internal static NullableStringDatabaseParameter Persons = new() { Name = "persons" };
     public override string TableName => "case_parties";
 }
-internal sealed class CasePartiesInserter : AutoGenerateIdDatabaseInserter<CaseParties>
+internal sealed class CasePartiesInserter : AutoGenerateIdDatabaseInserter<Request>
 {
     public CasePartiesInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(CaseParties item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (item.Id.HasValue) {
-            throw new Exception($"case parties id should be null upon creation");
-        }
         return new ParameterValue[] {
-            ParameterValue.Create(CasePartiesInserterFactory.Organizations, item.Organizations),
-            ParameterValue.Create(CasePartiesInserterFactory.Persons, item.Persons)
+            ParameterValue.Create(Factory.Organizations, request.Organizations),
+            ParameterValue.Create(Factory.Persons, request.Persons)
         };
     }
 }

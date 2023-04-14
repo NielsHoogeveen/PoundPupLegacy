@@ -134,6 +134,58 @@ public record NonNullableBooleanDatabaseParameter : DatabaseParameter<bool>
         SetParameter(value, command);
     }
 }
+public record NullCheckingIntegerDatabaseParameter : DatabaseParameter<int?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
+
+    public override void Set(int? value, NpgsqlCommand command)
+    {
+        if (value is null)
+            throw new ArgumentNullException(nameof(value));
+        SetParameter(value.Value, command);
+    }
+}
+
+public record NullCheckingAlternativeIntegerDatabaseParameter : DatabaseParameter<(int?, int?)>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
+
+    public override void Set((int?, int?) options, NpgsqlCommand command)
+    {
+        var value = options.Item1 ?? options.Item2;
+        if(value is null) 
+            throw new NullReferenceException(nameof(value));
+
+        SetParameter(value.Value, command);
+    }
+}
+
+public record NullableAlternativeIntegerDatabaseParameter : DatabaseParameter<(int?,int?)>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
+
+    public override void Set((int?, int?) options, NpgsqlCommand command)
+    {
+        var value = options.Item1 ?? options.Item2;
+
+        SetNullableParameter(value, command);
+    }
+}
+public record NonNullableAlternativeIntegerDatabaseParameter : DatabaseParameter<(int?, int)>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;
+
+    public override void Set((int?, int) options, NpgsqlCommand command)
+    {
+        var value = options.Item1 ?? options.Item2;
+
+        SetParameter(value, command);
+    }
+}
 
 
 public record NullableIntegerDatabaseParameter : DatabaseParameter<int?>
@@ -249,6 +301,18 @@ public record NullableStringDatabaseParameter : DatabaseParameter<string?>
     }
 }
 
+public record TrimmingNullableStringDatabaseParameter : DatabaseParameter<string?>
+{
+    public override bool IsNullable => true;
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Varchar;
+
+    public override void Set(string? value, NpgsqlCommand command)
+    {
+        SetNullableParameter(value?.Trim(), command);
+    }
+}
+
+
 public record NonNullableStringDatabaseParameter : DatabaseParameter<string>
 {
     public override bool IsNullable => false;
@@ -260,6 +324,17 @@ public record NonNullableStringDatabaseParameter : DatabaseParameter<string>
         SetParameter(value, command);
     }
 
+}
+public record TrimmingNonNullableStringDatabaseParameter : DatabaseParameter<string>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Varchar;
+
+    public override void Set(string value, NpgsqlCommand command)
+    {
+        SetParameter(value.Trim(), command);
+    }
 }
 public record NullableFixedStringDatabaseParameter : DatabaseParameter<string?>
 {

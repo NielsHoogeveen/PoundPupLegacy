@@ -1,33 +1,32 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class HouseTermInserterFactory : DatabaseInserterFactory<HouseTerm, HouseTermInserter>
+
+using Factory = HouseTermInserterFactory;
+using Request = HouseTerm;
+using Inserter = HouseTermInserter;
+
+internal sealed class HouseTermInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
-    internal static NonNullableIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
+    internal static NullCheckingIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
     internal static NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
     internal static NullableIntegerDatabaseParameter District = new() { Name = "district" };
     internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
 
     public override string TableName => "house_term";
 }
-internal sealed class HouseTermInserter : DatabaseInserter<HouseTerm>
+internal sealed class HouseTermInserter : IdentifiableDatabaseInserter<Request>
 {
 
     public HouseTermInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(HouseTerm item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
-        if (item.RepresentativeId is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(HouseTermInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(HouseTermInserterFactory.RepresentativeId, item.RepresentativeId.Value),
-            ParameterValue.Create(HouseTermInserterFactory.SubdivisionId, item.SubdivisionId),
-            ParameterValue.Create(HouseTermInserterFactory.District, item.District),
-            ParameterValue.Create(HouseTermInserterFactory.DateRange, item.DateTimeRange),
+            ParameterValue.Create(Factory.RepresentativeId, request.RepresentativeId),
+            ParameterValue.Create(Factory.SubdivisionId, request.SubdivisionId),
+            ParameterValue.Create(Factory.District, request.District),
+            ParameterValue.Create(Factory.DateRange, request.DateTimeRange),
         };
     }
 }

@@ -1,25 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PoliticalEntityInserterFactory : DatabaseInserterFactory<PoliticalEntity, PoliticalEntityInserter>
+
+using Factory = PoliticalEntityInserterFactory;
+using Request = PoliticalEntity;
+using Inserter = PoliticalEntityInserter;
+
+internal sealed class PoliticalEntityInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableIntegerDatabaseParameter FileIdFlag = new() { Name = "file_id_flag" };
 
     public override string TableName => "political_entity";
 }
-internal sealed class PoliticalEntityInserter : DatabaseInserter<PoliticalEntity>
+internal sealed class PoliticalEntityInserter : IdentifiableDatabaseInserter<Request>
 {
 
     public PoliticalEntityInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(PoliticalEntity item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(PoliticalEntityInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(PoliticalEntityInserterFactory.FileIdFlag, item.FileIdFlag),
+            ParameterValue.Create(Factory.FileIdFlag, request.FileIdFlag),
         };
     }
 }

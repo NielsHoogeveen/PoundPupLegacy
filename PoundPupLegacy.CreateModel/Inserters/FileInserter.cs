@@ -1,8 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FileInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<File, FileInserter>
+using Factory = FileInserterFactory;
+using Request = File;
+using Inserter = FileInserter;
+
+internal sealed class FileInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request, Inserter>
 {
-    internal static AutoGenerateIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static NonNullableStringDatabaseParameter MimeType = new() { Name = "mime_type" };
@@ -11,20 +14,19 @@ internal sealed class FileInserterFactory : ConditionalAutoGenerateIdDatabaseIns
     public override string TableName => "file";
 }
 
-internal sealed class FileInserter : ConditionalAutoGenerateIdDatabaseInserter<File>
+internal sealed class FileInserter : ConditionalAutoGenerateIdDatabaseInserter<Request>
 {
     public FileInserter(NpgsqlCommand command, NpgsqlCommand autoGenerateIdCommand) : base(command, autoGenerateIdCommand)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(File item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(FileInserterFactory.Id, item.Id),
-            ParameterValue.Create(FileInserterFactory.Path, item.Path),
-            ParameterValue.Create(FileInserterFactory.Name, item.Name),
-            ParameterValue.Create(FileInserterFactory.MimeType, item.MimeType),
-            ParameterValue.Create(FileInserterFactory.Size, item.Size)
+            ParameterValue.Create(Factory.Path, request.Path),
+            ParameterValue.Create(Factory.Name, request.Name),
+            ParameterValue.Create(Factory.MimeType, request.MimeType),
+            ParameterValue.Create(Factory.Size, request.Size)
         };
     }
 }

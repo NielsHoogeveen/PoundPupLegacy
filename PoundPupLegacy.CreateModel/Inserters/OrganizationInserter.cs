@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class OrganizationInserterFactory : DatabaseInserterFactory<Organization, OrganizationInserter>
+
+using Factory = OrganizationInserterFactory;
+using Request = Organization;
+using Inserter = OrganizationInserter;
+
+internal sealed class OrganizationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableStringDatabaseParameter WebsiteURL = new() { Name = "website_url" };
     internal static NullableStringDatabaseParameter EmailAddress = new() { Name = "email_address" };
     internal static NullableFuzzyDateDatabaseParameter Established = new() { Name = "established" };
@@ -10,22 +14,19 @@ internal sealed class OrganizationInserterFactory : DatabaseInserterFactory<Orga
     public override string TableName => "organization";
 
 }
-internal sealed class OrganizationInserter : DatabaseInserter<Organization>
+internal sealed class OrganizationInserter : IdentifiableDatabaseInserter<Request>
 {
     public OrganizationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Organization item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(OrganizationInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(OrganizationInserterFactory.WebsiteURL, item.WebsiteUrl),
-            ParameterValue.Create(OrganizationInserterFactory.EmailAddress, item.EmailAddress),
-            ParameterValue.Create(OrganizationInserterFactory.Established, item.Established),
-            ParameterValue.Create(OrganizationInserterFactory.Terminated, item.Terminated),
+            ParameterValue.Create(Factory.WebsiteURL, request.WebsiteUrl),
+            ParameterValue.Create(Factory.EmailAddress, request.EmailAddress),
+            ParameterValue.Create(Factory.Established, request.Established),
+            ParameterValue.Create(Factory.Terminated, request.Terminated),
         };
     }
 }

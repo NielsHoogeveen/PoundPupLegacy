@@ -1,25 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public class SecondLevelGlobalRegionInserterFactory : DatabaseInserterFactory<SecondLevelGlobalRegion, SecondLevelGlobalRegionInserter>
+
+using Factory = SecondLevelGlobalRegionInserterFactory;
+using Request = SecondLevelGlobalRegion;
+using Inserter = SecondLevelGlobalRegionInserter;
+
+public class SecondLevelGlobalRegionInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter FirstLevelGlobalRegionId = new() { Name = "first_level_global_region_id" };
 
     public override string TableName => "second_level_global_region";
 }
-public class SecondLevelGlobalRegionInserter : DatabaseInserter<SecondLevelGlobalRegion>
+public class SecondLevelGlobalRegionInserter : IdentifiableDatabaseInserter<Request>
 {
 
     public SecondLevelGlobalRegionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(SecondLevelGlobalRegion item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(SecondLevelGlobalRegionInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(SecondLevelGlobalRegionInserterFactory.FirstLevelGlobalRegionId, item.FirstLevelGlobalRegionId),
+            ParameterValue.Create(Factory.FirstLevelGlobalRegionId, request.FirstLevelGlobalRegionId),
         };
     }
 }

@@ -1,8 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCase, AbuseCaseInserter>
+using Factory = AbuseCaseInserterFactory;
+using Inserter = AbuseCaseInserter;
+using Request = AbuseCase;
+
+internal sealed class AbuseCaseInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter ChildPlacementTypeId = new() { Name = "child_placement_type_id" };
     internal static NullableIntegerDatabaseParameter FamilySizeId = new() { Name = "family_size_id" };
     internal static NullableBooleanDatabaseParameter HomeSchoolingInvolved = new() { Name = "home_schooling_involved" };
@@ -10,25 +13,21 @@ internal sealed class AbuseCaseInserterFactory : DatabaseInserterFactory<AbuseCa
     internal static NullableBooleanDatabaseParameter DisabilitiesInvolved = new() { Name = "disabilities_involved" };
     public override string TableName => "abuse_case";
 }
-internal sealed class AbuseCaseInserter : DatabaseInserter<AbuseCase>
+internal sealed class AbuseCaseInserter : IdentifiableDatabaseInserter<Request>
 {
 
     public AbuseCaseInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(AbuseCase abuseCase)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (abuseCase.Id is null)
-            throw new NullReferenceException();
-
         return new ParameterValue[] {
-            ParameterValue.Create(AbuseCaseInserterFactory.Id, abuseCase.Id.Value),
-            ParameterValue.Create(AbuseCaseInserterFactory.ChildPlacementTypeId, abuseCase.ChildPlacementTypeId),
-            ParameterValue.Create(AbuseCaseInserterFactory.FamilySizeId, abuseCase.FamilySizeId),
-            ParameterValue.Create(AbuseCaseInserterFactory.HomeSchoolingInvolved, abuseCase.HomeschoolingInvolved),
-            ParameterValue.Create(AbuseCaseInserterFactory.FundamentalFaithInvolved, abuseCase.FundamentalFaithInvolved),
-            ParameterValue.Create(AbuseCaseInserterFactory.DisabilitiesInvolved, abuseCase.DisabilitiesInvolved),
+            ParameterValue.Create(Factory.ChildPlacementTypeId, request.ChildPlacementTypeId),
+            ParameterValue.Create(Factory.FamilySizeId, request.FamilySizeId),
+            ParameterValue.Create(Factory.HomeSchoolingInvolved, request.HomeschoolingInvolved),
+            ParameterValue.Create(Factory.FundamentalFaithInvolved, request.FundamentalFaithInvolved),
+            ParameterValue.Create(Factory.DisabilitiesInvolved, request.DisabilitiesInvolved),
         };
     }
 }

@@ -1,24 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TopLevelCountryInserterFactory : DatabaseInserterFactory<TopLevelCountry, TopLevelCountryInserter>
+
+using Factory = TopLevelCountryInserterFactory;
+using Request = TopLevelCountry;
+using Inserter = TopLevelCountryInserter;
+
+internal sealed class TopLevelCountryInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableFixedStringDatabaseParameter ISO3166_1_code = new() { Name = "iso_3166_1_code" };
     internal static NonNullableIntegerDatabaseParameter GlobalRegionId = new() { Name = "global_region_id" };
     public override string TableName => "top_level_country";
 }
-internal sealed class TopLevelCountryInserter : DatabaseInserter<TopLevelCountry>
+internal sealed class TopLevelCountryInserter : IdentifiableDatabaseInserter<Request>
 {
     public TopLevelCountryInserter(NpgsqlCommand command) : base(command)
     {
     }
-    protected override IEnumerable<ParameterValue> GetParameterValues(TopLevelCountry country)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (country.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(TopLevelCountryInserterFactory.Id, country.Id.Value),
-            ParameterValue.Create(TopLevelCountryInserterFactory.ISO3166_1_code, country.ISO3166_1_Code),
-            ParameterValue.Create(TopLevelCountryInserterFactory.GlobalRegionId, country.SecondLevelRegionId),
+            ParameterValue.Create(Factory.ISO3166_1_code, request.ISO3166_1_Code),
+            ParameterValue.Create(Factory.GlobalRegionId, request.SecondLevelRegionId),
         };
     }
 }

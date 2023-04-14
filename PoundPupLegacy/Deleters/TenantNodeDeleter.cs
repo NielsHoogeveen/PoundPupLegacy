@@ -15,7 +15,7 @@ public record TenantNodeDeleterRequest: IRequest
 internal sealed class TenantNodeDeleterFactory : DatabaseDeleterFactory<Request,Deleter>
 {
 
-    public static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
 
     public override string Sql => SQL;
 

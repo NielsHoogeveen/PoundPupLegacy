@@ -1,24 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class SubgroupInserterFactory : DatabaseInserterFactory<Subgroup, SubgroupInserter>
+
+using Factory = SubgroupInserterFactory;
+using Request = Subgroup;
+using Inserter = SubgroupInserter;
+
+internal sealed class SubgroupInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
 
     public override string TableName => "subgroup";
 }
-internal sealed class SubgroupInserter : DatabaseInserter<Subgroup>
+internal sealed class SubgroupInserter : IdentifiableDatabaseInserter<Request>
 {
     public SubgroupInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Subgroup item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(SubgroupInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(SubgroupInserterFactory.TenantId, item.TenantId),
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
         };
     }
 }

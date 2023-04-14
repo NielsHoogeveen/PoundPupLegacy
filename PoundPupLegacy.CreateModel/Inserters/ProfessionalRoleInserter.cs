@@ -1,29 +1,29 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseInserterFactory<ProfessionalRole, ProfessionalRoleInserter>
+
+using Factory = ProfessionalRoleInserterFactory;
+using Request = ProfessionalRole;
+using Inserter = ProfessionalRoleInserter;
+
+internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
+    internal static NullCheckingIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
     internal static NonNullableIntegerDatabaseParameter ProfessionId = new() { Name = "profession_id" };
     internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "daterange" };
 
     public override string TableName => "professional_role";
 }
-internal sealed class ProfessionalRoleInserter : AutoGenerateIdDatabaseInserter<ProfessionalRole>
+internal sealed class ProfessionalRoleInserter : AutoGenerateIdDatabaseInserter<Request>
 {
     public ProfessionalRoleInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(ProfessionalRole professionalRole)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (professionalRole.Id.HasValue) {
-            throw new Exception($"professional role id should be null upon creation");
-        }
-        if (professionalRole.PersonId is null)
-            throw new NullReferenceException(nameof(professionalRole.Id));
         return new ParameterValue[] {
-            ParameterValue.Create(ProfessionalRoleInserterFactory.PersonId, professionalRole.PersonId.Value),
-            ParameterValue.Create(ProfessionalRoleInserterFactory.ProfessionId, professionalRole.ProfessionId),
-            ParameterValue.Create(ProfessionalRoleInserterFactory.DateRange, professionalRole.DateTimeRange)
+            ParameterValue.Create(Factory.PersonId, request.PersonId),
+            ParameterValue.Create(Factory.ProfessionId, request.ProfessionId),
+            ParameterValue.Create(Factory.DateRange, request.DateTimeRange)
         };
     }
 }

@@ -277,7 +277,7 @@ internal sealed class ArticlesDocumentReader : SingleItemDatabaseReader<Request,
             ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
             ParameterValue.Create(Factory.LengthParameter, request.Length),
             ParameterValue.Create(Factory.StartIndexParameter, request.StartIndex),
-            ParameterValue.Create(Factory.TermsParameter, request.SelectedTerms.Any() ? request.SelectedTerms.ToArray(): null)
+            ParameterValue.Create(Factory.TermsParameter, request.SelectedTerms is null ? null : request.SelectedTerms.Any() ? request.SelectedTerms.ToArray(): null)
         };
     }
 

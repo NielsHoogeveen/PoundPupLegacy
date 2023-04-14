@@ -1,25 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PollStatusInserterFactory : DatabaseInserterFactory<PollStatus, PollStatusInserter>
+
+using Factory = PollStatusInserterFactory;
+using Request = PollStatus;
+using Inserter = PollStatusInserter;
+
+internal sealed class PollStatusInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
     public override string TableName => "poll_status";
 
 }
-internal sealed class PollStatusInserter : DatabaseInserter<PollStatus>
+internal sealed class PollStatusInserter : IdentifiableDatabaseInserter<Request>
 {
     public PollStatusInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(PollStatus item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(PollStatusInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(PollStatusInserterFactory.Name, item.Name),
+            ParameterValue.Create(Factory.Name, request.Name),
         };
     }
 }

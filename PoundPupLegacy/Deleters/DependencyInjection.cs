@@ -10,5 +10,6 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseDeleterFactory<NodeTermDeleterRequest>, NodeTermDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<TenantNodeDeleterRequest>, TenantNodeDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<LocationDeleterRequest>, LocationDeleterFactory>();
+        services.AddTransient<IDatabaseDeleterFactory<OrganizationOrganizationTypeDeleterRequest>, OrganizationOrganizationTypeDeleterFactory>();
     }
 }

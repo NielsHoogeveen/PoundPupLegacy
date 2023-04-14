@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PartyPoliticalEntityRelationInserterFactory : DatabaseInserterFactory<PartyPoliticalEntityRelation, PartyPoliticalEntityRelationInserter>
+
+using Factory = PartyPoliticalEntityRelationInserterFactory;
+using Request = PartyPoliticalEntityRelation;
+using Inserter = PartyPoliticalEntityRelationInserter;
+
+internal sealed class PartyPoliticalEntityRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter PoliticalEntityId = new() { Name = "political_entity_id" };
     internal static NonNullableIntegerDatabaseParameter PartyId = new() { Name = "party_id" };
     internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
@@ -11,23 +15,20 @@ internal sealed class PartyPoliticalEntityRelationInserterFactory : DatabaseInse
     public override string TableName => "party_political_entity_relation";
 
 }
-internal sealed class PartyPoliticalEntityRelationInserter : DatabaseInserter<PartyPoliticalEntityRelation>
+internal sealed class PartyPoliticalEntityRelationInserter : IdentifiableDatabaseInserter<Request>
 {
     public PartyPoliticalEntityRelationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(PartyPoliticalEntityRelation item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(PartyPoliticalEntityRelationInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(PartyPoliticalEntityRelationInserterFactory.PartyId, item.PartyId),
-            ParameterValue.Create(PartyPoliticalEntityRelationInserterFactory.PoliticalEntityId, item.PoliticalEntityId),
-            ParameterValue.Create(PartyPoliticalEntityRelationInserterFactory.PartyPoliticalEntityRelationTypeId, item.PartyPoliticalEntityRelationTypeId),
-            ParameterValue.Create(PartyPoliticalEntityRelationInserterFactory.DateRange, item.DateRange),
-            ParameterValue.Create(PartyPoliticalEntityRelationInserterFactory.DocumentIdProof,item.DocumentIdProof),
+            ParameterValue.Create(Factory.PartyId, request.PartyId),
+            ParameterValue.Create(Factory.PoliticalEntityId, request.PoliticalEntityId),
+            ParameterValue.Create(Factory.PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationTypeId),
+            ParameterValue.Create(Factory.DateRange, request.DateRange),
+            ParameterValue.Create(Factory.DocumentIdProof,request.DocumentIdProof),
         };
     }
 }

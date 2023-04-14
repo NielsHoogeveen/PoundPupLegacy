@@ -1,8 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-public class CommentInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Comment, CommentInserter>
+using Factory = CommentInserterFactory;
+using Request = Comment;
+using Inserter = CommentInserter;
+
+public class CommentInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request, Inserter>
 {
-    internal static AutoGenerateIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NullableIntegerDatabaseParameter CommentIdParent = new() { Name = "comment_id_parent" };
     internal static NonNullableIntegerDatabaseParameter PublisherId = new() { Name = "publisher_id" };
@@ -15,25 +18,24 @@ public class CommentInserterFactory : ConditionalAutoGenerateIdDatabaseInserterF
     public override string TableName => "comment";
 
 }
-public class CommentInserter : ConditionalAutoGenerateIdDatabaseInserter<Comment>
+public class CommentInserter : ConditionalAutoGenerateIdDatabaseInserter<Request>
 {
 
     public CommentInserter(NpgsqlCommand command, NpgsqlCommand autoGenerateIdCommand) : base(command, autoGenerateIdCommand)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Comment item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request item)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(CommentInserterFactory.Id, item.Id),
-            ParameterValue.Create(CommentInserterFactory.NodeId, item.NodeId),
-            ParameterValue.Create(CommentInserterFactory.CommentIdParent, item.CommentIdParent),
-            ParameterValue.Create(CommentInserterFactory.PublisherId, item.PublisherId),
-            ParameterValue.Create(CommentInserterFactory.NodeStatusId, item.NodeStatusId),
-            ParameterValue.Create(CommentInserterFactory.IPAddress, item.IPAddress),
-            ParameterValue.Create(CommentInserterFactory.CreatedDateTime, item.CreatedDateTime),
-            ParameterValue.Create(CommentInserterFactory.Title, item.Title),
-            ParameterValue.Create(CommentInserterFactory.Text, item.Text)
+            ParameterValue.Create(Factory.NodeId, item.NodeId),
+            ParameterValue.Create(Factory.CommentIdParent, item.CommentIdParent),
+            ParameterValue.Create(Factory.PublisherId, item.PublisherId),
+            ParameterValue.Create(Factory.NodeStatusId, item.NodeStatusId),
+            ParameterValue.Create(Factory.IPAddress, item.IPAddress),
+            ParameterValue.Create(Factory.CreatedDateTime, item.CreatedDateTime),
+            ParameterValue.Create(Factory.Title, item.Title),
+            ParameterValue.Create(Factory.Text, item.Text)
         };
     }
 }

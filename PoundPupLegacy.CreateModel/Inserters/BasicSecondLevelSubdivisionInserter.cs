@@ -1,22 +1,24 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class BasicSecondLevelSubdivisionInserterFactory : DatabaseInserterFactory<BasicSecondLevelSubdivision, BasicSecondLevelSubdivisionInserter>
+
+using Factory = BasicSecondLevelSubdivisionInserterFactory;
+using Request = BasicSecondLevelSubdivision;
+using Inserter = BasicSecondLevelSubdivisionInserter;
+
+internal sealed class BasicSecondLevelSubdivisionInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter IntermediateLevelSubdivisionId = new() { Name = "intermediate_level_subdivision_id" };
     public override string TableName => "basic_second_level_subdivision";
 }
-internal sealed class BasicSecondLevelSubdivisionInserter : DatabaseInserter<BasicSecondLevelSubdivision>
+internal sealed class BasicSecondLevelSubdivisionInserter : IdentifiableDatabaseInserter<Request>
 {
     public BasicSecondLevelSubdivisionInserter(NpgsqlCommand command) : base(command)
     {
     }
-    protected override IEnumerable<ParameterValue> GetParameterValues(BasicSecondLevelSubdivision item)
+
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(BasicSecondLevelSubdivisionInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(BasicSecondLevelSubdivisionInserterFactory.IntermediateLevelSubdivisionId, item.IntermediateLevelSubdivisionId)
+            ParameterValue.Create(Factory.IntermediateLevelSubdivisionId, request.IntermediateLevelSubdivisionId)
         };
     }
 }

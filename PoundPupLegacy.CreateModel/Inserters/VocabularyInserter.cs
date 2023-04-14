@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class VocabularyInserterFactory : DatabaseInserterFactory<Vocabulary, VocabularyInserter>
+
+using Factory = VocabularyInserterFactory;
+using Request = Vocabulary;
+using Inserter = VocabularyInserter;
+
+internal sealed class VocabularyInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
@@ -9,21 +13,18 @@ internal sealed class VocabularyInserterFactory : DatabaseInserterFactory<Vocabu
     public override string TableName => "vocabulary";
 
 }
-internal sealed class VocabularyInserter : DatabaseInserter<Vocabulary>
+internal sealed class VocabularyInserter : IdentifiableDatabaseInserter<Request>
 {
     public VocabularyInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Vocabulary item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(VocabularyInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(VocabularyInserterFactory.OwnerId, item.OwnerId),
-            ParameterValue.Create(VocabularyInserterFactory.Name, item.Name),
-            ParameterValue.Create(VocabularyInserterFactory.Description, item.Description),
+            ParameterValue.Create(Factory.OwnerId, request.OwnerId),
+            ParameterValue.Create(Factory.Name, request.Name),
+            ParameterValue.Create(Factory.Description, request.Description),
         };
     }
 }

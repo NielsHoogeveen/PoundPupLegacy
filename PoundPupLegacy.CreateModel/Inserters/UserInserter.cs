@@ -1,7 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UserInserterFactory : DatabaseInserterFactory<User, UserInserter>
+
+using Factory = UserInserterFactory;
+using Request = User;
+using Inserter = UserInserter;
+internal sealed class UserInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
     internal static NullableStringDatabaseParameter AboutMe = new() { Name = "about_me" };
     internal static NullableStringDatabaseParameter AnimalWithin = new() { Name = "animal_within" };
@@ -13,25 +16,22 @@ internal sealed class UserInserterFactory : DatabaseInserterFactory<User, UserIn
 
     public override string TableName => "user";
 }
-internal sealed class UserInserter : DatabaseInserter<User>
+internal sealed class UserInserter : IdentifiableDatabaseInserter<Request>
 {
     public UserInserter(NpgsqlCommand command) : base(command)
     {
     }
-    protected override IEnumerable<ParameterValue> GetParameterValues(User item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(UserInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(UserInserterFactory.CreatedDateTime, item.CreatedDateTime),
-            ParameterValue.Create(UserInserterFactory.Email, item.Email),
-            ParameterValue.Create(UserInserterFactory.Password, item.Password),
-            ParameterValue.Create(UserInserterFactory.AboutMe, item.AboutMe),
-            ParameterValue.Create(UserInserterFactory.AnimalWithin, item.AnimalWithin),
-            ParameterValue.Create(UserInserterFactory.RelationToChildPlacement, item.RelationToChildPlacement),
-            ParameterValue.Create(UserInserterFactory.Avatar, item.Avatar),
-            ParameterValue.Create(UserInserterFactory.UserStatusId, item.UserStatusId),
+            ParameterValue.Create(Factory.CreatedDateTime, request.CreatedDateTime),
+            ParameterValue.Create(Factory.Email, request.Email),
+            ParameterValue.Create(Factory.Password, request.Password),
+            ParameterValue.Create(Factory.AboutMe, request.AboutMe),
+            ParameterValue.Create(Factory.AnimalWithin, request.AnimalWithin),
+            ParameterValue.Create(Factory.RelationToChildPlacement, request.RelationToChildPlacement),
+            ParameterValue.Create(Factory.Avatar, request.Avatar),
+            ParameterValue.Create(Factory.UserStatusId, request.UserStatusId),
         };
     }
 }

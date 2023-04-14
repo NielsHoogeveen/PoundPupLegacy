@@ -1,29 +1,32 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PollVoteInserterFactory : DatabaseInserterFactory<PollVote, PollVoteInserter>
+
+using Factory = PollVoteInserterFactory;
+using Request = PollVote;
+using Inserter = PollVoteInserter;
+
+internal sealed class PollVoteInserterFactory : DatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter PollId = new() { Name = "poll_id" };
+    internal static NullCheckingIntegerDatabaseParameter PollId = new() { Name = "poll_id" };
     internal static NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
     internal static NullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
     internal static NullableStringDatabaseParameter IPAddress = new() { Name = "ip_address" };
 
     public override string TableName => "poll_vote";
 }
-internal sealed class PollVoteInserter : DatabaseInserter<PollVote>
+internal sealed class PollVoteInserter : DatabaseInserter<Request>
 {
 
     public PollVoteInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(PollVote item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (item.PollId is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(PollVoteInserterFactory.PollId, item.PollId.Value),
-            ParameterValue.Create(PollVoteInserterFactory.Delta, item.Delta),
-            ParameterValue.Create(PollVoteInserterFactory.UserId, item.UserId),
-            ParameterValue.Create(PollVoteInserterFactory.IPAddress, item.IpAddress),
+            ParameterValue.Create(Factory.PollId, request.PollId),
+            ParameterValue.Create(Factory.Delta, request.Delta),
+            ParameterValue.Create(Factory.UserId, request.UserId),
+            ParameterValue.Create(Factory.IPAddress, request.IpAddress),
         };
     }
 }

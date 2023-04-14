@@ -1,37 +1,36 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<TenantNode, TenantNodeInserter>
+
+using Factory = TenantNodeInserterFactory;
+using Request = TenantNode;
+using Inserter = TenantNodeInserter;
+public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request, Inserter>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
-    internal static NullableStringDatabaseParameter UrlPath = new() { Name = "url_path" };
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    internal static NullCheckingAlternativeIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    internal static TrimmingNullableStringDatabaseParameter UrlPath = new() { Name = "url_path" };
+    internal static NullCheckingIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
     internal static NonNullableIntegerDatabaseParameter PublicationStatusId = new() { Name = "publication_status_id" };
 
     public override string TableName => "tenant_node";
 
 }
-public sealed class TenantNodeInserter : AutoGenerateIdDatabaseInserter<TenantNode>
+public sealed class TenantNodeInserter : AutoGenerateIdDatabaseInserter<Request>
 {
 
     public TenantNodeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(TenantNode tenantNode)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (tenantNode.Id.HasValue) {
-            throw new Exception($"tenant node id should be null upon creation");
-        }
-        if (tenantNode.NodeId is null)
-            throw new NullReferenceException(nameof(tenantNode.NodeId));
         return new ParameterValue[] {
-            ParameterValue.Create(TenantNodeInserterFactory.TenantId, tenantNode.TenantId),
-            ParameterValue.Create(TenantNodeInserterFactory.UrlId, tenantNode.UrlId.HasValue ? tenantNode.UrlId.Value : tenantNode.NodeId.Value),
-            ParameterValue.Create(TenantNodeInserterFactory.UrlPath, tenantNode.UrlPath?.Trim()),
-            ParameterValue.Create(TenantNodeInserterFactory.NodeId, tenantNode.NodeId.Value),
-            ParameterValue.Create(TenantNodeInserterFactory.SubgroupId, tenantNode.SubgroupId),
-            ParameterValue.Create(TenantNodeInserterFactory.PublicationStatusId, tenantNode.PublicationStatusId)
+            ParameterValue.Create(Factory.TenantId, request.TenantId),
+            ParameterValue.Create(Factory.UrlId, (request.UrlId, request.NodeId)),
+            ParameterValue.Create(Factory.UrlPath, request.UrlPath),
+            ParameterValue.Create(Factory.NodeId, request.NodeId),
+            ParameterValue.Create(Factory.SubgroupId, request.SubgroupId),
+            ParameterValue.Create(Factory.PublicationStatusId, request.PublicationStatusId)
         };
     }
 }

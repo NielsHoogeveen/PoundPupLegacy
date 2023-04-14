@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person, PersonInserter>
+
+using Factory =  PersonInserterFactory;
+using Request =  Person;
+using Inserter = PersonInserter;
+
+internal sealed class PersonInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableDateTimeDatabaseParameter DateOfBirth = new() { Name = "date_of_birth" };
     internal static NullableDateTimeDatabaseParameter DateOfDeath = new() { Name = "date_of_death" };
     internal static NullableIntegerDatabaseParameter FileIdPortrait = new() { Name = "file_id_portrait" };
@@ -15,28 +19,25 @@ internal sealed class PersonInserterFactory : DatabaseInserterFactory<Person, Pe
 
     public override string TableName => "person";
 }
-internal sealed class PersonInserter : DatabaseInserter<Person>
+internal sealed class PersonInserter : IdentifiableDatabaseInserter<Request>
 {
     public PersonInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Person item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(PersonInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(PersonInserterFactory.DateOfBirth, item.DateOfBirth),
-            ParameterValue.Create(PersonInserterFactory.DateOfDeath, item.DateOfDeath),
-            ParameterValue.Create(PersonInserterFactory.FileIdPortrait, item.FileIdPortrait),
-            ParameterValue.Create(PersonInserterFactory.GovtrackId, item.GovtrackId),
-            ParameterValue.Create(PersonInserterFactory.FirstName, item.FirstName),
-            ParameterValue.Create(PersonInserterFactory.MiddleName, item.MiddleName),
-            ParameterValue.Create(PersonInserterFactory.LastName, item.LastName),
-            ParameterValue.Create(PersonInserterFactory.Suffix, item.Suffix),
-            ParameterValue.Create(PersonInserterFactory.FullName, item.FullName),
-            ParameterValue.Create(PersonInserterFactory.Bioguide, item.Bioguide),
+            ParameterValue.Create(Factory.DateOfBirth, request.DateOfBirth),
+            ParameterValue.Create(Factory.DateOfDeath, request.DateOfDeath),
+            ParameterValue.Create(Factory.FileIdPortrait, request.FileIdPortrait),
+            ParameterValue.Create(Factory.GovtrackId, request.GovtrackId),
+            ParameterValue.Create(Factory.FirstName, request.FirstName),
+            ParameterValue.Create(Factory.MiddleName, request.MiddleName),
+            ParameterValue.Create(Factory.LastName, request.LastName),
+            ParameterValue.Create(Factory.Suffix, request.Suffix),
+            ParameterValue.Create(Factory.FullName, request.FullName),
+            ParameterValue.Create(Factory.Bioguide, request.Bioguide),
         };
     }
 }

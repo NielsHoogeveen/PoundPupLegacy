@@ -1,25 +1,28 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class OrganizationOrganizationTypeInserterFactory : DatabaseInserterFactory<OrganizationOrganizationType, OrganizationOrganizationTypeInserter>
+
+using Factory = OrganizationOrganizationTypeInserterFactory;
+using Request = OrganizationOrganizationType;
+using Inserter = OrganizationOrganizationTypeInserter;
+
+internal sealed class OrganizationOrganizationTypeInserterFactory : DatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
+    internal static NullCheckingIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
     internal static NonNullableIntegerDatabaseParameter OrganizationTypeId = new() { Name = "organization_type_id" };
 
     public override string TableName => "organization_organization_type";
 
 }
-internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<OrganizationOrganizationType>
+internal sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<Request>
 {
     public OrganizationOrganizationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(OrganizationOrganizationType item)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        if (item.OrganizationId is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(OrganizationOrganizationTypeInserterFactory.OrganizationId, item.OrganizationId.Value),
-            ParameterValue.Create(OrganizationOrganizationTypeInserterFactory.OrganizationTypeId, item.OrganizationTypeId),
+            ParameterValue.Create(Factory.OrganizationId, request.OrganizationId),
+            ParameterValue.Create(Factory.OrganizationTypeId, request.OrganizationTypeId),
         };
     }
 }

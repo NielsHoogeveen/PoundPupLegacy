@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class NodeTypeInserterFactory : DatabaseInserterFactory<NodeType, NodeTypeInserter>
+
+using Factory = NodeTypeInserterFactory;
+using Request = NodeType;
+using Inserter = NodeTypeInserter;
+
+internal sealed class NodeTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
     internal static NonNullableBooleanDatabaseParameter AuthorSpecific = new() { Name = "author_specific" };
@@ -9,21 +13,18 @@ internal sealed class NodeTypeInserterFactory : DatabaseInserterFactory<NodeType
     public override string TableName => "node_type";
 
 }
-internal sealed class NodeTypeInserter : DatabaseInserter<NodeType>
+internal sealed class NodeTypeInserter : IdentifiableDatabaseInserter<Request>
 {
     public NodeTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(NodeType item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(NodeTypeInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(NodeTypeInserterFactory.Name, item.Name),
-            ParameterValue.Create(NodeTypeInserterFactory.Description, item.Description),
-            ParameterValue.Create(NodeTypeInserterFactory.AuthorSpecific, item.AuthorSpecific),
+            ParameterValue.Create(Factory.Name, request.Name),
+            ParameterValue.Create(Factory.Description, request.Description),
+            ParameterValue.Create(Factory.AuthorSpecific, request.AuthorSpecific),
         };
     }
 }

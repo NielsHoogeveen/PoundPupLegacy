@@ -1,25 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PublishingUserGroupInserterFactory : DatabaseInserterFactory<PublishingUserGroup, PublishingUserGroupInserter>
+
+using Factory = PublishingUserGroupInserterFactory;
+using Request = PublishingUserGroup;
+using Inserter = PublishingUserGroupInserter;
+
+internal sealed class PublishingUserGroupInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter PublicationStatusIdDefault = new() { Name = "publication_status_id_default" };
 
     public override string TableName => "publishing_user_group";
 }
-internal sealed class PublishingUserGroupInserter : DatabaseInserter<PublishingUserGroup>
+internal sealed class PublishingUserGroupInserter : IdentifiableDatabaseInserter<Request>
 {
 
     public PublishingUserGroupInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(PublishingUserGroup item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(PublishingUserGroupInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(PublishingUserGroupInserterFactory.PublicationStatusIdDefault, item.PublicationStatusIdDefault),
+            ParameterValue.Create(Factory.PublicationStatusIdDefault, request.PublicationStatusIdDefault),
         };
     }
 }

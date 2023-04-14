@@ -1,21 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-public class PrincipalInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Principal, PrincipalInserter>
-{
-    internal static AutoGenerateIntegerDatabaseParameter Id = new() { Name = "id" };
+using Factory = PrincipalInserterFactory;
+using Request = Principal;
+using Inserter = PrincipalInserter;
 
+public class PrincipalInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request, Inserter>
+{
     public override string TableName => "principal";
 }
-public class PrincipalInserter : ConditionalAutoGenerateIdDatabaseInserter<Principal>
+public class PrincipalInserter : ConditionalAutoGenerateIdDatabaseInserter<Request>
 {
     public PrincipalInserter(NpgsqlCommand command, NpgsqlCommand autoGenerateIdCommand) : base(command, autoGenerateIdCommand)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Principal item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(PrincipalInserterFactory.Id, item.Id)
         };
     }
 }

@@ -1,26 +1,27 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class ProfessionInserterFactory : DatabaseInserterFactory<Profession, ProfessionInserter>
+
+using Factory = ProfessionInserterFactory;
+using Request = Profession;
+using Inserter = ProfessionInserter;
+
+internal sealed class ProfessionInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
 
     public override string TableName => "profession";
 
 }
-internal sealed class ProfessionInserter : DatabaseInserter<Profession>
+internal sealed class ProfessionInserter : IdentifiableDatabaseInserter<Request>
 {
 
     public ProfessionInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Profession item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(ProfessionInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(ProfessionInserterFactory.HasConcreteSubtype, item.HasConcreteSubtype),
+            ParameterValue.Create(Factory.HasConcreteSubtype, request.HasConcreteSubtype),
         };
     }
 }

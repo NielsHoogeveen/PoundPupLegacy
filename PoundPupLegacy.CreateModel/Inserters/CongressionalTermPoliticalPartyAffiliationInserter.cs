@@ -1,31 +1,28 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory : DatabaseInserterFactory<CongressionalTermPoliticalPartyAffiliation, CongressionalTermPoliticalPartyAffiliationInserter>
+
+using Factory = CongressionalTermPoliticalPartyAffiliationInserterFactory;
+using Request = CongressionalTermPoliticalPartyAffiliation;
+using Inserter = CongressionalTermPoliticalPartyAffiliationInserter;
+internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
-    internal static NonNullableIntegerDatabaseParameter CongressionalTermId = new() { Name = "congressional_term_id" };
+    internal static NullCheckingIntegerDatabaseParameter CongressionalTermId = new() { Name = "congressional_term_id" };
     internal static NonNullableIntegerDatabaseParameter UnitedStatesPoliticalPartyAffiliationId = new() { Name = "united_states_political_party_affiliation_id" };
     internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
 
     public override string TableName => "congressional_term_political_party_affiliation";
 }
-internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : DatabaseInserter<CongressionalTermPoliticalPartyAffiliation>
+internal sealed class CongressionalTermPoliticalPartyAffiliationInserter : IdentifiableDatabaseInserter<Request>
 {
 
     public CongressionalTermPoliticalPartyAffiliationInserter(NpgsqlCommand command) : base(command)
     {
     }
-    protected override IEnumerable<ParameterValue> GetParameterValues(CongressionalTermPoliticalPartyAffiliation item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
-        if (item.CongressionalTermId is null)
-            throw new NullReferenceException();
-
         return new ParameterValue[] {
-            ParameterValue.Create(CongressionalTermPoliticalPartyAffiliationInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(CongressionalTermPoliticalPartyAffiliationInserterFactory.CongressionalTermId, item.CongressionalTermId.Value),
-            ParameterValue.Create(CongressionalTermPoliticalPartyAffiliationInserterFactory.UnitedStatesPoliticalPartyAffiliationId, item.PoliticalPartyAffiliationId),
-            ParameterValue.Create(CongressionalTermPoliticalPartyAffiliationInserterFactory.DateRange, item.DateTimeRange),
+            ParameterValue.Create(Factory.CongressionalTermId, request.CongressionalTermId),
+            ParameterValue.Create(Factory.UnitedStatesPoliticalPartyAffiliationId, request.PoliticalPartyAffiliationId),
+            ParameterValue.Create(Factory.DateRange, request.DateTimeRange),
         };
     }
 }

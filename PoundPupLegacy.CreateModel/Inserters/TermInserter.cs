@@ -1,27 +1,32 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class TermInserterFactory : AutoGenerateIdDatabaseInserterFactory<Term, TermInserter>
+
+using Factory = TermInserterFactory;
+using Request = Term;
+using Inserter = TermInserter;
+
+internal sealed class TermInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request, Inserter>
 {
     internal static NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static TrimmingNonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static NonNullableIntegerDatabaseParameter NameableId = new() { Name = "nameable_id" };
 
     public override string TableName => "term";
 
 
 }
-internal sealed class TermInserter : AutoGenerateIdDatabaseInserter<Term>
+internal sealed class TermInserter : AutoGenerateIdDatabaseInserter<Request>
 {
 
     public TermInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Term term)
+    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(TermInserterFactory.VocabularyId, term.VocabularyId),
-            ParameterValue.Create(TermInserterFactory.Name, term.Name.Trim()),
-            ParameterValue.Create(TermInserterFactory.NameableId, term.NameableId)
+            ParameterValue.Create(Factory.VocabularyId, request.VocabularyId),
+            ParameterValue.Create(Factory.Name, request.Name),
+            ParameterValue.Create(Factory.NameableId, request.NameableId)
         };
     }
 }

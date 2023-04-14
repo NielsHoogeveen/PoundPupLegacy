@@ -2,17 +2,19 @@
 
 public sealed record BasicNodeType : NodeType
 {
-    public int? Id { get; set; }
-    public string Name { get; }
-    public string Description { get; }
+    public required int? Id { get; set; }
+    public required string Name { get; init; }
+    public required string Description { get; init; }
 
-    public bool AuthorSpecific { get; }
+    public required bool AuthorSpecific { get; init; }
 
-    public BasicNodeType(int id, string name, string description, bool authorSpecific)
+    public static BasicNodeType Create(int id, string name, string description, bool authorSpecific)
     {
-        Id = id;
-        Name = name;
-        Description = description;
-        AuthorSpecific = authorSpecific;
+        return new BasicNodeType {
+            Id = id,
+            Name = name,
+            Description = description,
+            AuthorSpecific = authorSpecific
+        };
     }
 }

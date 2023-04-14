@@ -1,26 +1,28 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class ActionMenuItemInserterFactory : DatabaseInserterFactory<ActionMenuItem, ActionMenuItemInserter>
+
+using Factory = ActionMenuItemInserterFactory;
+using Request = ActionMenuItem;
+using Inserter = ActionMenuItemInserter;
+
+internal sealed class ActionMenuItemInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    internal static TrimmingNonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static NonNullableIntegerDatabaseParameter ActionId = new() { Name = "action_id" };
 
     public override string TableName => "action_menu_item";
 
 }
-internal sealed class ActionMenuItemInserter : DatabaseInserter<ActionMenuItem>
+internal sealed class ActionMenuItemInserter : IdentifiableDatabaseInserter<Request>
 {
     public ActionMenuItemInserter(NpgsqlCommand command) : base(command)
     {
     }
-    protected override IEnumerable<ParameterValue> GetParameterValues(ActionMenuItem item)
+
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(ActionMenuItemInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(ActionMenuItemInserterFactory.Name, item.Name.Trim()),
-            ParameterValue.Create(ActionMenuItemInserterFactory.ActionId, item.ActionId)
+            ParameterValue.Create(Factory.Name, request.Name),
+            ParameterValue.Create(Factory.ActionId, request.ActionId)
         };
     }
 }

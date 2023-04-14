@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class CountryInserterFactory : DatabaseInserterFactory<Country, CountryInserter>
+
+using Factory = CountryInserterFactory;
+using Request = Country;
+using Inserter = CountryInserter;
+
+internal sealed class CountryInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter HagueStatusId = new() { Name = "hague_status_id" };
     internal static NullableStringDatabaseParameter ResidencyRequirements = new() { Name = "residency_requirements" };
     internal static NullableStringDatabaseParameter AgeRequirements = new() { Name = "age_requirements" };
@@ -13,26 +17,23 @@ internal sealed class CountryInserterFactory : DatabaseInserterFactory<Country, 
     public override string TableName => "country";
 
 }
-internal sealed class CountryInserter : DatabaseInserter<Country>
+internal sealed class CountryInserter : IdentifiableDatabaseInserter<Request>
 {
 
     public CountryInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(Country item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(CountryInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(CountryInserterFactory.HagueStatusId, item.HagueStatusId),
-            ParameterValue.Create(CountryInserterFactory.ResidencyRequirements, item.ResidencyRequirements),
-            ParameterValue.Create(CountryInserterFactory.AgeRequirements, item.AgeRequirements),
-            ParameterValue.Create(CountryInserterFactory.MarriageRequirements, item.MarriageRequirements),
-            ParameterValue.Create(CountryInserterFactory.IncomeRequirements, item.IncomeRequirements),
-            ParameterValue.Create(CountryInserterFactory.HealthRequirements, item.HealthRequirements),
-            ParameterValue.Create(CountryInserterFactory.OtherRequirements, item.OtherRequirements),
+            ParameterValue.Create(Factory.HagueStatusId, request.HagueStatusId),
+            ParameterValue.Create(Factory.ResidencyRequirements, request.ResidencyRequirements),
+            ParameterValue.Create(Factory.AgeRequirements, request.AgeRequirements),
+            ParameterValue.Create(Factory.MarriageRequirements, request.MarriageRequirements),
+            ParameterValue.Create(Factory.IncomeRequirements, request.IncomeRequirements),
+            ParameterValue.Create(Factory.HealthRequirements, request.HealthRequirements),
+            ParameterValue.Create(Factory.OtherRequirements, request.OtherRequirements),
         };
     }
 }

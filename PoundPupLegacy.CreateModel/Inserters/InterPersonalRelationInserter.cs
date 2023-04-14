@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class InterPersonalRelationInserterFactory : DatabaseInserterFactory<InterPersonalRelation, InterPersonalRelationInserter>
+
+using Factory = InterPersonalRelationInserterFactory;
+using Request = InterPersonalRelation;
+using Inserter = InterPersonalRelationInserter;
+
+internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableIntegerDatabaseParameter PersonIdFrom = new() { Name = "person_id_from" };
     internal static NonNullableIntegerDatabaseParameter PersonIdTo = new() { Name = "person_id_to" };
     internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
@@ -11,23 +15,20 @@ internal sealed class InterPersonalRelationInserterFactory : DatabaseInserterFac
     public override string TableName => "inter_personal_relation";
 
 }
-internal sealed class InterPersonalRelationInserter : DatabaseInserter<InterPersonalRelation>
+internal sealed class InterPersonalRelationInserter : IdentifiableDatabaseInserter<Request>
 {
     public InterPersonalRelationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(InterPersonalRelation item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(InterPersonalRelationInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(InterPersonalRelationInserterFactory.PersonIdFrom, item.PersonIdFrom),
-            ParameterValue.Create(InterPersonalRelationInserterFactory.PersonIdTo, item.PersonIdTo),
-            ParameterValue.Create(InterPersonalRelationInserterFactory.InterPersonalRelationTypeId, item.InterPersonalRelationTypeId),
-            ParameterValue.Create(InterPersonalRelationInserterFactory.DateRange, item.DateRange),
-            ParameterValue.Create(InterPersonalRelationInserterFactory.DocumentIdProof, item.DocumentIdProof),
+            ParameterValue.Create(Factory.PersonIdFrom, request.PersonIdFrom),
+            ParameterValue.Create(Factory.PersonIdTo, request.PersonIdTo),
+            ParameterValue.Create(Factory.InterPersonalRelationTypeId, request.InterPersonalRelationTypeId),
+            ParameterValue.Create(Factory.DateRange, request.DateRange),
+            ParameterValue.Create(Factory.DocumentIdProof, request.DocumentIdProof),
         };
     }
 }

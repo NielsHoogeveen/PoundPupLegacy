@@ -1,24 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class InterPersonalRelationTypeInserterFactory : DatabaseInserterFactory<InterPersonalRelationType, InterPersonalRelationTypeInserter>
+
+using Factory = InterPersonalRelationTypeInserterFactory;
+using Request = InterPersonalRelationType;
+using Inserter = InterPersonalRelationTypeInserter;
+
+internal sealed class InterPersonalRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
 
     public override string TableName => "inter_personal_relation_type";
 }
-internal sealed class InterPersonalRelationTypeInserter : DatabaseInserter<InterPersonalRelationType>
+internal sealed class InterPersonalRelationTypeInserter : IdentifiableDatabaseInserter<Request>
 {
     public InterPersonalRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(InterPersonalRelationType item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-                   ParameterValue.Create(InterPersonalRelationTypeInserterFactory.Id, item.Id.Value),
-                   ParameterValue.Create(InterPersonalRelationTypeInserterFactory.IsSymmetric, item.IsSymmetric),
-               };
+            ParameterValue.Create(Factory.IsSymmetric, request.IsSymmetric),
+        };
     }
 }

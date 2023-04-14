@@ -1,24 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UnitedStatesPoliticalPartyAffliationInserterFactory : DatabaseInserterFactory<UnitedStatesPoliticalPartyAffliation, UnitedStatesPoliticalPartyAffliationInserter>
+
+using Factory = UnitedStatesPoliticalPartyAffliationInserterFactory;
+using Request = UnitedStatesPoliticalPartyAffliation;
+using Inserter = UnitedStatesPoliticalPartyAffliationInserter;
+
+internal sealed class UnitedStatesPoliticalPartyAffliationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableIntegerDatabaseParameter UnitedStatsPoliticalPartyId = new() { Name = "united_states_political_party_id" };
 
     public override string TableName => "united_states_political_party_affiliation";
 }
-internal sealed class UnitedStatesPoliticalPartyAffliationInserter : DatabaseInserter<UnitedStatesPoliticalPartyAffliation>
+internal sealed class UnitedStatesPoliticalPartyAffliationInserter : IdentifiableDatabaseInserter<Request>
 {
     public UnitedStatesPoliticalPartyAffliationInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(UnitedStatesPoliticalPartyAffliation item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(UnitedStatesPoliticalPartyAffliationInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(UnitedStatesPoliticalPartyAffliationInserterFactory.UnitedStatsPoliticalPartyId, item.UnitedStatesPoliticalPartyId),
+            ParameterValue.Create(Factory.UnitedStatsPoliticalPartyId, request.UnitedStatesPoliticalPartyId),
         };
     }
 }

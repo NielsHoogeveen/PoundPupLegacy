@@ -1,30 +1,28 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class SenateTermInserterFactory : DatabaseInserterFactory<SenateTerm, SenateTermInserter>
+
+using Factory = SenateTermInserterFactory;
+using Request = SenateTerm;
+using Inserter = SenateTermInserter;
+internal sealed class SenateTermInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
-    internal static NonNullableIntegerDatabaseParameter SenatorId = new() { Name = "senator_id" };
+    internal static NullCheckingIntegerDatabaseParameter SenatorId = new() { Name = "senator_id" };
     internal static NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
     internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
 
     public override string TableName => "senate_term";
 }
-internal sealed class SenateTermInserter : DatabaseInserter<SenateTerm>
+internal sealed class SenateTermInserter : IdentifiableDatabaseInserter<Request>
 {
     public SenateTermInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(SenateTerm item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
-        if (item.SenatorId is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(SenateTermInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(SenateTermInserterFactory.SenatorId, item.SenatorId.Value),
-            ParameterValue.Create(SenateTermInserterFactory.SubdivisionId, item.SubdivisionId),
-            ParameterValue.Create(SenateTermInserterFactory.DateRange, item.DateTimeRange),
+            ParameterValue.Create(Factory.SenatorId, request.SenatorId),
+            ParameterValue.Create(Factory.SubdivisionId, request.SubdivisionId),
+            ParameterValue.Create(Factory.DateRange, request.DateTimeRange),
         };
     }
 }

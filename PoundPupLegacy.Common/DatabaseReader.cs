@@ -3,7 +3,7 @@ using System.Data;
 
 namespace PoundPupLegacy.Common
 {
-    public interface IDatabaseReaderFactory {
+    public interface IDatabaseReaderFactory: IDatabaseAccessorFactory {
         string Sql { get; }
     }
     public interface IDatabaseReaderFactory<TRequest, TResponse> : IDatabaseReaderFactory

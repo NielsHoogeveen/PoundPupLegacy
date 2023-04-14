@@ -1,24 +1,25 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class PersonOrganizationRelationTypeInserterFactory : DatabaseInserterFactory<PersonOrganizationRelationType, PersonOrganizationRelationTypeInserter>
+
+using Factory = PersonOrganizationRelationTypeInserterFactory;
+using Request = PersonOrganizationRelationType;
+using Inserter = PersonOrganizationRelationTypeInserter;
+
+internal sealed class PersonOrganizationRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
 
     public override string TableName => "person_organization_relation_type";
 }
-internal sealed class PersonOrganizationRelationTypeInserter : DatabaseInserter<PersonOrganizationRelationType>
+internal sealed class PersonOrganizationRelationTypeInserter : IdentifiableDatabaseInserter<Request>
 {
     public PersonOrganizationRelationTypeInserter(NpgsqlCommand command) : base(command)
     {
     }
 
-    protected override IEnumerable<ParameterValue> GetParameterValues(PersonOrganizationRelationType item)
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
-        if (item.Id is null)
-            throw new NullReferenceException();
         return new ParameterValue[] {
-            ParameterValue.Create(PersonOrganizationRelationTypeInserterFactory.Id, item.Id.Value),
-            ParameterValue.Create(PersonOrganizationRelationTypeInserterFactory.HasConcreteSubtype, item.HasConcreteSubtype),
+            ParameterValue.Create(Factory.HasConcreteSubtype, request.HasConcreteSubtype),
         };
     }
 }

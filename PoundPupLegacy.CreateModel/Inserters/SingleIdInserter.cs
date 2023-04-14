@@ -4,7 +4,7 @@ namespace PoundPupLegacy.CreateModel.Inserters;
 
 internal static class SingleIdInserterFactory
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    internal static NullCheckingIntegerDatabaseParameter Id = new() { Name = "id" };
 }
 internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
     where T : Identifiable
@@ -97,21 +97,21 @@ internal sealed class SingleIdInserter<T> : DatabaseAccessor<T>, IDatabaseInsert
 
     protected override IEnumerable<ParameterValue> GetParameterValues(T request)
     {
-        if (request.Id is null)
-            throw new NullReferenceException($"Id for {_tableName} should not be null");
-        return new ParameterValue[] { ParameterValue.Create(SingleIdInserterFactory.Id, request.Id.Value) };
+        return new ParameterValue[] { ParameterValue.Create(SingleIdInserterFactory.Id, request.Id) };
     }
 
-    public async Task InsertAsync(T identifiable)
+    public async Task InsertAsync(T request)
     {
         if (!_autoGenerateIdentity) {
-            foreach(var parameterValue in GetParameterValues(identifiable)) {
+            foreach (var parameterValue in GetParameterValues(request)) {
                 parameterValue.Set(_command);
             }
             await _command.ExecuteNonQueryAsync();
         }
         else {
-            identifiable.Id = await _command.ExecuteScalarAsync() switch {
+            if (request.Id is not null)
+                throw new Exception($"Id should be null when adding a {_tableName}");
+            request.Id = await _command.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception($"No id has been assigned when adding a {_tableName}"),
             };
