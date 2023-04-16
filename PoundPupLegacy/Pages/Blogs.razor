@@ -5,16 +5,9 @@
 @inherits Page
 @inject IFetchBlogsService fetchBlogsService
 
-@if (CanAccessPage)
+@if (blogs.Any())
 {
-    @if (blogs.Any())
-    {
-        <BlogsViewer Model="@blogs" />
-    }
-
-}
-else {
-    <NoAccess/>
+    <BlogsViewer Model="@blogs" />
 }
 
 @code{

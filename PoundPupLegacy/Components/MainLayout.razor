@@ -4,6 +4,7 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IUserService UserService
+@inject NotFoundListener NotFoundListener
 
 <PageTitle>Pound Pup Legacy</PageTitle>
 <CascadingValue Value="UserId" Name="UserId">
@@ -12,7 +13,14 @@
         <div class="main">
             <UserMenu />
             <content>
-                @Body
+                @if (notFound)
+                {
+                    <NotFound />
+                }
+                else
+                {
+                    @Body
+                }
             </content>
         </div>
         <footer>
@@ -43,6 +51,17 @@
 @code{
     private int TenantId { get; set; }
     private int UserId { get; set; }
+
+    private bool notFound;
+
+    protected override void OnInitialized() => NotFoundListener.OnNotFound += SetNotFound;
+
+    void SetNotFound()
+    {
+        notFound = true;
+        StateHasChanged();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         var uri = new Uri(NavigationManager.Uri);

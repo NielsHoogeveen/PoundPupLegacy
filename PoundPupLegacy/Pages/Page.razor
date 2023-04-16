@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.Services
 @inject ISiteDataService SiteDataService
+@inject NotFoundListener NotFoundListener;
 @code {
 
     protected bool CanAccessPage { get; set; } = false;
@@ -16,6 +17,9 @@
         var routeAttribute = this.GetType().GetCustomAttributes(true).OfType<Microsoft.AspNetCore.Components.RouteAttribute>().FirstOrDefault()?.Template;
         if(routeAttribute is not null) {
             CanAccessPage = SiteDataService.HasAccess(UserId, TenantId, routeAttribute);
+        }
+        if (!CanAccessPage) {
+            NotFoundListener.NotifyNotFound();            
         }
         await OnInitializedPageAsync();
     }

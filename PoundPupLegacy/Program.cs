@@ -29,6 +29,7 @@ public sealed class Program
                         configureApplicationInsightsLoggerOptions: (options) => { }
                     );
         });
+        builder.Services.AddScoped<NotFoundListener>();
         builder.Services.AddSignalR(e => {
             e.MaximumReceiveMessageSize = 102400000;
         });
