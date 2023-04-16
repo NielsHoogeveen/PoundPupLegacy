@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.EditModel.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Common.Test", "PoundPupLegacy.Common.Test\PoundPupLegacy.Common.Test.csproj", "{8AE59774-E07C-4BEE-8313-350DB4D67C65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.Meta", "PoundPupLegacy.Meta\PoundPupLegacy.Meta.csproj", "{95A50A6C-9423-42F9-AEE8-DB93994C8456}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Generators", "PoundPupLegacy.Generators\PoundPupLegacy.Generators.csproj", "{D3B99504-DCAB-40CF-A51C-2D88EAE9DAEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,10 +77,10 @@ Global
 		{8AE59774-E07C-4BEE-8313-350DB4D67C65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AE59774-E07C-4BEE-8313-350DB4D67C65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AE59774-E07C-4BEE-8313-350DB4D67C65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95A50A6C-9423-42F9-AEE8-DB93994C8456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95A50A6C-9423-42F9-AEE8-DB93994C8456}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95A50A6C-9423-42F9-AEE8-DB93994C8456}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95A50A6C-9423-42F9-AEE8-DB93994C8456}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3B99504-DCAB-40CF-A51C-2D88EAE9DAEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3B99504-DCAB-40CF-A51C-2D88EAE9DAEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3B99504-DCAB-40CF-A51C-2D88EAE9DAEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3B99504-DCAB-40CF-A51C-2D88EAE9DAEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
