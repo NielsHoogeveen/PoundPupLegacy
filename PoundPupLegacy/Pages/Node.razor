@@ -1,0 +1,39 @@
+﻿@page "/node/{Id:int}"
+@using PoundPupLegacy.ViewModel.Models
+@using PoundPupLegacy.Components
+@using PoundPupLegacy.Services
+@inject IFetchNodeService NodeDataService
+
+@if (_node is not null)
+{
+    <CascadingValue Value="@Id" Name="NodeId">
+        <CascadingValue Value="@_node.UrlId" Name="UrlId">
+            @if(UserId == 0) 
+            {
+                <NodeViewerNotSignedIn Model="@_node" />
+            }
+            else {
+                <NodeViewerSignedIn Model="@_node" />
+            }
+        </CascadingValue>
+    </CascadingValue>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [CascadingParameter(Name="UserId")]
+    public int UserId { get; set; }
+
+    [CascadingParameter(Name = "TenantId")]
+    public int TenantId { get; set; }
+
+
+    private ViewModel.Models.Node? _node;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _node = await NodeDataService.FetchNode(Id, UserId, TenantId);
+    }
+}

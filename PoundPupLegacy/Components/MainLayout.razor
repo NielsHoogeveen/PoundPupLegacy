@@ -1,0 +1,71 @@
+﻿@using PoundPupLegacy.Services
+@inherits LayoutComponentBase
+@inject ISiteDataService SiteDataService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService UserService
+
+<PageTitle>Pound Pup Legacy</PageTitle>
+<CascadingValue Value="UserId" Name="UserId">
+    <CascadingValue Value="TenantId" Name="TenantId">
+        <PPLPageHeader />
+        <div class="main">
+            <UserMenu />
+            <content>
+                @if (HasAccess)
+                {
+                    @Body
+                }
+                else 
+                {
+                    <p>Sorry, you do not have access to this page.</p>
+                }
+            </content>
+        </div>
+        <footer>
+            <ul>
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/about_us">About Us</a>
+                </li>
+                <li>
+                    <a href="/our_position">Our Position </a>
+                </li>
+                <li>
+                    <a href="/faq">FAQ</a>
+                </li>
+                <li>
+                    <a href="/ways_to_help">Ways to help</a>
+                </li>
+                <li>
+                    <a href="/contact">Contact</a>
+                </li>
+            </ul>
+            <h2>Pound Pup Legacy</h2>
+        </footer>
+    </CascadingValue>
+</CascadingValue>
+@code{
+    private int TenantId { get; set; }
+    private int UserId { get; set; }
+    private bool HasAccess { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        TenantId = SiteDataService.GetTenantId(uri);
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity is not null) 
+        {
+            UserId = UserService.GetUserId(authState.User);
+        }
+        else
+        {
+            UserId = 0;
+        }
+        HasAccess = SiteDataService.HasAccess(UserId, TenantId, uri);
+    }
+}
+

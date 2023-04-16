@@ -18,14 +18,14 @@ public sealed class BlogsController : Controller
         _siteDataService = siteDataService;
         _userService = userService;
     }
-    public async Task<IActionResult> Index()
-    {
-        var userId = _userService.GetUserId(HttpContext.User);
-        var tenantId = _siteDataService.GetTenantId(Request);
-        if (!_siteDataService.HasAccess(userId, tenantId, Request)) {
-            return NotFound();
-        }
-        var model = await _fetchBlogsService.FetchBlogs(tenantId);
-        return View("Blogs", model);
-    }
+    //public async Task<IActionResult> Index()
+    //{
+    //    var userId = _userService.GetUserId(HttpContext.User);
+    //    var tenantId = _siteDataService.GetTenantId(Request);
+    //    if (!_siteDataService.HasAccess(userId, tenantId, Request)) {
+    //        return NotFound();
+    //    }
+    //    var model = await _fetchBlogsService.FetchBlogs(tenantId);
+    //    return View("Blogs", model);
+    //}
 }

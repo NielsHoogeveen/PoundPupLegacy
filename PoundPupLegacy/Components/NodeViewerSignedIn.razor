@@ -77,8 +77,6 @@
                 <article>
                    <CascadingValue Value="@Model.NodeId" Name="NodeId">
                        <CascadingValue Value="@Model.UrlId" Name="UrlId">
-                            <CascadingValue Value="@UserId" Name="UserId">
-                                <CascadingValue Value="@TenantId" Name="TenantId">
                                 @if (Model is BlogPost)
                                 {
                                     <BlogPostEditor/>
@@ -100,8 +98,6 @@
                                 }
                                 </CascadingValue>
                             </CascadingValue>
-                        </CascadingValue>
-                    </CascadingValue>
                 </article>
             </div>
         }
@@ -113,10 +109,10 @@
     [Parameter]
     public Node? Model { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name="UserId")]
     public int UserId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "TenantId")]
     public int TenantId { get; set; }
 
     private DisplayMode displayMode = DisplayMode.View;

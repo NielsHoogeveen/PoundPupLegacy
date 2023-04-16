@@ -1,0 +1,22 @@
+﻿@page "/blogs"
+@using PoundPupLegacy.Services
+@using PoundPupLegacy.ViewModel.Models
+@using PoundPupLegacy.Components
+@inject IFetchBlogsService fetchBlogsService
+
+@if (blogs.Any()) {
+    <BlogsViewer Model="@blogs" />
+}
+
+@code{
+    private List<BlogListEntry> blogs = new List<BlogListEntry>();
+
+
+    [CascadingParameter(Name = "TenantId")]
+    public int TenantId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        blogs = await fetchBlogsService.FetchBlogs(TenantId);
+    }
+}

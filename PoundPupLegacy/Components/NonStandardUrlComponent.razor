@@ -1,0 +1,33 @@
+﻿@using PoundPupLegacy.Services
+@using PoundPupLegacy.ViewModel.Models
+@inject ICongressionalDataService CongressionalDataService
+@inject ISiteDataService SiteDataService
+@inject NavigationManager NavigationManager
+
+@if (_congressionalMeetingChamber is not null)
+{
+    <CongressionalMeetingChamberViewer Model="@_congressionalMeetingChamber" />
+}
+@if(_nodeId is not null)
+{
+    <PoundPupLegacy.Pages.Node Id="@_nodeId.Value" />
+}
+@if(_nodeId is null && _congressionalMeetingChamber is null)
+{
+    <h1>Page Not Found</h1>
+}
+@code {
+
+    private CongressionalMeetingChamber? _congressionalMeetingChamber;
+
+    private int? _nodeId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var urlPath = new Uri(NavigationManager.Uri).AbsolutePath;
+        var tenantId = SiteDataService.GetTenantId(new Uri(NavigationManager.Uri));
+        _congressionalMeetingChamber = await CongressionalDataService.GetCongressionalMeetingChamber(urlPath);
+
+        _nodeId = SiteDataService.GetIdForUrlPath(urlPath, tenantId);
+    }
+}

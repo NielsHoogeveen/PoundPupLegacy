@@ -123,6 +123,25 @@ internal sealed class SiteDataService : ISiteDataService
         );
     }
 
+    public bool HasAccess(int userId, int tenantId, Uri uri)
+    {
+        var path = uri.AbsolutePath;
+        if(path == "/") {
+            return true;
+        }
+        if (path.StartsWith("/node/")) {
+            return true;
+        }
+        return _data.UserTenantActions.Contains(
+            new UserTenantAction {
+                UserId = userId,
+                TenantId = tenantId,
+                Action = path
+            }
+        );
+    }
+
+
     public int GetTenantId(HttpRequest httpRequest)
     {
         var domainName = httpRequest.Host.Value;
@@ -135,11 +154,36 @@ internal sealed class SiteDataService : ISiteDataService
         }
         return 1;
     }
+    public int GetTenantId(Uri uri)
+    {
+        var domainName = uri.Host;
+        if (domainName == "localhost:7141") {
+            return 1;
+        }
+        var tenant = _data.Tenants.Find(x => x.DomainName == domainName);
+        if (tenant is not null) {
+            return tenant.Id;
+        }
+        return 1;
+    }
+
+    public int? GetIdForUrlPath(string urlPath, int tenantId)
+    {
+        var tenant = _data.Tenants.Find(x => x.Id == tenantId);
+        if (tenant is null) {
+            throw new NullReferenceException("Tenant should not be null");
+        }
+        if (tenant.UrlToId.TryGetValue(urlPath[1..], out var urlId)) {
+            return urlId;
+        }
+        return null;
+    }
+
 
     public int? GetIdForUrlPath(HttpRequest httpRequest)
     {
         var tenantId = GetTenantId(httpRequest);
-        var urlPath = httpRequest.Path.Value!.Substring(1);
+        var urlPath = httpRequest.Path.Value![1..];
         var tenant = _data.Tenants.Find(x => x.Id == tenantId);
         if (tenant is null) {
             throw new NullReferenceException("Tenant should not be null");

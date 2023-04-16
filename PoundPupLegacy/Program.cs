@@ -3,6 +3,7 @@ using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Middleware;
 using PoundPupLegacy.Services;
+using PoundPupLegacy.Services.Implementation;
 using Quartz;
 using System.Data;
 
@@ -31,6 +32,7 @@ public sealed class Program
         builder.Services.AddSignalR(e => {
             e.MaximumReceiveMessageSize = 102400000;
         });
+        builder.Services.AddRazorPages();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddTransient<IDbConnection>((sp) => {
@@ -92,16 +94,18 @@ public sealed class Program
 
         app.UseCustomMiddleware();
 
+        app.MapBlazorHub();
+        app.MapFallbackToPage("/_Host");
+
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
-        app.MapControllerRoute(
-           name: "all-else",
-           pattern: "{*url}",
-           defaults: new { controller = "Home", action = "AllElse" });
+        //app.MapControllerRoute(
+        //   name: "all-else",
+        //   pattern: "{*url}",
+        //   defaults: new { controller = "Home", action = "AllElse" });
 
-        app.MapBlazorHub();
 
         var res = app.Services.GetService<ISiteDataService>();
         if (res != null) {

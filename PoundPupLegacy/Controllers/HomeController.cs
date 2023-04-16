@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using PoundPupLegacy.Services;
 using PoundPupLegacy.ViewModel.Models;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -11,62 +10,14 @@ namespace PoundPupLegacy.Controllers;
 
 public sealed class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
     private readonly IAuthenticationService _authenticationService;
-    private readonly ISiteDataService _siteDataService;
-    private readonly INodeCacheService _nodeCacheService;
-    private readonly ICongressionalDataService _congressionalDataService;
-    private readonly IUserService _userService;
 
     public HomeController(
-        ILogger<HomeController> logger,
-        IAuthenticationService authenticationService,
-        ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
-        ICongressionalDataService congressionalDataService,
-        IUserService userService)
+        IAuthenticationService authenticationService)
     {
-        _logger = logger;
         _authenticationService = authenticationService;
-        _siteDataService = siteDataService;
-        _nodeCacheService = nodeCacheService;
-        _congressionalDataService = congressionalDataService;
-        _userService = userService;
     }
 
-    public IActionResult Index()
-    {
-        var bla = HttpContext.Items["UserMenu"];
-        return View();
-    }
-
-    public async Task<IActionResult> AllElse()
-    {
-        var stopwatch = new Stopwatch();
-        if (Request.Path == "/NotFound") {
-            return View("NotFound");
-        }
-
-        stopwatch.Start();
-
-        var congressionalMeetingChamber = await _congressionalDataService.GetCongressionalMeetingChamberResult(HttpContext);
-        if (congressionalMeetingChamber is not null) {
-            return new ContentResult {
-                Content = congressionalMeetingChamber,
-                ContentType = "text/html"
-            };
-        }
-        var urlId = _siteDataService.GetIdForUrlPath(Request);
-        if (urlId is null) {
-            return NotFound();
-        }
-        var id = urlId.Value;
-        var userId = _userService.GetUserId(HttpContext.User);
-        var tenantId = _siteDataService.GetTenantId(Request);
-        var result = await _nodeCacheService.GetResult(id, userId, tenantId, HttpContext);
-        _logger.LogInformation($"Fetched node {id} in {stopwatch.Elapsed.TotalMilliseconds} ms");
-        return result;
-    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

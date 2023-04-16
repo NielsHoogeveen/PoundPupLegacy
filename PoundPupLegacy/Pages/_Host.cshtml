@@ -1,0 +1,60 @@
+﻿@page "/"
+@using PoundPupLegacy
+@using PoundPupLegacy.Services
+@using Microsoft.AspNetCore.Components.Web
+@namespace BlazorAppTestRenderModes.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IUserService UserService
+@inject ISiteDataService SiteDataService
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Rosario:wght@515&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=BhuTuka+Expanded+One&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL_Y-3alaKm4UQqh9nxsOuVrR_LCxmGNU&callback=initMap&v=weekly" defer></script>
+    <script src="~/js/site.js"></script>
+    <link href="/css/ppl.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" asp-append-version="true" />
+    @if (HttpContext.User.Identity is not null && HttpContext.User.Identity.IsAuthenticated) 
+    {
+        <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+        <script src="/js/ckeditor.js"></script>
+        <script src="/js/editor.js"></script>
+    }
+    else 
+    {
+        <component type="typeof(HeadOutlet)" render-mode="Static" />
+    }
+</head>
+<body>
+    @if (HttpContext.User.Identity is not null && HttpContext.User.Identity.IsAuthenticated) 
+    {
+        <component type="typeof(App)" render-mode="ServerPrerendered" />
+        <div id="blazor-error-ui">
+            <environment include="Staging,Production">
+                An error has occurred. This application may no longer respond until reloaded.
+            </environment>
+            <environment include="Development">
+                An unhandled exception has occurred. See browser dev tools for details.
+            </environment>
+            <a href="" class="reload">Reload</a>
+            <a class="dismiss">🗙</a>
+        </div>
+
+        <script src="_framework/blazor.server.js"></script>
+    }
+    else 
+    {
+        <component type="typeof(App)" render-mode="Static"/>
+    }
+
+</body>
+</html>
