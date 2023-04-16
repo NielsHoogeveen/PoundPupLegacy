@@ -717,3 +717,9 @@ input[type=file] {
 .editor-section{
     border-bottom: solid 1px #838383;
 }
+.country-flag {
+    width: auto;
+    height: 2em;
+    margin-bottom: 0.5em;
+    border: solid 1px #aaa
+}

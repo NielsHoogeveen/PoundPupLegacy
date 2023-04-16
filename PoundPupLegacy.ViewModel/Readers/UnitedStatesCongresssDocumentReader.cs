@@ -4,6 +4,7 @@ using Request = UnitedStatesCongresssDocumentReaderRequest;
 using Factory = UnitedStatesCongresssDocumentReaderFactory;
 using Reader = UnitedStatesCongresssDocumentReader;
 using PoundPupLegacy.Common;
+using PoundPupLegacy.ViewModel.Models;
 
 public sealed record UnitedStatesCongresssDocumentReaderRequest : IRequest
 {

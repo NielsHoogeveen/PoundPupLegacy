@@ -1,0 +1,12 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+
+@if(Model is not null) 
+{
+    <DocumentsViewer Model="@Model.Documents" />
+}
+
+@code {
+    [Parameter]
+    public Documentable? Model { get; set; }
+
+}

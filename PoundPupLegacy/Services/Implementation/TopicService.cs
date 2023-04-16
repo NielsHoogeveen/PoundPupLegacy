@@ -1,9 +1,9 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.ViewModel;
+using PoundPupLegacy.ViewModel.Models;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
-using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
+using SearchOption = PoundPupLegacy.ViewModel.Models.SearchOption;
 
 namespace PoundPupLegacy.Services.Implementation;
 

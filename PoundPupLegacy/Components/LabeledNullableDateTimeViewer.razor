@@ -1,0 +1,19 @@
+﻿@using PoundPupLegacy.Common
+@if (Value.HasValue) {
+    <div class="labeled-value labeled-string-value">
+        <label>@Label: </label>
+        @if(Format == DateTimeFormat.YearMonthAsTextDay) {
+            @Value.Value.ToString("yyyy MMMM dd")
+        }
+    </div>
+}
+@code {
+    [Parameter]
+    public DateTime? Value { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public DateTimeFormat Format {get; set;}
+}

@@ -14,5 +14,5 @@ public sealed record HouseBill : Bill
     public required int? FileIdTileImage { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
     public required DateTime? IntroductionDate { get; init; }
-
+    public required int? ActId { get; init;  }
 }

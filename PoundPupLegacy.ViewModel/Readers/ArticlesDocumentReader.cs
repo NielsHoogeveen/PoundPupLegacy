@@ -3,6 +3,7 @@
 using Request = ArticlesDocumentReaderRequest;
 using Reader = ArticlesDocumentReader;
 using Factory = ArticlesDocumentReaderFactory;
+using PoundPupLegacy.ViewModel.Models;
 
 public sealed record ArticlesDocumentReaderRequest : IRequest
 {

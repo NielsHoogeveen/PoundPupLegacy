@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PoundPupLegacy.ViewModel.Models;
+using File = PoundPupLegacy.ViewModel.Models.File;
 
 namespace PoundPupLegacy.ViewModel.Readers;
 

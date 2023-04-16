@@ -2,7 +2,7 @@
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
-using PoundPupLegacy.ViewModel;
+using PoundPupLegacy.ViewModel.Models;
 using System.Data;
 using System.Diagnostics;
 

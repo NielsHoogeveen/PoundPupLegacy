@@ -16,14 +16,14 @@ internal sealed class AttachmentService : IAttachmentService
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<AttachmentService> _logger;
     private readonly IConfiguration _configuration;
-    private readonly ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, ViewModel.File> _fileDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, ViewModel.Models.File> _fileDocumentReaderFactory;
     private readonly IEntityCreator<File> _fileCreator;
 
     public AttachmentService(
         IDbConnection connection,
         IConfiguration configuration,
         ILogger<AttachmentService> logger,
-        ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, ViewModel.File> fileDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, ViewModel.Models.File> fileDocumentReaderFactory,
         IEntityCreator<File> fileCreator
         )
     {

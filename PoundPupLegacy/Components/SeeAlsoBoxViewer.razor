@@ -1,0 +1,17 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@if (Links.Any()) {
+    <div class="see-also-box">
+        <t2>See also</t2>
+        <ul>
+            @foreach (var elem in Links) {
+                <li><a href="@elem.Path">@elem.Name</a></li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Link[] Links { get; set; } = Array.Empty<Link>();
+
+}

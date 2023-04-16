@@ -3,6 +3,7 @@
 using Request = NodeDocumentReaderRequest;
 using Factory = NodeDocumentReaderFactory;
 using Reader = NodeDocumentReader;
+using PoundPupLegacy.ViewModel.Models;
 
 public sealed class NodeDocumentReaderRequest : IRequest
 {
@@ -2716,6 +2717,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Name', n.global_region_name
                 ),
                 'ISO3166_1_Code', iso_3166_1_code,
+                'FlagImage', json_build_object(
+                    'FilePath',
+                    '/files/flags/' || lower(iso_3166_1_code) || '.svg',
+                    'Label',
+                    n.title
+                ),
                 'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
@@ -2778,6 +2785,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ),
                 'ISO3166_1_Code', iso_3166_1_code,
                 'ISO3166_2_Code', iso_3166_2_code,
+                'FlagImage', json_build_object(
+                    'FilePath',
+                    '/files/flags/' || lower(iso_3166_1_code) || '.svg',
+                    'Label',
+                    n.title
+                ),
                 'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
@@ -2841,6 +2854,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Name', n.global_region_name
                 ),
                 'ISO3166_1_Code', iso_3166_1_code,
+                'FlagImage', json_build_object(
+                    'FilePath',
+                    '/files/flags/gb.svg'
+                    'Label',
+                    n.title
+                ),
                 'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
@@ -2903,6 +2922,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Name', n.binding_country_name
                 ),
                 'ISO3166_2_Code', iso_3166_2_code,
+                'FlagImage', json_build_object(
+                    'FilePath',
+                    '/files/flags/' || lower(iso_3166_2_code) || '.svg',
+                    'Label',
+                    n.title
+                ),
                 'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
@@ -3228,7 +3253,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Suffix', suffix,
                 'NickName', nick_name,
                 'MiddleName', middle_name,
-                'PortraitFilePath', portrait_file_path,
+                'Portrait', jsonb_build_object(
+                    'FilePath',
+                    portrait_file_path,
+                    'Label',
+                    full_name
+                ),
                 'BreadCrumElements', (SELECT document FROM organization_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -4036,6 +4066,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     when an.node_type_id = 44 then (select document from disrupted_placement_case_document)
                     when an.node_type_id = 50 then (select document from basic_nameable_document)
                     when an.node_type_id = 51 then (select document from basic_nameable_document)
+                    when an.node_type_id = 52 then (select document from basic_nameable_document)
                     when an.node_type_id = 53 then (select document from single_question_poll_document)
                     when an.node_type_id = 54 then (select document from multi_question_poll_document)
                     when an.node_type_id = 58 then (select document from basic_nameable_document)
@@ -4109,6 +4140,7 @@ internal sealed class NodeDocumentReader : SingleItemDatabaseReader<Request, Nod
             44 => reader.GetFieldValue<DisruptedPlacementCase>(1),
             50 => reader.GetFieldValue<BasicNameable>(1),
             51 => reader.GetFieldValue<BasicNameable>(1),
+            52 => reader.GetFieldValue<BasicNameable>(1),
             53 => reader.GetFieldValue<SingleQuestionPoll>(1),
             54 => reader.GetFieldValue<MultiQuestionPoll>(1),
             58 => reader.GetFieldValue<BasicNameable>(1),

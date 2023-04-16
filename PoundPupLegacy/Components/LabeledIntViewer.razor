@@ -1,0 +1,15 @@
+﻿@if (Value.HasValue)
+{
+    <div class="labeled-value labeled-string-value">
+        <label>@Label: </label>
+        @Value
+    </div>
+}
+@code {
+    [Parameter]
+    public int? Value { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+}

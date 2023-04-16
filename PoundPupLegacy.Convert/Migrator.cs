@@ -173,13 +173,15 @@ internal abstract class Migrator
     }
     public static string TextToTeaser(string text)
     {
-        var doc = Convert(text);
-        var res = doc.DocumentNode.ChildNodes.Take(5).Aggregate("", (a, b) => a + b.OuterHtml.Replace(@"href=""http://poundpuplegacy.org", @"href="""));
+        var urlFixedText = text.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
+        var doc = Convert(urlFixedText);
+        var res = doc.DocumentNode.ChildNodes.Take(5).Aggregate("", (a, b) => a + b.OuterHtml);
         return res;
     }
     protected string TextToHtml(string text)
     {
-        return Convert(text).DocumentNode.InnerHtml;
+        var urlFixedText = text.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
+        return Convert(urlFixedText).DocumentNode.InnerHtml;
     }
 
     private static HtmlDocument Convert(string text)

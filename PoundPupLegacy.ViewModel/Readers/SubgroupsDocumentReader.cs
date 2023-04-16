@@ -3,6 +3,7 @@
 using Request = SubgroupsDocumentReaderRequest;
 using Factory = SubgroupsDocumentReaderFactory;
 using Reader = SubgroupsDocumentReader;
+using PoundPupLegacy.ViewModel.Models;
 
 public sealed record SubgroupsDocumentReaderRequest : IRequest
 {

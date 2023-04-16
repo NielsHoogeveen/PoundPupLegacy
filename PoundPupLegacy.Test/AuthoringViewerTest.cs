@@ -1,6 +1,6 @@
 ﻿using Bunit;
 using PoundPupLegacy.Components;
-using PoundPupLegacy.ViewModel;
+using PoundPupLegacy.ViewModel.Models;
 using Xunit;
 namespace PoundPupLegacy.Test;
 

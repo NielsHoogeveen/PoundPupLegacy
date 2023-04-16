@@ -1,0 +1,15 @@
+﻿@using PoundPupLegacy.Common;
+@if(Value is not null && Label is not null)
+{
+    <div>
+        <label>@Label: </label>
+        @Value.ToDisplayString()
+    </div>
+}
+@code {
+    [Parameter]
+    public FuzzyDate? Value { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+}

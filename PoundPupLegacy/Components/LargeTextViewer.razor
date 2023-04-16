@@ -1,0 +1,12 @@
+﻿@if (Text is not null){
+    @Text
+}
+
+@code {
+
+    [Parameter]
+    public string? Value { get; set; }
+
+    private MarkupString? Text => Value is null ? null : (MarkupString)Value;
+
+}

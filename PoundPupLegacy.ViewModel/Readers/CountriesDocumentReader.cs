@@ -3,6 +3,7 @@
 using Request = CountriesDocumentReaderRequest;
 using Factory = CountriesDocumentReaderFactory;
 using Reader = CountriesDocumentReader;
+using PoundPupLegacy.ViewModel.Models;
 
 public sealed class CountriesDocumentReaderRequest : IRequest
 {

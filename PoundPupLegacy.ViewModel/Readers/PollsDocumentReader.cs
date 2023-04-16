@@ -3,7 +3,7 @@
 using Request = PollsDocumentReaderRequest;
 using Factory = PollsDocumentReaderFactory;
 using Reader = PollsDocumentReader;
-
+using PoundPupLegacy.ViewModel.Models;
 
 public sealed record PollsDocumentReaderRequest : IRequest
 {

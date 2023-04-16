@@ -1,4 +1,4 @@
-﻿using PoundPupLegacy.ViewModel;
+﻿using PoundPupLegacy.ViewModel.Models;
 
 namespace PoundPupLegacy.Services;
 

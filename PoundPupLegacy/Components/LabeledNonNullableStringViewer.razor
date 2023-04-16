@@ -1,0 +1,12 @@
+﻿<div class="labeled-value labeled-string-value">
+    <label>@Label: </label>
+    @Value
+</div>
+@code {
+    [Parameter]
+    public string Value { get; set; } = "Unset string value";
+
+    [Parameter]
+    public string? Label { get; set; }
+
+}

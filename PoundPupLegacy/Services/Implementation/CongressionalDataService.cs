@@ -1,6 +1,6 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.ViewModel;
+using PoundPupLegacy.ViewModel.Models;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using System.Text.RegularExpressions;

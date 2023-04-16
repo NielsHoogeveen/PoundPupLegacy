@@ -1,5 +1,5 @@
-﻿using PoundPupLegacy.ViewModel;
-using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
+﻿using PoundPupLegacy.ViewModel.Models;
+using SearchOption = PoundPupLegacy.ViewModel.Models.SearchOption;
 
 namespace PoundPupLegacy.Services;
 

@@ -4,6 +4,7 @@ using Request = TopicsDocumentReaderRequest;
 using Factory = TopicsDocumentReaderFactory;
 using Reader = TopicsDocumentReader;
 using PoundPupLegacy.Common;
+using PoundPupLegacy.ViewModel.Models;
 
 public sealed record TopicsDocumentReaderRequest : IRequest
 {

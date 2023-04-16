@@ -3,6 +3,7 @@
 using Request = FileDocumentReaderRequest;
 using Factory = FileDocumentReaderFactory;
 using Reader = FileDocumentReader;
+using PoundPupLegacy.ViewModel.Models;
 
 public sealed class FileDocumentReaderRequest : IRequest
 {

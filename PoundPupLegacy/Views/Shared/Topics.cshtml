@@ -1,5 +1,5 @@
-﻿@using PoundPupLegacy.Services;
-@using PoundPupLegacy.ViewModel;
+﻿@using PoundPupLegacy.Services
+@using PoundPupLegacy.ViewModel.Models
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model Topics
 @inject ISiteDataService siteDataService
@@ -55,10 +55,10 @@
     </form>
     @if (Model.Entries.Any())
     {
-        @foreach (var organization in Model.Entries)
+        @foreach (var topic in Model.Entries)
         {
             <div>
-                <a href="@organization.Path">@organization.Title</a>
+                <a href="@topic.Path">@topic.Title</a>
             </div>
         }
         <partial name="~/Views/Shared/_PagedList.cshtml" model="@Model" />

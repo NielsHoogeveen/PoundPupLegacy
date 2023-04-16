@@ -1,0 +1,16 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@if (Text is not null) {
+    <div class="large-text">
+        <SeeAlsoBoxViewer Links="Links" />
+        <LargeTextViewer Value="@Text" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public Link[] Links { get; set; } = Array.Empty<Link>();
+
+}

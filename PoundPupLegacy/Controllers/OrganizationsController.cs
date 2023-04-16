@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
 using System.Diagnostics;
-using SearchOption = PoundPupLegacy.ViewModel.SearchOption;
+using SearchOption = PoundPupLegacy.ViewModel.Models.SearchOption;
 
 namespace PoundPupLegacy.Controllers;
 

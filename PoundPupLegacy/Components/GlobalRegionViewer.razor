@@ -1,10 +1,8 @@
-﻿@using PoundPupLegacy.ViewModel;
+﻿@using PoundPupLegacy.ViewModel.Models
 @if (Model is not null)
 {
-    
-    <SubTopicsViewer Model="@Model.SubTopics" />
-    <SuperTopicsViewer Model="@Model.SuperTopics" />
-    <DocumentsViewer Model="@Model.Documents" />
+    <NameableViewer Model="Model" />
+    <DocumentableViewer Model="Model" />
 }
 @code{
     [Parameter]

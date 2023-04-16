@@ -1,17 +1,11 @@
-﻿@using PoundPupLegacy.ViewModel;
-@if (Model is not null){
-    @((MarkupString)Model.Description)
-    @if(Model.FuzzyDate is not null)
-    {
-        <div>
-            <label>Incident date:</label>
-            @Model.FuzzyDate.ToDisplayString()
-        </div>
-    }
-    <CasePartiesViewer Model="Model.CaseParties" />
-    <DocumentsViewer Model="Model.Documents" />
-    <LocationsViewer Model="Model.Locations" />
-
+﻿@using PoundPupLegacy.ViewModel.Models
+@if (Model is not null)
+{
+    <LargeTextViewer Value="@Model.Description" />
+    <LabeledFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
+    <CasePartiesViewer Model="@Model.CaseParties" />
+    <DocumentableViewer Model="@Model" />
+    <LocatableViewer Model="@Model" />
 }
 @code{
     [Parameter]

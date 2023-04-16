@@ -1,8 +1,7 @@
-﻿@using PoundPupLegacy.ViewModel;
-@if (Model is not null)
-{
-    
-    <img src="@Model.FlagPath" style="width: auto;height:2em;margin-bottom:0.5em;border: solid 1px #aaa">
+﻿@using PoundPupLegacy.ViewModel.Models
+@if (Model is not null) {
+
+    <ImageViewer Model="@Model.FlagImage" Class="country-flag" />
     
     @if (Model is TopLevelCountry topLevelCountry)
     {

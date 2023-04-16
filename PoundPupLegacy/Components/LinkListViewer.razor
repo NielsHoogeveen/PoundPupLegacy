@@ -1,0 +1,14 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@if (Links is not null && Links.Any())
+{
+    <ul>
+        @foreach (var link in Links)
+        {
+            <LinkListElementViewer Link="@link" />
+        }
+    </ul>
+}
+@code{
+    [Parameter]
+    public IEnumerable<Link>? Links { get; set; }
+}
