@@ -2,20 +2,25 @@
 @using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
 @using PoundPupLegacy.Components
+@inherits Page
 @inject IFetchBlogsService fetchBlogsService
 
-@if (blogs.Any()) {
-    <BlogsViewer Model="@blogs" />
+@if (CanAccessPage)
+{
+    @if (blogs.Any())
+    {
+        <BlogsViewer Model="@blogs" />
+    }
+
+}
+else {
+    <NoAccess/>
 }
 
 @code{
     private List<BlogListEntry> blogs = new List<BlogListEntry>();
 
-
-    [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedPageAsync()
     {
         blogs = await fetchBlogsService.FetchBlogs(TenantId);
     }

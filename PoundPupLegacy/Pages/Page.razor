@@ -1,0 +1,28 @@
+﻿@using PoundPupLegacy.Services
+@inject ISiteDataService SiteDataService
+@code {
+
+    protected bool CanAccessPage { get; set; } = false;
+
+    [CascadingParameter(Name ="UserId")]
+    public int UserId { get; set; }
+
+    [CascadingParameter(Name = "TenantId")]
+    public int TenantId { get; set; }
+
+    protected sealed override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var routeAttribute = this.GetType().GetCustomAttributes(true).OfType<Microsoft.AspNetCore.Components.RouteAttribute>().FirstOrDefault()?.Template;
+        if(routeAttribute is not null) {
+            CanAccessPage = SiteDataService.HasAccess(UserId, TenantId, routeAttribute);
+        }
+        await OnInitializedPageAsync();
+    }
+
+    protected virtual async Task OnInitializedPageAsync()
+    {
+        await Task.CompletedTask;
+    }
+
+}

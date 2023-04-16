@@ -12,14 +12,7 @@
         <div class="main">
             <UserMenu />
             <content>
-                @if (HasAccess)
-                {
-                    @Body
-                }
-                else 
-                {
-                    <p>Sorry, you do not have access to this page.</p>
-                }
+                @Body
             </content>
         </div>
         <footer>
@@ -50,7 +43,6 @@
 @code{
     private int TenantId { get; set; }
     private int UserId { get; set; }
-    private bool HasAccess { get; set; }
     protected override async Task OnInitializedAsync()
     {
         var uri = new Uri(NavigationManager.Uri);
@@ -65,7 +57,6 @@
         {
             UserId = 0;
         }
-        HasAccess = SiteDataService.HasAccess(UserId, TenantId, uri);
     }
 }
 

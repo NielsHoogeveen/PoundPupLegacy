@@ -123,13 +123,12 @@ internal sealed class SiteDataService : ISiteDataService
         );
     }
 
-    public bool HasAccess(int userId, int tenantId, Uri uri)
+    public bool HasAccess(int userId, int tenantId, string path)
     {
-        var path = uri.AbsolutePath;
         if(path == "/") {
             return true;
         }
-        if (path.StartsWith("/node/")) {
+        if (path.StartsWith("/node/{Id:int}")) {
             return true;
         }
         return _data.UserTenantActions.Contains(

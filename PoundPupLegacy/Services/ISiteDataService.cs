@@ -9,7 +9,7 @@ public interface ISiteDataService
     Task InitializeAsync();
     string? GetUrlPathForId(int tenantId, int urlId);
     bool HasAccess(int userId, int tenantId, HttpRequest request);
-    bool HasAccess(int userId, int tenantId, Uri uri);
+    bool HasAccess(int userId, int tenantId, string path);
     bool CanEdit(Node node, int userId, int tenantId);
     int GetTenantId(HttpRequest httpRequest);
     int GetTenantId(Uri uri);
