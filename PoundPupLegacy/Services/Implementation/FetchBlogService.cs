@@ -28,12 +28,17 @@ internal sealed class FetchBlogService : IFetchBlogService
         try {
             await _connection.OpenAsync();
             await using var reader = await _blogDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new BlogDocumentReaderRequest {
+            var blog = await reader.ReadAsync(new BlogDocumentReaderRequest {
                 PublisherId = publisherId,
                 TenantId = tenantId,
                 StartIndex = startIndex,
                 Length = length
             });
+            if (blog is null)
+                return null;
+            blog.PageNumber = startIndex;
+            blog.NumberOfPages = (blog.NumberOfEntries / length) + 1;
+            return blog;
         }
         finally {
             await _connection.CloseAsync();

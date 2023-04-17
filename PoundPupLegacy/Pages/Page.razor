@@ -11,6 +11,11 @@
     [CascadingParameter(Name = "TenantId")]
     public int TenantId { get; set; }
 
+    protected sealed override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
     protected sealed override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

@@ -24,9 +24,10 @@
                     </div>
                 }
             </div>
-            <partial name="~/Views/Shared/_PagedList.cshtml" model="@Model" />
+            <Pager Model="@Model" />
         </article>
     </div>
+    
 }
 @code{
     [Parameter]

@@ -131,6 +131,9 @@ internal sealed class SiteDataService : ISiteDataService
         if (path.StartsWith("/node/{Id:int}")) {
             return true;
         }
+        if (path.StartsWith("/blog/{Id:int}")) {
+            return true;
+        }
         return _data.UserTenantActions.Contains(
             new UserTenantAction {
                 UserId = userId,
