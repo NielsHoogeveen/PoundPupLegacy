@@ -1,4 +1,7 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
+@using PoundPupLegacy.Services
+@inherits Viewer
+@inject IFetchBlogsService fetchBlogsService
 @if(Model is not null){
     <div class="article-with-comments">
         <div class="breadcrum">
@@ -30,6 +33,12 @@
     </div>
 }
 @code{
-    [Parameter]
-    public List<BlogListEntry>? Model { get; set; }
+    
+    private List<BlogListEntry>? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await fetchBlogsService.FetchBlogs(TenantId);
+    }
+
 }

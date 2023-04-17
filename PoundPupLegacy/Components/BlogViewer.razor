@@ -1,4 +1,8 @@
-﻿@using PoundPupLegacy.ViewModel.Models
+﻿@using PoundPupLegacy.Services
+@using PoundPupLegacy.ViewModel.Models
+@inherits PagedViewer
+@inject IFetchBlogService FetchBlogService;
+
 @if (Model is not null)
 {
     <div class="blog-list">
@@ -31,5 +35,14 @@
 }
 @code{
     [Parameter]
-    public Blog? Model { get; set; }
+    public int Id { get; set; }
+
+    private Blog? Model { get; set; }
+
+    const int NUMBER_OF_ENTRIES = 10;
+
+    protected override async Task OnInitializedPagedAsync()
+    {
+        Model = await FetchBlogService.FetchBlog(Id, TenantId, PageNumber, NUMBER_OF_ENTRIES);
+    }
 }

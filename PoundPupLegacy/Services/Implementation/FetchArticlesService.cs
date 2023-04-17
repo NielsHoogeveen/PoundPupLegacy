@@ -21,8 +21,10 @@ internal sealed class FetchArticlesService : IFetchArticlesService
         _articlesDocumentReaderFactory = articlesDocumentReaderFactory;
     }
 
-    public async Task<Articles> GetArticles(int tenantId, List<int> selectedTerms, int startIndex, int length)
+    public async Task<Articles> GetArticles(int tenantId, List<int> selectedTerms, int pageNumber, int length, string termNamePrefix)
     {
+
+        var startIndex = (pageNumber - 1) * length;
         try {
             await _connection.OpenAsync();
             await using var reader = await _articlesDocumentReaderFactory.CreateAsync(_connection);
@@ -32,13 +34,14 @@ internal sealed class FetchArticlesService : IFetchArticlesService
                 StartIndex = startIndex,
                 Length = length
             });
-            if(articles is not null)
-                return articles;
-            return new Articles {
+            var result = articles is not null ? articles : new Articles {
                 ArticleListEntries = Array.Empty<ArticleListEntry>(),
                 NumberOfEntries = 0
             };
-
+            result.PageNumber = pageNumber;
+            result.NumberOfPages = (result.NumberOfEntries / length) + 1;
+            result.QueryString = string.Join("&", selectedTerms.Select(x => $"{termNamePrefix}{x}"));
+            return result;
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

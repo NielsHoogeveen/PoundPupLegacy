@@ -1,24 +1,22 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities
-@inherits Page
 @inject NavigationManager NavigationManager;
+@inherits Viewer
 @code {
-
-    private ViewModel.Models.Blog? blog;
-
     protected int PageNumber { get; set; } = 1;
 
-    protected sealed override async Task OnInitializedPageAsync()
+    protected sealed override async Task OnInitializedAsync()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        if(QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageValue)) {
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageValue)) {
             if (int.TryParse(pageValue, out int providedPageNumber)) {
                 PageNumber = providedPageNumber;
             }
         }
-        await OnInitializedPagedPageAsync();
+        await OnInitializedPagedAsync();
     }
-    protected virtual async Task OnInitializedPagedPageAsync()
+    protected virtual async Task OnInitializedPagedAsync()
     {
         await Task.CompletedTask;
     }
+
 }

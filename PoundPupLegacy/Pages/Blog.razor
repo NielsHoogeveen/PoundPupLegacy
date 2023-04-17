@@ -1,24 +1,10 @@
 ﻿@page "/blog/{Id:int}"
-@using PoundPupLegacy.Services
 @using PoundPupLegacy.Components
-@using PoundPupLegacy.ViewModel.Models
-@inherits PagedPage
-@inject IFetchBlogService FetchBlogService;
-@if(blog is not null) {
-    <BlogViewer Model="@blog" />
-}
+@inherits Page
+
+<BlogViewer Id="@Id" />
 
 @code {
-
-    const int NUMBER_OF_ENTRIES = 10;
-
     [Parameter]
     public int Id { get; set; }
-
-    private ViewModel.Models.Blog? blog;
-
-    protected override async Task OnInitializedPagedPageAsync()
-    {
-        blog = await FetchBlogService.FetchBlog(Id, TenantId, PageNumber, NUMBER_OF_ENTRIES);
-    }
 }

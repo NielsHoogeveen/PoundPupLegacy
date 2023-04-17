@@ -1,0 +1,30 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@using PoundPupLegacy.Services
+
+@inherits Viewer
+@inject IFetchNodeService NodeDataService
+@if (Node is not null) {
+    <CascadingValue Value="@Id" Name="NodeId">
+        <CascadingValue Value="@Node.UrlId" Name="UrlId">
+            @if (UserId == 0) {
+                <NodeViewerNotSignedIn Model="@Node" />
+            }
+            else {
+                <NodeViewerSignedIn Model="@Node" />
+            }
+        </CascadingValue>
+    </CascadingValue>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ViewModel.Models.Node? Node { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Node = await NodeDataService.FetchNode(Id, UserId, TenantId);
+    }
+
+}

@@ -4,5 +4,5 @@ namespace PoundPupLegacy.Services;
 
 public interface IFetchArticlesService
 {
-    public Task<Articles> GetArticles(int tenantId, List<int> selectedTerms, int startIndex, int length);
+    public Task<Articles> GetArticles(int tenantId, List<int> selectedTerms, int pageNumber, int length, string termNamePrefix);
 }

@@ -26,12 +26,5 @@
         if (!CanAccessPage) {
             NotFoundListener.NotifyNotFound();            
         }
-        await OnInitializedPageAsync();
     }
-
-    protected virtual async Task OnInitializedPageAsync()
-    {
-        await Task.CompletedTask;
-    }
-
 }

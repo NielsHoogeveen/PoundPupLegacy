@@ -34,3 +34,25 @@ function initMap() {
 function reloadNode(id) {
     window.location = '/node/' + id;
 }
+
+function setClickEventHandlersForTerms() {
+    document.querySelectorAll('.term-name-label').forEach(item => {
+        item.addEventListener('click', event => {
+            console.log('clicked');
+            var elem = document.getElementById(item.getAttribute("for"));
+            if (elem.hasAttribute("checked")) {
+                elem.removeAttribute("checked");
+            }
+            else {
+                elem.setAttribute("checked", "on");
+            }
+            console.log(document.getElementById('term-form').elements);
+            var terms = Array.from(document.querySelectorAll('.term-name input[type="checkbox"]')).filter(x => x.hasAttribute('checked')).reduce((accumulator, currentValue) => accumulator + '&' + currentValue.id + '=on', '');
+            var url = document.location.origin + document.location.pathname + '?' + terms;
+            document.location = url;
+            console.log(url);
+            console.log(document.location);
+            //document.getElementById('term-form').submit();
+        })
+    })
+}
