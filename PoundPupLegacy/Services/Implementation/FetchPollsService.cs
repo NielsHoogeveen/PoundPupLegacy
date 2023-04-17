@@ -22,8 +22,9 @@ internal sealed class FetchPollsService : IFetchPollsService
     }
 
 
-    public async Task<Polls> GetPolls(int userId, int tenantId, int limit, int offset)
+    public async Task<Polls> GetPolls(int userId, int tenantId, int limit, int pageNumber)
     {
+        var offset = (pageNumber - 1) * limit;
 
         try {
             await _connection.OpenAsync();
@@ -34,12 +35,13 @@ internal sealed class FetchPollsService : IFetchPollsService
                 Limit = limit,
                 Offset = offset
             });
-            if (polls is not null) 
-                return polls;
-            return new Polls {
+            var result = polls is not null ? polls : new Polls {
                 Entries = Array.Empty<PollListEntry>(),
                 NumberOfEntries = 0
             };
+            result.PageNumber = pageNumber;
+            result.NumberOfPages = (result.NumberOfEntries / limit) + 1;
+            return result;
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

@@ -128,12 +128,16 @@ internal sealed class SiteDataService : ISiteDataService
         if(path == "/") {
             return true;
         }
-        if (path.StartsWith("/node/{Id:int}")) {
+        if (path == "/node/{Id:int}") {
             return true;
         }
-        if (path.StartsWith("/blog/{Id:int}")) {
+        if (path == "/blog/{Id:int}") {
             return true;
         }
+        if (path == "/united_states_congress") {
+            return true;
+        }
+
         return _data.UserTenantActions.Contains(
             new UserTenantAction {
                 UserId = userId,

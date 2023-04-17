@@ -1,14 +1,11 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model Polls
+@inherits PagedViewer
 @inject ISiteDataService siteDataService
 @inject IUserService userService
-@{
-    var userId = userService.GetUserId(Context.User);
-    var tenantId = siteDataService.GetTenantId(Context.Request);
-}
-@{
+@inject IFetchPollsService FetchPollsService
+
+@if(Model is not null){
     <div class="articles">
         <div class="breadcrum">
             <span class="breadcrum-element">
@@ -27,14 +24,23 @@
                     <h2>
                         <a href="@entry.Path">@entry.Title</a>
                     </h2>
-                    @Html.Raw(entry.Text)
+                    <LargeTextViewer Value="@entry.Text" />
                 </div>
             }
         </div>
         </article>
-        <partial name="~/Views/Shared/_PagedList.cshtml" model="@Model" />
+        <Pager Model="Model" />
     </div>
 }
-@{
-    Layout = siteDataService.GetLayout(userId, tenantId);
+
+@code {
+    private Polls? Model { get; set; }
+
+    const int NUMBER_OF_ENTRIES = 25;
+
+    protected override async Task OnInitializedPagedAsync()
+    {
+        Model = await FetchPollsService.GetPolls(UserId, TenantId, NUMBER_OF_ENTRIES, PageNumber);
+    }
+
 }

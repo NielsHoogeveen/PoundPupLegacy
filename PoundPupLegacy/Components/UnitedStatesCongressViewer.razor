@@ -1,4 +1,8 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
+@using PoundPupLegacy.Services
+@inherits Viewer
+@inject ICongressionalDataService CongressionalDataService
+
 @if (Model is not null){
    <style>
         .chamber{
@@ -55,6 +59,11 @@
         </div>
 }
 @code{
-    [Parameter]
+ 
     public UnitedStatesCongress? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await CongressionalDataService.GetUnitedStatesCongress();
+    }
 }

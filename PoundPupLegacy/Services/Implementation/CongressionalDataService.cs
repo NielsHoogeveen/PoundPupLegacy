@@ -95,6 +95,18 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         return await _razorViewToStringService.GetFromView("/Views/Shared/CongressionalMeetingChamber.cshtml", congressionalMeetingChamber, context);
     }
 
+    public async Task<UnitedStatesCongress?> GetUnitedStatesCongress()
+    {
+        try {
+            await _connection.OpenAsync();
+            await using var reader = await _unitedStatesCongresssDocumentReaderFactory.CreateAsync(_connection);
+            return await reader.ReadAsync(new UnitedStatesCongresssDocumentReaderRequest());
+        }
+        finally {
+            await _connection.CloseAsync();
+        }
+    }
+
     public async Task<string?> GetUnitedStatesCongress(HttpContext context)
     {
         try {

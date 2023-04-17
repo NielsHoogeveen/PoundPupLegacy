@@ -32,7 +32,7 @@ internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDat
         			'Meetings',
         			house_meetings
         		)
-        	)
+        	) document
         	from(
                 select
         	        'files/userimages/Image/Seal_of_the_United_States_Senate-250.png' image_path_senate,
