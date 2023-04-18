@@ -1,8 +1,8 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
-@inherits PagedSearchViewer
+@inherits PagedSearchViewer<TopicListEntry>
 @inject ITopicService TopicService
-@if(Model is not null)
+@if(ListEntries is not null)
 {
     <div class="articles">
         <div class="breadcrum">
@@ -12,7 +12,7 @@
         </div>
         <form>
             <select name="search_option">
-                @if (PagedList.SearchOption == SearchOption.Contains)
+                @if (PagedListSettings.SearchOption == SearchOption.Contains)
                 {
                     <option value="contains" selected>contains</option>
                 }
@@ -20,21 +20,21 @@
                 {
                     <option value="contains">contains</option>
                 }
-                @if (PagedList.SearchOption == SearchOption.IsEqualTo) {
+                @if (PagedListSettings.SearchOption == SearchOption.IsEqualTo) {
                     <option value="is_equal_to" selected>is equal to</option>
                 }
                 else
                 {
                     <option value="is_equal_to">is equal to</option>
                 }
-                @if (PagedList.SearchOption == SearchOption.StartsWith) {
+                @if (PagedListSettings.SearchOption == SearchOption.StartsWith) {
                     <option value="starts_with" selected>starts with</option>
                 }
                 else
                 {
                     <option value="starts_with">starts with</option>
                 }
-                @if (PagedList.SearchOption == SearchOption.EndsWith) {
+                @if (PagedListSettings.SearchOption == SearchOption.EndsWith) {
 
                     <option value="ends_with" selected>ends with</option>
                 }
@@ -43,18 +43,18 @@
                     <option value="ends_with">ends with</option>
                 }
             </select>
-            <input type="text" name="search" value="@PagedList.SearchTerm"/>
+            <input type="text" name="search" value="@PagedListSettings.SearchTerm"/>
             <input type="submit" value="Search" />
         </form>
-        @if (Model.Entries.Any())
+        @if (ListEntries.Any())
         {
-            @foreach (var topic in Model.Entries)
+            @foreach (var topic in ListEntries)
             {
                 <div>
                     <a href="@topic.Path">@topic.Title</a>
                 </div>
             }
-            <Pager Model="PagedList"/>
+            <Pager Model="PagedListSettings"/>
         }
         else
         {
@@ -65,13 +65,12 @@
     </div>
 }
 @code {
-    private Topics? Model { get; set; }
 
     protected override int PageSize => 50;
 
-    protected override async Task OnInitializedPagedSearchAsync()
+    protected override async Task<IPagedList<TopicListEntry>> GetListEntriesAsync()
     {
-        Model = await TopicService.FetchTopics(UserId, TenantId, PagedList.PageSize, PagedList.PageNumber, PagedList.SearchTerm, PagedList.SearchOption);
+        return await TopicService.FetchTopics(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm, PagedListSettings.SearchOption);
     }
 
 }

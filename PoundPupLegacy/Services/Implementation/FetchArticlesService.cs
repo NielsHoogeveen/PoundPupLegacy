@@ -35,7 +35,7 @@ internal sealed class FetchArticlesService : IFetchArticlesService
                 Length = length
             });
             var result = articles is not null ? articles : new Articles {
-                ArticleListEntries = Array.Empty<ArticleListEntry>(),
+                Entries = Array.Empty<ArticleListEntry>(),
                 NumberOfEntries = 0
             };
             return result;

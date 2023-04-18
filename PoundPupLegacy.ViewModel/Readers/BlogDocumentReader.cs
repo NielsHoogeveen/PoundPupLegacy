@@ -31,6 +31,11 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     jsonb_build_object(
                     'Id', 
                     n.id,
+                    'Path',
+                    case 
+                        when url_path is null then '/node/' || n.id
+                        else '/path/' || url_path
+                    end,
                     'Title', 
                     n.title, 
                     'Text', 
@@ -50,6 +55,7 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 FROM (
                     SELECT
                         tn.url_id id, 
+                        tn.url_path url_path,
                         n.title, 
                         n.created_date_time, 
                         n.changed_date_time, 
@@ -77,7 +83,7 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     end,
                     'NumberOfEntries', 
                     COUNT(n.id),
-                    'BlogPostTeasers', 
+                    'Entries', 
                     (select jsonb_agg(document) from fetch_blog_post_documents)
                 ) document
                 FROM publisher p

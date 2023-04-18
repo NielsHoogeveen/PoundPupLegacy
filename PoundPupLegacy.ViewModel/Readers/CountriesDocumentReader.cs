@@ -22,7 +22,7 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
         select
             jsonb_agg(
                 jsonb_build_object(
-                    'Name', 
+                    'Title', 
                     n.title,
                     'Path', 
                     case
@@ -37,7 +37,7 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
                         	select 
                         		jsonb_agg(
                                     jsonb_build_object(
-                            			'Name', 
+                            			'Title', 
                                         n2.title,
                         				'Path', 
                                         case
@@ -52,7 +52,7 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
                             					select 
                             						jsonb_agg(
                                                         jsonb_build_object(
-                        								    'Name', 
+                        								    'Title', 
                                                             n3.title,
                         								    'Path', 
                                                             case
@@ -91,7 +91,7 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
                         	select 
                         		jsonb_agg(
                                     jsonb_build_object(
-                        			'Name', n2.title,
+                        			'Title', n2.title,
                         			'Path', case
                         						when n2.url_path is null then '/node/' || n2.url_id
                         						else '/' || n2.url_path

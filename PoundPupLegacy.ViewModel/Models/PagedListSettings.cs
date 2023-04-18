@@ -1,6 +1,17 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record PagedList
+public interface IPagedList
+{
+    public int NumberOfEntries { get; }
+}
+
+public interface IPagedList<T>: IPagedList
+    where T : ListEntry
+{
+    public T[] Entries { get; }
+}
+
+public record PagedListSettings
 {
     public int NumberOfEntries { get; set; } = 0;
     public int PageNumber { get; set; } = 1;
@@ -45,7 +56,7 @@ public record PagedList
     }
 }
 
-public record PagedSearchList : PagedList
+public record PagedSearchListSettings : PagedListSettings
 {
     public string? SearchTerm { get; set; }
     public SearchOption SearchOption { get; set; }

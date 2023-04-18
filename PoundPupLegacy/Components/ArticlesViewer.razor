@@ -6,8 +6,8 @@
 @inject IJSRuntime JSRuntime
 @inject IFetchArticlesService FetchArticlesService
 @inject NavigationManager NavigationManager
-@inherits PagedViewer
-@if(Model is not null) {
+@inherits PagedViewer<ArticleListEntry>
+@if(ListEntries is not null) {
         <div class="articles">
         <div class="breadcrum">
             <span class="breadcrum-element">
@@ -18,7 +18,7 @@
         {
             <form id="term-form" action="/articles" method="get">
                 <div class="term-names">
-                    @foreach(var termName in Model.TermNames)
+                    @foreach(var termName in TermNames)
                     {
                         <div class="term-name">
                             @if (termName.Selected)
@@ -37,7 +37,7 @@
         }
         else {
             <div class="term-names">
-                @foreach (var termName in Model.TermNames) {
+                @foreach (var termName in TermNames) {
                     <div class="term-name">
                         @if (termName.Selected) {
                             <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="checked" />
@@ -52,11 +52,11 @@
         }
         <article>
         <div class="blog-teasers">
-            @foreach (var entry in Model.ArticleListEntries)
+            @foreach (var entry in ListEntries)
             {
                 <div class="blog-teaser">
                     <h2>
-                        <a href="/node/@entry.Id">@entry.Title</a>
+                        <a href="@entry.Path">@entry.Title</a>
                     </h2>
                     <AuthoringViewer Model="@entry.Authoring" />
                     <LargeTextViewer Value="entry.Text"/>
@@ -74,11 +74,12 @@
             }
         </div>
         </article>
-        <Pager Model="@PagedList" />
+        <Pager Model="@PagedListSettings" />
     </div>
 }
 @code {
-    private Articles? Model;
+
+    private SelectionItem[] TermNames = Array.Empty<SelectionItem>();
 
     protected override int PageSize => 10;
 
@@ -98,18 +99,15 @@
 
     private async Task Choose(int id)
     {
-        if (Model is not null) {
-            var term = Model.TermNames.First(x => x.Id == id);
-            term.Selected = !term.Selected;
-            await OnInitializedAsync();
-            var selectedTerms = Model.TermNames.Where(x => x.Selected);
-            var query = selectedTerms.Any() ? $"?{selectedTerms.Aggregate("", (a, b) => a + $"&{TERM_NAME_PREFIX}{b.Id}=on").ToString()[1..]}": "";
-            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-            var newUri = uri.AbsolutePath + query;
-            NavigationManager.NavigateTo(newUri, false);
-            StateHasChanged();
-        }
-        
+        var term = TermNames.First(x => x.Id == id);
+        term.Selected = !term.Selected;
+        await OnInitializedAsync();
+        var selectedTerms = TermNames.Where(x => x.Selected);
+        var query = selectedTerms.Any() ? $"?{selectedTerms.Aggregate("", (a, b) => a + $"&{TERM_NAME_PREFIX}{b.Id}=on").ToString()[1..]}": "";
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var newUri = uri.AbsolutePath + query;
+        NavigationManager.NavigateTo(newUri, false);
+        StateHasChanged();
     }
     private List<int> GetTermIds()
     {
@@ -119,13 +117,15 @@
         return termIds;
     }
 
-    protected override async Task OnInitializedPagedAsync()
+    protected override async Task<IPagedList<ArticleListEntry>> GetListEntriesAsync()
     {
         var termIds = UserId == 0
             ? GetTermIds()
-            : Model is null
+            : ListEntries is null
                 ? GetTermIds() 
-                : Model.TermNames.Where(x => x.Selected).Select(x => x.Id);
-        Model = await FetchArticlesService.GetArticles(TenantId, termIds.ToList(), PagedList.PageNumber, PagedList.PageSize, TERM_NAME_PREFIX);
+                : TermNames.Where(x => x.Selected).Select(x => x.Id);
+        var articles =  await FetchArticlesService.GetArticles(TenantId, termIds.ToList(), PagedListSettings.PageNumber, PagedListSettings.PageSize, TERM_NAME_PREFIX);
+        TermNames = articles.TermNames;
+        return articles;
     }
 }

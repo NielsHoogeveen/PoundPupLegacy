@@ -1,9 +1,15 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities
 @using PoundPupLegacy.ViewModel.Models
-@inherits PagedViewerBase<PagedList>
+@typeparam TListEntry
+@inherits PagedViewerBase<PagedListSettings, TListEntry>
 
 @code {
 
-    protected sealed override PagedList PagedList { get; } = new PagedList();
 
+    protected sealed override PagedListSettings PagedListSettings { get; } = new PagedListSettings();
+
+    protected sealed override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
 }

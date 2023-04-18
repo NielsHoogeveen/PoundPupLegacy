@@ -2,7 +2,8 @@
 
 namespace PoundPupLegacy.Components;
 
-public abstract partial class PagedViewerBase<TPagedList>
-    where TPagedList : PagedList
+public abstract partial class PagedViewerBase<TPagedListSettings, TListEntry>
+    where TPagedListSettings : PagedListSettings
+    where TListEntry: ListEntry
 {
 }

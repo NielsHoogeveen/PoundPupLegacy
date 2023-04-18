@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Polls
+public record Polls: IPagedList<PollListEntry>
 {
     private PollListEntry[] _entries = Array.Empty<PollListEntry>();
     public required PollListEntry[] Entries

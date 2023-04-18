@@ -1,11 +1,11 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
-@inherits PagedViewer
+@inherits PagedViewer<PollListEntry>
 @inject ISiteDataService siteDataService
 @inject IUserService userService
 @inject IFetchPollsService FetchPollsService
 
-@if(Model is not null){
+@if(ListEntries is not null){
     <div class="articles">
         <div class="breadcrum">
             <span class="breadcrum-element">
@@ -13,35 +13,36 @@
             </span>
         </div>
         <article>
-        <div class="blog-teasers">
-            @foreach (var entry in Model.Entries)
+            @if (ListEntries.Any())
             {
-                @if (!entry.HasBeenPublished)
-                {
-                    <div class="watermark">Unpublished</div>
-                }
-                <div class="blog-teaser">
-                    <h2>
-                        <a href="@entry.Path">@entry.Title</a>
-                    </h2>
-                    <LargeTextViewer Value="@entry.Text" />
+                <div class="blog-teasers">
+                    @foreach (var entry in ListEntries)
+                    {
+                        @if (!entry.HasBeenPublished)
+                        {
+                            <div class="watermark">Unpublished</div>
+                        }
+                        <div class="blog-teaser">
+                            <h2>
+                                <a href="@entry.Path">@entry.Title</a>
+                            </h2>
+                            <LargeTextViewer Value="@entry.Text" />
+                        </div>
+                    }
                 </div>
-            }
-        </div>
+        }
         </article>
-        <Pager Model="PagedList" />
+        <Pager Model="PagedListSettings" />
     </div>
 }
 
 @code {
-    private Polls? Model { get; set; }
 
     protected override int PageSize => 25;
-    const int NUMBER_OF_ENTRIES = 25;
 
-    protected override async Task OnInitializedPagedAsync()
+    protected override async Task<IPagedList<PollListEntry>> GetListEntriesAsync()
     {
-        Model = await FetchPollsService.GetPolls(UserId, TenantId, PagedList.PageSize, PagedList.PageNumber);
+        return await FetchPollsService.GetPolls(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber);
     }
 
 }

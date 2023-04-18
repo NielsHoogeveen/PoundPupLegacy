@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Articles
+public record Articles: IPagedList<ArticleListEntry>
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
     public SelectionItem[] TermNames
@@ -14,15 +14,15 @@ public record Articles
             }
         }
     }
-    private ArticleListEntry[] articleListEntries = Array.Empty<ArticleListEntry>();
-    public ArticleListEntry[] ArticleListEntries
+    private ArticleListEntry[] _entries = Array.Empty<ArticleListEntry>();
+    public ArticleListEntry[] Entries
     {
-        get => articleListEntries;
+        get => _entries;
         set
         {
             if (value != null)
             {
-                articleListEntries = value;
+                _entries = value;
             }
         }
     }

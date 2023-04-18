@@ -1,31 +1,38 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities
 @using PoundPupLegacy.ViewModel.Models
-@typeparam TPagedList
-@inherits Viewer
+@typeparam TPagedListSettings
+@typeparam TListEntry
+@inherits ViewerBase
 @inject NavigationManager NavigationManager
 
 @code {
 
+    protected TListEntry[]? ListEntries { get; set; }
+
+    protected abstract Task<IPagedList<TListEntry>> GetListEntriesAsync();
+
     protected abstract int PageSize { get; }
 
-    protected abstract TPagedList PagedList { get; }
+    protected abstract TPagedListSettings PagedListSettings { get; }
 
-    protected sealed override async Task OnInitializedAsync()
+    protected sealed override void OnInitialized()
     {
-        PagedList.PageSize = PageSize;
+       
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        PagedListSettings.PageSize = PageSize;
 
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        PagedList.Path = uri.AbsolutePath;
+        PagedListSettings.Path = uri.AbsolutePath;
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageValue)) {
             if (int.TryParse(pageValue, out int providedPageNumber)) {
-                PagedList.PageNumber = providedPageNumber;
+                PagedListSettings.PageNumber = providedPageNumber;
             }
         }
-        await OnInitializedPagedAsync();
+        var list = await GetListEntriesAsync();
+        ListEntries = list.Entries;
+        PagedListSettings.NumberOfEntries = list.NumberOfEntries;
     }
-    protected virtual async Task OnInitializedPagedAsync()
-    {
-        await Task.CompletedTask;
-    }
-
 }

@@ -1,10 +1,10 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
-@inherits PagedSearchViewer
+@inherits PagedSearchViewer<PersonListEntry>
 @inject ISiteDataService siteDataService
 @inject IUserService userService
 @inject IPersonService PersonService
-@if(Model is not null){
+@if(ListEntries is not null){
     <div class="articles">
         <div class="breadcrum">
             <span class="breadcrum-element">
@@ -13,7 +13,7 @@
         </div>
         <form>
             <select name="search_option">
-                @if (PagedList.SearchOption == SearchOption.Contains)
+                @if (PagedListSettings.SearchOption == SearchOption.Contains)
                 {
                     <option value="contains" selected>contains</option>
                 }
@@ -21,21 +21,21 @@
                 {
                     <option value="contains">contains</option>
                 }
-                @if (PagedList.SearchOption == SearchOption.IsEqualTo) {
+                @if (PagedListSettings.SearchOption == SearchOption.IsEqualTo) {
                     <option value="is_equal_to" selected>is equal to</option>
                 }
                 else
                 {
                     <option value="is_equal_to">is equal to</option>
                 }
-                @if (PagedList.SearchOption == SearchOption.StartsWith) {
+                @if (PagedListSettings.SearchOption == SearchOption.StartsWith) {
                     <option value="starts_with" selected>starts with</option>
                 }
                 else
                 {
                     <option value="starts_with">starts with</option>
                 }
-                @if (PagedList.SearchOption == SearchOption.EndsWith) {
+                @if (PagedListSettings.SearchOption == SearchOption.EndsWith) {
 
                     <option value="ends_with" selected>ends with</option>
                 }
@@ -44,18 +44,18 @@
                     <option value="ends_with">ends with</option>
                 }
             </select>
-            <input type="text" name="search" value="@PagedList.SearchTerm" />
+            <input type="text" name="search" value="@PagedListSettings.SearchTerm" />
             <input type="submit" value="Search" />
         </form>
-        @if (Model.Entries.Any())
+        @if (ListEntries.Any())
         {
-            @foreach (var organization in Model.Entries)
+            @foreach (var organization in ListEntries)
             {
                 <div>
                     <a href="@organization.Path">@organization.Title</a>
                 </div>
             }
-            <Pager Model="PagedList" />
+            <Pager Model="PagedListSettings" />
         }
         else
         {
@@ -67,12 +67,9 @@
 @code {
     protected override int PageSize => 50;
 
-    private Persons Model { get; set; }
-
-
-    protected override async Task OnInitializedPagedSearchAsync()
+    protected override async Task<IPagedList<PersonListEntry>> GetListEntriesAsync()
     {
-        Model = await PersonService.FetchPersons(UserId, TenantId, PagedList.PageSize, PagedList.PageNumber, PagedList.SearchTerm, PagedList.SearchOption);
+        return await PersonService.FetchPersons(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm, PagedListSettings.SearchOption);
     }
 
 }

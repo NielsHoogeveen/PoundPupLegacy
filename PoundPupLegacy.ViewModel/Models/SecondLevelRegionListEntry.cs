@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record SecondLevelRegionListEntry
+public record SecondLevelRegionListEntry: ListEntry
 {
-    public required string Name { get; init; }
+    public required string Title { get; init; }
     public required string Path { get; init; }
     private CountryListEntry[] _countries = Array.Empty<CountryListEntry>();
     public required CountryListEntry[] Countries

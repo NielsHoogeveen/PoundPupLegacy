@@ -1,9 +1,9 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
-@inherits PagedViewer
+@inherits PagedViewer<BlogPostTeaser>
 @inject IFetchBlogService FetchBlogService;
 
-@if (Model is not null)
+@if (ListEntries is not null)
 {
     <div class="blog-list">
         <div class="breadcrum">
@@ -13,10 +13,10 @@
         </div>
         <article>
             <h1>
-                @Model.Name
+                @Name
             </h1>
             <div class="blog-teasers">
-                @foreach (var entry in Model.BlogPostTeasers)
+                @foreach (var entry in ListEntries)
                 {
 
                     <div class="blog-teaser">
@@ -28,7 +28,7 @@
                     </div>
                 }
             </div>
-            <Pager Model="@PagedList" />
+            <Pager Model="@PagedListSettings" />
         </article>
     </div>
     
@@ -37,12 +37,14 @@
     [Parameter]
     public int Id { get; set; }
 
-    private Blog? Model { get; set; }
+    private string Name { get; set; } = string.Empty;
 
     protected override int PageSize => 10;
 
-    protected override async Task OnInitializedPagedAsync()
+    protected override async Task<IPagedList<BlogPostTeaser>> GetListEntriesAsync()
     {
-        Model = await FetchBlogService.FetchBlog(Id, TenantId, PagedList.PageNumber, PagedList.PageSize);
+        var result =  await FetchBlogService.FetchBlog(Id, TenantId, PagedListSettings.PageNumber, PagedListSettings.PageSize);
+        Name = result.Name;
+        return result;
     }
 }

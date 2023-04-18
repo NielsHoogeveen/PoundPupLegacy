@@ -18,7 +18,7 @@
             {
                 <ul>
                     <li>
-                        <a href="@entry.Path">@entry.Name</a>
+                        <a href="@entry.Path">@entry.Title</a>
                     </li>
                     @if (entry.Regions is not null)
                     {
@@ -28,7 +28,7 @@
                                 @foreach (var region in entry.Regions)
                                 {
                                     <li>
-                                        <a href="@region.Path">@region.Name</a>
+                                        <a href="@region.Path">@region.Title</a>
                                     </li>
                                     @if (region.Countries is not null)
                                     {
@@ -37,7 +37,7 @@
                                                 @foreach (var country in region.Countries)
                                                 {
                                                     <li>
-                                                        <a href="@country.Path">@country.Name</a>
+                                                        <a href="@country.Path">@country.Title</a>
                                                     </li>
                                                 }
                                             </ul>
@@ -55,7 +55,7 @@
                                 @foreach (var country in entry.Countries)
                                 {
                                     <li>
-                                        <a href="@country.Path">@country.Name</a>
+                                        <a href="@country.Path">@country.Title</a>
                                     </li>
                                 }
                             </ul>

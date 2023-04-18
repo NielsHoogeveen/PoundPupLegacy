@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Organizations 
+public record Organizations:  IPagedList<OrganizationListEntry>
 {
-    private BasicListEntry[] _entries = Array.Empty<BasicListEntry>();
-    public required BasicListEntry[] Entries
+    private OrganizationListEntry[] _entries = Array.Empty<OrganizationListEntry>();
+    public required OrganizationListEntry[] Entries
     {
         get => _entries;
         set

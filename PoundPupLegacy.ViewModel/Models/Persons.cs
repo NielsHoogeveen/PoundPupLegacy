@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Persons
+public record Persons : IPagedList<PersonListEntry>
 {
     private PersonListEntry[] _entries = Array.Empty<PersonListEntry>();
     public required PersonListEntry[] Entries

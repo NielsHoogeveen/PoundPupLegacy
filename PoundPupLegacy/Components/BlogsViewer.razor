@@ -17,7 +17,7 @@
             <label>Avatar</label>
             @foreach(var entry in Model)
             {
-                <div><a href="/blog/@entry.Id">@entry.Name</a></div>
+                <div><a href="/blog/@entry.Id">@entry.Title</a></div>
                 <div>@entry.NumberOfEntries</div>
                 <div><a href="/node/@entry.LatestEntryId">@entry.LatestEntryTitle</a></div>
                 @if (!string.IsNullOrEmpty(entry.FilePathAvatar))

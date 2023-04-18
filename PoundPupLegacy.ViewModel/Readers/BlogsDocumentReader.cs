@@ -22,8 +22,9 @@ internal sealed class BlogsDocumentReaderFactory : SingleItemDatabaseReaderFacto
                 jsonb_agg(to_jsonb(b)) document
             from(
                 select 
-                    p.name "Name",
+                    p.name "Title",
                     p.id "Id",
+                    '/blog/' || p.id "Path",
                     u.avatar "FilePathAvatar",
                     COUNT(n.id) "NumberOfEntries",
                     max(tn.url_id) "LatestEntryId",

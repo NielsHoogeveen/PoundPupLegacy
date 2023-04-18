@@ -48,7 +48,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
             case 
                 when @terms is null then (select agg from fetch_articles_document_unfiltered) 
                 else (select agg from fetch_articles_document_filtered) 
-            end "ArticleListEntries",
+            end "Entries",
             case
                 when @terms is null then (select count from count_articles_unfiltered) 
                 else (select count from count_articles_filtered) 
@@ -123,6 +123,10 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
         fetch_articles_unfiltered as (	
         	 select
         	 tn.url_id "Id",
+             case 
+                when tn.url_path is null then '/node/' || tn.url_id
+                else '/' || tn.url_path
+             end "Path",
         	 n.title "Title",
              stn.teaser "Text",
         	 jsonb_build_object(
@@ -168,6 +172,9 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
         fetch_articles_filtered as (	
             select
             tna.url_id "Id",
+            case when tna.url_path is null then '/node/' || tna.url_id
+                else '/' || tna.url_path
+            end "Path",
             n.title "Title",
             stn.teaser "Text",
             jsonb_build_object(
@@ -210,6 +217,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
             left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
         	GROUP BY
             tna.url_id,
+            tna.url_path,
         	n.id,
             n.title,
             stn.teaser,

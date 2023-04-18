@@ -43,7 +43,7 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
                 return (new OrganizationSearch {
                     Organizations = new Organizations {
                         NumberOfEntries = 0,
-                        Entries = Array.Empty<BasicListEntry>()
+                        Entries = Array.Empty<OrganizationListEntry>()
                     },
                     OrganizationTypes = Array.Empty<SelectionItem>(),
                     Countries = Array.Empty<SelectionItem>()

@@ -1,5 +1,8 @@
-﻿namespace PoundPupLegacy.Components;
+﻿using PoundPupLegacy.ViewModel.Models;
 
-public abstract partial class PagedSearchViewer
+namespace PoundPupLegacy.Components;
+
+public abstract partial class PagedSearchViewer<TListEntry>
+    where TListEntry : ListEntry
 {
 }

@@ -31,7 +31,7 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             	jsonb_build_object(
             		'NumberOfEntries', 
                     number_of_entries,
-            		'CaseListEntries', 
+            		'Entries', 
                     jsonb_agg(
             			jsonb_build_object
             			(

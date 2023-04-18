@@ -1,12 +1,12 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
-@inherits PagedSearchViewer
+@inherits PagedSearchViewer<SearchResultListEntry>
 @inject IFetchSearchService FetchSearchService
-@if (Model is not null)
+@if (ListEntries is not null)
 {
     <div class="blog-list">
         <article>
-            @foreach (var entry in Model.Entries)
+            @foreach (var entry in ListEntries)
             {
                 <div class="blog-teaser">
                     <h2>
@@ -17,16 +17,15 @@
                 </div>
             }
         </article>
-        <Pager Model="PagedList"/>
+        <Pager Model="PagedListSettings"/>
     </div>
 }
 @code {
-    private SearchResult? Model { get; set; }
 
     protected override int PageSize => 25;
 
-    protected override async Task OnInitializedPagedSearchAsync()
+    protected override async Task<IPagedList<SearchResultListEntry>> GetListEntriesAsync()
     {
-        Model = await FetchSearchService.FetchSearch(UserId, TenantId, PagedList.PageSize, PagedList.PageNumber, PagedList.SearchTerm!);
+        return await FetchSearchService.FetchSearch(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm!);
     }
 }
