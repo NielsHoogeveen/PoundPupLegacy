@@ -1,71 +1,67 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public static class PagedListExtensions
+public record PagedList
 {
+    public int NumberOfEntries { get; set; } = 0;
+    public int PageNumber { get; set; } = 1;
+    public int NumberOfPages => NumberOfEntries / PageSize + (NumberOfEntries % PageSize == 0 ? 0 : 1);
+    public virtual string QueryString { get; set; } = "";
+    public string Path { get; set; } = "";
+    public int PageSize { get; set; } = 25; 
+    public int StartPage => GetStartPage();
 
-    public static int StartPage(this PagedList pl)
-    {
-        var res = pl.GetStartPage();
-        return res;
-    }
-    public static int EndPage(this PagedList pl)
-    {
-        var res = pl.GetEndPage();
-        return res;
-    }
+    public int EndPage => GetEndPage();
 
-    private static int GetStartPage(this PagedList pl)
+    private int GetStartPage()
     {
-        if (pl.PageNumber <= 4)
-        {
+        if (PageNumber <= 4) {
             return 1;
         }
-        if (pl.PageNumber > pl.NumberOfPages - 4 && pl.NumberOfPages < 9)
-        {
-            return pl.NumberOfPages;
+        if (PageNumber > NumberOfPages - 4 && NumberOfPages < 9) {
+            return NumberOfPages;
 
         }
-        if (pl.PageNumber > pl.NumberOfPages - 4)
-        {
-            return pl.NumberOfPages - 9;
+        if (PageNumber > NumberOfPages - 4) {
+            return NumberOfPages - 9;
         }
-        return pl.PageNumber - 4;
+        return PageNumber - 4;
     }
-    private static int GetEndPage(this PagedList pl)
+    private int GetEndPage()
     {
-        if (pl.NumberOfPages - pl.PageNumber < 5)
-        {
-            return pl.NumberOfPages + 1;
+        if (NumberOfPages - PageNumber < 5) {
+            return NumberOfPages + 1;
         }
-        if (pl.PageNumber < 6)
-        {
-            return Math.Min(10, pl.NumberOfPages);
+        if (PageNumber < 6) {
+            return Math.Min(10, NumberOfPages);
         }
-        return pl.PageNumber + 5;
-
+        return PageNumber + 5;
     }
-    public static string GetQueryString(this PagedList pl, int pageNumbeer)
+    public virtual string GetQueryString(int pageNumber)
     {
-        if (string.IsNullOrEmpty(pl.QueryString))
-        {
-            return $"page={pageNumbeer}";
+        if (string.IsNullOrEmpty(QueryString)) {
+            return $"page={pageNumber}";
         }
-        return $"{pl.QueryString}&page={pageNumbeer}";
+        return $"{QueryString}&page={pageNumber}";
     }
 }
 
-public interface PagedList
+public record PagedSearchList : PagedList
 {
-    public int NumberOfEntries { get; set; }
-    public int PageNumber { get; set; }
-    public int NumberOfPages { get; set; }
-    public string QueryString { get; set; }
+    public string? SearchTerm { get; set; }
+    public SearchOption SearchOption { get; set; }
 
-    public string Path { get; }
-
-}
-public interface PagedList<T> : PagedList
-    where T : ListEntry
-{
-    public T[] Entries { get; }
+    private string SearchOptionAsText(SearchOption searchOption)
+    {
+        return searchOption switch {
+            SearchOption.Contains => "contains",
+            SearchOption.StartsWith => "starts",
+            SearchOption.EndsWith => "ends",
+            SearchOption.IsEqualTo => "is_equal_to",
+            _ => "contains",
+        };
+    }
+    public override string GetQueryString(int pageNumber)
+    {
+        return base.GetQueryString(pageNumber) + $"&search_term={SearchTerm}&search_option={SearchOptionAsText(SearchOption)}";
+    }
 }

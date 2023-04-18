@@ -1,0 +1,10 @@
+﻿@page "/subgroup/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits Page
+
+<SubgroupViewer Id="@Id" />
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+}

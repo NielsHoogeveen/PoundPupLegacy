@@ -17,7 +17,6 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
     public BlogPostEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost> createDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
@@ -27,7 +26,7 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
         ITextService textService,
         ILogger<BlogPostEditService> logger,
         IEntityCreator<CreateModel.BlogPost> blogPostCreator
-    ) : base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
+    ) : base(connection, siteDataService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
     {
         _createDocumentReaderFactory = createDocumentReaderFactory;
         _updateDocumentReaderFactory = updateDocumentReaderFactory;

@@ -42,8 +42,6 @@ internal sealed class FetchCasesService : IFetchCasesService
                     CaseListEntries = Array.Empty<CaseListEntry>(),
                     NumberOfEntries = 0,
                 };
-            result.PageNumber = pageNumber;
-            result.NumberOfPages = (result.NumberOfEntries / limit) + 1;
 
             return result; 
         }

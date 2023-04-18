@@ -30,7 +30,6 @@ public static class DependencyInjection
         services.AddTransient<IFetchCasesService, FetchCasesService>();
         services.AddTransient<IFetchCountriesService, FetchCountriesService>();
         services.AddTransient<IFetchSearchService, FetchSearchService>();
-        services.AddTransient<IRazorViewToStringService, RazorViewToStringService>();
         services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IEditService<EditModel.Article>, ArticleEditService>();
         services.AddTransient<IEditService<EditModel.BlogPost>, BlogPostEditService>();
@@ -52,7 +51,6 @@ public static class DependencyInjection
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<ILocationService, LocationService>();
         services.AddSingleton<ISiteDataService, SiteDataService>();
-        services.AddSingleton<INodeCacheService, NodeCacheService>();
 
     }
 }

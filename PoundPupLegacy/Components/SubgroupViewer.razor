@@ -1,0 +1,33 @@
+﻿@using PoundPupLegacy.Services
+@using PoundPupLegacy.Components
+@using PoundPupLegacy.ViewModel.Models
+@inherits PagedViewer
+@inject ISiteDataService siteDataService
+@inject ISubgroupService SubgroupService
+@if (Model is not null)
+{
+    <table>
+        @foreach (var item in Model.Entries.OrderByDescending(x => x.Authoring.CreatedDateTime))
+        {
+            <tr>
+                <td>
+                    <a href="@item.Path">@item.Title</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private SubgroupPagedList? Model { get; set; }
+
+    protected override int PageSize => 150;
+
+    protected override async Task OnInitializedPagedAsync()
+    {
+        Model = await SubgroupService.GetSubGroupPagedList(UserId, Id, PagedList.PageSize, PagedList.PageNumber);
+    }
+}

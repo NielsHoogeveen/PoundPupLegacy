@@ -12,7 +12,6 @@ internal abstract class PartyEditServiceBase<T, TCreate> : NodeEditServiceBase<T
     protected PartyEditServiceBase(
         IDbConnection connection,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
@@ -21,7 +20,6 @@ internal abstract class PartyEditServiceBase<T, TCreate> : NodeEditServiceBase<T
         ) : base(
             connection,
             siteDataService,
-            nodeCacheService,
             tagSaveService,
             tenantNodesSaveService,
             filesSaveService,

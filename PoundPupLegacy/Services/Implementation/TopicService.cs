@@ -22,8 +22,9 @@ internal sealed class TopicService : ITopicService
         _topicsDocumentReaderFactory = topicsDocumentReaderFactory;
     }
 
-    public async Task<Topics?> FetchTopics(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
+    public async Task<Topics?> FetchTopics(int userId, int tenantId, int limit, int pageNumber, string searchTerm, SearchOption searchOption)
     {
+        var offset = (pageNumber - 1) * limit;
 
         try {
             await _connection.OpenAsync();

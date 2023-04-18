@@ -29,18 +29,19 @@
             }
         </div>
         </article>
-        <Pager Model="Model" />
+        <Pager Model="PagedList" />
     </div>
 }
 
 @code {
     private Polls? Model { get; set; }
 
+    protected override int PageSize => 25;
     const int NUMBER_OF_ENTRIES = 25;
 
     protected override async Task OnInitializedPagedAsync()
     {
-        Model = await FetchPollsService.GetPolls(UserId, TenantId, NUMBER_OF_ENTRIES, PageNumber);
+        Model = await FetchPollsService.GetPolls(UserId, TenantId, PagedList.PageSize, PagedList.PageNumber);
     }
 
 }

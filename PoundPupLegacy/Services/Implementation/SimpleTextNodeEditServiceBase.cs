@@ -19,7 +19,6 @@ internal abstract class SimpleTextNodeEditServiceBase<T, TCreate> : NodeEditServ
     protected SimpleTextNodeEditServiceBase(
         IDbConnection connection,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -29,7 +28,6 @@ internal abstract class SimpleTextNodeEditServiceBase<T, TCreate> : NodeEditServ
         ) : base(
             connection,
             siteDataService,
-            nodeCacheService,
             tagSaveService,
             tenantNodesSaveService,
             filesSaveService,

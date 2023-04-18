@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Articles : PagedList
+public record Articles
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
     public SelectionItem[] TermNames
@@ -26,10 +26,6 @@ public record Articles : PagedList
             }
         }
     }
-    public int NumberOfEntries { get; set; }
-    public int PageNumber { get; set; }
-    public int NumberOfPages { get; set; }
-    public string QueryString { get; set; } = "";
-    public string Path => "articles";
+    public required int NumberOfEntries { get; init; }
 
 }

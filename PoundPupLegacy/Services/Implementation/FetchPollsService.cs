@@ -39,8 +39,6 @@ internal sealed class FetchPollsService : IFetchPollsService
                 Entries = Array.Empty<PollListEntry>(),
                 NumberOfEntries = 0
             };
-            result.PageNumber = pageNumber;
-            result.NumberOfPages = (result.NumberOfEntries / limit) + 1;
             return result;
         }
         finally {

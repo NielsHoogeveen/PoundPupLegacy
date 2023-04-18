@@ -1,0 +1,77 @@
+﻿@using PoundPupLegacy.Services
+@using PoundPupLegacy.ViewModel.Models
+@inherits PagedSearchViewer
+@inject ITopicService TopicService
+@if(Model is not null)
+{
+    <div class="articles">
+        <div class="breadcrum">
+            <span class="breadcrum-element">
+                <a href="/home">home</a>
+            </span>
+        </div>
+        <form>
+            <select name="search_option">
+                @if (PagedList.SearchOption == SearchOption.Contains)
+                {
+                    <option value="contains" selected>contains</option>
+                }
+                else
+                {
+                    <option value="contains">contains</option>
+                }
+                @if (PagedList.SearchOption == SearchOption.IsEqualTo) {
+                    <option value="is_equal_to" selected>is equal to</option>
+                }
+                else
+                {
+                    <option value="is_equal_to">is equal to</option>
+                }
+                @if (PagedList.SearchOption == SearchOption.StartsWith) {
+                    <option value="starts_with" selected>starts with</option>
+                }
+                else
+                {
+                    <option value="starts_with">starts with</option>
+                }
+                @if (PagedList.SearchOption == SearchOption.EndsWith) {
+
+                    <option value="ends_with" selected>ends with</option>
+                }
+                else
+                {
+                    <option value="ends_with">ends with</option>
+                }
+            </select>
+            <input type="text" name="search" value="@PagedList.SearchTerm"/>
+            <input type="submit" value="Search" />
+        </form>
+        @if (Model.Entries.Any())
+        {
+            @foreach (var topic in Model.Entries)
+            {
+                <div>
+                    <a href="@topic.Path">@topic.Title</a>
+                </div>
+            }
+            <Pager Model="PagedList"/>
+        }
+        else
+        {
+            <p>No organizations were found</p>
+    
+        }
+
+    </div>
+}
+@code {
+    private Topics? Model { get; set; }
+
+    protected override int PageSize => 50;
+
+    protected override async Task OnInitializedPagedSearchAsync()
+    {
+        Model = await TopicService.FetchTopics(UserId, TenantId, PagedList.PageSize, PagedList.PageNumber, PagedList.SearchTerm, PagedList.SearchOption);
+    }
+
+}

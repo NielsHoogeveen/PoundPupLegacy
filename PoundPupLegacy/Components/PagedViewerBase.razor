@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using PoundPupLegacy.ViewModel.Models
+@typeparam TPagedList
+@inherits Viewer
+@inject NavigationManager NavigationManager
+
+@code {
+
+    protected abstract int PageSize { get; }
+
+    protected abstract TPagedList PagedList { get; }
+
+    protected sealed override async Task OnInitializedAsync()
+    {
+        PagedList.PageSize = PageSize;
+
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        PagedList.Path = uri.AbsolutePath;
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageValue)) {
+            if (int.TryParse(pageValue, out int providedPageNumber)) {
+                PagedList.PageNumber = providedPageNumber;
+            }
+        }
+        await OnInitializedPagedAsync();
+    }
+    protected virtual async Task OnInitializedPagedAsync()
+    {
+        await Task.CompletedTask;
+    }
+
+}

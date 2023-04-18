@@ -17,7 +17,6 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
     public DiscussionEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion> createDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
@@ -27,7 +26,7 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
         ITextService textService,
         ILogger<DiscussionEditService> logger,
         IEntityCreator<CreateModel.Discussion> discussionCreator
-    ) : base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
+    ) : base(connection, siteDataService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
     {
         _createDocumentReaderFactory = createDocumentReaderFactory;
         _updateDocumentReaderFactory = updateDocumentReaderFactory;

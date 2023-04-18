@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Organizations : PagedList<BasicListEntry>
+public record Organizations 
 {
     private BasicListEntry[] _entries = Array.Empty<BasicListEntry>();
     public required BasicListEntry[] Entries
     {
         get => _entries;
-        init
+        set
         {
             if (value is not null)
             {
@@ -15,12 +15,5 @@ public record Organizations : PagedList<BasicListEntry>
         }
     }
 
-    public int NumberOfEntries { get; set; }
-    public int PageNumber { get; set; }
-    public int NumberOfPages { get; set; }
-    public string QueryString { get; set; } = "";
-    public SearchOption SelectedSearchOption { get; set; }
-    public string? SearchTerm { get; set; }
-    public string Path => "organizations";
-
+    public required int NumberOfEntries { get; init; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Polls : PagedList<PollListEntry>
+public record Polls
 {
     private PollListEntry[] _entries = Array.Empty<PollListEntry>();
     public required PollListEntry[] Entries
@@ -15,10 +15,5 @@ public record Polls : PagedList<PollListEntry>
         }
     }
 
-    public int NumberOfEntries { get; set; }
-    public int PageNumber { get; set; }
-    public int NumberOfPages { get; set; }
-    public string QueryString { get; set; } = "";
-    public string Path => "polls";
-
+    public required int NumberOfEntries { get; init; }
 }

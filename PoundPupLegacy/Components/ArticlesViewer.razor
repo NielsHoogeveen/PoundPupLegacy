@@ -74,13 +74,13 @@
             }
         </div>
         </article>
-        <Pager Model="@Model" />
+        <Pager Model="@PagedList" />
     </div>
 }
 @code {
     private Articles? Model;
 
-    const int NUMBER_OF_ENTRIES = 10;
+    protected override int PageSize => 10;
 
     const string TERM_NAME_PREFIX = "term-name-";
 
@@ -126,6 +126,6 @@
             : Model is null
                 ? GetTermIds() 
                 : Model.TermNames.Where(x => x.Selected).Select(x => x.Id);
-        Model = await FetchArticlesService.GetArticles(TenantId, termIds.ToList(), PageNumber, NUMBER_OF_ENTRIES, TERM_NAME_PREFIX);
+        Model = await FetchArticlesService.GetArticles(TenantId, termIds.ToList(), PagedList.PageNumber, PagedList.PageSize, TERM_NAME_PREFIX);
     }
 }

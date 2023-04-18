@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Topics : PagedList<TopicListEntry>
+public record Topics 
 {
     private TopicListEntry[] _entries = Array.Empty<TopicListEntry>();
     public required TopicListEntry[] Entries
@@ -15,12 +15,6 @@ public record Topics : PagedList<TopicListEntry>
         }
     }
 
-    public int NumberOfEntries { get; set; }
-    public int PageNumber { get; set; }
-    public int NumberOfPages { get; set; }
-    public string QueryString { get; set; } = "";
-    public SearchOption SelectedSearchOption { get; set; }
-    public string? SearchTerm { get; set; }
-    public string Path => "topics";
+    public required int NumberOfEntries { get; init; }
 
 }

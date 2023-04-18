@@ -19,7 +19,6 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
     public OrganizationEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization> organizationUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<OrganizationUpdaterRequest> organizationUpdateFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
@@ -33,7 +32,6 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
     ) : base(
         connection,
         siteDataService,
-        nodeCacheService,
         tagSaveService,
         tenantNodesSaveService,
         filesSaveService,

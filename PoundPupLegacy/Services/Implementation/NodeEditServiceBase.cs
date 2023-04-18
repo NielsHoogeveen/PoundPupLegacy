@@ -11,7 +11,6 @@ internal abstract class NodeEditServiceBase<T, TCreate>
 {
     protected readonly NpgsqlConnection _connection;
     protected readonly ISiteDataService _siteDateService;
-    protected readonly INodeCacheService _nodeCacheService;
     protected readonly ISaveService<IEnumerable<Tag>> _tagSaveService;
     protected readonly ISaveService<IEnumerable<TenantNode>> _tenantNodesSaveService;
     protected readonly ISaveService<IEnumerable<File>> _filesSaveService;
@@ -20,7 +19,6 @@ internal abstract class NodeEditServiceBase<T, TCreate>
     public NodeEditServiceBase(
         IDbConnection connection,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
@@ -31,7 +29,6 @@ internal abstract class NodeEditServiceBase<T, TCreate>
             throw new Exception("Application only works with a Postgres database");
         _connection = (NpgsqlConnection)connection;
         _siteDateService = siteDataService;
-        _nodeCacheService = nodeCacheService;
         _tagSaveService = tagSaveService;
         _tenantNodesSaveService = tenantNodesSaveService;
         _filesSaveService = filesSaveService;
@@ -61,9 +58,6 @@ internal abstract class NodeEditServiceBase<T, TCreate>
                 }
                 await StoreAdditional(node);
                 await tx.CommitAsync();
-                if (node.UrlId.HasValue) {
-                    _nodeCacheService.Remove(node.UrlId.Value, node.OwnerId);
-                }
                 if (node.TenantNodes.Any(x => x.UrlPath is not null)) {
                     await _siteDateService.RefreshTenants();
                 }

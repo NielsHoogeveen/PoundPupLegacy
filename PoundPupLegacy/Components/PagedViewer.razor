@@ -1,22 +1,9 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities
-@inject NavigationManager NavigationManager;
-@inherits Viewer
-@code {
-    protected int PageNumber { get; set; } = 1;
+@using PoundPupLegacy.ViewModel.Models
+@inherits PagedViewerBase<PagedList>
 
-    protected sealed override async Task OnInitializedAsync()
-    {
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageValue)) {
-            if (int.TryParse(pageValue, out int providedPageNumber)) {
-                PageNumber = providedPageNumber;
-            }
-        }
-        await OnInitializedPagedAsync();
-    }
-    protected virtual async Task OnInitializedPagedAsync()
-    {
-        await Task.CompletedTask;
-    }
+@code {
+
+    protected sealed override PagedList PagedList { get; } = new PagedList();
 
 }

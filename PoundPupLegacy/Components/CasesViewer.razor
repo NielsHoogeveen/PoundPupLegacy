@@ -119,7 +119,7 @@
                     </div>
                 }
             </div>
-            <Pager Model="Model"/>
+            <Pager Model="PagedList"/>
         </article>
     </div>
 
@@ -128,11 +128,11 @@
     [Parameter]
     public CaseType CaseType { get; set; }
 
-    private const int NUMBER_OF_ENTRIES = 10;
+    protected override int PageSize => 10;
     private Cases? Model;
 
     protected override async Task OnInitializedPagedAsync()
     {
-        Model = await FetchCasesService.FetchCases(NUMBER_OF_ENTRIES, PageNumber, TenantId, UserId, CaseType);
+        Model = await FetchCasesService.FetchCases(PagedList.PageSize, PagedList.PageNumber, TenantId, UserId, CaseType);
     }
 }

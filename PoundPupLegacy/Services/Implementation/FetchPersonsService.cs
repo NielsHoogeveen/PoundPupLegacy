@@ -23,8 +23,9 @@ internal sealed class FetchPersonsService : IPersonService
         _personsDocumentReaderFactory = personsDocumentReaderFactory;
     }
 
-    public async Task<Persons> FetchPersons(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption)
+    public async Task<Persons> FetchPersons(int userId, int tenantId, int limit, int pageNumber, string searchTerm, SearchOption searchOption)
     {
+        var offset = (pageNumber - 1) * limit;
 
         try {
             await _connection.OpenAsync();
@@ -37,12 +38,13 @@ internal sealed class FetchPersonsService : IPersonService
                 SearchTerm = searchTerm,
                 SearchOption = searchOption
             });
-            if (persons is not null)
-                return persons;
-            return new Persons {
-                Entries = Array.Empty<PersonListEntry>(),
-                NumberOfEntries = 0
-            };
+            var result = persons is not null
+                ? persons
+                : new Persons {
+                    Entries = Array.Empty<PersonListEntry>(),
+                    NumberOfEntries = 0
+                };
+            return result;
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

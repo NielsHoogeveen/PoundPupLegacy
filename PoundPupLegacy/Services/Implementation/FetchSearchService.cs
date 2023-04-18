@@ -21,15 +21,16 @@ internal sealed class FetchSearchService : IFetchSearchService
         _searchDocumentReaderFactory = searchDocumentReaderFactory;
     }
 
-    public async Task<SearchResult> FetchSearch(int userId, int tenantId, int limit, int offset, string searchString)
+    public async Task<SearchResult> FetchSearch(int userId, int tenantId, int pageSize, int pageNumber, string searchString)
     {
+        int offset = (pageNumber - 1) * pageSize;
         try {
             await _connection.OpenAsync();
             await using var reader = await _searchDocumentReaderFactory.CreateAsync(_connection);
             var searchResult =  await reader.ReadAsync(new SearchDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
-                Limit = limit,
+                Limit = pageSize,
                 Offset = offset,
                 SearchString = searchString
             });

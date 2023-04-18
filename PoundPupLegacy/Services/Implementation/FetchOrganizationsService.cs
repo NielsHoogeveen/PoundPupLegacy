@@ -22,9 +22,10 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
         _organizationsDocumentReaderFactory = organizationsDocumentReaderFactory;
     }
 
-    public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
+    public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int limit, int pageNumber, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
     {
 
+        var offset = (pageNumber - 1) * limit;
         try {
             await _connection.OpenAsync();
             await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection);
@@ -38,16 +39,19 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
                 OrganizationTypeId = organizationTypeId,
                 CountryId = countryId
             });
-            if (organizations is not null)
-                return organizations;
-            return new OrganizationSearch {
-                Organizations = new Organizations {
-                    Entries = Array.Empty<BasicListEntry>(),
-                    NumberOfEntries = 0
-                },
-                Countries = Array.Empty<SelectionItem>(),
-                OrganizationTypes = Array.Empty<SelectionItem>(),
-            };
+            if (organizations is null) {
+                return (new OrganizationSearch {
+                    Organizations = new Organizations {
+                        NumberOfEntries = 0,
+                        Entries = Array.Empty<BasicListEntry>()
+                    },
+                    OrganizationTypes = Array.Empty<SelectionItem>(),
+                    Countries = Array.Empty<SelectionItem>()
+                });
+            }
+            else {
+                return (organizations);
+            }
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

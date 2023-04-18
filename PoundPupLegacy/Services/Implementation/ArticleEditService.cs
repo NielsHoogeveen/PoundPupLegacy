@@ -18,7 +18,6 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
     public ArticleEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Article> createDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Article> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
@@ -28,7 +27,7 @@ internal sealed class ArticleEditService : SimpleTextNodeEditServiceBase<Article
         ITextService textService,
         ILogger<ArticleEditService> logger,
         IEntityCreator<CreateModel.Article> articleCreator
-    ) : base(connection, siteDataService, nodeCacheService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
+    ) : base(connection, siteDataService, simpleTextNodeUpdaterFactory, tagSaveService, tenantNodesSaveService, filesSaveService, textService, logger)
     {
         _createDocumentReaderFactory = createDocumentReaderFactory;
         _updateDocumentReaderFactory = updateDocumentReaderFactory;

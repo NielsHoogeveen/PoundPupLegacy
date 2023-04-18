@@ -23,14 +23,12 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
 
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<CongressionalDataService> _logger;
-    private readonly IRazorViewToStringService _razorViewToStringService;
     private readonly ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> _unitedStatesMeetingChamberDocumentReaderFactory;
     private readonly ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> _unitedStatesCongresssDocumentReaderFactory;
 
     public CongressionalDataService(
         IDbConnection connection,
         ILogger<CongressionalDataService> logger,
-        IRazorViewToStringService razorViewToStringService,
         ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> unitedStatesMeetingChamberDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> unitedStatesCongresssDocumentReaderFactory)
     {
@@ -39,7 +37,6 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         _connection = (NpgsqlConnection)connection;
 
         _logger = logger;
-        _razorViewToStringService = razorViewToStringService;
         _unitedStatesMeetingChamberDocumentReaderFactory = unitedStatesMeetingChamberDocumentReaderFactory;
         _unitedStatesCongresssDocumentReaderFactory = unitedStatesCongresssDocumentReaderFactory;
     }
@@ -86,34 +83,12 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
 
     }
 
-    public async Task<string?> GetCongressionalMeetingChamberResult(HttpContext context)
-    {
-        var congressionalMeetingChamber = GetCongressionalMeetingChamber(context.Request.Path);
-        if (congressionalMeetingChamber is null) {
-            return null;
-        }
-        return await _razorViewToStringService.GetFromView("/Views/Shared/CongressionalMeetingChamber.cshtml", congressionalMeetingChamber, context);
-    }
-
     public async Task<UnitedStatesCongress?> GetUnitedStatesCongress()
     {
         try {
             await _connection.OpenAsync();
             await using var reader = await _unitedStatesCongresssDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new UnitedStatesCongresssDocumentReaderRequest());
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
-    }
-
-    public async Task<string?> GetUnitedStatesCongress(HttpContext context)
-    {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _unitedStatesCongresssDocumentReaderFactory.CreateAsync(_connection);
-            var document = await reader.ReadAsync(new UnitedStatesCongresssDocumentReaderRequest());
-            return await _razorViewToStringService.GetFromView("/Views/Shared/UnitedStatesCongress.cshtml", document, context);
         }
         finally {
             await _connection.CloseAsync();

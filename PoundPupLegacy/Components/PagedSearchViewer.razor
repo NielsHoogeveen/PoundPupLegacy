@@ -1,0 +1,34 @@
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using PoundPupLegacy.ViewModel.Models
+@inherits PagedViewerBase<PagedSearchList>
+@inject NavigationManager NavigationManager
+
+@code {
+
+    protected sealed override PagedSearchList PagedList { get; } = new PagedSearchList();
+
+    protected sealed override async Task OnInitializedPagedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var parsedQuery = QueryHelpers.ParseQuery(uri.Query);
+        if (parsedQuery.TryGetValue("search_term", out var search)) {
+            PagedList.SearchTerm = search.FirstOrDefault() ?? string.Empty;
+        }
+        if (parsedQuery.TryGetValue("search_option", out var searchOption)) {
+
+            PagedList.SearchOption = search.FirstOrDefault() switch {
+                "contains" => SearchOption.Contains,
+                "starts" => SearchOption.StartsWith,
+                "ends" => SearchOption.EndsWith,
+                "is_equal_to" => SearchOption.IsEqualTo,
+                _ => SearchOption.Contains
+            };
+        }
+
+        await OnInitializedPagedSearchAsync();
+    }
+    protected virtual async Task OnInitializedPagedSearchAsync()
+    {
+        await Task.CompletedTask;
+    }
+}

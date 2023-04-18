@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
-using PoundPupLegacy.Middleware;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.Services.Implementation;
 using Quartz;
 using System.Data;
 
@@ -91,9 +89,6 @@ public sealed class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-
-
-        app.UseCustomMiddleware();
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");

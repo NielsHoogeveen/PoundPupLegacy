@@ -15,7 +15,6 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
     public DocumentEditService(
         IDbConnection connection,
         ISiteDataService siteDataService,
-        INodeCacheService nodeCacheService,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document> documentUpdateDocumentReaderFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -25,7 +24,6 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
     ) : base(
         connection,
         siteDataService,
-        nodeCacheService,
         tagSaveService,
         tenantNodesSaveService,
         filesSaveService,

@@ -38,9 +38,6 @@ internal sealed class FetchArticlesService : IFetchArticlesService
                 ArticleListEntries = Array.Empty<ArticleListEntry>(),
                 NumberOfEntries = 0
             };
-            result.PageNumber = pageNumber;
-            result.NumberOfPages = (result.NumberOfEntries / length) + 1;
-            result.QueryString = string.Join("&", selectedTerms.Select(x => $"{termNamePrefix}{x}"));
             return result;
         }
         finally {

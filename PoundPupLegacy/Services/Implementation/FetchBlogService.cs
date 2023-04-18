@@ -36,8 +36,6 @@ internal sealed class FetchBlogService : IFetchBlogService
             });
             if (blog is null)
                 return null;
-            blog.PageNumber = startIndex;
-            blog.NumberOfPages = (blog.NumberOfEntries / length) + 1;
             return blog;
         }
         finally {

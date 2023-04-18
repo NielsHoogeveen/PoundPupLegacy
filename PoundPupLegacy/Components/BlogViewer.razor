@@ -28,7 +28,7 @@
                     </div>
                 }
             </div>
-            <Pager Model="@Model" />
+            <Pager Model="@PagedList" />
         </article>
     </div>
     
@@ -39,10 +39,10 @@
 
     private Blog? Model { get; set; }
 
-    const int NUMBER_OF_ENTRIES = 10;
+    protected override int PageSize => 10;
 
     protected override async Task OnInitializedPagedAsync()
     {
-        Model = await FetchBlogService.FetchBlog(Id, TenantId, PageNumber, NUMBER_OF_ENTRIES);
+        Model = await FetchBlogService.FetchBlog(Id, TenantId, PagedList.PageNumber, PagedList.PageSize);
     }
 }
