@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = SubgroupsDocumentReaderRequest;
-using Factory = SubgroupsDocumentReaderFactory;
-using Reader = SubgroupsDocumentReader;
 using PoundPupLegacy.ViewModel.Models;
 
 public sealed record SubgroupsDocumentReaderRequest : IRequest
@@ -13,7 +11,7 @@ public sealed record SubgroupsDocumentReaderRequest : IRequest
     public required int Offset { get; init; }
 
 }
-internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, SubgroupPagedList, Reader>
+internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, SubgroupPagedList>
 {
     internal readonly static NonNullableIntegerDatabaseParameter SubgroupIdParameter = new() { Name = "subgroup_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -139,23 +137,17 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
             """
             ;
 
-}
-internal sealed class SubgroupsDocumentReader : SingleItemDatabaseReader<Request, SubgroupPagedList>
-{
-    public SubgroupsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.SubgroupIdParameter, request.SubgroupId),
-            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
-            ParameterValue.Create(Factory.LimitParameter, request.Limit),
-            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
+            ParameterValue.Create(SubgroupIdParameter, request.SubgroupId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
+            ParameterValue.Create(LimitParameter, request.Limit),
+            ParameterValue.Create(OffsetParameter, request.Offset),
         };
     }
     protected override SubgroupPagedList Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

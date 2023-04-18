@@ -1,9 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = TenantNodeInserterFactory;
 using Request = TenantNode;
-using Inserter = TenantNodeInserter;
-public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request, Inserter>
+
+public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NullCheckingAlternativeIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -13,24 +12,15 @@ public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFa
     internal static NonNullableIntegerDatabaseParameter PublicationStatusId = new() { Name = "publication_status_id" };
 
     public override string TableName => "tenant_node";
-
-}
-public sealed class TenantNodeInserter : AutoGenerateIdDatabaseInserter<Request>
-{
-
-    public TenantNodeInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantId, request.TenantId),
-            ParameterValue.Create(Factory.UrlId, (request.UrlId, request.NodeId)),
-            ParameterValue.Create(Factory.UrlPath, request.UrlPath),
-            ParameterValue.Create(Factory.NodeId, request.NodeId),
-            ParameterValue.Create(Factory.SubgroupId, request.SubgroupId),
-            ParameterValue.Create(Factory.PublicationStatusId, request.PublicationStatusId)
+            ParameterValue.Create(TenantId, request.TenantId),
+            ParameterValue.Create(UrlId, (request.UrlId, request.NodeId)),
+            ParameterValue.Create(UrlPath, request.UrlPath),
+            ParameterValue.Create(NodeId, request.NodeId),
+            ParameterValue.Create(SubgroupId, request.SubgroupId),
+            ParameterValue.Create(PublicationStatusId, request.PublicationStatusId)
         };
     }
 }

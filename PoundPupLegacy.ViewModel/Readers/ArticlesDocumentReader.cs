@@ -1,9 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
-
-using Request = ArticlesDocumentReaderRequest;
-using Reader = ArticlesDocumentReader;
-using Factory = ArticlesDocumentReaderFactory;
 using PoundPupLegacy.ViewModel.Models;
+using Request = ArticlesDocumentReaderRequest;
 
 public sealed record ArticlesDocumentReaderRequest : IRequest
 {
@@ -13,7 +10,7 @@ public sealed record ArticlesDocumentReaderRequest : IRequest
     public required int Length { get; init; }
 }
 
-internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Articles, Reader>
+internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Articles>
 {
     internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal static readonly NullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
@@ -273,25 +270,18 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
         )
         """;
 
-}
-internal sealed class ArticlesDocumentReader : SingleItemDatabaseReader<Request, Articles>
-{
-    public ArticlesDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
-            ParameterValue.Create(Factory.LengthParameter, request.Length),
-            ParameterValue.Create(Factory.StartIndexParameter, request.StartIndex),
-            ParameterValue.Create(Factory.TermsParameter, request.SelectedTerms is null ? null : request.SelectedTerms.Any() ? request.SelectedTerms.ToArray(): null)
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(LengthParameter, request.Length),
+            ParameterValue.Create(StartIndexParameter, request.StartIndex),
+            ParameterValue.Create(TermsParameter, request.SelectedTerms is null ? null : request.SelectedTerms.Any() ? request.SelectedTerms.ToArray(): null)
         };
     }
 
     protected override Articles Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

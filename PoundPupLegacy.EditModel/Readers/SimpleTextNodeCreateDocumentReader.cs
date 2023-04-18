@@ -1,8 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-public abstract class SimpleTextNodeCreateDocumentReaderFactory<TResponse, TReader> : NodeCreateDocumentReaderFactory<TResponse, TReader>
-where TResponse : SimpleTextNode
-where TReader : ISingleItemDatabaseReader<NodeCreateDocumentRequest, TResponse>
+public abstract class SimpleTextNodeCreateDocumentReaderFactory<TResponse> : NodeCreateDocumentReaderFactory<TResponse>
+where TResponse : class, SimpleTextNode
 {
     public override string Sql => SQL;  
     private const string SQL = $"""
@@ -32,14 +31,4 @@ where TReader : ISingleItemDatabaseReader<NodeCreateDocumentRequest, TResponse>
         """;
 
 }
-
-public class SimpleTextNodeCreateDocumentReader<T> : NodeCreateDocumentReader<T>
-    where T : class, SimpleTextNode
-{
-    protected SimpleTextNodeCreateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
-    {
-    }
-
-}
-
 

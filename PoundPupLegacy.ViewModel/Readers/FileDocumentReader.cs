@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = FileDocumentReaderRequest;
-using Factory = FileDocumentReaderFactory;
-using Reader = FileDocumentReader;
 using PoundPupLegacy.ViewModel.Models;
 
 public sealed class FileDocumentReaderRequest : IRequest
@@ -12,7 +10,7 @@ public sealed class FileDocumentReaderRequest : IRequest
     public required int FileId { get; init; }
 }
 
-internal sealed class FileDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, File, Reader>
+internal sealed class FileDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, File>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -114,24 +112,17 @@ internal sealed class FileDocumentReaderFactory : SingleItemDatabaseReaderFactor
         having every(can_be_accessed)
         """;
 
-}
-internal sealed class FileDocumentReader : SingleItemDatabaseReader<Request, File>
-{
-    public FileDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
-            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
-            ParameterValue.Create(Factory.FileIdParameter, request.FileId),
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
+            ParameterValue.Create(FileIdParameter, request.FileId),
         };
     }
 
     protected override File Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

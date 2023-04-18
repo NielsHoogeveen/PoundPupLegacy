@@ -1,11 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = InterOrganizationalRelationInserterFactory;
 using Request = InterOrganizationalRelation;
-using Inserter = InterOrganizationalRelationInserter;
 
-
-internal sealed class InterOrganizationalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
+internal sealed class InterOrganizationalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter OrganizationIdFrom = new() { Name = "organization_id_from" };
     internal static NonNullableIntegerDatabaseParameter OrganizationIdTo = new() { Name = "organization_id_to" };
@@ -19,25 +16,18 @@ internal sealed class InterOrganizationalRelationInserterFactory : IdentifiableD
 
     public override string TableName => "inter_organizational_relation";
 
-}
-internal sealed class InterOrganizationalRelationInserter : IdentifiableDatabaseInserter<Request>
-{
-    public InterOrganizationalRelationInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.OrganizationIdFrom, request.OrganizationIdFrom),
-            ParameterValue.Create(Factory.OrganizationIdTo, request.OrganizationIdTo),
-            ParameterValue.Create(Factory.GeographicalEntityId, request.GeographicalEntityId),
-            ParameterValue.Create(Factory.InterOrganizationalRelationTypeId, request.InterOrganizationalRelationTypeId),
-            ParameterValue.Create(Factory.DateRange, request.DateRange),
-            ParameterValue.Create(Factory.DocumentIdProof, request.DocumentIdProof),
-            ParameterValue.Create(Factory.Description, request.Description),
-            ParameterValue.Create(Factory.MoneyInvolved, request.MoneyInvolved),
-            ParameterValue.Create(Factory.NumberOfChildrenInvolved, request.NumberOfChildrenInvolved),
+            ParameterValue.Create(OrganizationIdFrom, request.OrganizationIdFrom),
+            ParameterValue.Create(OrganizationIdTo, request.OrganizationIdTo),
+            ParameterValue.Create(GeographicalEntityId, request.GeographicalEntityId),
+            ParameterValue.Create(InterOrganizationalRelationTypeId, request.InterOrganizationalRelationTypeId),
+            ParameterValue.Create(DateRange, request.DateRange),
+            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
+            ParameterValue.Create(Description, request.Description),
+            ParameterValue.Create(MoneyInvolved, request.MoneyInvolved),
+            ParameterValue.Create(NumberOfChildrenInvolved, request.NumberOfChildrenInvolved),
         };
     }
 }

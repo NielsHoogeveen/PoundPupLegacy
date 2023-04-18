@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
 using Request = NodeReaderByUrlIdRequest;
-using Factory = NodeReaderByUrlIdFactory;
-using Reader = NodeReaderByUrlId;
 
 public sealed record NodeReaderByUrlIdRequest : IRequest
 {
@@ -10,7 +8,7 @@ public sealed record NodeReaderByUrlIdRequest : IRequest
     public required int UrlId { get; init; }
 }
 
-internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, Node, Reader>
+internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, Node>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -38,30 +36,24 @@ internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseRead
         join node n on n.id = t.node_id
         WHERE t.tenant_id= @tenant_id AND t.url_id = @url_id
         """;
-}
-internal sealed class NodeReaderByUrlId : MandatorySingleItemDatabaseReader<Request, Node>
-{
-
-    public NodeReaderByUrlId(NpgsqlCommand command) : base(command) { }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantId, request.TenantId),
-            ParameterValue.Create(Factory.UrlId, request.UrlId),
+            ParameterValue.Create(TenantId, request.TenantId),
+            ParameterValue.Create(UrlId, request.UrlId),
         };
     }
 
     protected override Node Read(NpgsqlDataReader reader)
     {
         var node = new BasicNode {
-            Id = Factory.IdReader.GetValue(reader),
-            PublisherId = Factory.PublisherIdReader.GetValue(reader),
-            Title = Factory.TitleReader.GetValue(reader),
-            CreatedDateTime = Factory.CreatedDateTimeReader.GetValue(reader),
-            ChangedDateTime = Factory.ChangedDateTimeReader.GetValue(reader),
-            NodeTypeId = Factory.NodeTypeIdReader.GetValue(reader),
-            OwnerId = Factory.OwnerIdReader.GetValue(reader),
+            Id = IdReader.GetValue(reader),
+            PublisherId = PublisherIdReader.GetValue(reader),
+            Title = TitleReader.GetValue(reader),
+            CreatedDateTime = CreatedDateTimeReader.GetValue(reader),
+            ChangedDateTime = ChangedDateTimeReader.GetValue(reader),
+            NodeTypeId = NodeTypeIdReader.GetValue(reader),
+            OwnerId = OwnerIdReader.GetValue(reader),
             TenantNodes = new List<TenantNode>(),
         };
         return node;
@@ -72,4 +64,3 @@ internal sealed class NodeReaderByUrlId : MandatorySingleItemDatabaseReader<Requ
         return $"node cannot be found in for url_id {request.UrlId} and tenant {request.TenantId}";
     }
 }
-

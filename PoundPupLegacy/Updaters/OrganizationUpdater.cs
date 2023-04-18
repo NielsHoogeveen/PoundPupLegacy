@@ -1,11 +1,8 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Updaters;
 
 using Request = OrganizationUpdaterRequest;
-using Factory = OrganizationUpdaterFactory;
-using Updater = OrganizationUpdater;
 
 public record OrganizationUpdaterRequest: IRequest
 {
@@ -18,7 +15,7 @@ public record OrganizationUpdaterRequest: IRequest
     public required DateTimeRange? TerminationDateRange { get; init; }
 
 }
-internal sealed class OrganizationUpdaterFactory : DatabaseUpdaterFactory<Request,Updater>
+internal sealed class OrganizationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NonNullableStringDatabaseParameter Title = new() { Name = "title" };
@@ -45,26 +42,17 @@ internal sealed class OrganizationUpdaterFactory : DatabaseUpdaterFactory<Reques
             terminated=@terminated
         where id = @node_id;
         """;
-
-}
-
-internal sealed class OrganizationUpdater : DatabaseUpdater<Request>
-{
-
-    public OrganizationUpdater(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(Factory.NodeId, request.NodeId),
-            ParameterValue.Create(Factory.Title, request.Title),
-            ParameterValue.Create(Factory.Description, request.Description),
-            ParameterValue.Create(Factory.WebsiteUrl, request.WebsiteUrl),
-            ParameterValue.Create(Factory.EmailAddress, request.EmailAddress),
-            ParameterValue.Create(Factory.Established, request.EstablishmentDateRange),
-            ParameterValue.Create(Factory.Terminated, request.TerminationDateRange)
+            ParameterValue.Create(NodeId, request.NodeId),
+            ParameterValue.Create(Title, request.Title),
+            ParameterValue.Create(Description, request.Description),
+            ParameterValue.Create(WebsiteUrl, request.WebsiteUrl),
+            ParameterValue.Create(EmailAddress, request.EmailAddress),
+            ParameterValue.Create(Established, request.EstablishmentDateRange),
+            ParameterValue.Create(Terminated, request.TerminationDateRange)
         };
     }
 }
+

@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = UnitedStatesCongresssDocumentReaderRequest;
-using Factory = UnitedStatesCongresssDocumentReaderFactory;
-using Reader = UnitedStatesCongresssDocumentReader;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
 
@@ -10,7 +8,7 @@ public sealed record UnitedStatesCongresssDocumentReaderRequest : IRequest
 {
 }
 
-internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, UnitedStatesCongress, Reader>
+internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, UnitedStatesCongress>
 {
     internal readonly static FieldValueReader<UnitedStatesCongress> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
@@ -73,13 +71,6 @@ internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDat
         	) house_meetings
         ) x
         """;
-
-}
-internal sealed class UnitedStatesCongresssDocumentReader : SingleItemDatabaseReader<Request, UnitedStatesCongress>
-{
-    public UnitedStatesCongresssDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
@@ -87,6 +78,6 @@ internal sealed class UnitedStatesCongresssDocumentReader : SingleItemDatabaseRe
     }
     protected override UnitedStatesCongress Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

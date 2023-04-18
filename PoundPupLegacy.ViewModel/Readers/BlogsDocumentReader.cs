@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = BlogsDocumentReaderRequest;
-using Factory = BlogsDocumentReaderFactory;
-using Reader = BlogsDocumentReader;
 using PoundPupLegacy.ViewModel.Models;
 
 public sealed record BlogsDocumentReaderRequest : IRequest
@@ -10,7 +8,7 @@ public sealed record BlogsDocumentReaderRequest : IRequest
     public required int TenantId { get; init; }
 }
 
-internal sealed class BlogsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, List<BlogListEntry>, Reader>
+internal sealed class BlogsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, List<BlogListEntry>>
 {
     internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal static readonly FieldValueReader<List<BlogListEntry>> DocumentReader = new() { Name = "document" };
@@ -47,23 +45,14 @@ internal sealed class BlogsDocumentReaderFactory : SingleItemDatabaseReaderFacto
                 order by COUNT(n.id) desc, u.created_date_time 
             ) b
             """;
-
-
-}
-internal sealed class BlogsDocumentReader : SingleItemDatabaseReader<Request, List<BlogListEntry>>
-{
-    public BlogsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
         };
     }
     protected override List<BlogListEntry> Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

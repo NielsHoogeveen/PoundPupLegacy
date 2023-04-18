@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = CasesDocumentReaderRequest;
-using Factory = CasesDocumentReaderFactory;
-using Reader = CasesDocumentReader;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
 
@@ -14,7 +12,7 @@ public sealed record CasesDocumentReaderRequest : IRequest
     public required int Offset { get; init; }
     public required CaseType CaseType { get; init; }
 }
-internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Cases, Reader>
+internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Cases>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -119,26 +117,19 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             group by number_of_entries
             """;
 
-}
-internal sealed class CasesDocumentReader : SingleItemDatabaseReader<Request, Cases>
-{
-    public CasesDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
-            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
-            ParameterValue.Create(Factory.LimitParameter, request.Limit),
-            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
-            ParameterValue.Create(Factory.NodeTypeIdParameter, request.CaseType == CaseType.Any ? null: (int)request.CaseType)
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
+            ParameterValue.Create(LimitParameter, request.Limit),
+            ParameterValue.Create(OffsetParameter, request.Offset),
+            ParameterValue.Create(NodeTypeIdParameter, request.CaseType == CaseType.Any ? null: (int)request.CaseType)
         };
     }
 
     protected override Cases Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

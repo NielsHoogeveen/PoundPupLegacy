@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = CommentInserterFactory;
 using Request = Comment;
-using Inserter = CommentInserter;
 
-public class CommentInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request, Inserter>
+public class CommentInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NullableIntegerDatabaseParameter CommentIdParent = new() { Name = "comment_id_parent" };
@@ -17,25 +15,17 @@ public class CommentInserterFactory : ConditionalAutoGenerateIdDatabaseInserterF
 
     public override string TableName => "comment";
 
-}
-public class CommentInserter : ConditionalAutoGenerateIdDatabaseInserter<Request>
-{
-
-    public CommentInserter(NpgsqlCommand command, NpgsqlCommand autoGenerateIdCommand) : base(command, autoGenerateIdCommand)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request item)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.NodeId, item.NodeId),
-            ParameterValue.Create(Factory.CommentIdParent, item.CommentIdParent),
-            ParameterValue.Create(Factory.PublisherId, item.PublisherId),
-            ParameterValue.Create(Factory.NodeStatusId, item.NodeStatusId),
-            ParameterValue.Create(Factory.IPAddress, item.IPAddress),
-            ParameterValue.Create(Factory.CreatedDateTime, item.CreatedDateTime),
-            ParameterValue.Create(Factory.Title, item.Title),
-            ParameterValue.Create(Factory.Text, item.Text)
+            ParameterValue.Create(NodeId, item.NodeId),
+            ParameterValue.Create(CommentIdParent, item.CommentIdParent),
+            ParameterValue.Create(PublisherId, item.PublisherId),
+            ParameterValue.Create(NodeStatusId, item.NodeStatusId),
+            ParameterValue.Create(IPAddress, item.IPAddress),
+            ParameterValue.Create(CreatedDateTime, item.CreatedDateTime),
+            ParameterValue.Create(Title, item.Title),
+            ParameterValue.Create(Text, item.Text)
         };
     }
 }

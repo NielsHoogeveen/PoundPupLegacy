@@ -5,8 +5,6 @@ namespace PoundPupLegacy.Readers;
 
 using Request = PasswordValidationReaderRequest;
 using Response = PasswordValidationReaderResponse;
-using Factory = PasswordValidationReaderFactory;
-using Reader = PasswordValidationReader;
 
 public record PasswordValidationReaderResponse
 {
@@ -20,7 +18,7 @@ public sealed record PasswordValidationReaderRequest : IRequest
     public required string Password { get; init; }
 }
 
-internal sealed class PasswordValidationReaderFactory : SingleItemDatabaseReaderFactory<Request, Response, Reader>
+internal sealed class PasswordValidationReaderFactory : SingleItemDatabaseReaderFactory<Request, Response>
 {
     internal static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static readonly NonNullableStringDatabaseParameter Password = new() { Name = "password" };
@@ -38,22 +36,14 @@ internal sealed class PasswordValidationReaderFactory : SingleItemDatabaseReader
         """;
 
 
-}
-internal sealed class PasswordValidationReader : SingleItemDatabaseReader<Request, Response>
-{
-
-    public PasswordValidationReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        yield return ParameterValue.Create(Factory.Name, request.UserName);
-        yield return ParameterValue.Create(Factory.Password, request.Password);
+        yield return ParameterValue.Create(Name, request.UserName);
+        yield return ParameterValue.Create(Password, request.Password);
     }
 
     protected override Response Read(NpgsqlDataReader reader)
     {
-        return new Response { UserId = Factory.IdReader.GetValue(reader) };
+        return new Response { UserId = IdReader.GetValue(reader) };
     }
 }

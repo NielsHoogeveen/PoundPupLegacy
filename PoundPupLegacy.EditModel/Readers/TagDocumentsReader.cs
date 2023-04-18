@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
 using Request = TagDocumentsReaderRequest;
-using Factory = TagDocumentsReaderFactory;
-using Reader = TagDocumentsReader;
 
 public sealed record TagDocumentsReaderRequest : IRequest
 {
@@ -11,7 +9,7 @@ public sealed record TagDocumentsReaderRequest : IRequest
     public required string SearchString { get; init; }
 }
 
-internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tag, Reader>
+internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tag>
 {
     internal static readonly NonNullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
     internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
@@ -47,28 +45,22 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
         ) x
         """;
 
-}
-internal sealed class TagDocumentsReader : EnumerableDatabaseReader<Request, Tag>
-{
-    public TagDocumentsReader(NpgsqlCommand command) : base(command)
-    {
-    }
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.NodeIdParameter, request.NodeId),
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
-            ParameterValue.Create(Factory.SearchStringParameter, request.SearchString)
+            ParameterValue.Create(NodeIdParameter, request.NodeId),
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(SearchStringParameter, request.SearchString)
         };
     }
 
     protected override Tag Read(NpgsqlDataReader reader)
     {
         return new Tag {
-            Name = Factory.NameReader.GetValue(reader),
-            NodeId = Factory.NodeIdReader.GetValue(reader),
-            TermId = Factory.TermIdReader.GetValue(reader),
+            Name = NameReader.GetValue(reader),
+            NodeId = NodeIdReader.GetValue(reader),
+            TermId = TermIdReader.GetValue(reader),
             HasBeenDeleted = false,
             IsStored = false,
         };

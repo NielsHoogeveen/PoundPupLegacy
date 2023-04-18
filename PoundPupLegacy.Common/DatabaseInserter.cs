@@ -19,11 +19,13 @@ public interface IDatabaseInserterFactory<T> : IDatabaseInserterFactory
 {
     Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection);
 }
-public abstract class DatabaseInserterFactoryBase<T, T2> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
+public abstract class DatabaseInserterFactoryBase<T> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
     where T : IRequest
-    where T2 : IDatabaseInserter<T>
 {
+
     protected abstract string Sql { get; }
+
+    protected abstract IDatabaseInserter<T> CreateInstance(NpgsqlCommand command);
 
     public async Task<IDatabaseInserter<T>> CreateAsync(IDbConnection connection)
     {
@@ -40,12 +42,11 @@ public abstract class DatabaseInserterFactoryBase<T, T2> : DatabaseAccessorFacto
             command.AddParameter(parameter);
         }
         await command.PrepareAsync();
-        return (IDatabaseInserter<T>)Activator.CreateInstance(typeof(T2), new object[] { command })!;
+        return CreateInstance(command);
     }
 }
-public abstract class DatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBase<T, T2>
+public abstract class DatabaseInserterFactory<T> : DatabaseInserterFactoryBase<T>
     where T : IRequest
-    where T2 : DatabaseInserter<T>
 {
     public abstract string TableName { get; }
 
@@ -59,15 +60,44 @@ public abstract class DatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBa
         """;
 }
 
+public abstract class BasicDatabaseInserterFactory<T> : DatabaseInserterFactoryBase<T>
+    where T : IRequest
+{
+    protected abstract IEnumerable<ParameterValue> GetParameterValues(T request);
+    protected override IDatabaseInserter<T> CreateInstance(NpgsqlCommand command)
+    {
+        return new BasicDatabaseInserter<T>(command, GetParameterValues);
+    }
+    public abstract string TableName { get; }
+
+    protected override string Sql => $"""
+        INSERT INTO public."{TableName}"(
+            {string.Join(',', DatabaseParameters.Select(x => x.Name))}
+        ) 
+        VALUES(
+            {string.Join(',', DatabaseParameters.Select(x => $"@{x.Name}"))}
+        )
+        """;
+
+}
+
 internal static class IdentifiableDatabaseInserterFactory
 {
     internal static readonly NullCheckingIntegerDatabaseParameter Id = new() { Name = "id" };
+
 }
 
-public abstract class IdentifiableDatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBase<T, T2>
+public abstract class IdentifiableDatabaseInserterFactory<T> : DatabaseInserterFactoryBase<T>
     where T : Identifiable
-    where T2 : IdentifiableDatabaseInserter<T>
 {
+
+    protected abstract IEnumerable<ParameterValue> GetNonIdParameterValues(T request);
+
+    protected override IDatabaseInserter<T> CreateInstance(NpgsqlCommand command)
+    {
+        return new IdentifiableDatabaseInserter<T>(command, GetNonIdParameterValues);
+    }
+
 
     internal static readonly NullCheckingIntegerDatabaseParameter Id = IdentifiableDatabaseInserterFactory.Id;
 
@@ -87,10 +117,10 @@ internal static class ConditionalAutoGenerateIdDatabaseInserterFactory
 {
     internal static readonly AutoGenerateIntegerDatabaseParameter Id = new() { Name = "id" };
 }
-public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T, T2> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
+public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
     where T : Identifiable
-    where T2 : ConditionalAutoGenerateIdDatabaseInserter<T>
 {
+    protected abstract IEnumerable<ParameterValue> GetNonIdParameterValues(T request);
 
     internal static readonly AutoGenerateIntegerDatabaseParameter Id = ConditionalAutoGenerateIdDatabaseInserterFactory.Id;
     public abstract string TableName { get; }
@@ -143,15 +173,21 @@ public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T, T2> : 
             autoGenerateCommand.AddParameter(parameter);
         }
         await autoGenerateCommand.PrepareAsync();
-        return (IDatabaseInserter<T>)Activator.CreateInstance(typeof(T2), new object[] { command, autoGenerateCommand })!;
+        return new ConditionalAutoGenerateIdDatabaseInserter<T>(command, autoGenerateCommand, GetNonIdParameterValues);
     }
 }
 
-public abstract class AutoGenerateIdDatabaseInserterFactory<T, T2> : DatabaseInserterFactoryBase<T, T2>
+public abstract class AutoGenerateIdDatabaseInserterFactory<T> : DatabaseInserterFactoryBase<T>
     where T : Identifiable
-    where T2 : AutoGenerateIdDatabaseInserter<T>
 {
     public abstract string TableName { get; }
+
+    protected abstract IEnumerable<ParameterValue> GetParameterValues(T request);
+
+    protected override IDatabaseInserter<T> CreateInstance(NpgsqlCommand command)
+    {
+        return new AutoGenerateIdDatabaseInserter<T>(command, GetParameterValues);
+    }
 
     protected override string Sql => DatabaseParameters.Any()
         ? $"""
@@ -185,19 +221,20 @@ public abstract class DatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInsert
 }
 
 
-public abstract class IdentifiableDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
+public class IdentifiableDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
     where T : Identifiable
 {
-    protected IdentifiableDatabaseInserter(NpgsqlCommand command) : base(command)
+    private Func<T, IEnumerable<ParameterValue>> _parameterMapper;
+    public IdentifiableDatabaseInserter(NpgsqlCommand command, Func<T, IEnumerable<ParameterValue>> parameterMapper ) : base(command)
     {
+        _parameterMapper = parameterMapper;
     }
-
-    protected abstract IEnumerable<ParameterValue> GetNonIdParameterValues(T request);
 
     protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
     {
         yield return ParameterValue.Create(IdentifiableDatabaseInserterFactory.Id , request.Id);
-        foreach(var parameter in GetNonIdParameterValues(request)) 
+       
+        foreach(var parameter in _parameterMapper(request)) 
         {
             yield return parameter;
         }
@@ -213,12 +250,47 @@ public abstract class IdentifiableDatabaseInserter<T> : DatabaseAccessor<T>, IDa
     }
 }
 
-public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
+public class BasicDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
+    where T : IRequest
+{
+    private readonly Func<T, IEnumerable<ParameterValue>> _parameterMapper;
+    public BasicDatabaseInserter(NpgsqlCommand command, Func<T, IEnumerable<ParameterValue>> parameterMapper) : base(command)
+    {
+        _parameterMapper = parameterMapper;
+    }
+
+    protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
+    {
+        foreach (var parameter in _parameterMapper(request)) {
+            yield return parameter;
+        }
+    }
+
+    public async Task InsertAsync(T item)
+    {
+        foreach (var parameter in GetParameterValues(item)) {
+            parameter.Set(_command);
+        }
+        await _command.ExecuteNonQueryAsync();
+    }
+}
+
+public class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
     where T : Identifiable
 {
-    protected AutoGenerateIdDatabaseInserter(NpgsqlCommand command) : base(command)
+    private readonly Func<T, IEnumerable<ParameterValue>> _parameterMapper;
+    public AutoGenerateIdDatabaseInserter(NpgsqlCommand command, Func<T, IEnumerable<ParameterValue>> parameterMapper) : base(command)
     {
+        _parameterMapper = parameterMapper;
     }
+
+    protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
+    {
+        foreach (var parameter in _parameterMapper(request)) {
+            yield return parameter;
+        }
+    }
+
     public async Task InsertAsync(T item)
     {
         if(item.Id is not null) 
@@ -233,17 +305,24 @@ public abstract class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, I
         };
     }
 }
-public abstract class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
+public class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
     where T : Identifiable
 {
 
     private readonly NpgsqlCommand _commandAutoGenerate;
-    protected ConditionalAutoGenerateIdDatabaseInserter(NpgsqlCommand command, NpgsqlCommand commandAutoGenerate) : base(command)
+    private readonly Func<T, IEnumerable<ParameterValue>> _parameterMapper;
+    public ConditionalAutoGenerateIdDatabaseInserter(NpgsqlCommand command, NpgsqlCommand commandAutoGenerate, Func<T, IEnumerable<ParameterValue>> parameterMapper) : base(command)
     {
         _commandAutoGenerate = commandAutoGenerate;
+        _parameterMapper = parameterMapper;
     }
 
-    protected abstract IEnumerable<ParameterValue> GetNonIdParameterValues(T request);
+    protected IEnumerable<ParameterValue> GetNonIdParameterValues(T request)
+    {
+        foreach (var parameter in _parameterMapper(request)) {
+            yield return parameter;
+        }
+    }
 
     protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
     {

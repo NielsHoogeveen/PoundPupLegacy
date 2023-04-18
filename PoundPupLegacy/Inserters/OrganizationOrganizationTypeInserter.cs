@@ -4,8 +4,6 @@ using PoundPupLegacy.Common;
 namespace PoundPupLegacy.Inserters;
 
 using Request = OrganizationOrganizationTypeInserterRequest;
-using Factory = OrganizationOrganizationTypeInserterFactory;
-using Inserter = OrganizationOrganizationTypeInserter;
 
 public record OrganizationOrganizationTypeInserterRequest: IRequest
 {
@@ -14,10 +12,23 @@ public record OrganizationOrganizationTypeInserterRequest: IRequest
     public required int OrganizationTypeId { get; init; }
 }
 
-public sealed class OrganizationOrganizationTypeInserterFactory : DatabaseInserterFactoryBase<Request, Inserter>
+public sealed class OrganizationOrganizationTypeInserterFactory : DatabaseInserterFactoryBase<Request>
 {
     internal static NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
     internal static NonNullableIntegerDatabaseParameter OrganizationTypeId = new() { Name = "organization_type_id" };
+
+    private IEnumerable<ParameterValue> GetParameterValues(Request request)
+    {
+        return new ParameterValue[] {
+            ParameterValue.Create(OrganizationId, request.OrganizationId),
+            ParameterValue.Create(OrganizationTypeId, request.OrganizationTypeId),
+        };
+    }
+
+    protected override IDatabaseInserter<Request> CreateInstance(NpgsqlCommand command)
+    {
+        return new BasicDatabaseInserter<Request>(command, GetParameterValues);
+    }
 
     protected override string Sql => SQL;
 
@@ -26,17 +37,3 @@ public sealed class OrganizationOrganizationTypeInserterFactory : DatabaseInsert
         """;
 }
 
-public sealed class OrganizationOrganizationTypeInserter : DatabaseInserter<Request>
-{
-    public OrganizationOrganizationTypeInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
-    {
-        return new ParameterValue[] {
-            ParameterValue.Create(Factory.OrganizationId, request.OrganizationId),
-            ParameterValue.Create(Factory.OrganizationTypeId, request.OrganizationTypeId),
-        };
-    }
-}

@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = SearchDocumentReaderRequest;
-using Factory = SearchDocumentReaderFactory;
-using Reader = SearchDocumentReader;
 using PoundPupLegacy.ViewModel.Models;
 
 public sealed record SearchDocumentReaderRequest : IRequest
@@ -13,7 +11,7 @@ public sealed record SearchDocumentReaderRequest : IRequest
     public required int Offset { get; init; }
     public required string SearchString { get; init; }
 }
-internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, SearchResult, Reader>
+internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, SearchResult>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -169,25 +167,19 @@ internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFact
                 group by number_of_entries
             """;
 
-}
-internal sealed class SearchDocumentReader : SingleItemDatabaseReader<Request, SearchResult>
-{
-    public SearchDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
-            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
-            ParameterValue.Create(Factory.LimitParameter, request.Limit),
-            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
-            ParameterValue.Create(Factory.SearchStringParameter, request.SearchString)
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
+            ParameterValue.Create(LimitParameter, request.Limit),
+            ParameterValue.Create(OffsetParameter, request.Offset),
+            ParameterValue.Create(SearchStringParameter, request.SearchString)
             
         };
     }
     protected override SearchResult Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

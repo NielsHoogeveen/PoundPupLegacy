@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
 using Request = SubdivisionIdReaderByIso3166CodeRequest;
-using Factory = SubdivisionIdReaderByIso3166CodeFactory;
-using Reader = SubdivisionIdReaderByIso3166Code;
 
 
 public sealed record SubdivisionIdReaderByIso3166CodeRequest: IRequest
@@ -11,7 +9,7 @@ public sealed record SubdivisionIdReaderByIso3166CodeRequest: IRequest
 }
 
 
-internal sealed class SubdivisionIdReaderByIso3166CodeFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
+internal sealed class SubdivisionIdReaderByIso3166CodeFactory : IntDatabaseReaderFactory<Request>
 {
     internal static NonNullableStringDatabaseParameter Iso3166Code = new() { Name = "iso_3166_2_code" };
 
@@ -24,23 +22,18 @@ internal sealed class SubdivisionIdReaderByIso3166CodeFactory : MandatorySingleI
         FROM public.iso_coded_subdivision 
         WHERE iso_3166_2_code = @iso_3166_2_code 
         """;
-
-}
-internal sealed class SubdivisionIdReaderByIso3166Code : IntDatabaseReader<Request>
-{
-    public SubdivisionIdReaderByIso3166Code(NpgsqlCommand command) : base(command) { }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.Iso3166Code, request.Iso3166Code)
+            ParameterValue.Create(Iso3166Code, request.Iso3166Code)
         };
     }
 
-    protected override IntValueReader IntValueReader => Factory.IdReader;
+    protected override IntValueReader IntValueReader => IdReader;
 
     protected override string GetErrorMessage(Request request)
     {
         return $"subdivision with code {request} cannot be found";
     }
+
 }

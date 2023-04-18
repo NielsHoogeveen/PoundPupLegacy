@@ -1,11 +1,8 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Updaters;
 
 using Request = LocationUpdaterRequest;
-using Factory = LocationUpdaterFactory;
-using Updater = LocationUpdater;
 
 public record LocationUpdaterRequest: IRequest
 {
@@ -21,7 +18,7 @@ public record LocationUpdaterRequest: IRequest
 }
 
 
-internal sealed class LocationUpdaterFactory : DatabaseUpdaterFactory<Request, Updater>
+internal sealed class LocationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableStringDatabaseParameter Street = new() { Name = "street" };
@@ -46,26 +43,18 @@ internal sealed class LocationUpdaterFactory : DatabaseUpdaterFactory<Request, U
         country_id = @country_id
         where id = @id
         """;
-}
-
-internal sealed class LocationUpdater : DatabaseUpdater<Request>
-{
-    public LocationUpdater(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(Factory.Id, request.Id),
-            ParameterValue.Create(Factory.Street, request.Street),
-            ParameterValue.Create(Factory.Additional, request.Additional),
-            ParameterValue.Create(Factory.City, request.City),
-            ParameterValue.Create(Factory.PostalCode, request.PostalCode),
-            ParameterValue.Create(Factory.Latitude, request.Latitude),
-            ParameterValue.Create(Factory.Longitude, request.Longitude),
-            ParameterValue.Create(Factory.SubdivisionId, request.SubdivisionId),
-            ParameterValue.Create(Factory.CountryId, request.CountryId)
+            ParameterValue.Create(Id, request.Id),
+            ParameterValue.Create(Street, request.Street),
+            ParameterValue.Create(Additional, request.Additional),
+            ParameterValue.Create(City, request.City),
+            ParameterValue.Create(PostalCode, request.PostalCode),
+            ParameterValue.Create(Latitude, request.Latitude),
+            ParameterValue.Create(Longitude, request.Longitude),
+            ParameterValue.Create(SubdivisionId, request.SubdivisionId),
+            ParameterValue.Create(CountryId, request.CountryId)
         };
     }
 }

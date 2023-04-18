@@ -1,9 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = UserInserterFactory;
 using Request = User;
-using Inserter = UserInserter;
-internal sealed class UserInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
+
+internal sealed class UserInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
     internal static NullableStringDatabaseParameter AboutMe = new() { Name = "about_me" };
@@ -15,23 +14,17 @@ internal sealed class UserInserterFactory : IdentifiableDatabaseInserterFactory<
     internal static NonNullableIntegerDatabaseParameter UserStatusId = new() { Name = "user_status_id" };
 
     public override string TableName => "user";
-}
-internal sealed class UserInserter : IdentifiableDatabaseInserter<Request>
-{
-    public UserInserter(NpgsqlCommand command) : base(command)
-    {
-    }
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.CreatedDateTime, request.CreatedDateTime),
-            ParameterValue.Create(Factory.Email, request.Email),
-            ParameterValue.Create(Factory.Password, request.Password),
-            ParameterValue.Create(Factory.AboutMe, request.AboutMe),
-            ParameterValue.Create(Factory.AnimalWithin, request.AnimalWithin),
-            ParameterValue.Create(Factory.RelationToChildPlacement, request.RelationToChildPlacement),
-            ParameterValue.Create(Factory.Avatar, request.Avatar),
-            ParameterValue.Create(Factory.UserStatusId, request.UserStatusId),
+            ParameterValue.Create(CreatedDateTime, request.CreatedDateTime),
+            ParameterValue.Create(Email, request.Email),
+            ParameterValue.Create(Password, request.Password),
+            ParameterValue.Create(AboutMe, request.AboutMe),
+            ParameterValue.Create(AnimalWithin, request.AnimalWithin),
+            ParameterValue.Create(RelationToChildPlacement, request.RelationToChildPlacement),
+            ParameterValue.Create(Avatar, request.Avatar),
+            ParameterValue.Create(UserStatusId, request.UserStatusId),
         };
     }
 }

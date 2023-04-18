@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = OrganizationsDocumentReaderRequest;
-using Factory = OrganizationsDocumentReaderFactory;
-using Reader = OrganizationsDocumentReader;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
 
@@ -18,7 +16,7 @@ public sealed record OrganizationsDocumentReaderRequest : IRequest
     public required int? CountryId { get; init; }
 }
 
-internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, OrganizationSearch, Reader>
+internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, OrganizationSearch>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -175,28 +173,21 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
             ) document
         """;
 
-}
-internal sealed class OrganizationsDocumentReader : SingleItemDatabaseReader<Request, OrganizationSearch>
-{
-    public OrganizationsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
-            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
-            ParameterValue.Create(Factory.LimitParameter, request.Limit),
-            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
-            ParameterValue.Create(Factory.PatternParameter, (request.SearchTerm, request.SearchOption)),
-            ParameterValue.Create(Factory.OrganizationTypeIdParameter, request.OrganizationTypeId),
-            ParameterValue.Create(Factory.CountryIdParameter, request.CountryId),
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
+            ParameterValue.Create(LimitParameter, request.Limit),
+            ParameterValue.Create(OffsetParameter, request.Offset),
+            ParameterValue.Create(PatternParameter, (request.SearchTerm, request.SearchOption)),
+            ParameterValue.Create(OrganizationTypeIdParameter, request.OrganizationTypeId),
+            ParameterValue.Create(CountryIdParameter, request.CountryId),
         };
     }
 
     protected override OrganizationSearch Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

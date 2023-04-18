@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = CountryInserterFactory;
 using Request = Country;
-using Inserter = CountryInserter;
 
-internal sealed class CountryInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
+internal sealed class CountryInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter HagueStatusId = new() { Name = "hague_status_id" };
     internal static NullableStringDatabaseParameter ResidencyRequirements = new() { Name = "residency_requirements" };
@@ -16,24 +14,16 @@ internal sealed class CountryInserterFactory : IdentifiableDatabaseInserterFacto
 
     public override string TableName => "country";
 
-}
-internal sealed class CountryInserter : IdentifiableDatabaseInserter<Request>
-{
-
-    public CountryInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.HagueStatusId, request.HagueStatusId),
-            ParameterValue.Create(Factory.ResidencyRequirements, request.ResidencyRequirements),
-            ParameterValue.Create(Factory.AgeRequirements, request.AgeRequirements),
-            ParameterValue.Create(Factory.MarriageRequirements, request.MarriageRequirements),
-            ParameterValue.Create(Factory.IncomeRequirements, request.IncomeRequirements),
-            ParameterValue.Create(Factory.HealthRequirements, request.HealthRequirements),
-            ParameterValue.Create(Factory.OtherRequirements, request.OtherRequirements),
+            ParameterValue.Create(HagueStatusId, request.HagueStatusId),
+            ParameterValue.Create(ResidencyRequirements, request.ResidencyRequirements),
+            ParameterValue.Create(AgeRequirements, request.AgeRequirements),
+            ParameterValue.Create(MarriageRequirements, request.MarriageRequirements),
+            ParameterValue.Create(IncomeRequirements, request.IncomeRequirements),
+            ParameterValue.Create(HealthRequirements, request.HealthRequirements),
+            ParameterValue.Create(OtherRequirements, request.OtherRequirements),
         };
     }
 }

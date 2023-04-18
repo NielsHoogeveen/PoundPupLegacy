@@ -16,10 +16,9 @@ public record NodeCreateDocumentRequest: IRequest
 
 }
 
-public abstract class NodeEditDocumentReaderFactory<TRequest, TResponse, TReader> : SingleItemDatabaseReaderFactory<TRequest, TResponse, TReader>
+public abstract class NodeEditDocumentReaderFactory<TRequest, TResponse> : SingleItemDatabaseReaderFactory<TRequest, TResponse>
 where TRequest : IRequest
-where TResponse : Node
-where TReader: ISingleItemDatabaseReader<TRequest, TResponse>
+where TResponse : class, Node
 {
     protected const string CTE_EDIT = $"""
         WITH
@@ -458,15 +457,5 @@ where TReader: ISingleItemDatabaseReader<TRequest, TResponse>
             where tn.tenant_id = 1 and tn.url_id = 4126
         )
         """;
-}
-
-public abstract class NodeEditDocumentReader<TRequest,TResponse> : SingleItemDatabaseReader<TRequest,TResponse>
-    where TRequest : IRequest
-    where TResponse : class, Node
-{
-
-    protected NodeEditDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
 
 }

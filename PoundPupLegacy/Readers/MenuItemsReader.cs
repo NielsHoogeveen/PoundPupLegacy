@@ -5,14 +5,12 @@ using PoundPupLegacy.Models;
 namespace PoundPupLegacy.Readers;
 
 using Request = MenuItemsReaderRequest;
-using Factory = MenuItemsReaderFactory;
-using Reader = MenuItemsReader;
 
 public sealed record MenuItemsReaderRequest : IRequest
 {
 }
 
-internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<Request, UserTenantMenuItems, Reader>
+internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<Request, UserTenantMenuItems>
 {
     internal readonly static FieldValueReader<UserTenantMenuItems> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
@@ -121,13 +119,6 @@ internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<R
         """;
 
 
-}
-
-internal sealed class MenuItemsReader : EnumerableDatabaseReader<Request, UserTenantMenuItems>
-{
-    public MenuItemsReader(NpgsqlCommand command) : base(command)
-    {
-    }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
@@ -135,6 +126,6 @@ internal sealed class MenuItemsReader : EnumerableDatabaseReader<Request, UserTe
     }
     protected override UserTenantMenuItems Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

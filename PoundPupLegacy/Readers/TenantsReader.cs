@@ -5,15 +5,13 @@ using PoundPupLegacy.Models;
 namespace PoundPupLegacy.Readers;
 
 using Request = TenantsReaderRequest;
-using Factory = TenantsReaderFactory;
-using Reader = TenantsReader;
 
 internal sealed record TenantsReaderRequest: IRequest
 {
 
 }
 
-internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tenant, Reader>
+internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tenant>
 {
     internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
     internal static readonly StringValueReader DomainNameReader = new() { Name = "domain_name" };
@@ -33,13 +31,6 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
         join node n on n.id = t.country_id_default
         """;
 
-}
-internal sealed class TenantsReader : EnumerableDatabaseReader<Request, Tenant>
-{
-
-    public TenantsReader(NpgsqlCommand command) : base(command)
-    {
-    }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] { };
@@ -48,10 +39,10 @@ internal sealed class TenantsReader : EnumerableDatabaseReader<Request, Tenant>
     protected override Tenant Read(NpgsqlDataReader reader)
     {
         return new Tenant {
-            Id = Factory.TenantIdReader.GetValue(reader),
-            DomainName = Factory.DomainNameReader.GetValue(reader),
-            CountryIdDefault = Factory.CountryIdDefaultReader.GetValue(reader),
-            CountryNameDefault = Factory.CountryNameDefault.GetValue(reader),
+            Id = TenantIdReader.GetValue(reader),
+            DomainName = DomainNameReader.GetValue(reader),
+            CountryIdDefault = CountryIdDefaultReader.GetValue(reader),
+            CountryNameDefault = CountryNameDefault.GetValue(reader),
             IdToUrl = new Dictionary<int, string>(),
             UrlToId = new Dictionary<string, int>()
         };

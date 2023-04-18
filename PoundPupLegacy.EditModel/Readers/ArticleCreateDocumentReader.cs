@@ -1,16 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-using Reader = ArticleCreateDocumentReader;
-
-internal sealed class ArticleCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<Article, Reader>
+internal sealed class ArticleCreateDocumentReaderFactory : SimpleTextNodeCreateDocumentReaderFactory<Article>
 {
+    protected override int NodeTypeId => Constants.ARTICLE;
 }
-internal sealed class ArticleCreateDocumentReader : SimpleTextNodeCreateDocumentReader<Article>
-{
-    public ArticleCreateDocumentReader(NpgsqlCommand command) : base(command, Constants.ARTICLE)
-    {
-    }
-}
-
-
-

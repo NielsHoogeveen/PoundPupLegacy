@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = InterCountryRelationInserterFactory;
 using Request = InterCountryRelation;
-using Inserter = InterCountryRelationInserter;
 
-internal sealed class InterCountryRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
+internal sealed class InterCountryRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter CountryIdFrom = new() { Name = "country_id_from" };
     internal static NonNullableIntegerDatabaseParameter CountryIdTo = new() { Name = "country_id_to" };
@@ -16,23 +14,16 @@ internal sealed class InterCountryRelationInserterFactory : IdentifiableDatabase
 
     public override string TableName => "inter_country_relation";
 
-}
-internal sealed class InterCountryRelationInserter : IdentifiableDatabaseInserter<Request>
-{
-    public InterCountryRelationInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.CountryIdFrom, request.CountryIdFrom),
-            ParameterValue.Create(Factory.CountryIdTo, request.CountryIdTo),
-            ParameterValue.Create(Factory.DateRange, request.DateTimeRange),
-            ParameterValue.Create(Factory.InterCountryRelationTypeId, request.InterCountryRelationTypeId),
-            ParameterValue.Create(Factory.NumberOfChildrenInvolved, request.NumberOfChildrenInvolved),
-            ParameterValue.Create(Factory.MoneyInvolved, request.MoneyInvolved),
-            ParameterValue.Create(Factory.DocumentIdProof, request.DocumentIdProof),
+            ParameterValue.Create(CountryIdFrom, request.CountryIdFrom),
+            ParameterValue.Create(CountryIdTo, request.CountryIdTo),
+            ParameterValue.Create(DateRange, request.DateTimeRange),
+            ParameterValue.Create(InterCountryRelationTypeId, request.InterCountryRelationTypeId),
+            ParameterValue.Create(NumberOfChildrenInvolved, request.NumberOfChildrenInvolved),
+            ParameterValue.Create(MoneyInvolved, request.MoneyInvolved),
+            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
         };
     }
 }

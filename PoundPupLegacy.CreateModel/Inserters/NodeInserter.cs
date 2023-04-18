@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = NodeInserterFactory;
 using Request = Node;
-using Inserter = NodeInserter;
 
-public class NodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request, Inserter>
+public class NodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter PublisherId = new() { Name = "publisher_id" };
     internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
@@ -14,23 +12,15 @@ public class NodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request
     internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
 
     public override string TableName => "node";
-
-}
-public class NodeInserter : AutoGenerateIdDatabaseInserter<Request>
-{
-    public NodeInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.PublisherId,request.PublisherId),
-            ParameterValue.Create(Factory.CreatedDateTime, request.CreatedDateTime),
-            ParameterValue.Create(Factory.ChangedDateTime, request.ChangedDateTime),
-            ParameterValue.Create(Factory.Title, request.Title),
-            ParameterValue.Create(Factory.NodeTypeId, request.NodeTypeId),
-            ParameterValue.Create(Factory.OwnerId, request.OwnerId)
+            ParameterValue.Create(PublisherId,request.PublisherId),
+            ParameterValue.Create(CreatedDateTime, request.CreatedDateTime),
+            ParameterValue.Create(ChangedDateTime, request.ChangedDateTime),
+            ParameterValue.Create(Title, request.Title),
+            ParameterValue.Create(NodeTypeId, request.NodeTypeId),
+            ParameterValue.Create(OwnerId, request.OwnerId)
         };
     }
 }

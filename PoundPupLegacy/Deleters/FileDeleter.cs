@@ -4,8 +4,6 @@ using PoundPupLegacy.Common;
 namespace PoundPupLegacy.Deleters;
 
 using Request = FileDeleterRequest;
-using Factory = FileDeleterFactory;
-using Deleter = FileDeleter;
 
 public record FileDeleterRequest: IRequest
 {
@@ -13,7 +11,7 @@ public record FileDeleterRequest: IRequest
     public required int FileId { get; init; }
 }
 
-internal sealed class FileDeleterFactory : DatabaseDeleterFactory<Request,Deleter>
+internal sealed class FileDeleterFactory : DatabaseDeleterFactory<Request>
 {
 
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
@@ -43,20 +41,11 @@ internal sealed class FileDeleterFactory : DatabaseDeleterFactory<Request,Delete
             and f.id = @file_id
         );
         """;
-    
-
-}
-internal sealed class FileDeleter : DatabaseDeleter<Request>
-{
-    public FileDeleter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.NodeId, request.NodeId),
-            ParameterValue.Create(Factory.FileId, request.FileId),
+            ParameterValue.Create(NodeId, request.NodeId),
+            ParameterValue.Create(FileId, request.FileId),
         };
     }
 }

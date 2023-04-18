@@ -1,11 +1,8 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Deleters;
 
 using Request = LocationDeleterRequest;
-using Factory = LocationDeleterFactory;
-using Deleter = LocationDeleter;
 
 public record LocationDeleterRequest: IRequest
 {
@@ -13,7 +10,7 @@ public record LocationDeleterRequest: IRequest
     public required int LocatableId { get; init; }
 }
 
-internal sealed class LocationDeleterFactory : DatabaseDeleterFactory<Request,Deleter>
+internal sealed class LocationDeleterFactory : DatabaseDeleterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter LocationId = new() { Name = "location_id" };
     internal static NonNullableIntegerDatabaseParameter LocatableId = new() { Name = "locatable_id" };
@@ -31,18 +28,11 @@ internal sealed class LocationDeleterFactory : DatabaseDeleterFactory<Request,De
             where ll.location_id is null
         )
         """;
-}
-internal sealed class LocationDeleter : DatabaseDeleter<Request>
-{
-    public LocationDeleter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.LocationId, request.LocationId),
-            ParameterValue.Create(Factory.LocatableId, request.LocatableId),
+            ParameterValue.Create(LocationId, request.LocationId),
+            ParameterValue.Create(LocatableId, request.LocatableId),
         };
     }
 }

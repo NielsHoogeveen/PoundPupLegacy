@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-using Reader = OrganizationUpdateDocumentReader;
-
-internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<Organization, Reader>
+internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<Organization>
 {
     public override string Sql => SQL;
+
+    protected override int NodeTypeId => Constants.ORGANIZATION;
 
     const string SQL = $"""
             {CTE_EDIT}
@@ -74,12 +74,3 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
         """;
 
 }
-
-internal sealed class OrganizationUpdateDocumentReader : NodeUpdateDocumentReader<Organization>
-{
-    public OrganizationUpdateDocumentReader(NpgsqlCommand command) : base(command, Constants.ORGANIZATION)
-    {
-    }
-}
-
-

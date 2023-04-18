@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory =  PersonInserterFactory;
 using Request =  Person;
-using Inserter = PersonInserter;
 
-internal sealed class PersonInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
+internal sealed class PersonInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     internal static NullableDateTimeDatabaseParameter DateOfBirth = new() { Name = "date_of_birth" };
     internal static NullableDateTimeDatabaseParameter DateOfDeath = new() { Name = "date_of_death" };
@@ -18,26 +16,19 @@ internal sealed class PersonInserterFactory : IdentifiableDatabaseInserterFactor
     internal static NullableStringDatabaseParameter Bioguide = new() { Name = "bioguide" };
 
     public override string TableName => "person";
-}
-internal sealed class PersonInserter : IdentifiableDatabaseInserter<Request>
-{
-    public PersonInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.DateOfBirth, request.DateOfBirth),
-            ParameterValue.Create(Factory.DateOfDeath, request.DateOfDeath),
-            ParameterValue.Create(Factory.FileIdPortrait, request.FileIdPortrait),
-            ParameterValue.Create(Factory.GovtrackId, request.GovtrackId),
-            ParameterValue.Create(Factory.FirstName, request.FirstName),
-            ParameterValue.Create(Factory.MiddleName, request.MiddleName),
-            ParameterValue.Create(Factory.LastName, request.LastName),
-            ParameterValue.Create(Factory.Suffix, request.Suffix),
-            ParameterValue.Create(Factory.FullName, request.FullName),
-            ParameterValue.Create(Factory.Bioguide, request.Bioguide),
+            ParameterValue.Create(DateOfBirth, request.DateOfBirth),
+            ParameterValue.Create(DateOfDeath, request.DateOfDeath),
+            ParameterValue.Create(FileIdPortrait, request.FileIdPortrait),
+            ParameterValue.Create(GovtrackId, request.GovtrackId),
+            ParameterValue.Create(FirstName, request.FirstName),
+            ParameterValue.Create(MiddleName, request.MiddleName),
+            ParameterValue.Create(LastName, request.LastName),
+            ParameterValue.Create(Suffix, request.Suffix),
+            ParameterValue.Create(FullName, request.FullName),
+            ParameterValue.Create(Bioguide, request.Bioguide),
         };
     }
 }

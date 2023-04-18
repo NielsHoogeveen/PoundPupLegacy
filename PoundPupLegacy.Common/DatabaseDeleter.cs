@@ -25,11 +25,11 @@ public interface IDatabaseDeleterFactory<TRequest> : IDatabaseDeleterFactory
     public Task<IDatabaseDeleter<TRequest>> CreateAsync(IDbConnection connection);
 }
 
-public abstract class DatabaseDeleterFactory<TRequest, TDeleter> : DatabaseAccessorFactory, IDatabaseDeleterFactory<TRequest>
+public abstract class DatabaseDeleterFactory<TRequest> : DatabaseAccessorFactory, IDatabaseDeleterFactory<TRequest>
     where TRequest : IRequest
-    where TDeleter : IDatabaseDeleter<TRequest>
 {
 
+    protected abstract IEnumerable<ParameterValue> GetParameterValues(TRequest request);
     public async Task<IDatabaseDeleter<TRequest>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -45,15 +45,21 @@ public abstract class DatabaseDeleterFactory<TRequest, TDeleter> : DatabaseAcces
             command.AddParameter(parameter);
         }
         await command.PrepareAsync();
-        return (IDatabaseDeleter<TRequest>)Activator.CreateInstance(typeof(TDeleter), new object[] { command })!;
+        return new DatabaseDeleter<TRequest>(command, GetParameterValues);
     }
     public abstract string Sql { get; }
 }
-public abstract class DatabaseDeleter<TRequest> : DatabaseAccessor<TRequest>, IDatabaseDeleter<TRequest>
+public class DatabaseDeleter<TRequest> : DatabaseAccessor<TRequest>, IDatabaseDeleter<TRequest>
     where TRequest: IRequest
 {
-    protected DatabaseDeleter(NpgsqlCommand command): base(command)
+    private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
+    public DatabaseDeleter(NpgsqlCommand command, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper) : base(command)
     {
+        _parameterMapper = parameterMapper;
+    }
+    protected sealed override IEnumerable<ParameterValue> GetParameterValues(TRequest request)
+    {
+        return _parameterMapper(request);
     }
 
     public async Task DeleteAsync(TRequest request)
@@ -63,5 +69,4 @@ public abstract class DatabaseDeleter<TRequest> : DatabaseAccessor<TRequest>, ID
         }
         await _command.ExecuteNonQueryAsync();
     }
-
 }

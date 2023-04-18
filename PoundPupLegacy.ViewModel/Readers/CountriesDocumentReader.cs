@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = CountriesDocumentReaderRequest;
-using Factory = CountriesDocumentReaderFactory;
-using Reader = CountriesDocumentReader;
 using PoundPupLegacy.ViewModel.Models;
 
 public sealed class CountriesDocumentReaderRequest : IRequest
@@ -10,7 +8,7 @@ public sealed class CountriesDocumentReaderRequest : IRequest
     public required int TenantId { get; init; }
 }
 
-internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, FirstLevelRegionListEntry[], Reader>
+internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, FirstLevelRegionListEntry[]>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
 
@@ -125,23 +123,16 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
             ORDER BY n.title
         ) n
         """;
-}
-internal sealed class CountriesDocumentReader : SingleItemDatabaseReader<Request, FirstLevelRegionListEntry[]>
-{
-    public CountriesDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId)
+            ParameterValue.Create(TenantIdParameter, request.TenantId)
         };
     }
 
     protected override FirstLevelRegionListEntry[] Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
 
     }
 }

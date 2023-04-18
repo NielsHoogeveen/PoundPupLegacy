@@ -1,15 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
 using Request = TenantNodeReaderByUrlIdRequest;
-using Factory = TenantNodeReaderByUrlIdFactory;
-using Reader = TenantNodeReaderByUrlId;
 
 public sealed class TenantNodeReaderByUrlIdRequest : IRequest
 {
     public required int TenantId { get; init; }
     public required int UrlId { get; init; }
 }
-internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderFactory<Request, TenantNode, Reader>
+internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderFactory<Request, TenantNode>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -37,30 +35,24 @@ internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderF
         WHERE tenant_id= @tenant_id AND url_id = @url_id
         """;
 
-}
-internal sealed class TenantNodeReaderByUrlId : SingleItemDatabaseReader<Request, TenantNode>
-{
-
-    public TenantNodeReaderByUrlId(NpgsqlCommand command) : base(command) { }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantId, request.TenantId),
-            ParameterValue.Create(Factory.UrlId, request.UrlId),
+            ParameterValue.Create(TenantId, request.TenantId),
+            ParameterValue.Create(UrlId, request.UrlId),
         };
     }
 
     protected override TenantNode Read(NpgsqlDataReader reader)
     {
         return new TenantNode {
-            Id = Factory.IdReader.GetValue(reader),
-            TenantId = Factory.TenantIdReader.GetValue(reader),
-            UrlId = Factory.UrlIdReader.GetValue(reader),
-            NodeId = Factory.NodeIdReader.GetValue(reader),
-            UrlPath = Factory.UrlPathReader.GetValue(reader),
-            PublicationStatusId = Factory.PublicationStatusIdReader.GetValue(reader),
-            SubgroupId = Factory.SubgroupIdReader.GetValue(reader),
+            Id = IdReader.GetValue(reader),
+            TenantId = TenantIdReader.GetValue(reader),
+            UrlId = UrlIdReader.GetValue(reader),
+            NodeId = NodeIdReader.GetValue(reader),
+            UrlPath = UrlPathReader.GetValue(reader),
+            PublicationStatusId = PublicationStatusIdReader.GetValue(reader),
+            SubgroupId = SubgroupIdReader.GetValue(reader),
         };
     }
 }

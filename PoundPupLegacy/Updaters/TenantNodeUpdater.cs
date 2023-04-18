@@ -1,11 +1,8 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Updaters;
 
 using Request = TenantNodeUpdaterRequest;
-using Factory = TenantNodeUpdaterFactory;
-using Updater = TenantNodeUpdater;
 
 public record TenantNodeUpdaterRequest: IRequest
 {
@@ -15,7 +12,7 @@ public record TenantNodeUpdaterRequest: IRequest
     public required int PublicationStatusId { get; init; }
 }
 
-internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<Request,Updater>
+internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
     internal static NullableStringDatabaseParameter UrlPath = new() { Name = "url_path" };
@@ -30,21 +27,14 @@ internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<Request,
         publication_status_id = @publication_status_id
         where id = @id
         """;
-}
-
-internal sealed class TenantNodeUpdater : DatabaseUpdater<Request>
-{
-    public TenantNodeUpdater(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(Factory.Id, request.Id),
-            ParameterValue.Create(Factory.UrlPath, request.UrlPath),
-            ParameterValue.Create(Factory.SubgroupId, request.SubgroupId),
-            ParameterValue.Create(Factory.PublicationStatusId, request.PublicationStatusId)
+            ParameterValue.Create(Id, request.Id),
+            ParameterValue.Create(UrlPath, request.UrlPath),
+            ParameterValue.Create(SubgroupId, request.SubgroupId),
+            ParameterValue.Create(PublicationStatusId, request.PublicationStatusId)
         };
     }
 }
+

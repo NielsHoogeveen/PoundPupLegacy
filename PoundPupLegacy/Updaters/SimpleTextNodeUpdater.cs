@@ -1,11 +1,8 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Updaters;
 
 using Request = SimpleTextNodeUpdaterRequest;
-using Factory = SimpleTextNodeUpdaterFactory;
-using Updater = SimpleTextNodeUpdater;
 
 public record SimpleTextNodeUpdaterRequest : IRequest
 {
@@ -15,7 +12,7 @@ public record SimpleTextNodeUpdaterRequest : IRequest
     public required string Teaser { get; init; }
 }
 
-internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Request,Updater>
+internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
@@ -28,24 +25,14 @@ internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Requ
         update simple_text_node set text=@text, teaser=@teaser
         where id = @node_id;
         """;
-
-}
-
-internal sealed class SimpleTextNodeUpdater : DatabaseUpdater<Request>
-{
-
-
-    public SimpleTextNodeUpdater(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(Factory.Title, request.Title),
-            ParameterValue.Create(Factory.NodeId, request.NodeId),
-            ParameterValue.Create(Factory.Text, request.Text),
-            ParameterValue.Create(Factory.Teaser, request.Teaser),
+            ParameterValue.Create(Title, request.Title),
+            ParameterValue.Create(NodeId, request.NodeId),
+            ParameterValue.Create(Text, request.Text),
+            ParameterValue.Create(Teaser, request.Teaser),
         };
     }
 }
+

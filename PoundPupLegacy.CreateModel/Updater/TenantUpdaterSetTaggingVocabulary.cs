@@ -2,7 +2,6 @@
 
 using Request = TenantUpdaterSetTaggingVocabularyRequest;
 using Factory = TenantUpdaterSetTaggingVocabularyFactory;
-using Updater = TenantUpdaterSetTaggingVocabulary;
 
 public record TenantUpdaterSetTaggingVocabularyRequest: IRequest
 {
@@ -10,7 +9,7 @@ public record TenantUpdaterSetTaggingVocabularyRequest: IRequest
     public required int VocabularyId { get; init; }
 }
 
-public sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFactory<Request, Updater>
+public sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter TenantId = new() {
         Name = "tenant_id"
@@ -24,12 +23,6 @@ public sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFa
         vocabulary_id_tagging = @vocabulary_id 
         WHERE id = @tenant_id
         """;
-
-}
-public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<Request>
-{
-    public TenantUpdaterSetTaggingVocabulary(NpgsqlCommand command) : base(command) { }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
@@ -37,4 +30,5 @@ public sealed class TenantUpdaterSetTaggingVocabulary : DatabaseUpdater<Request>
             ParameterValue.Create(Factory.VocabularyId, request.VocabularyId),
         };
     }
+
 }

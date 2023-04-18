@@ -1,8 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-public abstract class SimpleTextNodeUpdateDocumentReaderFactory<TResponse, TReader> : NodeUpdateDocumentReaderFactory<TResponse, TReader>
-where TResponse : SimpleTextNode
-where TReader : ISingleItemDatabaseReader<NodeUpdateDocumentRequest, TResponse>
+public abstract class SimpleTextNodeUpdateDocumentReaderFactory<TResponse> : NodeUpdateDocumentReaderFactory<TResponse>
+where TResponse : class, SimpleTextNode
 {
     public override string Sql => SQL;
     protected const string SQL = $"""
@@ -46,16 +45,5 @@ where TReader : ISingleItemDatabaseReader<NodeUpdateDocumentRequest, TResponse>
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
-
-
 }
-
-public class SimpleTextNodeUpdateDocumentReader<T> : NodeUpdateDocumentReader<T>
-    where T : class, SimpleTextNode
-{
-    protected SimpleTextNodeUpdateDocumentReader(NpgsqlCommand command, int nodeTypeId) : base(command, nodeTypeId)
-    {
-    }
-}
-
 

@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = NodeTypeInserterFactory;
 using Request = NodeType;
-using Inserter = NodeTypeInserter;
 
-internal sealed class NodeTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
+internal sealed class NodeTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
     internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
@@ -12,19 +10,12 @@ internal sealed class NodeTypeInserterFactory : IdentifiableDatabaseInserterFact
 
     public override string TableName => "node_type";
 
-}
-internal sealed class NodeTypeInserter : IdentifiableDatabaseInserter<Request>
-{
-    public NodeTypeInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.Name, request.Name),
-            ParameterValue.Create(Factory.Description, request.Description),
-            ParameterValue.Create(Factory.AuthorSpecific, request.AuthorSpecific),
+            ParameterValue.Create(Name, request.Name),
+            ParameterValue.Create(Description, request.Description),
+            ParameterValue.Create(AuthorSpecific, request.AuthorSpecific),
         };
     }
 }

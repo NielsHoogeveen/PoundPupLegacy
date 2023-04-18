@@ -1,15 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
 using Request = DeleteNodeActionIdReaderByNodeTypeIdRequest;
-using Factory = DeleteNodeActionIdReaderByNodeTypeIdFactory;
-using Reader = DeleteNodeActionIdReaderByNodeTypeId;
 
 public sealed record DeleteNodeActionIdReaderByNodeTypeIdRequest: IRequest
 {
     public required int NodeTypeId { get; init; }
 }
 
-internal sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
+internal sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : IntDatabaseReaderFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
@@ -19,17 +17,11 @@ internal sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : MandatorySin
     private const string SQL = """
         SELECT id FROM delete_node_action WHERE node_type_id = @node_type_id
         """;
-}
-
-internal sealed class DeleteNodeActionIdReaderByNodeTypeId : IntDatabaseReader<Request>
-{
-
-    public DeleteNodeActionIdReaderByNodeTypeId(NpgsqlCommand command) : base(command) { }
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.NodeTypeId, request.NodeTypeId)
+            ParameterValue.Create(NodeTypeId, request.NodeTypeId)
         };
     }
 
@@ -38,5 +30,6 @@ internal sealed class DeleteNodeActionIdReaderByNodeTypeId : IntDatabaseReader<R
         return $"delete node action cannot be found for node type {request.NodeTypeId}";
     }
 
-    protected override IntValueReader IntValueReader => Factory.IdReader;
+    protected override IntValueReader IntValueReader => IdReader;
 }
+

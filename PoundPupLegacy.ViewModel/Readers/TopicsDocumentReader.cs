@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = TopicsDocumentReaderRequest;
-using Factory = TopicsDocumentReaderFactory;
-using Reader = TopicsDocumentReader;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
 
@@ -16,7 +14,7 @@ public sealed record TopicsDocumentReaderRequest : IRequest
     public required SearchOption SearchOption { get; init; }
 }
 
-internal sealed class TopicsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Topics, Reader>
+internal sealed class TopicsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Topics>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -108,27 +106,19 @@ internal sealed class TopicsDocumentReaderFactory : SingleItemDatabaseReaderFact
         number_of_entries
         """;
 
-
-}
-internal sealed class TopicsDocumentReader : SingleItemDatabaseReader<Request, Topics>
-{
-    public TopicsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
-            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
-            ParameterValue.Create(Factory.LimitParameter, request.Limit),
-            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
-            ParameterValue.Create(Factory.PatternParameter, (request.SearchTerm, request.SearchOption)),
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
+            ParameterValue.Create(LimitParameter, request.Limit),
+            ParameterValue.Create(OffsetParameter, request.Offset),
+            ParameterValue.Create(PatternParameter, (request.SearchTerm, request.SearchOption)),
         };
     }
 
     protected override Topics Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

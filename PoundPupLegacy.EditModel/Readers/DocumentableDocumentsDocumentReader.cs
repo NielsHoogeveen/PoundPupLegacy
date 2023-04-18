@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
 using Request = DocumentableDocumentsDocumentReaderRequest;
-using Factory = DocumentableDocumentsDocumentReaderFactory;
-using Reader = DocumentableDocumentsDocumentReader;
 
 public sealed record DocumentableDocumentsDocumentReaderRequest : IRequest
 {
@@ -12,7 +10,7 @@ public sealed record DocumentableDocumentsDocumentReaderRequest : IRequest
     public required string SearchString { get; init; }
 }
 
-internal sealed class DocumentableDocumentsDocumentReaderFactory : EnumerableDatabaseReaderFactory<Request, DocumentableDocument, Reader>
+internal sealed class DocumentableDocumentsDocumentReaderFactory : EnumerableDatabaseReaderFactory<Request, DocumentableDocument>
 {
     public override string Sql => SQL;
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
@@ -75,31 +73,22 @@ internal sealed class DocumentableDocumentsDocumentReaderFactory : EnumerableDat
         where status = 1
         """;
 
-}
-
-internal sealed class DocumentableDocumentsDocumentReader : EnumerableDatabaseReader<Request, DocumentableDocument>
-{
-    public DocumentableDocumentsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.NodeId, request.NodeId),
-            ParameterValue.Create(Factory.UserId, request.UserId),
-            ParameterValue.Create(Factory.TenantId, request.TenantId),
-            ParameterValue.Create(Factory.SearchString, $"%{request.SearchString}%"),
+            ParameterValue.Create(NodeId, request.NodeId),
+            ParameterValue.Create(UserId, request.UserId),
+            ParameterValue.Create(TenantId, request.TenantId),
+            ParameterValue.Create(SearchString, $"%{request.SearchString}%"),
         };
     }
 
     protected override DocumentableDocument Read(NpgsqlDataReader reader)
     {
         return new DocumentableDocument {
-            DocumentableId = Factory.DocumentableId.GetValue(reader),
-            DocumentId = Factory.DocumentId.GetValue(reader),
-            Title = Factory.Title.GetValue(reader),
+            DocumentableId = DocumentableId.GetValue(reader),
+            DocumentId = DocumentId.GetValue(reader),
+            Title = Title.GetValue(reader),
             HasBeenDeleted = false,
             IsStored = false,
         };

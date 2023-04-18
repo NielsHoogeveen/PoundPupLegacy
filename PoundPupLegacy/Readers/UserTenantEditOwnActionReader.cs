@@ -5,14 +5,12 @@ using PoundPupLegacy.Models;
 namespace PoundPupLegacy.Readers;
 
 using Request = UserTenantEditOwnActionReaderRequest;
-using Factory = UserTenantEditOwnActionReaderFactory;
-using Reader = UserTenantEditOwnActionReader;
 
 public sealed record UserTenantEditOwnActionReaderRequest : IRequest
 {
 }
 
-internal sealed class UserTenantEditOwnActionReaderFactory : EnumerableDatabaseReaderFactory<Request, UserTenantEditOwnAction, Reader>
+internal sealed class UserTenantEditOwnActionReaderFactory : EnumerableDatabaseReaderFactory<Request, UserTenantEditOwnAction>
 {
 
     internal static readonly IntValueReader UserIdReader = new() { Name = "user_id" };
@@ -58,12 +56,6 @@ internal sealed class UserTenantEditOwnActionReaderFactory : EnumerableDatabaseR
             join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
         ) x
         """;
-}
-internal sealed class UserTenantEditOwnActionReader : EnumerableDatabaseReader<Request, UserTenantEditOwnAction>
-{
-    public UserTenantEditOwnActionReader(NpgsqlCommand command) : base(command)
-    {
-    }
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
@@ -73,9 +65,9 @@ internal sealed class UserTenantEditOwnActionReader : EnumerableDatabaseReader<R
     protected override UserTenantEditOwnAction Read(NpgsqlDataReader reader)
     {
         return new UserTenantEditOwnAction {
-            UserId = Factory.UserIdReader.GetValue(reader),
-            TenantId = Factory.TenantIdReader.GetValue(reader),
-            NodeTypeId = Factory.NodeTypeIdReader.GetValue(reader),
+            UserId = UserIdReader.GetValue(reader),
+            TenantId = TenantIdReader.GetValue(reader),
+            NodeTypeId = NodeTypeIdReader.GetValue(reader),
         };
     }
 }

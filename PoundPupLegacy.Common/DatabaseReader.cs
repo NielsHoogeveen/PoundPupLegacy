@@ -45,30 +45,45 @@ namespace PoundPupLegacy.Common
         public Task<ISingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
     }
 
-    public abstract class SingleItemDatabaseReaderFactory<TRequest, TResponse, TReader>: DatabaseReaderFactory<TRequest, TResponse>, ISingleItemDatabaseReaderFactory<TRequest, TResponse>
+    public abstract class SingleItemDatabaseReaderFactory<TRequest, TResponse>: DatabaseReaderFactory<TRequest, TResponse>, ISingleItemDatabaseReaderFactory<TRequest, TResponse>
+        where TResponse : class
         where TRequest: IRequest
-        where TReader : ISingleItemDatabaseReader<TRequest, TResponse>
     {
+        protected abstract TResponse? Read(NpgsqlDataReader reader);
         public async Task<ISingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection)
         {
-            return (TReader)Activator.CreateInstance(typeof(TReader), new object[] { await GetCommand(connection) })!;
+            return new SingleItemDatabaseReader<TRequest, TResponse>(await GetCommand(connection), GetParameterValues, Read);
         }
-
     }
     public interface IMandatorySingleItemDatabaseReaderFactory<TRequest, TResponse>: IDatabaseReaderFactory<TRequest, TResponse> 
         where TRequest: IRequest
     {
         public Task<IMandatorySingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
     }
-    public abstract class MandatorySingleItemDatabaseReaderFactory<TRequest, TResponse, TReader> : DatabaseReaderFactory<TRequest, TResponse>, IMandatorySingleItemDatabaseReaderFactory<TRequest, TResponse>
+    public abstract class IntDatabaseReaderFactory<TRequest> : DatabaseReaderFactory<TRequest, int>, IMandatorySingleItemDatabaseReaderFactory<TRequest, int>
         where TRequest : IRequest
-        where TReader : IMandatorySingleItemDatabaseReader<TRequest, TResponse>
     {
-        public async Task<IMandatorySingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection)
+        protected abstract string GetErrorMessage(TRequest request);
+
+        protected abstract IntValueReader IntValueReader { get; }
+
+        public async Task<IMandatorySingleItemDatabaseReader<TRequest, int>> CreateAsync(IDbConnection connection)
         {
-            return (TReader)Activator.CreateInstance(typeof(TReader), new object[] { await GetCommand(connection) })!;
+            return new IntDatabaseReader<TRequest>(await GetCommand(connection), IntValueReader, GetParameterValues, GetErrorMessage);
         }
 
+    }
+    public abstract class MandatorySingleItemDatabaseReaderFactory<TRequest, TResponse> : DatabaseReaderFactory<TRequest, TResponse>, IMandatorySingleItemDatabaseReaderFactory<TRequest, TResponse>
+        where TRequest : IRequest
+    {
+        protected abstract TResponse Read(NpgsqlDataReader reader);
+
+        protected abstract string GetErrorMessage(TRequest request);
+
+        public async Task<IMandatorySingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection)
+        {
+            return new MandatorySingleItemDatabaseReader<TRequest, TResponse>(await GetCommand(connection), GetParameterValues, Read, GetErrorMessage);
+        }
     }
     public interface IEnumerableDatabaseReaderFactory<TRequest, TResponse> : IDatabaseReaderFactory<TRequest, TResponse>
     where TRequest : IRequest
@@ -76,13 +91,14 @@ namespace PoundPupLegacy.Common
         public Task<IEnumerableDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
     }
 
-    public abstract class EnumerableDatabaseReaderFactory<TRequest, TResponse, TReader> : DatabaseReaderFactory<TRequest, TResponse>, IEnumerableDatabaseReaderFactory<TRequest, TResponse>
+    public abstract class EnumerableDatabaseReaderFactory<TRequest, TResponse> : DatabaseReaderFactory<TRequest, TResponse>, IEnumerableDatabaseReaderFactory<TRequest, TResponse>
         where TRequest : IRequest
-        where TReader : IEnumerableDatabaseReader<TRequest, TResponse>
     {
+
+        protected abstract TResponse Read(NpgsqlDataReader reader);
         public async Task<IEnumerableDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection)
         {
-            return (TReader)Activator.CreateInstance(typeof(TReader), new object[] { await GetCommand(connection) })!;
+            return new EnumerableDatabaseReader<TRequest, TResponse>(await GetCommand(connection), GetParameterValues, Read);
         }
 
     }
@@ -91,6 +107,8 @@ namespace PoundPupLegacy.Common
         where TRequest: IRequest
     {
         public abstract string Sql { get; }
+
+        protected abstract IEnumerable<ParameterValue> GetParameterValues(TRequest request);
 
         protected async Task<NpgsqlCommand> GetCommand(IDbConnection connection)
         {
@@ -107,36 +125,35 @@ namespace PoundPupLegacy.Common
             await command.PrepareAsync();
             return command;
         }
-
     }
 
 
-    public abstract class IntDatabaseReader<TRequest> : MandatorySingleItemDatabaseReader<TRequest, int>
+    public class IntDatabaseReader<TRequest> : MandatorySingleItemDatabaseReader<TRequest, int>
         where TRequest : IRequest
     {
-        protected IntDatabaseReader(NpgsqlCommand command) : base(command)
+        public IntDatabaseReader(NpgsqlCommand command, IntValueReader IntValueReader, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper, Func<TRequest, string> errorMessageFunction) : base(command, parameterMapper, (reader) => IntValueReader.GetValue(reader), errorMessageFunction)
         {
-        }
-
-        protected abstract IntValueReader IntValueReader { get; }
-
-
-        protected sealed override int Read(NpgsqlDataReader reader)
-        {
-            return IntValueReader.GetValue(reader);
         }
     }
-    public abstract class MandatorySingleItemDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, IMandatorySingleItemDatabaseReader<TRequest, TResponse>
+
+
+    public class MandatorySingleItemDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, IMandatorySingleItemDatabaseReader<TRequest, TResponse>
         where TRequest : IRequest
     {
-        protected MandatorySingleItemDatabaseReader(NpgsqlCommand command) : base(command)
+        private readonly Func<NpgsqlDataReader, TResponse> _readerFunction;
+        private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
+        private readonly Func<TRequest, string> _errorMessageFunction;
+
+        public MandatorySingleItemDatabaseReader(NpgsqlCommand command, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper, Func<NpgsqlDataReader, TResponse> readerFunction, Func<TRequest, string> errorMessageFunction) : base(command)
         {
+            _parameterMapper = parameterMapper;
+            _readerFunction = readerFunction;
+            _errorMessageFunction = errorMessageFunction;
         }
-
-        protected abstract string GetErrorMessage(TRequest request);
-
-        protected abstract TResponse Read(NpgsqlDataReader reader);
-
+        protected override IEnumerable<ParameterValue> GetParameterValues(TRequest request)
+        {
+            return _parameterMapper(request);
+        }
 
         public async Task<TResponse> ReadAsync(TRequest request)
         {
@@ -146,20 +163,28 @@ namespace PoundPupLegacy.Common
             }
             await using var reader = await _command.ExecuteReaderAsync();
             if (!reader.HasRows)
-                throw new Exception(GetErrorMessage(request)); ;
+                throw new Exception(_errorMessageFunction(request)); ;
             await reader.ReadAsync();
-            return Read(reader);
+            return _readerFunction(reader);
         }
     }
 
-    public abstract class SingleItemDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, ISingleItemDatabaseReader<TRequest, TResponse>
+    public class SingleItemDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, ISingleItemDatabaseReader<TRequest, TResponse>
         where TResponse : class
         where TRequest : IRequest
     {
-        protected SingleItemDatabaseReader(NpgsqlCommand command) : base(command)
+        private readonly Func<NpgsqlDataReader, TResponse?> _readerFunction;
+        private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
+        protected override IEnumerable<ParameterValue> GetParameterValues(TRequest request)
         {
+            return _parameterMapper(request);
         }
-        protected abstract TResponse? Read(NpgsqlDataReader reader);
+
+        public SingleItemDatabaseReader(NpgsqlCommand command, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper, Func<NpgsqlDataReader, TResponse?> readerFunction) : base(command)
+        {
+            _readerFunction = readerFunction;
+            _parameterMapper = parameterMapper;
+        }
 
         public async Task<TResponse?> ReadAsync(TRequest request)
         {
@@ -171,17 +196,20 @@ namespace PoundPupLegacy.Common
             if (!reader.HasRows)
                 return null;
             await reader.ReadAsync();
-            return Read(reader);
+            return _readerFunction(reader);
         }
     }
-    public abstract class EnumerableDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, IEnumerableDatabaseReader<TRequest, TResponse>
+    public class EnumerableDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, IEnumerableDatabaseReader<TRequest, TResponse>
         where TRequest: IRequest
     {
-        protected EnumerableDatabaseReader(NpgsqlCommand command) : base(command)
-        {
-        }
-        protected abstract TResponse Read(NpgsqlDataReader reader);
+        private readonly Func<NpgsqlDataReader, TResponse> _readerFunction;
+        private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
 
+        public EnumerableDatabaseReader(NpgsqlCommand command, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper, Func<NpgsqlDataReader, TResponse> readerFunction) : base(command)
+        {
+            _readerFunction = readerFunction;
+            _parameterMapper = parameterMapper;
+        }
         public async IAsyncEnumerable<TResponse> ReadAsync(TRequest request)
         {
             foreach (var parameter in GetParameterValues(request)) 
@@ -190,8 +218,13 @@ namespace PoundPupLegacy.Common
             }
             await using var reader = await _command.ExecuteReaderAsync();
             while (await reader.ReadAsync()) {
-                yield return Read(reader);
+                yield return _readerFunction(reader);
             }
+        }
+
+        protected override IEnumerable<ParameterValue> GetParameterValues(TRequest request)
+        {
+            return _parameterMapper(request);
         }
     }
     public abstract record class ValueReader<T>
@@ -285,7 +318,7 @@ namespace PoundPupLegacy.Common
             return reader.GetBoolean(reader.GetOrdinal(Name));
         }
     }
-    public record class NullanleBooleanValueReader : ValueReader<bool?>
+    public record class NullableBooleanValueReader : ValueReader<bool?>
     {
         public override bool? GetValue(NpgsqlDataReader reader)
         {

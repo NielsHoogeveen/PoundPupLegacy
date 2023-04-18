@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = PartyPoliticalEntityRelationInserterFactory;
 using Request = PartyPoliticalEntityRelation;
-using Inserter = PartyPoliticalEntityRelationInserter;
 
-internal sealed class PartyPoliticalEntityRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
+internal sealed class PartyPoliticalEntityRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter PoliticalEntityId = new() { Name = "political_entity_id" };
     internal static NonNullableIntegerDatabaseParameter PartyId = new() { Name = "party_id" };
@@ -14,21 +12,14 @@ internal sealed class PartyPoliticalEntityRelationInserterFactory : Identifiable
 
     public override string TableName => "party_political_entity_relation";
 
-}
-internal sealed class PartyPoliticalEntityRelationInserter : IdentifiableDatabaseInserter<Request>
-{
-    public PartyPoliticalEntityRelationInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.PartyId, request.PartyId),
-            ParameterValue.Create(Factory.PoliticalEntityId, request.PoliticalEntityId),
-            ParameterValue.Create(Factory.PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationTypeId),
-            ParameterValue.Create(Factory.DateRange, request.DateRange),
-            ParameterValue.Create(Factory.DocumentIdProof,request.DocumentIdProof),
+            ParameterValue.Create(PartyId, request.PartyId),
+            ParameterValue.Create(PoliticalEntityId, request.PoliticalEntityId),
+            ParameterValue.Create(PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationTypeId),
+            ParameterValue.Create(DateRange, request.DateRange),
+            ParameterValue.Create(DocumentIdProof,request.DocumentIdProof),
         };
     }
 }

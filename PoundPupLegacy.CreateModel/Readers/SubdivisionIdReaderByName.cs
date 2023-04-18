@@ -1,15 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
 using Request = SubdivisionIdReaderByNameRequest;
-using Factory = SubdivisionIdReaderByNameFactory;
-using Reader = SubdivisionIdReaderByName;
 
 public sealed class SubdivisionIdReaderByNameRequest : IRequest
 {
     public required int CountryId { get; init; }
     public required string Name { get; init; }
 }
-internal sealed class SubdivisionIdReaderByNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, int, Reader>
+internal sealed class SubdivisionIdReaderByNameFactory : IntDatabaseReaderFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
@@ -25,20 +23,15 @@ internal sealed class SubdivisionIdReaderByNameFactory : MandatorySingleItemData
         AND name = @name 
         """;
 
-}
-internal sealed class SubdivisionIdReaderByName : IntDatabaseReader<Request>
-{
-    public SubdivisionIdReaderByName(NpgsqlCommand command) : base(command) { }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.CountryId, request.CountryId),
-            ParameterValue.Create(Factory.Name, request.Name)
+            ParameterValue.Create(CountryId, request.CountryId),
+            ParameterValue.Create(Name, request.Name)
         };
     }
 
-    protected override IntValueReader IntValueReader => Factory.IdReader;
+    protected override IntValueReader IntValueReader => IdReader;
 
     protected override string GetErrorMessage(Request request)
     {

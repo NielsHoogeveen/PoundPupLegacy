@@ -4,8 +4,6 @@ using PoundPupLegacy.Common;
 namespace PoundPupLegacy.Inserters;
 
 using Request = FileInserterRequest;
-using Factory = FileInserterFactory;
-using Inserter = FileInserter;
 
 public record FileInserterRequest: IRequest
 {
@@ -16,7 +14,7 @@ public record FileInserterRequest: IRequest
     public required long Size { get; init; }
 }
 
-public sealed class FileInserterFactory : DatabaseInserterFactoryBase<Request, Inserter>
+public sealed class FileInserterFactory : DatabaseInserterFactoryBase<Request>
 {
     internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
@@ -30,22 +28,21 @@ public sealed class FileInserterFactory : DatabaseInserterFactoryBase<Request, I
         insert into file (name, size, mime_type, path) VALUES(@name, @size, @mime_type, @path);
         insert into node_file (node_id, file_id) VALUES(@node_id, lastval());
         """;
-}
 
-public sealed class FileInserter : DatabaseInserter<Request>
-{
-    public FileInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
-    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
+    private IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.Name, request.Name),
-            ParameterValue.Create(Factory.Size, request.Size),
-            ParameterValue.Create(Factory.MimeType, request.MimeType),
-            ParameterValue.Create(Factory.Path, request.Path),
-            ParameterValue.Create(Factory.NodeId, request.NodeId)
+            ParameterValue.Create(Name, request.Name),
+            ParameterValue.Create(Size, request.Size),
+            ParameterValue.Create(MimeType, request.MimeType),
+            ParameterValue.Create(Path, request.Path),
+            ParameterValue.Create(NodeId, request.NodeId)
         };
     }
+
+    protected override IDatabaseInserter<Request> CreateInstance(NpgsqlCommand command)
+    {
+        return new BasicDatabaseInserter<Request>(command, GetParameterValues);
+    }
 }
+

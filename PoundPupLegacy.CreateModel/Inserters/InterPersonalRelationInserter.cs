@@ -1,10 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Factory = InterPersonalRelationInserterFactory;
 using Request = InterPersonalRelation;
-using Inserter = InterPersonalRelationInserter;
 
-internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request, Inserter>
+internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     internal static NonNullableIntegerDatabaseParameter PersonIdFrom = new() { Name = "person_id_from" };
     internal static NonNullableIntegerDatabaseParameter PersonIdTo = new() { Name = "person_id_to" };
@@ -14,21 +12,14 @@ internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabas
 
     public override string TableName => "inter_personal_relation";
 
-}
-internal sealed class InterPersonalRelationInserter : IdentifiableDatabaseInserter<Request>
-{
-    public InterPersonalRelationInserter(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.PersonIdFrom, request.PersonIdFrom),
-            ParameterValue.Create(Factory.PersonIdTo, request.PersonIdTo),
-            ParameterValue.Create(Factory.InterPersonalRelationTypeId, request.InterPersonalRelationTypeId),
-            ParameterValue.Create(Factory.DateRange, request.DateRange),
-            ParameterValue.Create(Factory.DocumentIdProof, request.DocumentIdProof),
+            ParameterValue.Create(PersonIdFrom, request.PersonIdFrom),
+            ParameterValue.Create(PersonIdTo, request.PersonIdTo),
+            ParameterValue.Create(InterPersonalRelationTypeId, request.InterPersonalRelationTypeId),
+            ParameterValue.Create(DateRange, request.DateRange),
+            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
         };
     }
 }

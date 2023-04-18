@@ -1,15 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
 using Request = TermReaderByNameRequest;
-using Factory = TermReaderByNameFactory;
-using Reader = TermReaderByName;
 
 public sealed class TermReaderByNameRequest : IRequest
 {
     public required int VocabularyId { get; init; }
     public required string Name { get; init; }
 }
-internal sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term, Reader>
+internal sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term>
 {
     internal static NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
     internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
@@ -31,26 +29,21 @@ internal sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReade
         WHERE vocabulary_id = @vocabulary_id
         AND name = @name 
         """;
-}
-internal sealed class TermReaderByName : MandatorySingleItemDatabaseReader<Request, Term>
-{
-    public TermReaderByName(NpgsqlCommand command) : base(command) { }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.VocabularyId, request.VocabularyId),
-            ParameterValue.Create(Factory.Name, request.Name?.Trim())
+            ParameterValue.Create(VocabularyId, request.VocabularyId),
+            ParameterValue.Create(Name, request.Name?.Trim())
         };
     }
 
     protected override Term Read(NpgsqlDataReader reader)
     {
         return new Term {
-            Id = Factory.IdReader.GetValue(reader),
-            Name = Factory.NameReader.GetValue(reader),
-            VocabularyId = Factory.VocabularyIdReader.GetValue(reader),
-            NameableId = Factory.NameableIdReader.GetValue(reader)
+            Id = IdReader.GetValue(reader),
+            Name = NameReader.GetValue(reader),
+            VocabularyId = VocabularyIdReader.GetValue(reader),
+            NameableId = NameableIdReader.GetValue(reader)
         };
     }
     protected override string GetErrorMessage(Request request)

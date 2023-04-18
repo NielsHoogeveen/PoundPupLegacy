@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = UnitedStatesMeetingChamberDocumentReaderRequest;
-using Factory = UnitedStatesMeetingChamberDocumentReaderFactory;
-using Reader = UnitedStatesMeetingChamberDocumentReader;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
 
@@ -12,7 +10,7 @@ public sealed record UnitedStatesMeetingChamberDocumentReaderRequest : IRequest
 
     public required int Type { get; init; }
 }
-internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, CongressionalMeetingChamber, Reader>
+internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, CongressionalMeetingChamber>
 {
     internal readonly static NonNullableIntegerDatabaseParameter MeetingNumberParameter = new() { Name = "meeting_number" };
     internal readonly static NonNullableIntegerDatabaseParameter ChamberTypeParameter = new() { Name = "chamber_type" };
@@ -256,22 +254,15 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
         group by meeting_name, date_from, date_to
         """;
 
-}
-internal sealed class UnitedStatesMeetingChamberDocumentReader : SingleItemDatabaseReader<Request, CongressionalMeetingChamber>
-{
- 
-    public UnitedStatesMeetingChamberDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.MeetingNumberParameter, request.Number),
-            ParameterValue.Create(Factory.ChamberTypeParameter, request.Type),
+            ParameterValue.Create(MeetingNumberParameter, request.Number),
+            ParameterValue.Create(ChamberTypeParameter, request.Type),
         };
     }
     protected override CongressionalMeetingChamber Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

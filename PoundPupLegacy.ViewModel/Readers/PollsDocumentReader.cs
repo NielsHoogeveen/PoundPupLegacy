@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using Request = PollsDocumentReaderRequest;
-using Factory = PollsDocumentReaderFactory;
-using Reader = PollsDocumentReader;
 using PoundPupLegacy.ViewModel.Models;
 
 public sealed record PollsDocumentReaderRequest : IRequest
@@ -13,7 +11,7 @@ public sealed record PollsDocumentReaderRequest : IRequest
     public required int Offset { get; init; }
 }
 
-internal sealed class PollsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Polls, Reader>
+internal sealed class PollsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Polls>
 {
     internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -104,25 +102,17 @@ internal sealed class PollsDocumentReaderFactory : SingleItemDatabaseReaderFacto
             where status <> -1
             group by number_of_entries
         """;
-}
-internal sealed class PollsDocumentReader : SingleItemDatabaseReader<Request, Polls>
-{
-
-    public PollsDocumentReader(NpgsqlCommand command) : base(command)
-    {
-    }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.TenantIdParameter, request.TenantId),
-            ParameterValue.Create(Factory.UserIdParameter, request.UserId),
-            ParameterValue.Create(Factory.LimitParameter, request.Limit),
-            ParameterValue.Create(Factory.OffsetParameter, request.Offset),
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
+            ParameterValue.Create(LimitParameter, request.Limit),
+            ParameterValue.Create(OffsetParameter, request.Offset),
         };
     }
     protected override Polls Read(NpgsqlDataReader reader)
     {
-        return Factory.DocumentReader.GetValue(reader);
+        return DocumentReader.GetValue(reader);
     }
 }

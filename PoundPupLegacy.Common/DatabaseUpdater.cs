@@ -27,11 +27,10 @@ public interface IDatabaseUpdaterFactory<TRequest> : IDatabaseUpdaterFactory
 
 }
 
-public abstract class DatabaseUpdaterFactory<TRequest, TUpdater> : DatabaseAccessorFactory, IDatabaseUpdaterFactory<TRequest>
+public abstract class DatabaseUpdaterFactory<TRequest> : DatabaseAccessorFactory, IDatabaseUpdaterFactory<TRequest>
     where TRequest : IRequest
-    where TUpdater : IDatabaseUpdater<TRequest>
 {
-
+    protected abstract IEnumerable<ParameterValue> GetParameterValues(TRequest request);
     public async Task<IDatabaseUpdater<TRequest>> CreateAsync(IDbConnection connection)
     {
         if (connection is not NpgsqlConnection)
@@ -47,17 +46,24 @@ public abstract class DatabaseUpdaterFactory<TRequest, TUpdater> : DatabaseAcces
             command.AddParameter(parameter);
         }
         await command.PrepareAsync();
-        return (IDatabaseUpdater<TRequest>)Activator.CreateInstance(typeof(TUpdater), new object[] { command })!;
+        return new DatabaseUpdater<TRequest>(command, GetParameterValues);
     }
 
     public abstract string Sql { get; }
 
 }
-public abstract class DatabaseUpdater<TRequest> : DatabaseAccessor<TRequest>, IDatabaseUpdater<TRequest>
+public class DatabaseUpdater<TRequest> : DatabaseAccessor<TRequest>, IDatabaseUpdater<TRequest>
     where TRequest: IRequest
 {
-    protected DatabaseUpdater(NpgsqlCommand command) : base(command)
+    private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
+    public DatabaseUpdater(NpgsqlCommand command, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper) : base(command)
     {
+        _parameterMapper = parameterMapper;
+    }
+
+    protected sealed override IEnumerable<ParameterValue> GetParameterValues(TRequest request)
+    {
+        return _parameterMapper(request);
     }
 
     public async Task UpdateAsync(TRequest request)
@@ -68,5 +74,4 @@ public abstract class DatabaseUpdater<TRequest> : DatabaseAccessor<TRequest>, ID
         }
         await _command.ExecuteNonQueryAsync();
     }
-
 }

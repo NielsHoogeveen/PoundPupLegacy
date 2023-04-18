@@ -1,8 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
 using Request = TermReaderByNameableIdRequest;
-using Factory = TermReaderByNameableIdFactory;
-using Reader = TermReaderByNameableId;
 
 public sealed class TermReaderByNameableIdRequest : IRequest
 {
@@ -10,7 +8,7 @@ public sealed class TermReaderByNameableIdRequest : IRequest
     public required string VocabularyName { get; init; }
     public required int NameableId { get; init; }
 }
-internal sealed class TermReaderByNameableIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term, Reader>
+internal sealed class TermReaderByNameableIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term>
 {
     internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
     internal static NonNullableStringDatabaseParameter VocabularyName = new() { Name = "vocabulary_name" };
@@ -34,28 +32,22 @@ internal sealed class TermReaderByNameableIdFactory : MandatorySingleItemDatabas
         JOIN vocabulary v on v.id = t.vocabulary_id
         WHERE v.owner_id = @owner_id AND v.name = @vocabulary_name AND nameable_id = @nameable_id
         """;
-}
-internal sealed class TermReaderByNameableId : MandatorySingleItemDatabaseReader<Request, Term>
-{
-
-    public TermReaderByNameableId(NpgsqlCommand command) : base(command) { }
-
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Factory.OwnerId, request.OwnerId),
-            ParameterValue.Create(Factory.VocabularyName, request.VocabularyName),
-            ParameterValue.Create(Factory.NameableId, request.NameableId)
+            ParameterValue.Create(OwnerId, request.OwnerId),
+            ParameterValue.Create(VocabularyName, request.VocabularyName),
+            ParameterValue.Create(NameableId, request.NameableId)
         };
     }
 
     protected override Term Read(NpgsqlDataReader reader)
     {
         return new Term {
-            Id = Factory.IdReader.GetValue(reader),
-            Name = Factory.NameReader.GetValue(reader),
-            VocabularyId = Factory.VocabularyIdReader.GetValue(reader),
-            NameableId = Factory.NameableIdReader.GetValue(reader)
+            Id = IdReader.GetValue(reader),
+            Name = NameReader.GetValue(reader),
+            VocabularyId = VocabularyIdReader.GetValue(reader),
+            NameableId = NameableIdReader.GetValue(reader)
         };
     }
 
