@@ -96,18 +96,15 @@
 
     private async Task Choose(int id)
     {
-        if (NavigationManager is not null)
-        {
-            var term = TermNames.First(x => x.Id == id);
-            term.Selected = !term.Selected;
-            await OnInitializedAsync();
-            var selectedTerms = TermNames.Where(x => x.Selected);
-            var query = selectedTerms.Any() ? $"?{selectedTerms.Aggregate("", (a, b) => a + $"&{TERM_NAME_PREFIX}{b.Id}=on").ToString()[1..]}" : "";
-            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-            var newUri = uri.AbsolutePath + query;
-            NavigationManager.NavigateTo(newUri, false);
-            StateHasChanged();
-        }
+        var term = TermNames.First(x => x.Id == id);
+        term.Selected = !term.Selected;
+        await OnInitializedAsync();
+        var selectedTerms = TermNames.Where(x => x.Selected);
+        var query = selectedTerms.Any() ? $"?{selectedTerms.Aggregate("", (a, b) => a + $"&{TERM_NAME_PREFIX}{b.Id}=on").ToString()[1..]}" : "";
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var newUri = uri.AbsolutePath + query;
+        NavigationManager.NavigateTo(newUri, false);
+        StateHasChanged();
     }
     private int[] GetTermIds()
     {
