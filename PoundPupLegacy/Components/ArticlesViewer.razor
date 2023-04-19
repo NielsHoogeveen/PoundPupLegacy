@@ -30,6 +30,7 @@
                     }
                 </div>
             </form>
+            @JavascriptCall
         }
         else {
             <div class="term-names">
@@ -111,7 +112,7 @@
     private int[] GetTermIds()
     {
         if (NavigationManager is null)
-        return Array.Empty<int>();
+            return Array.Empty<int>();
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var keys = QueryHelpers.ParseQuery(uri.Query).Select(x => x.Key);
         var termIds = keys == null ? Array.Empty<int>() : GetTermIds(keys).ToArray();
@@ -129,4 +130,6 @@
         TermNames = articles.TermNames;
         return articles;
     }
+
+    private MarkupString JavascriptCall =>  new MarkupString(@"<script>setClickEventHandlersForTerms();</script>");
 }

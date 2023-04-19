@@ -9,7 +9,7 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
     where TPagedListSettings : PagedListSettings
     where TListEntry : ListEntry
 {
-    [RazorInject]
+    [Inject]
     protected NavigationManager? NavigationManager { get; set; }
     protected TListEntry[]? ListEntries { get; set; }
 
