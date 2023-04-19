@@ -107,6 +107,7 @@
 }
 @code{
     [Parameter]
+    [EditorRequired]
     public Node? Model { get; set; }
 
     [CascadingParameter(Name="UserId")]

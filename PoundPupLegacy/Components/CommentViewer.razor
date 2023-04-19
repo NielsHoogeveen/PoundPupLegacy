@@ -31,6 +31,7 @@
 }
 @code{
     [Parameter]
+    [EditorRequired]
     public Comment? Model { get; set; }
 
     private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");

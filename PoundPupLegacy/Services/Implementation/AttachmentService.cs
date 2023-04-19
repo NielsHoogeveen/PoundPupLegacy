@@ -115,6 +115,8 @@ internal sealed class AttachmentService : IAttachmentService
                 UserId = userId,
                 TenantId = tenantId
             });
+            if (file is null)
+                return new None();
             var fullPath = attachementsLocation + "\\" + file.Path;
             return new FileReturn { FileName = file.Name, MimeType = file.MimeType, Stream = System.IO.File.OpenRead(fullPath) };
         }

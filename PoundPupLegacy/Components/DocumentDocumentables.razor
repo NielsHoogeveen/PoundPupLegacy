@@ -94,15 +94,17 @@
 
 @code {
     [Parameter]
+    [EditorRequired]
     public List<DocumentableDocument>? Elems { get; set; }
 
     [Parameter]
+    [EditorRequired]
     public int? NodeId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name ="UserId")]
     public int UserId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name ="TenantId")]
     public int TenantId { get; set; }
 
     List<DocumentableDocument> options = new();

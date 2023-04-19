@@ -35,16 +35,20 @@
 }
 @code{
     [Parameter]
+    [EditorRequired]
     public int Id { get; set; }
 
     private string Name { get; set; } = string.Empty;
 
     protected override int PageSize => 10;
 
-    protected override async Task<IPagedList<BlogPostTeaser>> GetListEntriesAsync()
+    protected override async Task<IPagedList<BlogPostTeaser>?> GetListEntriesAsync()
     {
         var result =  await FetchBlogService.FetchBlog(Id, TenantId, PagedListSettings.PageNumber, PagedListSettings.PageSize);
-        Name = result.Name;
+        if (result is not null)
+        {
+            Name = result.Name;
+        }
         return result;
     }
 }

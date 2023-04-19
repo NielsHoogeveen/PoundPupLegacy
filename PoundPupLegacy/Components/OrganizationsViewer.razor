@@ -43,38 +43,7 @@
                 
                 }
             </select>
-            <select name="search_option">
-                @if (PagedListSettings.SearchOption == SearchOption.Contains)
-                {
-                    <option value="contains" selected>contains</option>
-                }
-                else
-                {
-                    <option value="contains">contains</option>
-                }
-                @if (PagedListSettings.SearchOption == SearchOption.IsEqualTo) {
-                    <option value="is_equal_to" selected>is equal to</option>
-                }
-                else
-                {
-                    <option value="is_equal_to">is equal to</option>
-                }
-                @if (PagedListSettings.SearchOption == SearchOption.StartsWith) {
-                    <option value="starts_with" selected>starts with</option>
-                }
-                else
-                {
-                    <option value="starts_with">starts with</option>
-                }
-                @if (PagedListSettings.SearchOption == SearchOption.EndsWith) {
-
-                    <option value="ends_with" selected>ends with</option>
-                }
-                else
-                {
-                    <option value="ends_with">ends with</option>
-                }
-            </select>
+            <SearchOptionSelector SearchOption="@PagedListSettings.SearchOption" />
             <input type="text" name="search_term" value="@PagedListSettings.SearchTerm" />
             <input type="submit" value="Search" />
         </form>
@@ -106,7 +75,7 @@
     private SelectionItem[] Countries = Array.Empty<SelectionItem>();
     private SelectionItem[] OrganizationTypes = Array.Empty<SelectionItem>();
 
-    protected override async Task<IPagedList<OrganizationListEntry>> GetListEntriesAsync()
+    protected override async Task<IPagedList<OrganizationListEntry>?> GetListEntriesAsync()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("country", out var countryIdValue)) {

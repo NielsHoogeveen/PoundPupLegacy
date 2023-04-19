@@ -43,7 +43,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         _organizationUpdateFactory = organizationUpdateFactory;
         _organizationEntityCreator = organizationEntityCreator;
     }
-    public async Task<Organization> GetViewModelAsync(int urlId, int userId, int tenantId)
+    public async Task<Organization?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
         try {
             await _connection.OpenAsync();
@@ -66,8 +66,9 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         await base.StoreAdditional(organization);
         await _locationsSaveService.SaveAsync(organization.Locations, _connection);
     }
-    public Task<Organization> GetViewModelAsync(int userId, int tenantId)
+    public async Task<Organization?> GetViewModelAsync(int userId, int tenantId)
     {
+        await Task.CompletedTask;
         throw new NotImplementedException();
     }
     protected sealed override async Task StoreNew(Organization organization, NpgsqlConnection connection)

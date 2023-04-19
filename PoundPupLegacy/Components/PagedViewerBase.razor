@@ -9,7 +9,7 @@
 
     protected TListEntry[]? ListEntries { get; set; }
 
-    protected abstract Task<IPagedList<TListEntry>> GetListEntriesAsync();
+    protected abstract Task<IPagedList<TListEntry>?> GetListEntriesAsync();
 
     protected abstract int PageSize { get; }
 
@@ -17,7 +17,7 @@
 
     protected sealed override void OnInitialized()
     {
-       
+
     }
 
     protected override async Task OnInitializedAsync()
@@ -32,7 +32,10 @@
             }
         }
         var list = await GetListEntriesAsync();
-        ListEntries = list.Entries;
-        PagedListSettings.NumberOfEntries = list.NumberOfEntries;
+        if (list is not null)
+        {
+            ListEntries = list.Entries;
+            PagedListSettings.NumberOfEntries = list.NumberOfEntries;
+        }
     }
 }

@@ -51,8 +51,9 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
         }
     }
 
-    public Task<Document> GetViewModelAsync(int userId, int tenantId)
+    public async Task<Document?> GetViewModelAsync(int userId, int tenantId)
     {
+        await Task.CompletedTask;
         throw new NotImplementedException();
     }
 

@@ -26,15 +26,19 @@
     public RenderFragment? DialogContent { get; set; }
 
     [Parameter]
+    [EditorRequired]
     public string? Id { get; set; } 
 
     [Parameter]
+    [EditorRequired]
     public string? Title { get; set; }
 
     [Parameter]
+    [EditorRequired]
     public Action? OnOk { get; set; }
 
     [Parameter]
+    [EditorRequired]
     public Action? OnCancel { get; set; }
 
     private string className => displayState == DisplayState.Open ? "" : "modal";

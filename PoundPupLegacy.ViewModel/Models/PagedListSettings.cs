@@ -58,7 +58,7 @@ public record PagedListSettings
 
 public record PagedSearchListSettings : PagedListSettings
 {
-    public string? SearchTerm { get; set; }
+    public string SearchTerm { get; set; } = string.Empty;
     public SearchOption SearchOption { get; set; }
 
     private string SearchOptionAsText(SearchOption searchOption)

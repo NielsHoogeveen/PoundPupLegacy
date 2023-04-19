@@ -2,7 +2,7 @@
 
 @if (Model is not null){
     
-    <BreadCrumElementViewer model="@Model.BreadCrumElements"/>
+    <BreadCrumElementViewer Model="@Model.BreadCrumElements"/>
     
     @if (!Model.HasBeenPublished) {
         <div class="watermark">Unpublished</div>
@@ -78,5 +78,6 @@
 }
 @code{
     [Parameter]
+    [EditorRequired]
     public Node? Model { get; set; }
 }

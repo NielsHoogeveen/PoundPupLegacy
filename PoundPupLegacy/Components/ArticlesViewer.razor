@@ -59,7 +59,7 @@
                         <a href="@entry.Path">@entry.Title</a>
                     </h2>
                     <AuthoringViewer Model="@entry.Authoring" />
-                    <LargeTextViewer Value="entry.Text"/>
+                    <LargeTextViewer Value="@entry.Text"/>
                     @if (entry.Tags is not null)
                     {
                         <div class="tags">
@@ -117,7 +117,7 @@
         return termIds;
     }
 
-    protected override async Task<IPagedList<ArticleListEntry>> GetListEntriesAsync()
+    protected override async Task<IPagedList<ArticleListEntry>?> GetListEntriesAsync()
     {
         var termIds = UserId == 0
             ? GetTermIds()

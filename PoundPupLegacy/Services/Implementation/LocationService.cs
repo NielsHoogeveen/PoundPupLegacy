@@ -98,33 +98,37 @@ internal sealed class LocationService : ILocationService
         if (response.IsSuccessStatusCode) {
             var content = response.Content;
             var json = await content.ReadFromJsonAsync<Root>();
-            if (json is not null && json.results.Count > 0) {
+            if (json is not null && json.results is not null && json.results.Count > 0) {
                 var result = json.results[0];
-                var country = result.address_components.FirstOrDefault(x => x.types.Contains("country"));
-                if (country is not null && country.short_name == "US") {
-                    var streetNumber = result.address_components.FirstOrDefault(x => x.types.Contains("street_number"))?.long_name;
-                    var streetName = result.address_components.FirstOrDefault(x => x.types.Contains("route"))?.long_name;
-                    if (streetNumber is not null && streetName is not null) {
-                        responseLocation.Street = $"{streetNumber} {streetName}";
+                if (result is not null && result.address_components is not null) {
+                    var country = result.address_components.FirstOrDefault(x => x.types!.Contains("country"));
+                    if (country is not null && country.short_name == "US") {
+                        var streetNumber = result.address_components.FirstOrDefault(x => x.types!.Contains("street_number"))?.long_name;
+                        var streetName = result.address_components.FirstOrDefault(x => x.types!.Contains("route"))?.long_name;
+                        if (streetNumber is not null && streetName is not null) {
+                            responseLocation.Street = $"{streetNumber} {streetName}";
+                        }
                     }
-                }
-                var postalCode = result.address_components?.FirstOrDefault(x => x.types.Contains("postal_code"));
-                if (postalCode is not null) {
-                    responseLocation.PostalCode = postalCode.long_name;
-                }
-                var neighborhood = result.address_components?.FirstOrDefault(x => x.types.Contains("neighborhood"));
-                var locality = result.address_components?.FirstOrDefault(x => x.types.Contains("locality"));
-                if (locality is not null) {
-                    if (neighborhood is not null) {
-                        responseLocation.City = neighborhood.long_name;
+                    var postalCode = result.address_components?.FirstOrDefault(x => x.types!.Contains("postal_code"));
+                    if (postalCode is not null) {
+                        responseLocation.PostalCode = postalCode.long_name;
                     }
-                    else {
-                        responseLocation.City = locality.long_name;
+                    var neighborhood = result.address_components?.FirstOrDefault(x => x.types!.Contains("neighborhood"));
+                    var locality = result.address_components?.FirstOrDefault(x => x.types!.Contains("locality"));
+                    if (locality is not null) {
+                        if (neighborhood is not null) {
+                            responseLocation.City = neighborhood.long_name;
+                        }
+                        else {
+                            responseLocation.City = locality.long_name;
+                        }
                     }
+                    if (result is not null && result.geometry is not null && result.geometry.location is not null) {
+                        responseLocation.Latitude = new decimal(result.geometry.location.lat);
+                        responseLocation.Longitude = new decimal(result.geometry.location.lng);
+                    }
+                    return responseLocation;
                 }
-                responseLocation.Latitude = new decimal(result.geometry.location.lat);
-                responseLocation.Longitude = new decimal(result.geometry.location.lng);
-                return responseLocation;
             }
         }
         return location;
@@ -132,23 +136,23 @@ internal sealed class LocationService : ILocationService
     }
     public sealed class AddressComponent
     {
-        public string long_name { get; set; }
-        public string short_name { get; set; }
-        public List<string> types { get; set; }
+        public string? long_name { get; set; }
+        public string? short_name { get; set; }
+        public List<string>? types { get; set; }
     }
 
     public sealed class Bounds
     {
-        public Northeast northeast { get; set; }
-        public Southwest southwest { get; set; }
+        public Northeast? northeast { get; set; }
+        public Southwest? southwest { get; set; }
     }
 
     public sealed class Geometry
     {
-        public Bounds bounds { get; set; }
-        public Location2 location { get; set; }
-        public string location_type { get; set; }
-        public Viewport viewport { get; set; }
+        public Bounds? bounds { get; set; }
+        public Location2? location { get; set; }
+        public string? location_type { get; set; }
+        public Viewport? viewport { get; set; }
     }
 
     public sealed class Location2
@@ -165,18 +169,18 @@ internal sealed class LocationService : ILocationService
 
     public sealed class Result
     {
-        public List<AddressComponent> address_components { get; set; }
-        public string formatted_address { get; set; }
-        public Geometry geometry { get; set; }
+        public List<AddressComponent>? address_components { get; set; }
+        public string? formatted_address { get; set; }
+        public Geometry? geometry { get; set; }
         public bool partial_match { get; set; }
-        public string place_id { get; set; }
-        public List<string> types { get; set; }
+        public string? place_id { get; set; }
+        public List<string>? types { get; set; }
     }
 
     public sealed class Root
     {
-        public List<Result> results { get; set; }
-        public string status { get; set; }
+        public List<Result>? results { get; set; }
+        public string? status { get; set; }
     }
 
     public sealed class Southwest
@@ -187,8 +191,8 @@ internal sealed class LocationService : ILocationService
 
     public sealed class Viewport
     {
-        public Northeast northeast { get; set; }
-        public Southwest southwest { get; set; }
+        public Northeast? northeast { get; set; } 
+        public Southwest? southwest { get; set; }
     }
 
 

@@ -35,10 +35,10 @@
 
     string url = "";
 
-    [Parameter]
+    [CascadingParameter(Name ="UserId")]
     public int UserId { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name ="TenantId")]
     public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()

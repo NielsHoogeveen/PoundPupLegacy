@@ -9,11 +9,13 @@
 }
 @code {
     [Parameter]
+    [EditorRequired]
     public DateTime? Value { get; set; }
 
     [Parameter]
     public string? Label { get; set; }
 
     [Parameter]
+    [EditorRequired]
     public DateTimeFormat Format {get; set;}
 }

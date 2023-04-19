@@ -30,6 +30,7 @@
 @code{
 
     [Parameter]
+    [EditorRequired]
     public IEnumerable<Location>? Model { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

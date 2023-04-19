@@ -5,6 +5,7 @@
 @code {
 
     [Parameter]
+    [EditorRequired]
     public string? Value { get; set; }
 
     private MarkupString? Text => Value is null ? null : (MarkupString)Value;

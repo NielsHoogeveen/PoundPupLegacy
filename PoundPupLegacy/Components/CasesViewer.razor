@@ -126,11 +126,12 @@
 }
 @code {
     [Parameter]
+    [EditorRequired]
     public CaseType CaseType { get; set; }
 
     protected override int PageSize => 10;
 
-    protected override async Task<IPagedList<CaseListEntry>> GetListEntriesAsync()
+    protected override async Task<IPagedList<CaseListEntry>?> GetListEntriesAsync()
     {
         return await FetchCasesService.FetchCases(PagedListSettings.PageSize, PagedListSettings.PageNumber, TenantId, UserId, CaseType);
     }

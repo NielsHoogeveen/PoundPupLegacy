@@ -5,5 +5,5 @@ namespace PoundPupLegacy.Services;
 
 public interface ITopicService
 {
-    Task<Topics> FetchTopics(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption);
+    Task<Topics?> FetchTopics(int userId, int tenantId, int limit, int offset, string searchTerm, SearchOption searchOption);
 }

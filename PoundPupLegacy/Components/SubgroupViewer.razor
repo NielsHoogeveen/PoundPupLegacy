@@ -20,11 +20,12 @@
 
 @code {
     [Parameter]
+    [EditorRequired]
     public int Id { get; set; }
 
     protected override int PageSize => 150;
 
-    protected override async Task<IPagedList<SubgroupListEntry>> GetListEntriesAsync()
+    protected override async Task<IPagedList<SubgroupListEntry>?> GetListEntriesAsync()
     {
         return await SubgroupService.GetSubGroupPagedList(UserId, Id, PagedListSettings.PageSize, PagedListSettings.PageNumber);
     }

@@ -1,0 +1,36 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+<select name="search_option">
+    @if (SearchOption == SearchOption.Contains) {
+        <option value="contains" selected>contains</option>
+    }
+    else {
+        <option value="contains">contains</option>
+    }
+    @if (SearchOption == SearchOption.IsEqualTo) {
+        <option value="is_equal_to" selected>is equal to</option>
+    }
+    else {
+        <option value="is_equal_to">is equal to</option>
+    }
+    @if (SearchOption == SearchOption.StartsWith) {
+        <option value="starts_with" selected>starts with</option>
+    }
+    else {
+        <option value="starts_with">starts with</option>
+    }
+    @if (SearchOption == SearchOption.EndsWith) {
+
+        <option value="ends_with" selected>ends with</option>
+    }
+    else {
+        <option value="ends_with">ends with</option>
+    }
+</select>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public SearchOption SearchOption { get; set; } = SearchOption.Contains;
+
+}

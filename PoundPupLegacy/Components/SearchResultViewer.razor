@@ -24,7 +24,7 @@
 
     protected override int PageSize => 25;
 
-    protected override async Task<IPagedList<SearchResultListEntry>> GetListEntriesAsync()
+    protected override async Task<IPagedList<SearchResultListEntry>?> GetListEntriesAsync()
     {
         return await FetchSearchService.FetchSearch(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm!);
     }
