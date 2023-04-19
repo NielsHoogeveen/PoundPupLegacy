@@ -3,8 +3,8 @@
 using Request = BasicAction;
 internal sealed class BasicActionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
-    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+    private static readonly NonNullableStringDatabaseParameter Description = new() { Name = "description" };
     public override string TableName => "basic_action";
 
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

@@ -10,16 +10,16 @@ public sealed record NodeReaderByUrlIdRequest : IRequest
 
 internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, Node>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
-    internal static IntValueReader PublisherIdReader = new() { Name = "publisher_id" };
-    internal static StringValueReader TitleReader = new() { Name = "title" };
-    internal static DateTimeValueReader CreatedDateTimeReader = new() { Name = "created_date_time" };
-    internal static DateTimeValueReader ChangedDateTimeReader = new() { Name = "changed_date_time" };
-    internal static IntValueReader NodeTypeIdReader = new() { Name = "node_type_id" };
-    internal static IntValueReader OwnerIdReader = new() { Name = "owner_id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader PublisherIdReader = new() { Name = "publisher_id" };
+    private static readonly StringValueReader TitleReader = new() { Name = "title" };
+    private static readonly DateTimeValueReader CreatedDateTimeReader = new() { Name = "created_date_time" };
+    private static readonly DateTimeValueReader ChangedDateTimeReader = new() { Name = "changed_date_time" };
+    private static readonly IntValueReader NodeTypeIdReader = new() { Name = "node_type_id" };
+    private static readonly IntValueReader OwnerIdReader = new() { Name = "owner_id" };
 
     public override string Sql => SQL;
 

@@ -8,8 +8,8 @@ public sealed record CountryListItemsReaderRequest: IRequest
 
 internal sealed class CountryListItemsReaderFactory : EnumerableDatabaseReaderFactory<Request, CountryListItem>
 {
-    internal static readonly IntValueReader IdReader = new() { Name = "id" };
-    internal static readonly StringValueReader NameReader = new() { Name = "name" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
+    private static readonly StringValueReader NameReader = new() { Name = "name" };
 
     public override string Sql => SQL;
     private const string SQL = $"""

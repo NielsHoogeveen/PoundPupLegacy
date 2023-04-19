@@ -15,13 +15,13 @@ public sealed record PersonsDocumentReaderRequest : IRequest
 }
 internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Persons>
 {
-    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
-    internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
-    internal readonly static SearchOptionDatabaseParameter PatternParameter = new() { Name = "pattern" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    private static readonly NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+    private static readonly SearchOptionDatabaseParameter PatternParameter = new() { Name = "pattern" };
 
-    internal readonly static FieldValueReader<Persons> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<Persons> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

@@ -7,10 +7,10 @@ public static class NodeUpdateDocumentReaderFactory
 public abstract class NodeUpdateDocumentReaderFactory<TResponse> : NodeEditDocumentReaderFactory<NodeUpdateDocumentRequest, TResponse>
 where TResponse : class, Node
 {
-    internal readonly static NonNullableIntegerDatabaseParameter UrlIdParameter = new() { Name = "url_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UrlIdParameter = new() { Name = "url_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
 
     protected abstract int NodeTypeId {get;}
 

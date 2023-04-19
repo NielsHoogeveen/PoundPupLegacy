@@ -4,11 +4,11 @@ using Request = InterPersonalRelation;
 
 internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter PersonIdFrom = new() { Name = "person_id_from" };
-    internal static NonNullableIntegerDatabaseParameter PersonIdTo = new() { Name = "person_id_to" };
-    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
-    internal static NonNullableIntegerDatabaseParameter InterPersonalRelationTypeId = new() { Name = "inter_personal_relation_type_id" };
-    internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    private static readonly NonNullableIntegerDatabaseParameter PersonIdFrom = new() { Name = "person_id_from" };
+    private static readonly NonNullableIntegerDatabaseParameter PersonIdTo = new() { Name = "person_id_to" };
+    private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    private static readonly NonNullableIntegerDatabaseParameter InterPersonalRelationTypeId = new() { Name = "inter_personal_relation_type_id" };
+    private static readonly NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
 
     public override string TableName => "inter_personal_relation";
 

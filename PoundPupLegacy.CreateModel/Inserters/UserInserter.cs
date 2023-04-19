@@ -4,14 +4,14 @@ using Request = User;
 
 internal sealed class UserInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
-    internal static NullableStringDatabaseParameter AboutMe = new() { Name = "about_me" };
-    internal static NullableStringDatabaseParameter AnimalWithin = new() { Name = "animal_within" };
-    internal static NonNullableStringDatabaseParameter RelationToChildPlacement = new() { Name = "relation_to_child_placement" };
-    internal static NonNullableStringDatabaseParameter Email = new() { Name = "email" };
-    internal static NonNullableStringDatabaseParameter Password = new() { Name = "password" };
-    internal static NullableStringDatabaseParameter Avatar = new() { Name = "avatar" };
-    internal static NonNullableIntegerDatabaseParameter UserStatusId = new() { Name = "user_status_id" };
+    private static readonly NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
+    private static readonly NullableStringDatabaseParameter AboutMe = new() { Name = "about_me" };
+    private static readonly NullableStringDatabaseParameter AnimalWithin = new() { Name = "animal_within" };
+    private static readonly NonNullableStringDatabaseParameter RelationToChildPlacement = new() { Name = "relation_to_child_placement" };
+    private static readonly NonNullableStringDatabaseParameter Email = new() { Name = "email" };
+    private static readonly NonNullableStringDatabaseParameter Password = new() { Name = "password" };
+    private static readonly NullableStringDatabaseParameter Avatar = new() { Name = "avatar" };
+    private static readonly NonNullableIntegerDatabaseParameter UserStatusId = new() { Name = "user_status_id" };
 
     public override string TableName => "user";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

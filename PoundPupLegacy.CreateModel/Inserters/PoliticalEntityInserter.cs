@@ -4,7 +4,7 @@ using Request = PoliticalEntity;
 
 internal sealed class PoliticalEntityInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullableIntegerDatabaseParameter FileIdFlag = new() { Name = "file_id_flag" };
+    private static readonly NullableIntegerDatabaseParameter FileIdFlag = new() { Name = "file_id_flag" };
 
     public override string TableName => "political_entity";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

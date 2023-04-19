@@ -14,10 +14,10 @@ public record TenantNodeUpdaterRequest: IRequest
 
 internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
-    internal static NullableStringDatabaseParameter UrlPath = new() { Name = "url_path" };
-    internal static NullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
-    internal static NonNullableIntegerDatabaseParameter PublicationStatusId = new() { Name = "publication_status_id" };
+    private static readonly NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    private static readonly NullableStringDatabaseParameter UrlPath = new() { Name = "url_path" };
+    private static readonly NullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
+    private static readonly NonNullableIntegerDatabaseParameter PublicationStatusId = new() { Name = "publication_status_id" };
 
     public override string Sql => $"""
         update tenant_node 

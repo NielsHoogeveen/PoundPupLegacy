@@ -12,12 +12,12 @@ public sealed record ArticlesDocumentReaderRequest : IRequest
 
 internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Articles>
 {
-    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal static readonly NullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
-    internal static readonly NullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
-    internal static readonly NullableIntegerArrayDatabaseParameter TermsParameter = new() { Name = "terms" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
+    private static readonly NullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
+    private static readonly NullableIntegerArrayDatabaseParameter TermsParameter = new() { Name = "terms" };
 
-    internal static readonly FieldValueReader<Articles> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<Articles> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

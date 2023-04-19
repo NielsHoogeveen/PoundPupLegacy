@@ -13,11 +13,10 @@ internal sealed record TenantsReaderRequest: IRequest
 
 internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tenant>
 {
-    internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
-    internal static readonly StringValueReader DomainNameReader = new() { Name = "domain_name" };
-    internal static readonly IntValueReader CountryIdDefaultReader = new() { Name = "country_id_default" };
-    internal static readonly StringValueReader CountryNameDefault = new() { Name = "country_name" };
-
+    private static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    private static readonly StringValueReader DomainNameReader = new() { Name = "domain_name" };
+    private static readonly IntValueReader CountryIdDefaultReader = new() { Name = "country_id_default" };
+    private static readonly StringValueReader CountryNameDefault = new() { Name = "country_name" };
 
     public override string Sql => SQL;
 

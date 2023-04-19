@@ -4,9 +4,9 @@ using Request = UserGroup;
 
 public class UserGroupInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
-    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
-    internal static NullCheckingIntegerDatabaseParameter AdministratorRoleId = new() { Name = "administrator_role_id" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NullCheckingIntegerDatabaseParameter AdministratorRoleId = new() { Name = "administrator_role_id" };
 
     public override string TableName => "user_group";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

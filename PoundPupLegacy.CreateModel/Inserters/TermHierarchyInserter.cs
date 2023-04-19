@@ -4,8 +4,8 @@ using Request = TermHierarchy;
 
 internal sealed class TermHierarchyInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter TermIdParent = new() { Name = "term_id_parent" };
-    internal static NonNullableIntegerDatabaseParameter TermIdChild = new() { Name = "term_id_child" };
+    private static readonly NonNullableIntegerDatabaseParameter TermIdParent = new() { Name = "term_id_parent" };
+    private static readonly NonNullableIntegerDatabaseParameter TermIdChild = new() { Name = "term_id_child" };
 
     public override string TableName => "term_hierarchy";
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

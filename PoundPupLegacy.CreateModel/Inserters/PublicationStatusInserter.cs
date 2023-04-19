@@ -4,7 +4,7 @@ using Request = PublicationStatus;
 
 internal sealed class PublicationStatusInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
     public override string TableName => "publication_status";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

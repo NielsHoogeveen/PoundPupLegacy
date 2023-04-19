@@ -20,10 +20,10 @@ public sealed record PasswordValidationReaderRequest : IRequest
 
 internal sealed class PasswordValidationReaderFactory : SingleItemDatabaseReaderFactory<Request, Response>
 {
-    internal static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
-    internal static readonly NonNullableStringDatabaseParameter Password = new() { Name = "password" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableStringDatabaseParameter Password = new() { Name = "password" };
 
-    internal static readonly IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 

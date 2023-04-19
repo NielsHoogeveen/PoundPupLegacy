@@ -11,9 +11,9 @@ public sealed record UserTenantActionReaderRequest : IRequest
 }
 internal sealed class UserTenantActionReaderFactory : EnumerableDatabaseReaderFactory<Request, UserTenantAction>
 {
-    internal static readonly IntValueReader UserIdReader = new() { Name = "user_id" };
-    internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
-    internal static readonly StringValueReader ActionReader = new() { Name = "action" };
+    private static readonly IntValueReader UserIdReader = new() { Name = "user_id" };
+    private static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    private static readonly StringValueReader ActionReader = new() { Name = "action" };
 
     public override string Sql => SQL;
 

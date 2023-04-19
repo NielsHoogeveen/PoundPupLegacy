@@ -4,10 +4,10 @@ using Request = HouseTerm;
 
 internal sealed class HouseTermInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullCheckingIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
-    internal static NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
-    internal static NullableIntegerDatabaseParameter District = new() { Name = "district" };
-    internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    private static readonly NullCheckingIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
+    private static readonly NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
+    private static readonly NullableIntegerDatabaseParameter District = new() { Name = "district" };
+    private static readonly NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
 
     public override string TableName => "house_term";
 

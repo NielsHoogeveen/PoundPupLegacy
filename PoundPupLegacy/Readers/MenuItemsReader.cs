@@ -12,7 +12,7 @@ public sealed record MenuItemsReaderRequest : IRequest
 
 internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<Request, UserTenantMenuItems>
 {
-    internal readonly static FieldValueReader<UserTenantMenuItems> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<UserTenantMenuItems> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
 
     const string SQL = """

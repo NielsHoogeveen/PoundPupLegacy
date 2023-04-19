@@ -13,14 +13,14 @@ public sealed record DocumentableDocumentsDocumentReaderRequest : IRequest
 internal sealed class DocumentableDocumentsDocumentReaderFactory : EnumerableDatabaseReaderFactory<Request, DocumentableDocument>
 {
     public override string Sql => SQL;
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableStringDatabaseParameter SearchString = new() { Name = "search_string" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserId = new() { Name = "user_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    private static readonly NonNullableStringDatabaseParameter SearchString = new() { Name = "search_string" };
 
-    internal static readonly IntValueReader DocumentableId = new() { Name = "documentable_id" };
-    internal static readonly IntValueReader DocumentId = new() { Name = "document_id" };
-    internal static readonly StringValueReader Title = new() { Name = "title" };
+    private static readonly IntValueReader DocumentableId = new() { Name = "documentable_id" };
+    private static readonly IntValueReader DocumentId = new() { Name = "document_id" };
+    private static readonly StringValueReader Title = new() { Name = "title" };
 
     const string SQL = """
         select

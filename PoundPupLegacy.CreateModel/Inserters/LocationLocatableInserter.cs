@@ -4,8 +4,8 @@ using Request = LocationLocatable;
 
 internal sealed class LocationLocatableInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NullCheckingIntegerDatabaseParameter LocationId = new() { Name = "location_id" };
-    internal static NonNullableIntegerDatabaseParameter LocatableId = new() { Name = "locatable_id" };
+    private static readonly NullCheckingIntegerDatabaseParameter LocationId = new() { Name = "location_id" };
+    private static readonly NonNullableIntegerDatabaseParameter LocatableId = new() { Name = "locatable_id" };
 
     public override string TableName => "location_locatable";
 

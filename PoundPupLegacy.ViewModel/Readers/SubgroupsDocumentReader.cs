@@ -13,12 +13,12 @@ public sealed record SubgroupsDocumentReaderRequest : IRequest
 }
 internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, SubgroupPagedList>
 {
-    internal readonly static NonNullableIntegerDatabaseParameter SubgroupIdParameter = new() { Name = "subgroup_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
-    internal readonly static NullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
-    internal readonly static NullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+    private static readonly NonNullableIntegerDatabaseParameter SubgroupIdParameter = new() { Name = "subgroup_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly NullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    private static readonly NullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
 
-    internal readonly static FieldValueReader<SubgroupPagedList> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<SubgroupPagedList> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

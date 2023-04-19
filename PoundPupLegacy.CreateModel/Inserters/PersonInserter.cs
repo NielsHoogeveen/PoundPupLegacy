@@ -4,16 +4,16 @@ using Request =  Person;
 
 internal sealed class PersonInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullableDateTimeDatabaseParameter DateOfBirth = new() { Name = "date_of_birth" };
-    internal static NullableDateTimeDatabaseParameter DateOfDeath = new() { Name = "date_of_death" };
-    internal static NullableIntegerDatabaseParameter FileIdPortrait = new() { Name = "file_id_portrait" };
-    internal static NullableStringDatabaseParameter FirstName = new() { Name = "first_name" };
-    internal static NullableStringDatabaseParameter MiddleName = new() { Name = "middle_name" };
-    internal static NullableStringDatabaseParameter LastName = new() { Name = "last_name" };
-    internal static NullableStringDatabaseParameter FullName = new() { Name = "full_name" };
-    internal static NullableStringDatabaseParameter Suffix = new() { Name = "suffix" };
-    internal static NullableIntegerDatabaseParameter GovtrackId = new() { Name = "govtrack_id" };
-    internal static NullableStringDatabaseParameter Bioguide = new() { Name = "bioguide" };
+    private static readonly NullableDateTimeDatabaseParameter DateOfBirth = new() { Name = "date_of_birth" };
+    private static readonly NullableDateTimeDatabaseParameter DateOfDeath = new() { Name = "date_of_death" };
+    private static readonly NullableIntegerDatabaseParameter FileIdPortrait = new() { Name = "file_id_portrait" };
+    private static readonly NullableStringDatabaseParameter FirstName = new() { Name = "first_name" };
+    private static readonly NullableStringDatabaseParameter MiddleName = new() { Name = "middle_name" };
+    private static readonly NullableStringDatabaseParameter LastName = new() { Name = "last_name" };
+    private static readonly NullableStringDatabaseParameter FullName = new() { Name = "full_name" };
+    private static readonly NullableStringDatabaseParameter Suffix = new() { Name = "suffix" };
+    private static readonly NullableIntegerDatabaseParameter GovtrackId = new() { Name = "govtrack_id" };
+    private static readonly NullableStringDatabaseParameter Bioguide = new() { Name = "bioguide" };
 
     public override string TableName => "person";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

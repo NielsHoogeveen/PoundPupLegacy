@@ -4,8 +4,8 @@ using Request = Nameable;
 
 internal sealed class NameableInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullableStringDatabaseParameter Description = new() { Name = "description" };
-    internal static NullableIntegerDatabaseParameter FileIdTileImage = new() { Name = "file_id_tile_image" };
+    private static readonly NullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NullableIntegerDatabaseParameter FileIdTileImage = new() { Name = "file_id_tile_image" };
 
     public override string TableName => "nameable";
 

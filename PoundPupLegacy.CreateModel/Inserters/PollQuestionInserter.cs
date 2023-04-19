@@ -4,7 +4,7 @@ using Request = PollQuestion;
 
 internal sealed class PollQuestionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Question = new() { Name = "question" };
+    private static readonly NonNullableStringDatabaseParameter Question = new() { Name = "question" };
 
     public override string TableName => "poll_question";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

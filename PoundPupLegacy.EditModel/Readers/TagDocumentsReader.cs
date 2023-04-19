@@ -11,13 +11,13 @@ public sealed record TagDocumentsReaderRequest : IRequest
 
 internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tag>
 {
-    internal static readonly NonNullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
-    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal static readonly NonNullableStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
 
-    internal static readonly IntValueReader NodeIdReader = new() { Name = "node_id" };
-    internal static readonly IntValueReader TermIdReader = new() { Name = "term_id" };
-    internal static readonly StringValueReader NameReader = new() { Name = "name" };
+    private static readonly IntValueReader NodeIdReader = new() { Name = "node_id" };
+    private static readonly IntValueReader TermIdReader = new() { Name = "term_id" };
+    private static readonly StringValueReader NameReader = new() { Name = "name" };
 
     public override string Sql => SQL;
 

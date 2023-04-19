@@ -4,8 +4,8 @@ using Request = Case;
 
 internal sealed class CaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
-    internal static NullableTimeStampRangeDatabaseParameter FuzzyDate = new() { Name = "fuzzy_date" };
+    private static readonly NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NullableTimeStampRangeDatabaseParameter FuzzyDate = new() { Name = "fuzzy_date" };
 
     public override string TableName => "case";
 

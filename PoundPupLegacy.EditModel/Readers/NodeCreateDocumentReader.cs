@@ -3,9 +3,9 @@
 public abstract class NodeCreateDocumentReaderFactory<TResponse> : NodeEditDocumentReaderFactory<NodeCreateDocumentRequest, TResponse>
 where TResponse : class, Node
 {
-    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal static readonly NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
-    internal static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
 
     protected abstract int NodeTypeId { get; }
 

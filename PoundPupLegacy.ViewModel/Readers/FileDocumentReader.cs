@@ -12,11 +12,11 @@ public sealed class FileDocumentReaderRequest : IRequest
 
 internal sealed class FileDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, File>
 {
-    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter FileIdParameter = new() { Name = "file_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly NonNullableIntegerDatabaseParameter FileIdParameter = new() { Name = "file_id" };
 
-    internal readonly static FieldValueReader<File> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<File> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

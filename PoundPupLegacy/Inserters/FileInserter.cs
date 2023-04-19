@@ -16,11 +16,11 @@ public record FileInserterRequest: IRequest
 
 public sealed class FileInserterFactory : DatabaseInserterFactoryBase<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
-    internal static NonNullableStringDatabaseParameter MimeType = new() { Name = "mime_type" };
-    internal static NonNullableLongDatabaseParameter Size = new() { Name = "size" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableStringDatabaseParameter MimeType = new() { Name = "mime_type" };
+    private static readonly NonNullableLongDatabaseParameter Size = new() { Name = "size" };
 
     protected override string Sql => SQL;
 

@@ -20,15 +20,15 @@ public record LocationUpdaterRequest: IRequest
 
 internal sealed class LocationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
-    internal static NullableStringDatabaseParameter Street = new() { Name = "street" };
-    internal static NullableStringDatabaseParameter Additional = new() { Name = "additional" };
-    internal static NullableStringDatabaseParameter City = new() { Name = "city" };
-    internal static NullableStringDatabaseParameter PostalCode = new() { Name = "postal_code" };
-    internal static NullableDecimalDatabaseParameter Latitude = new() { Name = "latitude" };
-    internal static NullableDecimalDatabaseParameter Longitude = new() { Name = "longitude" };
-    internal static NullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
-    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    private static readonly NonNullableIntegerDatabaseParameter Id = new() { Name = "id" };
+    private static readonly NullableStringDatabaseParameter Street = new() { Name = "street" };
+    private static readonly NullableStringDatabaseParameter Additional = new() { Name = "additional" };
+    private static readonly NullableStringDatabaseParameter City = new() { Name = "city" };
+    private static readonly NullableStringDatabaseParameter PostalCode = new() { Name = "postal_code" };
+    private static readonly NullableDecimalDatabaseParameter Latitude = new() { Name = "latitude" };
+    private static readonly NullableDecimalDatabaseParameter Longitude = new() { Name = "longitude" };
+    private static readonly NullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
+    private static readonly NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
 
     public override string Sql => $"""
         update location 

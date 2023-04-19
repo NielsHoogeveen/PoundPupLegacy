@@ -11,9 +11,9 @@ public sealed record SubdivisionIdReaderByIso3166CodeRequest: IRequest
 
 internal sealed class SubdivisionIdReaderByIso3166CodeFactory : IntDatabaseReaderFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Iso3166Code = new() { Name = "iso_3166_2_code" };
+    private static readonly NonNullableStringDatabaseParameter Iso3166Code = new() { Name = "iso_3166_2_code" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 

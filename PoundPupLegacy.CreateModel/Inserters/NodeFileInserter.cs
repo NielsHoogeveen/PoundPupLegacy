@@ -4,8 +4,8 @@ using Request = NodeFile;
 
 internal sealed class NodeFileInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NonNullableIntegerDatabaseParameter FileId = new() { Name = "file_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NonNullableIntegerDatabaseParameter FileId = new() { Name = "file_id" };
 
     public override string TableName => "node_file";
 

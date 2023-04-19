@@ -14,8 +14,8 @@ public record OrganizationOrganizationTypeInserterRequest: IRequest
 
 public sealed class OrganizationOrganizationTypeInserterFactory : DatabaseInserterFactoryBase<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
-    internal static NonNullableIntegerDatabaseParameter OrganizationTypeId = new() { Name = "organization_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
+    private static readonly NonNullableIntegerDatabaseParameter OrganizationTypeId = new() { Name = "organization_type_id" };
 
     private IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

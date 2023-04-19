@@ -4,8 +4,8 @@ using Request = DocumentableDocument;
 
 internal sealed class DocumentableDocumentInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter DocumentableId = new() { Name = "documentable_id" };
-    internal static NonNullableIntegerDatabaseParameter DocumentId = new() { Name = "document_id" };
+    private static readonly NonNullableIntegerDatabaseParameter DocumentableId = new() { Name = "documentable_id" };
+    private static readonly NonNullableIntegerDatabaseParameter DocumentId = new() { Name = "document_id" };
 
     public override string TableName => "documentable_document";
 

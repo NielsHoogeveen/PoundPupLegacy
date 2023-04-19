@@ -12,10 +12,10 @@ public sealed record UnitedStatesMeetingChamberDocumentReaderRequest : IRequest
 }
 internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, CongressionalMeetingChamber>
 {
-    internal readonly static NonNullableIntegerDatabaseParameter MeetingNumberParameter = new() { Name = "meeting_number" };
-    internal readonly static NonNullableIntegerDatabaseParameter ChamberTypeParameter = new() { Name = "chamber_type" };
+    private static readonly NonNullableIntegerDatabaseParameter MeetingNumberParameter = new() { Name = "meeting_number" };
+    private static readonly NonNullableIntegerDatabaseParameter ChamberTypeParameter = new() { Name = "chamber_type" };
 
-    internal readonly static FieldValueReader<CongressionalMeetingChamber> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<CongressionalMeetingChamber> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

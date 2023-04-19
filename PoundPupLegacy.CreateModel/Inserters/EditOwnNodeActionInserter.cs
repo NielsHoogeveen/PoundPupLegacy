@@ -4,7 +4,7 @@ using Request = EditOwnNodeAction;
 
 internal sealed class EditOwnNodeActionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
     public override string TableName => "edit_own_node_action";
 

@@ -9,13 +9,13 @@ public sealed class TermReaderByNameRequest : IRequest
 }
 internal sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term>
 {
-    internal static NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
-    internal static StringValueReader NameReader = new() { Name = "name" };
-    internal static IntValueReader NameableIdReader = new() { Name = "nameable_id" };
-    internal static IntValueReader VocabularyIdReader = new() { Name = "vocabulary_id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
+    private static readonly StringValueReader NameReader = new() { Name = "name" };
+    private static readonly IntValueReader NameableIdReader = new() { Name = "nameable_id" };
+    private static readonly IntValueReader VocabularyIdReader = new() { Name = "vocabulary_id" };
 
     public override string Sql => SQL;
 

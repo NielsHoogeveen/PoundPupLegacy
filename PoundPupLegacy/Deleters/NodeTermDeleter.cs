@@ -12,8 +12,8 @@ public record NodeTermDeleterRequest: IRequest
 
 internal sealed class NodeTermDeleterFactory : DatabaseDeleterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NonNullableIntegerDatabaseParameter TermId = new() { Name = "term_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TermId = new() { Name = "term_id" };
 
     public override string Sql => SQL;  
 

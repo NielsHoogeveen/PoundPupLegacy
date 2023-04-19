@@ -4,7 +4,7 @@ using Request = InterOrganizationalRelationType;
 
 internal sealed class InterOrganizationalRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
+    private static readonly NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
     public override string TableName => "inter_organizational_relation_type";
 
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

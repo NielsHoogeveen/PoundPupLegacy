@@ -4,8 +4,8 @@ using Request = NodeTerm;
 
 public sealed class NodeTermInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NonNullableIntegerDatabaseParameter TermId = new() { Name = "term_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TermId = new() { Name = "term_id" };
 
     public override string TableName => "node_term";
 

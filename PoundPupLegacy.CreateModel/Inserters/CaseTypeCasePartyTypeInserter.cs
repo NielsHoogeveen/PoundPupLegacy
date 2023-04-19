@@ -4,8 +4,8 @@ using Request = CaseTypeCasePartyType;
 
 internal sealed class CaseTypeCasePartyTypeInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter CaseTypeId = new() { Name = "case_type_id" };
-    internal static NonNullableIntegerDatabaseParameter CasePartyTypeId = new() { Name = "case_party_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter CaseTypeId = new() { Name = "case_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter CasePartyTypeId = new() { Name = "case_party_type_id" };
 
     public override string TableName => "case_type_case_party_type";
 

@@ -13,12 +13,12 @@ public sealed record PollsDocumentReaderRequest : IRequest
 
 internal sealed class PollsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Polls>
 {
-    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
-    internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    private static readonly NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
 
-    internal readonly static FieldValueReader<Polls> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<Polls> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

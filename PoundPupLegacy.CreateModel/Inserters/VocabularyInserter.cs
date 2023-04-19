@@ -4,9 +4,9 @@ using Request = Vocabulary;
 
 internal sealed class VocabularyInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
-    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableStringDatabaseParameter Description = new() { Name = "description" };
 
     public override string TableName => "vocabulary";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

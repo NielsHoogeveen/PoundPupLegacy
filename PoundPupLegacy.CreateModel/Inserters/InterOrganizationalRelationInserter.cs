@@ -4,15 +4,15 @@ using Request = InterOrganizationalRelation;
 
 internal sealed class InterOrganizationalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter OrganizationIdFrom = new() { Name = "organization_id_from" };
-    internal static NonNullableIntegerDatabaseParameter OrganizationIdTo = new() { Name = "organization_id_to" };
-    internal static NullableIntegerDatabaseParameter GeographicalEntityId = new() { Name = "geographical_entity_id" };
-    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
-    internal static NonNullableIntegerDatabaseParameter InterOrganizationalRelationTypeId = new() { Name = "inter_organizational_relation_type_id" };
-    internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
-    internal static NullableStringDatabaseParameter Description = new() { Name = "description" };
-    internal static NullableDecimalDatabaseParameter MoneyInvolved = new() { Name = "money_involved" };
-    internal static NullableIntegerDatabaseParameter NumberOfChildrenInvolved = new() { Name = "number_of_children_involved" };
+    private static readonly NonNullableIntegerDatabaseParameter OrganizationIdFrom = new() { Name = "organization_id_from" };
+    private static readonly NonNullableIntegerDatabaseParameter OrganizationIdTo = new() { Name = "organization_id_to" };
+    private static readonly NullableIntegerDatabaseParameter GeographicalEntityId = new() { Name = "geographical_entity_id" };
+    private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    private static readonly NonNullableIntegerDatabaseParameter InterOrganizationalRelationTypeId = new() { Name = "inter_organizational_relation_type_id" };
+    private static readonly NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    private static readonly NullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NullableDecimalDatabaseParameter MoneyInvolved = new() { Name = "money_involved" };
+    private static readonly NullableIntegerDatabaseParameter NumberOfChildrenInvolved = new() { Name = "number_of_children_involved" };
 
     public override string TableName => "inter_organizational_relation";
 

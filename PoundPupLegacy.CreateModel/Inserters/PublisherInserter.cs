@@ -4,7 +4,7 @@ using Request = Publisher;
 
 public class PublisherInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
     public override string TableName => "publisher";
 

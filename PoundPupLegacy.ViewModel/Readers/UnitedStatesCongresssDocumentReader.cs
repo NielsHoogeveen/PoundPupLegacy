@@ -10,7 +10,7 @@ public sealed record UnitedStatesCongresssDocumentReaderRequest : IRequest
 
 internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, UnitedStatesCongress>
 {
-    internal readonly static FieldValueReader<UnitedStatesCongress> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<UnitedStatesCongress> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
 
     private const string SQL = """

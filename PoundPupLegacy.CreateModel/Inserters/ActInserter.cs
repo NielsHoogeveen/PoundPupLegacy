@@ -4,7 +4,7 @@ using Request = Act;
 
 internal sealed class ActInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullableDateTimeDatabaseParameter EnactmentDate = new() { Name = "enactment_date" };
+    private static readonly NullableDateTimeDatabaseParameter EnactmentDate = new() { Name = "enactment_date" };
 
     public override string TableName => "act";
 

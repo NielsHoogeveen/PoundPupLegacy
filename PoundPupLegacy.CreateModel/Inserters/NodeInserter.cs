@@ -4,12 +4,12 @@ using Request = Node;
 
 public class NodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter PublisherId = new() { Name = "publisher_id" };
-    internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
-    internal static NonNullableDateTimeDatabaseParameter ChangedDateTime = new() { Name = "changed_date_time" };
-    internal static TrimmingNonNullableStringDatabaseParameter Title = new() { Name = "title" };
-    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
-    internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
+    private static readonly NonNullableIntegerDatabaseParameter PublisherId = new() { Name = "publisher_id" };
+    private static readonly NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
+    private static readonly NonNullableDateTimeDatabaseParameter ChangedDateTime = new() { Name = "changed_date_time" };
+    private static readonly TrimmingNonNullableStringDatabaseParameter Title = new() { Name = "title" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
 
     public override string TableName => "node";
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

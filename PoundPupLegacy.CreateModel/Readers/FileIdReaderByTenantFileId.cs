@@ -9,10 +9,10 @@ public sealed class FileIdReaderByTenantFileIdRequest : IRequest
 }
 internal sealed class FileIdReaderByTenantFileIdFactory : IntDatabaseReaderFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 

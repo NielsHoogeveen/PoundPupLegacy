@@ -4,7 +4,7 @@ using Request = DeleteNodeAction;
 
 internal sealed class DeleteNodeActionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
     public override string TableName => "delete_node_action";
 

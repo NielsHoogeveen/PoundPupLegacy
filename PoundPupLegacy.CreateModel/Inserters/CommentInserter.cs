@@ -4,14 +4,14 @@ using Request = Comment;
 
 public class CommentInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NullableIntegerDatabaseParameter CommentIdParent = new() { Name = "comment_id_parent" };
-    internal static NonNullableIntegerDatabaseParameter PublisherId = new() { Name = "publisher_id" };
-    internal static NonNullableIntegerDatabaseParameter NodeStatusId = new() { Name = "node_status_id" };
-    internal static NonNullableStringDatabaseParameter IPAddress = new() { Name = "ip_address" };
-    internal static NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
-    internal static NonNullableStringDatabaseParameter Title = new() { Name = "title" };
-    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NullableIntegerDatabaseParameter CommentIdParent = new() { Name = "comment_id_parent" };
+    private static readonly NonNullableIntegerDatabaseParameter PublisherId = new() { Name = "publisher_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeStatusId = new() { Name = "node_status_id" };
+    private static readonly NonNullableStringDatabaseParameter IPAddress = new() { Name = "ip_address" };
+    private static readonly NonNullableDateTimeDatabaseParameter CreatedDateTime = new() { Name = "created_date_time" };
+    private static readonly NonNullableStringDatabaseParameter Title = new() { Name = "title" };
+    private static readonly NonNullableStringDatabaseParameter Text = new() { Name = "text" };
 
     public override string TableName => "comment";
 

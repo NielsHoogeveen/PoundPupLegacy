@@ -12,8 +12,8 @@ public record OrganizationOrganizationTypeDeleterRequest: IRequest
 
 internal sealed class OrganizationOrganizationTypeDeleterFactory : DatabaseDeleterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter Organization = new() { Name = "organization_id" };
-    internal static NonNullableIntegerDatabaseParameter organizationTypeId = new() { Name = "organization_type_id" };
+    private static NonNullableIntegerDatabaseParameter Organization = new() { Name = "organization_id" };
+    private static NonNullableIntegerDatabaseParameter organizationTypeId = new() { Name = "organization_type_id" };
 
     public override string Sql => SQL;
 

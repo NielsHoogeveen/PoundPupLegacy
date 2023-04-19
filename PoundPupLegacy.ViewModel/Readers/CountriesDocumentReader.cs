@@ -10,9 +10,9 @@ public sealed class CountriesDocumentReaderRequest : IRequest
 
 internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, FirstLevelRegionListEntry[]>
 {
-    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
 
-    internal readonly static FieldValueReader<FirstLevelRegionListEntry[]> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<FirstLevelRegionListEntry[]> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

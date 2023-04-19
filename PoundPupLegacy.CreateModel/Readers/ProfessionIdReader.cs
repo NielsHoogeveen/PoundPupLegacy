@@ -18,11 +18,11 @@ public sealed record ProfessionIdReaderRequest : IRequest
 }
 internal sealed class ProfessionIdReaderFactory : IntDatabaseReaderFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
-    internal static NonNullableStringDatabaseParameter ProfessionName = new() { Name = "profession_name" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    private static readonly NonNullableStringDatabaseParameter ProfessionName = new() { Name = "profession_name" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 

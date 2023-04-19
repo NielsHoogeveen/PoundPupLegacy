@@ -4,13 +4,13 @@ using Request = InterCountryRelation;
 
 internal sealed class InterCountryRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter CountryIdFrom = new() { Name = "country_id_from" };
-    internal static NonNullableIntegerDatabaseParameter CountryIdTo = new() { Name = "country_id_to" };
-    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
-    internal static NullableIntegerDatabaseParameter NumberOfChildrenInvolved = new() { Name = "number_of_children_involved" };
-    internal static NullableDecimalDatabaseParameter MoneyInvolved = new() { Name = "money_involved" };
-    internal static NonNullableIntegerDatabaseParameter InterCountryRelationTypeId = new() { Name = "inter_country_relation_type_id" };
-    internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    private static readonly NonNullableIntegerDatabaseParameter CountryIdFrom = new() { Name = "country_id_from" };
+    private static readonly NonNullableIntegerDatabaseParameter CountryIdTo = new() { Name = "country_id_to" };
+    private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    private static readonly NullableIntegerDatabaseParameter NumberOfChildrenInvolved = new() { Name = "number_of_children_involved" };
+    private static readonly NullableDecimalDatabaseParameter MoneyInvolved = new() { Name = "money_involved" };
+    private static readonly NonNullableIntegerDatabaseParameter InterCountryRelationTypeId = new() { Name = "inter_country_relation_type_id" };
+    private static readonly NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
 
     public override string TableName => "inter_country_relation";
 

@@ -12,9 +12,9 @@ public sealed record TenantNodesReaderRequest : IRequest
 
 internal sealed class TenantNodesReaderFactory : EnumerableDatabaseReaderFactory<Request, TenantNode>
 {
-    internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
-    internal static readonly IntValueReader UrlIdReader = new() { Name = "url_id" };
-    internal static readonly StringValueReader UrlPathReader = new() { Name = "url_path" };
+    private static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    private static readonly IntValueReader UrlIdReader = new() { Name = "url_id" };
+    private static readonly StringValueReader UrlPathReader = new() { Name = "url_path" };
 
     public override string Sql => SQL;
     const string SQL = """

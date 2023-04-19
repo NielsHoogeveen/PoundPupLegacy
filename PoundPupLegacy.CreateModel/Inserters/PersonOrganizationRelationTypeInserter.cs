@@ -4,7 +4,7 @@ using Request = PersonOrganizationRelationType;
 
 internal sealed class PersonOrganizationRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
+    private static readonly NonNullableBooleanDatabaseParameter HasConcreteSubtype = new() { Name = "has_concrete_subtype" };
 
     public override string TableName => "person_organization_relation_type";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

@@ -12,8 +12,8 @@ public record LocationDeleterRequest: IRequest
 
 internal sealed class LocationDeleterFactory : DatabaseDeleterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter LocationId = new() { Name = "location_id" };
-    internal static NonNullableIntegerDatabaseParameter LocatableId = new() { Name = "locatable_id" };
+    private static readonly NonNullableIntegerDatabaseParameter LocationId = new() { Name = "location_id" };
+    private static readonly NonNullableIntegerDatabaseParameter LocatableId = new() { Name = "locatable_id" };
     public override string Sql => SQL;
 
     const string SQL = $"""

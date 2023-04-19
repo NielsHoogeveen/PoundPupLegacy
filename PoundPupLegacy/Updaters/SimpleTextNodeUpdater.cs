@@ -14,10 +14,10 @@ public record SimpleTextNodeUpdaterRequest : IRequest
 
 internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
-    internal static NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
-    internal static NonNullableStringDatabaseParameter Title = new() { Name = "title" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    private static readonly NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
+    private static readonly NonNullableStringDatabaseParameter Title = new() { Name = "title" };
 
     public override string Sql => $"""
         update node set title=@title

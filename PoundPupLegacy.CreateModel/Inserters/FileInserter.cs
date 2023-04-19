@@ -4,10 +4,10 @@ using Request = File;
 
 internal sealed class FileInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
-    internal static NonNullableStringDatabaseParameter MimeType = new() { Name = "mime_type" };
-    internal static NonNullableIntegerDatabaseParameter Size = new() { Name = "size" };
+    private static readonly NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableStringDatabaseParameter MimeType = new() { Name = "mime_type" };
+    private static readonly NonNullableIntegerDatabaseParameter Size = new() { Name = "size" };
 
     public override string TableName => "file";
 

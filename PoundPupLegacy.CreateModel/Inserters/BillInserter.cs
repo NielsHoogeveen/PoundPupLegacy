@@ -4,8 +4,8 @@ using Request  = Bill;
 
 internal sealed class BillInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullableDateTimeDatabaseParameter IntroductionDate = new() { Name = "introduction_date" };
-    internal static NullableIntegerDatabaseParameter ActId = new() { Name = "act_id" };
+    private static readonly NullableDateTimeDatabaseParameter IntroductionDate = new() { Name = "introduction_date" };
+    private static readonly NullableIntegerDatabaseParameter ActId = new() { Name = "act_id" };
 
     public override string TableName => "bill";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

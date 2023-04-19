@@ -4,8 +4,8 @@ using Request = UserRole;
 
 public class UserRoleInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullCheckingIntegerDatabaseParameter UserGroupId = new() { Name = "user_group_id" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NullCheckingIntegerDatabaseParameter UserGroupId = new() { Name = "user_group_id" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
     public override string TableName => "user_role";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

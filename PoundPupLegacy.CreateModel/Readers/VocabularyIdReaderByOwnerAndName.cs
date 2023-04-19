@@ -10,10 +10,10 @@ public sealed record VocabularyIdReaderByOwnerAndNameRequest : IRequest
 
 internal sealed class VocabularyIdReaderByOwnerAndNameFactory : IntDatabaseReaderFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-    internal static IntValueReader IdReader = new() { Name = "id"};
+    private static readonly IntValueReader IdReader = new() { Name = "id"};
 
     public override string Sql => SQL;
 

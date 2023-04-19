@@ -4,10 +4,10 @@ using Request = RepresentativeHouseBillAction;
 
 internal sealed class RepresentativeHouseBillActionInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
-    internal static NonNullableIntegerDatabaseParameter HouseBillId = new() { Name = "house_bill_id" };
-    internal static NonNullableDateTimeDatabaseParameter Date = new() { Name = "date" };
-    internal static NonNullableIntegerDatabaseParameter BillActionTypeId = new() { Name = "bill_action_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter RepresentativeId = new() { Name = "representative_id" };
+    private static readonly NonNullableIntegerDatabaseParameter HouseBillId = new() { Name = "house_bill_id" };
+    private static readonly NonNullableDateTimeDatabaseParameter Date = new() { Name = "date" };
+    private static readonly NonNullableIntegerDatabaseParameter BillActionTypeId = new() { Name = "bill_action_type_id" };
 
     public override string TableName => "representative_house_bill_action";
 

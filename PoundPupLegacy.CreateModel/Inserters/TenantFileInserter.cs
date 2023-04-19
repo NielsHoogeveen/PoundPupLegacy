@@ -4,9 +4,9 @@ using Request = TenantFile;
 
 internal sealed class TenantFileInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NullCheckingIntegerDatabaseParameter FileId = new() { Name = "file_id" };
-    internal static NullCheckingIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    private static readonly NullCheckingIntegerDatabaseParameter FileId = new() { Name = "file_id" };
+    private static readonly NullCheckingIntegerDatabaseParameter TenantFileId = new() { Name = "tenant_file_id" };
 
     public override string TableName => "tenant_file";
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

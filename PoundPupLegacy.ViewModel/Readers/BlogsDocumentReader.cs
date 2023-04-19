@@ -10,8 +10,8 @@ public sealed record BlogsDocumentReaderRequest : IRequest
 
 internal sealed class BlogsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, List<BlogListEntry>>
 {
-    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal static readonly FieldValueReader<List<BlogListEntry>> DocumentReader = new() { Name = "document" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly FieldValueReader<List<BlogListEntry>> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

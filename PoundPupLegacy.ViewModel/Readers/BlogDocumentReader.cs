@@ -13,12 +13,12 @@ public sealed record BlogDocumentReaderRequest : IRequest
 
 internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Blog>
 {
-    internal static readonly NonNullableIntegerDatabaseParameter PublishedIdParameter = new() { Name = "publisher_id" };
-    internal static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal static readonly NonNullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
-    internal static readonly NonNullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
+    private static readonly NonNullableIntegerDatabaseParameter PublishedIdParameter = new() { Name = "publisher_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
+    private static readonly NonNullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
 
-    internal static readonly FieldValueReader<Blog> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<Blog> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

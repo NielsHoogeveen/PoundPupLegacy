@@ -14,13 +14,13 @@ public sealed record CasesDocumentReaderRequest : IRequest
 }
 internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Cases>
 {
-    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
-    internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
-    internal readonly static NullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    private static readonly NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+    private static readonly NullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
 
-    internal readonly static FieldValueReader<Cases> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<Cases> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

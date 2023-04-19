@@ -4,10 +4,10 @@ using Request = Organization;
 
 internal sealed class OrganizationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullableStringDatabaseParameter WebsiteURL = new() { Name = "website_url" };
-    internal static NullableStringDatabaseParameter EmailAddress = new() { Name = "email_address" };
-    internal static NullableFuzzyDateDatabaseParameter Established = new() { Name = "established" };
-    internal static NullableFuzzyDateDatabaseParameter Terminated = new() { Name = "terminated" };
+    private static readonly NullableStringDatabaseParameter WebsiteURL = new() { Name = "website_url" };
+    private static readonly NullableStringDatabaseParameter EmailAddress = new() { Name = "email_address" };
+    private static readonly NullableFuzzyDateDatabaseParameter Established = new() { Name = "established" };
+    private static readonly NullableFuzzyDateDatabaseParameter Terminated = new() { Name = "terminated" };
 
     public override string TableName => "organization";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

@@ -4,12 +4,12 @@ using Request = TenantNode;
 
 public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NullCheckingAlternativeIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
-    internal static TrimmingNullableStringDatabaseParameter UrlPath = new() { Name = "url_path" };
-    internal static NullCheckingIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
-    internal static NonNullableIntegerDatabaseParameter PublicationStatusId = new() { Name = "publication_status_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    private static readonly NullCheckingAlternativeIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    private static readonly TrimmingNullableStringDatabaseParameter UrlPath = new() { Name = "url_path" };
+    private static readonly NullCheckingIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
+    private static readonly NonNullableIntegerDatabaseParameter PublicationStatusId = new() { Name = "publication_status_id" };
 
     public override string TableName => "tenant_node";
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

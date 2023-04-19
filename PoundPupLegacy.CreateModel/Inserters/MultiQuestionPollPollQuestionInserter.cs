@@ -4,9 +4,9 @@ using Request = MultiQuestionPollPollQuestion;
 
 internal sealed class MultiQuestionPollPollQuestionInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter MultiQuestionPollId = new() { Name = "multi_question_poll_id" };
-    internal static NonNullableIntegerDatabaseParameter PollQuesionId = new() { Name = "poll_question_id" };
-    internal static NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
+    private static readonly NonNullableIntegerDatabaseParameter MultiQuestionPollId = new() { Name = "multi_question_poll_id" };
+    private static readonly NonNullableIntegerDatabaseParameter PollQuesionId = new() { Name = "poll_question_id" };
+    private static readonly NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
 
     public override string TableName => "multi_question_poll_poll_question";
 

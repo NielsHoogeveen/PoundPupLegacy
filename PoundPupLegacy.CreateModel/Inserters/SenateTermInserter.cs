@@ -4,9 +4,9 @@ using Request = SenateTerm;
 
 internal sealed class SenateTermInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullCheckingIntegerDatabaseParameter SenatorId = new() { Name = "senator_id" };
-    internal static NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
-    internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    private static readonly NullCheckingIntegerDatabaseParameter SenatorId = new() { Name = "senator_id" };
+    private static readonly NonNullableIntegerDatabaseParameter SubdivisionId = new() { Name = "subdivision_id" };
+    private static readonly NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
 
     public override string TableName => "senate_term";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

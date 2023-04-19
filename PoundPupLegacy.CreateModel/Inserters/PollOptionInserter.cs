@@ -4,10 +4,10 @@ using Request = PollOption;
 
 internal sealed class PollOptionInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NullCheckingIntegerDatabaseParameter PollQuesyionId = new() { Name = "poll_question_id" };
-    internal static NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
-    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
-    internal static NonNullableIntegerDatabaseParameter NumberOfVotes = new() { Name = "number_of_votes" };
+    private static readonly NullCheckingIntegerDatabaseParameter PollQuesyionId = new() { Name = "poll_question_id" };
+    private static readonly NonNullableIntegerDatabaseParameter Delta = new() { Name = "delta" };
+    private static readonly NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    private static readonly NonNullableIntegerDatabaseParameter NumberOfVotes = new() { Name = "number_of_votes" };
 
     public override string TableName => "poll_option";
 

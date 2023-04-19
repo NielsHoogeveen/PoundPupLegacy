@@ -4,9 +4,9 @@ using Request = Subdivision;
 
 internal sealed class SubdivisionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
-    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
-    internal static NonNullableIntegerDatabaseParameter SubdivisionTypeId = new() { Name = "subdivision_type_id" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    private static readonly NonNullableIntegerDatabaseParameter SubdivisionTypeId = new() { Name = "subdivision_type_id" };
 
     public override string TableName => "subdivision";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

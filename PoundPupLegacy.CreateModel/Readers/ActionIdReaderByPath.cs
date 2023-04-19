@@ -9,9 +9,9 @@ public sealed record ActionIdReaderByPathRequest: IRequest
 
 internal sealed class ActionIdReaderByPathFactory : IntDatabaseReaderFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Path = new() { Name = "path" };
+    private static readonly NonNullableStringDatabaseParameter Path = new() { Name = "path" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     protected override string GetErrorMessage(Request request)
     {

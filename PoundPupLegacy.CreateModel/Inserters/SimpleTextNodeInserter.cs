@@ -4,8 +4,8 @@ using Request = SimpleTextNode;
 
 internal sealed class SimpleTextNodeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
-    internal static NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
+    private static readonly NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    private static readonly NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
 
     public override string TableName => "simple_text_node";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

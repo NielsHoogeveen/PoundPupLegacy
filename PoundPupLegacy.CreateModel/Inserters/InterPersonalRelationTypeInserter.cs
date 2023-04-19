@@ -4,7 +4,7 @@ using Request = InterPersonalRelationType;
 
 internal sealed class InterPersonalRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
+    private static NonNullableBooleanDatabaseParameter IsSymmetric = new() { Name = "is_symmetric" };
 
     public override string TableName => "inter_personal_relation_type";
 

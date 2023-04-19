@@ -4,11 +4,11 @@ using Request = Document;
 
 internal sealed class DocumentInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NullableFuzzyDateDatabaseParameter Published = new() { Name = "published" };
-    internal static NullableStringDatabaseParameter SourceUrl = new() { Name = "source_url" };
-    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
-    internal static NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
-    internal static NullableIntegerDatabaseParameter DocumentTypeId = new() { Name = "document_type_id" };
+    private static readonly NullableFuzzyDateDatabaseParameter Published = new() { Name = "published" };
+    private static readonly NullableStringDatabaseParameter SourceUrl = new() { Name = "source_url" };
+    private static readonly NonNullableStringDatabaseParameter Text = new() { Name = "text" };
+    private static readonly NonNullableStringDatabaseParameter Teaser = new() { Name = "teaser" };
+    private static readonly NullableIntegerDatabaseParameter DocumentTypeId = new() { Name = "document_type_id" };
 
     public override string TableName => "document";
 

@@ -10,10 +10,10 @@ public sealed record NodeIdReaderByUrlIdRequest: IRequest
 
 internal sealed class NodeIdReaderByUrlIdFactory : IntDatabaseReaderFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 

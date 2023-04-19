@@ -9,10 +9,10 @@ public sealed record SubdivisionListItemsReaderRequest: IRequest
 
 internal sealed class SubdivisionListItemsReaderFactory : EnumerableDatabaseReaderFactory<Request, SubdivisionListItem>
 {
-    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    private static readonly NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
 
-    internal static readonly IntValueReader IdReader = new() { Name = "id" };
-    internal static readonly StringValueReader NameReader = new() { Name = "name" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
+    private static readonly StringValueReader NameReader = new() { Name = "name" };
 
     public override string Sql => SQL;
     private const string SQL = $"""

@@ -18,15 +18,15 @@ public sealed record OrganizationsDocumentReaderRequest : IRequest
 
 internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, OrganizationSearch>
 {
-    internal readonly static NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
-    internal readonly static NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
-    internal readonly static NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
-    internal readonly static NullableIntegerDatabaseParameter OrganizationTypeIdParameter = new() { Name = "organization_type_id" };
-    internal readonly static NullableIntegerDatabaseParameter CountryIdParameter = new() { Name = "country_id" };
-    internal readonly static SearchOptionDatabaseParameter PatternParameter = new() { Name = "pattern" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly  NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    private static readonly NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
+    private static readonly NullableIntegerDatabaseParameter OrganizationTypeIdParameter = new() { Name = "organization_type_id" };
+    private static readonly NullableIntegerDatabaseParameter CountryIdParameter = new() { Name = "country_id" };
+    private static readonly SearchOptionDatabaseParameter PatternParameter = new() { Name = "pattern" };
 
-    internal readonly static FieldValueReader<OrganizationSearch> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<OrganizationSearch> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 

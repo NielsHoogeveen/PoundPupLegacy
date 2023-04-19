@@ -4,13 +4,13 @@ using Request = PersonOrganizationRelation;
 
 internal sealed class PersonOrganizationRelationInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NullCheckingIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
-    internal static NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
-    internal static NullableIntegerDatabaseParameter GeographicalEntityId = new() { Name = "geographical_entity_id" };
-    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
-    internal static NonNullableIntegerDatabaseParameter PersonOrganizationRelationTypeId = new() { Name = "person_organization_relation_type_id" };
-    internal static NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
-    internal static NullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NullCheckingIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
+    private static readonly NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
+    private static readonly NullableIntegerDatabaseParameter GeographicalEntityId = new() { Name = "geographical_entity_id" };
+    private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    private static readonly NonNullableIntegerDatabaseParameter PersonOrganizationRelationTypeId = new() { Name = "person_organization_relation_type_id" };
+    private static readonly NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    private static readonly NullableStringDatabaseParameter Description = new() { Name = "description" };
 
     public override string TableName => "person_organization_relation";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

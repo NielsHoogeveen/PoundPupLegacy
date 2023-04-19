@@ -4,8 +4,8 @@ using Request = CaseParties;
 
 internal sealed class CasePartiesInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NullableStringDatabaseParameter Organizations = new() { Name = "organizations" };
-    internal static NullableStringDatabaseParameter Persons = new() { Name = "persons" };
+    private static readonly NullableStringDatabaseParameter Organizations = new() { Name = "organizations" };
+    private static readonly NullableStringDatabaseParameter Persons = new() { Name = "persons" };
     public override string TableName => "case_parties";
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

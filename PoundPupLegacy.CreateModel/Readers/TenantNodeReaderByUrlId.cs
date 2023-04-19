@@ -9,16 +9,16 @@ public sealed class TenantNodeReaderByUrlIdRequest : IRequest
 }
 internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderFactory<Request, TenantNode>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    internal static NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
-    internal static IntValueReader NodeIdReader = new() { Name = "node_id" };
-    internal static IntValueReader TenantIdReader = new() { Name = "tenant_id" };
-    internal static IntValueReader UrlIdReader = new() { Name = "url_id" };
-    internal static IntValueReader PublicationStatusIdReader = new() { Name = "publication_status_id" };
-    internal static NullableIntValueReader SubgroupIdReader = new() { Name = "subgroup_id" };
-    internal static NullableStringValueReader UrlPathReader = new() { Name = "url_path" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader NodeIdReader = new() { Name = "node_id" };
+    private static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    private static readonly IntValueReader UrlIdReader = new() { Name = "url_id" };
+    private static readonly  IntValueReader PublicationStatusIdReader = new() { Name = "publication_status_id" };
+    private static readonly NullableIntValueReader SubgroupIdReader = new() { Name = "subgroup_id" };
+    private static readonly NullableStringValueReader UrlPathReader = new() { Name = "url_path" };
 
     public override string Sql => SQL;
 

@@ -17,13 +17,13 @@ public record OrganizationUpdaterRequest: IRequest
 }
 internal sealed class OrganizationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    internal static NonNullableStringDatabaseParameter Title = new() { Name = "title" };
-    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
-    internal static NullableStringDatabaseParameter WebsiteUrl = new() { Name = "website_url" };
-    internal static NullableStringDatabaseParameter EmailAddress = new() { Name = "email_address" };
-    internal static NullableDateRangeDatabaseParameter Established = new() { Name = "established" };
-    internal static NullableDateRangeDatabaseParameter Terminated = new() { Name = "terminated" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NonNullableStringDatabaseParameter Title = new() { Name = "title" };
+    private static readonly NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NullableStringDatabaseParameter WebsiteUrl = new() { Name = "website_url" };
+    private static readonly NullableStringDatabaseParameter EmailAddress = new() { Name = "email_address" };
+    private static readonly NullableDateRangeDatabaseParameter Established = new() { Name = "established" };
+    private static readonly NullableDateRangeDatabaseParameter Terminated = new() { Name = "terminated" };
 
     public override string Sql => $"""
         update node 

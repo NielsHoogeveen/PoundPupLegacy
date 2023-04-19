@@ -10,14 +10,14 @@ public sealed class TermReaderByNameableIdRequest : IRequest
 }
 internal sealed class TermReaderByNameableIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term>
 {
-    internal static NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
-    internal static NonNullableStringDatabaseParameter VocabularyName = new() { Name = "vocabulary_name" };
-    internal static NonNullableIntegerDatabaseParameter NameableId = new() { Name = "nameable_id" };
+    private static readonly NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
+    private static readonly NonNullableStringDatabaseParameter VocabularyName = new() { Name = "vocabulary_name" };
+    private static readonly NonNullableIntegerDatabaseParameter NameableId = new() { Name = "nameable_id" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
-    internal static StringValueReader NameReader = new() { Name = "name" };
-    internal static IntValueReader NameableIdReader = new() { Name = "nameable_id" };
-    internal static IntValueReader VocabularyIdReader = new() { Name = "vocabulary_id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
+    private static readonly StringValueReader NameReader = new() { Name = "name" };
+    private static readonly IntValueReader NameableIdReader = new() { Name = "nameable_id" };
+    private static readonly IntValueReader VocabularyIdReader = new() { Name = "vocabulary_id" };
 
 
     public override string Sql => SQL;

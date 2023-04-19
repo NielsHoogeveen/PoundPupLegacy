@@ -4,7 +4,7 @@ using Request = BoundCountry;
 
 internal sealed class BoundCountryInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter BindingCountryId = new() { Name = "binding_country_id" };
+    private static readonly NonNullableIntegerDatabaseParameter BindingCountryId = new() { Name = "binding_country_id" };
 
     public override string TableName => "bound_country";
 

@@ -4,9 +4,9 @@ using Request = NodeType;
 
 internal sealed class NodeTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
-    internal static NonNullableStringDatabaseParameter Description = new() { Name = "description" };
-    internal static NonNullableBooleanDatabaseParameter AuthorSpecific = new() { Name = "author_specific" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableStringDatabaseParameter Description = new() { Name = "description" };
+    private static readonly NonNullableBooleanDatabaseParameter AuthorSpecific = new() { Name = "author_specific" };
 
     public override string TableName => "node_type";
 

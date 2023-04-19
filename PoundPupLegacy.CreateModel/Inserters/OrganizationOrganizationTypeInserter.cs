@@ -4,8 +4,8 @@ using Request = OrganizationOrganizationType;
 
 internal sealed class OrganizationOrganizationTypeInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NullCheckingIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
-    internal static NonNullableIntegerDatabaseParameter OrganizationTypeId = new() { Name = "organization_type_id" };
+    private static readonly NullCheckingIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
+    private static readonly NonNullableIntegerDatabaseParameter OrganizationTypeId = new() { Name = "organization_type_id" };
 
     public override string TableName => "organization_organization_type";
 

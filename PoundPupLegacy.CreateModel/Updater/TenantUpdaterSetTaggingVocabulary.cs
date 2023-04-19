@@ -11,12 +11,8 @@ public record TenantUpdaterSetTaggingVocabularyRequest: IRequest
 
 public sealed class TenantUpdaterSetTaggingVocabularyFactory : DatabaseUpdaterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter TenantId = new() {
-        Name = "tenant_id"
-    };
-    internal static NonNullableIntegerDatabaseParameter VocabularyId = new() {
-        Name = "vocabulary_id"
-    };
+    private static readonly NonNullableIntegerDatabaseParameter TenantId = new() {Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id"};
     public override string Sql => """
         UPDATE tenant 
         SET 

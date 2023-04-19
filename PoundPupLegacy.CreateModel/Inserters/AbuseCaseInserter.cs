@@ -4,11 +4,11 @@ using Request = AbuseCase;
 
 internal sealed class AbuseCaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter ChildPlacementTypeId = new() { Name = "child_placement_type_id" };
-    internal static NullableIntegerDatabaseParameter FamilySizeId = new() { Name = "family_size_id" };
-    internal static NullableBooleanDatabaseParameter HomeSchoolingInvolved = new() { Name = "home_schooling_involved" };
-    internal static NullableBooleanDatabaseParameter FundamentalFaithInvolved = new() { Name = "fundamental_faith_involved" };
-    internal static NullableBooleanDatabaseParameter DisabilitiesInvolved = new() { Name = "disabilities_involved" };
+    private static readonly NonNullableIntegerDatabaseParameter ChildPlacementTypeId = new() { Name = "child_placement_type_id" };
+    private static readonly NullableIntegerDatabaseParameter FamilySizeId = new() { Name = "family_size_id" };
+    private static readonly NullableBooleanDatabaseParameter HomeSchoolingInvolved = new() { Name = "home_schooling_involved" };
+    private static readonly NullableBooleanDatabaseParameter FundamentalFaithInvolved = new() { Name = "fundamental_faith_involved" };
+    private static readonly NullableBooleanDatabaseParameter DisabilitiesInvolved = new() { Name = "disabilities_involved" };
     public override string TableName => "abuse_case";
 
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

@@ -4,8 +4,8 @@ using Request = UnitedStatesCongressionalMeeting;
 
 internal sealed class UnitedStatesCongressionalMeetingInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    internal static NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
-    internal static NonNullableIntegerDatabaseParameter Number = new() { Name = "number" };
+    private static readonly NonNullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
+    private static readonly NonNullableIntegerDatabaseParameter Number = new() { Name = "number" };
 
     public override string TableName => "united_states_congressional_meeting";
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)

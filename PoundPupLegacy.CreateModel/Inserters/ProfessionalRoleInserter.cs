@@ -4,9 +4,9 @@ using Request = ProfessionalRole;
 
 internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
-    internal static NullCheckingIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
-    internal static NonNullableIntegerDatabaseParameter ProfessionId = new() { Name = "profession_id" };
-    internal static NullableDateRangeDatabaseParameter DateRange = new() { Name = "daterange" };
+    private static readonly NullCheckingIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
+    private static readonly NonNullableIntegerDatabaseParameter ProfessionId = new() { Name = "profession_id" };
+    private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "daterange" };
 
     public override string TableName => "professional_role";
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)

@@ -9,10 +9,10 @@ public sealed class SubdivisionIdReaderByNameRequest : IRequest
 }
 internal sealed class SubdivisionIdReaderByNameFactory : IntDatabaseReaderFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
-    internal static NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 

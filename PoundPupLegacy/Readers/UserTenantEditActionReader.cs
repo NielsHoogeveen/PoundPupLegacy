@@ -12,9 +12,9 @@ public sealed record UserTenantEditActionReaderRequest : IRequest
 internal sealed class UserTenantEditActionReaderFactory : EnumerableDatabaseReaderFactory<Request, UserTenantEditAction>
 {
 
-    internal static readonly IntValueReader UserIdReader = new() { Name = "user_id" };
-    internal static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
-    internal static readonly IntValueReader NodeTypeIdReader = new() { Name = "node_type_id" };
+    private static readonly IntValueReader UserIdReader = new() { Name = "user_id" };
+    private static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
+    private static readonly IntValueReader NodeTypeIdReader = new() { Name = "node_type_id" };
 
     public override string Sql => SQL;
 

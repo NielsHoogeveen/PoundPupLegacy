@@ -4,8 +4,8 @@ using Request = CountrySubdivisionType;
 
 internal sealed class CountrySubdivisionTypeInserterFactory : BasicDatabaseInserterFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
-    internal static NonNullableIntegerDatabaseParameter SubdivisionTypeId = new() { Name = "subdivision_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter CountryId = new() { Name = "country_id" };
+    private static readonly NonNullableIntegerDatabaseParameter SubdivisionTypeId = new() { Name = "subdivision_type_id" };
 
     public override string TableName => "country_subdivision_type";
 

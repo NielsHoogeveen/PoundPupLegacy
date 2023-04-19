@@ -9,9 +9,9 @@ public sealed record EditOwnNodeActionIdReaderByNodeTypeIdRequest : IRequest
 
 internal sealed class EditOwnNodeActionIdReaderByNodeTypeIdFactory : IntDatabaseReaderFactory<Request>
 {
-    internal static NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeTypeId = new() { Name = "node_type_id" };
 
-    internal static IntValueReader IdReader = new() { Name = "id" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
     const string SQL = """
