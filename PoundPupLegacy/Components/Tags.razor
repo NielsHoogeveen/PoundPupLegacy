@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel
 @using PoundPupLegacy.Services;
+@inherits Viewer
 @inject ITopicSearchService topicSearchService
 
 @if(Elems is not null)
@@ -37,12 +38,9 @@
     [EditorRequired]
     public List<Tag>? Elems { get; set; }
 
-    [CascadingParameter(Name = "NodeId")]
+    [Parameter]
+    [EditorRequired]
     public int? NodeId { get; set; }
-
-    [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
-
 
     List<Tag> termOptions = new();
 

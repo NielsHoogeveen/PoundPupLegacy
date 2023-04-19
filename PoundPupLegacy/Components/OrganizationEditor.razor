@@ -1,6 +1,7 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
 @using PoundPupLegacy.Common;
+@inherits NodeEditor
 @inject IEditService<Organization> editService;
 @inject ILogger<OrganizationEditor> logger;
 @inject NavigationManager navigationManager;
@@ -46,9 +47,9 @@
         <FuzzyDateEditor @bind-Value="organization.Establishment" />
         <FuzzyDateEditor @bind-Value="organization.Termination" />
         
-        <Tags Elems="@organization.Tags" />
-        <TenantNodesEditor Node="@organization" />
-        <AttachmentEditor Files="organization.Files"/>
+        <Tags Elems="organization.Tags" NodeId="organization.NodeId"/>
+        <TenantNodesEditor Node="organization" />
+        <AttachmentEditor Files="organization.Files" NodeId="organization.NodeId"/>
         <LocationsEditor Locatable="organization"/>
         
         <button type="submit" style="display: block;">Submit</button>
@@ -60,15 +61,6 @@
     Organization? organization;
 
     string url = "";
-
-    [CascadingParameter(Name = "UrlId")]
-    public int UrlId { get; set; }
-
-    [CascadingParameter(Name = "UserId")]
-    public int UserId { get; set; }
-
-    [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

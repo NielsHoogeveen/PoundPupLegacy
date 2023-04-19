@@ -1,8 +1,9 @@
-﻿@using PoundPupLegacy.EditModel;
-@using PoundPupLegacy.Services;
-@inject IEditService<Article> editService;
-@inject ILogger<ArticleCreator> logger;
-@inject NavigationManager navigationManager;
+﻿@using PoundPupLegacy.EditModel
+@using PoundPupLegacy.Services
+@inherits Viewer
+@inject IEditService<Article> editService
+@inject ILogger<ArticleCreator> logger
+@inject NavigationManager navigationManager
 @inject IJSRuntime JSRuntime
 
 @if (article is not null)
@@ -34,12 +35,6 @@
     Article? article;
 
     string url = "";
-
-    [CascadingParameter(Name ="UserId")]
-    public int UserId { get; set; }
-
-    [CascadingParameter(Name ="TenantId")]
-    public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

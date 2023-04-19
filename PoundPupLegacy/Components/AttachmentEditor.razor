@@ -34,7 +34,8 @@
     [EditorRequired]
     public List<EditModel.File>? Files { get; set; }
 
-    [CascadingParameter(Name = "NodeId")]
+    [Parameter]
+    [EditorRequired]
     public int? NodeId { get; set; }
 
     private string ErrorMessage = "";

@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
+@inherits Viewer
 @inject IEditService<Discussion> editService;
 @inject ILogger<DiscussionCreator> logger;
 @inject NavigationManager navigationManager;
@@ -34,12 +35,6 @@
     Discussion? discussion;
 
     string url = "";
-
-    [CascadingParameter(Name ="UserId")]
-    public int UserId { get; set; }
-
-    [CascadingParameter(Name="TenantId")]
-    public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

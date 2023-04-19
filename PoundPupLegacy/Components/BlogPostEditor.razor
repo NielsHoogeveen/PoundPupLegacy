@@ -1,8 +1,9 @@
-﻿@using PoundPupLegacy.EditModel;
-@using PoundPupLegacy.Services;
-@inject IEditService<BlogPost> editService;
-@inject ILogger<BlogPostEditor> logger;
-@inject NavigationManager navigationManager;
+﻿@using PoundPupLegacy.EditModel
+@using PoundPupLegacy.Services
+@inherits NodeEditor
+@inject IEditService<BlogPost> editService
+@inject ILogger<BlogPostEditor> logger
+@inject NavigationManager navigationManager
 @inject IJSRuntime JSRuntime
 
 @if (blogPost is not null)
@@ -24,9 +25,9 @@
               @bind-Value=@blogPost.Text
             UrlToPostImage=@url>
         </CKEditor>
-        <Tags Elems="@blogPost.Tags"/>
-        <TenantNodesEditor Node="@blogPost" />
-        <AttachmentEditor Files="blogPost.Files"/>
+        <Tags Elems="blogPost.Tags" NodeId="blogPost.NodeId"/>
+        <TenantNodesEditor Node="blogPost" />
+        <AttachmentEditor Files="blogPost.Files" NodeId="blogPost.NodeId"/>
         <button type="submit">Submit</button>
     </EditForm>
     
@@ -35,15 +36,6 @@
     BlogPost? blogPost;
 
     string url = "";
-
-    [CascadingParameter(Name = "UrlId")]
-    public int UrlId { get; set; }
-
-    [CascadingParameter(Name = "UserId")]
-    public int UserId { get; set; }
-
-    [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

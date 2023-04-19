@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel
 @using PoundPupLegacy.Services
+@inherits Viewer
 @inject ISiteDataService SiteDataService
 
 @if (Locatable is not null && Locatable.Locations.Any()) {
@@ -36,9 +37,6 @@
     [Parameter]
     [EditorRequired]
     public Locatable? Locatable { get; set; }
-
-    [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
 
     private Location? locationToEdit = null;
 

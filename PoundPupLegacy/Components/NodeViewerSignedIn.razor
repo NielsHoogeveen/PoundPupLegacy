@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
 @using PoundPupLegacy.Services
+@inherits Viewer
 @inject ISiteDataService siteDataService
 @inject IUserService userService
 @if(Model is not null)
@@ -75,29 +76,25 @@
         {
             <div class="tab content2">
                 <article>
-                   <CascadingValue Value="@Model.NodeId" Name="NodeId">
-                       <CascadingValue Value="@Model.UrlId" Name="UrlId">
-                                @if (Model is BlogPost)
-                                {
-                                    <BlogPostEditor/>
-                                }
-                                @if (Model is Article) 
-                                {
-                                    <ArticleEditor/>
-                                }
-                                @if (Model is Discussion) 
-                                {
-                                    <DiscussionEditor/>
-                                }
-                                @if (Model is Document) 
-                                {
-                                    <DocumentEditor/>
-                                }
-                                @if (Model is Organization) {
-                                   <OrganizationEditor/>
-                                }
-                                </CascadingValue>
-                            </CascadingValue>
+                    @if (Model is BlogPost)
+                    {
+                        <BlogPostEditor UrlId="Model.UrlId"/>
+                    }
+                    @if (Model is Article) 
+                    {
+                        <ArticleEditor UrlId="Model.UrlId"/>
+                    }
+                    @if (Model is Discussion) 
+                    {
+                        <DiscussionEditor UrlId="Model.UrlId" />
+                    }
+                    @if (Model is Document) 
+                    {
+                        <DocumentEditor UrlId="Model.UrlId" />
+                    }
+                    @if (Model is Organization) {
+                        <OrganizationEditor UrlId="Model.UrlId" />
+                    }
                 </article>
             </div>
         }
@@ -109,12 +106,6 @@
     [Parameter]
     [EditorRequired]
     public Node? Model { get; set; }
-
-    [CascadingParameter(Name="UserId")]
-    public int UserId { get; set; }
-
-    [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
 
     private DisplayMode displayMode = DisplayMode.View;
 

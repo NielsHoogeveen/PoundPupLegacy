@@ -1,6 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel
 @using PoundPupLegacy.Services
-
+@inherits Viewer
 @inject IDocumentableDocumentsSearchService searchService
 
 @if(Elems is not null && NodeId is not null)
@@ -100,12 +100,6 @@
     [Parameter]
     [EditorRequired]
     public int? NodeId { get; set; }
-
-    [CascadingParameter(Name ="UserId")]
-    public int UserId { get; set; }
-
-    [CascadingParameter(Name ="TenantId")]
-    public int TenantId { get; set; }
 
     List<DocumentableDocument> options = new();
 

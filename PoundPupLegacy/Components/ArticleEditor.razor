@@ -1,5 +1,6 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
+@inherits NodeEditor
 @inject IEditService<Article> editService;
 @inject ILogger<ArticleEditor> logger;
 @inject NavigationManager navigationManager;
@@ -24,9 +25,9 @@
               @bind-Value=@article.Text
             UrlToPostImage=@url>
         </CKEditor>
-        <Tags Elems="@article.Tags"/>
+        <Tags Elems="@article.Tags" NodeId="article.NodeId"/>
         <TenantNodesEditor  Node="@article" />
-        <AttachmentEditor Files="article.Files"/>
+        <AttachmentEditor Files="article.Files" NodeId="article.NodeId"/>
         <button type="submit">Submit</button>
     </EditForm>
     
@@ -35,15 +36,6 @@
     Article? article;
 
     string url = "";
-
-    [CascadingParameter(Name = "UrlId")]
-    public int UrlId { get; set; }
-
-    [CascadingParameter(Name = "UserId")]
-    public int UserId { get; set; }
-
-    [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
