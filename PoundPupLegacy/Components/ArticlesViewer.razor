@@ -1,11 +1,7 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
 @using Microsoft.AspNetCore.WebUtilities
-@inject ISiteDataService siteDataService
-@inject IUserService userService
-@inject IJSRuntime JSRuntime
 @inject IFetchArticlesService FetchArticlesService
-@inject NavigationManager NavigationManager
 @inherits PagedViewer<ArticleListEntry>
 @if(ListEntries is not null) {
         <div class="articles">
@@ -99,21 +95,26 @@
 
     private async Task Choose(int id)
     {
-        var term = TermNames.First(x => x.Id == id);
-        term.Selected = !term.Selected;
-        await OnInitializedAsync();
-        var selectedTerms = TermNames.Where(x => x.Selected);
-        var query = selectedTerms.Any() ? $"?{selectedTerms.Aggregate("", (a, b) => a + $"&{TERM_NAME_PREFIX}{b.Id}=on").ToString()[1..]}": "";
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        var newUri = uri.AbsolutePath + query;
-        NavigationManager.NavigateTo(newUri, false);
-        StateHasChanged();
+        if (NavigationManager is not null)
+        {
+            var term = TermNames.First(x => x.Id == id);
+            term.Selected = !term.Selected;
+            await OnInitializedAsync();
+            var selectedTerms = TermNames.Where(x => x.Selected);
+            var query = selectedTerms.Any() ? $"?{selectedTerms.Aggregate("", (a, b) => a + $"&{TERM_NAME_PREFIX}{b.Id}=on").ToString()[1..]}" : "";
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            var newUri = uri.AbsolutePath + query;
+            NavigationManager.NavigateTo(newUri, false);
+            StateHasChanged();
+        }
     }
-    private List<int> GetTermIds()
+    private int[] GetTermIds()
     {
+        if (NavigationManager is null)
+        return Array.Empty<int>();
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var keys = QueryHelpers.ParseQuery(uri.Query).Select(x => x.Key);
-        var termIds = keys == null ? new List<int>() : GetTermIds(keys).ToList();
+        var termIds = keys == null ? Array.Empty<int>() : GetTermIds(keys).ToArray();
         return termIds;
     }
 

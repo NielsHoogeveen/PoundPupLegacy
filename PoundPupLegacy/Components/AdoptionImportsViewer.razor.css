@@ -22,7 +22,7 @@ border-bottom: solid 1px silver;
 }
 
 ::deep .adoption-import-numbers .year-10000 {
-color: black;
+    color: black;
 }
 
 ::deep .even {
@@ -30,9 +30,10 @@ color: black;
 }
 
 ::deep .subtotal {
-    background-color: white;
+    background-color: #c8d2ed;
 }
 
-::deep .total {
-    background-color: white;
+::deep .total, ::deep .adoption-import-value.year-10000.total {
+    background-color: #5a6c88;
+    color: aliceblue;
 }

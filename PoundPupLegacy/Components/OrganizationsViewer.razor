@@ -3,7 +3,6 @@
 @using PoundPupLegacy.ViewModel.Models
 @inherits PagedSearchViewer<OrganizationListEntry>
 @inject IFetchOrganizationsService FetchOrganizationsService
-@inject NavigationManager NavigationManager
 @if(ListEntries is not null){
 
     <div class="articles">
@@ -77,41 +76,55 @@
 
     protected override async Task<IPagedList<OrganizationListEntry>?> GetListEntriesAsync()
     {
+        if (NavigationManager is null)
+            return null;
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("country", out var countryIdValue)) {
-            if (int.TryParse(countryIdValue, out int providedCountryId)) {
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("country", out var countryIdValue))
+        {
+            if (int.TryParse(countryIdValue, out int providedCountryId))
+            {
                 CountryId = providedCountryId;
-                if(PagedListSettings.QueryString == string.Empty) {
+                if (PagedListSettings.QueryString == string.Empty)
+                {
                     PagedListSettings.QueryString = $"country={providedCountryId}";
                 }
-                else {
+                else
+                {
                     PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&country={providedCountryId}";
                 }
             }
         }
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("organization_type", out var organizationTypeIdValue)) {
-            if (int.TryParse(organizationTypeIdValue, out int providedOrganizationTypeId)) {
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("organization_type", out var organizationTypeIdValue))
+        {
+            if (int.TryParse(organizationTypeIdValue, out int providedOrganizationTypeId))
+            {
                 OrganizationTypeId = providedOrganizationTypeId;
-                if (PagedListSettings.QueryString == string.Empty) {
+                if (PagedListSettings.QueryString == string.Empty)
+                {
                     PagedListSettings.QueryString = $"organization_type={providedOrganizationTypeId}";
                 }
-                else {
+                else
+                {
                     PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&organization_type={providedOrganizationTypeId}";
                 }
             }
         }
 
         var organizationSearch = await FetchOrganizationsService.FetchOrganizations(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm, PagedListSettings.SearchOption, OrganizationTypeId, CountryId);
-        foreach (var country in organizationSearch.Countries) {
-            if (country.Id == CountryId) {
+        foreach (var country in organizationSearch.Countries)
+        {
+            if (country.Id == CountryId)
+            {
                 country.Selected = true;
                 continue;
             }
             country.Selected = false;
         }
         Countries = organizationSearch.Countries;
-        foreach (var organizationType in organizationSearch.OrganizationTypes) {
-            if (organizationType.Id == OrganizationTypeId) {
+        foreach (var organizationType in organizationSearch.OrganizationTypes)
+        {
+            if (organizationType.Id == OrganizationTypeId)
+            {
                 organizationType.Selected = true;
                 continue;
             }
