@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.EditModel
+
+@if (Model is not null)
+{
+    <CKEditor Id="#editor" @bind-Value=@Model.Text />
+}
+@code {
+    [Parameter]
+    public SimpleTextNode Model { get; set; }
+
+}

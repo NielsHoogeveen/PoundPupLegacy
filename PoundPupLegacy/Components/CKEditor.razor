@@ -1,5 +1,6 @@
 ﻿@inherits InputTextArea
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <textarea @attributes="AdditionalAttributes"
           id="@Id"
@@ -12,9 +13,7 @@
     [EditorRequired]
     public string? Id { get; set; }
 
-    [Parameter]
-    [EditorRequired]
-    public string? UrlToPostImage { get; set; }
+    public string? UrlToPostImage => $"{NavigationManager.BaseUri}image/upload";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

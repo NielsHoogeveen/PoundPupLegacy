@@ -1,38 +1,16 @@
 ﻿@using PoundPupLegacy.EditModel;
 @using PoundPupLegacy.Services;
 @using PoundPupLegacy.Common;
-@inherits NodeEditor
-@inject IEditService<Organization> editService;
-@inject ILogger<OrganizationEditor> logger;
-@inject NavigationManager navigationManager;
-@inject IJSRuntime JSRuntime
-@inject ILocationService locationService;
+@inherits Viewer
 
-@if (organization is not null)
+@if (Model is not null)
 {
-    <style>
-        .title-editor {
-            width: 100%;
-            font-size: 2em;
-            font-weight: bold;
-            border: none;
-            border-bottom: 1px solid black;
-            padding: 0.5em;
-            margin-bottom: 1em;
-        }
-    </style>
-    <EditForm Model="@organization" OnSubmit="HandleSubmit" class="edit-form">
-        
-        <InputText class="title-editor" id="name" @bind-Value="organization.Title" />
-        <CKEditor Id="#editor"
-              @bind-Value=@organization.Description
-            UrlToPostImage=@url>
-        </CKEditor>
+        <CKEditor Id="#editor" @bind-Value=@Model.Description />
         <div class="organization-organization-types">
 
-        @foreach(var organizationOrganizationType in organization.OrganizationOrganizationTypes) {
+        @foreach(var organizationOrganizationType in Model.OrganizationOrganizationTypes) {
             <select>
-                @foreach(var organizationType in organization.OrganizationTypes){
+                @foreach(var organizationType in Model.OrganizationTypes){
                     @if (organizationType.Id == organizationOrganizationType.OrganizationTypeId) {
                         <option selected value="@organizationType.Id">@organizationType.Name</option>
                     }
@@ -44,49 +22,16 @@
         }
         </div>
     
-        <FuzzyDateEditor @bind-Value="organization.Establishment" />
-        <FuzzyDateEditor @bind-Value="organization.Termination" />
+        <FuzzyDateEditor @bind-Value=" Model.Establishment" />
+        <FuzzyDateEditor @bind-Value="Model.Termination" />
         
-        <Tags Elems="organization.Tags" NodeId="organization.NodeId"/>
-        <TenantNodesEditor Node="organization" />
-        <AttachmentEditor Files="organization.Files" NodeId="organization.NodeId"/>
-        <LocationsEditor Locatable="organization"/>
-        
-        <button type="submit" style="display: block;">Submit</button>
-    
-    </EditForm>
-
+        <Tags Elems="Model.Tags" NodeId="Model.NodeId"/>
+        <TenantNodesEditor Node="Model" />
+        <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId"/>
+        <LocationsEditor Locatable="Model"/>
 }
 @code {
-    Organization? organization;
-
-    string url = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        url = $"{navigationManager.BaseUri}image/upload";
-        if (organization is null)
-        {
-            organization = await editService.GetViewModelAsync(UrlId, UserId, TenantId);
-            foreach (var tenant in organization!.Tenants)
-            {
-                var tenantNode = organization.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
-                tenant.TenantNode = tenantNode;
-            }
-        }
-    }
-
-    private async Task HandleSubmit()
-    {
-        if (organization is null)
-            return;
-        foreach (var location in organization.Locations)
-        {
-            await locationService.ValidateLocationAsync(location);
-        }
-        await editService.SaveAsync(organization);
-        await JSRuntime.InvokeVoidAsync("reloadNode", organization.UrlId);
-    }
-
+    [Parameter]
+    [EditorRequired]
+    public Organization? Model { get; set; }
 }

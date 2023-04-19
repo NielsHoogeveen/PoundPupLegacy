@@ -39,22 +39,22 @@
                 <article>
                     @if (Model is BlogPost)
                     {
-                        <BlogPostEditor UrlId="Model.UrlId"/>
+                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.BlogPost"/>
                     }
                     @if (Model is Article) 
                     {
-                        <ArticleEditor UrlId="Model.UrlId"/>
+                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.Article" />
                     }
                     @if (Model is Discussion) 
                     {
-                        <DiscussionEditor UrlId="Model.UrlId" />
+                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.Discussion" />
                     }
                     @if (Model is Document) 
                     {
-                        <DocumentEditor UrlId="Model.UrlId" />
+                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.Document" />
                     }
                     @if (Model is Organization) {
-                        <OrganizationEditor UrlId="Model.UrlId" />
+                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.Organization" />
                     }
                 </article>
             </div>

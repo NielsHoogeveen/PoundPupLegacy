@@ -6,7 +6,7 @@ public interface Node
     int? UrlId { get; set; }
     int PublisherId { get; set; }
     int OwnerId { get; set; }
-    string Title { get; }
+    string Title { get; set; }
     List<Tag> Tags { get; }
     List<Tenant> Tenants { get; }
     List<TenantNode> TenantNodes { get; }
