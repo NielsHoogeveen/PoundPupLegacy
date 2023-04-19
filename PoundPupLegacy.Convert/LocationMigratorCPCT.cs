@@ -84,9 +84,9 @@ internal sealed class LocationMigratorCPCT : MigratorCPCT
     }
 
     private async Task<int?> GetSubdivisionId(
-        int id, 
-        int? stateId, 
-        int? countryId, 
+        int id,
+        int? stateId,
+        int? countryId,
         string? code,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
@@ -136,7 +136,7 @@ internal sealed class LocationMigratorCPCT : MigratorCPCT
 
 
     private async Task<int?> GetSubdivisionId(
-        int id, 
+        int id,
         int? stateId,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
@@ -271,7 +271,7 @@ internal sealed class LocationMigratorCPCT : MigratorCPCT
             if (stateCode == null) {
                 return null;
             }
-            return await subdivisionIdReaderByIso3166Code.ReadAsync(new SubdivisionIdReaderByIso3166CodeRequest { Iso3166Code = stateCode});
+            return await subdivisionIdReaderByIso3166Code.ReadAsync(new SubdivisionIdReaderByIso3166CodeRequest { Iso3166Code = stateCode });
         }
         else {
             var ret = id switch {

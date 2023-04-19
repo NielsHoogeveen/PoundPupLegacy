@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = PollsDocumentReaderRequest;
 using PoundPupLegacy.ViewModel.Models;
+using Request = PollsDocumentReaderRequest;
 
 public sealed record PollsDocumentReaderRequest : IRequest
 {

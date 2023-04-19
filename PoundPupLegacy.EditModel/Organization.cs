@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Common;
-
-namespace PoundPupLegacy.EditModel;
+﻿namespace PoundPupLegacy.EditModel;
 
 public record Organization : Party
 {

@@ -6,7 +6,7 @@ namespace PoundPupLegacy.Readers;
 
 using Request = TenantsReaderRequest;
 
-internal sealed record TenantsReaderRequest: IRequest
+internal sealed record TenantsReaderRequest : IRequest
 {
 
 }

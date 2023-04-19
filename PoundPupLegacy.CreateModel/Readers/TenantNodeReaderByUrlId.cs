@@ -16,7 +16,7 @@ internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderF
     private static readonly IntValueReader NodeIdReader = new() { Name = "node_id" };
     private static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
     private static readonly IntValueReader UrlIdReader = new() { Name = "url_id" };
-    private static readonly  IntValueReader PublicationStatusIdReader = new() { Name = "publication_status_id" };
+    private static readonly IntValueReader PublicationStatusIdReader = new() { Name = "publication_status_id" };
     private static readonly NullableIntValueReader SubgroupIdReader = new() { Name = "subgroup_id" };
     private static readonly NullableStringValueReader UrlPathReader = new() { Name = "url_path" };
 

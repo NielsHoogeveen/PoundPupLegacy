@@ -30,7 +30,7 @@ internal sealed class NodeFileMigratorCPCT : MigratorCPCT
     private async IAsyncEnumerable<NodeFile> ReadNodeFiles(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
-      
+
     )
     {
         var sql = $"""

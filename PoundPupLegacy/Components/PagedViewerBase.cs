@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
-using PoundPupLegacy.ViewModel.Models;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc.Razor.Internal;
+using Microsoft.AspNetCore.WebUtilities;
+using PoundPupLegacy.ViewModel.Models;
 
 namespace PoundPupLegacy.Components;
 
-public abstract class PagedViewerBase<TPagedListSettings, TListEntry>: ViewerBase
+public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBase
     where TPagedListSettings : PagedListSettings
-    where TListEntry: ListEntry
+    where TListEntry : ListEntry
 {
     [RazorInject]
     protected NavigationManager? NavigationManager { get; set; }

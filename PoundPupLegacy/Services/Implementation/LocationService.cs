@@ -30,8 +30,7 @@ internal sealed class LocationService : ILocationService
         try {
             await _connection.OpenAsync();
             await using var reader = await _subdivisionListItemReaderFactory.CreateAsync(_connection);
-            await foreach (var subdivision in reader.ReadAsync(new SubdivisionListItemsReaderRequest { CountryId = countryId }))
-            {
+            await foreach (var subdivision in reader.ReadAsync(new SubdivisionListItemsReaderRequest { CountryId = countryId })) {
                 yield return subdivision;
             }
         }
@@ -191,7 +190,7 @@ internal sealed class LocationService : ILocationService
 
     public sealed class Viewport
     {
-        public Northeast? northeast { get; set; } 
+        public Northeast? northeast { get; set; }
         public Southwest? southwest { get; set; }
     }
 

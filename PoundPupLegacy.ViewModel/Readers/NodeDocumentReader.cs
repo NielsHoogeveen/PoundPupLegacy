@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = NodeDocumentReaderRequest;
 using PoundPupLegacy.ViewModel.Models;
+using Request = NodeDocumentReaderRequest;
 
 public sealed class NodeDocumentReaderRequest : IRequest
 {

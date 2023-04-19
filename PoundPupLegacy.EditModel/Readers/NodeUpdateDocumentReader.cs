@@ -2,7 +2,7 @@
 
 public static class NodeUpdateDocumentReaderFactory
 {
- 
+
 }
 public abstract class NodeUpdateDocumentReaderFactory<TResponse> : NodeEditDocumentReaderFactory<NodeUpdateDocumentRequest, TResponse>
 where TResponse : class, Node
@@ -12,7 +12,7 @@ where TResponse : class, Node
     private static readonly NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
 
-    protected abstract int NodeTypeId {get;}
+    protected abstract int NodeTypeId { get; }
 
     private readonly FieldValueReader<TResponse> Document = new() { Name = "document" };
 

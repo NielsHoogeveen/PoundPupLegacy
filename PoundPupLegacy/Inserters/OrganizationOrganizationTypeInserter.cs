@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Inserters;
 
 using Request = OrganizationOrganizationTypeInserterRequest;
 
-public record OrganizationOrganizationTypeInserterRequest: IRequest
+public record OrganizationOrganizationTypeInserterRequest : IRequest
 {
     public required int OrganizationId { get; init; }
 

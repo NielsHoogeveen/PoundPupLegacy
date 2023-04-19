@@ -12,13 +12,10 @@ public record AdoptionImport
     public required RowType RowType { get; init; }
 
     private AdoptionImportValue[] values = Array.Empty<AdoptionImportValue>();
-    public required AdoptionImportValue[] Values
-    {
+    public required AdoptionImportValue[] Values {
         get => values;
-        init
-        {
-            if (values is not null)
-            {
+        init {
+            if (values is not null) {
                 values = value;
             }
         }

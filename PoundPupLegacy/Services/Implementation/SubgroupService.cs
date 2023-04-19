@@ -36,10 +36,9 @@ internal sealed class SubgroupService : ISubgroupService
             });
             if (result != null)
                 return result;
-            return new SubgroupPagedList 
-            { 
-                Entries = Array.Empty<SubgroupListEntry>(), 
-                NumberOfEntries = 0 
+            return new SubgroupPagedList {
+                Entries = Array.Empty<SubgroupListEntry>(),
+                NumberOfEntries = 0
             };
         }
         finally {

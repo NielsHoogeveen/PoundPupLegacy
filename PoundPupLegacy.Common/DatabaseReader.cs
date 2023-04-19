@@ -3,18 +3,19 @@ using System.Data;
 
 namespace PoundPupLegacy.Common
 {
-    public interface IDatabaseReaderFactory: IDatabaseAccessorFactory {
+    public interface IDatabaseReaderFactory : IDatabaseAccessorFactory
+    {
         string Sql { get; }
     }
     public interface IDatabaseReaderFactory<TRequest, TResponse> : IDatabaseReaderFactory
         where TRequest : IRequest
     {
-        
+
     }
 
-    public interface IDatabaseReader: IDatabaseAccessor 
-    { 
-        
+    public interface IDatabaseReader : IDatabaseAccessor
+    {
+
     }
     public interface IDatabaseReader<TRequest, TResponse> : IDatabaseReader
         where TRequest : IRequest
@@ -23,7 +24,7 @@ namespace PoundPupLegacy.Common
     }
 
     public interface ISingleItemDatabaseReader<TRequest, TResponse> : IDatabaseReader<TRequest, TResponse>
-        where TRequest: IRequest
+        where TRequest : IRequest
     {
         public Task<TResponse?> ReadAsync(TRequest request);
     }
@@ -33,21 +34,21 @@ namespace PoundPupLegacy.Common
         public Task<TResponse> ReadAsync(TRequest request);
     }
 
-    public interface IEnumerableDatabaseReader<TRequest, TResponse>: IDatabaseReader<TRequest, TResponse>
-        where TRequest: IRequest
+    public interface IEnumerableDatabaseReader<TRequest, TResponse> : IDatabaseReader<TRequest, TResponse>
+        where TRequest : IRequest
     {
         public IAsyncEnumerable<TResponse> ReadAsync(TRequest request);
     }
 
     public interface ISingleItemDatabaseReaderFactory<TRequest, TResponse> : IDatabaseReaderFactory<TRequest, TResponse>
-        where TRequest: IRequest
+        where TRequest : IRequest
     {
         public Task<ISingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
     }
 
-    public abstract class SingleItemDatabaseReaderFactory<TRequest, TResponse>: DatabaseReaderFactory<TRequest, TResponse>, ISingleItemDatabaseReaderFactory<TRequest, TResponse>
+    public abstract class SingleItemDatabaseReaderFactory<TRequest, TResponse> : DatabaseReaderFactory<TRequest, TResponse>, ISingleItemDatabaseReaderFactory<TRequest, TResponse>
         where TResponse : class
-        where TRequest: IRequest
+        where TRequest : IRequest
     {
         protected abstract TResponse? Read(NpgsqlDataReader reader);
         public async Task<ISingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection)
@@ -55,8 +56,8 @@ namespace PoundPupLegacy.Common
             return new SingleItemDatabaseReader<TRequest, TResponse>(await GetCommand(connection), GetParameterValues, Read);
         }
     }
-    public interface IMandatorySingleItemDatabaseReaderFactory<TRequest, TResponse>: IDatabaseReaderFactory<TRequest, TResponse> 
-        where TRequest: IRequest
+    public interface IMandatorySingleItemDatabaseReaderFactory<TRequest, TResponse> : IDatabaseReaderFactory<TRequest, TResponse>
+        where TRequest : IRequest
     {
         public Task<IMandatorySingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
     }
@@ -104,7 +105,7 @@ namespace PoundPupLegacy.Common
     }
 
     public abstract class DatabaseReaderFactory<TRequest, TResponse> : DatabaseAccessorFactory, IDatabaseReaderFactory<TRequest, TResponse>
-        where TRequest: IRequest
+        where TRequest : IRequest
     {
         public abstract string Sql { get; }
 
@@ -157,8 +158,7 @@ namespace PoundPupLegacy.Common
 
         public async Task<TResponse> ReadAsync(TRequest request)
         {
-            foreach (var parameter in GetParameterValues(request)) 
-            {
+            foreach (var parameter in GetParameterValues(request)) {
                 parameter.Set(_command);
             }
             await using var reader = await _command.ExecuteReaderAsync();
@@ -188,8 +188,7 @@ namespace PoundPupLegacy.Common
 
         public async Task<TResponse?> ReadAsync(TRequest request)
         {
-            foreach (var parameter in GetParameterValues(request)) 
-            { 
+            foreach (var parameter in GetParameterValues(request)) {
                 parameter.Set(_command);
             }
             await using var reader = await _command.ExecuteReaderAsync();
@@ -200,7 +199,7 @@ namespace PoundPupLegacy.Common
         }
     }
     public class EnumerableDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, IEnumerableDatabaseReader<TRequest, TResponse>
-        where TRequest: IRequest
+        where TRequest : IRequest
     {
         private readonly Func<NpgsqlDataReader, TResponse> _readerFunction;
         private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
@@ -212,8 +211,7 @@ namespace PoundPupLegacy.Common
         }
         public async IAsyncEnumerable<TResponse> ReadAsync(TRequest request)
         {
-            foreach (var parameter in GetParameterValues(request)) 
-            {
+            foreach (var parameter in GetParameterValues(request)) {
                 parameter.Set(_command);
             }
             await using var reader = await _command.ExecuteReaderAsync();
@@ -253,7 +251,7 @@ namespace PoundPupLegacy.Common
         public override int? GetValue(NpgsqlDataReader reader)
         {
             var ordinal = reader.GetOrdinal(Name);
-            if(reader.IsDBNull(ordinal))
+            if (reader.IsDBNull(ordinal))
                 return null;
             return reader.GetInt32(ordinal);
         }
@@ -287,9 +285,9 @@ namespace PoundPupLegacy.Common
         public override string? GetValue(NpgsqlDataReader reader)
         {
             var ordinal = reader.GetOrdinal(Name);
-            if(reader.IsDBNull(ordinal))
+            if (reader.IsDBNull(ordinal))
                 return null;
-            else 
+            else
                 return reader.GetString(ordinal);
         }
     }
@@ -306,7 +304,7 @@ namespace PoundPupLegacy.Common
         public override DateTime? GetValue(NpgsqlDataReader reader)
         {
             var ordinal = (int)reader.GetOrdinal(Name);
-            if(reader.IsDBNull(ordinal))
+            if (reader.IsDBNull(ordinal))
                 return null;
             return reader.GetDateTime(ordinal);
         }
@@ -323,7 +321,7 @@ namespace PoundPupLegacy.Common
         public override bool? GetValue(NpgsqlDataReader reader)
         {
             var ordinal = reader.GetOrdinal(Name);
-            if(reader.IsDBNull(ordinal))
+            if (reader.IsDBNull(ordinal))
                 return null;
             return reader.GetBoolean(ordinal);
         }

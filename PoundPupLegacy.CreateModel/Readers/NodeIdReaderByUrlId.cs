@@ -2,7 +2,7 @@
 
 using Request = NodeIdReaderByUrlIdRequest;
 
-public sealed record NodeIdReaderByUrlIdRequest: IRequest
+public sealed record NodeIdReaderByUrlIdRequest : IRequest
 {
     public int TenantId { get; init; }
     public int UrlId { get; init; }

@@ -20,7 +20,7 @@ public abstract class DatabaseValidatorBase
 {
     const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
 
-    private static Type? GetRequestType(Type t) 
+    private static Type? GetRequestType(Type t)
     {
         var genericArguments = t.GetGenericArguments();
         if (genericArguments.Any()) {
@@ -30,7 +30,7 @@ public abstract class DatabaseValidatorBase
                 }
             }
         }
-        if(t.BaseType is not null) {
+        if (t.BaseType is not null) {
             var result = GetRequestType(t.BaseType);
             if (result is not null)
                 return result;

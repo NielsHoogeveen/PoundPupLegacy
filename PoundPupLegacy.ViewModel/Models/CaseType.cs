@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Common;
-
-namespace PoundPupLegacy.ViewModel.Models;
+﻿namespace PoundPupLegacy.ViewModel.Models;
 public enum CaseType
 {
     Any = 0,

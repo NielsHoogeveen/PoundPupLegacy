@@ -191,7 +191,7 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
         await foreach (var nodeType in NodeTypeMigrator.GetNodeTypes().Where(x => x.AuthorSpecific)) {
             yield return new AccessRolePrivilege {
                 AccessRoleId = 4,
-                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest {NodeTypeId = nodeType.Id!.Value })
+                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = nodeType.Id!.Value })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 16,

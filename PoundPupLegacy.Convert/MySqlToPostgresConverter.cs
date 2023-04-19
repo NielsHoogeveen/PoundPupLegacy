@@ -310,6 +310,6 @@ internal partial class MySqlToPostgresConverter
         alter table tenant alter column country_id_default SET NOT NULL;	
         """;
         await command.ExecuteNonQueryAsync();
-        
+
     }
 }

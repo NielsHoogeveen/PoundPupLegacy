@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = SubgroupsDocumentReaderRequest;
 using PoundPupLegacy.ViewModel.Models;
+using Request = SubgroupsDocumentReaderRequest;
 
 public sealed record SubgroupsDocumentReaderRequest : IRequest
 {

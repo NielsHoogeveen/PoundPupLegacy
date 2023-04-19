@@ -3,7 +3,7 @@
 using Request = SubdivisionIdReaderByIso3166CodeRequest;
 
 
-public sealed record SubdivisionIdReaderByIso3166CodeRequest: IRequest
+public sealed record SubdivisionIdReaderByIso3166CodeRequest : IRequest
 {
     public required string Iso3166Code { get; init; }
 }

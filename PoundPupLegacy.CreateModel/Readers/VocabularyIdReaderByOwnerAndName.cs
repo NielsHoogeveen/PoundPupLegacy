@@ -13,7 +13,7 @@ internal sealed class VocabularyIdReaderByOwnerAndNameFactory : IntDatabaseReade
     private static readonly NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
     private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-    private static readonly IntValueReader IdReader = new() { Name = "id"};
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 

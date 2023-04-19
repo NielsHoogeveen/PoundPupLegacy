@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Inserters;
 
 using Request = FileInserterRequest;
 
-public record FileInserterRequest: IRequest
+public record FileInserterRequest : IRequest
 {
     public required string Name { get; init; }
     public required string MimeType { get; init; }

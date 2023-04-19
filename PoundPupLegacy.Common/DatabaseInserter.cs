@@ -2,16 +2,16 @@
 using System.Data;
 
 namespace PoundPupLegacy.Common;
-public interface IDatabaseInserter : IDatabaseAccessor 
-{ 
+public interface IDatabaseInserter : IDatabaseAccessor
+{
 }
 public interface IDatabaseInserter<T> : IDatabaseInserter
-    where T: IRequest
+    where T : IRequest
 {
     Task InsertAsync(T item);
 }
 
-public interface IDatabaseInserterFactory: IDatabaseAccessorFactory
+public interface IDatabaseInserterFactory : IDatabaseAccessorFactory
 {
 }
 public interface IDatabaseInserterFactory<T> : IDatabaseInserterFactory
@@ -225,25 +225,23 @@ public class IdentifiableDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseIns
     where T : Identifiable
 {
     private Func<T, IEnumerable<ParameterValue>> _parameterMapper;
-    public IdentifiableDatabaseInserter(NpgsqlCommand command, Func<T, IEnumerable<ParameterValue>> parameterMapper ) : base(command)
+    public IdentifiableDatabaseInserter(NpgsqlCommand command, Func<T, IEnumerable<ParameterValue>> parameterMapper) : base(command)
     {
         _parameterMapper = parameterMapper;
     }
 
     protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
     {
-        yield return ParameterValue.Create(IdentifiableDatabaseInserterFactory.Id , request.Id);
-       
-        foreach(var parameter in _parameterMapper(request)) 
-        {
+        yield return ParameterValue.Create(IdentifiableDatabaseInserterFactory.Id, request.Id);
+
+        foreach (var parameter in _parameterMapper(request)) {
             yield return parameter;
         }
     }
 
     public async Task InsertAsync(T item)
     {
-        foreach(var parameter in GetParameterValues(item)) 
-        {
+        foreach (var parameter in GetParameterValues(item)) {
             parameter.Set(_command);
         }
         await _command.ExecuteNonQueryAsync();
@@ -293,10 +291,9 @@ public class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseI
 
     public async Task InsertAsync(T item)
     {
-        if(item.Id is not null) 
+        if (item.Id is not null)
             throw new ArgumentException("The Id property should be null");
-        foreach (var parameter in GetParameterValues(item)) 
-        {
+        foreach (var parameter in GetParameterValues(item)) {
             parameter.Set(_command);
         }
         item.Id = await _command.ExecuteScalarAsync() switch {
@@ -335,8 +332,7 @@ public class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>,
     public async Task InsertAsync(T request)
     {
         if (request.Id is null) {
-            foreach(var parameter in GetNonIdParameterValues(request))
-            {
+            foreach (var parameter in GetNonIdParameterValues(request)) {
                 parameter.Set(_commandAutoGenerate);
             };
             request.Id = await _commandAutoGenerate.ExecuteScalarAsync() switch {
@@ -345,8 +341,7 @@ public class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>,
             };
         }
         else {
-            foreach(var parameter in GetParameterValues(request)) 
-            {
+            foreach (var parameter in GetParameterValues(request)) {
                 parameter.Set(_command);
             }
             await _command.ExecuteNonQueryAsync();

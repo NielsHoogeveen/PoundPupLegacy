@@ -14,13 +14,10 @@ public record FormalSubdivision : Subdivision
     public required string ISO3166_2_Code { get; init; }
 
     private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags
-    {
+    public required Link[] Tags {
         get => tags;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 tags = value;
             }
 
@@ -28,13 +25,10 @@ public record FormalSubdivision : Subdivision
     }
 
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems
-    {
+    public CommentListItem[] CommentListItems {
         get => commentListItems;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 commentListItems = value;
             }
         }
@@ -44,13 +38,10 @@ public record FormalSubdivision : Subdivision
 
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
-    public required DocumentListItem[] Documents
-    {
+    public required DocumentListItem[] Documents {
         get => documents;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 documents = value;
             }
         }
@@ -58,26 +49,20 @@ public record FormalSubdivision : Subdivision
     public required OrganizationTypeWithOrganizations[] OrganizationTypes { get; init; }
 
     private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics
-    {
+    public required Link[] SubTopics {
         get => subTopics;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 subTopics = value;
             }
         }
     }
 
     private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics
-    {
+    public required Link[] SuperTopics {
         get => superTopics;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 superTopics = value;
             }
         }
@@ -85,13 +70,10 @@ public record FormalSubdivision : Subdivision
     public required SubdivisionType[] SubdivisionTypes { get; init; }
 
     private File[] _files = Array.Empty<File>();
-    public required File[] Files
-    {
+    public required File[] Files {
         get => _files;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _files = value;
             }
         }

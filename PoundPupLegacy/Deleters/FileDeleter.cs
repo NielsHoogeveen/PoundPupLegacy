@@ -1,11 +1,10 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Deleters;
 
 using Request = FileDeleterRequest;
 
-public record FileDeleterRequest: IRequest
+public record FileDeleterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required int FileId { get; init; }

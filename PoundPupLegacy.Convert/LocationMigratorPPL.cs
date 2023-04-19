@@ -319,9 +319,9 @@ internal sealed class LocationMigratorPPL : MigratorPPL
     }
 
     private async Task<int?> GetSubdivisionId(
-        int id, 
-        int? stateId, 
-        int? countryId, 
+        int id,
+        int? stateId,
+        int? countryId,
         string? code,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
@@ -371,7 +371,7 @@ internal sealed class LocationMigratorPPL : MigratorPPL
 
 
     private async Task<int?> GetSubdivisionId(
-        int id, 
+        int id,
         int? stateId,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
@@ -1321,7 +1321,7 @@ internal sealed class LocationMigratorPPL : MigratorPPL
         }
     }
     private async Task<int?> GetCountryId(
-        int id, 
+        int id,
         int? countryId,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )

@@ -355,9 +355,8 @@ internal sealed class BillMigrator : MigratorPPL
                 VocabularyNames = vocabularyNames,
                 FileIdTileImage = null,
                 IntroductionDate = reader.IsDBNull("introduction_date") ? null : reader.GetDateTime("introduction_date"),
-                ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest 
-                { 
-                    TenantId  = Constants.PPL,
+                ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("act_id")
                 })
             };

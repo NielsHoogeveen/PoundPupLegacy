@@ -11,13 +11,10 @@ public record BasicPollQuestion : PollQuestion
     public required bool HasBeenPublished { get; init; }
 
     private PollOption[] pollOptions = Array.Empty<PollOption>();
-    public PollOption[] PollOptions
-    {
+    public PollOption[] PollOptions {
         get => pollOptions;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 pollOptions = value;
             }
 

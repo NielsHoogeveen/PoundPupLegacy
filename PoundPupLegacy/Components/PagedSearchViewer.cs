@@ -4,7 +4,7 @@ using SearchOption = PoundPupLegacy.ViewModel.Models.SearchOption;
 
 namespace PoundPupLegacy.Components;
 
-public abstract partial class PagedSearchViewer<TListEntry>: PagedViewerBase<PagedSearchListSettings, TListEntry>
+public abstract partial class PagedSearchViewer<TListEntry> : PagedViewerBase<PagedSearchListSettings, TListEntry>
     where TListEntry : ListEntry
 {
     protected sealed override PagedSearchListSettings PagedListSettings { get; } = new PagedSearchListSettings();

@@ -1,15 +1,12 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Topics: IPagedList<TopicListEntry> 
+public record Topics : IPagedList<TopicListEntry>
 {
     private TopicListEntry[] _entries = Array.Empty<TopicListEntry>();
-    public required TopicListEntry[] Entries
-    {
+    public required TopicListEntry[] Entries {
         get => _entries;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _entries = value;
             }
         }

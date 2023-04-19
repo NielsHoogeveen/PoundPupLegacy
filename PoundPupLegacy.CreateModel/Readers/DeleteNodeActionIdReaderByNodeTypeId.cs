@@ -2,7 +2,7 @@
 
 using Request = DeleteNodeActionIdReaderByNodeTypeIdRequest;
 
-public sealed record DeleteNodeActionIdReaderByNodeTypeIdRequest: IRequest
+public sealed record DeleteNodeActionIdReaderByNodeTypeIdRequest : IRequest
 {
     public required int NodeTypeId { get; init; }
 }
@@ -13,7 +13,7 @@ internal sealed class DeleteNodeActionIdReaderByNodeTypeIdFactory : IntDatabaseR
 
     private static readonly IntValueReader IdReader = new() { Name = "id" };
     public override string Sql => SQL;
-    
+
     private const string SQL = """
         SELECT id FROM delete_node_action WHERE node_type_id = @node_type_id
         """;

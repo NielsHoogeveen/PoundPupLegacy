@@ -18,12 +18,12 @@ public abstract class DatabaseAccessorFactory : IDatabaseAccessorFactory
 
     private IEnumerable<System.Reflection.FieldInfo> GetStaticNonPublicFields(Type t)
     {
-        foreach(var elem in t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)) {
+        foreach (var elem in t.GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)) {
             yield return elem;
         }
-        if(t.BaseType is not null) {
+        if (t.BaseType is not null) {
 
-            foreach(var elem in GetStaticNonPublicFields((Type)t.BaseType)) {
+            foreach (var elem in GetStaticNonPublicFields((Type)t.BaseType)) {
                 yield return elem;
             }
         }
@@ -37,8 +37,8 @@ public interface IDatabaseAccessor : IAsyncDisposable
     bool HasBeenPrepared { get; }
 }
 
-public abstract class DatabaseAccessor<TRequest>: IDatabaseAccessor
-    where TRequest: IRequest
+public abstract class DatabaseAccessor<TRequest> : IDatabaseAccessor
+    where TRequest : IRequest
 {
     protected readonly NpgsqlCommand _command;
     public string Sql => _command.CommandText;

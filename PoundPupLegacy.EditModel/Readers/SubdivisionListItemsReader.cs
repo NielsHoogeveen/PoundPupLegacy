@@ -2,7 +2,7 @@
 
 using Request = SubdivisionListItemsReaderRequest;
 
-public sealed record SubdivisionListItemsReaderRequest: IRequest
+public sealed record SubdivisionListItemsReaderRequest : IRequest
 {
     public required int CountryId { get; init; }
 }

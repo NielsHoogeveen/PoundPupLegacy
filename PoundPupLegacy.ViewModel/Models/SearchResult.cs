@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record SearchResult: IPagedList<SearchResultListEntry> 
+public record SearchResult : IPagedList<SearchResultListEntry>
 {
     public required SearchResultListEntry[] Entries { get; init; }
 

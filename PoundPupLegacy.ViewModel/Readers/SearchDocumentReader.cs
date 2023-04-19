@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = SearchDocumentReaderRequest;
 using PoundPupLegacy.ViewModel.Models;
+using Request = SearchDocumentReaderRequest;
 
 public sealed record SearchDocumentReaderRequest : IRequest
 {
@@ -175,7 +175,7 @@ internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFact
             ParameterValue.Create(LimitParameter, request.Limit),
             ParameterValue.Create(OffsetParameter, request.Offset),
             ParameterValue.Create(SearchStringParameter, request.SearchString)
-            
+
         };
     }
     protected override SearchResult Read(NpgsqlDataReader reader)

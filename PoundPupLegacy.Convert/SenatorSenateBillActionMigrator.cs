@@ -33,7 +33,7 @@ internal sealed class SenatorSenateBillActionMigrator : MigratorPPL
         IMandatorySingleItemDatabaseReader<ProfessionIdReaderRequest, int> professionIdReader
     )
     {
-        
+
 
         var sql = $"""
             SELECT

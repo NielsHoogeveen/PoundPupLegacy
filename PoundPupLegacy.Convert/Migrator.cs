@@ -28,7 +28,7 @@ internal abstract class MigratorCPCT : Migrator
         _tenantNodeReaderByUrlIdFactory = tenantNodeReaderByUrlIdFactory;
     }
     protected async Task<(int, int)> GetNodeId(
-        int urlId, 
+        int urlId,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {

@@ -2,7 +2,7 @@
 
 using Request = CountryListItemsReaderRequest;
 
-public sealed record CountryListItemsReaderRequest: IRequest
+public sealed record CountryListItemsReaderRequest : IRequest
 {
 }
 

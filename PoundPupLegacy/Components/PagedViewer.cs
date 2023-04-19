@@ -1,7 +1,7 @@
 ﻿using PoundPupLegacy.ViewModel.Models;
 namespace PoundPupLegacy.Components;
 
-public abstract class PagedViewer<TListEntry>: PagedViewerBase<PagedListSettings, TListEntry>
+public abstract class PagedViewer<TListEntry> : PagedViewerBase<PagedListSettings, TListEntry>
     where TListEntry : ListEntry
 {
     protected sealed override PagedListSettings PagedListSettings { get; } = new PagedListSettings();

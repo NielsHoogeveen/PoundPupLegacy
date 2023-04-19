@@ -125,7 +125,7 @@ internal sealed class SiteDataService : ISiteDataService
 
     public bool HasAccess(int userId, int tenantId, string path)
     {
-        if(path == "/") {
+        if (path == "/") {
             return true;
         }
         if (path == "/node/{Id:int}") {

@@ -30,7 +30,7 @@ internal sealed class FetchPersonsService : IPersonService
         try {
             await _connection.OpenAsync();
             await using var reader = await _personsDocumentReaderFactory.CreateAsync(_connection);
-            var persons =  await reader.ReadAsync(new PersonsDocumentReaderRequest {
+            var persons = await reader.ReadAsync(new PersonsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = limit,

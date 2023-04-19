@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = CountriesDocumentReaderRequest;
 using PoundPupLegacy.ViewModel.Models;
+using Request = CountriesDocumentReaderRequest;
 
 public sealed class CountriesDocumentReaderRequest : IRequest
 {

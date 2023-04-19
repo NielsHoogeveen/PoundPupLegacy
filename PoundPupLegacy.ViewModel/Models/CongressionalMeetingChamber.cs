@@ -6,13 +6,10 @@ public record CongressionalMeetingChamber
     public required DateTime DateTo { get; init; }
 
     private StateRepresentation[] states = Array.Empty<StateRepresentation>();
-    public required StateRepresentation[] States
-    {
+    public required StateRepresentation[] States {
         get => states;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 states = value;
             }
         }

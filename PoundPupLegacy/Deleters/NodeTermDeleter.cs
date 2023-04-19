@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Deleters;
 
 using Request = NodeTermDeleterRequest;
 
-public record NodeTermDeleterRequest: IRequest
+public record NodeTermDeleterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required int TermId { get; init; }
@@ -15,7 +15,7 @@ internal sealed class NodeTermDeleterFactory : DatabaseDeleterFactory<Request>
     private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     private static readonly NonNullableIntegerDatabaseParameter TermId = new() { Name = "term_id" };
 
-    public override string Sql => SQL;  
+    public override string Sql => SQL;
 
     const string SQL = $"""
         delete from node_term

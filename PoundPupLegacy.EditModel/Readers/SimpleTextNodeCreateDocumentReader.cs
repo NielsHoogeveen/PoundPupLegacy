@@ -3,7 +3,7 @@
 public abstract class SimpleTextNodeCreateDocumentReaderFactory<TResponse> : NodeCreateDocumentReaderFactory<TResponse>
 where TResponse : class, SimpleTextNode
 {
-    public override string Sql => SQL;  
+    public override string Sql => SQL;
     private const string SQL = $"""
             {CTE_CREATE}
             select

@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Common;
-
-namespace PoundPupLegacy.ViewModel.Models;
+﻿namespace PoundPupLegacy.ViewModel.Models;
 
 public record DocumentListItem
 {
@@ -11,15 +9,11 @@ public record DocumentListItem
     public DateTime? PublicationDateFrom { get; set; }
 
     public DateTime? PublicationDateTo { get; set; }
-    public FuzzyDate? Published
-    {
-        get
-        {
-            if (PublicationDateFrom is not null && PublicationDateTo is not null)
-            {
+    public FuzzyDate? Published {
+        get {
+            if (PublicationDateFrom is not null && PublicationDateTo is not null) {
                 var dateTimeRange = new DateTimeRange(PublicationDateFrom, PublicationDateTo);
-                if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result))
-                {
+                if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
                     return result;
                 }
             }

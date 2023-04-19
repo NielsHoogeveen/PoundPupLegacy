@@ -2,7 +2,7 @@
 
 using Request = ActionIdReaderByPathRequest;
 
-public sealed record ActionIdReaderByPathRequest: IRequest
+public sealed record ActionIdReaderByPathRequest : IRequest
 {
     public required string Path { get; init; }
 }

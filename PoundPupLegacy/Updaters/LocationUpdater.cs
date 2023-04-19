@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Updaters;
 
 using Request = LocationUpdaterRequest;
 
-public record LocationUpdaterRequest: IRequest
+public record LocationUpdaterRequest : IRequest
 {
     public required int Id { get; init; }
     public required string? Street { get; init; }

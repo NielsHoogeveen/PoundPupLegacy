@@ -1,11 +1,10 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.Deleters;
 
 using Request = TenantNodeDeleterRequest;
 
-public record TenantNodeDeleterRequest: IRequest
+public record TenantNodeDeleterRequest : IRequest
 {
     public required int Id { get; init; }
 }

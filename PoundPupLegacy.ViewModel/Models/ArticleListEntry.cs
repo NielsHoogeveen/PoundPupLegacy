@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record ArticleListEntry: ListEntry
+public record ArticleListEntry : ListEntry
 {
     public required int Id { get; init; }
 

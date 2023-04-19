@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record CaseCaseParties: IRequest
+public record CaseCaseParties : IRequest
 {
     public required int CaseId { get; init; }
 

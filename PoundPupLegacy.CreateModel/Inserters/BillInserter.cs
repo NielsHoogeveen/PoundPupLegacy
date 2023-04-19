@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request  = Bill;
+using Request = Bill;
 
 internal sealed class BillInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

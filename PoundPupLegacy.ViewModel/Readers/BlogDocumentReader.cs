@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = BlogDocumentReaderRequest;
 using PoundPupLegacy.ViewModel.Models;
+using Request = BlogDocumentReaderRequest;
 
 public sealed record BlogDocumentReaderRequest : IRequest
 {

@@ -10,14 +10,14 @@ where TResponse : class, Node
     protected abstract int NodeTypeId { get; }
 
     internal readonly FieldValueReader<TResponse> DocumentReader = new() { Name = "document" };
-    
+
     protected override IEnumerable<ParameterValue> GetParameterValues(NodeCreateDocumentRequest request)
     {
         return new ParameterValue[] {
             ParameterValue.Create(TenantIdParameter, request.TenantId),
             ParameterValue.Create(NodeTypeIdParameter, NodeTypeId),
             ParameterValue.Create(UserIdParameter, request.UserId)
-        };  
+        };
     }
     protected override TResponse Read(NpgsqlDataReader reader)
     {

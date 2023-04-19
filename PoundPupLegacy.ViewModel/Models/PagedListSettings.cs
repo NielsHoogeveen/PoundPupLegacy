@@ -5,7 +5,7 @@ public interface IPagedList
     public int NumberOfEntries { get; }
 }
 
-public interface IPagedList<T>: IPagedList
+public interface IPagedList<T> : IPagedList
     where T : ListEntry
 {
     public T[] Entries { get; }
@@ -18,7 +18,7 @@ public record PagedListSettings
     public int NumberOfPages => NumberOfEntries / PageSize + (NumberOfEntries % PageSize == 0 ? 0 : 1);
     public virtual string QueryString { get; set; } = "";
     public string Path { get; set; } = "";
-    public int PageSize { get; set; } = 25; 
+    public int PageSize { get; set; } = 25;
     public int StartPage => GetStartPage();
 
     public int EndPage => GetEndPage();

@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Common;
-
-namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
 internal static class SingleIdInserterFactory
 {

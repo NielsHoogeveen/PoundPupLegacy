@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = TopicsDocumentReaderRequest;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
+using Request = TopicsDocumentReaderRequest;
 
 public sealed record TopicsDocumentReaderRequest : IRequest
 {

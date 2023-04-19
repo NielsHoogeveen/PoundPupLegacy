@@ -155,14 +155,14 @@ public record NullCheckingAlternativeIntegerDatabaseParameter : DatabaseParamete
     public override void Set((int?, int?) options, NpgsqlCommand command)
     {
         var value = options.Item1 ?? options.Item2;
-        if(value is null) 
+        if (value is null)
             throw new NullReferenceException(nameof(value));
 
         SetParameter(value.Value, command);
     }
 }
 
-public record NullableAlternativeIntegerDatabaseParameter : DatabaseParameter<(int?,int?)>
+public record NullableAlternativeIntegerDatabaseParameter : DatabaseParameter<(int?, int?)>
 {
     public override bool IsNullable => true;
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Integer;

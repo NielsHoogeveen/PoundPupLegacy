@@ -2,7 +2,7 @@
 
 using Request = EditNodeActionIdReaderByNodeTypeIdRequest;
 
-public sealed record EditNodeActionIdReaderByNodeTypeIdRequest: IRequest
+public sealed record EditNodeActionIdReaderByNodeTypeIdRequest : IRequest
 {
     public required int NodeTypeId { get; init; }
 }

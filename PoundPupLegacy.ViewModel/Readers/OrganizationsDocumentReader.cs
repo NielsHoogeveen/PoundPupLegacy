@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = OrganizationsDocumentReaderRequest;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
+using Request = OrganizationsDocumentReaderRequest;
 
 public sealed record OrganizationsDocumentReaderRequest : IRequest
 {
@@ -20,7 +20,7 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
-    private static readonly  NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
+    private static readonly NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
     private static readonly NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
     private static readonly NullableIntegerDatabaseParameter OrganizationTypeIdParameter = new() { Name = "organization_type_id" };
     private static readonly NullableIntegerDatabaseParameter CountryIdParameter = new() { Name = "country_id" };

@@ -1,11 +1,9 @@
 using Bunit;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.Services;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Xunit;
 using Location = PoundPupLegacy.EditModel.Location;
@@ -16,7 +14,7 @@ public class UnitTest1
 {
     private const string URL_PATH = "united_states_senate_114th_congress";
     private const string REGEX = "united_states_(senate|house)_([0-9]+)(th|st|nd|rd)_congress";
-    
+
 
     private const string REGEX2 = "(?<year>[0-9]{1,4})(-(?<month>[0-9]{1,2})(-(?<day>[0-9]{1,2}))?)?";
 

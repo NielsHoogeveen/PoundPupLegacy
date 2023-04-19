@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Updaters;
 
 using Request = TenantNodeUpdaterRequest;
 
-public record TenantNodeUpdaterRequest: IRequest
+public record TenantNodeUpdaterRequest : IRequest
 {
     public required int Id { get; init; }
     public required string? UrlPath { get; init; }

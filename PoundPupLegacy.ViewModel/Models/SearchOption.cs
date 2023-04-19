@@ -19,12 +19,10 @@ public record SearchOptionDatabaseParameter : DatabaseParameter<(string, SearchO
     {
         string GetPattern(string searchTerm, SearchOption searchOption)
         {
-            if (string.IsNullOrEmpty(searchTerm))
-            {
+            if (string.IsNullOrEmpty(searchTerm)) {
                 return "%";
             }
-            return searchOption switch
-            {
+            return searchOption switch {
                 SearchOption.IsEqualTo => searchTerm,
                 SearchOption.Contains => $"%{searchTerm}%",
                 SearchOption.StartsWith => $"{searchTerm}%",

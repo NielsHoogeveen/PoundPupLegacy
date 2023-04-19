@@ -10,12 +10,12 @@ public interface IDatabaseUpdater : IAsyncDisposable
 
 }
 
-public interface IDatabaseUpdater<TRequest>: IDatabaseUpdater
-    where TRequest: IRequest
+public interface IDatabaseUpdater<TRequest> : IDatabaseUpdater
+    where TRequest : IRequest
 {
     Task UpdateAsync(TRequest request);
 }
-public interface IDatabaseUpdaterFactory: IDatabaseAccessorFactory
+public interface IDatabaseUpdaterFactory : IDatabaseAccessorFactory
 {
 
 }
@@ -53,7 +53,7 @@ public abstract class DatabaseUpdaterFactory<TRequest> : DatabaseAccessorFactory
 
 }
 public class DatabaseUpdater<TRequest> : DatabaseAccessor<TRequest>, IDatabaseUpdater<TRequest>
-    where TRequest: IRequest
+    where TRequest : IRequest
 {
     private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
     public DatabaseUpdater(NpgsqlCommand command, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper) : base(command)
@@ -68,8 +68,7 @@ public class DatabaseUpdater<TRequest> : DatabaseAccessor<TRequest>, IDatabaseUp
 
     public async Task UpdateAsync(TRequest request)
     {
-        foreach (var parameter in GetParameterValues(request)) 
-        {
+        foreach (var parameter in GetParameterValues(request)) {
             parameter.Set(_command);
         }
         await _command.ExecuteNonQueryAsync();

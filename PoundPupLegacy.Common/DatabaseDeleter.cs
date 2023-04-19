@@ -10,13 +10,13 @@ public interface IDatabaseDeleter : IAsyncDisposable
 
 }
 
-public interface IDatabaseDeleter<TRequest>: IDatabaseDeleter
-    where TRequest: IRequest
+public interface IDatabaseDeleter<TRequest> : IDatabaseDeleter
+    where TRequest : IRequest
 {
     Task DeleteAsync(TRequest request);
 }
 
-public interface IDatabaseDeleterFactory: IDatabaseAccessorFactory
+public interface IDatabaseDeleterFactory : IDatabaseAccessorFactory
 {
 }
 public interface IDatabaseDeleterFactory<TRequest> : IDatabaseDeleterFactory
@@ -50,7 +50,7 @@ public abstract class DatabaseDeleterFactory<TRequest> : DatabaseAccessorFactory
     public abstract string Sql { get; }
 }
 public class DatabaseDeleter<TRequest> : DatabaseAccessor<TRequest>, IDatabaseDeleter<TRequest>
-    where TRequest: IRequest
+    where TRequest : IRequest
 {
     private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
     public DatabaseDeleter(NpgsqlCommand command, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper) : base(command)

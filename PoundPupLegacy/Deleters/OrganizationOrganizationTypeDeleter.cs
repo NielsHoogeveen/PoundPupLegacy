@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Deleters;
 
 using Request = OrganizationOrganizationTypeDeleterRequest;
 
-public record OrganizationOrganizationTypeDeleterRequest: IRequest
+public record OrganizationOrganizationTypeDeleterRequest : IRequest
 {
     public required int LocationId { get; init; }
     public required int LocatableId { get; init; }

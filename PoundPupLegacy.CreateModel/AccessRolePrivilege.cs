@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record class AccessRolePrivilege: IRequest
+public sealed record class AccessRolePrivilege : IRequest
 {
     public required int AccessRoleId { get; init; }
 

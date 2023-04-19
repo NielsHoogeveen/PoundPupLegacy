@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.Common;
-
-namespace PoundPupLegacy.ViewModel.Models;
+﻿namespace PoundPupLegacy.ViewModel.Models;
 
 public record DisruptedPlacementCase : Case
 {
@@ -14,15 +12,11 @@ public record DisruptedPlacementCase : Case
 
     public DateTime? DateFrom { get; set; }
     public DateTime? DateTo { get; set; }
-    public FuzzyDate? FuzzyDate
-    {
-        get
-        {
-            if (DateFrom is not null && DateTo is not null)
-            {
+    public FuzzyDate? FuzzyDate {
+        get {
+            if (DateFrom is not null && DateTo is not null) {
                 var dateTimeRange = new DateTimeRange(DateFrom, DateTo);
-                if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result))
-                {
+                if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
                     return result;
                 }
             }
@@ -30,13 +24,10 @@ public record DisruptedPlacementCase : Case
         }
     }
     private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags
-    {
+    public required Link[] Tags {
         get => tags;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 tags = value;
             }
 
@@ -45,13 +36,10 @@ public record DisruptedPlacementCase : Case
 
     private Comment[] comments = Array.Empty<Comment>();
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems
-    {
+    public CommentListItem[] CommentListItems {
         get => commentListItems;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 commentListItems = value;
             }
         }
@@ -60,26 +48,20 @@ public record DisruptedPlacementCase : Case
     public Comment[] Comments => this.GetComments(); public required Link[] BreadCrumElements { get; init; }
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
-    public required DocumentListItem[] Documents
-    {
+    public required DocumentListItem[] Documents {
         get => documents;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 documents = value;
             }
         }
     }
 
     private Location[] _locations = Array.Empty<Location>();
-    public required Location[] Locations
-    {
+    public required Location[] Locations {
         get => _locations;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _locations = value;
             }
         }
@@ -87,51 +69,39 @@ public record DisruptedPlacementCase : Case
 
 
     private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics
-    {
+    public required Link[] SubTopics {
         get => subTopics;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 subTopics = value;
             }
         }
     }
 
     private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics
-    {
+    public required Link[] SuperTopics {
         get => superTopics;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 superTopics = value;
             }
         }
     }
 
     private CaseParties[] _caseParties = Array.Empty<CaseParties>();
-    public required CaseParties[] CaseParties
-    {
+    public required CaseParties[] CaseParties {
         get => _caseParties;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _caseParties = value;
             }
         }
     }
     private File[] _files = Array.Empty<File>();
-    public required File[] Files
-    {
+    public required File[] Files {
         get => _files;
-        init
-        {
-            if (value is not null)
-            {
+        init {
+            if (value is not null) {
                 _files = value;
             }
         }

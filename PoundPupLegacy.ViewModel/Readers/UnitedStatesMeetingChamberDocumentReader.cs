@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = UnitedStatesMeetingChamberDocumentReaderRequest;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
+using Request = UnitedStatesMeetingChamberDocumentReaderRequest;
 
 public sealed record UnitedStatesMeetingChamberDocumentReaderRequest : IRequest
 {
