@@ -1,0 +1,15 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+
+@foreach (var (row, index) in Model.Select((row, index) => (row, index)))
+{
+    @foreach (var elem in row.Values.OrderBy(x => x.Year))
+    {
+        <AdoptionImportsValueCellViewer Model="elem" RowType="row.RowType" LineNumber="index" />
+    }
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public AdoptionImport[] Model { get; set; } = Array.Empty<AdoptionImport>();
+}

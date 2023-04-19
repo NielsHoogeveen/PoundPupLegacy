@@ -1,0 +1,17 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits AdoptionImportsTableCellViewer
+
+@if (RowType == RowType.Total)
+{
+    <div class="country-from @TableCellCssClass">Total</div>
+}
+else
+{
+    <div class="country-from @TableCellCssClass">@Model &nbsp;</div>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public string? Model { get; set; }
+}

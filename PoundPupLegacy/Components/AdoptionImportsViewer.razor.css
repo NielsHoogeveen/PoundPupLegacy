@@ -1,0 +1,38 @@
+﻿.adoption-imports {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 25em auto;
+    margin-top: 2em;
+}
+
+::deep .adoption-import-numbers {
+    display: grid;
+    overflow-x: scroll;
+}
+
+::deep .adoption-import-numbers .header-element, ::deep .adoption-import-numbers .adoption-import-value {
+    padding-left: 0.15em;
+    padding-right: 0.25em;
+    border-left: solid 1px silver;
+    border-bottom: solid 1px silver;
+}
+
+::deep .adoption-import-countries .country-from {
+border-bottom: solid 1px silver;
+}
+
+::deep .adoption-import-numbers .year-10000 {
+color: black;
+}
+
+::deep .even {
+    background-color: white;
+}
+
+::deep .subtotal {
+    background-color: white;
+}
+
+::deep .total {
+    background-color: white;
+}

@@ -1,0 +1,17 @@
+﻿@foreach (var year in Enumerable.Range(StartYear, EndYear - StartYear + 1)) 
+{
+    <div class="header-element">@year</div>
+}
+<div class="header-element header-element-total">total</div>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public int StartYear { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public int EndYear { get; set; }
+
+}

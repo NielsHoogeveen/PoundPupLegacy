@@ -1,0 +1,15 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits AdoptionImportsTableCellViewer
+@if(Model is not null) {
+    <div class="adoption-import-value year-@Model.Year @TableCellCssClass">
+        @if (Model.NumberOfChildren != 0) {
+            @Model.NumberOfChildren
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public AdoptionImportValue? Model { get; set; }
+}
