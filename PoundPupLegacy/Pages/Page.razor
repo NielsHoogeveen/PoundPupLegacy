@@ -21,7 +21,10 @@
         await base.OnInitializedAsync();
         var routeAttribute = this.GetType().GetCustomAttributes(true).OfType<Microsoft.AspNetCore.Components.RouteAttribute>().FirstOrDefault()?.Template;
         if(routeAttribute is not null) {
-            CanAccessPage = SiteDataService.HasAccess(UserId, TenantId, routeAttribute);
+            CanAccessPage = SiteDataService.HasAccess(
+                userId: UserId, 
+                tenantId: TenantId, 
+                path: routeAttribute);
         }
         if (!CanAccessPage) {
             NotFoundListener.NotifyNotFound();            

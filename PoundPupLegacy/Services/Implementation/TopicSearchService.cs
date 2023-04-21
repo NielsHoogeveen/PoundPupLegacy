@@ -22,7 +22,7 @@ internal sealed class TopicSearchService : ITopicSearchService
         _connection = (NpgsqlConnection)connection;
         _tagDocumentsReaderFactory = tagDocumentsReaderFactory;
     }
-    public async Task<List<Tag>> GetTerms(int nodeId, int tenantId, string str)
+    public async Task<List<Tag>> GetTerms(int nodeId, int tenantId, string searchString)
     {
         await semaphore.WaitAsync(TimeSpan.FromMilliseconds(100));
         List<Tag> tags = new();
@@ -32,7 +32,7 @@ internal sealed class TopicSearchService : ITopicSearchService
             await foreach (var elem in reader.ReadAsync(new TagDocumentsReaderRequest {
                 NodeId = nodeId,
                 TenantId = tenantId,
-                SearchString = str
+                SearchString = searchString
 
             })) {
                 tags.Add(elem);

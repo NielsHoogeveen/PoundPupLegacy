@@ -23,8 +23,10 @@ internal sealed class FetchBlogService : IFetchBlogService
         _blogDocumentReaderFactory = blogDocumentReaderFactory;
     }
 
-    public async Task<Blog?> FetchBlog(int publisherId, int tenantId, int startIndex, int length)
+    public async Task<Blog?> FetchBlog(int publisherId, int tenantId, int pageNumber, int pageSize)
     {
+        
+        var startIndex = (pageNumber - 1) * pageSize;
         try {
             await _connection.OpenAsync();
             await using var reader = await _blogDocumentReaderFactory.CreateAsync(_connection);
@@ -32,7 +34,7 @@ internal sealed class FetchBlogService : IFetchBlogService
                 PublisherId = publisherId,
                 TenantId = tenantId,
                 StartIndex = startIndex,
-                Length = length
+                Length = pageSize
             });
             if (blog is null)
                 return null;

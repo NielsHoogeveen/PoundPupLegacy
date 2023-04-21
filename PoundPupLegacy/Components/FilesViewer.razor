@@ -1,5 +1,5 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if (Model is not null && Model.Any())
+@if (Model.Any())
 {
 
     <h4>Attachments</h4>
@@ -15,5 +15,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public IEnumerable<File>? Model { get; set; }
+    public required IEnumerable<File> Model { get; init; }
 }

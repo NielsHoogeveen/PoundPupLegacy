@@ -45,6 +45,8 @@
     protected override void OnInitialized()
     {
 
-        _menuItems = SiteDataService.GetMenuItemsForUser(UserId, TenantId);
+        _menuItems = SiteDataService.GetMenuItemsForUser(
+            userId: UserId, 
+            tenantId: TenantId);
     }
 }

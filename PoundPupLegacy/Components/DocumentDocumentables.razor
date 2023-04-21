@@ -99,7 +99,7 @@
 
     [Parameter]
     [EditorRequired]
-    public int? NodeId { get; set; }
+    public required int? NodeId { get; init; }
 
     List<DocumentableDocument> options = new();
 
@@ -129,10 +129,14 @@
     private async Task OnSetTopicSearch(ChangeEventArgs args)
     {
         options.Clear();
-        var str = args.Value?.ToString() ?? string.Empty;
-        if (!string.IsNullOrEmpty(str) && NodeId is not null)
+        var searchString = args.Value?.ToString() ?? string.Empty;
+        if (!string.IsNullOrEmpty(searchString) && NodeId is not null)
         {
-            options = await searchService.GetDocumentableDocuments(NodeId.Value, UserId, TenantId, str);
+            options = await searchService.GetDocumentableDocuments(
+                nodeId: NodeId.Value, 
+                userId: UserId, 
+                tenantId: TenantId, 
+                searchString: searchString);
         }
         StateHasChanged();
     }

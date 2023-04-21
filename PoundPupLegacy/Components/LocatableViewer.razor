@@ -1,12 +1,10 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if(Model is not null) 
-{
+@{
     <LocationsViewer Model="@Model.Locations" />    
 }
-
 @code {
     [Parameter]
     [EditorRequired]
-    public Locatable? Model { get; set; }
+    public required Locatable Model { get; init; }
 
 }

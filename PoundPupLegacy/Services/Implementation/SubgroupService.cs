@@ -22,16 +22,16 @@ internal sealed class SubgroupService : ISubgroupService
         _subgroupsDocumentReaderFactory = subgroupsDocumentReaderFactory;
     }
 
-    public async Task<SubgroupPagedList> GetSubGroupPagedList(int userId, int subgroupId, int limit, int pageNumber)
+    public async Task<SubgroupPagedList> GetSubGroupPagedList(int userId, int subgroupId, int pageSize, int pageNumber)
     {
-        var offset = (pageNumber - 1) * limit;
+        var offset = (pageNumber - 1) * pageSize;
         try {
             await _connection.OpenAsync();
             await using var reader = await _subgroupsDocumentReaderFactory.CreateAsync(_connection);
             var result = await reader.ReadAsync(new SubgroupsDocumentReaderRequest {
                 UserId = userId,
                 SubgroupId = subgroupId,
-                Limit = limit,
+                Limit = pageSize,
                 Offset = offset
             });
             if (result != null)

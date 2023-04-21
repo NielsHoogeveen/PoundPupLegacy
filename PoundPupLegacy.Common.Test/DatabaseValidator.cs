@@ -44,6 +44,7 @@ public abstract class DatabaseValidatorBase
     {
         var databaseParameters = factory.DatabaseParameters;
         var request = Activator.CreateInstance(requestType);
+        Assert.NotNull(request);
         var method = accessor.GetType().GetMethod("GetParameterValues", BindingFlags.NonPublic | BindingFlags.Instance, new Type[] { request.GetType() });
         Assert.NotNull(method);
         var parameterValues = method.Invoke(accessor, new object[] { request }) as IEnumerable<ParameterValue>;

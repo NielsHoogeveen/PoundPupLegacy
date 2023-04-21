@@ -22,17 +22,17 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
         _organizationsDocumentReaderFactory = organizationsDocumentReaderFactory;
     }
 
-    public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int limit, int pageNumber, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
+    public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int pageSize, int pageNumber, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
     {
 
-        var offset = (pageNumber - 1) * limit;
+        var offset = (pageNumber - 1) * pageSize;
         try {
             await _connection.OpenAsync();
             await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection);
             var organizations = await reader.ReadAsync(new OrganizationsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
-                Limit = limit,
+                Limit = pageSize,
                 Offset = offset,
                 SearchTerm = searchTerm,
                 SearchOption = searchOption,

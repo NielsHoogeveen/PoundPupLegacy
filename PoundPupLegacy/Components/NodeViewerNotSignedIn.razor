@@ -1,21 +1,18 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
 
-@if(Model is not null)
-{
+<div class="article-with-comments @ModelClassName">
 
-    var ModelClassName = Model.HasBeenPublished ? "node" : "node node-unpublished";
-
-
-    <div class="article-with-comments @ModelClassName">
-
-        <NodeContentViewer Model="Model" />
-        <CommentsViewer Model="Model.Comments"/>
-    </div>
+    <NodeContentViewer Model="Model" />
+    <CommentsViewer Model="Model.Comments"/>
+</div>
     
-}
+
 @code{
     [Parameter]
     [EditorRequired]
-    public Node? Model { get; set; }
+    public required Node Model { get; init; }
+
+    private string ModelClassName => Model.HasBeenPublished ? "node" : "node node-unpublished";
+
 }
 

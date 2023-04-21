@@ -141,8 +141,8 @@ internal sealed class AdoptionImportMigrator : MigratorPPL
             //The relation is about imports so the relation from is the receiving party
             //and relation to is the sending party
             //even though the children go from the sending party to the receiving party
-            CountryIdFrom = (int)nodeTo.Id,
-            CountryIdTo = (int)nodeFrom.Id,
+            CountryIdFrom = (int)nodeTo.Id!,
+            CountryIdTo = (int)nodeFrom.Id!,
             DateTimeRange = GetDateTimeRange(countryIdTo, year),
             Title = title,
             OwnerId = Constants.OWNER_GEOGRAPHY,

@@ -26,6 +26,11 @@
 
     protected override async Task<IPagedList<SearchResultListEntry>?> GetListEntriesAsync()
     {
-        return await FetchSearchService.FetchSearch(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm!);
+        return await FetchSearchService.FetchSearch(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            searchString: PagedListSettings.SearchTerm!);
     }
 }

@@ -1,14 +1,11 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if(Link is not null)
-{
-    <li>
-        <a href="@Link.Path">@Link.Name</a>
-    </li>
-}
+<li>
+    <a href="@Link.Path">@Link.Name</a>
+</li>
 
 @code {
     [Parameter]
     [EditorRequired]
-    public Link? Link { get; set; }
+    public required Link Link { get; init; }
 
 }

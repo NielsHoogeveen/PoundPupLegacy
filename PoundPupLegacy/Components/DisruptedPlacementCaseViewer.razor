@@ -1,14 +1,11 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if (Model is not null) 
-{
-    <LargeTextViewer Value="@Model.Description" />
-    <LabeledFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
-    <CasePartiesViewer Model="@Model.CaseParties" />
-    <DocumentableViewer Model="@Model" />
-    <LocatableViewer Model="@Model" />
-}
+<LargeTextViewer Value="@Model.Description" />
+<LabeledFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
+<CasePartiesViewer Model="@Model.CaseParties" />
+<DocumentableViewer Model="@Model" />
+<LocatableViewer Model="@Model" />
 @code {
     [Parameter]
     [EditorRequired]
-    public DisruptedPlacementCase? Model { get; set; }
+    public required DisruptedPlacementCase Model { get; init; }
 }

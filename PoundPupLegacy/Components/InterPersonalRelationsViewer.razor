@@ -1,5 +1,5 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if (Model is not null && Model.Any())
+@if (Model.Any())
 {
     <h3>Relations to other persons</h3>
     <table style="width: 100%">
@@ -48,5 +48,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public IEnumerable<InterPersonalRelation>? Model { get; set; }
+    public required IEnumerable<InterPersonalRelation> Model { get; init; }
 }

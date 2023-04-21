@@ -1,8 +1,5 @@
 ﻿@inject IJSRuntime JSRuntime
-
-@if (DialogContent is not null)
-{
-
+@{
     <div class="modal open" id="@Id" aria-modal="true" role="dialog" @onclick="Cancel">
         <div class="modal-dialog" @onclick:preventDefault="true" @onclick:stopPropagation="true">
             <div class="modal-content">
@@ -23,7 +20,8 @@
 }
 @code {
     [Parameter]
-    public RenderFragment? DialogContent { get; set; }
+    [EditorRequired]
+    public required RenderFragment DialogContent { get; init; }
 
     [Parameter]
     [EditorRequired]

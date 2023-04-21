@@ -1,23 +1,20 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if (Model is not null)
+@if (@Model.Id != 0)
 {
-    @if (@Model.Id != 0)
-    {
-        <div class="author">
-            by <span class="name"><a href="/user/@Model.Id">@Model.Name</a></span>
-            on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
-        </div>
-    }
-    @if (Model.Id == 0)
-    {
-        <div class="author">
-            by <span class="name"><em>@Model.Name</em></span>
-            on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
-        </div>
-    }
+    <div class="author">
+        by <span class="name"><a href="/user/@Model.Id">@Model.Name</a></span>
+        on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
+    </div>
+}
+@if (Model.Id == 0)
+{
+    <div class="author">
+        by <span class="name"><em>@Model.Name</em></span>
+        on <span class="date">@Model.CreatedDateTime.ToString("dddd, dd MMMM yyyy")</span>
+    </div>
 }
 @code{
     [Parameter]
     [EditorRequired]
-    public Authoring? Model { get; set; }
+    public required Authoring Model { get; init; }
 }

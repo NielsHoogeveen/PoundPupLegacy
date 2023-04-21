@@ -10,12 +10,13 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public DateTime? Value { get; set; }
-
-    [Parameter]
-    public string? Label { get; set; }
+    public required DateTime? Value { get; init; }
 
     [Parameter]
     [EditorRequired]
-    public DateTimeFormat Format {get; set;}
+    public required string Label { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required DateTimeFormat Format {get; init;}
 }

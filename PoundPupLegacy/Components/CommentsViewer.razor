@@ -1,5 +1,5 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if(Model is not null && Model.Any()){
+@if(Model.Any()){
     <div class="comments">
         @foreach (var comment in @Model)
         {
@@ -10,5 +10,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public IEnumerable<Comment>? Model { get; set; }
+    public required IEnumerable<Comment> Model { get; init; }
 }

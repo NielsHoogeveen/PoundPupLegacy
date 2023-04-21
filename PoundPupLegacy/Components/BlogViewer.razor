@@ -2,37 +2,32 @@
 @using PoundPupLegacy.ViewModel.Models
 @inherits PagedViewer<BlogPostTeaser>
 @inject IFetchBlogService FetchBlogService;
-
-@if (ListEntries is not null)
-{
-    <div class="blog-list">
-        <div class="breadcrum">
-            <span class="breadcrum-element">
-                <a href="/blogs">blogs</a>
-            </span>
-        </div>
-        <article>
-            <h1>
-                @Name
-            </h1>
-            <div class="blog-teasers">
-                @foreach (var entry in ListEntries)
-                {
-
-                    <div class="blog-teaser">
-                        <h2>
-                            <a href="/node/@entry.Id">@entry.Title</a>
-                        </h2>
-                        <partial name="~/Views/Shared/_Authoring.cshtml" model="@entry.Authoring" />
-                        @((MarkupString)entry.Text)
-                    </div>
-                }
-            </div>
-            <Pager Model="@PagedListSettings" />
-        </article>
+<div class="blog-list">
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/blogs">blogs</a>
+        </span>
     </div>
-    
-}
+    <article>
+        <h1>
+            @Name
+        </h1>
+        <div class="blog-teasers">
+            @foreach (var entry in ListEntries)
+            {
+
+                <div class="blog-teaser">
+                    <h2>
+                        <a href="/node/@entry.Id">@entry.Title</a>
+                    </h2>
+                    <partial name="~/Views/Shared/_Authoring.cshtml" model="@entry.Authoring" />
+                    @((MarkupString)entry.Text)
+                </div>
+            }
+        </div>
+        <Pager Model="@PagedListSettings" />
+    </article>
+</div>
 @code{
     [Parameter]
     [EditorRequired]
@@ -44,7 +39,11 @@
 
     protected override async Task<IPagedList<BlogPostTeaser>?> GetListEntriesAsync()
     {
-        var result =  await FetchBlogService.FetchBlog(Id, TenantId, PagedListSettings.PageNumber, PagedListSettings.PageSize);
+        var result =  await FetchBlogService.FetchBlog(
+            publisherId: Id, 
+            tenantId: TenantId, 
+            pageNumber: PagedListSettings.PageNumber, 
+            pageSize: PagedListSettings.PageSize);
         if (result is not null)
         {
             Name = result.Name;

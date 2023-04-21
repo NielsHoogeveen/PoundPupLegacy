@@ -1,13 +1,10 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
 
-@if(Model is not null) 
-{
-    <DocumentsViewer Model="@Model.Documents" />
-}
+<DocumentsViewer Model="@Model.Documents" />
 
 @code {
     [Parameter]
     [EditorRequired]
-    public Documentable? Model { get; set; }
+    public required Documentable Model { get; init; }
 
 }

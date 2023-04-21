@@ -3,7 +3,7 @@
 @inherits Viewer
 @inject ISiteDataService SiteDataService
 
-@if (Locatable is not null && Locatable.Locations.Any()) {
+@if (Locatable.Locations.Any()) {
     @if (locationToEdit is not null)
     {
         <ModalDialog Title="Add location" Id="location-dialog" OnOk="OnOkLocationDialog" OnCancel="OnCancelLocationDialog">
@@ -36,7 +36,7 @@
 
     [Parameter]
     [EditorRequired]
-    public Locatable? Locatable { get; set; }
+    public required Locatable Locatable { get; init; }
 
     private Location? locationToEdit = null;
 

@@ -1,5 +1,4 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if(Model is not null){
 <div class="section">
     <h3>Adoption imports</h3>
     <div class="adoption-imports">
@@ -7,9 +6,8 @@
         <AdoptionImportsValueColumnsViewer StartYear="Model.StartYear" EndYear="Model.EndYear" Imports="Model.Imports"/>
     </div>
 </div>
-}
 @code{
     [Parameter]
     [EditorRequired]
-    public AdoptionImports? Model { get; set; }
+    public required AdoptionImports Model { get; init; }
 }

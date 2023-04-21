@@ -3,70 +3,65 @@
 @inherits Viewer
 @inject ISiteDataService siteDataService
 @inject IUserService userService
-@if(Model is not null)
-{
-    var ModelClassName = Model.HasBeenPublished ? "node" : "node node-unpublished";
-
-    <div class="article-with-comments @ModelClassName">
-
-
-        @if (siteDataService.CanEdit(Model, UserId, TenantId))
-        {
-            @if (displayMode == DisplayMode.View)
-            {
-                <input class="tab-button" type="radio" name="tabs" id="tab1"checked />
-            }
-            else {
-                <input class="tab-button" type="radio" name="tabs" id="tab1" @onclick="ToggleDisplayMode" />
-            }
-            <label for="tab1">View</label>
-            @if (displayMode == DisplayMode.Edit)
-            {
-                <input class="tab-button" type="radio" name="tabs" id="tab2" checked />
-            }
-            else {
-                <input class="tab-button" type="radio" name="tabs" id="tab2" @onclick="ToggleDisplayMode" />
-            }
-            <label for="tab2">Edit</label>
-        }   
-        <div class=" tab content1">
-            <NodeContentViewer Model="Model" />
-        </div>
     
-        @if (siteDataService.CanEdit(Model, UserId, TenantId))
-        {
-            <div class="tab content2">
-                <article>
-                    @if (Model is BlogPost)
-                    {
-                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.BlogPost"/>
-                    }
-                    @if (Model is Article) 
-                    {
-                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.Article" />
-                    }
-                    @if (Model is Discussion) 
-                    {
-                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.Discussion" />
-                    }
-                    @if (Model is Document) 
-                    {
-                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.Document" />
-                    }
-                    @if (Model is Organization) {
-                        <NodeUpdater UrlId="Model.UrlId" T="EditModel.Organization" />
-                    }
-                </article>
-            </div>
-        }
-        <CommentsViewer Model="Model.Comments"/>
-    </div>
 
-}
+<div class="article-with-comments @ModelClassName">
+
+    @if (siteDataService.CanEdit(node: Model, userId: UserId, tenantId: TenantId))
+    {
+        @if (displayMode == DisplayMode.View)
+        {
+            <input class="tab-button" type="radio" name="tabs" id="tab1"checked />
+        }
+        else {
+            <input class="tab-button" type="radio" name="tabs" id="tab1" @onclick="ToggleDisplayMode" />
+        }
+        <label for="tab1">View</label>
+        @if (displayMode == DisplayMode.Edit)
+        {
+            <input class="tab-button" type="radio" name="tabs" id="tab2" checked />
+        }
+        else {
+            <input class="tab-button" type="radio" name="tabs" id="tab2" @onclick="ToggleDisplayMode" />
+        }
+        <label for="tab2">Edit</label>
+    }   
+    <div class=" tab content1">
+        <NodeContentViewer Model="Model" />
+    </div>
+    
+    @if (siteDataService.CanEdit(node: Model, userId: UserId, tenantId: TenantId))
+    {
+        <div class="tab content2">
+            <article>
+                @if (Model is BlogPost)
+                {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.BlogPost"/>
+                }
+                @if (Model is Article) 
+                {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Article" />
+                }
+                @if (Model is Discussion) 
+                {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Discussion" />
+                }
+                @if (Model is Document) 
+                {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Document" />
+                }
+                @if (Model is Organization) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Organization" />
+                }
+            </article>
+        </div>
+    }
+    <CommentsViewer Model="Model.Comments"/>
+</div>
 @code{
     [Parameter]
     [EditorRequired]
-    public Node? Model { get; set; }
+    public required Node Model { get; init; }
 
     private DisplayMode displayMode = DisplayMode.View;
 
@@ -77,4 +72,6 @@
         displayMode = displayMode == DisplayMode.View ? DisplayMode.Edit : DisplayMode.View;
         StateHasChanged();
     }
+
+    private string ModelClassName => Model.HasBeenPublished? "node" : "node node-unpublished";
 }

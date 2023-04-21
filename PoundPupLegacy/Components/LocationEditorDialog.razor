@@ -3,14 +3,13 @@
 @inject ISiteDataService SiteDataService
 @inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
-<style>
-    .label-value{
-        display: grid;
-        grid-template-columns: 1fr 5fr;
-    }
-</style>
-@if(Location is not null)
-{
+@{
+    <style>
+        .label-value{
+            display: grid;
+            grid-template-columns: 1fr 5fr;
+        }
+    </style>
     <div style="display: grid;grid-template-columns: 1fr 10em 1fr;">
         <div>
             <div class="label-value">
@@ -103,12 +102,13 @@
             }
         }
         </div>
-    </div>
+</div>
 }
 @code {
 
     [Parameter]
-    public Location? Location { get; set; }
+    [EditorRequired]
+    public required Location Location { get; init; }
 
     private Location? validatedLocation = null;
 

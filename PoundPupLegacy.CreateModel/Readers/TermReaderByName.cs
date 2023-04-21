@@ -10,7 +10,7 @@ public sealed class TermReaderByNameRequest : IRequest
 internal sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term>
 {
     private static readonly NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
-    private static readonly NonNullableStringDatabaseParameter Name = new() { Name = "name" };
+    private static readonly TrimmingNonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
     private static readonly IntValueReader IdReader = new() { Name = "id" };
     private static readonly StringValueReader NameReader = new() { Name = "name" };
@@ -33,7 +33,7 @@ internal sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReade
     {
         return new ParameterValue[] {
             ParameterValue.Create(VocabularyId, request.VocabularyId),
-            ParameterValue.Create(Name, request.Name?.Trim())
+            ParameterValue.Create(Name, request.Name)
         };
     }
 

@@ -38,7 +38,13 @@
 
     protected override async Task<IPagedList<PersonListEntry>?> GetListEntriesAsync()
     {
-        return await PersonService.FetchPersons(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm, PagedListSettings.SearchOption);
+        return await PersonService.FetchPersons(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            searchTerm: PagedListSettings.SearchTerm, 
+            searchOption: PagedListSettings.SearchOption);
     }
 
 }

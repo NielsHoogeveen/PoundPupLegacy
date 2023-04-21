@@ -3,66 +3,63 @@
 @using PoundPupLegacy.ViewModel.Models
 @inherits PagedSearchViewer<OrganizationListEntry>
 @inject IFetchOrganizationsService FetchOrganizationsService
-@if(ListEntries is not null){
-
-    <div class="articles">
-        <div class="breadcrum">
-            <span class="breadcrum-element">
-                <a href="/home">home</a>
-            </span>
-        </div>
-        <form>
-            <select name="country">
-                <option value="0"></option>
-                @foreach (var country in Countries)
-                {
-                    if (country.Selected)
-                    {
-                        <option value="@country.Id" selected>@country.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@country.Id">@country.Name</option>
-                    }
-                
-                }
-            </select>
-            <select name="organization_type">
-                <option value="0"></option>
-                @foreach (var organizationType in OrganizationTypes)
-                {
-                    if (organizationType.Selected)
-                    {
-                        <option value="@organizationType.Id" selected>@organizationType.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@organizationType.Id">@organizationType.Name</option>
-                    }
-                
-                }
-            </select>
-            <SearchOptionSelector SearchOption="@PagedListSettings.SearchOption" />
-            <input type="text" name="search_term" value="@PagedListSettings.SearchTerm" />
-            <input type="submit" value="Search" />
-        </form>
-        @if (ListEntries.Any())
-        {
-            @foreach (var organization in ListEntries)
-            {
-                <div>
-                    <a href="@organization.Path">@organization.Title</a>
-                </div>
-            }
-            <Pager Model="PagedListSettings" />
-        }
-        else
-        {
-            <p>No organizations were found</p>
-    
-        }
+<div class="articles">
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/home">home</a>
+        </span>
     </div>
-}
+    <form>
+        <select name="country">
+            <option value="0"></option>
+            @foreach (var country in Countries)
+            {
+                if (country.Selected)
+                {
+                    <option value="@country.Id" selected>@country.Name</option>
+                }
+                else
+                {
+                    <option value="@country.Id">@country.Name</option>
+                }
+                
+            }
+        </select>
+        <select name="organization_type">
+            <option value="0"></option>
+            @foreach (var organizationType in OrganizationTypes)
+            {
+                if (organizationType.Selected)
+                {
+                    <option value="@organizationType.Id" selected>@organizationType.Name</option>
+                }
+                else
+                {
+                    <option value="@organizationType.Id">@organizationType.Name</option>
+                }
+                
+            }
+        </select>
+        <SearchOptionSelector SearchOption="@PagedListSettings.SearchOption" />
+        <input type="text" name="search_term" value="@PagedListSettings.SearchTerm" />
+        <input type="submit" value="Search" />
+    </form>
+    @if (ListEntries.Any())
+    {
+        @foreach (var organization in ListEntries)
+        {
+            <div>
+                <a href="@organization.Path">@organization.Title</a>
+            </div>
+        }
+        <Pager Model="PagedListSettings" />
+    }
+    else
+    {
+        <p>No organizations were found</p>
+    
+    }
+</div>
 @code {
 
     protected override int PageSize => 50;
@@ -74,63 +71,63 @@
     private SelectionItem[] Countries = Array.Empty<SelectionItem>();
     private SelectionItem[] OrganizationTypes = Array.Empty<SelectionItem>();
 
-    protected override async Task<IPagedList<OrganizationListEntry>?> GetListEntriesAsync()
+    private void SetCountryId(Uri uri)
     {
-        if (NavigationManager is null)
-            return null;
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("country", out var countryIdValue))
-        {
-            if (int.TryParse(countryIdValue, out int providedCountryId))
-            {
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("country", out var countryIdValue)) {
+            if (int.TryParse(countryIdValue, out int providedCountryId)) {
                 CountryId = providedCountryId;
-                if (PagedListSettings.QueryString == string.Empty)
-                {
+                if (PagedListSettings.QueryString == string.Empty) {
                     PagedListSettings.QueryString = $"country={providedCountryId}";
                 }
-                else
-                {
+                else {
                     PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&country={providedCountryId}";
                 }
             }
         }
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("organization_type", out var organizationTypeIdValue))
-        {
-            if (int.TryParse(organizationTypeIdValue, out int providedOrganizationTypeId))
-            {
+    }
+    private void SetOrganizationTypeId(Uri uri)
+    {
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("organization_type", out var organizationTypeIdValue)) {
+            if (int.TryParse(organizationTypeIdValue, out int providedOrganizationTypeId)) {
                 OrganizationTypeId = providedOrganizationTypeId;
-                if (PagedListSettings.QueryString == string.Empty)
-                {
+                if (PagedListSettings.QueryString == string.Empty) {
                     PagedListSettings.QueryString = $"organization_type={providedOrganizationTypeId}";
                 }
-                else
-                {
+                else {
                     PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&organization_type={providedOrganizationTypeId}";
                 }
             }
         }
 
-        var organizationSearch = await FetchOrganizationsService.FetchOrganizations(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm, PagedListSettings.SearchOption, OrganizationTypeId, CountryId);
-        foreach (var country in organizationSearch.Countries)
-        {
-            if (country.Id == CountryId)
-            {
-                country.Selected = true;
+    }
+    private SelectionItem[] GetSelectItems(SelectionItem[] items, int? id)
+    {
+        foreach (var item in items) {
+            if (item.Id == id) {
+                item.Selected = true;
                 continue;
             }
-            country.Selected = false;
+            item.Selected = false;
         }
-        Countries = organizationSearch.Countries;
-        foreach (var organizationType in organizationSearch.OrganizationTypes)
-        {
-            if (organizationType.Id == OrganizationTypeId)
-            {
-                organizationType.Selected = true;
-                continue;
-            }
-            organizationType.Selected = false;
-        }
-        OrganizationTypes = organizationSearch.OrganizationTypes;
+        return items;
+    }
+
+    protected override async Task<IPagedList<OrganizationListEntry>?> GetListEntriesAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        SetCountryId(uri);
+        SetOrganizationTypeId(uri);
+        var organizationSearch = await FetchOrganizationsService.FetchOrganizations(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            searchTerm: PagedListSettings.SearchTerm, 
+            searchOption: PagedListSettings.SearchOption, 
+            organizationTypeId: OrganizationTypeId, 
+            countryId: CountryId);
+        Countries = GetSelectItems(organizationSearch.Countries, CountryId);
+        OrganizationTypes = GetSelectItems(organizationSearch.OrganizationTypes, OrganizationTypeId);
         return organizationSearch.Organizations;
     }
 }

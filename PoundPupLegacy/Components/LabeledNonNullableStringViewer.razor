@@ -5,9 +5,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public string Value { get; set; } = "Unset string value";
+    public required string Value { get; init; }
 
     [Parameter]
-    public string? Label { get; set; }
+    [EditorRequired]
+    public required string Label { get; init; }
 
 }

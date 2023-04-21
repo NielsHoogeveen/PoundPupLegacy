@@ -3,35 +3,32 @@
 @using PoundPupLegacy.Common;
 @inherits Viewer
 
-@if (Model is not null)
-{
-        <CKEditor Id="#editor" @bind-Value=@Model.Description />
-        <div class="organization-organization-types">
+<CKEditor Id="#editor" @bind-Value=@Model.Description />
+<div class="organization-organization-types">
 
-        @foreach(var organizationOrganizationType in Model.OrganizationOrganizationTypes) {
-            <select>
-                @foreach(var organizationType in Model.OrganizationTypes){
-                    @if (organizationType.Id == organizationOrganizationType.OrganizationTypeId) {
-                        <option selected value="@organizationType.Id">@organizationType.Name</option>
-                    }
-                    else {
-                        <option value="@organizationType.Id">@organizationType.Name</option>
-                    }
-                }
-            </select>
+@foreach(var organizationOrganizationType in Model.OrganizationOrganizationTypes) {
+    <select>
+        @foreach(var organizationType in Model.OrganizationTypes){
+            @if (organizationType.Id == organizationOrganizationType.OrganizationTypeId) {
+                <option selected value="@organizationType.Id">@organizationType.Name</option>
+            }
+            else {
+                <option value="@organizationType.Id">@organizationType.Name</option>
+            }
         }
-        </div>
-    
-        <FuzzyDateEditor @bind-Value=" Model.Establishment" />
-        <FuzzyDateEditor @bind-Value="Model.Termination" />
-        
-        <Tags Elems="Model.Tags" NodeId="Model.NodeId"/>
-        <TenantNodesEditor Node="Model" />
-        <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId"/>
-        <LocationsEditor Locatable="Model"/>
+    </select>
 }
+</div>
+    
+<FuzzyDateEditor @bind-Value=" Model.Establishment" />
+<FuzzyDateEditor @bind-Value="Model.Termination" />
+        
+<Tags Elems="Model.Tags" NodeId="Model.NodeId"/>
+<TenantNodesEditor Node="Model" />
+<AttachmentEditor Files="Model.Files" NodeId="Model.NodeId"/>
+<LocationsEditor Locatable="Model"/>
 @code {
     [Parameter]
     [EditorRequired]
-    public Organization? Model { get; set; }
+    public required Organization Model { get; init; }
 }

@@ -42,7 +42,11 @@
 
     protected override async Task<IPagedList<PollListEntry>?> GetListEntriesAsync()
     {
-        return await FetchPollsService.GetPolls(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber);
+        return await FetchPollsService.GetPolls(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber);
     }
 
 }

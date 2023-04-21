@@ -1,13 +1,10 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if(Model is not null) 
-{
-    <LabeledLinkListViewer Links="Model.SubTopics" Label="Child topics" />
-    <LabeledLinkListViewer Links="Model.SuperTopics" Label="Parent topics" />
-}
+<LabeledLinkListViewer Links="Model.SubTopics" Label="Child topics" />
+<LabeledLinkListViewer Links="Model.SuperTopics" Label="Parent topics" />
 
 @code {
     [Parameter]
     [EditorRequired]
-    public Nameable? Model { get; set; }
+    public required Nameable Model { get; set; }
 
 }

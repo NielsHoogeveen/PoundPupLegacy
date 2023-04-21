@@ -26,7 +26,7 @@ internal sealed class DocumentableDocumentsSearchService : IDocumentableDocument
         _documentableDocumentsDocumentReaderFactory = documentableDocumentsDocumentReaderFactory;
     }
 
-    public async Task<List<DocumentableDocument>> GetDocumentableDocuments(int nodeId, int userId, int tenantId, string str)
+    public async Task<List<DocumentableDocument>> GetDocumentableDocuments(int nodeId, int userId, int tenantId, string searchString)
     {
         await semaphore.WaitAsync(TimeSpan.FromMilliseconds(100));
         List<DocumentableDocument> tags = new();
@@ -37,7 +37,7 @@ internal sealed class DocumentableDocumentsSearchService : IDocumentableDocument
                 NodeId = nodeId,
                 UserId = userId,
                 TenantId = tenantId,
-                SearchString = str
+                SearchString = searchString
 
             };
             await foreach (var elem in reader.ReadAsync(request)) {

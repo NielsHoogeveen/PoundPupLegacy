@@ -5,8 +5,9 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public DateTime Value { get; set; }
+    public required DateTime Value { get; init; }
 
     [Parameter]
-    public string? Label { get; set; }
+    [EditorRequired]
+    public required string Label { get; init; }
 }

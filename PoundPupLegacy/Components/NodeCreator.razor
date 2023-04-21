@@ -13,6 +13,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Model = await editService.GetViewModelAsync(UserId, TenantId);
+        Model = await editService.GetViewModelAsync(userId: UserId, tenantId: TenantId);
     }
 }

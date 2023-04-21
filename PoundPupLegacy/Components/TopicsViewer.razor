@@ -39,7 +39,13 @@
 
     protected override async Task<IPagedList<TopicListEntry>?> GetListEntriesAsync()
     {
-        return await TopicService.FetchTopics(UserId, TenantId, PagedListSettings.PageSize, PagedListSettings.PageNumber, PagedListSettings.SearchTerm, PagedListSettings.SearchOption);
+        return await TopicService.FetchTopics(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            searchTerm: PagedListSettings.SearchTerm, 
+            searchOption: PagedListSettings.SearchOption);
     }
 
 }

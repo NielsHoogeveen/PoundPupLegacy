@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
 
 namespace PoundPupLegacy.Controllers;
@@ -22,8 +23,11 @@ public sealed class AttachmentController : Controller
     public async Task<IActionResult> Index(int id)
     {
         var userId = _userService.GetUserId(HttpContext.User);
-        var tenantId = _siteDataService.GetTenantId(Request);
-        var res = await _attachmentService.GetFileStream(id, userId, tenantId);
+        var tenantId = _siteDataService.GetTenantId(Request.GetUri());
+        var res = await _attachmentService.GetFileStream(
+            id: id, 
+            userId: userId, 
+            tenantId: tenantId);
         return res.Match(
             fr => File(fr.Stream, fr.MimeType, fr.FileName) as IActionResult,
             n => NotFound(),

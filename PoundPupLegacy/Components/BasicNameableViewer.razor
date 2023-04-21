@@ -1,10 +1,7 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if (Model is not null) 
-{
-    <NameableViewer Model="@Model" />
-}
+<NameableViewer Model="@Model" />
 @code{
     [Parameter]
     [EditorRequired]
-    public BasicNameable? Model { get; set; }
+    public required BasicNameable Model { get; init; }
 }

@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
@@ -112,17 +113,6 @@ internal sealed class SiteDataService : ISiteDataService
         return null;
     }
 
-    public bool HasAccess(int userId, int tenantId, HttpRequest request)
-    {
-        return _data.UserTenantActions.Contains(
-            new UserTenantAction {
-                UserId = userId,
-                TenantId = tenantId,
-                Action = request.Path
-            }
-        );
-    }
-
     public bool HasAccess(int userId, int tenantId, string path)
     {
         if (path == "/") {
@@ -147,19 +137,6 @@ internal sealed class SiteDataService : ISiteDataService
         );
     }
 
-
-    public int GetTenantId(HttpRequest httpRequest)
-    {
-        var domainName = httpRequest.Host.Value;
-        if (domainName == "localhost:7141") {
-            return 1;
-        }
-        var tenant = _data.Tenants.Find(x => x.DomainName == domainName);
-        if (tenant is not null) {
-            return tenant.Id;
-        }
-        return 1;
-    }
     public int GetTenantId(Uri uri)
     {
         var domainName = uri.Host;
@@ -188,7 +165,7 @@ internal sealed class SiteDataService : ISiteDataService
 
     public int? GetIdForUrlPath(HttpRequest httpRequest)
     {
-        var tenantId = GetTenantId(httpRequest);
+        var tenantId = GetTenantId(httpRequest.GetUri());
         var urlPath = httpRequest.Path.Value![1..];
         var tenant = _data.Tenants.Find(x => x.Id == tenantId);
         if (tenant is null) {

@@ -22,9 +22,9 @@ internal sealed class FetchPollsService : IFetchPollsService
     }
 
 
-    public async Task<Polls> GetPolls(int userId, int tenantId, int limit, int pageNumber)
+    public async Task<Polls> GetPolls(int userId, int tenantId, int pageSize, int pageNumber)
     {
-        var offset = (pageNumber - 1) * limit;
+        var offset = (pageNumber - 1) * pageSize;
 
         try {
             await _connection.OpenAsync();
@@ -32,7 +32,7 @@ internal sealed class FetchPollsService : IFetchPollsService
             var polls = await reader.ReadAsync(new PollsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
-                Limit = limit,
+                Limit = pageSize,
                 Offset = offset
             });
             var result = polls is not null ? polls : new Polls {

@@ -17,7 +17,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Model = await editService.GetViewModelAsync(UrlId, UserId, TenantId);
+        Model = await editService.GetViewModelAsync(
+            urlId: UrlId, 
+            userId: UserId, 
+            tenantId:TenantId);
+
         foreach (var tenant in Model!.Tenants) {
             var tenantNode = Model!.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
             tenant.TenantNode = tenantNode;

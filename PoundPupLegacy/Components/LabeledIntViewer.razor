@@ -8,9 +8,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public int? Value { get; set; }
+    public required int? Value { get; init; }
 
     [Parameter]
-    public string? Label { get; set; }
+    [EditorRequired]
+    public required string Label { get; init; }
 
 }

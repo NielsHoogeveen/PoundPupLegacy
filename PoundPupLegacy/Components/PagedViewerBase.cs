@@ -9,16 +9,9 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
     where TListEntry : ListEntry
 {
 
-    /*
-     * Inject the NavigationManager and suppress the null warning. 
-     * Once the NavigationManager is injected, it will never be null.
-     * In OnInializedAsync the NavigationManager has already been injected.
-     */
     [Inject]
-#pragma warning disable CS8618 
-    protected NavigationManager NavigationManager { get; set; }
-#pragma warning restore CS8618 
-    protected TListEntry[]? ListEntries { get; set; }
+    public required NavigationManager NavigationManager { get; init; }
+    protected TListEntry[] ListEntries { get; set; } = Array.Empty<TListEntry>();
 
     protected abstract Task<IPagedList<TListEntry>?> GetListEntriesAsync();
 

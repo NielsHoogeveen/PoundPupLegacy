@@ -5,30 +5,28 @@
 @inject IJSRuntime JSRuntime
 @inject IEditService<T> editService
 
-@if (Model is not null) {
-    <EditForm Model="@Model" OnSubmit="@HandleSubmit">
-        <InputText class="title-editor" id="name" @bind-Value="Model.Title" />
-        @if(Model is SimpleTextNode simpleTextNode) 
-        {
-            <SimpleTextNodeEditor Model="simpleTextNode"/>
-        }
-        @if(Model is Document document) {
-            <DocumentEditor Model="document"/>
-        }
-        @if (Model is Organization organization) {
-            <OrganizationEditor Model="organization" />
-        }
-        <Tags Elems="Model.Tags" NodeId="Model.NodeId" />
-        <TenantNodesEditor Node="@Model" />
-        <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />
-        <button type="submit">Submit</button>
-    </EditForm>
-}
+<EditForm Model="@Model" OnSubmit="@HandleSubmit">
+    <InputText class="title-editor" id="name" @bind-Value="Model.Title" />
+    @if(Model is SimpleTextNode simpleTextNode) 
+    {
+        <SimpleTextNodeEditor Model="simpleTextNode"/>
+    }
+    @if(Model is Document document) {
+        <DocumentEditor Model="document"/>
+    }
+    @if (Model is Organization organization) {
+        <OrganizationEditor Model="organization" />
+    }
+    <Tags Elems="Model.Tags" NodeId="Model.NodeId" />
+    <TenantNodesEditor Node="@Model" />
+    <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />
+    <button type="submit">Submit</button>
+</EditForm>
 
 @code {
     [Parameter]
     [EditorRequired]
-    public T? Model { get; set; }
+    public required T Model { get; init; }
 
     private async Task HandleSubmit()
     {

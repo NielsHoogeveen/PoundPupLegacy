@@ -1,5 +1,5 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if (Model is not null && Model.Any())
+@if (Model.Any())
 {
 
     <h3>Organizations</h3>
@@ -24,5 +24,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public IEnumerable<OrganizationPersonRelation>? Model { get; set; }
+    public required IEnumerable<OrganizationPersonRelation> Model { get; init; }
 }

@@ -1,26 +1,19 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if (Model is not null && Model.Any())
+@if (Model.Any())
 {
     <div class="section">
         <h3>Organizations</h3>
         @foreach (var organizationType in Model)
         {
-            <div>
+            <h4>
                 @organizationType.OrganizationTypeName
-            </div>
-            <ul>
-                @foreach (var organization in organizationType.Organizations)
-                {
-                    <li>
-                        <a href="@organization.Path" >@organization.Name</a>
-                    </li>
-                }
-            </ul>
+            </h4>
+            <LinkListViewer Links="@organizationType.Organizations" />
         }
     </div>
 }
 @code{
     [Parameter]
     [EditorRequired]
-    public IEnumerable<OrganizationTypeWithOrganizations>? Model { get; set; }
+    public required IEnumerable<OrganizationTypeWithOrganizations> Model { get; init; }
 }

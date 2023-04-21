@@ -1,12 +1,10 @@
 ﻿@using PoundPupLegacy.EditModel
 @using PoundPupLegacy.Services
 
-@if (Model is not null) {
-        <CKEditor Id="#editor" @bind-Value=@Model.Text />
-        <DocumentDocumentables Elems="Model.DocumentableDocuments" NodeId="Model.NodeId"/>
-}
+<CKEditor Id="#editor" @bind-Value=@Model.Text />
+<DocumentDocumentables Elems="Model.DocumentableDocuments" NodeId="Model.NodeId"/>
 @code {
     [Parameter]
     [EditorRequired]
-    public Document? Model { get; set; }
+    public required Document Model { get; init; }
 }

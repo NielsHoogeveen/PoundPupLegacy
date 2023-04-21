@@ -25,7 +25,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Node = await NodeDataService.FetchNode(Id, UserId, TenantId);
+        Node = await NodeDataService.FetchNode(
+            id: Id, 
+            userId: UserId, 
+            tenantId: TenantId);
     }
 
 }

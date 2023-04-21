@@ -169,52 +169,48 @@ internal class MemberOfCongressMigrator : MigratorPPL
 
     private async IAsyncEnumerable<(string, int)> GetStates()
     {
-        using (var command = _postgresConnection.CreateCommand()) {
-            var sql = """
-                select
-                    s.id,
-                    iso_3166_2_code
-                from iso_coded_subdivision ics
-                join subdivision s on s.id = ics.id
-                join country c on c.id = s.country_id
-                join tenant_node tn on tn.node_id = c.id
-                where tn.tenant_id = 1 and tn.url_id = 3805
-                """;
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = sql;
-            await command.PrepareAsync();
-            var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                yield return (reader.GetString(1), reader.GetInt32(0));
-            }
-            await reader.CloseAsync();
+        using var command = _postgresConnection.CreateCommand(); 
+        var sql = """
+            select
+                s.id,
+                iso_3166_2_code
+            from iso_coded_subdivision ics
+            join subdivision s on s.id = ics.id
+            join country c on c.id = s.country_id
+            join tenant_node tn on tn.node_id = c.id
+            where tn.tenant_id = 1 and tn.url_id = 3805
+            """;
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = sql;
+        await command.PrepareAsync();
+        var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
+            yield return (reader.GetString(1), reader.GetInt32(0));
         }
-
+        await reader.CloseAsync();
     }
     private async IAsyncEnumerable<(string, int)> GetPoliticalPartyAffiliations()
     {
-        using (var command = _postgresConnection.CreateCommand()) {
-            var sql = """
-                SELECT 
-                    usppa.id,
-                	t.name
-                FROM united_states_political_party_affiliation usppa
-                join term t on t.nameable_id =  usppa.id
-                join tenant_node tn on tn.node_id = t.vocabulary_id and tn.tenant_id = 1
-                where tn.url_id = 150
-                """;
-            command.CommandType = CommandType.Text;
-            command.CommandTimeout = 300;
-            command.CommandText = sql;
-            await command.PrepareAsync();
-            var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                yield return (reader.GetString(1), reader.GetInt32(0));
-            }
-            await reader.CloseAsync();
+        using var command = _postgresConnection.CreateCommand();
+        var sql = """
+            SELECT 
+                usppa.id,
+                t.name
+            FROM united_states_political_party_affiliation usppa
+            join term t on t.nameable_id =  usppa.id
+            join tenant_node tn on tn.node_id = t.vocabulary_id and tn.tenant_id = 1
+            where tn.url_id = 150
+            """;
+        command.CommandType = CommandType.Text;
+        command.CommandTimeout = 300;
+        command.CommandText = sql;
+        await command.PrepareAsync();
+        var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
+            yield return (reader.GetString(1), reader.GetInt32(0));
         }
-
+        await reader.CloseAsync();
     }
 
     private async Task<int?> FindIdByGovtackId(

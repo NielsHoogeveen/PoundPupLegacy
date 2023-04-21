@@ -123,7 +123,12 @@
             : ListEntries is null
                 ? GetTermIds() 
                 : TermNames.Where(x => x.Selected).Select(x => x.Id);
-        var articles =  await FetchArticlesService.GetArticles(TenantId, termIds.ToList(), PagedListSettings.PageNumber, PagedListSettings.PageSize, TERM_NAME_PREFIX);
+        var articles =  await FetchArticlesService.GetArticles(
+            tenantId: TenantId, 
+            selectedTerms: termIds.ToList(), 
+            pageNumber: PagedListSettings.PageNumber, 
+            pageSize: PagedListSettings.PageSize, 
+            termNamePrefix: TERM_NAME_PREFIX);
         TermNames = articles.TermNames;
         return articles;
     }

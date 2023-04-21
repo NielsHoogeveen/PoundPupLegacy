@@ -1,8 +1,10 @@
-﻿using PoundPupLegacy.ViewModel.Models;
+﻿using PoundPupLegacy.Common;
+using PoundPupLegacy.ViewModel.Models;
 
 namespace PoundPupLegacy.Services;
 
 public interface IFetchCasesService
 {
-    Task<Cases> FetchCases(int limit, int offset, int tenantId, int userId, CaseType caseType);
+    [RequireNamedArgs]
+    Task<Cases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, CaseType caseType);
 }

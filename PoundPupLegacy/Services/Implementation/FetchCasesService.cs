@@ -22,15 +22,15 @@ internal sealed class FetchCasesService : IFetchCasesService
         _casesDocumentReaderFactory = casesDocumentReaderFactory;
     }
 
-    public async Task<Cases> FetchCases(int limit, int pageNumber, int tenantId, int userId, CaseType caseType)
+    public async Task<Cases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, CaseType caseType)
     {
-        var startIndex = (pageNumber - 1) * limit;
+        var startIndex = (pageNumber - 1) * pageSize;
 
         try {
             await _connection.OpenAsync();
             await using var reader = await _casesDocumentReaderFactory.CreateAsync(_connection);
             var cases = await reader.ReadAsync(new CasesDocumentReaderRequest {
-                Limit = limit,
+                Limit = pageSize,
                 Offset = startIndex,
                 TenantId = tenantId,
                 UserId = userId,

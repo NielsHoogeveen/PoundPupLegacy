@@ -27,6 +27,10 @@
 
     protected override async Task<IPagedList<SubgroupListEntry>?> GetListEntriesAsync()
     {
-        return await SubgroupService.GetSubGroupPagedList(UserId, Id, PagedListSettings.PageSize, PagedListSettings.PageNumber);
+        return await SubgroupService.GetSubGroupPagedList(
+            userId: UserId, 
+            subgroupId: Id, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber);
     }
 }

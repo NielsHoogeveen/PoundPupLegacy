@@ -1,37 +1,33 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
 @inject IJSRuntime JSRuntime
 
-@if (Model is not null)
+@if(Model.Any())
 {
-
-    @if (Model.Any())
+    @foreach (var location in Model)
     {
-        @foreach (var location in Model)
-        {
-            <div class="address">
-                <h4>Adress</h4>
-                <div>@location.Street</div>
-                <div>@location.Additional</div>
-                <div>@location.PostalCode</div>
-                <div>@location.City</div>
-                @if (location.Subdivision is not null)
-                {
-                    <div><a href="@location.Subdivision.Path">@location.Subdivision.Name</a></div>
-                }
-                <div><a href="@location.Country.Path">@location.Country.Name</a></div>
-            </div>
-        }
-        @if (Model.Any(x => x.Latitude is not null && x.Longitude is not null))
-        {
-            <div id="location-viewer-map" style="height: 400px;width:700px;"></div>
-        }
+        <div class="address">
+            <h4>Adress</h4>
+            <div>@location.Street</div>
+            <div>@location.Additional</div>
+            <div>@location.PostalCode</div>
+            <div>@location.City</div>
+            @if (location.Subdivision is not null)
+            {
+                <div><a href="@location.Subdivision.Path">@location.Subdivision.Name</a></div>
+            }
+            <div><a href="@location.Country.Path">@location.Country.Name</a></div>
+        </div>
+    }
+    @if (Model.Any(x => x.Latitude is not null && x.Longitude is not null))
+    {
+        <div id="location-viewer-map" style="height: 400px;width:700px;"></div>
     }
 }
 @code{
 
     [Parameter]
     [EditorRequired]
-    public IEnumerable<Location>? Model { get; set; }
+    public required IEnumerable<Location> Model { get; init; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

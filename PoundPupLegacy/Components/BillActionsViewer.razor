@@ -1,5 +1,5 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-@if (Model is not null && Model.Any())
+@if (Model.Any())
 {
     <h3>Bill actions</h3>
     <table style="width:100%">
@@ -21,5 +21,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public IEnumerable<BillAction>? Model { get; set; }
+    public required IEnumerable<BillAction> Model { get; init; }
 }

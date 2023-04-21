@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>2216ab23-1133-4813-9d59-b0f2c2d201c5</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <WarningsAsErrors>true</WarningsAsErrors>
+    <WarningsAsErrors>RZ2012</WarningsAsErrors>
     <RazorLangVersion>7.0</RazorLangVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
     <PackageReference Include="OneOf" Version="3.0.243" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.6.2" />
+    <PackageReference Include="RequireNamedArguments" Version="0.0.2.1" />
     <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
   </ItemGroup>

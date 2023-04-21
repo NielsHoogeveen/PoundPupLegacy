@@ -1,8 +1,10 @@
-﻿using PoundPupLegacy.EditModel;
+﻿using PoundPupLegacy.Common;
+using PoundPupLegacy.EditModel;
 
 namespace PoundPupLegacy.Services;
 
 public interface ITopicSearchService
 {
-    Task<List<Tag>> GetTerms(int nodeId, int tenantId, string str);
+    [RequireNamedArgs]
+    Task<List<Tag>> GetTerms(int nodeId, int tenantId, string searchString);
 }
