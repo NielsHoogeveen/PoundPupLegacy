@@ -9,8 +9,8 @@ public record Person : Nameable, Documentable, Locatable
     public required string Title { get; init; }
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
-    private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags {
+    private BasicLink[] tags = Array.Empty<BasicLink>();
+    public required BasicLink[] Tags {
         get => tags;
         init {
             if (value is not null) {
@@ -30,7 +30,7 @@ public record Person : Nameable, Documentable, Locatable
     }
 
     public Comment[] Comments => this.GetComments();
-    public required Link[] BreadCrumElements { get; init; }
+    public required BasicLink[] BreadCrumElements { get; init; }
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
     public required DocumentListItem[] Documents {
@@ -51,8 +51,8 @@ public record Person : Nameable, Documentable, Locatable
     public string? FullName { get; init; }
     public string? Suffix { get; init; }
     public string? NickName { get; init; }
-    private Link[] professions = Array.Empty<Link>();
-    public required Link[] Professions {
+    private BasicLink[] professions = Array.Empty<BasicLink>();
+    public required BasicLink[] Professions {
         get => professions;
         init {
             if (value is not null) {
@@ -71,8 +71,8 @@ public record Person : Nameable, Documentable, Locatable
         }
     }
 
-    private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics {
+    private BasicLink[] subTopics = Array.Empty<BasicLink>();
+    public required BasicLink[] SubTopics {
         get => subTopics;
         init {
             if (value is not null) {
@@ -81,8 +81,8 @@ public record Person : Nameable, Documentable, Locatable
         }
     }
 
-    private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics {
+    private BasicLink[] superTopics = Array.Empty<BasicLink>();
+    public required BasicLink[] SuperTopics {
         get => superTopics;
         init {
             if (value is not null) {

@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 public record StateRepresentation
 {
-    public required Link State { get; set; }
+    public required BasicLink State { get; set; }
 
     private MemberOfCongress[] members = Array.Empty<MemberOfCongress>();
     public required MemberOfCongress[] Members {

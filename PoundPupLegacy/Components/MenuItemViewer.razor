@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.Models
+<li>
+    <a href="@Model.Path">@Model.Title</a>
+</li>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required MenuItem Model { get; init; }
+
+}

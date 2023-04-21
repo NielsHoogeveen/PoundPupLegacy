@@ -2,15 +2,15 @@
 
 public record PartyPoliticalEntityRelation
 {
-    public required Link Party { get; init; }
+    public required BasicLink Party { get; init; }
 
-    public required Link PoliticalEntity { get; init; }
+    public required BasicLink PoliticalEntity { get; init; }
 
-    public required Link PartyPoliticalEntityRelationType { get; init; }
+    public required BasicLink PartyPoliticalEntityRelationType { get; init; }
 
     public DateTime? DateFrom { get; init; }
 
     public DateTime? DateTo { get; init; }
 
-    public Link? DocumentProof { get; init; }
+    public BasicLink? DocumentProof { get; init; }
 }

@@ -1,0 +1,44 @@
+﻿nav {
+    border-top-style: solid;
+    border-top-width: thin;
+    border-right-style: solid;
+    border-right-width: 1px;
+    min-width: 10em;
+    flex-grow: 0;
+    background-color: var(--nav-bg-color);
+    border-top-color: var(--nav-border-color);
+    border-right-color: var(--nav-border-color);
+}
+
+nav ul li:hover {
+    background-color: var(--nav-bg-hover-color);
+}
+
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+::deep li {
+    background-color: var(--nav-bg-color);
+    color: var(--nav-text-color);
+    border-bottom-color: var(--nav-border-color);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-left: 0.25em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-right: 0.25em;
+}
+
+::deep li a {
+    display: block;
+    text-decoration: none;
+    color: var(--nav-text-color);
+}
+
+::deep form {
+    margin-top: 0.25em;
+}

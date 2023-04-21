@@ -44,10 +44,10 @@ public interface Node
     public string Title { get; }
     public Authoring Authoring { get; }
     public bool HasBeenPublished { get; }
-    public Link[] Tags { get; }
+    public BasicLink[] Tags { get; }
     public CommentListItem[] CommentListItems { get; }
     public Comment[] Comments { get; }
-    public Link[] BreadCrumElements { get; }
+    public BasicLink[] BreadCrumElements { get; }
     public File[] Files { get; }
 
 }

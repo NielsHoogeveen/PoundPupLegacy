@@ -69,10 +69,10 @@
             <h2>@Model.MeetingName</h2>
             <div>@Model.DateFrom.ToString("d MMMM yyyy") - @Model.DateTo.ToString("d MMMM yyyy")</div>
         </div>
-        @foreach(var state in Model.States.OrderBy(x => x.State.Name)) 
+        @foreach(var state in Model.States.OrderBy(x => x.State.Title)) 
         {
             <div class="state-representation">
-                <h4><a href="@state.State.Path">@state.State.Name</a></h4>
+                <h4><a href="@state.State.Path">@state.State.Title</a></h4>
                 @foreach(var member in state.Members.OrderBy(x => x.Name)) 
                 {
                     <div class="member-of-congress">
@@ -86,7 +86,7 @@
                                 <div class="list-entries">
                                 @foreach (var bill in member.Bills)
                                 {
-                                    <div><a href="@bill.Path">@bill.Name</a></div>
+                                    <div><a href="@bill.Path">@bill.Title</a></div>
                                 }
                                 </div>
                             }
@@ -94,7 +94,7 @@
                                 <label>Letters singed</label>
                                 <div class="list-entries">
                                     @foreach (var letter in member.Letters) {
-                                        <div><a href="@letter.Path">@letter.Name</a></div>
+                                        <div><a href="@letter.Path">@letter.Title</a></div>
                                     }
                                 </div>
                             }
@@ -105,7 +105,7 @@
                                 @foreach(var term in member.Terms.OrderBy(x => x.DateFrom)) {
                                     <tr>
                                         <td>@term.MemberType</td>
-                                        <td><a href="@term.State.Path">@term.State.Name</a></td>
+                                        <td><a href="@term.State.Path">@term.State.Title</a></td>
                                             <td>@term.DateFrom?.ToString("yyyy MMMM dd")</td>
                                             <td>@term.DateTo?.ToString("yyyy MMMM dd")</td>
                                     </tr>

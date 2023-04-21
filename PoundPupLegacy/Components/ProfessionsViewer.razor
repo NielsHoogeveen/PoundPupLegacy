@@ -5,12 +5,12 @@
     <div class="person-types">
         @foreach (var link in Model)
         {
-            <div><a href="@link.Path">@link.Name</a></div>
+            <div><a href="@link.Path">@link.Title</a></div>
         }
     </div>
 }
 @code{
     [Parameter]
     [EditorRequired]
-    public IEnumerable<Link>? Model { get; set; }
+    public IEnumerable<BasicLink>? Model { get; set; }
 }

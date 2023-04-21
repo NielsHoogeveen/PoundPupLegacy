@@ -24,22 +24,22 @@
             </th>
 
         </tr>
-        @foreach (var relation in Model.OrderBy(x => x.InterOrganizationalRelationType.Name).ThenBy(x => x.OrganizationTo.Name))
+        @foreach (var relation in Model.OrderBy(x => x.InterOrganizationalRelationType.Title).ThenBy(x => x.OrganizationTo.Title))
         {
             <tr>
                 <td>
-                    <a href="@relation.OrganizationTo.Path">@relation.OrganizationTo.Name</a>
+                    <a href="@relation.OrganizationTo.Path">@relation.OrganizationTo.Title</a>
                 </td>
                 <td>
-                    <a href="@relation.InterOrganizationalRelationType.Path">@relation.InterOrganizationalRelationType.Name</a>
+                    <a href="@relation.InterOrganizationalRelationType.Path">@relation.InterOrganizationalRelationType.Title</a>
                 </td>
                 <td>
-                    <a href="@relation.OrganizationFrom.Path">@relation.OrganizationFrom.Name</a>
+                    <a href="@relation.OrganizationFrom.Path">@relation.OrganizationFrom.Title</a>
                 </td>
                 <td>
                     @if (relation.GeographicEntity is not null)
                     {
-                        <a href="@relation.GeographicEntity.Path">@relation.GeographicEntity.Name</a>
+                        <a href="@relation.GeographicEntity.Path">@relation.GeographicEntity.Title</a>
                     }
                 </td>
 

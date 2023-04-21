@@ -4,7 +4,7 @@
         <t2>See also</t2>
         <ul>
             @foreach (var elem in Links) {
-                <li><a href="@elem.Path">@elem.Name</a></li>
+                <li><a href="@elem.Path">@elem.Title</a></li>
             }
         </ul>
     </div>
@@ -13,6 +13,6 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public Link[] Links { get; set; } = Array.Empty<Link>();
+    public BasicLink[] Links { get; set; } = Array.Empty<BasicLink>();
 
 }

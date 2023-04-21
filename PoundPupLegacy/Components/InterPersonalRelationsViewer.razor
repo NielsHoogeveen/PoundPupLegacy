@@ -21,19 +21,19 @@
             </th>
 
         </tr>
-        @foreach (var relation in Model.OrderBy(x => x.InterPersonalRelationType.Name).ThenBy(x => x.PersonTo.Name))
+        @foreach (var relation in Model.OrderBy(x => x.InterPersonalRelationType.Title).ThenBy(x => x.PersonTo.Title))
         {
             <tr>
                 <td>
-                    <a href="@relation.PersonTo.Path">@relation.PersonTo.Name</a>
+                    <a href="@relation.PersonTo.Path">@relation.PersonTo.Title</a>
                     
                 </td>
                 <td>
-                    <a href="@relation.InterPersonalRelationType.Path">@relation.InterPersonalRelationType.Name</a>
+                    <a href="@relation.InterPersonalRelationType.Path">@relation.InterPersonalRelationType.Title</a>
                     
                 </td>
                 <td>
-                    <a href="@relation.PersonFrom.Path">@relation.PersonFrom.Name</a>
+                    <a href="@relation.PersonFrom.Path">@relation.PersonFrom.Title</a>
                 </td>
                 <td>
                     @relation.DateFrom?.ToString("yyyy MMMM dd")

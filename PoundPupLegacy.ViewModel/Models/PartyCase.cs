@@ -4,8 +4,8 @@ public record PartyCase
 {
     public required string CasePartyTypeName { get; init; }
 
-    private Link[] _cases = Array.Empty<Link>();
-    public required Link[] Cases {
+    private BasicLink[] _cases = Array.Empty<BasicLink>();
+    public required BasicLink[] Cases {
         get => _cases;
         init {
             if (value is not null) {

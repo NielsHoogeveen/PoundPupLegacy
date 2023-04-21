@@ -23,8 +23,8 @@ public record CoercedAdoptionCase : Case
             return null;
         }
     }
-    private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags {
+    private BasicLink[] tags = Array.Empty<BasicLink>();
+    public required BasicLink[] Tags {
         get => tags;
         init {
             if (value is not null) {
@@ -43,7 +43,7 @@ public record CoercedAdoptionCase : Case
         }
     }
 
-    public Comment[] Comments => this.GetComments(); public required Link[] BreadCrumElements { get; init; }
+    public Comment[] Comments => this.GetComments(); public required BasicLink[] BreadCrumElements { get; init; }
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
     public required DocumentListItem[] Documents {
@@ -66,8 +66,8 @@ public record CoercedAdoptionCase : Case
     }
 
 
-    private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics {
+    private BasicLink[] subTopics = Array.Empty<BasicLink>();
+    public required BasicLink[] SubTopics {
         get => subTopics;
         init {
             if (value is not null) {
@@ -76,8 +76,8 @@ public record CoercedAdoptionCase : Case
         }
     }
 
-    private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics {
+    private BasicLink[] superTopics = Array.Empty<BasicLink>();
+    public required BasicLink[] SuperTopics {
         get => superTopics;
         init {
             if (value is not null) {

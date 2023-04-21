@@ -3,7 +3,7 @@
 {
     <div>
         <label>Document type</label>
-        <a href="@Model.DocumentType.Path">@Model.DocumentType.Name</a>
+        <a href="@Model.DocumentType.Path">@Model.DocumentType.Title</a>
     </div>
 }
 @if(Model.SourceUrl is not null)
@@ -27,7 +27,7 @@
         <label>Relates to:</label>
         @foreach (var documentable in Model.Documentables)
         {
-            <div><a href="@documentable.Path">@documentable.Name</a></div>
+            <div><a href="@documentable.Path">@documentable.Title</a></div>
         }
     </div>
 }

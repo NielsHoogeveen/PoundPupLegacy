@@ -12,27 +12,16 @@
         </li>
         @foreach (var item in _menuItems) 
         {
-            <a href="@item.Path">
-            <li>
-                    @item.Name
-            </li>
-            </a>
+            <LinkListElementViewer Link="@item" />
         }
         @if (UserId != 0) {
             <li>
-                <form id="login-form" action="/logout" method="post">
-                    <input type="submit" value="logout" />
-                </form>
+                <LogoutForm />
             </li>
         }
         else {
             <li>
-                <form id="login-form" action="/login" method="post">
-                    <input type="text" name="user" />
-                    <input type="password" name="password" />
-                    <br />
-                    <input type="submit" value="login" />
-                </form>
+                <LoginForm />
             </li>
         }
     </ul>

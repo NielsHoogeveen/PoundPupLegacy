@@ -2,10 +2,10 @@
 
 public record InterOrganizationalRelation
 {
-    public required Link OrganizationFrom { get; init; }
-    public required Link OrganizationTo { get; init; }
-    public required Link InterOrganizationalRelationType { get; init; }
-    public Link? GeographicEntity { get; init; }
+    public required BasicLink OrganizationFrom { get; init; }
+    public required BasicLink OrganizationTo { get; init; }
+    public required BasicLink InterOrganizationalRelationType { get; init; }
+    public BasicLink? GeographicEntity { get; init; }
     public DateTime? DateFrom { get; init; }
     public DateTime? DateTo { get; init; }
     public decimal? MoneyInvolved { get; init; }

@@ -21,14 +21,14 @@ public record Document : Node
         }
     }
 
-    public Link? DocumentType { get; init; }
+    public BasicLink? DocumentType { get; init; }
     public string? SourceUrl { get; init; }
     public string? SourceUrlHost => SourceUrl is null ? null : new Uri(SourceUrl).Host;
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
 
-    private Link[] tags = Array.Empty<Link>();
-    public Link[] Tags {
+    private BasicLink[] tags = Array.Empty<BasicLink>();
+    public BasicLink[] Tags {
         get => tags;
         init {
             if (value is not null) {
@@ -37,8 +37,8 @@ public record Document : Node
 
         }
     }
-    private Link[] documentables = Array.Empty<Link>();
-    public Link[] Documentables {
+    private BasicLink[] documentables = Array.Empty<BasicLink>();
+    public BasicLink[] Documentables {
         get => documentables;
         init {
             if (value is not null) {
@@ -59,7 +59,7 @@ public record Document : Node
     }
 
     public Comment[] Comments => this.GetComments();
-    public required Link[] BreadCrumElements { get; init; }
+    public required BasicLink[] BreadCrumElements { get; init; }
 
     private File[] _files = Array.Empty<File>();
 

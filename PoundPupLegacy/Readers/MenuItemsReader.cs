@@ -58,7 +58,7 @@ internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<R
             jsonb_agg(
         	    jsonb_build_object(
         		    'Path', path,
-        		    'Name', "name"
+        		    'Title', "name"
         	    )
             )
         

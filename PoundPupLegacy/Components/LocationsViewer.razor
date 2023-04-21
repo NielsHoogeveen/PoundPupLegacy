@@ -13,9 +13,9 @@
             <div>@location.City</div>
             @if (location.Subdivision is not null)
             {
-                <div><a href="@location.Subdivision.Path">@location.Subdivision.Name</a></div>
+                <div><a href="@location.Subdivision.Path">@location.Subdivision.Title</a></div>
             }
-            <div><a href="@location.Country.Path">@location.Country.Name</a></div>
+            <div><a href="@location.Country.Path">@location.Country.Title</a></div>
         </div>
     }
     @if (Model.Any(x => x.Latitude is not null && x.Longitude is not null))

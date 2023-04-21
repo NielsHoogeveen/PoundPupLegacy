@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+<form>
+    <SearchOptionSelector SearchOption="@PagedListSettings.SearchOption" />
+    <input type="text" name="search" value="@PagedListSettings.SearchTerm" />
+    <input type="submit" value="Search" />
+</form>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required PagedSearchListSettings PagedListSettings { get; init; }
+}

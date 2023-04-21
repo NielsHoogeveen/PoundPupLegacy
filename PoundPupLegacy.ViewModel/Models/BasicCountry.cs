@@ -10,10 +10,10 @@ public record BasicCountry : TopLevelCountry
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
     public required string ISO3166_1_Code { get; init; }
-    public required Link GlobalRegion { get; init; }
+    public required BasicLink GlobalRegion { get; init; }
 
-    private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags {
+    private BasicLink[] tags = Array.Empty<BasicLink>();
+    public required BasicLink[] Tags {
         get => tags;
         init {
             if (value is not null) {
@@ -33,7 +33,7 @@ public record BasicCountry : TopLevelCountry
         }
     }
 
-    public Comment[] Comments => this.GetComments(); public required Link[] BreadCrumElements { get; init; }
+    public Comment[] Comments => this.GetComments(); public required BasicLink[] BreadCrumElements { get; init; }
 
     public required AdoptionImports AdoptionImports { get; init; }
 
@@ -65,8 +65,8 @@ public record BasicCountry : TopLevelCountry
         }
     }
 
-    private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics {
+    private BasicLink[] subTopics = Array.Empty<BasicLink>();
+    public required BasicLink[] SubTopics {
         get => subTopics;
         init {
             if (value is not null) {
@@ -75,8 +75,8 @@ public record BasicCountry : TopLevelCountry
         }
     }
 
-    private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics {
+    private BasicLink[] superTopics = Array.Empty<BasicLink>();
+    public required BasicLink[] SuperTopics {
         get => superTopics;
         init {
             if (value is not null) {

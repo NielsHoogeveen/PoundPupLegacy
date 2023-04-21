@@ -1,0 +1,25 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+<div class="chamber">
+    <div>
+        <label>@Label</label>
+        <br />
+        <img src="@Model.ImagePath" />
+    </div>
+    <div class="meetings">
+        @foreach (var meeting in Model.Meetings.OrderByDescending(x => x.DateFrom)) {
+            <a href="@meeting.Path">@meeting.Name</a>
+            <div>@meeting.DateFrom.ToString("yyyy MMMM dd") - @meeting.DateTo.ToString("yyyy MMMM dd")</div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required CongressionalChamber Model { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Label { get; init; }
+
+}

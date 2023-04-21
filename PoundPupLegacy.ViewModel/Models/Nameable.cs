@@ -4,7 +4,7 @@ public interface Nameable : Node
 {
     string Description { get; }
 
-    Link[] SubTopics { get; }
-    Link[] SuperTopics { get; }
+    BasicLink[] SubTopics { get; }
+    BasicLink[] SuperTopics { get; }
 
 }

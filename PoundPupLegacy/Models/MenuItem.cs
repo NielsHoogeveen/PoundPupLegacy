@@ -1,9 +1,11 @@
-﻿namespace PoundPupLegacy.Models;
+﻿using PoundPupLegacy.Common;
 
-public record MenuItem
+namespace PoundPupLegacy.Models;
+
+public record MenuItem: Link
 {
     public required string Path { get; init; }
-    public required string Name { get; init; }
+    public required string Title { get; init; }
 }
 
 

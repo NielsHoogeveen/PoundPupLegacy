@@ -23,8 +23,8 @@ public record class MultiQuestionPoll : Poll, SimpleTextNode
         }
     }
 
-    private Link[] tags = Array.Empty<Link>();
-    public Link[] Tags {
+    private BasicLink[] tags = Array.Empty<BasicLink>();
+    public BasicLink[] Tags {
         get => tags;
         init {
             if (value is not null) {
@@ -34,8 +34,8 @@ public record class MultiQuestionPoll : Poll, SimpleTextNode
         }
     }
 
-    private Link[] seeAlsoBoxElements = Array.Empty<Link>();
-    public Link[] SeeAlsoBoxElements {
+    private BasicLink[] seeAlsoBoxElements = Array.Empty<BasicLink>();
+    public BasicLink[] SeeAlsoBoxElements {
         get => seeAlsoBoxElements;
         init {
             if (value is not null) {
@@ -56,7 +56,7 @@ public record class MultiQuestionPoll : Poll, SimpleTextNode
 
     public Comment[] Comments => this.GetComments();
 
-    public required Link[] BreadCrumElements { get; init; }
+    public required BasicLink[] BreadCrumElements { get; init; }
 
     private File[] _files = Array.Empty<File>();
     public required File[] Files {

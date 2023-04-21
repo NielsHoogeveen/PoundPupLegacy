@@ -6,8 +6,8 @@ public record CaseParties
     public string? OrganizationsText { get; init; }
     public string? PersonsText { get; init; }
 
-    private Link[] _persons = Array.Empty<Link>();
-    public required Link[] Persons {
+    private BasicLink[] _persons = Array.Empty<BasicLink>();
+    public required BasicLink[] Persons {
         get => _persons;
         init {
             if (value is not null) {
@@ -15,8 +15,8 @@ public record CaseParties
             }
         }
     }
-    private Link[] _organizations = Array.Empty<Link>();
-    public required Link[] Organizations {
+    private BasicLink[] _organizations = Array.Empty<BasicLink>();
+    public required BasicLink[] Organizations {
         get => _organizations;
         init {
             if (value is not null) {

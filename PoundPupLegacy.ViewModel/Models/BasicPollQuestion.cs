@@ -21,15 +21,15 @@ public record BasicPollQuestion : PollQuestion
         }
     }
 
-    public Link[] SeeAlsoBoxElements => Array.Empty<Link>();
+    public BasicLink[] SeeAlsoBoxElements => Array.Empty<BasicLink>();
 
-    public Link[] Tags => Array.Empty<Link>();
+    public BasicLink[] Tags => Array.Empty<BasicLink>();
 
     public CommentListItem[] CommentListItems => Array.Empty<CommentListItem>();
 
     public Comment[] Comments => Array.Empty<Comment>();
 
-    public Link[] BreadCrumElements => Array.Empty<Link>();
+    public BasicLink[] BreadCrumElements => Array.Empty<BasicLink>();
 
     public File[] Files => Array.Empty<File>();
 }

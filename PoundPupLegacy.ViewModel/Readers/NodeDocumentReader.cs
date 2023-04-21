@@ -297,16 +297,16 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 jsonb_agg(
                     jsonb_build_object(
                         'Party', jsonb_build_object(
-        	                'Name', party_name,
+        	                'Title', party_name,
         	                'Path', party_path
                         ),
                         'PoliticalEntity', jsonb_build_object(
-        	                'Name', political_entity_name,
+        	                'Title', political_entity_name,
         	                'Path', political_entity_path
                         ),
                         'PartyPoliticalEntityRelationType',
                         jsonb_build_object(
-        	                'Name', party_political_entity_relation_type_name,
+        	                'Title', party_political_entity_relation_type_name,
         	                'Path', party_political_entity_relation_type_path
                         ),
                         'DateFrom', lower(date_range),
@@ -314,7 +314,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'DocumentProof', case
         	                when status4 is null or status4 = -1 then null
         	                else jsonb_build_object(
-        		                'Name', document_proof_name,
+        		                'Title', document_proof_name,
         		                'Path', document_proof_path
         	                )
                         end
@@ -526,7 +526,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    case_type_name,
         	    case_party_type_name,
         	    jsonb_agg(jsonb_build_object(
-        		    'Name', title,
+        		    'Title', title,
         		    'Path', path
         	    )) cases
         	    from(
@@ -613,7 +613,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    case_type_name,
         	    case_party_type_name,
         	    jsonb_agg(jsonb_build_object(
-        		    'Name', title,
+        		    'Title', title,
         		    'Path', path
         	    )) cases
         	    from(
@@ -683,7 +683,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             select
                 jsonb_agg(
                     jsonb_build_object(
-                        'Name', "name", 
+                        'Title', "name", 
                         'Path', url_path
                     )
                 ) "document"
@@ -745,7 +745,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             select
                 jsonb_agg(
                     jsonb_build_object(
-                        'Name', "name", 
+                        'Title', "name", 
                         'Path', url_path
                     )
                 ) "document"
@@ -823,7 +823,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         select
                             jsonb_agg(
                                 jsonb_build_object(
-                                    'Name', organization_name,
+                                    'Title', organization_name,
                                     'Path', organization_path
                                 )
                             ) organizations
@@ -877,7 +877,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     (
                         select
                             jsonb_agg(jsonb_build_object(
-                                'Name', person_name,
+                                'Title', person_name,
                                 'Path', person_path
                             )) persons
                         from(
@@ -962,11 +962,11 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 l.postal_code,
                 jsonb_build_object(
                 	'Path', case when tn2.url_path is null then '/node/' || tn2.url_id else '/' || tn2.url_path end,
-                	'Name', s.name
+                	'Title', s.name
                 ) subdivision,
                 jsonb_build_object(
                 	'Path', case when tn3.url_path is null then '/node/' || tn3.url_id else '/' || tn3.url_path end,
-                	'Name', nc.title
+                	'Title', nc.title
                 ) country,
                 l.latitude,
                 l.longitude
@@ -999,21 +999,21 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             from(
         	    select
         	    jsonb_build_object(
-        		    'Name', organization_name_from,
+        		    'Title', organization_name_from,
         		    'Path', organization_path_from
         	    ) organization_from,
         	    jsonb_build_object(
-        		    'Name', organization_name_to,
+        		    'Title', organization_name_to,
         		    'Path', organization_path_to
         	    ) organization_to,
         	    jsonb_build_object(
-        		    'Name', inter_organizational_relation_type_name,
+        		    'Title', inter_organizational_relation_type_name,
         		    'Path', inter_organizational_relation_type_path
         	    ) inter_organizational_relation_type,
         	    case
         	    when geographic_entity_name is null then null
         	    else jsonb_build_object(
-        			    'Name', geographic_entity_name,
+        			    'Title', geographic_entity_name,
         			    'Path', geographic_entity_path) 
         	    end geographic_entity,
         	    date_range,
@@ -1241,15 +1241,15 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             from(
         	    select
         	    jsonb_build_object(
-        		    'Name', person_name_from,
+        		    'Title', person_name_from,
         		    'Path', person_path_from
         	    ) person_from,
         	    jsonb_build_object(
-        		    'Name', person_name_to,
+        		    'Title', person_name_to,
         		    'Path', person_path_to
         	    ) person_to,
         	    jsonb_build_object(
-        		    'Name', inter_personal_relation_type_name,
+        		    'Title', inter_personal_relation_type_name,
         		    'Path', inter_personal_relation_type_path
         	    ) inter_personal_relation_type,
         	    date_range,
@@ -1389,7 +1389,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 jsonb_agg(
                     jsonb_build_object(
                         'Path', sa.path,
-                        'Name', sa.title
+                        'Title', sa.title
                     )
                 ) document
             FROM (
@@ -1418,7 +1418,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 jsonb_agg(
                     jsonb_build_object(
                         'Path',  t.path,
-                        'Name', t.name
+                        'Title', t.name
                     )
                 ) as document
             FROM (
@@ -1451,7 +1451,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	        organization_type,
         	        jsonb_agg(
         	            jsonb_build_object(
-        		            'Name', organization_name,
+        		            'Title', organization_name,
         		            'Path', "path"
         	            )
                     ) organizations
@@ -1492,7 +1492,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	        organization_type,
         	        jsonb_agg(
         	            jsonb_build_object(
-        		            'Name', organization_name,
+        		            'Title', organization_name,
         		            'Path', "path"
         	            )
                     ) organizations
@@ -1563,7 +1563,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 ) 
             ) document
             FROM(
@@ -1599,7 +1599,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 ) 
             ) document
             FROM(
@@ -1622,7 +1622,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 ) 
             ) document
             FROM(
@@ -1639,7 +1639,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 ) 
             ) document
             FROM(
@@ -1666,7 +1666,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 ) 
             ) document
             FROM(
@@ -1693,7 +1693,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 ) 
             ) document
             FROM(
@@ -1720,7 +1720,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 ) 
             ) document
             FROM(
@@ -1754,7 +1754,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 select
         	        subdivision_type_name,
         	        jsonb_agg(jsonb_build_object(
-        		        'Name', subdivision_name,
+        		        'Title', subdivision_name,
         		        'Path', case 
         			        when url_path is null then '/node/' || url_id
         			        else url_path
@@ -1792,7 +1792,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 select
         	        subdivision_type_name,
         	        jsonb_agg(jsonb_build_object(
-        		        'Name', subdivision_name,
+        		        'Title', subdivision_name,
         		        'Path', case 
         			        when url_path is null then '/node/' || url_id
         			        else url_path
@@ -1828,14 +1828,14 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     jsonb_build_object(
                         'BillActionType', 
                         jsonb_build_object(
-                            'Name', 
+                            'Title', 
                             bill_action_name, 
                             'Path', 
                             bill_action_path
                         ),
                         'Bill', 
                         jsonb_build_object(
-                            'Name', 
+                            'Title', 
                             bill_name, 
                             'Path', 
                             bill_path
@@ -1897,7 +1897,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -1925,7 +1925,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -1967,7 +1967,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -1989,7 +1989,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2020,7 +2020,14 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
     const string DOCUMENTABLES_DOCUMENT = """
         documentables_document as (
             select
-                jsonb_agg(jsonb_build_object('Name', documentable_name, 'Path', documentable_path)) document
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Title', 
+                        documentable_name, 
+                        'Path', 
+                        documentable_path
+                    )
+                ) document
                 from(
                 select
                 n.title documentable_name,
@@ -2076,7 +2083,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2108,7 +2115,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2140,7 +2147,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2172,7 +2179,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2204,7 +2211,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2236,7 +2243,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2268,7 +2275,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2300,7 +2307,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
-                    'Name', "name"
+                    'Title', "name"
                 )
             ) document
             FROM(
@@ -2483,7 +2490,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         organization_types_document AS (
             select
                 jsonb_agg(jsonb_build_object(
-        	        'Name', "name",
+        	        'Title', "name",
         	        'Path', "path"
                 )) "document"
             from(
@@ -2506,7 +2513,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         professions_document AS (
             select
                 jsonb_agg(jsonb_build_object(
-        	        'Name', "name",
+        	        'Title', "name",
         	        'Path', "path"
                 )) "document"
             from(
@@ -2544,7 +2551,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ),
                 'Country', jsonb_build_object(
                     'Path', n.country_path,
-                    'Name', n.country_name
+                    'Title', n.country_name
                 ),
                 'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
@@ -2604,7 +2611,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ),
                 'Country', jsonb_build_object(
                     'Path', n.country_path,
-                    'Name', n.country_name
+                    'Title', n.country_name
                 ),
                 'ISO3166_2_Code', iso_3166_2_code,
                 'HasBeenPublished', n.has_been_published,
@@ -2712,7 +2719,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ),
                 'GlobalRegion', jsonb_build_object(
                     'Path', n.global_region_path,
-                    'Name', n.global_region_name
+                    'Title', n.global_region_name
                 ),
                 'ISO3166_1_Code', iso_3166_1_code,
                 'FlagImage', json_build_object(
@@ -2779,7 +2786,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ),
                 'GlobalRegion', jsonb_build_object(
                     'Path', n.global_region_path,
-                    'Name', n.global_region_name
+                    'Title', n.global_region_name
                 ),
                 'ISO3166_1_Code', iso_3166_1_code,
                 'ISO3166_2_Code', iso_3166_2_code,
@@ -2849,7 +2856,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ),
                 'GlobalRegion', jsonb_build_object(
                     'Path', n.global_region_path,
-                    'Name', n.global_region_name
+                    'Title', n.global_region_name
                 ),
                 'ISO3166_1_Code', iso_3166_1_code,
                 'FlagImage', json_build_object(
@@ -2917,7 +2924,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ),
                 'BindingCountry', jsonb_build_object(
                     'Path', n.binding_country_path,
-                    'Name', n.binding_country_name
+                    'Title', n.binding_country_name
                 ),
                 'ISO3166_2_Code', iso_3166_2_code,
                 'FlagImage', json_build_object(
@@ -3039,7 +3046,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             select
                 jsonb_agg(jsonb_build_object(
         	        'Person', jsonb_build_object(
-        		        'Name', person_name,
+        		        'Title', person_name,
         		        'Path', path
         	        ),
         	        'RelationTypeName', relation_type_name,
@@ -3104,7 +3111,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             select
                 jsonb_agg(jsonb_build_object(
         	        'Organization', jsonb_build_object(
-        		        'Name', organization_name,
+        		        'Title', organization_name,
         		        'Path', path
         	        ),
         	        'RelationTypeName', relation_type_name,

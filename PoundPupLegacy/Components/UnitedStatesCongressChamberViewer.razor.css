@@ -1,0 +1,19 @@
+﻿.chamber {
+    background-color: #dddddd;
+    margin-bottom: 2em;
+    margin-right: 1em;
+    padding: 0.5em;
+    padding-left: 1em;
+    box-shadow: 10px 10px 5px #888888;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
+label {
+    font-weight: 400;
+}
+
+.meetings {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}

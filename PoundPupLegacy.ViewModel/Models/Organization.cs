@@ -10,8 +10,8 @@ public record Organization : Nameable, Documentable, Locatable
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
 
-    private Link[] tags = Array.Empty<Link>();
-    public Link[] Tags {
+    private BasicLink[] tags = Array.Empty<BasicLink>();
+    public BasicLink[] Tags {
         get => tags;
         init {
             if (value is not null) {
@@ -31,7 +31,7 @@ public record Organization : Nameable, Documentable, Locatable
     }
 
     public Comment[] Comments => this.GetComments();
-    public required Link[] BreadCrumElements { get; init; }
+    public required BasicLink[] BreadCrumElements { get; init; }
 
     private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
     public required DocumentListItem[] Documents {
@@ -68,8 +68,8 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
 
-    private Link[] organizationTypes = Array.Empty<Link>();
-    public Link[] OrganizationTypes {
+    private BasicLink[] organizationTypes = Array.Empty<BasicLink>();
+    public BasicLink[] OrganizationTypes {
         get => organizationTypes;
         init {
             if (value is not null) {
@@ -88,8 +88,8 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
 
-    private Link[] subTopics = Array.Empty<Link>();
-    public Link[] SubTopics {
+    private BasicLink[] subTopics = Array.Empty<BasicLink>();
+    public BasicLink[] SubTopics {
         get => subTopics;
         init {
             if (value is not null) {
@@ -98,8 +98,8 @@ public record Organization : Nameable, Documentable, Locatable
         }
     }
 
-    private Link[] superTopics = Array.Empty<Link>();
-    public Link[] SuperTopics {
+    private BasicLink[] superTopics = Array.Empty<BasicLink>();
+    public BasicLink[] SuperTopics {
         get => superTopics;
         init {
             if (value is not null) {

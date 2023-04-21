@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.ViewModel.Models;
+using PoundPupLegacy.Common;
 namespace PoundPupLegacy.Components;
 
 public abstract class PagedViewer<TListEntry> : PagedViewerBase<PagedListSettings, TListEntry>
@@ -10,4 +11,5 @@ public abstract class PagedViewer<TListEntry> : PagedViewerBase<PagedListSetting
     {
         await base.OnInitializedAsync();
     }
+
 }

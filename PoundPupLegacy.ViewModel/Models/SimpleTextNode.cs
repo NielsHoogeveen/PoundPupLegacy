@@ -3,6 +3,6 @@
 public interface SimpleTextNode : Node
 {
     public string Text { get; }
-    public Link[] SeeAlsoBoxElements { get; }
+    public BasicLink[] SeeAlsoBoxElements { get; }
 
 }

@@ -11,9 +11,9 @@
                     {
                         @foreach (var person in elem.Persons.SkipLast(1))
                         {
-                            <span><a href="@person.Path">@person.Name</a>, </span>
+                            <span><a href="@person.Path">@person.Title</a>, </span>
                         }
-                        <span><a href="@elem.Persons.Last().Path">@elem.Persons.Last().Name</a></span>
+                        <span><a href="@elem.Persons.Last().Path">@elem.Persons.Last().Title</a></span>
                     }
                 </div>
                 <div class="organizations">
@@ -22,9 +22,9 @@
                     {
                         @foreach (var organization in elem.Organizations.SkipLast(1))
                         {
-                            <span><a href="@organization.Path">@organization.Name</a>, </span>
+                            <span><a href="@organization.Path">@organization.Title</a>, </span>
                         }
-                        <span><a href="@elem.Organizations.Last().Path">@elem.Organizations.Last().Name</a></span>
+                        <span><a href="@elem.Organizations.Last().Path">@elem.Organizations.Last().Title</a></span>
                     }
                 </div>
             </div>

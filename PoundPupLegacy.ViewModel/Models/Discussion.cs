@@ -10,15 +10,15 @@ public record Discussion : SimpleTextNode
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
 
-    private Link[]? tags;
-    public required Link[] Tags {
-        get => tags is null ? Array.Empty<Link>() : tags;
+    private BasicLink[]? tags;
+    public required BasicLink[] Tags {
+        get => tags is null ? Array.Empty<BasicLink>() : tags;
         init => tags = value;
     }
 
-    private Link[]? seeAlsoBoxElements;
-    public required Link[] SeeAlsoBoxElements {
-        get => seeAlsoBoxElements is null ? Array.Empty<Link>() : seeAlsoBoxElements;
+    private BasicLink[]? seeAlsoBoxElements;
+    public required BasicLink[] SeeAlsoBoxElements {
+        get => seeAlsoBoxElements is null ? Array.Empty<BasicLink>() : seeAlsoBoxElements;
         init => seeAlsoBoxElements = value;
     }
 
@@ -33,7 +33,7 @@ public record Discussion : SimpleTextNode
     }
 
     public Comment[] Comments => this.GetComments();
-    public required Link[] BreadCrumElements { get; init; }
+    public required BasicLink[] BreadCrumElements { get; init; }
     private File[] _files = Array.Empty<File>();
     public required File[] Files {
         get => _files;

@@ -6,7 +6,9 @@
     --header-bg-color: linear-gradient(180deg, #2c2c2c 0%, #2c2c2c 100%);
     --content-bg-color: white;
     --nav-bg-color: #444;
+    --nav-bg-hover-color: #222;
     --nav-border-color: #808080;
+    --nav-text-color: silver;
     --footer-bg-color: #2c2c2c;
     --breadcrum-bg-color: #9aaddf;
     --term-bg-color: #d8e0f3;
@@ -138,49 +140,6 @@ footer h2 {
     flex-wrap: wrap;
     flex-direction: column;
     flex-grow: 1;
-}
-nav {
-    background-color: var(--nav-bg-color);
-    border-top: solid thin var(--nav-border-color);
-    border-right: solid 1px var(--nav-border-color);
-    min-width: 10em;
-    flex-grow: 0;
-}
-nav ul {
-    list-style-type: none;
-    margin:0;
-    padding:0;
-}
-nav ul a {
-    color: silver;
-    text-decoration: none;
-}
-nav ul li {
-    background-color: #444;
-    color:silver;
-    border-bottom: solid 1px var(--nav-border-color);
-    padding-left: 0.25em;
-    padding-top: 0.25em;
-    padding-bottom: 0.25em;
-    padding-right: 0.25em;
-}
-nav ul li:hover {
-    background-color: white;
-}
-
-nav form{
-    width: 10em;
-}
-nav form input {
-    margin-top: 0.25em;
-}
-
-nav form input[type=text], nav form input[type=password] {
-    width: 8em;
-    border: 0;
-    padding: 0.15em;
-    border-radius: 2px;
-    margin-left: 0.15em;
 }
 
 input:-webkit-autofill,
@@ -638,7 +597,7 @@ tr:nth-of-type(2n+1){
     vertical-align:central;
 }
 
-input[type=text], select {
+input[type=text], input[type=password], select {
     border-radius: 3px;
     border: 0;
     outline: solid 2px #bed1fd;

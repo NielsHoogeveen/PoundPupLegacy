@@ -10,10 +10,10 @@
             <th>Date from</th>
             <th>Date to</th>
         </tr>
-        @foreach (var relation in Model.OrderBy(x => x.RelationTypeName).ThenBy( x=> x.Person.Name))
+        @foreach (var relation in Model.OrderBy(x => x.RelationTypeName).ThenBy( x=> x.Person.Title))
         {
             <tr>
-                <td><a href="@relation.Person.Path">@relation.Person.Name</a></td>
+                <td><a href="@relation.Person.Path">@relation.Person.Title</a></td>
                 <td>@relation.RelationTypeName</td>
                 <td>@relation.DateFrom?.ToString("yyyy MMMM dd")</td>
                 <td>@relation.DateTo?.ToString("yyyy MMMM dd")</td>

@@ -10,11 +10,11 @@ public record BasicNameable : Nameable
 
     public required bool HasBeenPublished { get; init; }
 
-    public required Link[] BreadCrumElements { get; init; }
+    public required BasicLink[] BreadCrumElements { get; init; }
 
     public required string Description { get; init; }
-    private Link[] tags = Array.Empty<Link>();
-    public required Link[] Tags {
+    private BasicLink[] tags = Array.Empty<BasicLink>();
+    public required BasicLink[] Tags {
         get => tags;
         init {
             if (value is not null) {
@@ -33,8 +33,8 @@ public record BasicNameable : Nameable
         }
     }
 
-    public Comment[] Comments => this.GetComments(); private Link[] subTopics = Array.Empty<Link>();
-    public required Link[] SubTopics {
+    public Comment[] Comments => this.GetComments(); private BasicLink[] subTopics = Array.Empty<BasicLink>();
+    public required BasicLink[] SubTopics {
         get => subTopics;
         init {
             if (value is not null) {
@@ -43,8 +43,8 @@ public record BasicNameable : Nameable
         }
     }
 
-    private Link[] superTopics = Array.Empty<Link>();
-    public required Link[] SuperTopics {
+    private BasicLink[] superTopics = Array.Empty<BasicLink>();
+    public required BasicLink[] SuperTopics {
         get => superTopics;
         init {
             if (value is not null) {

@@ -1,0 +1,24 @@
+﻿@using PoundPupLegacy.ViewModel.Models;
+@if (ListEntries.Any()) {
+    @foreach (var topic in ListEntries) {
+        <div>
+            <LinkViewer Link="@topic" />
+        </div>
+    }
+    <Pager Model="PagedListSettings" />
+}
+else {
+    <p>No organizations were found</p>
+
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required TopicListEntry[] ListEntries { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required PagedListSettings PagedListSettings { get; init; }
+
+}

@@ -12,5 +12,5 @@ public record ArticleListEntry : ListEntry
 
     public required Authoring Authoring { get; init; }
 
-    public required Link[] Tags { get; init; }
+    public required BasicLink[] Tags { get; init; }
 }

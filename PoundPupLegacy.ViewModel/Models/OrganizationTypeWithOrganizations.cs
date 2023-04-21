@@ -4,8 +4,8 @@ public record OrganizationTypeWithOrganizations
 {
     public required string OrganizationTypeName { get; init; }
 
-    private Link[] organizations = Array.Empty<Link>();
-    public required Link[] Organizations {
+    private BasicLink[] organizations = Array.Empty<BasicLink>();
+    public required BasicLink[] Organizations {
         get => organizations;
         init {
             if (value is not null) {

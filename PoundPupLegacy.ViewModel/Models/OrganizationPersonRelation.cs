@@ -2,7 +2,7 @@
 
 public record OrganizationPersonRelation
 {
-    public required Link Organization { get; init; }
+    public required BasicLink Organization { get; init; }
     public required string RelationTypeName { get; init; }
 
     public DateTime? DateFrom { get; init; }

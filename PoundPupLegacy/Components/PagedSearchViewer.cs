@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
 using SearchOption = PoundPupLegacy.ViewModel.Models.SearchOption;
 

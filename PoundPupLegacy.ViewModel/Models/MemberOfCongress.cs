@@ -9,8 +9,8 @@ public record MemberOfCongress
     public required string FilePathPortrait { get; init; }
 
 
-    private Link[] letters = Array.Empty<Link>();
-    public required Link[] Letters {
+    private BasicLink[] letters = Array.Empty<BasicLink>();
+    public required BasicLink[] Letters {
         get => letters;
         init {
             if (value is not null) {
@@ -18,8 +18,8 @@ public record MemberOfCongress
             }
         }
     }
-    private Link[] bills = Array.Empty<Link>();
-    public required Link[] Bills {
+    private BasicLink[] bills = Array.Empty<BasicLink>();
+    public required BasicLink[] Bills {
         get => bills;
         init {
             if (value is not null) {
