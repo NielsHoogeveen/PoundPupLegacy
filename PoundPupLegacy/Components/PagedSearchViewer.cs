@@ -12,7 +12,6 @@ public abstract partial class PagedSearchViewer<TListEntry> : PagedViewerBase<Pa
 
     protected sealed override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var parsedQuery = QueryHelpers.ParseQuery(uri.Query);
         if (parsedQuery.TryGetValue("search_term", out var search)) {
@@ -20,13 +19,14 @@ public abstract partial class PagedSearchViewer<TListEntry> : PagedViewerBase<Pa
         }
         if (parsedQuery.TryGetValue("search_option", out var searchOption)) {
 
-            PagedListSettings.SearchOption = search.FirstOrDefault() switch {
+            PagedListSettings.SearchOption = searchOption.FirstOrDefault() switch {
                 "contains" => SearchOption.Contains,
-                "starts" => SearchOption.StartsWith,
-                "ends" => SearchOption.EndsWith,
+                "starts_with" => SearchOption.StartsWith,
+                "ends_with" => SearchOption.EndsWith,
                 "is_equal_to" => SearchOption.IsEqualTo,
                 _ => SearchOption.Contains
             };
         }
+        await base.OnInitializedAsync();
     }
 }

@@ -4,21 +4,15 @@
         <div class="pager">
 
             @if (Model.PageNumber > 1) {
-                <span class="first"><a href="@Model.Path?@Model.GetQueryString(1)">« first</a></span>
-                <span class="previous"><a href="@Model.Path?@Model.GetQueryString(Model.PageNumber-1)">‹ previous</a></span>
+                <PagerElement Model="Model" PageNumber="1" PagerElementType="PagerElementType.First" SelectPage="SelectPage" />
+                <PagerElement Model="Model" PageNumber="Model.PageNumber - 1" PagerElementType="PagerElementType.Previous" SelectPage="SelectPage" />
             }
             @foreach (var i in Enumerable.Range(Model.StartPage, Model.EndPage - Model.StartPage)) {
-                if (Model.PageNumber == i) {
-                    <span class="pager-entry"><a href="@Model.Path?@Model.GetQueryString(i)"><strong>@i</strong></a></span>
-                }
-                else {
-                    <span class="pager-entry"><a href="@Model.Path?@Model.GetQueryString(i)">@i</a></span>
-                }
-
+               <PagerElement Model="Model" PageNumber="i" PagerElementType="PagerElementType.Page" SelectPage="SelectPage" />
             }
             @if (Model.PageNumber < Model.NumberOfPages) {
-                <span class="next"><a href="@Model.Path?@Model.GetQueryString(Model.PageNumber+1)">next ›</a></span>
-                <span class="last"><a href="@Model.Path?@Model.GetQueryString(Model.NumberOfPages)">last »</a></span>
+                <PagerElement Model="Model" PageNumber="Model.PageNumber+1" PagerElementType="PagerElementType.Next" SelectPage="SelectPage" />
+                <PagerElement Model="Model" PageNumber="Model.NumberOfPages" PagerElementType="PagerElementType.Last" SelectPage="SelectPage" />
             }
         </div>
     }
@@ -28,5 +22,10 @@
 
     [Parameter]
     [EditorRequired]
-    public PagedListSettings? Model { get; set; }
+    public required PagedListSettings Model { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required Func<int,Task> SelectPage { get; init; }
+
 }

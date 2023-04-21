@@ -5,7 +5,7 @@
             <LinkViewer Link="@topic" />
         </div>
     }
-    <Pager Model="PagedListSettings" />
+    <Pager Model="PagedListSettings" SelectPage="SelectPage"/>
 }
 else {
     <p>No organizations were found</p>
@@ -20,5 +20,9 @@ else {
     [Parameter]
     [EditorRequired]
     public required PagedListSettings PagedListSettings { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required Func<int, Task> SelectPage { get; init; }
 
 }

@@ -7,7 +7,7 @@
     <div class="articles">
         <BreadCrumElementViewer Model="BreadCrumElements" />
         <TopicsListSearchForm PagedListSettings="PagedListSettings" />
-        <TopicsListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" />
+        <TopicsListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
     </div>
 }
 @code {
@@ -24,4 +24,6 @@
             searchTerm: PagedListSettings.SearchTerm, 
             searchOption: PagedListSettings.SearchOption);
     }
+
+    
 }

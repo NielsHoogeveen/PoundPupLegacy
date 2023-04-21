@@ -64,4 +64,18 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
             PagedListSettings.NumberOfEntries = list.NumberOfEntries;
         }
     }
+
+    protected async Task Reload()
+    {
+        var url = PagedListSettings.Path + "?" + PagedListSettings.GetQueryString(PagedListSettings.PageNumber);
+        NavigationManager.NavigateTo(url);
+        await OnInitializedAsync();
+        StateHasChanged();
+    }
+
+    protected async Task SelectPage(int pageNumber)
+    {
+        PagedListSettings.PageNumber = pageNumber;
+        await Reload();
+    }
 }

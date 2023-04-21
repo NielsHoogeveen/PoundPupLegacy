@@ -1,0 +1,12 @@
+﻿.pager{
+display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+::deep span{
+    padding: 0 5px;
+    cursor: pointer;
+    color: #000;
+    font-size: 1.2em;
+}
