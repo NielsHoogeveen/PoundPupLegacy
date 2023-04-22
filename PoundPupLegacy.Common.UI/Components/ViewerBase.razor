@@ -1,0 +1,17 @@
+﻿@code {
+    [CascadingParameter(Name = "UserId")]
+    public int UserId { get; set; }
+
+    [CascadingParameter(Name = "TenantId")]
+    public int TenantId { get; set; }
+
+    protected virtual Link[] BreadCrumElements => new Link[]
+    {
+        new BasicLink
+        {
+            Title = "Home",
+            Path = "/home"
+        }
+    };
+
+}

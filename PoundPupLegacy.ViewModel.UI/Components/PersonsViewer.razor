@@ -1,0 +1,30 @@
+﻿@inherits PagedSearchViewer<PersonListEntry>
+@inject IFetchPersonService PersonService
+@if(ListEntries is not null){
+    <div class="articles">
+        <BreadCrumElementViewer Model="BreadCrumElements" />
+        <SearchForm 
+            PagedSearchListSettings="PagedListSettings" 
+            OnSearch="OnSearch" />
+        <ListEntriesViewer 
+            ListEntries="ListEntries" 
+            PagedListSettings="PagedListSettings" 
+            ElementsName="persons" 
+            SelectPage="SelectPage" />
+    </div>
+}
+@code {
+    protected override int PageSize => 50;
+
+    protected override async Task<IPagedList<PersonListEntry>> GetListEntriesAsync()
+    {
+        return await PersonService.FetchPersons(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            searchTerm: PagedListSettings.SearchTerm, 
+            searchOption: PagedListSettings.SearchOption);
+    }
+
+}

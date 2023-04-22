@@ -1,0 +1,48 @@
+﻿@inherits PagedViewer<BlogPostTeaser>
+@inject IFetchBlogService FetchBlogService;
+<div class="blog-list">
+    <BreadCrumElementViewer Model="BreadCrumElements" />
+    <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
+        <h1>
+            @Name
+        </h1>
+    </TeaserListViewer>
+</div>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public int Id { get; set; }
+
+    private int? PreviousId { get; set; } = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!PreviousId.HasValue) {
+            PreviousId = Id;
+            return;
+        }
+        if (PreviousId != Id) {
+            await OnInitializedAsync();
+        }
+    }
+
+    private string Name { get; set; } = string.Empty;
+
+    protected override int PageSize => 10;
+
+    protected override async Task<IPagedList<BlogPostTeaser>> GetListEntriesAsync()
+    {
+        var result =  await FetchBlogService.FetchBlog(
+            publisherId: Id, 
+            tenantId: TenantId, 
+            pageNumber: PagedListSettings.PageNumber, 
+            pageSize: PagedListSettings.PageSize);
+        if (result is not null)
+        {
+            Name = result.Name;
+        }
+        return result;
+    }
+
+    protected override Link[] BreadCrumElements => new Link[] { base.BreadCrumElements.First(), new BasicLink { Path = "/blogs", Title = "blogs" } };
+}

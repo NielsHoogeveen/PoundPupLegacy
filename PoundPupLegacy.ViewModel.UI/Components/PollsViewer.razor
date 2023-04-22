@@ -1,0 +1,19 @@
+﻿@inherits PagedViewer<PollListEntry>
+@inject IFetchPollsService FetchPollsService
+
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
+
+@code {
+
+    protected override int PageSize => 25;
+
+    protected override async Task<IPagedList<PollListEntry>> GetListEntriesAsync()
+    {
+        return await FetchPollsService.GetPolls(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber);
+    }
+}

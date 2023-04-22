@@ -1,0 +1,8 @@
+﻿<DocumentsViewer Model="@Model.Documents" />
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required Documentable Model { get; init; }
+
+}

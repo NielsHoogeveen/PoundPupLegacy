@@ -1,0 +1,16 @@
+﻿@typeparam T where T : class, Node
+@inherits ViewerBase
+@inject IEditService<T> editService
+
+@if (Model is not null)
+{
+    <NodeEditor Model="Model" T="T"/>
+}
+@code {
+    T? Model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await editService.GetViewModelAsync(userId: UserId, tenantId: TenantId);
+    }
+}

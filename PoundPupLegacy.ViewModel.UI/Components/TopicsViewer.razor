@@ -1,0 +1,24 @@
+﻿@inherits PagedSearchViewer<TopicListEntry>
+@inject IFetchTopicsService TopicService
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch"/>
+<ListEntriesViewer 
+    ListEntries="ListEntries" 
+    PagedListSettings="PagedListSettings" 
+    SelectPage="SelectPage"
+    ElementsName="topics"/>
+@code {
+
+    protected override int PageSize => 50;
+
+    protected override async Task<IPagedList<TopicListEntry>> GetListEntriesAsync()
+    {
+        return await TopicService.FetchTopics(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            searchTerm: PagedListSettings.SearchTerm, 
+            searchOption: PagedListSettings.SearchOption);
+    }
+}

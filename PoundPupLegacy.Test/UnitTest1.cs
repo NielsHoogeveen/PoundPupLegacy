@@ -3,11 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.EditModel;
+using PoundPupLegacy.EditModel.UI.Services;
 using PoundPupLegacy.Services;
 using System.Text.RegularExpressions;
 using Xunit;
 using Location = PoundPupLegacy.EditModel.Location;
-using LocationEditorDialog = PoundPupLegacy.Components.LocationEditorDialog;
+using LocationEditorDialog = PoundPupLegacy.EditModel.UI.Components.LocationEditorDialog;
 
 namespace PoundPupLegacy.Test;
 public class UnitTest1

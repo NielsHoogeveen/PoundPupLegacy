@@ -4,7 +4,7 @@ namespace PoundPupLegacy.EditModel.Readers;
 
 public static class DependencyInjection
 {
-    public static void AddEditReaders(this IServiceCollection services)
+    public static void AddEditModelReaders(this IServiceCollection services)
     {
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Article>, ArticleCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost>, BlogPostCreateDocumentReaderFactory>();

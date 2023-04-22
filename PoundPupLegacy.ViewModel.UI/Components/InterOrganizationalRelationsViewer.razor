@@ -1,0 +1,60 @@
+﻿@if(Model.Any())
+{
+    <h3>Relations to other organizations</h3>
+    <table style="width: 100%">
+        <tr>
+            <th>
+                Organization
+            </th>
+            <th>
+                Relation Type
+            </th>
+            <th>
+                Organization
+            </th>
+            <th>
+                Country
+            </th>
+            <th>
+                Date from
+            </th>
+            <th>
+                Date to
+            </th>
+
+        </tr>
+        @foreach (var relation in Model.OrderBy(x => x.InterOrganizationalRelationType.Title).ThenBy(x => x.OrganizationTo.Title))
+        {
+            <tr>
+                <td>
+                    <a href="@relation.OrganizationTo.Path">@relation.OrganizationTo.Title</a>
+                </td>
+                <td>
+                    <a href="@relation.InterOrganizationalRelationType.Path">@relation.InterOrganizationalRelationType.Title</a>
+                </td>
+                <td>
+                    <a href="@relation.OrganizationFrom.Path">@relation.OrganizationFrom.Title</a>
+                </td>
+                <td>
+                    @if (relation.GeographicEntity is not null)
+                    {
+                        <a href="@relation.GeographicEntity.Path">@relation.GeographicEntity.Title</a>
+                    }
+                </td>
+
+                <td>
+                    @relation.DateFrom?.ToString("yyyy MMMM dd")
+                </td>
+                <td>
+                    @relation.DateTo?.ToString("yyyy MMMM dd")
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<InterOrganizationalRelation> Model { get; init; }
+}

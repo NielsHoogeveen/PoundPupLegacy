@@ -1,0 +1,17 @@
+﻿@if(Model is not null)
+{
+
+    <div class="breadcrum">
+    @foreach (var element in @Model)
+    {
+        <span class="breadcrum-element">
+            <a href="@element.Path">@element.Title</a>
+        </span>
+    }
+    </div>
+}
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<Link> Model { get; init; }
+}

@@ -1,0 +1,25 @@
+﻿@if (Model is not null && Model.Any())
+{
+    <div class="section">
+        <h3>Subdivisions</h3>
+        @foreach (var subdivisioonType in Model)
+        {
+            <div>
+                @subdivisioonType.Name
+            </div>
+            <ul>
+                @foreach (var subdivision in subdivisioonType.Subdivisions)
+                {
+                    <li>
+                        <a href="@subdivision.Path">@subdivision.Name</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+}
+@code{
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<SubdivisionType>? Model { get; set; }
+}

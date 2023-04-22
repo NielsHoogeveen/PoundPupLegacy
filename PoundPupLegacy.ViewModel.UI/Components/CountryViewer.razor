@@ -1,0 +1,24 @@
+﻿<ImageViewer Model="@Model.FlagImage" Class="country-flag" />
+    
+@if (Model is TopLevelCountry topLevelCountry)
+{
+    <div>
+        <label>ISO 3166-1 code</label>
+        @topLevelCountry.ISO3166_1_Code
+    </div>  <div>
+        <label>Region</label>
+        <a href="@topLevelCountry.GlobalRegion.Path">@topLevelCountry.GlobalRegion.Title</a>
+    </div>
+}
+
+
+<SubdivisionTypesViewer Model="@Model.SubdivisionTypes" />
+<OrganizationTypesWithOrganizationsViewer Model="@Model.OrganizationTypes" />
+<AdoptionImportsViewer Model="@Model.AdoptionImports" />
+<DocumentsViewer Model="@Model.Documents" />
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required Country Model { get; init; }
+}
+

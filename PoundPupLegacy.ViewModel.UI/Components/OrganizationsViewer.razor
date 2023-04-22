@@ -1,0 +1,98 @@
+﻿@inherits PagedSearchViewer<OrganizationListEntry>
+@inject IFetchOrganizationsService FetchOrganizationsService
+<div class="articles">
+    <BreadCrumElementViewer Model="BreadCrumElements" />
+    <SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch">
+        <OptionalSelectionItemSelector SelectionItems="Countries" OnSelect="OnSelectCountry" Name="country"/>
+        <OptionalSelectionItemSelector SelectionItems="OrganizationTypes" OnSelect="OnSelectOrganizationType" Name="organization_type" />
+    </SearchForm>
+    <ListEntriesViewer 
+        ListEntries="ListEntries" 
+        PagedListSettings="PagedListSettings" 
+        SelectPage="SelectPage"
+        ElementsName="organizations"/>
+</div>
+@code {
+
+    protected override int PageSize => 50;
+
+    private int? OrganizationTypeId { get; set; }
+
+    private int? CountryId { get; set; }
+
+    private SelectionItem[] Countries = Array.Empty<SelectionItem>();
+    private SelectionItem[] OrganizationTypes = Array.Empty<SelectionItem>();
+
+    private void SetCountryId(Uri uri)
+    {
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("country", out var countryIdValue)) {
+            if (int.TryParse(countryIdValue, out int providedCountryId)) {
+                CountryId = providedCountryId;
+            }
+        }
+    }
+    private void SetOrganizationTypeId(Uri uri)
+    {
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("organization_type", out var organizationTypeIdValue)) {
+            if (int.TryParse(organizationTypeIdValue, out int providedOrganizationTypeId)) {
+                OrganizationTypeId = providedOrganizationTypeId;
+            }
+        }
+
+    }
+    private SelectionItem[] GetSelectItems(SelectionItem[] items, int? id)
+    {
+        foreach (var item in items) {
+            if (item.Id == id) {
+                item.Selected = true;
+                continue;
+            }
+            item.Selected = false;
+        }
+        return items;
+    }
+
+    protected override async Task<IPagedList<OrganizationListEntry>> GetListEntriesAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        SetCountryId(uri);
+        SetOrganizationTypeId(uri);
+        var organizationSearch = await FetchOrganizationsService.FetchOrganizations(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            searchTerm: PagedListSettings.SearchTerm, 
+            searchOption: PagedListSettings.SearchOption, 
+            organizationTypeId: OrganizationTypeId, 
+            countryId: CountryId);
+        Countries = GetSelectItems(organizationSearch.Countries, CountryId);
+        OrganizationTypes = GetSelectItems(organizationSearch.OrganizationTypes, OrganizationTypeId);
+        return organizationSearch.Organizations;
+    }
+
+    private async Task OnSelectCountry(int id)
+    {
+        CountryId = id;
+        if (PagedListSettings.QueryString == string.Empty) {
+            PagedListSettings.QueryString = $"country={id}";
+        }
+        else {
+            PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&country={id}";
+        }
+        await Reload();
+    }
+    private async Task OnSelectOrganizationType(int id)
+    {
+        OrganizationTypeId = id;
+        if (PagedListSettings.QueryString == string.Empty) {
+            PagedListSettings.QueryString = $"organization_type={id}";
+        }
+        else {
+            PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&organization_type={id}";
+        }
+        await Reload();
+    }
+
+    private MarkupString JavascriptCall => new MarkupString(@"<script>setClickEventHandlersForSearchForm();</script>");
+}

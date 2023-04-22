@@ -1,0 +1,20 @@
+﻿<div class="adoption-import-numbers" style="grid-template-columns: repeat(@(EndYear - StartYear + 2), 1fr);">
+    <AdoptionImportsColumnHeadersViewer StartYear="StartYear" EndYear="EndYear" />
+    <AdoptionImportsValuesViewer Model="Imports" />
+</div>
+
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public AdoptionImport[] Imports { get; set; } = Array.Empty<AdoptionImport>();
+
+    [Parameter]
+    [EditorRequired]
+    public int StartYear { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public int EndYear { get; set; }
+
+}

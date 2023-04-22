@@ -1,0 +1,73 @@
+﻿@inherits Viewer
+@inject IFetchCountriesService FetchCountriesService
+@if (Model is not null)
+{
+
+    <div class="articles">
+        <div class="breadcrum">
+            <span class="breadcrum-element">
+                <a href="/home">home</a>
+            </span>
+        </div>
+        <article>
+            @foreach (var entry in Model)
+            {
+                <ul>
+                    <li>
+                        <a href="@entry.Path">@entry.Title</a>
+                    </li>
+                    @if (entry.Regions is not null)
+                    {
+                        <li>
+                            <ul>
+
+                                @foreach (var region in entry.Regions)
+                                {
+                                    <li>
+                                        <a href="@region.Path">@region.Title</a>
+                                    </li>
+                                    @if (region.Countries is not null)
+                                    {
+                                        <li>
+                                            <ul>
+                                                @foreach (var country in region.Countries)
+                                                {
+                                                    <li>
+                                                        <a href="@country.Path">@country.Title</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    }
+                    @if (entry.Countries is not null)
+                    {
+                        <li>
+                            <ul>
+
+                                @foreach (var country in entry.Countries)
+                                {
+                                    <li>
+                                        <a href="@country.Path">@country.Title</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            }
+        </article>
+    </div>
+}
+@code {
+
+    private IEnumerable<FirstLevelRegionListEntry>? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await FetchCountriesService.FetchCountries(TenantId);
+    }
+}

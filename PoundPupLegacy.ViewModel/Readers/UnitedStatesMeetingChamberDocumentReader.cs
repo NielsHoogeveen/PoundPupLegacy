@@ -33,7 +33,7 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
         			jsonb_build_object(
         				'State',
         				jsonb_build_object(
-        					'Name',
+        					'Title',
         					political_entity_name,
         					'Path',
         					political_entity_path
@@ -52,7 +52,7 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
         		political_entity_name,
         		jsonb_agg(
         			jsonb_build_object(
-        				'Name',
+        				'Title',
         				"person_name",
         				'Path',
         				person_path,
@@ -86,12 +86,12 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
         				else tn.url_path
         			end person_path,
         			n.title person_name,
-                    f.path file_path_portrait,
+                    '/attachment/' || f.id file_path_portrait,
         			(
         				select
         					jsonb_agg(
         						jsonb_build_object(
-        							'Name',
+        							'Title',
         							"name",
         							'Path',
         							path
@@ -121,7 +121,7 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
         				select
         				jsonb_agg(
         					jsonb_build_object(
-        						'Name',
+        						'Title',
         						"name",
         						'Path',
         						path
@@ -163,7 +163,7 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
         				select
         				jsonb_agg(
         					jsonb_build_object(
-        						'Name',
+        						'Title',
         						"name",
         						'Path',
         						path,
@@ -199,7 +199,7 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
         							member_type,
         							'State',
         							jsonb_build_object(
-        								'Name',
+        								'Title',
         								state_name,
         								'Path',
         								state_path

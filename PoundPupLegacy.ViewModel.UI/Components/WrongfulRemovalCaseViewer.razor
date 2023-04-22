@@ -1,0 +1,13 @@
+﻿@if (Model is not null) 
+{
+    <LargeTextViewer Value="@Model.Description" />
+    <LabeledFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
+    <CasePartiesViewer Model="@Model.CaseParties" />
+    <DocumentableViewer Model="@Model" />
+    <LocatableViewer Model="@Model" />
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public WrongfulRemovalCase? Model { get; set; }
+}

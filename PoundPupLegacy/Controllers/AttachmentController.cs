@@ -1,17 +1,18 @@
 ﻿using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using PoundPupLegacy.Services;
+using PoundPupLegacy.ViewModel.UI.Services;
 
 namespace PoundPupLegacy.Controllers;
 
 [Route("attachment")]
 public sealed class AttachmentController : Controller
 {
-    private readonly IAttachmentService _attachmentService;
+    private readonly IFetchAttachmentService _attachmentService;
     private readonly IUserService _userService;
     private readonly ISiteDataService _siteDataService;
     public AttachmentController(
-        IAttachmentService attachmentService,
+        IFetchAttachmentService attachmentService,
         ISiteDataService siteDataService,
         IUserService userService)
     {

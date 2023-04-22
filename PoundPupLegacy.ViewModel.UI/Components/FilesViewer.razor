@@ -1,0 +1,18 @@
+﻿@if (Model.Any())
+{
+
+    <h4>Attachments</h4>
+    <div>
+        @foreach(var elem in Model)
+        {
+            <div>
+                <a href="/attachment/@elem.Id">@elem.Name</a> (@elem.Size Bytes)
+            </div>
+        }
+    </div>
+}
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<File> Model { get; init; }
+}

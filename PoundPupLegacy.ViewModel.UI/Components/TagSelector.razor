@@ -1,0 +1,49 @@
+﻿@if (UserId == 0) {
+    <form id="term-form" action="/articles" method="get">
+        <div class="term-names">
+            @foreach (var termName in TermNames) {
+                <div class="term-name">
+                    @if (termName.Selected) {
+                        <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="checked" />
+                    }
+                    else {
+                        <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" />
+                    }
+                    <label class="term-name-label" for="term-name-@termName.Id">@termName.Name</label>
+                </div>
+            }
+        </div>
+    </form>
+    @JavascriptCall
+}
+else {
+    <div class="term-names">
+        @foreach (var termName in TermNames) {
+            <div class="term-name">
+                @if (termName.Selected) {
+                    <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="checked" />
+                }
+                else {
+                    <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" />
+                }
+                <label class="term-name-label" for="term-name-@termName.Id" @onclick="async () => await OnSelectTerm(termName.Id)">@termName.Name</label>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [CascadingParameter(Name ="UserId")]
+    public int UserId { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public required SelectionItem[] TermNames { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required Func<int, Task> OnSelectTerm { get; init; }
+
+
+    private MarkupString JavascriptCall => new MarkupString(@"<script>setClickEventHandlersForTerms();</script>");
+}

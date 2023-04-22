@@ -1,0 +1,22 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+
+<div class="article-with-comments @ModelClassName">
+
+    <NodeContentViewer Model="Model" />
+    <CommentsViewer Model="Model.Comments"/>
+</div>
+    
+
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required Node Model { get; init; }
+
+    private string ModelClassName => Model.HasBeenPublished ? "node" : "node node-unpublished";
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+}
+

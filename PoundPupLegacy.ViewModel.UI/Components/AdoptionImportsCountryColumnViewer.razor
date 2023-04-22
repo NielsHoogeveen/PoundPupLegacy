@@ -1,0 +1,15 @@
+﻿<div class="adoption-import-countries">
+    <div class="country-from">&nbsp;</div>
+    @foreach (var (row, index) in Imports.Select((row, index) => (row, index))) {
+        <AdoptionImportsCountryCellViewer Model="@row.CountryFrom" RowType="row.RowType" LineNumber="index" />
+    }
+</div>
+
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public AdoptionImport[] Imports { get; set; } = Array.Empty<AdoptionImport>();
+
+}

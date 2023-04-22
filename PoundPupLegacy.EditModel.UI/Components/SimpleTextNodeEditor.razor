@@ -1,0 +1,10 @@
+﻿@if (Model is not null)
+{
+    <CKEditor Id="#editor" @bind-Value=@Model.Text />
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required SimpleTextNode Model { get; init; }
+
+}

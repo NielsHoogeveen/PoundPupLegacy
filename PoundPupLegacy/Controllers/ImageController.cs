@@ -1,15 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PoundPupLegacy.Services;
+using PoundPupLegacy.EditModel.UI.Services;
+using PoundPupLegacy.ViewModel.UI.Services;
 
 namespace PoundPupLegacy.Controllers;
 
 [Route("image")]
 public sealed class ImageController : Controller
 {
-    private readonly IAttachmentService _attachmentService;
-    public ImageController(IAttachmentService attachmentService)
+    private readonly IFetchAttachmentService _attachmentService;
+    private readonly IAttachmentStoreService _storeAttachementService;
+    public ImageController(
+        IFetchAttachmentService attachmentService,
+        IAttachmentStoreService storeAttachementService)
     {
         _attachmentService = attachmentService;
+        _storeAttachementService = storeAttachementService;
     }
     [HttpPost("upload")]
     public async Task<IActionResult> Upload()
@@ -25,7 +30,7 @@ public sealed class ImageController : Controller
             return BadRequest();
         }
         var file = files[0];
-        var res = await _attachmentService.StoreFile(file);
+        var res = await _storeAttachementService.StoreFile(file);
         if (res is null) {
             return BadRequest();
         }

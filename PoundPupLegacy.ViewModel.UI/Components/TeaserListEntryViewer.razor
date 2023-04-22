@@ -1,0 +1,21 @@
+﻿@if (!ListEntry.HasBeenPublished) {
+    <div class="watermark">Unpublished</div>
+}
+<div class="teaser-list-element">
+    <h2>
+        <LinkViewer Link="ListEntry"  />
+    </h2>
+    @if (ListEntry is AuthoredTeaserListEntry authoredEntry) {
+        <AuthoringViewer Model="@authoredEntry.Authoring" />
+    }
+    <LargeTextViewer Value="@ListEntry.Text" />
+    @if (ListEntry is TaggedTeaserListEntry taggedEntry && taggedEntry.Tags is not null) {
+        <TagsViewer Tags="taggedEntry.Tags" />
+    }
+    
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required TeaserListEntry ListEntry { get; init; }
+}

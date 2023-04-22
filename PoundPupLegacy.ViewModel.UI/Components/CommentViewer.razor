@@ -1,0 +1,35 @@
+﻿<div class="@ModelClassName">
+    @if (Model.NodeStatusId == 1)
+    {
+        <div class="watermark">Unpublished</div>
+    }
+    <div class="comment-body">
+        <div class="title">
+            <h2>@Model.Title</h2>
+        </div>
+        <div class="comment-content">
+            <AuthoringViewer Model="Model.Authoring" />
+            <div class="text">
+                @((MarkupString)Format(Model.Text))
+            </div>
+        </div>
+    </div>
+    @if (Model.Comments is not null)
+    {
+        <div class="Models">
+            @foreach (var child in Model.Comments)
+            {
+                <CommentViewer Model="child"/>
+            }
+        </div>
+    }
+</div>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required Comment Model { get; init; }
+
+    private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
+
+    private string ModelClassName => Model.NodeStatusId == 1 ? "comment comment-unpublished" : "comment";
+}

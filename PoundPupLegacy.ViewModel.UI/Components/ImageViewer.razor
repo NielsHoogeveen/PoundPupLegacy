@@ -1,0 +1,9 @@
+﻿<img src="@Model.FilePath" alt="@Model.Label" class="@Class"/>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required Image Model { get; init; }
+
+    [Parameter]
+    public string Class { get; set; } = "";
+}

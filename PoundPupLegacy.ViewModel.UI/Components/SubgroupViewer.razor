@@ -1,0 +1,45 @@
+﻿@inherits PagedViewer<SubgroupListEntry>
+@inject IFetchSubgroupService SubgroupService
+@if (ListEntries is not null)
+{
+    <table>
+        @foreach (var item in ListEntries.OrderByDescending(x => x.Authoring.CreatedDateTime))
+        {
+            <tr>
+                <td>
+                    <a href="@item.Path">@item.Title</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int Id { get; set; }
+
+    private int? PreviousId { get; set; } = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!PreviousId.HasValue) {
+            PreviousId = Id;
+            return;
+        }
+        if (PreviousId != Id) {
+            await OnInitializedAsync();
+        }
+    }
+
+    protected override int PageSize => 150;
+
+    protected override async Task<IPagedList<SubgroupListEntry>> GetListEntriesAsync()
+    {
+        return await SubgroupService.GetSubGroupPagedList(
+            userId: UserId, 
+            subgroupId: Id, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber);
+    }
+}

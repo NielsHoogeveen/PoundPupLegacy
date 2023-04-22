@@ -1,0 +1,18 @@
+﻿@if (Model.Any())
+{
+    <div class="section">
+        <h3>Organizations</h3>
+        @foreach (var organizationType in Model)
+        {
+            <h4>
+                @organizationType.OrganizationTypeName
+            </h4>
+            <LinkListViewer Links="@organizationType.Organizations" />
+        }
+    </div>
+}
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<OrganizationTypeWithOrganizations> Model { get; init; }
+}

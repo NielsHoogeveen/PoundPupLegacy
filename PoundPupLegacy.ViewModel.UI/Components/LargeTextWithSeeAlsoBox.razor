@@ -1,0 +1,15 @@
+﻿<div class="large-text">
+    <SeeAlsoBoxViewer Links="Links" />
+    <LargeTextViewer Value="@Text" />
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required string Text { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required BasicLink[] Links { get; init; } 
+
+}

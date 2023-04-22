@@ -1,0 +1,12 @@
+﻿<div class="section">
+    <h3>Adoption imports</h3>
+    <div class="adoption-imports">
+        <AdoptionImportsCountryColumnViewer Imports="Model.Imports" />
+        <AdoptionImportsValueColumnsViewer StartYear="Model.StartYear" EndYear="Model.EndYear" Imports="Model.Imports"/>
+    </div>
+</div>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required AdoptionImports Model { get; init; }
+}

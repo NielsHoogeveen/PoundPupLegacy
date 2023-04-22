@@ -1,0 +1,7 @@
+﻿<CKEditor Id="#editor" @bind-Value=@Model.Text />
+<DocumentDocumentables Elems="Model.DocumentableDocuments" NodeId="Model.NodeId"/>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required Document Model { get; init; }
+}

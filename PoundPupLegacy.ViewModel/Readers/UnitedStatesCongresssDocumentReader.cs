@@ -38,7 +38,7 @@ internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDat
         		        select
         			        jsonb_agg(
         				        jsonb_build_object(
-        					        'Name',
+        					        'Title',
         					        n.title,
         					        'Path',
         					        'united_states_senate_'|| LOWER(REPLACE(n.title, ' ', '_')),
@@ -56,7 +56,7 @@ internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDat
         		        select
         			        jsonb_agg(
         				        jsonb_build_object(
-        					        'Name',
+        					        'Title',
         					        n.title,
         					        'Path',
         					        'united_states_house_of_representatives_'|| LOWER(REPLACE(n.title, ' ', '_')),

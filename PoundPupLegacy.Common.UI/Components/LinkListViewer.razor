@@ -1,0 +1,14 @@
+﻿@if (Links.Any())
+{
+    <ul>
+        @foreach (var link in Links)
+        {
+            <LinkListElementViewer Link="@link" />
+        }
+    </ul>
+}
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<Link> Links { get; init; }
+}

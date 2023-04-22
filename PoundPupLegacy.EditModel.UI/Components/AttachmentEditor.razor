@@ -1,0 +1,104 @@
+﻿@using PoundPupLegacy.EditModel.UI.Services
+@using Microsoft.Extensions.Logging
+@inject ILogger<AttachmentEditor> logger
+@inject IAttachmentStoreService attachmentService
+<style>
+    .error{
+        background-color: #662222;
+        color: red;
+    }
+    .files{
+        display: grid;
+        grid-template-columns: 5fr 2fr 1fr 1fr;
+    }
+</style>
+@if (Files is not null)
+{
+    <div class="editor-section">
+        <h4> Attachments</h4>
+        <div class="files" style="margin-bottom:1em;">
+        @foreach(var (file, index) in Files.Where(x => !x.HasBeenDeleted).Select((x,y) => (x,y)) ) {
+            <div>@file.Name</div>
+            <div>@file.MimeType</div>
+            <div>@file.Size</div>
+            <div class="close" @onclick="() => SetAttachmentToDeleted(index)">&times;</div>
+        }
+        </div>
+        <label class="file-upload" for="file-upload">Upload files</label>
+        <InputFile OnChange="@LoadFiles" multiple id="file-upload"/>
+        <div class="error">@((MarkupString)ErrorMessage)</div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public List<EditModel.File>? Files { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public int? NodeId { get; set; }
+
+    private string ErrorMessage = "";
+
+    private int maxNumberOfFiles = 100;
+    private long maxFileSize = 1024L * 1024L * 1024L * 8L;
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        if (Files is not null)
+        {
+            ErrorMessage = "";
+            var files = e.GetMultipleFiles(maxNumberOfFiles);
+            foreach (var file in files)
+            {
+                try
+                {
+                    if (file.Size > maxFileSize)
+                    {
+                        ErrorMessage += $"<div>File {file.Name} has a size that exceeds the maximum</div>";
+                        continue;
+                    }
+                    var path = await attachmentService.StoreFile(file);
+                    if(path is null) {
+                        ErrorMessage += "<div>An internal error occured uploading files</div>";
+                        continue;
+                    }
+                    Files.Add(new EditModel.File
+                        {
+                            Id = null,
+                            Name = file.Name,
+                            Size = file.Size,
+                            MimeType = file.ContentType,
+                            Path = path,
+                            HasBeenStored = false,
+                            NodeId = NodeId,
+                        });
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage += "<div>An internal error occured uploading files</div>";
+                    logger.LogError("File: {Filename} Error: {Error}",
+                        file.Name, ex.Message);
+                };
+            }
+        }
+    }
+    private void SetAttachmentToDeleted(int index)
+    {
+
+        if (Files is not null) {
+            var elem = Files[index];
+            if (elem is not null) {
+                if (elem.HasBeenStored) {
+                    elem.HasBeenDeleted = true;
+                }
+                else {
+                    Files.Remove(elem);
+                }
+                StateHasChanged();
+            }
+        }
+    }
+    
+
+}

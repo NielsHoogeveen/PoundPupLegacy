@@ -1,0 +1,44 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inject IJSRuntime JSRuntime
+
+@if(Model.Any())
+{
+    @foreach (var location in Model)
+    {
+        <div class="address">
+            <h4>Adress</h4>
+            <div>@location.Street</div>
+            <div>@location.Additional</div>
+            <div>@location.PostalCode</div>
+            <div>@location.City</div>
+            @if (location.Subdivision is not null)
+            {
+                <div><a href="@location.Subdivision.Path">@location.Subdivision.Title</a></div>
+            }
+            <div><a href="@location.Country.Path">@location.Country.Title</a></div>
+        </div>
+    }
+    @if (Model.Any(x => x.Latitude is not null && x.Longitude is not null && UserId != 0) )
+    {
+        <div id="location-viewer-map" style="height: 400px;width:700px;"></div>
+    }
+}
+@code{
+
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<Location> Model { get; init; }
+
+    [CascadingParameter(Name ="UserId")]
+    public int UserId { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Model is not null && Model.Any()){
+            var locations = Model.Where(x => x.Latitude is not null && x.Longitude is not null).Select((location, index) => new object[] { location.Latitude!, location.Longitude!, index }).ToArray();
+            var centerLatitude = Model.Average(x => x.Latitude);
+            var centerLongitude = Model.Average(x => x.Longitude);
+            await JSRuntime.InvokeVoidAsync("initGoogleMaps", "location-viewer-map", locations, centerLatitude, centerLongitude);
+        }
+    }
+}

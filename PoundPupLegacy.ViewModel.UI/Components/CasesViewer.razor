@@ -1,0 +1,100 @@
+﻿@inject IFetchCasesService FetchCasesService
+@inherits PagedViewer<CaseListEntry>
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
+    @if (CaseType == CaseType.Abuse) {
+        <h1>Abuse cases</h1>
+    }
+    @if (CaseType == CaseType.ChildTrafficking) {
+        <h1>Child trafficking cases</h1>
+    }
+    @if (CaseType == CaseType.CoercedAdoption) {
+        <h1>Coerced adoption cases</h1>
+    }
+    @if (CaseType == CaseType.Deportation) {
+        <h1>Deportation cases</h1>
+    }
+    @if (CaseType == CaseType.FathersRightsViolation) {
+        <h1>Fathers rights violation cases</h1>
+    }
+    @if (CaseType == CaseType.DisruptedPlacement) {
+        <h1>Disrupted placement cases</h1>
+    }
+    @if (CaseType == CaseType.WrongfulMedication) {
+        <h1>Wrongful medication cases</h1>
+    }
+    @if (CaseType == CaseType.WrongfulRemoval) {
+        <h1>Wrongful removal cases</h1>
+    }
+    @if (CaseType == CaseType.Any) {
+        <h1>Cases</h1>
+        <div>
+            <div class="case-type">
+                <a href="/abuse_cases">Abuse cases</a>
+                <div>
+                    The assumption behind child-placement is that the safety and living conditions of a child improve. These cases demonstrate that this assumption is often invalid.
+                </div>
+            </div>
+            <div class="case-type">
+                <a href="/child_trafficking_cases">Child trafficking cases</a>
+                <div>
+                    There is often a fine line between adoption and child trafficking. In many cases this line is being crossed.
+                </div>
+            </div>
+            <div class="case-type">
+                <a href="/disrupted_placement_cases">Disrupted placement cases</a>
+                <div>
+                    Although the adoptive family is called the "forever family" by the adoption industry, adoptions can end in disruption. These cases demonstrate that the "forever family" is sometimes only temporary.
+                </div>
+            </div>
+            <div class="case-type">
+                <a href="/deportation_cases">Deportation cases</a>
+                <div>
+                    Adoptions before 1997, didn't automatically lead to naturalization. As result, people adopted from outside the outside US that ran into problems with the justice system face deportation to their country of birth.
+                </div>
+            </div>
+            <div class="case-type">
+                <a href="/coerced_adoption_cases">Coerced adoption cases</a>
+                <div>
+                    Adoption is assumed to be the result of a choice made by the parents of the child. These cases demonstrate women are pressured to give up their children.
+                </div>
+            </div>
+            <div class="case-type">
+                <a href="/wrongful_removal_cases">Wrongful removal cases</a>
+                <div>
+                    Lorum ipsum.
+                </div>
+            </div>
+            <div class="case-type">
+                <a href="/wrongful_medication_cases">Wrongful medication cases</a>
+                <div>
+                    Lorum ipsum.
+                </div>
+            </div>
+            <div class="case-type">
+                <a href="/fathers_rights_violation_cases">Father's right violation cases</a>
+                <div>
+                    Lorum ipsum.
+                </div>
+            </div>
+        </div>
+    }
+</TeaserListViewer>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public CaseType CaseType { get; set; }
+
+    protected override int PageSize => 10;
+
+    protected override async Task<IPagedList<CaseListEntry>> GetListEntriesAsync()
+    {
+        return await FetchCasesService.FetchCases(
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            tenantId: TenantId, 
+            userId: UserId, 
+            caseType: CaseType);
+    }
+}

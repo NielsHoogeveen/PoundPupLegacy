@@ -1,0 +1,9 @@
+﻿@{
+    <LocationsViewer Model="@Model.Locations" />    
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required Locatable Model { get; init; }
+
+}

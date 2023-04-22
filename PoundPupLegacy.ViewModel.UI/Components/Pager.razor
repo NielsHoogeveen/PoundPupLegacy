@@ -1,0 +1,30 @@
+﻿@if(Model is not null) {
+    @if (Model.NumberOfPages > 1) {
+        <div class="pager">
+
+            @if (Model.PageNumber > 1) {
+                <PagerElement Model="Model" PageNumber="1" PagerElementType="PagerElementType.First" SelectPage="SelectPage" />
+                <PagerElement Model="Model" PageNumber="Model.PageNumber - 1" PagerElementType="PagerElementType.Previous" SelectPage="SelectPage" />
+            }
+            @foreach (var i in Enumerable.Range(Model.StartPage, Model.EndPage - Model.StartPage)) {
+               <PagerElement Model="Model" PageNumber="i" PagerElementType="PagerElementType.Page" SelectPage="SelectPage" />
+            }
+            @if (Model.PageNumber < Model.NumberOfPages) {
+                <PagerElement Model="Model" PageNumber="Model.PageNumber+1" PagerElementType="PagerElementType.Next" SelectPage="SelectPage" />
+                <PagerElement Model="Model" PageNumber="Model.NumberOfPages" PagerElementType="PagerElementType.Last" SelectPage="SelectPage" />
+            }
+        </div>
+    }
+}
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public required PagedListSettings Model { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required Func<int,Task> SelectPage { get; init; }
+
+}

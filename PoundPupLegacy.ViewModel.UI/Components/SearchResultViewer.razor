@@ -1,0 +1,34 @@
+﻿@inherits PagedSearchViewer<SearchResultListEntry>
+@inject IFetchSearchService FetchSearchService
+@if (ListEntries is not null)
+{
+    <div class="blog-list">
+        <article>
+            @foreach (var entry in ListEntries)
+            {
+                <div class="blog-teaser">
+                    <h2>
+                        <a href="@entry.Path">@entry.Title</a>
+                    </h2>
+                    <LargeTextViewer Value="@entry.Teaser" />
+                    <div style="clear:both"></div>
+                </div>
+            }
+        </article>
+        <Pager Model="PagedListSettings" SelectPage="SelectPage"/>
+    </div>
+}
+@code {
+
+    protected override int PageSize => 25;
+
+    protected override async Task<IPagedList<SearchResultListEntry>?> GetListEntriesAsync()
+    {
+        return await FetchSearchService.FetchSearch(
+            userId: UserId, 
+            tenantId: TenantId, 
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            searchString: PagedListSettings.SearchTerm!);
+    }
+}

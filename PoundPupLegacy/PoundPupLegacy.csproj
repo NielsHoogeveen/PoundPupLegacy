@@ -19,16 +19,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-    <PackageReference Include="OneOf" Version="3.0.243" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.6.2" />
     <PackageReference Include="RequireNamedArguments" Version="0.0.2.1" />
     <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PoundPupLegacy.Common.UI\PoundPupLegacy.Common.UI.csproj" />
+    <ProjectReference Include="..\PoundPupLegacy.EditModel.UI\PoundPupLegacy.EditModel.UI.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.CreateModel.csproj" />
-    <ProjectReference Include="..\PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj" />
+    <ProjectReference Include="..\PoundPupLegacy.ViewModel.UI\PoundPupLegacy.ViewModel.UI.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\lib\" />

@@ -1,0 +1,51 @@
+﻿@if (Model.Any())
+{
+    <h3>Relations to other persons</h3>
+    <table style="width: 100%">
+        <tr>
+            <th>
+                Person
+            </th>
+            <th>
+                Relation Type
+            </th>
+            <th>
+                Person
+            </th>
+            <th>
+                Date from
+            </th>
+            <th>
+                Date to
+            </th>
+
+        </tr>
+        @foreach (var relation in Model.OrderBy(x => x.InterPersonalRelationType.Title).ThenBy(x => x.PersonTo.Title))
+        {
+            <tr>
+                <td>
+                    <a href="@relation.PersonTo.Path">@relation.PersonTo.Title</a>
+                    
+                </td>
+                <td>
+                    <a href="@relation.InterPersonalRelationType.Path">@relation.InterPersonalRelationType.Title</a>
+                    
+                </td>
+                <td>
+                    <a href="@relation.PersonFrom.Path">@relation.PersonFrom.Title</a>
+                </td>
+                <td>
+                    @relation.DateFrom?.ToString("yyyy MMMM dd")
+                </td>
+                <td>
+                    @relation.DateTo?.ToString("yyyy MMMM dd")
+                </td>
+            </tr>
+        }
+    </table>
+}
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<InterPersonalRelation> Model { get; init; }
+}

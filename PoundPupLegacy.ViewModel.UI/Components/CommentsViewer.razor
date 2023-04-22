@@ -1,0 +1,13 @@
+﻿@if(Model.Any()){
+    <div class="comments">
+        @foreach (var comment in @Model)
+        {
+            <CommentViewer Model="comment" />
+        }
+    </div>
+}
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<Comment> Model { get; init; }
+}
