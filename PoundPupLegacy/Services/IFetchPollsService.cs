@@ -6,5 +6,5 @@ namespace PoundPupLegacy.Services;
 public interface IFetchPollsService
 {
     [RequireNamedArgs]
-    public Task<Polls> GetPolls(int userId, int tenantId, int pageNumber, int pageSize);
+    public Task<Polls> GetPolls(int userId, int tenantId, int pageSize, int pageNumber);
 }

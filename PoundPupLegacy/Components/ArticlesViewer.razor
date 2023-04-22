@@ -3,77 +3,9 @@
 @using Microsoft.AspNetCore.WebUtilities
 @inject IFetchArticlesService FetchArticlesService
 @inherits PagedViewer<ArticleListEntry>
-@if(ListEntries is not null) {
-        <div class="articles">
-        <div class="breadcrum">
-            <span class="breadcrum-element">
-                <a href="/home">home</a>
-            </span>
-        </div>
-        @if(UserId == 0)
-        {
-            <form id="term-form" action="/articles" method="get">
-                <div class="term-names">
-                    @foreach(var termName in TermNames)
-                    {
-                        <div class="term-name">
-                            @if (termName.Selected)
-                            {
-                                <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="checked"/>
-                            }
-                            else
-                            {
-                                <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" />
-                            }
-                            <label class="term-name-label" for="term-name-@termName.Id">@termName.Name</label>
-                        </div>
-                    }
-                </div>
-            </form>
-            @JavascriptCall
-        }
-        else {
-            <div class="term-names">
-                @foreach (var termName in TermNames) {
-                    <div class="term-name">
-                        @if (termName.Selected) {
-                            <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="checked" />
-                        }
-                        else {
-                            <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" />
-                        }
-                        <label class="term-name-label" for="term-name-@termName.Id" @onclick="() => Choose(termName.Id)">@termName.Name</label>
-                    </div>
-                }
-            </div>
-        }
-        <article>
-        <div class="blog-teasers">
-            @foreach (var entry in ListEntries)
-            {
-                <div class="blog-teaser">
-                    <h2>
-                        <a href="@entry.Path">@entry.Title</a>
-                    </h2>
-                    <AuthoringViewer Model="@entry.Authoring" />
-                    <LargeTextViewer Value="@entry.Text"/>
-                    @if (entry.Tags is not null)
-                    {
-                        <div class="tags">
-                            @foreach (var tag in @entry.Tags)
-                            {
-                                <span class="tag"><a href="@tag.Path">@tag.Title</a></span>
-                            }
-                        </div>
-                    }
-                </div>
-
-            }
-        </div>
-        </article>
-        <Pager Model="@PagedListSettings" SelectPage="SelectPage"/>
-    </div>
-}
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<TagSelector TermNames="TermNames" OnSelectTerm="SelectTerm"/>
+<TeaserListViewer ListEntries="ListEntries" PagedListSettings="@PagedListSettings" SelectPage="SelectPage"/>
 @code {
 
     private SelectionItem[] TermNames = Array.Empty<SelectionItem>();
@@ -94,7 +26,7 @@
         }
     }
 
-    private async Task Choose(int id)
+    private async Task SelectTerm(int id)
     {
         var term = TermNames.First(x => x.Id == id);
         term.Selected = !term.Selected;
@@ -132,6 +64,4 @@
         TermNames = articles.TermNames;
         return articles;
     }
-
-    private MarkupString JavascriptCall =>  new MarkupString(@"<script>setClickEventHandlersForTerms();</script>");
 }

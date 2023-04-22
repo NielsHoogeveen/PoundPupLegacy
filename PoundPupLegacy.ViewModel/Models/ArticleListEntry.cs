@@ -1,9 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record ArticleListEntry : ListEntry
+public record ArticleListEntry : AuthoredTeaserListEntry, TaggedTeaserListEntry
 {
-    public required int Id { get; init; }
-
     public required string Path { get; init; }
 
     public required string Title { get; init; }
@@ -13,4 +11,7 @@ public record ArticleListEntry : ListEntry
     public required Authoring Authoring { get; init; }
 
     public required BasicLink[] Tags { get; init; }
+
+    public required bool HasBeenPublished { get; init; }
+
 }

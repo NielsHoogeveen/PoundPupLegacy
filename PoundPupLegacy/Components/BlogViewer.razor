@@ -3,30 +3,12 @@
 @inherits PagedViewer<BlogPostTeaser>
 @inject IFetchBlogService FetchBlogService;
 <div class="blog-list">
-    <div class="breadcrum">
-        <span class="breadcrum-element">
-            <a href="/blogs">blogs</a>
-        </span>
-    </div>
-    <article>
+    <BreadCrumElementViewer Model="BreadCrumElements" />
+    <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
         <h1>
             @Name
         </h1>
-        <div class="blog-teasers">
-            @foreach (var entry in ListEntries)
-            {
-
-                <div class="blog-teaser">
-                    <h2>
-                        <a href="/node/@entry.Id">@entry.Title</a>
-                    </h2>
-                    <partial name="~/Views/Shared/_Authoring.cshtml" model="@entry.Authoring" />
-                    @((MarkupString)entry.Text)
-                </div>
-            }
-        </div>
-        <Pager Model="@PagedListSettings" SelectPage="SelectPage"/>
-    </article>
+    </TeaserListViewer>
 </div>
 @code{
     [Parameter]
@@ -63,4 +45,6 @@
         }
         return result;
     }
+
+    protected override Link[] BreadCrumElements => new Link[] { base.BreadCrumElements.First(), new BasicLink { Path = "/blogs", Title = "blogs" } };
 }

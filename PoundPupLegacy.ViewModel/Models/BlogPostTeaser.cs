@@ -1,9 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record BlogPostTeaser : ListEntry
+public record BlogPostTeaser : AuthoredTeaserListEntry
 {
-    public required int Id { get; init; }
-
     public required string Path { get; init; }
 
     public required string Title { get; init; }
@@ -11,4 +9,7 @@ public record BlogPostTeaser : ListEntry
     public required Authoring Authoring { get; init; }
 
     public required string Text { get; init; }
+
+    public required bool HasBeenPublished { get; init; }
+
 }

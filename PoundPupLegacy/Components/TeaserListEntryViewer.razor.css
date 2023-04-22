@@ -1,0 +1,10 @@
+﻿.teaser-list-element {
+    padding-bottom: 1.5em;
+    border-bottom: solid thin black;
+    clear: both;
+    block-size: fit-content;
+}
+
+.teaser-list-element:last-of-type {
+    border-bottom: 0;
+}

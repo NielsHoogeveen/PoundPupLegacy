@@ -64,15 +64,9 @@
     @if (Model is GlobalRegion globalRegion) {
         <GlobalRegionViewer Model="globalRegion" />
     }
+    <TagsViewer Tags="Model.Tags" />
     <FilesViewer Model="Model.Files" />
 </article>
-@if (Model.Tags.Any()) {
-    <div class="tags">
-        @foreach (var tag in @Model.Tags) {
-            <span class="tag"><a href="@tag.Path">@tag.Title</a></span>
-        }
-    </div>
-}
 @code{
     [Parameter]
     [EditorRequired]

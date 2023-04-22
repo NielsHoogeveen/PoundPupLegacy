@@ -119,7 +119,6 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
     const string FETCH_ARTICLES_UNFILTERED = """
         fetch_articles_unfiltered as (	
         	 select
-        	 tn.url_id "Id",
              case 
                 when tn.url_path is null then '/node/' || tn.url_id
                 else '/' || tn.url_path
@@ -132,12 +131,13 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
         		'CreatedDateTime', n.created_date_time,
         		'ChangedDateTime', n.changed_date_time 
         	 ) "Authoring",
+             true "HasBeenPublished", 
             (
                 select 
                     jsonb_agg(
                         jsonb_build_object(
                             'Path', t.path,
-                            'Name', t.name
+                            'Title', t.name
                         )
                     )
                     FROM (
@@ -168,7 +168,6 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
     const string FETCH_ARTICLES_FILTERED = """
         fetch_articles_filtered as (	
             select
-            tna.url_id "Id",
             case when tna.url_path is null then '/node/' || tna.url_id
                 else '/' || tna.url_path
             end "Path",
@@ -180,12 +179,13 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
                 'CreatedDateTime', n.created_date_time,
                 'ChangedDateTime', n.changed_date_time 
             ) "Authoring",
+            true "HasBeenPublished", 
             (
                 select 
                     jsonb_agg(
                         jsonb_build_object(
                             'Path', t.path,
-                            'Name', t.name
+                            'Title', t.name
                         )
                     )
                     FROM (

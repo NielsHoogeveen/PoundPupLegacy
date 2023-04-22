@@ -1,0 +1,30 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@if (ListEntries.Any()) {
+    <article>
+        @ChildContent
+        <div class="teaser-list">
+            @foreach (var entry in ListEntries) 
+            {
+                <TeaserListEntryViewer ListEntry="entry" />
+            }
+        </div>
+        <Pager Model="@PagedListSettings" SelectPage="SelectPage" />
+    </article>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required TeaserListEntry[] ListEntries { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required PagedListSettings PagedListSettings { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required Func<int, Task> SelectPage { get; init; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; init; }
+}

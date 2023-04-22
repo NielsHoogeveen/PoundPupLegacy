@@ -38,7 +38,7 @@
 
     protected override int PageSize => 150;
 
-    protected override async Task<IPagedList<SubgroupListEntry>?> GetListEntriesAsync()
+    protected override async Task<IPagedList<SubgroupListEntry>> GetListEntriesAsync()
     {
         return await SubgroupService.GetSubGroupPagedList(
             userId: UserId, 

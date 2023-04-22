@@ -5,36 +5,8 @@
 @inject IUserService userService
 @inject IFetchPollsService FetchPollsService
 
-@if(ListEntries is not null){
-    <div class="articles">
-        <div class="breadcrum">
-            <span class="breadcrum-element">
-                <a href="/home">home</a>
-            </span>
-        </div>
-        <article>
-            @if (ListEntries.Any())
-            {
-                <div class="blog-teasers">
-                    @foreach (var entry in ListEntries)
-                    {
-                        @if (!entry.HasBeenPublished)
-                        {
-                            <div class="watermark">Unpublished</div>
-                        }
-                        <div class="blog-teaser">
-                            <h2>
-                                <a href="@entry.Path">@entry.Title</a>
-                            </h2>
-                            <LargeTextViewer Value="@entry.Text" />
-                        </div>
-                    }
-                </div>
-        }
-        </article>
-        <Pager Model="PagedListSettings" SelectPage="SelectPage"/>
-    </div>
-}
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
 
 @code {
 
@@ -48,5 +20,4 @@
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber);
     }
-
 }
