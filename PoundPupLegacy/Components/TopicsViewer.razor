@@ -2,23 +2,18 @@
 @using PoundPupLegacy.ViewModel.Models
 @inherits PagedSearchViewer<TopicListEntry>
 @inject ITopicService TopicService
-@if(ListEntries is not null)
-{
-    <div class="articles">
-        <BreadCrumElementViewer Model="BreadCrumElements" />
-        <SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch"/>
-        <ListEntriesViewer 
-            ListEntries="ListEntries" 
-            PagedListSettings="PagedListSettings" 
-            SelectPage="SelectPage"
-            ElementsName="topics"/>
-    </div>
-}
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch"/>
+<ListEntriesViewer 
+    ListEntries="ListEntries" 
+    PagedListSettings="PagedListSettings" 
+    SelectPage="SelectPage"
+    ElementsName="topics"/>
 @code {
 
     protected override int PageSize => 50;
 
-    protected override async Task<IPagedList<TopicListEntry>?> GetListEntriesAsync()
+    protected override async Task<IPagedList<TopicListEntry>> GetListEntriesAsync()
     {
         return await TopicService.FetchTopics(
             userId: UserId, 

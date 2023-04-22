@@ -20,7 +20,7 @@
 @code {
     protected override int PageSize => 50;
 
-    protected override async Task<IPagedList<PersonListEntry>?> GetListEntriesAsync()
+    protected override async Task<IPagedList<PersonListEntry>> GetListEntriesAsync()
     {
         return await PersonService.FetchPersons(
             userId: UserId, 

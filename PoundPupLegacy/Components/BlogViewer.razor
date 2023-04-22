@@ -50,7 +50,7 @@
 
     protected override int PageSize => 10;
 
-    protected override async Task<IPagedList<BlogPostTeaser>?> GetListEntriesAsync()
+    protected override async Task<IPagedList<BlogPostTeaser>> GetListEntriesAsync()
     {
         var result =  await FetchBlogService.FetchBlog(
             publisherId: Id, 

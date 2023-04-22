@@ -22,7 +22,7 @@ internal sealed class TopicService : ITopicService
         _topicsDocumentReaderFactory = topicsDocumentReaderFactory;
     }
 
-    public async Task<Topics?> FetchTopics(int userId, int tenantId, int pageSize, int pageNumber, string searchTerm, SearchOption searchOption)
+    public async Task<Topics> FetchTopics(int userId, int tenantId, int pageSize, int pageNumber, string searchTerm, SearchOption searchOption)
     {
         var offset = (pageNumber - 1) * pageSize;
 
@@ -31,7 +31,7 @@ internal sealed class TopicService : ITopicService
                 await _connection.OpenAsync();
             }
             await using var reader = await _topicsDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new TopicsDocumentReaderRequest {
+            var result = await reader.ReadAsync(new TopicsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = pageSize,
@@ -39,6 +39,13 @@ internal sealed class TopicService : ITopicService
                 SearchTerm = searchTerm,
                 SearchOption = searchOption
             });
+            if(result is not null)
+                return result;
+            else 
+                return new Topics {
+                    Entries = Array.Empty<TopicListEntry>(),
+                    NumberOfEntries = 0
+                };
         }
         finally {
             if (_connection.State == ConnectionState.Open) {

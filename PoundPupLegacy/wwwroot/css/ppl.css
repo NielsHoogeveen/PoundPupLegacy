@@ -167,9 +167,9 @@ content {
 }
 
 
-.article-with-comments, .blog-list, .articles {
+.article-with-comments, .blog-list{
 }
-.article-with-comments a, .blog-list a, .articles a {
+.article-with-comments a, .blog-list a{
     color: #002ea8;
     text-decoration: none;
 }    
@@ -187,8 +187,6 @@ article {
     margin-top: 1em;
     margin-bottom: 1.5em;
     padding: 0.5em;
-}
-.articles .tags {
 }
 
 .tag {

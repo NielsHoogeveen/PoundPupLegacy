@@ -14,7 +14,7 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
     public required NavigationManager NavigationManager { get; init; }
     protected TListEntry[] ListEntries { get; set; } = Array.Empty<TListEntry>();
 
-    protected abstract Task<IPagedList<TListEntry>?> GetListEntriesAsync();
+    protected abstract Task<IPagedList<TListEntry>> GetListEntriesAsync();
 
     protected abstract int PageSize { get; }
 
@@ -65,6 +65,7 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
             ListEntries = list.Entries;
             PagedListSettings.NumberOfEntries = list.NumberOfEntries;
         }
+
     }
 
     protected async Task Reload()

@@ -40,7 +40,7 @@
 
     protected override int PageSize => 25;
 
-    protected override async Task<IPagedList<PollListEntry>?> GetListEntriesAsync()
+    protected override async Task<IPagedList<PollListEntry>> GetListEntriesAsync()
     {
         return await FetchPollsService.GetPolls(
             userId: UserId, 

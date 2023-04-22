@@ -128,7 +128,7 @@
 
     protected override int PageSize => 10;
 
-    protected override async Task<IPagedList<CaseListEntry>?> GetListEntriesAsync()
+    protected override async Task<IPagedList<CaseListEntry>> GetListEntriesAsync()
     {
         return await FetchCasesService.FetchCases(
             pageSize: PagedListSettings.PageSize, 

@@ -55,7 +55,7 @@
         return items;
     }
 
-    protected override async Task<IPagedList<OrganizationListEntry>?> GetListEntriesAsync()
+    protected override async Task<IPagedList<OrganizationListEntry>> GetListEntriesAsync()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         SetCountryId(uri);

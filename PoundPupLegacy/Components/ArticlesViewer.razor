@@ -116,7 +116,7 @@
         return termIds;
     }
 
-    protected override async Task<IPagedList<ArticleListEntry>?> GetListEntriesAsync()
+    protected override async Task<IPagedList<ArticleListEntry>> GetListEntriesAsync()
     {
         var termIds = UserId == 0
             ? GetTermIds()
