@@ -56,3 +56,11 @@ function setClickEventHandlersForTerms() {
         })
     })
 }
+
+function setClickEventHandlersForSearchForm() {
+    document.querySelectorAll('.selection-item-selector').forEach(item => {
+        item.addEventListener('change', event => {
+            document.getElementById('search-form').submit();
+        })
+    })
+}

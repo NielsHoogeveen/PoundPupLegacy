@@ -1,0 +1,52 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@if(UserId == 0) {
+    <form id="search-form">
+        @ChildContent
+        <SearchOptionSelector SearchOption="@PagedSearchListSettings.SearchOption" OnSelect="OnChangeSearchOption"/>
+        <input type="text" name="search_term" value="@PagedSearchListSettings.SearchTerm"/>
+        <input type="submit" value="Search" />
+        @if (UserId == 0) {
+            @JavascriptCall
+        }
+    </form>
+}
+else {
+    @ChildContent
+    <SearchOptionSelector SearchOption="@PagedSearchListSettings.SearchOption" OnSelect="OnChangeSearchOption" />
+    <input type="text" name="search_term" value="@PagedSearchListSettings.SearchTerm" @onchange="ChangeSearchTerm"/>
+    <input type="submit" value="Search" @onclick="OnSearch"/>
+}
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required  PagedSearchListSettings PagedSearchListSettings { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required Func<Task> OnSearch { get; init; }
+
+    [CascadingParameter(Name ="UserId")]
+    public int UserId { get; set; }
+
+
+    private MarkupString JavascriptCall => new MarkupString(@"<script>setClickEventHandlersForSearchForm();</script>");
+
+    private void OnChangeSearchOption(SearchOption searchOption)
+    {
+        PagedSearchListSettings.SearchOption = searchOption;
+    }
+
+
+    private void ChangeSearchTerm(ChangeEventArgs changeEventArgs)
+    {
+        var value = changeEventArgs.Value?.ToString();
+        if (value is null) {
+            return;
+        }
+        PagedSearchListSettings.SearchTerm = value;
+    }
+}

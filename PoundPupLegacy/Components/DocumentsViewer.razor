@@ -11,7 +11,7 @@
             @foreach (var document in Model.OrderBy(x => x.SortOrder))
             {
                 <tr>
-                    <td><a href="@document.Path">@document.Title</a></td>
+                    <td><NavLink href="@document.Path">@document.Title</NavLink></td>
                     <td>@document.Published?.ToDisplayString()</td>
                 </tr>
             }

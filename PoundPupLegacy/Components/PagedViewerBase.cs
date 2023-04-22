@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using PoundPupLegacy.ViewModel.Models;
-using PoundPupLegacy.Common;
+using System.Runtime.CompilerServices;
 
 namespace PoundPupLegacy.Components;
 
@@ -49,13 +49,19 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
 
     protected override async Task OnInitializedAsync()
     {
-        PagedListSettings.PageSize = PageSize;
+        await InitializeAsync(false);
+    }
 
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        PagedListSettings.Path = uri.AbsolutePath;
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageValue)) {
-            if (int.TryParse(pageValue, out int providedPageNumber)) {
-                PagedListSettings.PageNumber = providedPageNumber;
+    protected virtual async Task InitializeAsync(bool isReloading)
+    {
+        if (!isReloading) {
+            PagedListSettings.PageSize = PageSize;
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            PagedListSettings.Path = uri.AbsolutePath;
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("page", out var pageValue)) {
+                if (int.TryParse(pageValue, out int providedPageNumber)) {
+                    PagedListSettings.PageNumber = providedPageNumber;
+                }
             }
         }
         var list = await GetListEntriesAsync();
@@ -67,9 +73,9 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
 
     protected async Task Reload()
     {
+        await InitializeAsync(true);
         var url = PagedListSettings.Path + "?" + PagedListSettings.GetQueryString(PagedListSettings.PageNumber);
         NavigationManager.NavigateTo(url);
-        await OnInitializedAsync();
         StateHasChanged();
     }
 

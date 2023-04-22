@@ -23,6 +23,11 @@
 
     private ViewModel.Models.Node? Node { get; set; }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnInitializedAsync();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         Node = await NodeDataService.FetchNode(

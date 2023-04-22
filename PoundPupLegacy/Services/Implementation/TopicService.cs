@@ -27,7 +27,9 @@ internal sealed class TopicService : ITopicService
         var offset = (pageNumber - 1) * pageSize;
 
         try {
-            await _connection.OpenAsync();
+            if(_connection.State == ConnectionState.Closed) {
+                await _connection.OpenAsync();
+            }
             await using var reader = await _topicsDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new TopicsDocumentReaderRequest {
                 UserId = userId,
@@ -39,7 +41,9 @@ internal sealed class TopicService : ITopicService
             });
         }
         finally {
-            await _connection.CloseAsync();
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
         }
     }
 }

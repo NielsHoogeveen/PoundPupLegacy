@@ -6,31 +6,15 @@
 @inject IPersonService PersonService
 @if(ListEntries is not null){
     <div class="articles">
-        <div class="breadcrum">
-            <span class="breadcrum-element">
-                <a href="/home">home</a>
-            </span>
-        </div>
-        <form>
-            <SearchOptionSelector SearchOption="@PagedListSettings.SearchOption" />
-            <input type="text" name="search" value="@PagedListSettings.SearchTerm" />
-            <input type="submit" value="Search" />
-        </form>
-        @if (ListEntries.Any())
-        {
-            @foreach (var organization in ListEntries)
-            {
-                <div>
-                    <a href="@organization.Path">@organization.Title</a>
-                </div>
-            }
-            <Pager Model="PagedListSettings" SelectPage="SelectPage"/>
-        }
-        else
-        {
-            <p>No organizations were found</p>
-    
-        }
+        <BreadCrumElementViewer Model="BreadCrumElements" />
+        <SearchForm 
+            PagedSearchListSettings="PagedListSettings" 
+            OnSearch="OnSearch" />
+        <ListEntriesViewer 
+            ListEntries="ListEntries" 
+            PagedListSettings="PagedListSettings" 
+            ElementsName="persons" 
+            SelectPage="SelectPage" />
     </div>
 }
 @code {

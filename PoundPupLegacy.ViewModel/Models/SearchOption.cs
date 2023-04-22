@@ -30,6 +30,7 @@ public record SearchOptionDatabaseParameter : DatabaseParameter<(string, SearchO
                 _ => throw new Exception("Cannot reach")
             };
         }
-        SetParameter(GetPattern(value.Item1, value.Item2), command);
+        var pattern = GetPattern(value.Item1, value.Item2);
+        SetParameter(pattern, command);
     }
 }

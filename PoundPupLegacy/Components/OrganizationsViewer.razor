@@ -4,61 +4,16 @@
 @inherits PagedSearchViewer<OrganizationListEntry>
 @inject IFetchOrganizationsService FetchOrganizationsService
 <div class="articles">
-    <div class="breadcrum">
-        <span class="breadcrum-element">
-            <a href="/home">home</a>
-        </span>
-    </div>
-    <form>
-        <select name="country">
-            <option value="0"></option>
-            @foreach (var country in Countries)
-            {
-                if (country.Selected)
-                {
-                    <option value="@country.Id" selected>@country.Name</option>
-                }
-                else
-                {
-                    <option value="@country.Id">@country.Name</option>
-                }
-                
-            }
-        </select>
-        <select name="organization_type">
-            <option value="0"></option>
-            @foreach (var organizationType in OrganizationTypes)
-            {
-                if (organizationType.Selected)
-                {
-                    <option value="@organizationType.Id" selected>@organizationType.Name</option>
-                }
-                else
-                {
-                    <option value="@organizationType.Id">@organizationType.Name</option>
-                }
-                
-            }
-        </select>
-        <SearchOptionSelector SearchOption="@PagedListSettings.SearchOption" />
-        <input type="text" name="search_term" value="@PagedListSettings.SearchTerm" />
-        <input type="submit" value="Search" />
-    </form>
-    @if (ListEntries.Any())
-    {
-        @foreach (var organization in ListEntries)
-        {
-            <div>
-                <a href="@organization.Path">@organization.Title</a>
-            </div>
-        }
-        <Pager Model="PagedListSettings" SelectPage="SelectPage"/>
-    }
-    else
-    {
-        <p>No organizations were found</p>
-    
-    }
+    <BreadCrumElementViewer Model="BreadCrumElements" />
+    <SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch">
+        <OptionalSelectionItemSelector SelectionItems="Countries" OnSelect="OnSelectCountry" Name="country"/>
+        <OptionalSelectionItemSelector SelectionItems="OrganizationTypes" OnSelect="OnSelectOrganizationType" Name="organization_type" />
+    </SearchForm>
+    <ListEntriesViewer 
+        ListEntries="ListEntries" 
+        PagedListSettings="PagedListSettings" 
+        SelectPage="SelectPage"
+        ElementsName="organizations"/>
 </div>
 @code {
 
@@ -76,12 +31,6 @@
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("country", out var countryIdValue)) {
             if (int.TryParse(countryIdValue, out int providedCountryId)) {
                 CountryId = providedCountryId;
-                if (PagedListSettings.QueryString == string.Empty) {
-                    PagedListSettings.QueryString = $"country={providedCountryId}";
-                }
-                else {
-                    PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&country={providedCountryId}";
-                }
             }
         }
     }
@@ -90,12 +39,6 @@
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("organization_type", out var organizationTypeIdValue)) {
             if (int.TryParse(organizationTypeIdValue, out int providedOrganizationTypeId)) {
                 OrganizationTypeId = providedOrganizationTypeId;
-                if (PagedListSettings.QueryString == string.Empty) {
-                    PagedListSettings.QueryString = $"organization_type={providedOrganizationTypeId}";
-                }
-                else {
-                    PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&organization_type={providedOrganizationTypeId}";
-                }
             }
         }
 
@@ -130,4 +73,29 @@
         OrganizationTypes = GetSelectItems(organizationSearch.OrganizationTypes, OrganizationTypeId);
         return organizationSearch.Organizations;
     }
+
+    private async Task OnSelectCountry(int id)
+    {
+        CountryId = id;
+        if (PagedListSettings.QueryString == string.Empty) {
+            PagedListSettings.QueryString = $"country={id}";
+        }
+        else {
+            PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&country={id}";
+        }
+        await Reload();
+    }
+    private async Task OnSelectOrganizationType(int id)
+    {
+        OrganizationTypeId = id;
+        if (PagedListSettings.QueryString == string.Empty) {
+            PagedListSettings.QueryString = $"organization_type={id}";
+        }
+        else {
+            PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&organization_type={id}";
+        }
+        await Reload();
+    }
+
+    private MarkupString JavascriptCall => new MarkupString(@"<script>setClickEventHandlersForSearchForm();</script>");
 }

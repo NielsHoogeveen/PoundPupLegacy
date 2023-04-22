@@ -1,5 +1,5 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
-<select name="search_option">
+<select name="search_option" @onchange="OnChange">
     @if (SearchOption == SearchOption.Contains) {
         <option value="contains" selected>contains</option>
     }
@@ -31,6 +31,25 @@
 
     [Parameter]
     [EditorRequired]
-    public SearchOption SearchOption { get; set; } = SearchOption.Contains;
+    public required SearchOption SearchOption { get; init; }
 
+    [Parameter]
+    [EditorRequired]
+    public required Action<SearchOption> OnSelect { get; init; }
+
+    private void OnChange(ChangeEventArgs changeEventArgs)
+    {
+        var value = changeEventArgs.Value?.ToString();
+        if (value is null) {
+            return;
+        }
+        OnSelect(value switch
+        {
+            "contains" => SearchOption.Contains,
+            "starts_with" => SearchOption.StartsWith,
+            "ends_with" => SearchOption.EndsWith,
+            "is_equal_to" => SearchOption.IsEqualTo,
+            _ => SearchOption.Contains
+        });
+    }
 }

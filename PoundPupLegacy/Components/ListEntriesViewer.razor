@@ -1,21 +1,21 @@
 ﻿@using PoundPupLegacy.ViewModel.Models;
 @if (ListEntries.Any()) {
-    @foreach (var topic in ListEntries) {
+    @foreach (var listEntry in ListEntries) {
         <div>
-            <LinkViewer Link="@topic" />
+            <LinkViewer Link="@listEntry" />
         </div>
     }
     <Pager Model="PagedListSettings" SelectPage="SelectPage"/>
 }
 else {
-    <p>No organizations were found</p>
+    <p>No @ElementsName were found</p>
 
 }
 
 @code {
     [Parameter]
     [EditorRequired]
-    public required TopicListEntry[] ListEntries { get; init; }
+    public required ListEntry[] ListEntries { get; init; }
 
     [Parameter]
     [EditorRequired]
@@ -24,5 +24,9 @@ else {
     [Parameter]
     [EditorRequired]
     public required Func<int, Task> SelectPage { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string ElementsName { get; init; }
 
 }

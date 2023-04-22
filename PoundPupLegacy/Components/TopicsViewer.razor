@@ -6,8 +6,12 @@
 {
     <div class="articles">
         <BreadCrumElementViewer Model="BreadCrumElements" />
-        <TopicsListSearchForm PagedListSettings="PagedListSettings" />
-        <TopicsListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
+        <SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch"/>
+        <ListEntriesViewer 
+            ListEntries="ListEntries" 
+            PagedListSettings="PagedListSettings" 
+            SelectPage="SelectPage"
+            ElementsName="topics"/>
     </div>
 }
 @code {
@@ -24,6 +28,4 @@
             searchTerm: PagedListSettings.SearchTerm, 
             searchOption: PagedListSettings.SearchOption);
     }
-
-    
 }

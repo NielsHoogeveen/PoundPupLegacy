@@ -1,5 +1,5 @@
 ﻿@using PoundPupLegacy.Common;
-@if(Label is not null)
+@if(Value is not null && Label is not null)
 {
     <div>
         <label>@Label: </label>
@@ -9,9 +9,9 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required FuzzyDate Value { get; init; }
+    public required FuzzyDate? Value { get; init; }
 
     [Parameter]
     [EditorRequired]
-    public required string Label { get; init; }
+    public required string? Label { get; init; }
 }

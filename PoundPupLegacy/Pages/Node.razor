@@ -1,5 +1,6 @@
 ﻿@page "/node/{Id:int}"
 @using PoundPupLegacy.Components
+@inject NavigationManager NavigationManager
 @inherits Page
 
 <NodeViewer Id="@Id" />
@@ -7,4 +8,5 @@
 @code {
     [Parameter]
     public int Id { get; set; }
+
 }
