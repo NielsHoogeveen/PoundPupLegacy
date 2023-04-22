@@ -23,9 +23,19 @@
 
     private ViewModel.Models.Node? Node { get; set; }
 
+    private int? PreviousId { get; set; } = null;
+
     protected override async Task OnParametersSetAsync()
     {
-        await OnInitializedAsync();
+        if(!PreviousId.HasValue)
+        {
+            PreviousId = Id;
+            return;
+        }
+        if (PreviousId != Id)
+        {
+            await OnInitializedAsync();
+        }
     }
 
     protected override async Task OnInitializedAsync()

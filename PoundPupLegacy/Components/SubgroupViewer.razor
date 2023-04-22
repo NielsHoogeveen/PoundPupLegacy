@@ -23,6 +23,19 @@
     [EditorRequired]
     public int Id { get; set; }
 
+    private int? PreviousId { get; set; } = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!PreviousId.HasValue) {
+            PreviousId = Id;
+            return;
+        }
+        if (PreviousId != Id) {
+            await OnInitializedAsync();
+        }
+    }
+
     protected override int PageSize => 150;
 
     protected override async Task<IPagedList<SubgroupListEntry>?> GetListEntriesAsync()

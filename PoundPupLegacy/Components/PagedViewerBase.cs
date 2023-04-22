@@ -32,10 +32,6 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
     {
         base.OnParametersSet();
     }
-    protected sealed override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-    }
 
     protected sealed override async Task OnAfterRenderAsync(bool firstRender)
     {

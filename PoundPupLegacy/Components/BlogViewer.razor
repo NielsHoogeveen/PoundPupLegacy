@@ -33,6 +33,19 @@
     [EditorRequired]
     public int Id { get; set; }
 
+    private int? PreviousId { get; set; } = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!PreviousId.HasValue) {
+            PreviousId = Id;
+            return;
+        }
+        if (PreviousId != Id) {
+            await OnInitializedAsync();
+        }
+    }
+
     private string Name { get; set; } = string.Empty;
 
     protected override int PageSize => 10;
