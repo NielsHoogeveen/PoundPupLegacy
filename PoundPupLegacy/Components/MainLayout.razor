@@ -1,15 +1,15 @@
 ﻿@using PoundPupLegacy.Services
 @inherits LayoutComponentBase
-@inject ISiteDataService SiteDataService
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IUserService UserService
 @inject NotFoundListener NotFoundListener
+@inject ISiteDataService SiteDataService
+@inject IUserService UserService
 
 <PageTitle>Pound Pup Legacy</PageTitle>
 <CascadingValue Value="UserId" Name="UserId">
     <CascadingValue Value="TenantId" Name="TenantId">
-        <PPLPageHeader />
+        <Header />
         <div class="main">
             <UserMenu />
             <content>
@@ -23,29 +23,7 @@
                 }
             </content>
         </div>
-        <footer>
-            <ul>
-                <li>
-                    <a href="/">Home</a>
-                </li>
-                <li>
-                    <a href="/about_us">About Us</a>
-                </li>
-                <li>
-                    <a href="/our_position">Our Position </a>
-                </li>
-                <li>
-                    <a href="/faq">FAQ</a>
-                </li>
-                <li>
-                    <a href="/ways_to_help">Ways to help</a>
-                </li>
-                <li>
-                    <a href="/contact">Contact</a>
-                </li>
-            </ul>
-            <h2>Pound Pup Legacy</h2>
-        </footer>
+        <Footer />
     </CascadingValue>
 </CascadingValue>
 @code{

@@ -1,5 +1,4 @@
-﻿@using PoundPupLegacy.ViewModel.Models
-@using PoundPupLegacy.Services
+﻿@using PoundPupLegacy.Services
 @inherits Viewer
 @inject ISiteDataService siteDataService
 @inject IUserService userService
@@ -34,23 +33,19 @@
     {
         <div class="tab content2">
             <article>
-                @if (Model is BlogPost)
-                {
+                @if (Model is ViewModel.Models.BlogPost){
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.BlogPost"/>
                 }
-                @if (Model is Article) 
-                {
+                @if (Model is ViewModel.Models.Article) {
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.Article" />
                 }
-                @if (Model is Discussion) 
-                {
+                @if (Model is ViewModel.Models.Discussion) {
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.Discussion" />
                 }
-                @if (Model is Document) 
-                {
+                @if (Model is ViewModel.Models.Document) {
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.Document" />
                 }
-                @if (Model is Organization) {
+                @if (Model is ViewModel.Models.Organization) {
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.Organization" />
                 }
             </article>
@@ -61,7 +56,7 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required Node Model { get; init; }
+    public required ViewModel.Models.Node Model { get; init; }
 
     private DisplayMode displayMode = DisplayMode.View;
 
