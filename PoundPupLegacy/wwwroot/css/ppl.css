@@ -105,36 +105,6 @@ header .subtitle {
     text-align: center;
 }
 }
-footer {
-    border-top: solid thin black;
-    border-bottom: solid thin black;
-    background-color: var(--footer-bg-color);
-    flex-grow: 0;
-}
-footer ul {
-    margin: 0;
-    margin-top: 0.5em;
-    padding-left: 1em;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-footer ul li {
-    display: inline;
-    margin-right: 0.5em;
-    border-left: solid 2px #386fff;
-    padding-left: 0.25em;
-}
-footer ul li a {
-    font-size: 90%;
-    color: silver;
-    text-decoration: none;
-}
-footer h2 {
-    font-size: clamp(24px, 6vw, 22px);
-    color: #444;
-    margin: 0.25em
-}
 .main {
     display: flex;
     flex-wrap: wrap;

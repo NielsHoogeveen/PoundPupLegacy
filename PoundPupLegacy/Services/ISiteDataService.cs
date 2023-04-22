@@ -1,6 +1,7 @@
 ﻿using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.ViewModel.Models;
+using System.Drawing;
 
 namespace PoundPupLegacy.Services;
 
@@ -24,6 +25,14 @@ public interface ISiteDataService
 
     [RequireNamedArgs]
     IEnumerable<MenuItem> GetMenuItemsForUser(int userId, int tenantId);
+
+    string GetLogoName(int tenantId);
+
+    string GetSubTitle(int tenantId);
+
+    string GetFooterTitle(int tenantId);
+
+    Link[] GetFooterMenuItems(int tenantId);
 
     Task RefreshTenants();
 }

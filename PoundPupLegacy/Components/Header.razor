@@ -1,10 +1,10 @@
 ﻿<header>
     <div class="logo">
-        PPL
+        @LogoName
     </div>
     <div class="central-header">
         <div>
-            <div class="subtitle">exposing the dark side of adoption</div>
+            <div class="subtitle">@Subtitle</div>
         </div>
         <form action="search">
             <input type="text" name="search_term" />
@@ -15,5 +15,12 @@
 </header>
 
 @code {
+    [Parameter]
+    [EditorRequired]
+    public required string LogoName { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Subtitle { get; init; }
 
 }

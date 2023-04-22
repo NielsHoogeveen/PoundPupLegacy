@@ -9,7 +9,7 @@
 <PageTitle>Pound Pup Legacy</PageTitle>
 <CascadingValue Value="UserId" Name="UserId">
     <CascadingValue Value="TenantId" Name="TenantId">
-        <Header />
+        <Header LogoName="@LogoName" Subtitle="@SubTitle" />
         <div class="main">
             <UserMenu />
             <content>
@@ -23,14 +23,23 @@
                 }
             </content>
         </div>
-        <Footer />
+        <Footer MenuItems="FooterMenuItems" Name="@FooterTitle"/>
     </CascadingValue>
 </CascadingValue>
 @code{
     private int TenantId { get; set; }
+
     private int UserId { get; set; }
 
     private bool notFound;
+
+    private string LogoName { get; set; } = "";
+
+    private string SubTitle { get; set; } = "";
+
+    private string FooterTitle { get; set; } = "";
+
+    private Link[] FooterMenuItems { get; set; } = Array.Empty<Link>();
 
     protected override void OnInitialized() => NotFoundListener.OnNotFound += SetNotFound;
 
@@ -44,6 +53,10 @@
     {
         var uri = new Uri(NavigationManager.Uri);
         TenantId = SiteDataService.GetTenantId(uri);
+        LogoName = SiteDataService.GetLogoName(TenantId);
+        SubTitle = SiteDataService.GetSubTitle(TenantId);
+        FooterTitle = SiteDataService.GetFooterTitle(TenantId);
+        FooterMenuItems = SiteDataService.GetFooterMenuItems(TenantId);
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity is not null) 

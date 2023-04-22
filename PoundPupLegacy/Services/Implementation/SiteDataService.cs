@@ -6,6 +6,7 @@ using PoundPupLegacy.Readers;
 using PoundPupLegacy.ViewModel.Models;
 using System.Data;
 using System.Diagnostics;
+using static Microsoft.FSharp.Core.ByRefKinds;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -313,5 +314,48 @@ internal sealed class SiteDataService : ISiteDataService
             }
         }
         return false;
+    }
+
+    public string GetLogoName(int tenantId)
+    {
+        if(tenantId == 1) {
+            return "PPL";
+        }
+        else if(tenantId == 6) {
+            return "CPCT";
+        }
+        else {
+            return "";
+        }
+    }
+
+    public string GetSubTitle(int tenantId)
+    {
+        if(tenantId == 1) {
+            return "exposing the dark side of adoption";
+        }
+        return "";
+    }
+
+    public Link[] GetFooterMenuItems(int tenantId)
+    {
+        if(tenantId == 1) {
+            return new Link[] {
+                new BasicLink { Title = "About", Path = "/about_us" },
+                new BasicLink { Title = "Our Position", Path = "/our_position" },
+                new BasicLink { Title = "FAQ", Path = "/faq" },
+                new BasicLink { Title = "Ways to help", Path = "/ways_to_help" },
+                new BasicLink { Title = "Contact", Path = "/contact" },
+            };
+        }
+        return Array.Empty<Link>();
+    }
+
+    public string GetFooterTitle(int tenantId)
+    {
+        if(tenantId == 1) {
+            return "Pound Pup Legacy";
+        }
+        return "";
     }
 }

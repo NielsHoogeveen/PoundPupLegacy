@@ -1,27 +1,15 @@
 ﻿<footer>
-    <ul>
-        <li>
-            <a href="/">Home</a>
-        </li>
-        <li>
-            <a href="/about_us">About Us</a>
-        </li>
-        <li>
-            <a href="/our_position">Our Position </a>
-        </li>
-        <li>
-            <a href="/faq">FAQ</a>
-        </li>
-        <li>
-            <a href="/ways_to_help">Ways to help</a>
-        </li>
-        <li>
-            <a href="/contact">Contact</a>
-        </li>
-    </ul>
-    <h2>Pound Pup Legacy</h2>
+    <LinkListViewer Links="MenuItems"/>
+    <h2>@Name</h2>
 </footer>
 
 @code {
+    [Parameter]
+    [EditorRequired]
+    public required string Name { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required Link[] MenuItems { get; init; }
 
 }
