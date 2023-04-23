@@ -1,0 +1,15 @@
+﻿@using PoundPupLegacy.Common;
+<div class="labeled-value labeled-fuzzy-date-value">
+    <label>@Label: </label>
+    @Value.ToDisplayString()
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required FuzzyDate Value { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Label { get; init; }
+}

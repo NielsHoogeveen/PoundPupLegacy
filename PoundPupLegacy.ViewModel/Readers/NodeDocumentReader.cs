@@ -3636,6 +3636,11 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     ),
                     'DateFrom', n.date_from,
                     'DateTo', n.date_to,
+                    'ChildPlacementType', n.child_placement_type,
+                    'FamilySize', n.family_size,
+                    'HomeSchoolingInvolved', n.home_schooling_involved,
+                    'FundamentalFaithInvolved', n.fundamental_faith_involved,
+                    'DisabilitiesInvolved', n.disabilities_involved,
                     'BreadCrumElements', (SELECT document FROM abuse_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3659,7 +3664,24 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     p.name publisher_name,
                     an.has_been_published,
                     lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to
+                    upper(c.fuzzy_date) date_to,
+                    case 
+                        when tn2.node_id is null then null
+                        else jsonb_build_object(
+                            'Title', tn2.title,
+                            'Path', tn2.path
+                        )
+                    end child_placement_type,
+                    case 
+                        when tn4.node_id is null then null
+                        else jsonb_build_object(
+                            'Title', tn4.title,
+                            'Path', tn4.path
+                        )
+                    end family_size,
+                    ac.home_schooling_involved,
+                    ac.fundamental_faith_involved,
+                    ac.disabilities_involved
                 FROM authenticated_node an
                 join "case" c on c.id = an.node_id 
                 join abuse_case ac on ac.id = an.node_id 
@@ -3668,11 +3690,11 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 LEFT JOIN (
                     select 
                     n2.id node_id,
-                    n2.name,
+                    t.name title,
                     case
                         when tn2.url_path is null then '/node/' || tn2.url_id
                         else '/' || tn2.url_path
-                    end
+                    end path
                     from nameable n2
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
                     join term t on t.nameable_id = n2.id
@@ -3682,18 +3704,17 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 LEFT JOIN (
                     select 
                     n2.id node_id,
-                    n2.name,
+                    t.name title,
                     case
                         when tn2.url_path is null then '/node/' || tn2.url_id
                         else '/' || tn2.url_path
-                    end
+                    end path
                     from nameable n2
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
                     join term t on t.nameable_id = n2.id
                     join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = 1
-                    where tn3.url_id = 115
-                ) tn4 on tn4.node_id = ac.family_size_id
-        
+                    where tn3.url_id = 117
+                ) tn4 on tn4.node_id = ac.family_size_id            
             ) n
         ) 
         """;

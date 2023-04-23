@@ -1,8 +1,8 @@
 ﻿<LargeTextViewer Value="@Model.Description" />
 <LabeledNullableStringViewer Value="@Model.WebsiteUrl" Label="Website"/>
 <LabeledNullableStringViewer Value="@Model.EmailAddress" Label="Email" />
-<LabeledFuzzyDateViewer Value="Model.Establishment" Label="Established" />
-<LabeledFuzzyDateViewer Value="Model.Termination" Label="Terminated" />
+<LabeledNullableFuzzyDateViewer Value="Model.Establishment" Label="Established" />
+<LabeledNullableFuzzyDateViewer Value="Model.Termination" Label="Terminated" />
 <LabeledLinkListViewer Links="@Model.OrganizationTypes" Label="Organization types"/>
 <PartyCaseTypeViewer Model="@Model.PartyCaseTypes" />
 <PersonOrganizationRelationsViewer Model="@Model.PersonOrganizationRelations" />

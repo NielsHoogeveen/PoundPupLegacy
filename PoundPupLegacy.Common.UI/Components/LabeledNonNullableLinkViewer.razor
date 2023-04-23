@@ -1,0 +1,13 @@
+﻿<div class="labeled-value labeled-link-value">
+    <label>@Label: </label>
+    <LinkViewer Link="Value"/>
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required Link Value { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Label { get; init; }
+}

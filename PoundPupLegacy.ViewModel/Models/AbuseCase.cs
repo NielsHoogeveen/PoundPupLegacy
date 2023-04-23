@@ -2,15 +2,15 @@
 
 public record AbuseCase : Case
 {
-    public required Link ChildPlacementType { get; init; }
+    public required BasicLink? ChildPlacementType { get; init; }
 
-    public required Link FamilySize { get; init; }
+    public required BasicLink? FamilySize { get; init; }
 
-    public required bool HomeSchoolingInvolved { get; init; }
+    public required bool? HomeSchoolingInvolved { get; init; }
 
-    public required bool FundamentalFaithInvolved { get; init; }
+    public required bool? FundamentalFaithInvolved { get; init; }
 
-    public required bool DisabilitiesInvolved { get; init; }
+    public required bool? DisabilitiesInvolved { get; init; }
 
     public required string Description { get; init; }
     public required int NodeId { get; init; }

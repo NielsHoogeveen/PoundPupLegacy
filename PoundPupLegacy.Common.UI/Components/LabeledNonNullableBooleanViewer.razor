@@ -1,0 +1,14 @@
+﻿<div class="labeled-value labeled-boolean-value">
+    <label>@Label: </label>
+    @Value
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required bool Value { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Label { get; init; }
+
+}
