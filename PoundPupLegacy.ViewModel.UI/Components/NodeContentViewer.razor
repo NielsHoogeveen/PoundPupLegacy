@@ -20,32 +20,8 @@
     @if (Model is Person person) {
         <PersonViewer Model="person"/>
     }
-    @if (Model is BasicNameable basicNameable) {
-        <BasicNameableViewer Model="basicNameable"/>
-    }
-    @if (Model is AbuseCase abuseCase) {
-        <AbuseCaseViewer Model="abuseCase"/>
-    }
-    @if (Model is ChildTraffickingCase childTraffickingCase) {
-        <ChildTraffickingCaseViewer Model="childTraffickingCase"/>
-    }
-    @if (Model is CoercedAdoptionCase coercedAdoptionCase) {
-        <CoercedAdoptionCaseViewer Model="coercedAdoptionCase"/>
-    }
-    @if (Model is DeportationCase deportationCase) {
-        <DeportationCaseViewer Model="deportationCase"/>
-    }
-    @if (Model is DisruptedPlacementCase disruptedPlacementCase) {
-        <DisruptedPlacementCaseViewer Model="disruptedPlacementCase"/>
-    }
-    @if (Model is FathersRightsViolationCase fathersRightsViolationCase) {
-        <FathersRightsViolationCaseViewer Model="fathersRightsViolationCase" />
-    }
-    @if (Model is WrongfulMedicationCase wrongfulMedicationCase) {
-        <WrongfulMedicationCaseViewer Model="wrongfulMedicationCase"/>
-    }
-    @if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
-        <WrongfulRemovalCaseViewer Model="wrongfulRemovalCase" />
+    @if (Model is Case _case) {
+        <CaseViewer Model="_case"/>
     }
     @if (Model is Document document) {
         <DocumentViewer Model="document"/>
@@ -59,8 +35,14 @@
     @if (Model is Subdivision subdivision) {
         <SubdivisionViewer Model="subdivision"/>
     }
-    @if (Model is GlobalRegion globalRegion) {
-        <GlobalRegionViewer Model="globalRegion" />
+    @if(Model is Documentable documentable) {
+        <DocumentableViewer Model="@documentable" />
+    }
+    @if(Model is Nameable nameable) {
+        <NameableViewer Model="@nameable" />
+    }
+    @if(Model is Locatable locatable) {
+        <LocatableViewer Model="locatable" />
     }
     <TagsViewer Tags="Model.Tags" />
     <FilesViewer Model="Model.Files" />

@@ -1,0 +1,17 @@
+﻿@inject ICongressionalDataService CongressionalDataService;
+@if(Model is not null) {
+    <CongressionalMeetingChamberViewer Model="Model" />
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required int Number { get; init; }
+
+    private CongressionalMeetingChamber? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await CongressionalDataService.GetCongressionalMeetingChamber(ChamberType.Senate, Number);
+    }
+
+}

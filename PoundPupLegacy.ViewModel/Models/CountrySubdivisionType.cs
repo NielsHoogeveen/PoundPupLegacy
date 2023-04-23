@@ -4,8 +4,8 @@ public record SubdivisionType
 {
     public required string Name { get; init; }
 
-    private SubdivisionListItem[] subdivisions = Array.Empty<SubdivisionListItem>();
-    public required SubdivisionListItem[] Subdivisions {
+    private SubdivisionListEntry[] subdivisions = Array.Empty<SubdivisionListEntry>();
+    public required SubdivisionListEntry[] Subdivisions {
         get => subdivisions;
         init {
             if (value is not null) {

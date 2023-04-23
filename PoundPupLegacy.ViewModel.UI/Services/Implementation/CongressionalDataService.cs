@@ -4,14 +4,10 @@ using System.Data;
 using System.Text.RegularExpressions;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
+
 internal sealed partial class CongressionalDataService : ICongressionalDataService
 {
 
-    private enum ChamberType
-    {
-        House = Constants.UNITED_STATES_HOUSE_OF_REPRESENTATIVES,
-        Senate = Constants.UNITED_STATES_SENATE
-    }
 
     private record ChamberTypeAndMeetingNumber
     {
@@ -57,6 +53,20 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         };
 
     }
+    public async Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(ChamberType chamberType, int number)
+    {
+        try {
+            await _connection.OpenAsync();
+            await using var reader = await _unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(_connection);
+            return await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReaderRequest {
+                Type = (int)chamberType,
+                Number = number
+            });
+        }
+        finally {
+            await _connection.CloseAsync();
+        }
+    }
 
     public async Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(string path)
     {
@@ -64,18 +74,7 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         if (congressionalMeetingChamber is null) {
             return null;
         }
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReaderRequest {
-                Type = (int)congressionalMeetingChamber.ChamberType,
-                Number = congressionalMeetingChamber.Number
-            });
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
-
+        return await GetCongressionalMeetingChamber(congressionalMeetingChamber.ChamberType, congressionalMeetingChamber.Number);
     }
 
     public async Task<UnitedStatesCongress?> GetUnitedStatesCongress()

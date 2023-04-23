@@ -14,6 +14,7 @@ public static class DependencyInjection
     {
         services.AddViewModelReaders();
         services.AddTransient<ICongressionalDataService, CongressionalDataService>();
+        services.AddTransient<IFetchAttachmentService, FetchAttachmentService>();
         services.AddTransient<IFetchArticlesService, FetchArticlesService>();
         services.AddTransient<IFetchBlogService, FetchBlogService>();
         services.AddTransient<IFetchBlogsService, FetchBlogsService>();

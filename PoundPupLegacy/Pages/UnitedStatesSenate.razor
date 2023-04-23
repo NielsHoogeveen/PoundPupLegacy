@@ -1,0 +1,9 @@
+﻿@page "/united_states_senate/{Id:int}"
+@inherits Page
+
+<UnitedStatesSenateMeetingViewer Number="@Id" />
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+}

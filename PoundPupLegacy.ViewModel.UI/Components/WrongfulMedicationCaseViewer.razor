@@ -1,13 +1,5 @@
-﻿@if (Model is not null) 
-{
-    <LargeTextViewer Value="@Model.Description" />
-    <LabeledFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
-    <CasePartiesViewer Model="@Model.CaseParties" />
-    <DocumentableViewer Model="@Model" />
-    <LocatableViewer Model="@Model" />
-}
-@code {
+﻿@code {
     [Parameter]
     [EditorRequired]
-    public WrongfulMedicationCase? Model { get; set; }
+    public required WrongfulMedicationCase Model { get; init; }
 }

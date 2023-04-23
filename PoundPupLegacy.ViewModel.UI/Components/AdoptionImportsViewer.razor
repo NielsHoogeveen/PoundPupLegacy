@@ -1,10 +1,13 @@
-﻿<div class="section">
-    <h3>Adoption imports</h3>
-    <div class="adoption-imports">
-        <AdoptionImportsCountryColumnViewer Imports="Model.Imports" />
-        <AdoptionImportsValueColumnsViewer StartYear="Model.StartYear" EndYear="Model.EndYear" Imports="Model.Imports"/>
+﻿@if (Model.Imports.Any())
+{
+    <div class="section">
+        <h3>Adoption imports</h3>
+        <div class="adoption-imports">
+            <AdoptionImportsCountryColumnViewer Imports="Model.Imports" />
+            <AdoptionImportsValueColumnsViewer StartYear="Model.StartYear" EndYear="Model.EndYear" Imports="Model.Imports"/>
+        </div>
     </div>
-</div>
+}
 @code{
     [Parameter]
     [EditorRequired]

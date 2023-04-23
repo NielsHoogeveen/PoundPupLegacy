@@ -128,7 +128,12 @@ internal sealed class SiteDataService : ISiteDataService
         if (path == "/united_states_congress") {
             return true;
         }
-
+        if (path == "/united_states_senate/{Id:int}") {
+            return true;
+        }
+        if (path == "/united_states_house_of_representatives/{Id:int}") {
+            return true;
+        }
         return _data.UserTenantActions.Contains(
             new UserTenantAction {
                 UserId = userId,

@@ -1,0 +1,32 @@
+﻿<LargeTextViewer Value="@Model.Description" />
+<LabeledFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
+@if(Model is AbuseCase abuseCase) {
+    <AbuseCaseViewer Model="@abuseCase" />
+}
+@if (Model is ChildTraffickingCase childTraffickingCase) {
+    <ChildTraffickingCaseViewer Model="@childTraffickingCase" />
+}
+@if (Model is CoercedAdoptionCase coercedAdoptionCase) {
+    <CoercedAdoptionCaseViewer Model="@coercedAdoptionCase" />
+}
+@if (Model is DeportationCase deportationCase) {
+    <DeportationCaseViewer Model="@deportationCase" />
+}
+@if (Model is DisruptedPlacementCase disruptedPlacementCase) {
+    <DisruptedPlacementCaseViewer Model="@disruptedPlacementCase" />
+}
+@if (Model is FathersRightsViolationCase fathersRightsViolationCase) {
+    <FathersRightsViolationCaseViewer Model="@fathersRightsViolationCase" />
+}
+@if (Model is WrongfulMedicationCase wrongfulMedicationCase) {
+    <WrongfulMedicationCaseViewer Model="@wrongfulMedicationCase" />
+}
+@if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
+    <WrongfulRemovalCaseViewer Model="@wrongfulRemovalCase" />
+}
+<CasePartiesViewer Model="@Model.CaseParties" />
+@code{
+    [Parameter]
+    [EditorRequired]
+    public required Case Model { get; init; }
+}
