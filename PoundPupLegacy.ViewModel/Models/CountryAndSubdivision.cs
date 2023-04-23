@@ -38,8 +38,8 @@ public record CountryAndSubdivision : TopLevelCountry, IsoCodedSubdivision
 
     public required AdoptionImports AdoptionImports { get; init; }
 
-    private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
-    public required DocumentListItem[] Documents {
+    private DocumentListEntry[] documents = Array.Empty<DocumentListEntry>();
+    public required DocumentListEntry[] Documents {
         get => documents;
         init {
             if (value is not null) {

@@ -2,6 +2,8 @@
 
 public record ChildTraffickingCase : Case
 {
+    public required BasicLink? CountryFrom { get; init; }
+    public required int? NumberOfChildrenInvolved { get; init; }
     public required string Description { get; init; }
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }
@@ -48,8 +50,8 @@ public record ChildTraffickingCase : Case
     public Comment[] Comments => this.GetComments();
     public required BasicLink[] BreadCrumElements { get; init; }
 
-    private DocumentListItem[] documents = Array.Empty<DocumentListItem>();
-    public required DocumentListItem[] Documents {
+    private DocumentListEntry[] documents = Array.Empty<DocumentListEntry>();
+    public required DocumentListEntry[] Documents {
         get => documents;
         init {
             if (value is not null) {

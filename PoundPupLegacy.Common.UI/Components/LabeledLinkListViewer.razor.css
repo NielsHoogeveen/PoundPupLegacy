@@ -1,0 +1,8 @@
+::deep ul {
+    margin:0;
+    padding-left:1em;
+}
+::deep li{
+    margin:0;
+    list-style-type: none;
+}

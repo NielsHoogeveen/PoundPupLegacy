@@ -1,7 +1,9 @@
-﻿@if (Links is not null && Links.Any())
+﻿@if (Links.Any())
 {
-    <h4>@Label</h4>
-    <LinkListViewer Links="@Links" />
+    <div class="labeled-value labeled-link-list">
+        <label>@Label:</label>
+        <LinkListViewer Links="@Links" />
+    </div>
 }
 @code{
     [Parameter]

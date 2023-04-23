@@ -1,4 +1,6 @@
-﻿@code {
+﻿<LabeledNullableLinkViewer Value="Model.CountryFrom" Label="Country"/>
+<LabeledNullableIntViewer Value="Model.NumberOfChildrenInvolved" Label="number of children involved" />
+@code {
     [Parameter]
     [EditorRequired]
     public required ChildTraffickingCase Model { get; init; }

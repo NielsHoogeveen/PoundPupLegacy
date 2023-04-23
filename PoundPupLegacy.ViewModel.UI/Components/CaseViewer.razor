@@ -6,23 +6,8 @@
 @if (Model is ChildTraffickingCase childTraffickingCase) {
     <ChildTraffickingCaseViewer Model="@childTraffickingCase" />
 }
-@if (Model is CoercedAdoptionCase coercedAdoptionCase) {
-    <CoercedAdoptionCaseViewer Model="@coercedAdoptionCase" />
-}
 @if (Model is DeportationCase deportationCase) {
     <DeportationCaseViewer Model="@deportationCase" />
-}
-@if (Model is DisruptedPlacementCase disruptedPlacementCase) {
-    <DisruptedPlacementCaseViewer Model="@disruptedPlacementCase" />
-}
-@if (Model is FathersRightsViolationCase fathersRightsViolationCase) {
-    <FathersRightsViolationCaseViewer Model="@fathersRightsViolationCase" />
-}
-@if (Model is WrongfulMedicationCase wrongfulMedicationCase) {
-    <WrongfulMedicationCaseViewer Model="@wrongfulMedicationCase" />
-}
-@if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
-    <WrongfulRemovalCaseViewer Model="@wrongfulRemovalCase" />
 }
 <CasePartiesViewer Model="@Model.CaseParties" />
 @code{

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record DocumentListItem
+public record DocumentListEntry: ListEntry
 {
     public required string Path { get; init; }
 

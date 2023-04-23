@@ -1,4 +1,4 @@
-﻿@if (Links.Any())
+﻿@if (Links.Count() > 1)
 {
     <ul>
         @foreach (var link in Links)
@@ -7,7 +7,10 @@
         }
     </ul>
 }
-@code{
+@if (Links.Count() == 1) {
+    <LinkViewer Link="@Links.First()" />
+}
+@code {
     [Parameter]
     [EditorRequired]
     public required IEnumerable<Link> Links { get; init; }

@@ -1,0 +1,17 @@
+﻿@if (Value.HasValue)
+{
+    <div class="labeled-value labeled-decimal-value">
+        <label>@Label: </label>
+        @Value.Value
+    </div>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required decimal? Value { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Label { get; init; }
+
+}

@@ -3019,7 +3019,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         when dt.id is null then null
                         else jsonb_build_object(
                             'Id', dt.id,
-                            'Name', dt.name,
+                            'Title', dt.name,
                             'Path', dt.path
                         )
                     end document_type
@@ -3737,6 +3737,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     ),
                     'DateFrom', n.date_from,
                     'DateTo', n.date_to,
+                    'CountryFrom', n.country_from,
+                    'NumberOfChildrenInvolved', n.number_of_children_involved,
                     'BreadCrumElements', (SELECT document FROM child_trafficking_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3760,12 +3762,32 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     p.name publisher_name,
                     an.has_been_published,
                     lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to
+                    upper(c.fuzzy_date) date_to,
+                    case 
+                        when tn2.node_id is null then null
+                        else jsonb_build_object(
+                            'Title', tn2.title,
+                            'Path', tn2.path
+                        )
+                    end country_from,
+                    ac.number_of_children_involved
                 FROM authenticated_node an
                 join "case" c on c.id = an.node_id 
                 join child_trafficking_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
+                LEFT JOIN (
+                    select 
+                    n2.id node_id,
+                    n2.title,
+                    case
+                        when tn2.url_path is null then '/node/' || tn2.url_id
+                        else '/' || tn2.url_path
+                    end path
+                    from node n2
+                    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
+                ) tn2 on tn2.node_id = ac.country_id_from
+        
             ) n
         ) 
         """;
@@ -3839,6 +3861,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     ),
                     'DateFrom', n.date_from,
                     'DateTo', n.date_to,
+                    'SubdivisionFrom', n.subdivision_from,
+                    'CountryTo', n.country_to,  
                     'BreadCrumElements', (SELECT document FROM deportation_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3862,12 +3886,49 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     p.name publisher_name,
                     an.has_been_published,
                     lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to
+                    upper(c.fuzzy_date) date_to,
+                    case 
+                        when tn4.node_id is null then null
+                        else jsonb_build_object(
+                            'Title', tn4.title,
+                            'Path', tn4.path
+                        )
+                    end subdivision_from,
+                    case 
+                        when tn2.node_id is null then null
+                        else jsonb_build_object(
+                            'Title', tn2.title,
+                            'Path', tn2.path
+                        )
+                    end country_to
                 FROM authenticated_node an
                 join "case" c on c.id = an.node_id 
                 join deportation_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
+                LEFT JOIN (
+                    select 
+                    n2.id node_id,
+                    n2.title,
+                    case
+                        when tn2.url_path is null then '/node/' || tn2.url_id
+                        else '/' || tn2.url_path
+                    end path
+                    from node n2
+                    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
+                ) tn2 on tn2.node_id = ac.country_id_to
+                LEFT JOIN (
+                    select 
+                    n2.id node_id,
+                    s.name title,
+                    case
+                        when tn2.url_path is null then '/node/' || tn2.url_id
+                        else '/' || tn2.url_path
+                    end path
+                    from node n2
+                    join subdivision s on s.id = n2.id
+                    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
+                ) tn4 on tn4.node_id = ac.subdivision_id_from
             ) n
         ) 
         """;

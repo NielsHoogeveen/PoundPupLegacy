@@ -1,4 +1,6 @@
-﻿@code {
+﻿<LabeledNullableLinkViewer Value="Model.SubdivisionFrom" Label="From"/>
+<LabeledNullableLinkViewer Value="Model.CountryTo" Label="To" />
+@code {
     [Parameter]
     [EditorRequired]
     public required DeportationCase Model { get; init; }
