@@ -23,7 +23,7 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
         	    'SourceUrl',
         	    d.source_url,
         	    'Text',
-        	    d.text,
+        	    stn.text,
         	    'DocumentTypeId',
                 case 
                     when d.document_type_id is null then 0
@@ -45,6 +45,7 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
                 (select document from attachments_document)
             ) document
         from document d
+        join simple_text_node stn on stn.id = d.id
         join node n on n.id = d.id
         join tenant_node tn on tn.node_id = d.id
         where tn.tenant_id = @tenant_id and tn.url_id = @url_id

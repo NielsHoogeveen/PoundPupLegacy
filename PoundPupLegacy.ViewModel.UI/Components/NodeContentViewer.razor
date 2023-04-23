@@ -7,6 +7,9 @@
     <div class="title">
         <h1>@Model.Title</h1>
     </div>
+    @if (Model is Document document) {
+        <DocumentViewer Model="document" />
+    }
     @if (Model is SimpleTextNode simpleTextNode) {
         <AuthoringViewer Model="simpleTextNode.Authoring" />
         <SimpleTextNodeViewer Model="simpleTextNode"/>
@@ -22,9 +25,6 @@
     }
     @if (Model is Case _case) {
         <CaseViewer Model="_case"/>
-    }
-    @if (Model is Document document) {
-        <DocumentViewer Model="document"/>
     }
     @if (Model is SingleQuestionPoll singleQuestionPoll) {
         <SingleQuestionPollViewer Model="singleQuestionPoll"/>

@@ -1,11 +1,8 @@
-﻿@if (Model is not null)
-{
-    <LargeTextWithSeeAlsoBox Text="@Model.Text" Links="@Model.SeeAlsoBoxElements" />
-}
+﻿<LargeTextWithSeeAlsoBox Text="@Model.Text" Links="@Model.SeeAlsoBoxElements" />
 @code {
 
     [Parameter]
     [EditorRequired]
-    public SimpleTextNode? Model { get; set; }
+    public required SimpleTextNode Model { get; init; }
   
 }

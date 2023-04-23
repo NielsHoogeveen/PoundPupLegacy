@@ -145,7 +145,7 @@ internal class SearchableMigrator : MigratorPPL
                 		replace(
                 			regexp_replace(
                 				concat(
-                					a.text,
+                					stn.text,
                 					' ' , 
                 					n.title, 
                 					' ', 
@@ -162,11 +162,12 @@ internal class SearchableMigrator : MigratorPPL
                 		)
                 	) tsvector
                     from "document" a
+                    join simple_text_node stn on stn.id = a.id
                     join node n  on n.id = a.id
                     left join "comment" cm on cm.node_id = n.id
                     group by 
                     n.id,
-                    a.text, 
+                    stn.text, 
                     n.title,
                     a.source_url
                 ) subquery

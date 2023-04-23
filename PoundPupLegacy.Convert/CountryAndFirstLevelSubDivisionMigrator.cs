@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System.Xml.Linq;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
 {
@@ -95,7 +97,16 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "Åland",
                         ParentNames = new List<string>{ "Northern Europe" },
+                    },
+                    new VocabularyName
+                    {
+                        OwnerId = Constants.PPL,
+                        Name = Constants.VOCABULARY_COUNTRIES,
+                        TermName = "Åland",
+                        ParentNames = new List<string>(),
+
                     }
+
                 },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
@@ -165,6 +176,14 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "Curaçao",
                         ParentNames = new List<string>{ "Caribbean" },
+                    },
+                    new VocabularyName
+                    {
+                        OwnerId = Constants.PPL,
+                        Name = Constants.VOCABULARY_COUNTRIES,
+                        TermName = "Curaçao",
+                        ParentNames = new List<string>(),
+
                     }
                 },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -235,6 +254,14 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "Sint Maarten",
                         ParentNames = new List<string>{ "Caribbean" },
+                    },
+                    new VocabularyName
+                    {
+                        OwnerId = Constants.PPL,
+                        Name = Constants.VOCABULARY_COUNTRIES,
+                        TermName = "Sint Maarten",
+                        ParentNames = new List<string>(),
+
                     }
                 },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -305,6 +332,14 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "United States Minor Outlying Islands",
                         ParentNames = new List<string>{ "Oceania" },
+                    },
+                    new VocabularyName
+                    {
+                        OwnerId = Constants.PPL,
+                        Name = Constants.VOCABULARY_COUNTRIES,
+                        TermName = "United States Minor Outlying Islands",
+                        ParentNames = new List<string>(),
+
                     }
                 },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -412,6 +447,14 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = new List<string>{ regionName },
+                },
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_COUNTRIES,
+                    TermName = name,
+                    ParentNames = new List<string>(),
+
                 }
             };
 

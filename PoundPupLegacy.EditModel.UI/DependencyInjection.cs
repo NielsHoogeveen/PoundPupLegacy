@@ -19,15 +19,19 @@ public static class DependencyInjection
         services.AddEditModelDeleters();
         services.AddEditModelInserters();
         services.AddEditModelUpdaters();
+        services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
+        services.AddTransient<IDocumentableDocumentsSearchService, DocumentableDocumentsSearchService>();
         services.AddTransient<IEditService<Article>, ArticleEditService>();
         services.AddTransient<IEditService<BlogPost>, BlogPostEditService>();
         services.AddTransient<IEditService<Discussion>, DiscussionEditService>();
         services.AddTransient<IEditService<Organization>, OrganizationEditService>();
         services.AddTransient<IEditService<Document>, DocumentEditService>();
+        services.AddTransient<ILocationService, LocationService>();
         services.AddTransient<ISaveService<IEnumerable<File>>, FilesSaveService>();
         services.AddTransient<ISaveService<IEnumerable<TenantNode>>, TenantNodesSaveService>();
         services.AddTransient<ISaveService<IEnumerable<Tag>>, TagsSaveService>();
         services.AddTransient<ISaveService<IEnumerable<Location>>, LocationsSaveService>();
         services.AddTransient<ITextService, TextService>();
+        services.AddTransient<ITopicSearchService, TopicSearchService>();
     }
 }

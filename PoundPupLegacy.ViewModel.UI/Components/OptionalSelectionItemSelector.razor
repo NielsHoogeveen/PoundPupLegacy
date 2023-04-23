@@ -1,14 +1,16 @@
-﻿<select name="@Name" @onchange="OnSelectItem" class="selection-item-selector">
-    <option></option>
-    @foreach (var selectionItem in SelectionItems) {
-        if (selectionItem.Selected) {
-            <option value="@selectionItem.Id" selected>@selectionItem.Name</option>
+﻿@{
+    <select @onchange="@((ChangeEventArgs args) => OnSelectItem(args))" name="@Name" class="selection-item-selector">
+        <option></option>
+        @foreach (var selectionItem in SelectionItems) {
+            if (selectionItem.Selected) {
+                <option value="@selectionItem.Id" selected>@selectionItem.Name</option>
+            }
+            else {
+                <option value="@selectionItem.Id">@selectionItem.Name</option>
+            }
         }
-        else {
-            <option value="@selectionItem.Id">@selectionItem.Name</option>
-        }
-    }
-</select>
+    </select>
+}
 
 @code {
 

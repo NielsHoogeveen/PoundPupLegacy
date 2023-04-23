@@ -90,6 +90,14 @@ internal sealed class BoundCountryMigrator : CountryMigrator
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = new List<string>{ bindingCountryName },
+                },
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_COUNTRIES,
+                    TermName = name,
+                    ParentNames = new List<string>(),
+
                 }
             };
 

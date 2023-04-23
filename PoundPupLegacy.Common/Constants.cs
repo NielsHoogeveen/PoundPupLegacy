@@ -137,6 +137,7 @@ public static class Constants
     public const string VOCABULARY_SUBDIVISION_TYPE = "Subdivision type";
     public const string VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE = "United States political party affiliation";
     public const string VOCABULARY_CASE_PARTY_TYPE = "Case party type";
+    public const string VOCABULARY_COUNTRIES = "Countries";
 
     public const int DOCUMENT = 10;
     public const int ORGANIZATION = 23;

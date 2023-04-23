@@ -1,4 +1,5 @@
-﻿<select name="search_option" @onchange="OnChange">
+﻿@{
+    <select name="search_option" @onchange="OnChange">
     @if (SearchOption == SearchOption.Contains) {
         <option value="contains" selected>contains</option>
     }
@@ -25,7 +26,7 @@
         <option value="ends_with">ends with</option>
     }
 </select>
-
+}
 @code {
 
     [Parameter]
@@ -36,7 +37,7 @@
     [EditorRequired]
     public required Action<SearchOption> OnSelect { get; init; }
 
-    private void OnChange(ChangeEventArgs changeEventArgs)
+    public void OnChange(ChangeEventArgs changeEventArgs)
     {
         var value = changeEventArgs.Value?.ToString();
         if (value is null) {

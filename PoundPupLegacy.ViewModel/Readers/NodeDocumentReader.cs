@@ -3013,8 +3013,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id,
                     p.name publisher_name,
                     an.has_been_published,
-                    stn.published,
-                    stn.source_url,
+                    d.published,
+                    d.source_url,
                     case 
                         when dt.id is null then null
                         else jsonb_build_object(
@@ -3024,7 +3024,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         )
                     end document_type
                 FROM authenticated_node an
-                join document stn on stn.id = an.node_id
+                join document d on d.id = an.node_id
+                join simple_text_node stn on stn.id = an.node_id
                 left join (
                     select 
                     dt.id,
@@ -3035,7 +3036,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     from document_type dt
                     join node n on n.id = dt.id
                     join tenant_node tn on tn.node_id = dt.id and tn.tenant_id = @tenant_id
-                ) dt on dt.id = stn.document_type_id
+                ) dt on dt.id = d.document_type_id
                 JOIN publisher p on p.id = an.publisher_id
             ) n
         )

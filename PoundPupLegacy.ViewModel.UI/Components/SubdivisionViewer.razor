@@ -1,17 +1,11 @@
-﻿@if (Model is not null)
+﻿@if (Model is FormalSubdivision formalSubdivision)
 {
-    @if (Model is FormalSubdivision formalSubdivision)
-    {
-        <div>
-            <label>ISO 3166-1 code</label>
-            @formalSubdivision.ISO3166_2_Code
-        </div>
-    }
-    <SubdivisionTypesViewer Model="Model.SubdivisionTypes" />
-    <OrganizationTypesWithOrganizationsViewer Model="Model.OrganizationTypes" />
+    <LabeledNonNullableStringViewer Label="ISO 3166-2 code" Value="@formalSubdivision.ISO3166_2_Code" />
 }
+<SubdivisionTypesViewer Model="Model.SubdivisionTypes" />
+<OrganizationTypesWithOrganizationsViewer Model="Model.OrganizationTypes" />
 @code{
     [Parameter]
     [EditorRequired]
-    public Subdivision? Model { get; set; }
+    public required Subdivision Model { get; set; }
 }

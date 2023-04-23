@@ -98,12 +98,12 @@ internal partial class MySqlToPostgresConverter
         await _serviceProvider.Migrate<InterPersonalRelationMigratorCPCT>();
         await _serviceProvider.Migrate<PartyPoliticalEntityRelationMigratorCPCT>();
         await _serviceProvider.Migrate<LocationMigratorCPCT>();
-        await _serviceProvider.Migrate<SearchableMigrator>();
         await _serviceProvider.Migrate<CaseCaseRelationsMigrator>();
         await _serviceProvider.Migrate<NodeFileMigratorPPL>();
         await _serviceProvider.Migrate<NodeFileMigratorCPCT>();
         await _serviceProvider.Migrate<CommentMigrator>();
         await _serviceProvider.Migrate<AdultAftermathMigrator>();
+        await _serviceProvider.Migrate<SearchableMigrator>();
         await PrepareFiles();
     }
 

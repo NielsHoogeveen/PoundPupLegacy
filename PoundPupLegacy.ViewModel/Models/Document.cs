@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Document : Node
+public record Document : SimpleTextNode
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }
@@ -76,5 +76,5 @@ public record Document : Node
         }
     }
 
-
+    public BasicLink[] SeeAlsoBoxElements => Array.Empty<BasicLink>();
 }

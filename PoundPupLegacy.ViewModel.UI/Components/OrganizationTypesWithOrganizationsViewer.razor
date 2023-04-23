@@ -1,13 +1,9 @@
-﻿@if (Model.Any())
+﻿@if (Model is not null && Model.Any())
 {
-    <div class="section">
-        <h3>Organizations</h3>
+    <div class="section" style="margin-top:2em;">
         @foreach (var organizationType in Model)
         {
-            <h4>
-                @organizationType.OrganizationTypeName
-            </h4>
-            <LinkListViewer Links="@organizationType.Organizations" />
+            <LabeledLinkListViewer Label="@organizationType.OrganizationTypeName" Links="@organizationType.Organizations" />
         }
     </div>
 }

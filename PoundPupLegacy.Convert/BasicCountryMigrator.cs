@@ -159,15 +159,23 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             Name = "Antigua and Barbuda",
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                        {
-                            OwnerId = Constants.PPL,
-                            Name = Constants.VOCABULARY_TOPICS,
-                            TermName = "Antigua and Barbuda",
-                            ParentNames = new List<string>{ "Caribbean" },
-                        }
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Antigua and Barbuda",
+                    ParentNames = new List<string>{ "Caribbean" },
                 },
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_COUNTRIES,
+                    TermName = "Antigua and Barbuda",
+                    ParentNames = new List<string>(),
+
+                }
+            },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3822
@@ -194,31 +202,39 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             Title = "Palestine",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = "palestine",
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.PALESTINE
-                    }
-                },
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = "palestine",
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.PALESTINE
+                }
+            },
             NodeTypeId = 13,
             Name = "Palestine",
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                        {
-                            OwnerId = Constants.PPL,
-                            Name = Constants.VOCABULARY_TOPICS,
-                            TermName = "Palestine",
-                            ParentNames = new List<string>{ "Western Asia" },
-                        }
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Palestine",
+                    ParentNames = new List<string>{ "Western Asia" },
                 },
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_COUNTRIES,
+                    TermName = "Palestine",
+                    ParentNames = new List<string>(),
+
+                }
+            },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3817
@@ -245,31 +261,39 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             Title = "Saint Helena, Ascension and Tristan da Cunha",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.SAINT_HELENA_ETC
-                    }
-                },
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.SAINT_HELENA_ETC
+                }
+            },
             NodeTypeId = 13,
             Name = "Saint Helena, Ascension and Tristan da Cunha",
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                        {
-                            OwnerId = Constants.PPL,
-                            Name = Constants.VOCABULARY_TOPICS,
-                            TermName = "Saint Helena, Ascension and Tristan da Cunha",
-                            ParentNames = new List<string>{ "Western Africa" },
-                        }
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Saint Helena, Ascension and Tristan da Cunha",
+                    ParentNames = new List<string>{ "Western Africa" },
                 },
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_COUNTRIES,
+                    TermName = "Saint Helena, Ascension and Tristan da Cunha",
+                    ParentNames = new List<string>(),
+
+                }
+            },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3825
@@ -297,31 +321,39 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             Title = "South Sudan",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = "south_sudan",
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.SOUTH_SUDAN
-                    }
-                },
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = "south_sudan",
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.SOUTH_SUDAN
+                }
+            },
             NodeTypeId = 13,
             Name = "South Sudan",
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                        {
-                            OwnerId = Constants.PPL,
-                            Name = Constants.VOCABULARY_TOPICS,
-                            TermName = "South Sudan",
-                            ParentNames = new List<string>{ "Eastern Africa" },
-                        }
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "South Sudan",
+                    ParentNames = new List<string>{ "Eastern Africa" },
                 },
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_COUNTRIES,
+                    TermName = "South Sudan",
+                    ParentNames = new List<string>(),
+
+                }
+            },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3827
@@ -468,6 +500,14 @@ internal sealed class BasicCountryMigrator : MigratorPPL
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = new List<string>{ regionName },
+                },
+                new VocabularyName 
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_COUNTRIES,
+                    TermName = topicName == "Georgia (country)" ?"Georgia": topicName,
+                    ParentNames = new List<string>(),
+
                 }
             };
             var country = new BasicCountry {
