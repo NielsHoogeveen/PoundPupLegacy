@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System.IO;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class ActionMigrator : MigratorPPL
 {
@@ -126,6 +128,32 @@ internal sealed class ActionMigrator : MigratorPPL
             Id = null,
             Path = "/search",
             Description = "Full text search"
+        };
+
+        yield return new BasicAction {
+            Id = null,
+            Path = "/node/{Id:int}",
+            Description = "View a node"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/blog/{Id:int}",
+            Description = "View a blog"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/united_states_congress",
+            Description = "View information about the United States congress"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/united_states_senate/{Id:int}",
+            Description = "View information about the United States Senate"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/united_states_house_of_representatives/{Id:int}",
+            Description = "View information about the United States House of Representatives"
         };
     }
 }

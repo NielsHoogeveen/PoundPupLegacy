@@ -54,7 +54,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
                     new VocabularyName
                     {
                         OwnerId = Constants.OWNER_CASES,
-                        Name = Constants.VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        Name = Constants.VOCABULARY_FAMILY_SIZE,
                         TermName = "1 to 4",
                         ParentNames = new List<string>(),
                     },
@@ -98,7 +98,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
                     new VocabularyName
                     {
                         OwnerId = Constants.OWNER_CASES,
-                        Name = Constants.VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        Name = Constants.VOCABULARY_FAMILY_SIZE,
                         TermName = "4 to 8",
                         ParentNames = new List<string>(),
                     },
@@ -142,7 +142,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
                     new VocabularyName
                     {
                         OwnerId = Constants.OWNER_CASES,
-                        Name = Constants.VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        Name = Constants.VOCABULARY_FAMILY_SIZE,
                         TermName = "8 to 12",
                         ParentNames = new List<string>(),
                     },
@@ -186,7 +186,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
                     new VocabularyName
                     {
                         OwnerId = Constants.OWNER_CASES,
-                        Name = Constants.VOCABULARY_CHILD_PLACEMENT_TYPE,
+                        Name = Constants.VOCABULARY_FAMILY_SIZE,
                         TermName = "more than 12",
                         ParentNames = new List<string>(),
                     },

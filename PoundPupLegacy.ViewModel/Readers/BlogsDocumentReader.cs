@@ -25,14 +25,21 @@ internal sealed class BlogsDocumentReaderFactory : SingleItemDatabaseReaderFacto
                     '/blog/' || p.id "Path",
                     u.avatar "FilePathAvatar",
                     COUNT(n.id) "NumberOfEntries",
-                    max(tn.url_id) "LatestEntryId",
                     (
                         select 
-                            n2.title 
+                        jsonb_build_object(
+                            'Title', 
+                            n2.title,
+                            'Path', 
+                            case 
+                                when tn2.url_path is null then '/node/' || tn2.url_id 
+                                else '/' || tn2.url_path 
+                            end
+                        )
                         from node n2 
                         JOIN tenant_node tn2 on tn2.node_id = n2.id AND tn2.tenant_id = @tenant_id
                         where tn2.url_id = max( tn.url_id)
-                    ) "LatestEntryTitle"
+                    ) "LatestEntry"
                 from publisher p
                 left join "user" u on u.id = p.id
                 join node n on n.publisher_id = p.id 

@@ -7,6 +7,5 @@ public record BlogListEntry : ListEntry
     public required string Title { get; init; }
     public required string? FilePathAvatar { get; init; }
     public required int NumberOfEntries { get; init; }
-    public required string LatestEntryTitle { get; init; }
-    public required int LatestEntryId { get; init; }
+    public required BasicLink LatestEntry { get; init; }
 }

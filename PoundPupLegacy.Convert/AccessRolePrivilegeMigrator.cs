@@ -2,7 +2,6 @@
 
 internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> _createNodeActionIdReaderByNodeTypeIdFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> _actionIdReaderByPathFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<EditNodeActionIdReaderByNodeTypeIdRequest, int> _editNodeActionIdReaderByNodeTypeIdFactory;
@@ -12,7 +11,6 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
     protected override string Name => "users";
     public AccessRolePrivilegeMigrator(
         IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
         IMandatorySingleItemDatabaseReaderFactory<EditNodeActionIdReaderByNodeTypeIdRequest, int> editNodeActionIdReaderByNodeTypeIdFactory,
@@ -22,7 +20,6 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
     )
     : base(databaseConnections)
     {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
         _createNodeActionIdReaderByNodeTypeIdFactory = createNodeActionIdReaderByNodeTypeIdFactory;
         _actionIdReaderByPathFactory = actionIdReaderByPathFactory;
         _editNodeActionIdReaderByNodeTypeIdFactory = editNodeActionIdReaderByNodeTypeIdFactory;
@@ -39,52 +36,77 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
 
         yield return new AccessRolePrivilege {
             AccessRoleId = 4,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 35 })
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
+            { 
+                NodeTypeId = 35 
+            })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 4,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 36 })
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 36 
+            })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 4,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 37 })
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 37 
+            })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 42,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 35 })
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 35 
+            })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 42,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 36 })
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 36 
+            })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 42,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 37 })
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 37 
+            })
         };
 
         yield return new AccessRolePrivilege {
             AccessRoleId = 11,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 26 }),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 26 
+            }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 11,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 29 }),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 29 
+            }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 11,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 23 }),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 23 
+            }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 11,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 24 }),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 24 
+            }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 18,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 23 }),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 23 
+            }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 18,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 24 }),
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
+                NodeTypeId = 24 
+            }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 12,
@@ -159,6 +181,26 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/search" })
         };
         yield return new AccessRolePrivilege {
+            AccessRoleId = 12,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/node/{Id:int}" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 12,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/blog/{Id:int}" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 12,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/united_states_congress" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 12,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/united_states_senate/{Id:int}" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 12,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/united_states_house_of_representatives/{Id:int}" })
+        };
+        yield return new AccessRolePrivilege {
             AccessRoleId = 16,
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/organizations" })
         };
@@ -168,38 +210,90 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/abuse_cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/child_trafficking_cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/deportation_cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/wrongful_removal_cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/wrongful_medication_cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/fathers_rights_violation_cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/coerced_adoption_cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/disrupted_placement_cases" })
+        };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/countries" })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 16,
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/search" })
         };
+        yield return new AccessRolePrivilege {
+            AccessRoleId = 16,
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/node/{Id:int}" })
+        };
         await foreach (var nodeType in NodeTypeMigrator.GetNodeTypes()) {
             yield return new AccessRolePrivilege {
                 AccessRoleId = 11,
-                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = nodeType.Id!.Value })
+                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { 
+                    NodeTypeId = nodeType.Id!.Value 
+                })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 18,
-                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = nodeType.Id!.Value })
+                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { 
+                    NodeTypeId = nodeType.Id!.Value 
+                })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 43,
-                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = nodeType.Id!.Value })
+                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { 
+                    NodeTypeId = nodeType.Id!.Value 
+                })
             };
         }
         await foreach (var nodeType in NodeTypeMigrator.GetNodeTypes().Where(x => x.AuthorSpecific)) {
             yield return new AccessRolePrivilege {
                 AccessRoleId = 4,
-                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = nodeType.Id!.Value })
+                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { 
+                    NodeTypeId = nodeType.Id!.Value 
+                })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 16,
-                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = nodeType.Id!.Value })
+                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { 
+                    NodeTypeId = nodeType.Id!.Value 
+                })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 42,
-                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = nodeType.Id!.Value })
+                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { 
+                    NodeTypeId = nodeType.Id!.Value 
+                })
             };
         }
     }

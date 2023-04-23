@@ -1,0 +1,13 @@
+﻿@if (Model.Any()) {
+    @foreach (var link in Model.SkipLast(1)) {
+        <span><LinkViewer Link="link" />, </span>
+    }
+    <span><LinkViewer Link="Model.Last()" /></span>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required IEnumerable<Link> Model { get; init; }
+
+}

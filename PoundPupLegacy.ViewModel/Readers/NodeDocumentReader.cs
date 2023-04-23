@@ -3665,6 +3665,35 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 join abuse_case ac on ac.id = an.node_id 
                 join nameable n on n.id = an.node_id 
                 JOIN publisher p on p.id = an.publisher_id
+                LEFT JOIN (
+                    select 
+                    n2.id node_id,
+                    n2.name,
+                    case
+                        when tn2.url_path is null then '/node/' || tn2.url_id
+                        else '/' || tn2.url_path
+                    end
+                    from nameable n2
+                    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
+                    join term t on t.nameable_id = n2.id
+                    join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = 1
+                    where tn3.url_id = 115
+                ) tn2 on tn2.node_id = ac.child_placement_type_id
+                LEFT JOIN (
+                    select 
+                    n2.id node_id,
+                    n2.name,
+                    case
+                        when tn2.url_path is null then '/node/' || tn2.url_id
+                        else '/' || tn2.url_path
+                    end
+                    from nameable n2
+                    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
+                    join term t on t.nameable_id = n2.id
+                    join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = 1
+                    where tn3.url_id = 115
+                ) tn4 on tn4.node_id = ac.family_size_id
+        
             ) n
         ) 
         """;

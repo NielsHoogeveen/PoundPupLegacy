@@ -10,8 +10,8 @@
         @foreach (var item in Model.OrderBy(x => x.Date))
         {
             <tr>
-                <td><a href="@item.BillActionType.Path">@item.BillActionType.Title</a></td>
-                <td><a href="@item.Bill.Path">@item.Bill.Title</a></td>
+                <td><LinkViewer Link="@item.BillActionType" /></td>
+                <td><LinkViewer Link="@item.Bill" /></td>
                 <td>@item.Date.ToString("yyyy MMMM dd")</td>
             </tr>
         }
