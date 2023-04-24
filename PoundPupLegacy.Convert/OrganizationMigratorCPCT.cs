@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System.Xml.Linq;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class OrganizationMigratorCPCT : MigratorCPCT
 {
@@ -131,7 +133,8 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
                 35233,
                 49624, 
                 33454,
-                50995)
+                50995,
+                36502)
             GROUP BY
                 n.nid,
                 n.uid,
@@ -187,7 +190,15 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
         });
 
         while (await reader.ReadAsync()) {
-            var vocabularyNames = new List<VocabularyName>();
+            var name = reader.GetString("title");
+            var vocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.OWNER_PARTIES,
+                    Name = Constants.VOCABULARY_ORGANIZATIONS,
+                    TermName = name,
+                    ParentNames = new List<string>(),
+                }
+            };
 
 
             var typeIds = reader

@@ -83,7 +83,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT : MigratorCPCT
                 	JOIN node n5 ON n5.nid = c.cid
                     JOIN category_node cn2 ON cn2.nid = n3.nid
                     JOIN category c2 ON c2.cid = cn2.cid AND c2.cnid = 12622
-                    JOIN node n6 ON n6.nid = c2.cid AND n6.nid NOT IN (38308)
+                    JOIN node n6 ON n6.nid = c2.cid AND n6.nid NOT IN (38308, 33648, 33636, 40524, 35143, 40525, 34624, 34347, 33664)
                     WHERE n.nid > 33162
                 ) x
                 """;

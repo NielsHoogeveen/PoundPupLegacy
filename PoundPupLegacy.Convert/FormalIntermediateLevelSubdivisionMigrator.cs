@@ -6,7 +6,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : MigratorPPL
 
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
+    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
     private readonly IEntityCreator<FormalIntermediateLevelSubdivision> _formalIntermediateLevelSubdivisionCreator;
 
@@ -14,7 +14,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IEntityCreator<FormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionCreator
     ) : base(databaseConnections)
@@ -28,7 +28,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : MigratorPPL
     private async IAsyncEnumerable<FormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
@@ -51,7 +51,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : MigratorPPL
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = countryId
-            })).Name;
+            }))!.Name;
             yield return new FormalIntermediateLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),

@@ -73,7 +73,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
                     JOIN category_node cn ON cn.nid = n.nid
                     JOIN node n4 ON n4.nid = cn.cid
                     JOIN category c ON c.cid = n4.nid AND c.cnid = 12652
-                	WHERE n.nid > 33162
+                	WHERE n.nid > 33162 and n.nid not in (37168)
                     GROUP BY n2.nid,
                     n3.nid,
                     p.field_from_date_value,

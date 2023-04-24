@@ -3,13 +3,13 @@
 internal sealed class TermHierarchyMigrator : MigratorPPL
 {
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
+    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
     private readonly IEntityCreator<TermHierarchy> _termHierarchyCreator;
 
     public TermHierarchyMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IEntityCreator<TermHierarchy> termHierarchyCreator
     ) : base(databaseConnections)
     {
@@ -30,7 +30,7 @@ internal sealed class TermHierarchyMigrator : MigratorPPL
     }
     private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
     )
     {
 
@@ -168,12 +168,13 @@ internal sealed class TermHierarchyMigrator : MigratorPPL
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdParent
             });
+            if (termIdChild is not null && termIdParent is not null) {
+                yield return new TermHierarchy {
 
-            yield return new TermHierarchy {
-
-                TermIdChild = termIdChild.Id!.Value,
-                TermIdPartent = termIdParent.Id!.Value,
-            };
+                    TermIdChild = termIdChild.Id!.Value,
+                    TermIdPartent = termIdParent.Id!.Value,
+                };
+            }
 
         }
         await reader.CloseAsync();

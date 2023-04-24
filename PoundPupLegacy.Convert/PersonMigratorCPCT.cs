@@ -33,7 +33,37 @@ internal sealed class PersonMigratorCPCT : MigratorCPCT
                 FROM_UNIXTIME(n.changed) changed_date_time
                 FROM node n
                 WHERE n.`type` = 'adopt_person'
-                AND n.nid > 33162
+                AND n.nid > 33162 and n.nid not in (
+                38251, 
+                38252, 
+                38253, 
+                38254, 
+                38255, 
+                38257, 
+                38258, 
+                37168, 
+                33320, 
+                36272, 
+                33648, 
+                33627, 
+                33222, 
+                36067, 
+                35811,
+                35142,
+                41441,
+                34879,
+                34623,
+                34572,
+                36603,
+                34344,
+                34274,
+                34214,
+                36362,
+                33636,
+                41917,
+                49167,
+                49894
+                )
                 
                 """;
         using var readCommand = _mySqlConnection.CreateCommand();
@@ -46,8 +76,20 @@ internal sealed class PersonMigratorCPCT : MigratorCPCT
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            var title = reader.GetString("title");
+            var title = id switch {
+                37074 => "Paul Cook (A Child's Hope Foundation)",
+                _ => reader.GetString("title")
+            };
 
+
+            var vocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.OWNER_PARTIES,
+                    Name = Constants.VOCABULARY_PERSONS,
+                    TermName = title,
+                    ParentNames = new List<string>(),
+                }
+            };
 
             yield return new Person {
                 Id = null,
@@ -82,7 +124,7 @@ internal sealed class PersonMigratorCPCT : MigratorCPCT
                 NodeTypeId = 24,
                 Description = "",
                 FileIdTileImage = null,
-                VocabularyNames = new List<VocabularyName>(),
+                VocabularyNames = vocabularyNames,
                 DateOfBirth = null,
                 DateOfDeath = null,
                 FileIdPortrait = null,

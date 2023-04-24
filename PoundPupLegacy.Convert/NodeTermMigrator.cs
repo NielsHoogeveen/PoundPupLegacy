@@ -3,13 +3,13 @@
 internal sealed class NodeTermMigrator : MigratorPPL
 {
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
+    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
     private readonly IEntityCreator<NodeTerm> _nodeTermCreator;
 
     public NodeTermMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IEntityCreator<NodeTerm> nodeTermCreator
     ) : base(databaseConnections)
     {
@@ -30,7 +30,7 @@ internal sealed class NodeTermMigrator : MigratorPPL
     }
     private async IAsyncEnumerable<NodeTerm> ReadNodeTerms(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId)
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId)
     {
 
         var sql = $"""
@@ -111,11 +111,18 @@ internal sealed class NodeTermMigrator : MigratorPPL
                 OwnerId = Constants.PPL,
                 NameableId = nameableId,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
-            });
-
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                    OwnerId = Constants.OWNER_PARTIES,
+                    NameableId = nameableId,
+                    VocabularyName = Constants.VOCABULARY_ORGANIZATIONS,
+                }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                    OwnerId = Constants.OWNER_PARTIES,
+                    NameableId = nameableId,
+                    VocabularyName = Constants.VOCABULARY_PERSONS,
+                });
             yield return new NodeTerm {
                 NodeId = nodeId,
-                TermId = (int)term.Id!,
+                TermId = (int)term!.Id!,
             };
 
         }

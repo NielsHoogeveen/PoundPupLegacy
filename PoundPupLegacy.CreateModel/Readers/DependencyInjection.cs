@@ -20,7 +20,7 @@ internal static class DependencyInjection
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TenantNodeIdReaderByUrlIdRequest, int>, TenantNodeIdReaderByUrlIdFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode>, TenantNodeReaderByUrlIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term>, TermReaderByNameFactory>();
-        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, Term>, TermReaderByNameableIdFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, Term>, TermReaderByNameableIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int>, VocabularyIdReaderByOwnerAndNameFactory>();
     }
 }

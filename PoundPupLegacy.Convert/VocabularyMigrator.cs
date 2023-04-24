@@ -216,7 +216,6 @@ internal sealed class VocabularyMigrator : MigratorPPL
             NodeTypeId = 36,
             Description = ""
         };
-
         yield return new Vocabulary {
             Id = null,
             Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
@@ -236,6 +235,54 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.CASE_PARTY_TYPE
+                    }
+                },
+            NodeTypeId = 36,
+            Description = ""
+        };
+        yield return new Vocabulary {
+            Id = null,
+            Name = Constants.VOCABULARY_ORGANIZATIONS,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = Constants.VOCABULARY_ORGANIZATIONS,
+            OwnerId = Constants.OWNER_PARTIES,
+            TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.ORGANIZATIONS_VOCABULARY_ID
+                    }
+                },
+            NodeTypeId = 36,
+            Description = ""
+        };
+        yield return new Vocabulary {
+            Id = null,
+            Name = Constants.VOCABULARY_PERSONS,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = Constants.VOCABULARY_PERSONS,
+            OwnerId = Constants.OWNER_PARTIES,
+            TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.PERSONS_VOCABULARY_ID
                     }
                 },
             NodeTypeId = 36,

@@ -189,7 +189,7 @@ internal sealed class PersonMigratorPPL : MigratorPPL
                     GROUP BY n.title
                 ) c2 ON c2.title = n.title
                 WHERE n.`type` = 'adopt_person'
-                AND n.nid not in (45656, 74250)
+                AND n.nid not in (45656, 74250, 26419)
                 """;
         using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -201,17 +201,18 @@ internal sealed class PersonMigratorPPL : MigratorPPL
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            var title = reader.GetString("title");
+            var title = id switch {
+                61991 => "Paul Cook (representative)",
+                _ => reader.GetString("title")
+            };
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
-            var vocabularyNames = new List<VocabularyName>();
-            if (topicName is not null) {
-                vocabularyNames.Add(
+            var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
-                    TermName = topicName,
+                    OwnerId = Constants.OWNER_PARTIES,
+                    Name = Constants.VOCABULARY_PERSONS,
+                    TermName = title,
                     ParentNames = new List<string>(),
-                });
+                }
             };
 
             yield return new Person {

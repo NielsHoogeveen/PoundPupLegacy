@@ -5,7 +5,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
     protected override string Name => "first and bottom level subdivisions";
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
+    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
 
     private readonly IEntityCreator<FirstAndBottomLevelSubdivision> _firstAndBottomLevelSubdivisionCreator;
@@ -14,7 +14,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IEntityCreator<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreator
     ) : base(databaseConnections)
@@ -28,7 +28,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
     private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
@@ -52,7 +52,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
                 OwnerId = Constants.PPL,
                 NameableId = countryId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
-            })).Name;
+            }))!.Name;
             yield return new FirstAndBottomLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),

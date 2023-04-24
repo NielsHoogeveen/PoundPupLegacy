@@ -363,45 +363,20 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
 
             var id = reader.GetInt32("id");
 
-            if (!reader.IsDBNull("topic_name")) {
-                var topicName = reader.GetString("topic_name");
-                var topicParentNames = reader.IsDBNull("topic_parent_names") ?
-                    new List<string>() : reader.GetString("topic_parent_names")
-                    .Split(',')
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .Select(x => x.Replace("Colorado", "Colorado (state of the USA)"))
-                    .Select(x => x.Replace("New York", "New York (state of the USA)"))
-                    .Select(x => x.Replace("Illinois", "Illinois (state of the USA)"))
-                    .Select(x => x.Replace("Texas", "Texas (state of the USA)"))
-                    .Select(x => x.Replace("Utah", "Texas (state of the USA)"))
-                    .Select(x => x.Replace("Arizona", "Arizona (state of the USA)"))
-                    .Select(x => x.Replace("Connecticut", "Connecticut (state of the USA)"))
-                    .Select(x => x.Replace("District of Columbia", "District of Columbia (state of the USA)"))
-                    .Select(x => x.Replace("Florida", "Florida (state of the USA)"))
-                    .Select(x => x.Replace("Georgia (state)", "Georgia (state of the USA)"))
-                    .Select(x => x.Replace("Kansas", "Kansas (state of the USA)"))
-                    .Select(x => x.Replace("Kentucky", "Kentucky (state of the USA)"))
-                    .Select(x => x.Replace("Maine", "Maine (state of the USA)"))
-                    .Select(x => x.Replace("Michigan", "Michigan (state of the USA)"))
-                    .Select(x => x.Replace("Mississippi", "Mississippi (state of the USA)"))
-                    .Select(x => x.Replace("Nebraska", "Nebraska (state of the USA)"))
-                    .Select(x => x.Replace("New Jersey", "New Jersey (state of the USA)"))
-                    .Select(x => x.Replace("Oklahoma", "Oklahoma (state of the USA)"))
-                    .Select(x => x.Replace("Oregon", "Oregon (state of the USA)"))
-                    .Select(x => x.Replace("South Carolina", "South Carolina (state of the USA)"))
-                    .Select(x => x.Replace("Tennessee", "Tennessee (state of the USA)"))
-                    .Select(x => x.Replace("Washington", "Washington (state of the USA)"))
-                    .Select(x => x.Replace("Wisconsin", "Wisconsin (state of the USA)"))
-                    .Select(x => x.Replace("Missouri", "Missouri (state of the USA)"))
-                    .ToList();
-
-                vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
-                    TermName = topicName,
-                    ParentNames = topicParentNames,
-                });
-            }
+            var name = id switch {
+                8315 => "Compassionate Hearts (PA)",
+                46082 => "Compassionate Hearts (MT)",
+                _ => reader.IsDBNull("topic_name")
+                ? reader.GetString("title")
+                : reader.GetString("topic_name")
+            };
+            
+            vocabularyNames.Add(new VocabularyName {
+                OwnerId = Constants.OWNER_PARTIES,
+                Name = Constants.VOCABULARY_ORGANIZATIONS,
+                TermName = name,
+                ParentNames = new List<string>(),
+            });
 
             if (id == Constants.DEMOCRATIC_PARTY || id == Constants.REPUBLICAN_PARTY) {
                 yield return new UnitedStatesPoliticalParty {
@@ -460,7 +435,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                    Title = reader.GetString("title"),
+                    Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     TenantNodes = new List<TenantNode>
                     {

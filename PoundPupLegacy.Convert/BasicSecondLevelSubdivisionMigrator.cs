@@ -5,7 +5,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int> _subdivisionIdByNameReaderFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
+    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> _subdivisionIdReaderByIso3166CodeFactory;
     private readonly IEntityCreator<BasicSecondLevelSubdivision> _basicSecondLevelSubdivisionCreator;
@@ -17,7 +17,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
         IEntityCreator<BasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreator
@@ -36,7 +36,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
@@ -60,7 +60,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 OwnerId = Constants.PPL,
                 NameableId = subdivisionId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
-            })).Name;
+            }))!.Name;
             yield return new BasicSecondLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
@@ -121,7 +121,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
@@ -141,7 +141,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 OwnerId = Constants.PPL,
                 NameableId = subdivisionId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
-            })).Name;
+            }))!.Name;
             yield return new BasicSecondLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),

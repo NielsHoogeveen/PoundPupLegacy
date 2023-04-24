@@ -8,7 +8,7 @@ public sealed class TermReaderByNameableIdRequest : IRequest
     public required string VocabularyName { get; init; }
     public required int NameableId { get; init; }
 }
-internal sealed class TermReaderByNameableIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, Term>
+internal sealed class TermReaderByNameableIdFactory : SingleItemDatabaseReaderFactory<Request, Term>
 {
     private static readonly NonNullableIntegerDatabaseParameter OwnerId = new() { Name = "owner_id" };
     private static readonly NonNullableStringDatabaseParameter VocabularyName = new() { Name = "vocabulary_name" };
@@ -49,10 +49,5 @@ internal sealed class TermReaderByNameableIdFactory : MandatorySingleItemDatabas
             VocabularyId = VocabularyIdReader.GetValue(reader),
             NameableId = NameableIdReader.GetValue(reader)
         };
-    }
-
-    protected override string GetErrorMessage(Request request)
-    {
-        return $"term {request.NameableId} cannot be found in vocabulary {request.VocabularyName} of owner {request.OwnerId}";
     }
 }
