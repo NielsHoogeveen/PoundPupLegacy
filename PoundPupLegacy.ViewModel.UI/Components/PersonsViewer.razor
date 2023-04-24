@@ -1,18 +1,14 @@
 ﻿@inherits PagedSearchViewer<PersonListEntry>
 @inject IFetchPersonService PersonService
-@if(ListEntries is not null){
-    <div class="articles">
-        <BreadCrumElementViewer Model="BreadCrumElements" />
-        <SearchForm 
-            PagedSearchListSettings="PagedListSettings" 
-            OnSearch="OnSearch" />
-        <ListEntriesViewer 
-            ListEntries="ListEntries" 
-            PagedListSettings="PagedListSettings" 
-            ElementsName="persons" 
-            SelectPage="SelectPage" />
-    </div>
-}
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<SearchForm 
+    PagedSearchListSettings="PagedListSettings" 
+    OnSearch="OnSearch" />
+<ListEntriesViewer 
+    ListEntries="ListEntries" 
+    PagedListSettings="PagedListSettings" 
+    ElementsName="persons" 
+    SelectPage="SelectPage" />
 @code {
     protected override int PageSize => 50;
 

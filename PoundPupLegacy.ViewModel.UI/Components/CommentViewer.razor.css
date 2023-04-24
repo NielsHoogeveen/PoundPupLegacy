@@ -1,0 +1,44 @@
+.comment {
+    margin-left: 2em;
+    margin-top: 1em;
+}
+
+.comment-body {
+    color: black;
+    border: solid 1px black;
+    border-radius: 5px 0 5px 0;
+}
+
+.comment-content {
+    padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+.title {
+    background-color: white;
+}
+
+h2 {
+    padding-left: 0.25em;
+    color: black;
+    margin: 0;
+    font-size: 110%;
+}
+
+.author {
+    margin-bottom: 1em;
+}
+
+.comment-unpublished {
+}
+
+.comment {
+    position: relative;
+}
+
+.comment-unpublished {
+    background-color: #ddd;
+}
+
+.text {
+    min-width: 20em;
+}

@@ -1,5 +1,5 @@
 ﻿@if (ListEntries.Any()) {
-    <article>
+    <ArticleViewer>
         @ChildContent
         <div class="teaser-list">
             @foreach (var entry in ListEntries) 
@@ -8,7 +8,7 @@
             }
         </div>
         <Pager Model="@PagedListSettings" SelectPage="SelectPage" />
-    </article>
+    </ArticleViewer>
 }
 
 @code {

@@ -1,33 +1,26 @@
 ﻿@inherits Viewer
 @inject IFetchBlogsService fetchBlogsService
 @if(Model is not null){
-    <div class="article-with-comments">
-        <div class="breadcrum">
-            <span class="breadcrum-element">
-                <a href="/home">home</a>
-            </span>
-        </div>
-
-        <div class="blogs-list">
-            <label>Author</label>
-            <label>Number of posts</label>
-            <label>Lastest post</label>
-            <label>Avatar</label>
-            @foreach(var entry in Model)
+    <BreadCrumElementViewer Model="BreadCrumElements" />
+    <div class="blogs-list">
+        <label>Author</label>
+        <label>Number of posts</label>
+        <label>Lastest post</label>
+        <label>Avatar</label>
+        @foreach(var entry in Model)
+        {
+            <div><LinkViewer Link="entry"/></div>
+            <div>@entry.NumberOfEntries</div>
+            <div><LinkViewer Link="entry.LatestEntry"/></div>
+            @if (!string.IsNullOrEmpty(entry.FilePathAvatar))
             {
-                <div><LinkViewer Link="entry"/></div>
-                <div>@entry.NumberOfEntries</div>
-                <div><LinkViewer Link="entry.LatestEntry"/></div>
-                @if (!string.IsNullOrEmpty(entry.FilePathAvatar))
-                {
-                    <div><img src="/@entry.FilePathAvatar"/></div>
-                }
-                else
-                {
-                    <div> </div>            
-                }
-        }
-        </div>
+                <div><img src="/@entry.FilePathAvatar"/></div>
+            }
+            else
+            {
+                <div> </div>            
+            }
+    }
     </div>
 }
 @code{

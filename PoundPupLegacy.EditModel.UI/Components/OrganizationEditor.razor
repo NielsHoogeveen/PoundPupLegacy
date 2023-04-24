@@ -1,29 +1,9 @@
 ﻿@inherits ViewerBase
 
-<CKEditor Id="#editor" @bind-Value=@Model.Description />
-<div class="organization-organization-types">
 
-@foreach(var organizationOrganizationType in Model.OrganizationOrganizationTypes) {
-    <select>
-        @foreach(var organizationType in Model.OrganizationTypes){
-            @if (organizationType.Id == organizationOrganizationType.OrganizationTypeId) {
-                <option selected value="@organizationType.Id">@organizationType.Name</option>
-            }
-            else {
-                <option value="@organizationType.Id">@organizationType.Name</option>
-            }
-        }
-    </select>
-}
-</div>
-    
+<OrganizationOrganizationTypesEditor Model="Model" />
 <FuzzyDateEditor @bind-Value=" Model.Establishment" />
 <FuzzyDateEditor @bind-Value="Model.Termination" />
-        
-<Tags Elems="Model.Tags" NodeId="Model.NodeId"/>
-<TenantNodesEditor Node="Model" />
-<AttachmentEditor Files="Model.Files" NodeId="Model.NodeId"/>
-<LocationsEditor Locatable="Model"/>
 @code {
     [Parameter]
     [EditorRequired]

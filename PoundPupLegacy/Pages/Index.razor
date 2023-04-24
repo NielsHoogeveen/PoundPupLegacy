@@ -2,7 +2,10 @@
 @using PoundPupLegacy.Components
 @inherits Page
 
-<div class="breadcrum">&nbsp;</div>
-<article>
+<BreadCrumElementViewer Model="BreadCrumElements"/>
+<ArticleViewer>
     <p>Welcome to Pound Pup Legacy</p>
-</article>
+</ArticleViewer>
+@code{
+    private Link[] BreadCrumElements { get; set; } = Array.Empty<Link>();
+}

@@ -44,9 +44,9 @@ internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFact
                         	jsonb_build_object(
                         		'Title', title,
                         		'Path', path,
-                        		'Teaser', teaser,
+                        		'Text', teaser,
                         		'NodeTypeName', node_type_name,
-                        		'Status', status
+                        		'HasBeenPublished', case when status = 1 then true else false end
                         	)
                         )
                     ) document

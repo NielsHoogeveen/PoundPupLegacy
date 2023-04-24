@@ -1,0 +1,13 @@
+.file-upload {
+    display: block;
+    width: 8em;
+    padding: 0.5em 1em;
+    font-size: 90%;
+    margin-top: 1em;
+    margin-bottom: 0.25em;
+    border: 0;
+    background-color: #6290fa;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}

@@ -1,54 +1,16 @@
-﻿<BreadCrumElementViewer Model="@Model.BreadCrumElements"/>
-    
-@if (!Model.HasBeenPublished) {
-    <div class="watermark">Unpublished</div>
-}
-<article>
-    <div class="title">
-        <h1>@Model.Title</h1>
-    </div>
-    @if (Model is Document document) {
-        <DocumentViewer Model="document" />
-    }
-    @if (Model is SimpleTextNode simpleTextNode) {
-        <AuthoringViewer Model="simpleTextNode.Authoring" />
-        <SimpleTextNodeViewer Model="simpleTextNode"/>
-    }
-    @if (Model is Country country) {
-        <CountryViewer Model="country" />
-    }
-    @if (Model is Organization organization) {
-        <OrganizationViewer Model="organization"/>
-    }
-    @if (Model is Person person) {
-        <PersonViewer Model="person"/>
-    }
-    @if (Model is Case _case) {
-        <CaseViewer Model="_case"/>
-    }
-    @if (Model is SingleQuestionPoll singleQuestionPoll) {
-        <SingleQuestionPollViewer Model="singleQuestionPoll"/>
-    }
-    @if (Model is MultiQuestionPoll multiQuestionPoll) {
-        <MultiQuestionPollViewer Model="multiQuestionPoll"/>
-    }
-    @if (Model is Subdivision subdivision) {
-        <SubdivisionViewer Model="subdivision"/>
-    }
-    @if(Model is Documentable documentable) {
-        <DocumentableViewer Model="@documentable" />
-    }
-    @if(Model is Nameable nameable) {
-        <NameableViewer Model="@nameable" />
-    }
-    @if(Model is Locatable locatable) {
-        <LocatableViewer Model="locatable" />
-    }
-    <TagsViewer Tags="Model.Tags" />
-    <FilesViewer Model="Model.Files" />
-</article>
-@code{
+﻿<div class="node-content @ModelClassName">
+    @ChildContent
+</div>
+
+@code {
     [Parameter]
     [EditorRequired]
     public required Node Model { get; init; }
+
+    [Parameter]
+    [EditorRequired]
+    public required RenderFragment ChildContent { get; init; }
+
+
+    private string ModelClassName => Model.HasBeenPublished ? "node" : "node node-unpublished";
 }

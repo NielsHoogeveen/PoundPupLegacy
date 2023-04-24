@@ -5,8 +5,10 @@
 
 <EditForm Model="@Model" OnSubmit="@HandleSubmit">
     <InputText class="title-editor" id="name" @bind-Value="Model.Title" />
-    @if(Model is SimpleTextNode simpleTextNode) 
-    {
+    @if(Model is Nameable nameable) {
+        <NameableEditor Model="nameable" />
+    }
+    @if(Model is SimpleTextNode simpleTextNode){
         <SimpleTextNodeEditor Model="simpleTextNode"/>
     }
     @if(Model is Document document) {
@@ -18,6 +20,9 @@
     <Tags Elems="Model.Tags" NodeId="Model.NodeId" />
     <TenantNodesEditor Node="@Model" />
     <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />
+    @if (Model is Locatable locatable) {
+        <LocationsEditor Locatable="locatable" />
+    }
     <button type="submit">Submit</button>
 </EditForm>
 

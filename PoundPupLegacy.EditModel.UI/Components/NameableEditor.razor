@@ -1,0 +1,8 @@
+﻿<CKEditor Id="#editor" @bind-Value=@Model.Description />
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required Nameable Model { get; init; }
+
+}

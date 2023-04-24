@@ -4,7 +4,7 @@
 @inject IUserService userService
     
 
-<div class="article-with-comments @ModelClassName">
+<NodeContentViewer Model="Model">
 
     @if (siteDataService.CanEdit(node: Model, userId: UserId, tenantId: TenantId))
     {
@@ -26,13 +26,13 @@
         <label for="tab2">Edit</label>
     }   
     <div class=" tab content1">
-        <NodeContentViewer Model="Model" />
+        <NodeDetailsViewer Model="Model" />
     </div>
     
     @if (siteDataService.CanEdit(node: Model, userId: UserId, tenantId: TenantId))
     {
         <div class="tab content2">
-            <article>
+            <ArticleViewer>
                 @if (Model is ViewModel.Models.BlogPost){
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.BlogPost"/>
                 }
@@ -48,11 +48,11 @@
                 @if (Model is ViewModel.Models.Organization) {
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.Organization" />
                 }
-            </article>
+            </ArticleViewer>
         </div>
     }
     <CommentsViewer Model="Model.Comments"/>
-</div>
+</NodeContentViewer>
 @code{
     [Parameter]
     [EditorRequired]
@@ -67,6 +67,4 @@
         displayMode = displayMode == DisplayMode.View ? DisplayMode.Edit : DisplayMode.View;
         StateHasChanged();
     }
-
-    private string ModelClassName => Model.HasBeenPublished? "node" : "node node-unpublished";
 }

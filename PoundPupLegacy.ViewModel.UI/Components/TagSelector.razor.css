@@ -1,0 +1,30 @@
+.term-names {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-column-gap: 0.5em;
+    padding: 0.5em;
+}
+
+.term-name {
+    width: 100%;
+    margin-bottom: 0.5em;
+    text-align: center;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    background-color: var(--term-bg-color);
+    border: solid thin black;
+    border-radius: 5px;
+}
+
+.term-name:has(input:checked) {
+    background-color: var(--term-bg-color-selected);
+}
+
+.term-name label {
+    user-select: none;
+    cursor: pointer;
+}
+
+.term-name input[type="checkbox"] {
+    display: none;
+}

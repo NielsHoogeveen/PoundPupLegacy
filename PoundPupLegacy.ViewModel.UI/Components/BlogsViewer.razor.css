@@ -1,0 +1,29 @@
+.blogs-list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15fr 14fr 50fr 1fr;
+}
+
+.blogs-list label {
+    background-color: white;
+    font-weight:bold;
+    padding: 0.5em;
+    color: black;
+    border-bottom: solid 1px grey;
+}
+
+.blogs-list div {
+    padding: 0.5em;
+    height: 7em;
+    margin-bottom: 1em;
+    border-bottom: solid 1px grey;
+}
+
+.blogs-list div:nth-last-child(-n+4) {
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+
+.blogs-list div img {
+    height: 5em;
+}

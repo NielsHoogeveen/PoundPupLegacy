@@ -1,10 +1,9 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
 
-<div class="article-with-comments @ModelClassName">
-
-    <NodeContentViewer Model="Model" />
+<NodeContentViewer Model="Model">
+    <NodeDetailsViewer Model="Model" />
     <CommentsViewer Model="Model.Comments"/>
-</div>
+</NodeContentViewer>
     
 
 @code{

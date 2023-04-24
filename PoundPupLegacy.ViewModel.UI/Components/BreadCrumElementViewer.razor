@@ -1,15 +1,12 @@
-﻿@if(Model is not null)
-{
-
-    <div class="breadcrum">
+﻿<div class="breadcrum">
     @foreach (var element in @Model)
     {
         <span class="breadcrum-element">
             <a href="@element.Path">@element.Title</a>
         </span>
     }
-    </div>
-}
+    &nbsp;
+</div>
 @code{
     [Parameter]
     [EditorRequired]

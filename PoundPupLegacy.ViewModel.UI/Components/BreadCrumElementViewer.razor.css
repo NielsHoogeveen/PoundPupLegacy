@@ -1,0 +1,22 @@
+.breadcrum {
+    background: var(--breadcrum-bg-color);
+    color: black;
+    margin: 0;
+    padding-left: 0.5em;
+    padding-bottom: 0.25em;
+    padding-top: 0.25em;
+    border-bottom: solid 1px var(--nav-border-color);
+}
+
+.breadcrum a {
+    color: black;
+    text-decoration: none;
+}
+
+.breadcrum-element::after {
+    content: ' > ';
+}
+
+.breadcrum-element:last-of-type::after {
+    content: '';
+}

@@ -1,17 +1,15 @@
 ﻿@inherits PagedSearchViewer<OrganizationListEntry>
 @inject IFetchOrganizationsService FetchOrganizationsService
-<div class="articles">
-    <BreadCrumElementViewer Model="BreadCrumElements" />
-    <SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch">
-        <OptionalSelectionItemSelector SelectionItems="Countries" OnSelect="OnSelectCountry" Name="country"/>
-        <OptionalSelectionItemSelector SelectionItems="OrganizationTypes" OnSelect="OnSelectOrganizationType" Name="organization_type" />
-    </SearchForm>
-    <ListEntriesViewer 
-        ListEntries="ListEntries" 
-        PagedListSettings="PagedListSettings" 
-        SelectPage="SelectPage"
-        ElementsName="organizations"/>
-</div>
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch">
+    <OptionalSelectionItemSelector SelectionItems="Countries" OnSelect="OnSelectCountry" Name="country"/>
+    <OptionalSelectionItemSelector SelectionItems="OrganizationTypes" OnSelect="OnSelectOrganizationType" Name="organization_type" />
+</SearchForm>
+<ListEntriesViewer 
+    ListEntries="ListEntries" 
+    PagedListSettings="PagedListSettings" 
+    SelectPage="SelectPage"
+    ElementsName="organizations"/>
 @code {
 
     protected override int PageSize => 50;

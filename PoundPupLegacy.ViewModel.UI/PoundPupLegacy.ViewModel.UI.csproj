@@ -23,8 +23,5 @@
     <ProjectReference Include="..\PoundPupLegacy.Common.UI\PoundPupLegacy.Common.UI.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
 
 </Project>

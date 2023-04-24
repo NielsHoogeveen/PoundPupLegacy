@@ -1,0 +1,26 @@
+.see-also-box {
+    float: right;
+    clear: right;
+    width: 28%;
+    min-width: 20em;
+    padding-top: 0;
+    padding-right: 1em;
+    margin-top: 0;
+    margin-left: 1em;
+    margin-bottom: 1em;
+    color: black;
+    background-color: white;
+    border: thin solid black;
+    padding: 0.25em;
+}
+.see-also-box h2 {
+}
+
+.see-also-box ul {
+    list-style-type: disc;
+    margin-left: -1em;
+}
+
+.see-also-box ul li {
+    padding-bottom: 0.25em;
+}

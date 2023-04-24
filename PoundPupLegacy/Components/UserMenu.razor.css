@@ -9,7 +9,6 @@
     border-top-color: var(--nav-border-color);
     border-right-color: var(--nav-border-color);
 }
-
 nav ul li:hover {
     background-color: var(--nav-bg-hover-color);
 }
@@ -41,4 +40,10 @@ nav ul {
 
 ::deep form {
     margin-top: 0.25em;
+}
+
+::deep form input[type="submit"] {
+    background-color: white;
+    padding: 0.5em;
+    border-radius: 2px;
 }

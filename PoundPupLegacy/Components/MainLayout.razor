@@ -12,16 +12,13 @@
         <Header LogoName="@LogoName" Subtitle="@SubTitle" />
         <div class="main">
             <UserMenu />
-            <content>
-                @if (notFound)
-                {
-                    <NotFound />
-                }
-                else
-                {
+            @if(notFound) {
+                <NotFound />
+            }else{
+                <ContentViewer>
                     @Body
-                }
-            </content>
+                </ContentViewer>
+            }
         </div>
         <Footer MenuItems="FooterMenuItems" Name="@FooterTitle"/>
     </CascadingValue>

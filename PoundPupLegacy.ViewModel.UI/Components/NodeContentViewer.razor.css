@@ -1,9 +1,3 @@
-::deep label{
-    font-weight: bold;
-}
-::deep .labeled-value{
-    margin-bottom: 0.25em;
-}
-::deep .large-text-viewer {
-    margin-bottom: 0.75em;
+.node-unpublished {
+    background-color: #ddd;
 }

@@ -1,0 +1,21 @@
+﻿<div class="organization-organization-types">
+    @foreach(var organizationOrganizationType in Model.OrganizationOrganizationTypes) {
+        <select>
+            @foreach(var organizationType in Model.OrganizationTypes){
+                @if (organizationType.Id == organizationOrganizationType.OrganizationTypeId) {
+                    <option selected value="@organizationType.Id">@organizationType.Name</option>
+                }
+                else {
+                    <option value="@organizationType.Id">@organizationType.Name</option>
+                }
+            }
+        </select>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required Organization Model { get; init; }
+}
