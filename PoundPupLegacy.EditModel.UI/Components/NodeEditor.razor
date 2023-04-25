@@ -29,7 +29,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required T Model { get; init; }
+    public T Model { get; set; } = default!;
 
     private async Task HandleSubmit()
     {

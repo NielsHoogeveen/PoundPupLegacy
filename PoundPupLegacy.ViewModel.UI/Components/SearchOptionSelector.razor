@@ -31,11 +31,11 @@
 
     [Parameter]
     [EditorRequired]
-    public required SearchOption SearchOption { get; init; }
+    public SearchOption SearchOption { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required Action<SearchOption> OnSelect { get; init; }
+    public Action<SearchOption> OnSelect { get; set; } = default!;
 
     public void OnChange(ChangeEventArgs changeEventArgs)
     {

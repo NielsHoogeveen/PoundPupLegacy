@@ -3,6 +3,6 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required Documentable Model { get; init; }
+    public Documentable Model { get; set; } = default!;
 
 }

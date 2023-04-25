@@ -6,10 +6,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required string Text { get; init; }
+    public string Text { get; set; } = string.Empty;
 
     [Parameter]
     [EditorRequired]
-    public required BasicLink[] Links { get; init; } 
+    public BasicLink[] Links { get; set; } = Array.Empty<BasicLink>();
 
 }

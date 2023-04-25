@@ -34,7 +34,7 @@
 
     [Parameter]
     [EditorRequired]
-    public required Locatable Locatable { get; init; }
+    public Locatable Locatable { get; set; } = default!;
 
     private Location? locationToEdit = null;
 

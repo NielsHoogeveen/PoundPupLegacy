@@ -8,9 +8,9 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<Link> Links { get; init; }
+    public IEnumerable<Link> Links { get; set; } = Array.Empty<Link>();
 
     [Parameter]
     [EditorRequired]
-    public required string Label { get; init; }
+    public string Label { get; set; } = string.Empty;
 }

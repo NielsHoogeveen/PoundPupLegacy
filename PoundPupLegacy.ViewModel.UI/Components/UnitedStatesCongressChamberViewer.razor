@@ -15,10 +15,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required CongressionalChamber Model { get; init; }
+    public CongressionalChamber Model { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required string Label { get; init; }
+    public string Label { get; set; } = string.Empty;
 
 }

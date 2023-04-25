@@ -8,10 +8,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required int? Value { get; init; }
+    public int? Value { get; set; }
 
     [Parameter]
     [EditorRequired]
-    public required string Label { get; init; }
+    public string Label { get; set; } = string.Empty;
 
 }

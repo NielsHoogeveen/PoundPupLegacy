@@ -27,7 +27,7 @@
 
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<Location> Model { get; init; }
+    public IEnumerable<Location> Model { get; set; } = Array.Empty<Location>();
 
     [CascadingParameter(Name ="UserId")]
     public int UserId { get; set; }

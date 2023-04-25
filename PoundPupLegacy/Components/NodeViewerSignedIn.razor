@@ -56,7 +56,7 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required ViewModel.Models.Node Model { get; init; }
+    public ViewModel.Models.Node Model { get; set; } = default!;
 
     private DisplayMode displayMode = DisplayMode.View;
 

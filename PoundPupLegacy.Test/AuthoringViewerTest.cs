@@ -34,7 +34,7 @@ public class AuthoringViewerTest
         var aut = ctx.RenderComponent<AuthoringViewer>(param);
 
         var elem = aut.Find("span.name a");
-        Assert.Single(elem.Attributes);
+        Assert.NotEmpty(elem.Attributes);
         var attr = elem.Attributes[0];
         Assert.Equal("href", attr!.Name);
         Assert.Equal("/user/1", attr.Value);

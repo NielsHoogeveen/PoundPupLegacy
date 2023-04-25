@@ -9,5 +9,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<Comment> Model { get; init; }
+    public IEnumerable<Comment> Model { get; set; } = Array.Empty<Comment>();
 }

@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Xml.Linq;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : CountryMigrator
 {
@@ -77,19 +74,11 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = "Saint Barthélemy",
                     ParentNames = new List<string> { "Caribbean" },
                 },
-                new VocabularyName
-                {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_COUNTRIES,
-                    TermName = "Saint Barthélemy",
-                    ParentNames = new List<string>(),
-
-                }
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
@@ -152,20 +141,11 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        OwnerId = Constants.OWNER_GEOGRAPHY,
+                        Name = Constants.VOCABULARY_GEOGRAPHY,
                         TermName = "Saint Martin",
                         ParentNames = new List<string>{ "Caribbean" },
                     },
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_COUNTRIES,
-                        TermName = "Saint Martin",
-                        ParentNames = new List<string>(),
-
-                    }
-
                 },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
@@ -228,20 +208,11 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        OwnerId = Constants.OWNER_GEOGRAPHY,
+                        Name = Constants.VOCABULARY_GEOGRAPHY,
                         TermName = "French Southern Territories",
                         ParentNames = new List<string>{ "Southern Africa" },
                     },
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_COUNTRIES,
-                        TermName = "French Southern Territories",
-                        ParentNames = new List<string>(),
-
-                    }
-
                 },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
@@ -351,19 +322,11 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = name,
                     ParentNames = new List<string>{ regionName },
                 },
-                new VocabularyName
-                {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_COUNTRIES,
-                    TermName = name,
-                    ParentNames = new List<string>(),
-
-                }
             };
 
 

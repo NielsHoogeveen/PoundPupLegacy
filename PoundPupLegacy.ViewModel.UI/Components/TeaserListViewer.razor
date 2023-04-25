@@ -14,16 +14,16 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required TeaserListEntry[] ListEntries { get; init; }
+    public TeaserListEntry[] ListEntries { get; set; } = Array.Empty<TeaserListEntry>();
 
     [Parameter]
     [EditorRequired]
-    public required PagedListSettings PagedListSettings { get; init; }
+    public PagedListSettings PagedListSettings { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required Func<int, Task> SelectPage { get; init; }
+    public Func<int, Task> SelectPage { get; set; } = default!;
 
     [Parameter]
-    public RenderFragment? ChildContent { get; init; }
+    public RenderFragment? ChildContent { get; set; }
 }

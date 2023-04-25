@@ -9,9 +9,9 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required FuzzyDate? Value { get; init; }
+    public FuzzyDate? Value { get; set; } 
 
     [Parameter]
     [EditorRequired]
-    public required string Label { get; init; }
+    public string Label { get; set; } = string.Empty;
 }

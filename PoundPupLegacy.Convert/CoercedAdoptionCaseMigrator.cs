@@ -102,7 +102,15 @@ internal sealed class CoercedAdoptionCaseMigrator : MigratorPPL
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var vocabularyNames = new List<VocabularyName>();
+            var vocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.OWNER_CASES,
+                    Name = Constants.VOCABULARY_CASES,
+                    TermName = name,
+                    ParentNames = new List<string>(),
+                }
+            };
+
 
             if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");

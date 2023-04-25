@@ -26,4 +26,5 @@ public sealed record BoundCountry : Country, ISOCodedSubdivision
     public required string? OtherRequirements { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
     public required int SubdivisionTypeId { get; init; }
+    public int? VocabularyIdSubdivisions { get; set; }
 }

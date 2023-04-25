@@ -17,5 +17,5 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required TeaserListEntry ListEntry { get; init; }
+    public TeaserListEntry ListEntry { get; set; } = default!;
 }

@@ -20,7 +20,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required RenderFragment DialogContent { get; init; }
+    public RenderFragment DialogContent { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]

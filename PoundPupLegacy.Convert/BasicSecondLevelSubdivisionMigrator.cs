@@ -57,9 +57,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 Name = parts[11]
             });
             var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_GEOGRAPHY,
                 NameableId = subdivisionId,
-                VocabularyName = Constants.VOCABULARY_TOPICS
+                VocabularyName = Constants.VOCABULARY_GEOGRAPHY
             }))!.Name;
             yield return new BasicSecondLevelSubdivision {
                 Id = null,
@@ -99,8 +99,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        OwnerId = Constants.OWNER_GEOGRAPHY,
+                        Name = Constants.VOCABULARY_GEOGRAPHY,
                         TermName = title,
                         ParentNames = new List<string> { topicName },
                     }
@@ -138,9 +138,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 Iso3166Code = parts[11]
             });
             var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_GEOGRAPHY,
                 NameableId = subdivisionId,
-                VocabularyName = Constants.VOCABULARY_TOPICS
+                VocabularyName = Constants.VOCABULARY_GEOGRAPHY
             }))!.Name;
             yield return new BasicSecondLevelSubdivision {
                 Id = null,
@@ -183,8 +183,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        OwnerId = Constants.OWNER_GEOGRAPHY,
+                        Name = Constants.VOCABULARY_GEOGRAPHY,
                         TermName = title,
                         ParentNames = new List<string> { topicName },
                     }
@@ -281,8 +281,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = title,
                     ParentNames = new List<string>{ subdivisioName },
                 }

@@ -64,19 +64,11 @@ internal sealed class BindingCountryMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        OwnerId = Constants.OWNER_GEOGRAPHY,
+                        Name = Constants.VOCABULARY_GEOGRAPHY,
                         TermName = name,
                         ParentNames = new List<string>{ regionName},
                     },
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.PPL,
-                        Name = Constants.VOCABULARY_COUNTRIES,
-                        TermName = name,
-                        ParentNames = new List<string>(),
-
-                    }
                 };
 
             var country = new BindingCountry {

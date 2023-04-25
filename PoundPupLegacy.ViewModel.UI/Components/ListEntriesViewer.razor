@@ -14,18 +14,18 @@ else {
 @code {
     [Parameter]
     [EditorRequired]
-    public required ListEntry[] ListEntries { get; init; }
+    public ListEntry[] ListEntries { get; set; } = Array.Empty<ListEntry>();
 
     [Parameter]
     [EditorRequired]
-    public required PagedListSettings PagedListSettings { get; init; }
+    public PagedListSettings PagedListSettings { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required Func<int, Task> SelectPage { get; init; }
+    public Func<int, Task> SelectPage { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required string ElementsName { get; init; }
+    public string ElementsName { get; set; } = string.Empty;
 
 }

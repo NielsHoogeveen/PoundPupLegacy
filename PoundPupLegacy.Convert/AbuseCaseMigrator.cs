@@ -125,23 +125,14 @@ internal sealed class AbuseCaseMigrator : MigratorPPL
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<VocabularyName>();
-
-            if (!reader.IsDBNull("topic_name")) {
-                var topicName = reader.GetString("topic_name");
-                var topicParentNames = reader.IsDBNull("topic_parent_names") ?
-                    new List<string>() : reader.GetString("topic_parent_names")
-                    .Split(',')
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .ToList();
-
-                vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
-                    TermName = topicName,
-                    ParentNames = topicParentNames,
-                });
-            }
+            var vocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.OWNER_CASES,
+                    Name = Constants.VOCABULARY_CASES,
+                    TermName = name,
+                    ParentNames = new List<string>(),
+                }
+            };
 
 
             var country = new AbuseCase {

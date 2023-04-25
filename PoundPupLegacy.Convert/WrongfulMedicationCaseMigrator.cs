@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System.Xml.Linq;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class WrongfulMedicationCaseMigrator : MigratorPPL
 {
@@ -47,6 +49,15 @@ internal sealed class WrongfulMedicationCaseMigrator : MigratorPPL
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
+            var vocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.OWNER_CASES,
+                    Name = Constants.VOCABULARY_CASES,
+                    TermName = title,
+                    ParentNames = new List<string>(),
+                }
+            };
+
             var country = new WrongfulMedicationCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
@@ -78,7 +89,7 @@ internal sealed class WrongfulMedicationCaseMigrator : MigratorPPL
                     }
                 },
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                VocabularyNames = new List<VocabularyName>(),
+                VocabularyNames = vocabularyNames,
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,

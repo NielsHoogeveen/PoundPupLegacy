@@ -5,11 +5,11 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required Node Model { get; init; }
+    public Node Model { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required RenderFragment ChildContent { get; init; }
+    public RenderFragment ChildContent { get; set; } = default!;
 
 
     private string ModelClassName => Model.HasBeenPublished ? "node" : "node node-unpublished";

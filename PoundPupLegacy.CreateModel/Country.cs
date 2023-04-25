@@ -2,12 +2,13 @@
 
 public interface Country : PoliticalEntity
 {
-    public int HagueStatusId { get; }
-    public string? ResidencyRequirements { get; }
-    public string? AgeRequirements { get; }
-    public string? MarriageRequirements { get; }
-    public string? IncomeRequirements { get; }
-    public string? HealthRequirements { get; }
-    public string? OtherRequirements { get; }
+    int HagueStatusId { get; }
+    string? ResidencyRequirements { get; }
+    string? AgeRequirements { get; }
+    string? MarriageRequirements { get; }
+    string? IncomeRequirements { get; }
+    string? HealthRequirements { get; }
+    string? OtherRequirements { get; }
+    int? VocabularyIdSubdivisions { get; }
 
 }

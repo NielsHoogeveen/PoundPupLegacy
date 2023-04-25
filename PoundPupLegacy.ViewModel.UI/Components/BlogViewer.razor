@@ -37,10 +37,7 @@
             tenantId: TenantId, 
             pageNumber: PagedListSettings.PageNumber, 
             pageSize: PagedListSettings.PageSize);
-        if (result is not null)
-        {
-            Name = result.Name;
-        }
+        Name = result.Name;
         return result;
     }
 

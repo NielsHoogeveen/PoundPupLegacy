@@ -61,10 +61,10 @@ internal sealed class FirstLevelGlobalRegionMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = name,
-                    ParentNames = new List<string>{ "Around the world"},
+                    ParentNames = new List<string>(),
                 }
             };
 

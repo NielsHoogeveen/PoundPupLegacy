@@ -5,7 +5,7 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required Document Model { get; init; }
+    public Document Model { get; set; } = default!;
 
     private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
 }

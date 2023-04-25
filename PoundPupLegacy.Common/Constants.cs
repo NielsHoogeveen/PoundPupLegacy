@@ -84,6 +84,8 @@ public static class Constants
 
     public const int ORGANIZATIONS_VOCABULARY_ID = 164;
     public const int PERSONS_VOCABULARY_ID = 165;
+    public const int SUBDIVISIONS_VOCABULARY_ID = 166;
+    public const int CASES_VOCABULARY_ID = 167;
 
     public const string POLITICAL_PARTY_NAME = "Political party";
 
@@ -126,7 +128,6 @@ public static class Constants
     public const string VOCABULARY_BILL_ACTION = "Bill Action";
     public const string VOCABULARY_ORGANIZATION_ACT_RELATION_TYPE = "Organization Act Relation Type";
 
-    public const string VOCABULARY_GEOGRAPHICAL_ENTITY = "Geographical Entity";
     public const string VOCABULARY_ORGANIZATION_TYPE = "Organization Type";
     public const string VOCABULARY_INTERORGANIZATIONAL_RELATION_TYPE = "Interorganizational Relation Type";
     public const string VOCABULARY_POLITICAL_ENTITY_RELATION_TYPE = "Political Entity Relation Type";
@@ -140,9 +141,10 @@ public static class Constants
     public const string VOCABULARY_SUBDIVISION_TYPE = "Subdivision type";
     public const string VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE = "United States political party affiliation";
     public const string VOCABULARY_CASE_PARTY_TYPE = "Case party type";
-    public const string VOCABULARY_COUNTRIES = "Countries";
+    public const string VOCABULARY_GEOGRAPHY = "Geography";
     public const string VOCABULARY_ORGANIZATIONS = "Organizations";
     public const string VOCABULARY_PERSONS = "Persons";
+    public const string VOCABULARY_CASES = "Cases";
 
     public const int DOCUMENT = 10;
     public const int ORGANIZATION = 23;

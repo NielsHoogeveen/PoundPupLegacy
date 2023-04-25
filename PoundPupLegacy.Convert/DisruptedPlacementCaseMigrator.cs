@@ -50,6 +50,14 @@ internal sealed class DisruptedPlacementCaseMigrator : MigratorPPL
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
+            var vocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.OWNER_CASES,
+                    Name = Constants.VOCABULARY_CASES,
+                    TermName = name,
+                    ParentNames = new List<string>(),
+                }
+            };
             var country = new DisruptedPlacementCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
@@ -81,7 +89,7 @@ internal sealed class DisruptedPlacementCaseMigrator : MigratorPPL
                     }
                 },
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                VocabularyNames = new List<VocabularyName>(),
+                VocabularyNames = vocabularyNames,
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,

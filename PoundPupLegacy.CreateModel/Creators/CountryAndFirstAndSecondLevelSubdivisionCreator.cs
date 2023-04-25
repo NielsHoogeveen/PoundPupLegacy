@@ -24,9 +24,8 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator : EntityCr
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
+    private readonly IEntityCreator<Vocabulary> _vocabularyCreator;
 
-
-    //Add Constructor
     public CountryAndFirstAndSecondLevelSubdivisionCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,
@@ -49,7 +48,8 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator : EntityCr
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderByNameInserterFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
+        IEntityCreator<Vocabulary> vocabularyCreator
         )
     {
         _nodeInserterFactory = nodeInserterFactory;
@@ -74,6 +74,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator : EntityCr
         _termHierarchyFactory = termHierarchyFactory;
         _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
         _tenantNodeInserterFactory = tenantNodeInserterFactory;
+        _vocabularyCreator = vocabularyCreator;
     }
 
     public override async Task CreateAsync(IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> countries, IDbConnection connection)
@@ -104,6 +105,32 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator : EntityCr
 
 
         await foreach (var country in countries) {
+            var vocabulary = new Vocabulary {
+                Id = null,
+                Name = $"Subdivision names of {country.Name}",
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = $"Subdivision names of {country.Name}",
+                OwnerId = Constants.OWNER_GEOGRAPHY,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+                NodeTypeId = 36,
+                Description = $"Contains unique names for all subdivisions of {country.Name}"
+            };
+            await _vocabularyCreator.CreateAsync(vocabulary, connection);
+            country.VocabularyIdSubdivisions = vocabulary.Id;
             await nodeWriter.InsertAsync(country);
             await searchableWriter.InsertAsync(country);
             await documentableWriter.InsertAsync(country);

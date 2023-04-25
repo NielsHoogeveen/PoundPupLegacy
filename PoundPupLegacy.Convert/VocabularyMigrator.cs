@@ -288,12 +288,36 @@ internal sealed class VocabularyMigrator : MigratorPPL
             NodeTypeId = 36,
             Description = ""
         };
+        yield return new Vocabulary {
+            Id = null,
+            Name = Constants.VOCABULARY_CASES,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = Constants.VOCABULARY_CASES,
+            OwnerId = Constants.OWNER_CASES,
+            TenantNodes = new List<TenantNode>
+        {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.CASES_VOCABULARY_ID
+                    }
+                },
+            NodeTypeId = 36,
+            Description = ""
+        };
     }
 
     private static string GetVocabularyName(int id, string name)
     {
         return id switch {
-            3797 => Constants.VOCABULARY_GEOGRAPHICAL_ENTITY,
+            3797 => Constants.VOCABULARY_GEOGRAPHY,
             4126 => Constants.VOCABULARY_TOPICS,
             12622 => Constants.VOCABULARY_ORGANIZATION_TYPE,
             12637 => Constants.VOCABULARY_INTERORGANIZATIONAL_RELATION_TYPE,
@@ -316,6 +340,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
             12652 => Constants.OWNER_PARTIES,
             12663 => Constants.OWNER_PARTIES,
             16900 => Constants.OWNER_PARTIES,
+            23399 => Constants.OWNER_GEOGRAPHY,
             27213 => Constants.OWNER_PARTIES,
             39428 => Constants.OWNER_PARTIES,
             41212 => Constants.OWNER_PARTIES,
@@ -344,7 +369,10 @@ internal sealed class VocabularyMigrator : MigratorPPL
             SELECT
                 n.nid id,
                 n.uid access_role_id,
-                n.title,
+                case 
+                    when n.nid = 3797 then 'Geography'
+                    else n.title
+                end title,
                 n.`status` node_status_id,
                 FROM_UNIXTIME(n.created) created_date_time, 
                 FROM_UNIXTIME(n.changed) changed_date_time,
@@ -352,7 +380,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                 nr.body description
             FROM node n
             JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-            WHERE n.`type` = 'category_cont' AND n.nid not in (220, 12707, 42422)
+            WHERE n.`type` = 'category_cont' AND n.nid not in (220, 12707, 42422, 23399)
             """;
         using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

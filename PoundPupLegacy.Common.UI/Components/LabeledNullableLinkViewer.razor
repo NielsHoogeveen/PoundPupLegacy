@@ -8,9 +8,9 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required Link? Value { get; init; }
+    public Link? Value { get; set; }
 
     [Parameter]
     [EditorRequired]
-    public required string Label { get; init; }
+    public string Label { get; set; } = string.Empty;
 }

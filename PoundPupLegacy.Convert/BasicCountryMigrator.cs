@@ -162,19 +162,11 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = "Antigua and Barbuda",
                     ParentNames = new List<string>{ "Caribbean" },
                 },
-                new VocabularyName
-                {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_COUNTRIES,
-                    TermName = "Antigua and Barbuda",
-                    ParentNames = new List<string>(),
-
-                }
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
@@ -221,19 +213,11 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = "Palestine",
                     ParentNames = new List<string>{ "Western Asia" },
                 },
-                new VocabularyName
-                {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_COUNTRIES,
-                    TermName = "Palestine",
-                    ParentNames = new List<string>(),
-
-                }
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
@@ -280,19 +264,11 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = "Saint Helena, Ascension and Tristan da Cunha",
                     ParentNames = new List<string>{ "Western Africa" },
                 },
-                new VocabularyName
-                {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_COUNTRIES,
-                    TermName = "Saint Helena, Ascension and Tristan da Cunha",
-                    ParentNames = new List<string>(),
-
-                }
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
@@ -340,19 +316,11 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = "South Sudan",
                     ParentNames = new List<string>{ "Eastern Africa" },
                 },
-                new VocabularyName
-                {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_COUNTRIES,
-                    TermName = "South Sudan",
-                    ParentNames = new List<string>(),
-
-                }
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
@@ -496,19 +464,11 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = topicName,
                     ParentNames = new List<string>{ regionName },
                 },
-                new VocabularyName 
-                {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_COUNTRIES,
-                    TermName = topicName == "Georgia (country)" ?"Georgia": topicName,
-                    ParentNames = new List<string>(),
-
-                }
             };
             var country = new BasicCountry {
                 Id = null,

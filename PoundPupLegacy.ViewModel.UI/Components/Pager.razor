@@ -21,10 +21,10 @@
 
     [Parameter]
     [EditorRequired]
-    public required PagedListSettings Model { get; init; }
+    public PagedListSettings Model { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required Func<int,Task> SelectPage { get; init; }
+    public Func<int, Task> SelectPage { get; set; } = default!;
 
 }

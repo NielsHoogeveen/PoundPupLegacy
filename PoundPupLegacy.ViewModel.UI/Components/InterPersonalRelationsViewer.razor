@@ -47,5 +47,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<InterPersonalRelation> Model { get; init; }
+    public IEnumerable<InterPersonalRelation> Model { get; set; } = Array.Empty<InterPersonalRelation>();
 }

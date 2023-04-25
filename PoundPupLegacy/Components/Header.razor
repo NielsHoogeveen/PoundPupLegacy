@@ -17,10 +17,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required string LogoName { get; init; }
+    public string LogoName { get; set; } = string.Empty;
 
     [Parameter]
     [EditorRequired]
-    public required string Subtitle { get; init; }
+    public string Subtitle { get; set; } = string.Empty;
 
 }

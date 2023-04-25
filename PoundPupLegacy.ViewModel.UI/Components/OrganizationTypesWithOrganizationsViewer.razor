@@ -10,5 +10,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<OrganizationTypeWithOrganizations> Model { get; init; }
+    public IEnumerable<OrganizationTypeWithOrganizations> Model { get; set; } = Array.Empty<OrganizationTypeWithOrganizations>();
 }

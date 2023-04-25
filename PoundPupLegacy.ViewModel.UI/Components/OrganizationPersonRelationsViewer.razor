@@ -23,5 +23,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<OrganizationPersonRelation> Model { get; init; }
+    public IEnumerable<OrganizationPersonRelation> Model { get; set; } = Array.Empty<OrganizationPersonRelation>();
 }

@@ -17,7 +17,7 @@ internal sealed class BoundCountryCreator : EntityCreator<BoundCountry>
     private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
     private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
-
+    private readonly IEntityCreator<Vocabulary> _vocabularyCreator;
 
     public BoundCountryCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
@@ -34,7 +34,8 @@ internal sealed class BoundCountryCreator : EntityCreator<BoundCountry>
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
         IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
+        IEntityCreator<Vocabulary> vocabularyCreator
         )
     {
         _nodeInserterFactory = nodeInserterFactory;
@@ -52,8 +53,7 @@ internal sealed class BoundCountryCreator : EntityCreator<BoundCountry>
         _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
         _tenantNodeInserterFactory = tenantNodeInserterFactory;
         _isoCodedSubdivisionInserterFactory = isoCodedSubdivisionInserterFactory;
-
-
+        _vocabularyCreator = vocabularyCreator;
     }
 
     public override async Task CreateAsync(IAsyncEnumerable<BoundCountry> countries, IDbConnection connection)
@@ -76,6 +76,32 @@ internal sealed class BoundCountryCreator : EntityCreator<BoundCountry>
         await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var country in countries) {
+            var vocabulary = new Vocabulary {
+                Id = null,
+                Name = $"Subdivision names of {country.Name}",
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = $"Subdivision names of {country.Name}",
+                OwnerId = Constants.OWNER_GEOGRAPHY,
+                TenantNodes = new List<TenantNode>
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+                NodeTypeId = 36,
+                Description = $"Contains unique names for all subdivisions of {country.Name}"
+            };
+            await _vocabularyCreator.CreateAsync(vocabulary, connection);
+            country.VocabularyIdSubdivisions = vocabulary.Id;
             await nodeWriter.InsertAsync(country);
             await searchableWriter.InsertAsync(country);
             await documentableWriter.InsertAsync(country);

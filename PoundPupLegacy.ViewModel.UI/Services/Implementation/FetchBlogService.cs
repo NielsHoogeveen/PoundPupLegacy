@@ -21,7 +21,7 @@ internal sealed class FetchBlogService : IFetchBlogService
         _blogDocumentReaderFactory = blogDocumentReaderFactory;
     }
 
-    public async Task<Blog?> FetchBlog(int publisherId, int tenantId, int pageNumber, int pageSize)
+    public async Task<Blog> FetchBlog(int publisherId, int tenantId, int pageNumber, int pageSize)
     {
 
         var startIndex = (pageNumber - 1) * pageSize;
@@ -37,7 +37,12 @@ internal sealed class FetchBlogService : IFetchBlogService
                 Length = pageSize
             });
             if (blog is null)
-                return null;
+                return new Blog {
+                    Name = string.Empty,
+                    Entries = Array.Empty<BlogPostTeaser>(),
+                    NumberOfEntries = 0,
+                    Id = 0,
+                };
             return blog;
         }
         finally

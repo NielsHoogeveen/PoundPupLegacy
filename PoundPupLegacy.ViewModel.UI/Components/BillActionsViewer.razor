@@ -20,5 +20,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<BillAction> Model { get; init; }
+    public IEnumerable<BillAction> Model { get; set; } = Array.Empty<BillAction>();
 }

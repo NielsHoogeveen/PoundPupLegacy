@@ -86,19 +86,11 @@ internal sealed class BoundCountryMigrator : CountryMigrator
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    Name = Constants.VOCABULARY_GEOGRAPHY,
                     TermName = name,
                     ParentNames = new List<string>{ bindingCountryName },
                 },
-                new VocabularyName
-                {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_COUNTRIES,
-                    TermName = name,
-                    ParentNames = new List<string>(),
-
-                }
             };
 
             yield return new BoundCountry {

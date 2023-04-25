@@ -162,10 +162,42 @@ internal sealed class TermHierarchyMigrator : MigratorPPL
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdChild
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                OwnerId = Constants.OWNER_PARTIES,
+                VocabularyName = Constants.VOCABULARY_ORGANIZATIONS,
+                NameableId = nodeIdChild
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                OwnerId = Constants.OWNER_PARTIES,
+                VocabularyName = Constants.VOCABULARY_PERSONS,
+                NameableId = nodeIdChild
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                OwnerId = Constants.OWNER_GEOGRAPHY,
+                VocabularyName = Constants.VOCABULARY_GEOGRAPHY,
+                NameableId = nodeIdChild
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                OwnerId = Constants.OWNER_CASES,
+                VocabularyName = Constants.VOCABULARY_CASES,
+                NameableId = nodeIdChild
             });
             var termIdParent = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
+                NameableId = nodeIdParent
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                OwnerId = Constants.OWNER_PARTIES,
+                VocabularyName = Constants.VOCABULARY_ORGANIZATIONS,
+                NameableId = nodeIdParent
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                OwnerId = Constants.OWNER_PARTIES,
+                VocabularyName = Constants.VOCABULARY_PERSONS,
+                NameableId = nodeIdParent
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                OwnerId = Constants.OWNER_GEOGRAPHY,
+                VocabularyName = Constants.VOCABULARY_GEOGRAPHY,
+                NameableId = nodeIdParent
+            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                OwnerId = Constants.OWNER_CASES,
+                VocabularyName = Constants.VOCABULARY_CASES,
                 NameableId = nodeIdParent
             });
             if (termIdChild is not null && termIdParent is not null) {

@@ -24,6 +24,8 @@ public sealed record BindingCountry : Node, TopLevelCountry
     public required string? HealthRequirements { get; init; }
     public required string? OtherRequirements { get; init; }
     public required List<TenantNode> TenantNodes { get; init; }
+
+    public int? VocabularyIdSubdivisions { get; set; }
 }
 
 

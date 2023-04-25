@@ -38,11 +38,11 @@ else {
 
     [Parameter]
     [EditorRequired]
-    public required SelectionItem[] TermNames { get; init; }
+    public SelectionItem[] TermNames { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required Func<int, Task> OnSelectTerm { get; init; }
+    public Func<int, Task> OnSelectTerm { get; set; } = default!;
 
 
     private MarkupString JavascriptCall => new MarkupString(@"<script>setClickEventHandlersForTerms();</script>");

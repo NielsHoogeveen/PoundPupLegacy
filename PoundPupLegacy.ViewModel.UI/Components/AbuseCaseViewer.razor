@@ -3,8 +3,9 @@
 <LabeledNullableBooleanViewer Value="Model.HomeSchoolingInvolved" Label="Homeschooling involved" />
 <LabeledNullableBooleanViewer Value="Model.FundamentalFaithInvolved" Label="Fundamental faith involved" />
 <LabeledNullableBooleanViewer Value="Model.DisabilitiesInvolved" Label="Disabilities involved" />
+
 @code{
     [Parameter]
     [EditorRequired]
-    public required AbuseCase Model { get; init; }
+    public AbuseCase Model { get; set; } = default!;
 }

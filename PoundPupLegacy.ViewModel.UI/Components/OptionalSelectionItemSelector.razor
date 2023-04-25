@@ -16,15 +16,15 @@
 
     [Parameter]
     [EditorRequired]
-    public required SelectionItem[] SelectionItems { get; init; }
+    public SelectionItem[] SelectionItems { get; set; } = Array.Empty<SelectionItem>();
 
     [Parameter]
     [EditorRequired]
-    public required string Name { get; init; }
+    public string Name { get; set; } = string.Empty;
 
     [Parameter]
     [EditorRequired]
-    public required Func<int, Task> OnSelect { get; init; }
+    public Func<int, Task> OnSelect { get; set; } = default!;
 
 
     private async Task OnSelectItem(ChangeEventArgs changeEventArgs)

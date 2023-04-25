@@ -13,5 +13,5 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<Link> Links { get; init; }
+    public IEnumerable<Link> Links { get; set; } = Array.Empty<Link>();
 }

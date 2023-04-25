@@ -18,15 +18,15 @@ else {
 @code {
 
     [Parameter]
-    public RenderFragment? ChildContent { get; init; }
+    public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     [EditorRequired]
-    public required  PagedSearchListSettings PagedSearchListSettings { get; init; }
+    public PagedSearchListSettings PagedSearchListSettings { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public required Func<Task> OnSearch { get; init; }
+    public Func<Task> OnSearch { get; set; } = default!;
 
     [CascadingParameter(Name ="UserId")]
     public int UserId { get; set; }

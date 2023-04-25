@@ -8,6 +8,6 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<Link> Model { get; init; }
+    public IEnumerable<Link> Model { get; set; } = Array.Empty<Link>();
 
 }

@@ -56,5 +56,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<InterOrganizationalRelation> Model { get; init; }
+    public IEnumerable<InterOrganizationalRelation> Model { get; set; } = Array.Empty<InterOrganizationalRelation>();
 }

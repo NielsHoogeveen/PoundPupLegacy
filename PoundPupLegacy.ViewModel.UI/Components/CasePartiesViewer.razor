@@ -19,5 +19,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public required IEnumerable<CaseParties> Model { get; init; }
+    public IEnumerable<CaseParties> Model { get; set; } = Array.Empty<CaseParties>();
 }
