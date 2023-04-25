@@ -3,7 +3,8 @@
 }
 /* hide radio buttons */
 input + label {
-    display: inline-block
+    display: inline-block;
+    cursor: pointer;
 }
 /* show labels in line */
 input ~ .tab {
@@ -37,10 +38,10 @@ input.tab-button ~ .tab { /* grey line between tab and contents */
 }
 ::deep .title-editor {
     width: 100%;
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: bold;
     border: none;
-    border-bottom: 1px solid black;
     padding: 0.5em;
     margin-bottom: 1em;
+    margin-top:0.5em;
 }

@@ -5,6 +5,7 @@
 :root {
     --header-bg-color: linear-gradient(180deg, #2c2c2c 0%, #2c2c2c 100%);
     --content-bg-color: white;
+    --content-title-color: #080b42;
     --nav-bg-color: #444;
     --nav-bg-hover-color: #222;
     --nav-border-color: #808080;
@@ -14,6 +15,9 @@
     --term-bg-color: #d8e0f3;
     --term-bg-color-selected: #c5d0ed;
     --watermark-color: #999;
+    --comment-border-color: #bbb;
+    --comment-bg-color: #eaecf3;
+    --comment-title-color: #05072f;
 }
 
 html {
@@ -42,7 +46,7 @@ input:-webkit-autofill:active {
 }
 
 a {
-    color: #002ea8;
+    color: #163893;
     text-decoration: none;
 }
 
@@ -55,7 +59,9 @@ blockquote {
 img {
     object-fit: contain;
 }
-
+h1{
+    color: var(--content-title-color);
+}
 td {
     border-left: solid 1px grey;
     border-bottom: solid 1px grey;

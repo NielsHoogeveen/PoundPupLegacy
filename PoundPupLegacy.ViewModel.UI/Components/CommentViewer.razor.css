@@ -5,8 +5,10 @@
 
 .comment-body {
     color: black;
-    border: solid 1px black;
+    border: solid 1px var(--comment-border-color);
     border-radius: 5px 0 5px 0;
+    padding: 0.5em;
+    background-color: var(--comment-bg-color)
 }
 
 .comment-content {
@@ -18,25 +20,23 @@
 }
 
 h2 {
-    padding-left: 0.25em;
-    color: black;
+    padding-left: 0.5em;
+    color: #05072f;
     margin: 0;
     font-size: 110%;
+    background-color: var(--comment-bg-color);
 }
 
 .author {
     margin-bottom: 1em;
 }
 
-.comment-unpublished {
-}
-
 .comment {
     position: relative;
 }
 
-.comment-unpublished {
-    background-color: #ddd;
+.comment-unpublished .comment-body, .comment-unpublished h2{
+    background-color: #f4e8e8;
 }
 
 .text {

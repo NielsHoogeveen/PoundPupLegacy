@@ -4,7 +4,7 @@
 @inject IEditService<T> editService
 
 <EditForm Model="@Model" OnSubmit="@HandleSubmit">
-    <InputText class="title-editor" id="name" @bind-Value="Model.Title" />
+    <InputText @bind-Value="Model.Title" id="name" class="title-editor" type="text"/>
     @if(Model is Nameable nameable) {
         <NameableEditor Model="nameable" />
     }
@@ -39,3 +39,4 @@
         }
     }
 }
+

@@ -43,7 +43,7 @@ nav ul {
 }
 
 ::deep form input[type="submit"] {
-    background-color: white;
+    background-color: var(--nav-text-color);
     padding: 0.5em;
     border-radius: 2px;
 }
