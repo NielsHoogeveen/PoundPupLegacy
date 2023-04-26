@@ -218,6 +218,8 @@ internal class MemberOfCongressMigrator : MigratorPPL
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         int? id = govtrack switch {
+            456918 => 38749,
+            412841 => 36087,
             412236 => 60496,
             412434 => 62239,
             400199 => 38347,
@@ -407,10 +409,6 @@ internal class MemberOfCongressMigrator : MigratorPPL
                 var isRepresentative = memberOfCongress.terms.Any(x => x.type == "rep");
 
                 var name = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
-
-                if (memberOfCongress.id.govtrack == 400568) {
-                    Console.WriteLine($"{memberOfCongress.name.official_full} isSenator {isSenator} isRepresentative {isRepresentative}");
-                }
 
                 var professionalRoles = new List<ProfessionalRole>();
 
@@ -673,13 +671,22 @@ internal class MemberOfCongressMigrator : MigratorPPL
                     if (terms.Count == 1) {
 
                     }
+                    var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
+                    var vocabularyNames = new List<VocabularyName> {
+                        new VocabularyName {
+                            OwnerId = Constants.PPL,
+                            Name = Constants.VOCABULARY_TOPICS,
+                            TermName = title,
+                            ParentNames = new List<string>(),
+                        }
+                    };
 
                     yield return new Person {
                         Id = null,
                         PublisherId = 2,
                         CreatedDateTime = DateTime.Now,
                         ChangedDateTime = DateTime.Now,
-                        Title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full,
+                        Title = title,
                         OwnerId = Constants.OWNER_PARTIES,
                         TenantNodes = new List<TenantNode> {
                             new TenantNode {
@@ -695,7 +702,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                         NodeTypeId = 24,
                         Description = "",
                         FileIdTileImage = null,
-                        VocabularyNames = new List<VocabularyName>(),
+                        VocabularyNames = vocabularyNames,
                         DateOfBirth = memberOfCongress.bio.birthday,
                         DateOfDeath = null,
                         FileIdPortrait = null,

@@ -43,7 +43,16 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
                     when n2.field_tile_image_fid = 0 then null
                     ELSE n2.field_tile_image_fid
                 END file_id_tile_image,
-                n2.title topic_name,
+                case
+                    when n2.title IS NOT NULL then n2.title
+                    ELSE LOWER(n.title)
+                END topic_name,
+                case
+                    when n.nid = 12626 then 'adoption organizations,'
+                    when n.nid = 12624 then 'adoption lobby,'
+                    when n2.parent_topics IS NOT NULL then n2.parent_topics
+                    ELSE 'organizations,'
+                END topic_parent_names,
                 case
                 when n.nid IN (14670,28962) then true
                 ELSE false
@@ -75,17 +84,27 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
             SELECT 17310, 'maternity homes'
             ) v ON v.nameable_id = n.nid
             LEFT JOIN (
-            SELECT 
-            n2.nid,
-            n2.title,
-            nr2.body,
-            cc.field_tile_image_fid
-            FROM node n2 
-            JOIN category c ON c.cid = n2.nid AND c.cnid = 4126
-            JOIN content_type_category_cat cc ON cc.vid = n2.vid AND cc.nid = n2.nid
-            JOIN node_revisions nr2 ON nr2.nid = n2.nid AND nr2.vid = n2.vid
-            WHERE n2.`type` = 'category_cat'
+            	SELECT 
+            	n2.nid,
+            	n2.title,
+            	nr2.body,
+            	cc.field_tile_image_fid,
+            	GROUP_CONCAT(n3.title, ',') parent_topics
+            	FROM node n2 
+            	JOIN category c ON c.cid = n2.nid AND c.cnid = 4126
+            	JOIN content_type_category_cat cc ON cc.vid = n2.vid AND cc.nid = n2.nid
+            	JOIN node_revisions nr2 ON nr2.nid = n2.nid AND nr2.vid = n2.vid
+            	LEFT JOIN category_hierarchy ch ON ch.cid = n2.nid
+            	LEFT JOIN node n3 ON n3.nid = ch.parent
+            	WHERE n2.`type` = 'category_cat' AND n3.title <> 'Topics'
+            	GROUP BY
+            			n2.nid,
+            		n2.title,
+            		nr2.body,
+            		cc.field_tile_image_fid
+
             ) n2 ON n2.title = v.topic_name
+            WHERE n.nid NOT IN (38308, 38518)
             """;
 
         using var readCommand = _mySqlConnection.CreateCommand();
@@ -98,7 +117,12 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
+            var topicName = reader.GetString("topic_name");
+
+            var topicParentNames = reader.GetString("topic_parent_names")
+                    .Split(',')
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
 
             var vocabularyNames = new List<VocabularyName>
             {
@@ -107,17 +131,15 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
                     OwnerId = Constants.OWNER_PARTIES,
                     Name = Constants.VOCABULARY_ORGANIZATION_TYPE,
                     TermName = name,
-                    ParentNames = new List<string>(),
-                }
-            };
-            if (topicName != null) {
-                vocabularyNames.Add(new VocabularyName {
+                    ParentNames = new List<string>()
+                },
+                new VocabularyName {
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
-                    ParentNames = new List<string>()
-                });
-            }
+                    ParentNames = topicParentNames,
+                }
+            };
 
             yield return new OrganizationType {
                 Id = null,
@@ -205,6 +227,12 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
                     Name = Constants.VOCABULARY_ORGANIZATION_TYPE,
                     TermName = Constants.POLITICAL_PARTY_NAME,
                     ParentNames = new List<string>(),
+                },
+                new VocabularyName {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = Constants.POLITICAL_PARTY_NAME.ToLower(),
+                    ParentNames = new List<string>{ "organizations" },
                 }
             },
             HasConcreteSubtype = true,

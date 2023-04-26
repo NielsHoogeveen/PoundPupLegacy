@@ -34,6 +34,8 @@ internal sealed class PersonMigratorCPCT : MigratorCPCT
                 FROM node n
                 WHERE n.`type` = 'adopt_person'
                 AND n.nid > 33162 and n.nid not in (
+                35063,
+                35343,
                 38251, 
                 38252, 
                 38253, 
@@ -84,8 +86,8 @@ internal sealed class PersonMigratorCPCT : MigratorCPCT
 
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_PARTIES,
-                    Name = Constants.VOCABULARY_PERSONS,
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
                     ParentNames = new List<string>(),
                 }

@@ -79,10 +79,9 @@ internal partial class MySqlToPostgresConverter
         await _serviceProvider.Migrate<ReviewMigrator>();
         await _serviceProvider.Migrate<ActMigrator>();
         await _serviceProvider.Migrate<BillMigrator>();
-        await _serviceProvider.Migrate<NodeTermMigrator>();
+
         await _serviceProvider.Migrate<MenuMigrator>();
-        await _serviceProvider.Migrate<DocumentableDocumentMigrator>();
-        await _serviceProvider.Migrate<TermHierarchyMigrator>();
+
         await _serviceProvider.Migrate<PartyPoliticalEntityRelationMigratorPPL>();
         await _serviceProvider.Migrate<PersonOrganizationRelationMigratorPPL>();
         await _serviceProvider.Migrate<InterOrganizationalRelationMigratorPPL>();
@@ -90,6 +89,8 @@ internal partial class MySqlToPostgresConverter
         await _serviceProvider.Migrate<MemberOfCongressMigrator>();
         await _serviceProvider.Migrate<RepresentativeHouseBillActionMigrator>();
         await _serviceProvider.Migrate<SenatorSenateBillActionMigrator>();
+        await _serviceProvider.Migrate<DocumentableDocumentMigrator>();
+
         await _serviceProvider.Migrate<OrganizationMigratorCPCT>();
         await _serviceProvider.Migrate<PersonMigratorCPCT>();
         await _serviceProvider.Migrate<PersonOrganizationRelationMigratorCPCT>();
@@ -104,6 +105,8 @@ internal partial class MySqlToPostgresConverter
         await _serviceProvider.Migrate<CommentMigrator>();
         await _serviceProvider.Migrate<AdultAftermathMigrator>();
         await _serviceProvider.Migrate<SearchableMigrator>();
+        await _serviceProvider.Migrate<NodeTermMigrator>();
+        await _serviceProvider.Migrate<TermHierarchyMigrator>();
         await PrepareFiles();
     }
 

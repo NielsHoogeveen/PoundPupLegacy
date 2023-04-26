@@ -5,14 +5,18 @@ namespace PoundPupLegacy.Convert;
 internal sealed class OrganizationMigratorCPCT : MigratorCPCT
 {
     private readonly IEntityCreator<Organization> _organizationCreator;
+    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
+
     public OrganizationMigratorCPCT(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IEntityCreator<Organization> organizationCreator
     ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
     {
         _organizationCreator = organizationCreator;
+        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
     }
 
     protected override string Name => "organizations (cpct)";
@@ -20,12 +24,16 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
 
     protected override async Task MigrateImpl()
     {
+
         await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader), _postgresConnection);
+        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        
+        await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId), _postgresConnection);
     }
 
     private async IAsyncEnumerable<BasicOrganization> ReadOrganizations(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
     )
     {
 
@@ -108,6 +116,7 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
             WHERE n.`type` = 'adopt_orgs'
             AND n.nid  > 33163
             AND n.nid not in (
+                47216,
                 34880, 
                 35725, 
                 33644, 
@@ -191,21 +200,11 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
 
         while (await reader.ReadAsync()) {
             var name = reader.GetString("title");
-            var vocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
-                    OwnerId = Constants.OWNER_PARTIES,
-                    Name = Constants.VOCABULARY_ORGANIZATIONS,
-                    TermName = name,
-                    ParentNames = new List<string>(),
-                }
-            };
-
-
             var typeIds = reader
-                            .GetString("organization_types")
-                            .Split(',')
-                            .Where(x => !string.IsNullOrEmpty(x))
-                            .Select(x => int.Parse(x));
+                .GetString("organization_types")
+                .Split(',')
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
                 var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -214,6 +213,25 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
                 });
                 organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
             }
+            async IAsyncEnumerable<string> GetTermNamesForOrganizationsTypes(IEnumerable<int> organizationTypeIds)
+            {
+                foreach (var organizationTypeId in organizationTypeIds) {
+                    var res = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                        NameableId = organizationTypeId,
+                        OwnerId = Constants.PPL,
+                        VocabularyName = Constants.VOCABULARY_TOPICS
+                    });
+                    yield return res!.Name;
+                }
+            }
+            var vocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = name,
+                    ParentNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypes.Select(x => x.OrganizationTypeId)).ToListAsync(),
+                }
+            };
 
             var id = reader.GetInt32("id");
 

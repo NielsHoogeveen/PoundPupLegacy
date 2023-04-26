@@ -49,9 +49,9 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
                 UrlId = int.Parse(parts[7])
             });
             var countryName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_GEOGRAPHY,
+                OwnerId = Constants.PPL,
                 NameableId = countryId,
-                VocabularyName = Constants.VOCABULARY_GEOGRAPHY
+                VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
             yield return new FirstAndBottomLevelSubdivision {
                 Id = null,
@@ -62,8 +62,8 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_GEOGRAPHY,
-                        Name = Constants.VOCABULARY_GEOGRAPHY,
+                        OwnerId = Constants.PPL,
+                        Name = Constants.VOCABULARY_TOPICS,
                         TermName = title,
                         ParentNames = new List<string> { countryName },
                     }
@@ -455,8 +455,8 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_GEOGRAPHY,
-                    Name = Constants.VOCABULARY_GEOGRAPHY,
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = new List<string>{ countryName },
                 }

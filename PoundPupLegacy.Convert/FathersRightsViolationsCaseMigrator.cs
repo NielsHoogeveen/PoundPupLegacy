@@ -49,10 +49,10 @@ internal sealed class FathersRightsViolationsCaseMigrator : MigratorPPL
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASES,
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
-                    ParentNames = new List<string>(),
+                    ParentNames = new List<string>{ "Father's rights violations" },
                 }
             };
 

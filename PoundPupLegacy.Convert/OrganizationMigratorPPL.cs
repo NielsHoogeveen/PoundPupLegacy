@@ -1,17 +1,22 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using System.Collections.Immutable;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class OrganizationMigratorPPL : MigratorPPL
 {
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
+    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
     private readonly IEntityCreator<Organization> _organizationCreator;
     public OrganizationMigratorPPL(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IEntityCreator<Organization> organizationCreator
     ) : base(databaseConnections)
     {
         _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
         _organizationCreator = organizationCreator;
+        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
     }
 
     protected override string Name => "organizations (ppl)";
@@ -57,7 +62,14 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>(),
+            VocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Colorado Adoption Center",
+                    ParentNames = new List<string>{ "adoption agencies" },
+                }
+            },
             OrganizationTypes = new List<OrganizationOrganizationType>
             {
                 new OrganizationOrganizationType
@@ -108,7 +120,14 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>(),
+            VocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Popular Democratic Party",
+                    ParentNames = new List<string>{ "political party" },
+                }
+            },
             OrganizationTypes = new List<OrganizationOrganizationType>
             {
                 new OrganizationOrganizationType
@@ -159,7 +178,14 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>(),
+            VocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Libertarian Party",
+                    ParentNames = new List<string>{ "political party" },
+                }
+            },
             OrganizationTypes = new List<OrganizationOrganizationType>
             {
                 new OrganizationOrganizationType
@@ -203,14 +229,21 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                         UrlId = 17036
                     }
                 },
-            NodeTypeId = 63,
+            NodeTypeId = 23,
             WebsiteUrl = null,
             EmailAddress = null,
             Established = null,
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>(),
+            VocabularyNames = new List<VocabularyName> {
+                new VocabularyName {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Government of Italy",
+                    ParentNames = new List<string>{ "governmental organization" },
+                }
+            },
             OrganizationTypes = new List<OrganizationOrganizationType>
             {
                 new OrganizationOrganizationType
@@ -229,11 +262,13 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
         await _organizationCreator.CreateAsync(GetOrganizations(nodeIdReader), _postgresConnection);
-        await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader), _postgresConnection);
+        await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId), _postgresConnection);
     }
     private async IAsyncEnumerable<Organization> ReadOrganizations(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
     )
     {
 
@@ -241,7 +276,11 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             SELECT
                 n.nid id,
                 n.uid access_role_id,
-                n.title,
+                case 
+                    when n.nid = 8315 then 'Compassionate Hearts (PA)'
+                    when n.nid = 46082 then 'Compassionate Hearts (MT)'
+                    else n.title
+                end title,
                 n.`status` node_status_id,
                 FROM_UNIXTIME(n.created) created_date_time, 
                 FROM_UNIXTIME(n.changed) changed_date_time,
@@ -253,7 +292,10 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                 o.field_description_3_value description,
                 case 
                     when c.title IS NOT NULL then c.title
-                    ELSE c2.title
+            		when c2.title IS NOT NULL then c2.title
+                    when n.nid = 8315 then 'Compassionate Hearts (PA)'
+                    when n.nid = 46082 then 'Compassionate Hearts (MT)'
+                    ELSE n.title
                 END topic_name,
                 case 
                     when c.topic_parent_names IS NOT NULL then c.topic_parent_names
@@ -348,10 +390,10 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
 
 
             var typeIds = reader
-                            .GetString("organization_types")
-                            .Split(',')
-                            .Where(x => !string.IsNullOrEmpty(x))
-                            .Select(x => int.Parse(x));
+                .GetString("organization_types")
+                .Split(',')
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Select(x => int.Parse(x));
             var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
             foreach (var typeId in typeIds) {
                 var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -361,21 +403,66 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                 organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
             }
 
+            async IAsyncEnumerable<string> GetTermNamesForOrganizationsTypes(IEnumerable<int> organizationTypeIds)
+            {
+                foreach (var organizationTypeId in organizationTypeIds) {
+                    var res = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                        NameableId = organizationTypeId,
+                        OwnerId = Constants.PPL,
+                        VocabularyName = Constants.VOCABULARY_TOPICS
+                    });
+                    yield return res!.Name;
+                }
+            }
+
             var id = reader.GetInt32("id");
 
-            var name = id switch {
-                8315 => "Compassionate Hearts (PA)",
-                46082 => "Compassionate Hearts (MT)",
-                _ => reader.IsDBNull("topic_name")
+            var name = reader.IsDBNull("topic_name")
                 ? reader.GetString("title")
-                : reader.GetString("topic_name")
-            };
-            
+                : reader.GetString("topic_name");
+
+            var topicName = reader.GetString("topic_name");
+            var organizationTypeTermNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypes.Select(x => x.OrganizationTypeId)).ToListAsync();
+            var topicParentNames = reader.IsDBNull("topic_parent_names") 
+                ? organizationTypeTermNames
+                : reader.GetString("topic_parent_names")
+                    .Split(',')
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .Where(x => x != "European Union")
+                    .Select(x => x.Replace("Colorado", "Colorado (state of the USA)"))
+                    .Select(x => x.Replace("New York", "New York (state of the USA)"))
+                    .Select(x => x.Replace("Illinois", "Illinois (state of the USA)"))
+                    .Select(x => x.Replace("Texas", "Texas (state of the USA)"))
+                    .Select(x => x.Replace("Utah", "Texas (state of the USA)"))
+                    .Select(x => x.Replace("Arizona", "Arizona (state of the USA)"))
+                    .Select(x => x.Replace("Connecticut", "Connecticut (state of the USA)"))
+                    .Select(x => x.Replace("District of Columbia", "District of Columbia (state of the USA)"))
+                    .Select(x => x.Replace("Florida", "Florida (state of the USA)"))
+                    .Select(x => x.Replace("Georgia (state)", "Georgia (state of the USA)"))
+                    .Select(x => x.Replace("Kansas", "Kansas (state of the USA)"))
+                    .Select(x => x.Replace("Kentucky", "Kentucky (state of the USA)"))
+                    .Select(x => x.Replace("Maine", "Maine (state of the USA)"))
+                    .Select(x => x.Replace("Michigan", "Michigan (state of the USA)"))
+                    .Select(x => x.Replace("Mississippi", "Mississippi (state of the USA)"))
+                    .Select(x => x.Replace("Nebraska", "Nebraska (state of the USA)"))
+                    .Select(x => x.Replace("New Jersey", "New Jersey (state of the USA)"))
+                    .Select(x => x.Replace("Oklahoma", "Oklahoma (state of the USA)"))
+                    .Select(x => x.Replace("Oregon", "Oregon (state of the USA)"))
+                    .Select(x => x.Replace("South Carolina", "South Carolina (state of the USA)"))
+                    .Select(x => x.Replace("Tennessee", "Tennessee (state of the USA)"))
+                    .Select(x => x.Replace("Washington", "Washington (state of the USA)"))
+                    .Select(x => x.Replace("Wisconsin", "Wisconsin (state of the USA)"))
+                    .Select(x => x.Replace("Missouri", "Missouri (state of the USA)"))
+                    .ToImmutableList()
+                    .AddRange(organizationTypeTermNames)
+                    .Distinct()
+                    .ToList();
+
             vocabularyNames.Add(new VocabularyName {
-                OwnerId = Constants.OWNER_PARTIES,
-                Name = Constants.VOCABULARY_ORGANIZATIONS,
-                TermName = name,
-                ParentNames = new List<string>(),
+                OwnerId = Constants.PPL,
+                Name = Constants.VOCABULARY_TOPICS,
+                TermName = topicName,
+                ParentNames = topicParentNames,
             });
 
             if (id == Constants.DEMOCRATIC_PARTY || id == Constants.REPUBLICAN_PARTY) {

@@ -71,8 +71,8 @@ internal sealed class SecondLevelGlobalRegionMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_GEOGRAPHY,
-                    Name = Constants.VOCABULARY_GEOGRAPHY,
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = new List<string>{ parentRegionName},
                 }

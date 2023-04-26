@@ -74,8 +74,8 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_GEOGRAPHY,
-                    Name = Constants.VOCABULARY_GEOGRAPHY,
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Saint Barthélemy",
                     ParentNames = new List<string> { "Caribbean" },
                 },
@@ -141,8 +141,8 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_GEOGRAPHY,
-                        Name = Constants.VOCABULARY_GEOGRAPHY,
+                        OwnerId = Constants.PPL,
+                        Name = Constants.VOCABULARY_TOPICS,
                         TermName = "Saint Martin",
                         ParentNames = new List<string>{ "Caribbean" },
                     },
@@ -208,8 +208,8 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_GEOGRAPHY,
-                        Name = Constants.VOCABULARY_GEOGRAPHY,
+                        OwnerId = Constants.PPL,
+                        Name = Constants.VOCABULARY_TOPICS,
                         TermName = "French Southern Territories",
                         ParentNames = new List<string>{ "Southern Africa" },
                     },
@@ -322,8 +322,8 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_GEOGRAPHY,
-                    Name = Constants.VOCABULARY_GEOGRAPHY,
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = new List<string>{ regionName },
                 },

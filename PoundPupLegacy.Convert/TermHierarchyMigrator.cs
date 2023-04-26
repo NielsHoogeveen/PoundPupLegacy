@@ -18,7 +18,7 @@ internal sealed class TermHierarchyMigrator : MigratorPPL
         _termHierarchyCreator = termHierarchyCreator;
     }
 
-    protected override string Name => "node terms";
+    protected override string Name => "node term hierarchy";
 
     protected override async Task MigrateImpl()
     {
@@ -149,66 +149,45 @@ internal sealed class TermHierarchyMigrator : MigratorPPL
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync()) {
+        async Task<TermHierarchy?> WriteTermHierarchy(int childNodeId, int parentNodeId)
+        {
+            var (childUrlId, childTenantId) = GetUrlIdAndTenant(childNodeId);
             var nodeIdChild = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = reader.GetInt32("node_id_child")
+                TenantId = childTenantId,
+                UrlId = childUrlId
             });
+            var (parentUrlId, parentTenantId) = GetUrlIdAndTenant(parentNodeId);
             var nodeIdParent = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = reader.GetInt32("node_id_parent")
+                TenantId = parentTenantId,
+                UrlId = parentUrlId
             });
             var termIdChild = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
-                NameableId = nodeIdChild
-            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_PARTIES,
-                VocabularyName = Constants.VOCABULARY_ORGANIZATIONS,
-                NameableId = nodeIdChild
-            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_PARTIES,
-                VocabularyName = Constants.VOCABULARY_PERSONS,
-                NameableId = nodeIdChild
-            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                VocabularyName = Constants.VOCABULARY_GEOGRAPHY,
-                NameableId = nodeIdChild
-            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_CASES,
-                VocabularyName = Constants.VOCABULARY_CASES,
                 NameableId = nodeIdChild
             });
             var termIdParent = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 OwnerId = Constants.PPL,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = nodeIdParent
-            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_PARTIES,
-                VocabularyName = Constants.VOCABULARY_ORGANIZATIONS,
-                NameableId = nodeIdParent
-            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_PARTIES,
-                VocabularyName = Constants.VOCABULARY_PERSONS,
-                NameableId = nodeIdParent
-            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                VocabularyName = Constants.VOCABULARY_GEOGRAPHY,
-                NameableId = nodeIdParent
-            }) ?? await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_CASES,
-                VocabularyName = Constants.VOCABULARY_CASES,
-                NameableId = nodeIdParent
             });
             if (termIdChild is not null && termIdParent is not null) {
-                yield return new TermHierarchy {
+                return new TermHierarchy {
 
                     TermIdChild = termIdChild.Id!.Value,
                     TermIdPartent = termIdParent.Id!.Value,
                 };
             }
-
+            else { 
+                return null; 
+            }
+        }
+        while (await reader.ReadAsync()) {
+            var res = await WriteTermHierarchy(reader.GetInt32("node_id_child"), reader.GetInt32("node_id_parent"));
+            if (res is not null)
+                yield return res;
         }
         await reader.CloseAsync();
+        await WriteTermHierarchy(6638, 14781);
     }
 }

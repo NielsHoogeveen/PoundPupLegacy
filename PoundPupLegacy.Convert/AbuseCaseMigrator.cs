@@ -33,15 +33,21 @@ internal sealed class AbuseCaseMigrator : MigratorPPL
                 FROM_UNIXTIME(n.created) created_date_time, 
                 FROM_UNIXTIME(n.changed) changed_date_time,
                 26 node_type_id,
-                		case 
-                        when c2.title IS NOT NULL then c2.title
-                        ELSE c3.title
+                case 
+                  when c2.title IS NOT NULL then c2.title
+                  when c3.title IS NOT NULL then c3.title
+                  ELSE n.title
                 END topic_name,
                 case 
                     when c2.topic_parent_names IS NOT NULL then c2.topic_parent_names
-                    ELSE c3.topic_parent_names
+                    WHEN c3.topic_parent_names IS NOT NULL then c3.topic_parent_names
+                    when field_child_placement_type_value = 'Adoption' then 'abused adoptees'
+                    when field_child_placement_type_value = 'Foster care' then 'abuse in foster care'
+                    when field_child_placement_type_value = 'To be adopted' then 'abuse in child placement'
+                    when field_child_placement_type_value = 'Legal Guardianship' then 'abuse in child placement'
+                    when field_child_placement_type_value = 'Institution' then 'abuse in residential care'
                 END topic_parent_names,
-                		c.field_discovery_date_value `date`,
+                c.field_discovery_date_value `date`,
                 c.field_body_0_value description,
                 case 
                     when field_child_placement_type_value = 'Adoption' then {Constants.ADOPTION}
@@ -125,15 +131,20 @@ internal sealed class AbuseCaseMigrator : MigratorPPL
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASES,
-                    TermName = name,
-                    ParentNames = new List<string>(),
-                }
-            };
+            var vocabularyNames = new List<VocabularyName>();
+            var topicName = reader.GetString("topic_name");
+            var topicParentNames = reader.IsDBNull("topic_parent_names") ?
+                new List<string>() : reader.GetString("topic_parent_names")
+                .Split(',')
+                .Where(x => !string.IsNullOrEmpty(x))
+                .ToList();
 
+            vocabularyNames.Add(new VocabularyName {
+                OwnerId = Constants.PPL,
+                Name = Constants.VOCABULARY_TOPICS,
+                TermName = topicName,
+                ParentNames = topicParentNames,
+            });
 
             var country = new AbuseCase {
                 Id = null,

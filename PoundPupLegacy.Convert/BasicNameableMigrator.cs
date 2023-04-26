@@ -1,4 +1,7 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel;
+using System.Xml.Linq;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class BasicNameableMigrator : MigratorPPL
 {
@@ -81,7 +84,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
                     'Kevin and Kody Pribbernow'
                 )
                 AND n.nid NOT IN (
-                    22589, 74730
+                    22589, 74730, 27064, 45581, 52679, 46859, 30753, 14781, 28576, 37627, 48018, 19559
                 )
                 AND n2.nid IS  NULL
                 """;
@@ -93,9 +96,47 @@ internal sealed class BasicNameableMigrator : MigratorPPL
 
         var reader = await readCommand.ExecuteReaderAsync();
 
+        yield return new BasicNameable {
+            Id = null,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = "organizations",
+            OwnerId = 1,
+            TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
+                {
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = null
+                }
+            },
+            NodeTypeId = 41,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "organizations",
+                    ParentNames = new List<string>(),
+                }
+            },
+        };
+
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
+            var parentNames = id == 4170 
+                ? new List<string> { "organizations" }
+                : new List<string>();
             var vocabularyNames = new List<VocabularyName>
                 {
                     new VocabularyName
@@ -103,7 +144,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
                         OwnerId = Constants.PPL,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = name,
-                        ParentNames = new List<string>(),
+                        ParentNames = parentNames,
                     }
                 };
 
@@ -135,5 +176,108 @@ internal sealed class BasicNameableMigrator : MigratorPPL
 
         }
         await reader.CloseAsync();
+
+        yield return new BasicNameable {
+            Id = null,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = "US senate bill",
+            OwnerId = 1,
+            TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
+                {
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = null
+                }
+            },
+            NodeTypeId = 41,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "US senate bill",
+                    ParentNames = new List<string>{"United States Congress"},
+                }
+            },
+        };
+        yield return new BasicNameable {
+            Id = null,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = "US house bill",
+            OwnerId = 1,
+            TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
+                {
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = null
+                }
+            },
+            NodeTypeId = 41,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "US house bill",
+                    ParentNames = new List<string>{"United States Congress"},
+                }
+            },
+        };
+        yield return new BasicNameable {
+            Id = null,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = "US act",
+            OwnerId = 1,
+            TenantNodes = new List<TenantNode>
+            {
+                new TenantNode
+                {
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = null
+                }
+            },
+            NodeTypeId = 41,
+            Description = "",
+            FileIdTileImage = null,
+            VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
+                {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "US act",
+                    ParentNames = new List<string>{"United States Congress"},
+                }
+            },
+        };
     }
 }

@@ -145,7 +145,7 @@ internal sealed class BillMigrator : MigratorPPL
             var vocabularyNames = new List<VocabularyName>();
 
             var id = reader.GetInt32("id");
-
+            var title = reader.GetString("title");
             if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");
                 var topicParentNames = reader.IsDBNull("topic_parent_names") ?
@@ -161,13 +161,21 @@ internal sealed class BillMigrator : MigratorPPL
                     ParentNames = topicParentNames,
                 });
             }
+            else {
+                vocabularyNames.Add(new VocabularyName {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = title,
+                    ParentNames = new List<string> {"US house bill"},
+                });
+            }
 
             yield return new HouseBill {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
+                Title = title,
                 OwnerId = Constants.PPL,
                 TenantNodes = new List<TenantNode>
                 {
@@ -313,6 +321,7 @@ internal sealed class BillMigrator : MigratorPPL
             var vocabularyNames = new List<VocabularyName>();
 
             var id = reader.GetInt32("id");
+            var title = reader.GetString("title");
 
             if (!reader.IsDBNull("topic_name")) {
                 var topicName = reader.GetString("topic_name");
@@ -329,13 +338,22 @@ internal sealed class BillMigrator : MigratorPPL
                     ParentNames = topicParentNames,
                 });
             }
+            else {
+                vocabularyNames.Add(new VocabularyName {
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = title,
+                    ParentNames = new List<string> { "US senate bill" },
+                });
+            }
+
 
             yield return new SenateBill {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
+                Title = title,
                 OwnerId = Constants.PPL,
                 TenantNodes = new List<TenantNode>
                 {

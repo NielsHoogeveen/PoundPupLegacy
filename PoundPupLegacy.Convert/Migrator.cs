@@ -13,6 +13,41 @@ internal abstract class MigratorPPL : Migrator
     {
 
     }
+    protected (int, int) GetUrlIdAndTenant(int urlId)
+    {
+        return urlId switch {
+            27064 => (27063, Constants.PPL),
+            52679 => (35547, Constants.CPCT),
+            46859 => (47547, Constants.CPCT),
+            30753 => (49292, Constants.CPCT),
+            14781 => (50153, Constants.CPCT),
+            28576 => (36874, Constants.CPCT),
+            37627 => (37272, Constants.CPCT),
+            48018 => (37755, Constants.CPCT),
+            19559 => (47091, Constants.CPCT),
+            45581 => (34195, Constants.PPL),
+            19316 => (39429, Constants.PPL),
+            4806 => (17310, Constants.PPL),
+            19326 => (35715, Constants.PPL),
+            19447 => (31716, Constants.PPL),
+            19597 => (12632, Constants.PPL),
+            20242 => (48309, Constants.PPL),
+            4816 => (12635, Constants.PPL),
+            27466 => (12635, Constants.PPL),
+            47130 => (12624, Constants.PPL),
+            74755 => (31586, Constants.PPL),
+            18644 => (14670, Constants.PPL),
+            20899 => (27215, Constants.PPL),
+            6167 => (27214, Constants.PPL),
+            4209 => (12625, Constants.PPL),
+            19256 => (6135, Constants.PPL),
+            22589 => (22591, Constants.PPL),
+            45656 => (41375, Constants.PPL),
+            45657 => (41375, Constants.PPL),
+            74730 => (55660, Constants.PPL),
+            _ => (urlId, Constants.PPL)
+        };
+    }
 }
 internal abstract class MigratorCPCT : Migrator
 {
@@ -56,9 +91,15 @@ internal abstract class MigratorCPCT : Migrator
             UrlId = id
         }), 1);
     }
+
+
+
+
     protected (int, int) GetUrlIdAndTenant(int urlId)
     {
         return urlId switch {
+            47216 => (58104, Constants.PPL),
+            35063 => (51789, Constants.PPL),
             10793 => (6138, Constants.PPL),
             34880 => (35760, Constants.PPL),
             35725 => (37560, Constants.PPL),

@@ -240,84 +240,11 @@ internal sealed class VocabularyMigrator : MigratorPPL
             NodeTypeId = 36,
             Description = ""
         };
-        yield return new Vocabulary {
-            Id = null,
-            Name = Constants.VOCABULARY_ORGANIZATIONS,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = Constants.VOCABULARY_ORGANIZATIONS,
-            OwnerId = Constants.OWNER_PARTIES,
-            TenantNodes = new List<TenantNode>
-                {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.ORGANIZATIONS_VOCABULARY_ID
-                    }
-                },
-            NodeTypeId = 36,
-            Description = ""
-        };
-        yield return new Vocabulary {
-            Id = null,
-            Name = Constants.VOCABULARY_PERSONS,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = Constants.VOCABULARY_PERSONS,
-            OwnerId = Constants.OWNER_PARTIES,
-            TenantNodes = new List<TenantNode>
-                {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.PERSONS_VOCABULARY_ID
-                    }
-                },
-            NodeTypeId = 36,
-            Description = ""
-        };
-        yield return new Vocabulary {
-            Id = null,
-            Name = Constants.VOCABULARY_CASES,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = Constants.VOCABULARY_CASES,
-            OwnerId = Constants.OWNER_CASES,
-            TenantNodes = new List<TenantNode>
-        {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.CASES_VOCABULARY_ID
-                    }
-                },
-            NodeTypeId = 36,
-            Description = ""
-        };
     }
 
     private static string GetVocabularyName(int id, string name)
     {
         return id switch {
-            3797 => Constants.VOCABULARY_GEOGRAPHY,
             4126 => Constants.VOCABULARY_TOPICS,
             12622 => Constants.VOCABULARY_ORGANIZATION_TYPE,
             12637 => Constants.VOCABULARY_INTERORGANIZATIONAL_RELATION_TYPE,
@@ -380,7 +307,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                 nr.body description
             FROM node n
             JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-            WHERE n.`type` = 'category_cont' AND n.nid not in (220, 12707, 42422, 23399)
+            WHERE n.`type` = 'category_cont' AND n.nid not in (220, 12707, 42422, 23399, 3797)
             """;
         using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

@@ -104,29 +104,13 @@ internal sealed class CoercedAdoptionCaseMigrator : MigratorPPL
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASES,
+                    OwnerId = Constants.PPL,
+                    Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
-                    ParentNames = new List<string>(),
+                    ParentNames = new List<string>{ "coerced adoption"},
                 }
             };
 
-
-            if (!reader.IsDBNull("topic_name")) {
-                var topicName = reader.GetString("topic_name");
-                var topicParentNames = reader.IsDBNull("topic_parent_names") ?
-                    new List<string>() : reader.GetString("topic_parent_names")
-                    .Split(',')
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .ToList();
-
-                vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
-                    Name = Constants.VOCABULARY_TOPICS,
-                    TermName = topicName,
-                    ParentNames = topicParentNames,
-                });
-            }
 
             var country = new CoercedAdoptionCase {
                 Id = null,
