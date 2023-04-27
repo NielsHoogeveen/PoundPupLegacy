@@ -24,12 +24,10 @@ internal sealed class FetchCasesService : IFetchCasesService
     {
         var startIndex = (pageNumber - 1) * pageSize;
 
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _casesDocumentReaderFactory.CreateAsync(_connection);
-            var cases = await reader.ReadAsync(new CasesDocumentReaderRequest
-            {
+            var cases = await reader.ReadAsync(new CasesDocumentReaderRequest {
                 Limit = pageSize,
                 Offset = startIndex,
                 TenantId = tenantId,
@@ -38,18 +36,15 @@ internal sealed class FetchCasesService : IFetchCasesService
             });
             var result = cases is not null
                 ? cases
-                : new Cases
-                {
+                : new Cases {
                     Entries = Array.Empty<CaseListEntry>(),
                     NumberOfEntries = 0,
                 };
 
             return result;
         }
-        finally
-        {
-            if (_connection.State == ConnectionState.Open)
-            {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

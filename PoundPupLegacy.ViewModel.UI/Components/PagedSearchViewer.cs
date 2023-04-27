@@ -7,7 +7,7 @@ public abstract partial class PagedSearchViewer<TListEntry> : PagedViewerBase<Pa
     protected sealed override PagedSearchListSettings PagedListSettings { get; } = new PagedSearchListSettings();
 
 
-    
+
     protected sealed override async Task InitializeAsync(bool isReloading)
     {
         if (!isReloading) {

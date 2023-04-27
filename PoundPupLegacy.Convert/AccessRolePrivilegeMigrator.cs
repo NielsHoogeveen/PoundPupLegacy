@@ -36,76 +36,75 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
 
         yield return new AccessRolePrivilege {
             AccessRoleId = 4,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = 35 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 35
             })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 4,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 36 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 36
             })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 4,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 37 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 37
             })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 42,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 35 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 35
             })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 42,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 36 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 36
             })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 42,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 37 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 37
             })
         };
 
         yield return new AccessRolePrivilege {
             AccessRoleId = 11,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 26 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 26
             }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 11,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 29 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 29
             }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 11,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 23 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 23
             }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 11,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 24 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 24
             }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 18,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 23 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 23
             }),
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 18,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { 
-                NodeTypeId = 24 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = 24
             }),
         };
         yield return new AccessRolePrivilege {
@@ -259,40 +258,40 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
         await foreach (var nodeType in NodeTypeMigrator.GetNodeTypes()) {
             yield return new AccessRolePrivilege {
                 AccessRoleId = 11,
-                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { 
-                    NodeTypeId = nodeType.Id!.Value 
+                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest {
+                    NodeTypeId = nodeType.Id!.Value
                 })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 18,
-                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { 
-                    NodeTypeId = nodeType.Id!.Value 
+                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest {
+                    NodeTypeId = nodeType.Id!.Value
                 })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 43,
-                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest { 
-                    NodeTypeId = nodeType.Id!.Value 
+                ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest {
+                    NodeTypeId = nodeType.Id!.Value
                 })
             };
         }
         await foreach (var nodeType in NodeTypeMigrator.GetNodeTypes().Where(x => x.AuthorSpecific)) {
             yield return new AccessRolePrivilege {
                 AccessRoleId = 4,
-                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { 
-                    NodeTypeId = nodeType.Id!.Value 
+                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest {
+                    NodeTypeId = nodeType.Id!.Value
                 })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 16,
-                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { 
-                    NodeTypeId = nodeType.Id!.Value 
+                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest {
+                    NodeTypeId = nodeType.Id!.Value
                 })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = 42,
-                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest { 
-                    NodeTypeId = nodeType.Id!.Value 
+                ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest {
+                    NodeTypeId = nodeType.Id!.Value
                 })
             };
         }

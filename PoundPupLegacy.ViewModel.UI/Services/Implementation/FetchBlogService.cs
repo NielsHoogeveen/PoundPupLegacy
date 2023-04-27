@@ -25,12 +25,10 @@ internal sealed class FetchBlogService : IFetchBlogService
     {
 
         var startIndex = (pageNumber - 1) * pageSize;
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _blogDocumentReaderFactory.CreateAsync(_connection);
-            var blog = await reader.ReadAsync(new BlogDocumentReaderRequest
-            {
+            var blog = await reader.ReadAsync(new BlogDocumentReaderRequest {
                 PublisherId = publisherId,
                 TenantId = tenantId,
                 StartIndex = startIndex,
@@ -45,8 +43,7 @@ internal sealed class FetchBlogService : IFetchBlogService
                 };
             return blog;
         }
-        finally
-        {
+        finally {
             await _connection.CloseAsync();
         }
     }

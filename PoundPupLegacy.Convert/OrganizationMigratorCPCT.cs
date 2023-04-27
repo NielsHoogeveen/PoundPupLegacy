@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class OrganizationMigratorCPCT : MigratorCPCT
 {
@@ -27,7 +25,7 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
 
         await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
-        
+
         await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId), _postgresConnection);
     }
 

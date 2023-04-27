@@ -6,7 +6,6 @@ using PoundPupLegacy.Readers;
 using PoundPupLegacy.ViewModel.Models;
 using System.Data;
 using System.Diagnostics;
-using static Microsoft.FSharp.Core.ByRefKinds;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -308,10 +307,10 @@ internal sealed class SiteDataService : ISiteDataService
 
     public string GetLogoName(int tenantId)
     {
-        if(tenantId == 1) {
+        if (tenantId == 1) {
             return "PPL";
         }
-        else if(tenantId == 6) {
+        else if (tenantId == 6) {
             return "CPCT";
         }
         else {
@@ -321,7 +320,7 @@ internal sealed class SiteDataService : ISiteDataService
 
     public string GetSubTitle(int tenantId)
     {
-        if(tenantId == 1) {
+        if (tenantId == 1) {
             return "exposing the dark side of adoption";
         }
         return "";
@@ -329,7 +328,7 @@ internal sealed class SiteDataService : ISiteDataService
 
     public Link[] GetFooterMenuItems(int tenantId)
     {
-        if(tenantId == 1) {
+        if (tenantId == 1) {
             return new Link[] {
                 new BasicLink { Title = "About", Path = "/about_us" },
                 new BasicLink { Title = "Our Position", Path = "/our_position" },
@@ -343,7 +342,7 @@ internal sealed class SiteDataService : ISiteDataService
 
     public string GetFooterTitle(int tenantId)
     {
-        if(tenantId == 1) {
+        if (tenantId == 1) {
             return "Pound Pup Legacy";
         }
         return "";

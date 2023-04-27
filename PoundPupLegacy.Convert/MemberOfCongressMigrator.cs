@@ -169,7 +169,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
 
     private async IAsyncEnumerable<(string, int)> GetStates()
     {
-        using var command = _postgresConnection.CreateCommand(); 
+        using var command = _postgresConnection.CreateCommand();
         var sql = """
             select
                 s.id,

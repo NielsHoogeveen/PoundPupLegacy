@@ -25,7 +25,7 @@ internal sealed class FetchTopicsService : IFetchTopicsService
         var offset = (pageNumber - 1) * pageSize;
 
         try {
-            if(_connection.State == ConnectionState.Closed) {
+            if (_connection.State == ConnectionState.Closed) {
                 await _connection.OpenAsync();
             }
             await using var reader = await _topicsDocumentReaderFactory.CreateAsync(_connection);
@@ -37,9 +37,9 @@ internal sealed class FetchTopicsService : IFetchTopicsService
                 SearchTerm = searchTerm,
                 SearchOption = searchOption
             });
-            if(result is not null)
+            if (result is not null)
                 return result;
-            else 
+            else
                 return new Topics {
                     Entries = Array.Empty<TopicListEntry>(),
                     NumberOfEntries = 0

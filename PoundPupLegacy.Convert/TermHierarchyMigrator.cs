@@ -178,8 +178,8 @@ internal sealed class TermHierarchyMigrator : MigratorPPL
                     TermIdPartent = termIdParent.Id!.Value,
                 };
             }
-            else { 
-                return null; 
+            else {
+                return null;
             }
         }
         while (await reader.ReadAsync()) {

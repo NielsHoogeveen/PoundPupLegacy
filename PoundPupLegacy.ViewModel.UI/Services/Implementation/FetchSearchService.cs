@@ -22,12 +22,10 @@ internal sealed class FetchSearchService : IFetchSearchService
     public async Task<SearchResult> FetchSearch(int userId, int tenantId, int pageSize, int pageNumber, string searchString)
     {
         int offset = (pageNumber - 1) * pageSize;
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _searchDocumentReaderFactory.CreateAsync(_connection);
-            var searchResult = await reader.ReadAsync(new SearchDocumentReaderRequest
-            {
+            var searchResult = await reader.ReadAsync(new SearchDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = pageSize,
@@ -36,17 +34,14 @@ internal sealed class FetchSearchService : IFetchSearchService
             });
             if (searchResult is not null)
                 return searchResult;
-            return new SearchResult
-            {
+            return new SearchResult {
                 Entries = Array.Empty<SearchResultListEntry>(),
                 NumberOfEntries = 0,
             };
 
         }
-        finally
-        {
-            if (_connection.State == ConnectionState.Open)
-            {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

@@ -26,8 +26,8 @@ public sealed class AttachmentController : Controller
         var userId = _userService.GetUserId(HttpContext.User);
         var tenantId = _siteDataService.GetTenantId(Request.GetUri());
         var res = await _attachmentService.GetFileStream(
-            id: id, 
-            userId: userId, 
+            id: id,
+            userId: userId,
             tenantId: tenantId);
         return res.Match(
             fr => File(fr.Stream, fr.MimeType, fr.FileName) as IActionResult,

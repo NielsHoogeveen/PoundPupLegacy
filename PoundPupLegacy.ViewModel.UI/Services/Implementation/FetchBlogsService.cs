@@ -21,8 +21,7 @@ internal sealed class FetchBlogsService : IFetchBlogsService
 
     public async Task<List<BlogListEntry>> FetchBlogs(int tenantId)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _blogsDocumentReaderFactory.CreateAsync(_connection);
             var blogs = await reader.ReadAsync(new BlogsDocumentReaderRequest { TenantId = tenantId });
@@ -30,10 +29,8 @@ internal sealed class FetchBlogsService : IFetchBlogsService
                 return blogs;
             return new List<BlogListEntry>();
         }
-        finally
-        {
-            if (_connection.State == ConnectionState.Open)
-            {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

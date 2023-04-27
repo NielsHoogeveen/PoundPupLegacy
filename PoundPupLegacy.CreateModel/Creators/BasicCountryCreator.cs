@@ -54,7 +54,7 @@ internal sealed class BasicCountryCreator : EntityCreator<BasicCountry>
     }
     public override async Task CreateAsync(IAsyncEnumerable<BasicCountry> countries, IDbConnection connection)
     {
-        
+
         await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
         await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);

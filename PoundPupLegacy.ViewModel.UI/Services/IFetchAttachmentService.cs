@@ -14,5 +14,5 @@ public interface IFetchAttachmentService
 {
     [RequireNamedArgs]
     Task<OneOf<FileReturn, None, Error<string>>> GetFileStream(int id, int userId, int tenantId);
-    
+
 }

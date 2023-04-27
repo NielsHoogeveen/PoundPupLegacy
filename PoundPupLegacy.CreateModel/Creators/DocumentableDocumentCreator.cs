@@ -5,7 +5,7 @@ internal sealed class DocumentableDocumentCreator : EntityCreator<DocumentableDo
     private readonly IDatabaseInserterFactory<NodeTerm> _nodeTermInserterFactory;
     private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, Term> _termReaderByNameableIdFactory;
     public DocumentableDocumentCreator(
-        IDatabaseInserterFactory<NodeTerm> nodeTermInserterFactory, 
+        IDatabaseInserterFactory<NodeTerm> nodeTermInserterFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, Term> termReaderByNameableIdFactory
 
     )

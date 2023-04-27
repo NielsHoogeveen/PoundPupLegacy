@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class WrongfulRemovalCaseMigrator : MigratorPPL
 {

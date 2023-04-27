@@ -1,9 +1,6 @@
 ﻿using Npgsql;
-using PoundPupLegacy.Common;
-using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
 using System.Data;
-using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 

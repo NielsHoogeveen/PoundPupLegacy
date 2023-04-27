@@ -1,7 +1,4 @@
-﻿using PoundPupLegacy.CreateModel;
-using System.Xml.Linq;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class BasicNameableMigrator : MigratorPPL
 {
@@ -134,7 +131,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var parentNames = id == 4170 
+            var parentNames = id == 4170
                 ? new List<string> { "organizations" }
                 : new List<string>();
             var vocabularyNames = new List<VocabularyName>

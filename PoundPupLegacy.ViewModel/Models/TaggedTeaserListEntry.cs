@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public interface TaggedTeaserListEntry: TeaserListEntry
+public interface TaggedTeaserListEntry : TeaserListEntry
 {
-     BasicLink[] Tags { get; }
+    BasicLink[] Tags { get; }
 
 }

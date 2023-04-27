@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.CreateModel;
-
-namespace PoundPupLegacy.EditModel.UI.Services;
+﻿namespace PoundPupLegacy.EditModel.UI.Services;
 
 public interface IDefaultCountryService
 {

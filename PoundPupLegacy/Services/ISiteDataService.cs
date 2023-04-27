@@ -1,7 +1,6 @@
 ﻿using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.ViewModel.Models;
-using System.Drawing;
 
 namespace PoundPupLegacy.Services;
 

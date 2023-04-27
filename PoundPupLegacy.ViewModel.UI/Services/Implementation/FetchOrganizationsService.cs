@@ -24,12 +24,10 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
     {
 
         var offset = (pageNumber - 1) * pageSize;
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection);
-            var organizations = await reader.ReadAsync(new OrganizationsDocumentReaderRequest
-            {
+            var organizations = await reader.ReadAsync(new OrganizationsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = pageSize,
@@ -39,12 +37,9 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
                 OrganizationTypeId = organizationTypeId,
                 CountryId = countryId
             });
-            if (organizations is null)
-            {
-                return new OrganizationSearch
-                {
-                    Organizations = new Organizations
-                    {
+            if (organizations is null) {
+                return new OrganizationSearch {
+                    Organizations = new Organizations {
                         NumberOfEntries = 0,
                         Entries = Array.Empty<OrganizationListEntry>()
                     },
@@ -52,15 +47,12 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
                     Countries = Array.Empty<SelectionItem>()
                 };
             }
-            else
-            {
+            else {
                 return organizations;
             }
         }
-        finally
-        {
-            if (_connection.State == ConnectionState.Open)
-            {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

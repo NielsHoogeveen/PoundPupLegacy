@@ -423,7 +423,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
 
             var topicName = reader.GetString("topic_name");
             var organizationTypeTermNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypes.Select(x => x.OrganizationTypeId)).ToListAsync();
-            var topicParentNames = reader.IsDBNull("topic_parent_names") 
+            var topicParentNames = reader.IsDBNull("topic_parent_names")
                 ? organizationTypeTermNames
                 : reader.GetString("topic_parent_names")
                     .Split(',')

@@ -1,11 +1,11 @@
-﻿global using PoundPupLegacy.ViewModel.Models;
-global using PoundPupLegacy.Common;
+﻿global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.WebUtilities;
-global using Microsoft.AspNetCore.Components;
+global using PoundPupLegacy.Common;
+global using PoundPupLegacy.ViewModel.Models;
 using Microsoft.Extensions.DependencyInjection;
+using PoundPupLegacy.ViewModel.Readers;
 using PoundPupLegacy.ViewModel.UI.Services;
 using PoundPupLegacy.ViewModel.UI.Services.Implementation;
-using PoundPupLegacy.ViewModel.Readers;
 namespace PoundPupLegacy.ViewModel.UI;
 
 public static class DependencyInjection

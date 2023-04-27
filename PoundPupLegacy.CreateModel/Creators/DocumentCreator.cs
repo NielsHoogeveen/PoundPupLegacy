@@ -9,10 +9,10 @@ internal sealed class DocumentCreator : EntityCreator<Document>
     private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
     private readonly IEntityCreator<DocumentableDocument> _documentableDocumentCreator;
     public DocumentCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory, 
+        IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,
         IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
-        IDatabaseInserterFactory<Document> documentInserterFactory, 
+        IDatabaseInserterFactory<Document> documentInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
         IEntityCreator<DocumentableDocument> documentableDocumentCreator)
     {

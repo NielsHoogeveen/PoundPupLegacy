@@ -1,9 +1,8 @@
-﻿using PoundPupLegacy.Common;
-using PoundPupLegacy.EditModel.UI.Services;
+﻿using PoundPupLegacy.EditModel.UI.Services;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class TenantRefreshService: ITenantRefreshService
+public class TenantRefreshService : ITenantRefreshService
 {
     private readonly ISiteDataService _siteDataService;
     public TenantRefreshService(ISiteDataService siteDataService)

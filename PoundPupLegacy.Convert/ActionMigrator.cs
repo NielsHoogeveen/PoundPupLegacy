@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class ActionMigrator : MigratorPPL
 {

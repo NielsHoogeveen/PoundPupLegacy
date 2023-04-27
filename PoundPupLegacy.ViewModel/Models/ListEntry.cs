@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public interface ListEntry: Link
+public interface ListEntry : Link
 {
 }

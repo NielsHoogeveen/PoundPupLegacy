@@ -24,28 +24,23 @@ internal sealed class FetchPollsService : IFetchPollsService
     {
         var offset = (pageNumber - 1) * pageSize;
 
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _pollsDocumentReaderFactory.CreateAsync(_connection);
-            var polls = await reader.ReadAsync(new PollsDocumentReaderRequest
-            {
+            var polls = await reader.ReadAsync(new PollsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = pageSize,
                 Offset = offset
             });
-            var result = polls is not null ? polls : new Polls
-            {
+            var result = polls is not null ? polls : new Polls {
                 Entries = Array.Empty<PollListEntry>(),
                 NumberOfEntries = 0
             };
             return result;
         }
-        finally
-        {
-            if (_connection.State == ConnectionState.Open)
-            {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

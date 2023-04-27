@@ -77,5 +77,5 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBa
     {
         PagedListSettings.PageNumber = pageNumber;
         await Reload();
-     }
+    }
 }

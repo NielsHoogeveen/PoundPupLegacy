@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public interface AuthoredTeaserListEntry: TeaserListEntry
+public interface AuthoredTeaserListEntry : TeaserListEntry
 {
-    Authoring Authoring { get;  }
+    Authoring Authoring { get; }
 
 }

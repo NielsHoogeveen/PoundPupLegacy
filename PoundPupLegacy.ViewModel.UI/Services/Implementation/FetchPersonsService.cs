@@ -25,12 +25,10 @@ internal sealed class FetchPersonsService : IFetchPersonService
     {
         var offset = (pageNumber - 1) * pageSize;
 
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _personsDocumentReaderFactory.CreateAsync(_connection);
-            var persons = await reader.ReadAsync(new PersonsDocumentReaderRequest
-            {
+            var persons = await reader.ReadAsync(new PersonsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
                 Limit = pageSize,
@@ -40,17 +38,14 @@ internal sealed class FetchPersonsService : IFetchPersonService
             });
             var result = persons is not null
                 ? persons
-                : new Persons
-                {
+                : new Persons {
                     Entries = Array.Empty<PersonListEntry>(),
                     NumberOfEntries = 0
                 };
             return result;
         }
-        finally
-        {
-            if (_connection.State == ConnectionState.Open)
-            {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

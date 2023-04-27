@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record SubdivisionListEntry: ListEntry
+public record SubdivisionListEntry : ListEntry
 {
     public required string Title { get; init; }
 

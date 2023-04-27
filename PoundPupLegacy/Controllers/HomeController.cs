@@ -41,7 +41,7 @@ public sealed class HomeController : Controller
     {
         var referer = this.HttpContext.Request.Headers.Referer.ToString();
         var path = referer.Substring(referer.IndexOf("/", 10));
-        var claimsIdentity = await _authenticationService.Login(userName: user, password:password);
+        var claimsIdentity = await _authenticationService.Login(userName: user, password: password);
         if (claimsIdentity == null) {
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return new RedirectResult(path);

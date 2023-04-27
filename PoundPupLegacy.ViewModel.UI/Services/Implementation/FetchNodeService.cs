@@ -23,21 +23,17 @@ internal sealed class FetchNodeService : IFetchNodeService
 
     public async Task<Node?> FetchNode(int urlId, int userId, int tenantId)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _nodeDocumentReaderFactory.CreateAsync(_connection);
-            return await reader.ReadAsync(new NodeDocumentReaderRequest
-            {
+            return await reader.ReadAsync(new NodeDocumentReaderRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
         }
-        finally
-        {
-            if (_connection.State == ConnectionState.Open)
-            {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record CongressionalChamberMeetings: Link
+public record CongressionalChamberMeetings : Link
 {
     public required string Title { get; init; }
 

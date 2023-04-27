@@ -22,8 +22,7 @@ internal sealed class FetchCountriesService : IFetchCountriesService
 
     public async Task<FirstLevelRegionListEntry[]> FetchCountries(int tenantId)
     {
-        try
-        {
+        try {
             await _connection.OpenAsync();
             await using var reader = await _countriesDocumentReaderFactory.CreateAsync(_connection);
             var countries = await reader.ReadAsync(new CountriesDocumentReaderRequest { TenantId = tenantId });
@@ -31,10 +30,8 @@ internal sealed class FetchCountriesService : IFetchCountriesService
                 return countries;
             return Array.Empty<FirstLevelRegionListEntry>();
         }
-        finally
-        {
-            if (_connection.State == ConnectionState.Open)
-            {
+        finally {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
         }

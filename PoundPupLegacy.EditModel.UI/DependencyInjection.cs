@@ -1,13 +1,13 @@
-﻿global using PoundPupLegacy.EditModel;
-global using PoundPupLegacy.Common;
+﻿global using PoundPupLegacy.Common;
+global using PoundPupLegacy.EditModel;
 using Microsoft.Extensions.DependencyInjection;
-using PoundPupLegacy.EditModel.Readers;
-using PoundPupLegacy.EditModel.UI.Services.Implementation;
-using PoundPupLegacy.EditModel.UI.Services;
-using File = PoundPupLegacy.EditModel.File;
 using PoundPupLegacy.EditModel.Deleters;
 using PoundPupLegacy.EditModel.Inserters;
+using PoundPupLegacy.EditModel.Readers;
+using PoundPupLegacy.EditModel.UI.Services;
+using PoundPupLegacy.EditModel.UI.Services.Implementation;
 using PoundPupLegacy.EditModel.Updaters;
+using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.ViewModel.UI;
 

@@ -166,7 +166,7 @@ internal sealed class BillMigrator : MigratorPPL
                     OwnerId = Constants.PPL,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
-                    ParentNames = new List<string> {"US house bill"},
+                    ParentNames = new List<string> { "US house bill" },
                 });
             }
 
