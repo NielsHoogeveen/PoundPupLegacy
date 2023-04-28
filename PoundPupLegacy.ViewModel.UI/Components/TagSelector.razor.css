@@ -14,6 +14,11 @@
     background-color: var(--term-bg-color);
     border: solid thin black;
     border-radius: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left:1em;
+    padding-right:1em;
 }
 
 .term-name:has(input:checked) {

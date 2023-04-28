@@ -22,253 +22,294 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
     public override string Sql => SQL;
 
     const string SQL = $"""
-            WITH
-            {FETCH_TERMS_UNFILTERED},
-            {FETCH_TERMS_FILTERED},
-            {FETCH_ARTICLES_UNFILTERED},
-            {FETCH_ARTICLES_FILTERED},
-            {COUNT_ARTICLES_UNFILTERED},
-            {COUNT_ARTICLES_FILTERED},
-            {FETCHS_ARTICLES_DOCUMENTS_FILTERED},
-            {FETCHS_ARTICLES_DOCUMENTS_UNFILTERED}
-            {FETCH_DOCUMENT}
-            """;
-
-    const string FETCH_DOCUMENT = """
-        select to_jsonb(ta) document
-        from(
-        select 
-            case 
-                when @terms is null then (select * from fetch_terms_unfiltered)  
-                else (select * from fetch_terms_filtered)  
-            end "TermNames",
-            case 
-                when @terms is null then (select agg from fetch_articles_document_unfiltered) 
-                else (select agg from fetch_articles_document_filtered) 
-            end "Entries",
-            case
-                when @terms is null then (select count from count_articles_unfiltered) 
-                else (select count from count_articles_filtered) 
-            end "NumberOfEntries"
-        	) ta
-        """;
-
-
-    const string FETCH_TERMS_UNFILTERED = """
-         fetch_terms_unfiltered as (
-         select 
-        	jsonb_agg(name)
-        		FROM(
-        			SELECT 
-        				tn.url_id "Id",
-        				t.name "Name",
-                        false "Selected"
-        			FROM article a
-        			JOIN node n on n.id = a.id 
-        			JOIN node_term nt on nt.node_id = n.id
-        			JOIN term t on t.id = nt.term_id
-                    JOIN tenant_node tn on tn.node_id = t.nameable_id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
-        			group by 
-        				tn.url_id,
-        				t.name
-        			order by count(a.id) desc, t.name
-        			LIMIT 15
-        		) name
-        	 )
-        """;
-    const string FETCH_TERMS_FILTERED = """
-         fetch_terms_filtered as (
-         select 
-        	jsonb_agg(name)
-        		FROM(
-        			SELECT 
-        				tn.url_id "Id",
-        				t.name "Name",
-                        CASE
-                            WHEN tn.url_id = any(@terms) THEN true
-                            ELSE false
-                        END "Selected"
-        			FROM article a
-        			JOIN tenant_node tn2 on tn2.node_id = a.id AND tn2.tenant_id = @tenant_id AND tn2.publication_status_id = 1 
-        			JOIN node_term nt on nt.node_id = a.id
-        			JOIN term t on t.id = nt.term_id
-                    JOIN tenant_node tn on tn.node_id = t.nameable_id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
-                    AND a.id in (
-                        SELECT
-                            n.id
-                        FROM node n
-                        JOIN tenant_node tna on tna.node_id = n.id AND tna.tenant_id = @tenant_id AND tna.publication_status_id = 1 				
-                        join article a on a.id = n.id
-                        join tenant te on te.id = @tenant_id
-                        join tenant_node tnt on tnt.url_id = any(@terms) AND tnt.tenant_id = @tenant_id AND tnt.publication_status_id = 1 
-                        JOIN nameable nm on nm.id = tnt.node_id
-                        JOIN term t on t.nameable_id = tnt.node_id and t.vocabulary_id = te.vocabulary_id_tagging
-                        left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
-                        group by n.id, n.title, n.created_date_time
-                        having count(t.id) = count(nt.node_id)
-                    )
-        			group by 
-        				tn.url_id,
-        				t.name
-        			order by count(a.id) desc, t.name
-        			LIMIT 15
-        		) name
-        	 )
-        """;
-
-    const string FETCH_ARTICLES_UNFILTERED = """
-        fetch_articles_unfiltered as (	
-        	 select
-             case 
-                when tn.url_path is null then '/node/' || tn.url_id
-                else '/' || tn.url_path
-             end "Path",
-        	 n.title "Title",
-             stn.teaser "Text",
-        	 jsonb_build_object(
-        	    'Id', p.id,
-        		'Name', p.name,
-        		'CreatedDateTime', n.created_date_time,
-        		'ChangedDateTime', n.changed_date_time 
-        	 ) "Authoring",
-             true "HasBeenPublished", 
-            (
-                select 
-                    jsonb_agg(
-                        jsonb_build_object(
-                            'Path', t.path,
-                            'Title', t.name
-                        )
-                    )
-                    FROM (
-                        SELECT
-                            case 
-                                when tn2.url_path is null then '/node/' || tn2.url_id
-                                else '/' || tn2.url_path
-                            end path,
-                            t.name
-                        FROM node_term nt
-                        JOIN tenant_node tn1 on tn1.node_id = nt.node_id AND tn1.tenant_id = @tenant_id AND tn1.publication_status_id = 1 
-                        JOIN term t on t.id = nt.term_id
-                        JOIN tenant_node tn2 on tn2.node_id = t.nameable_id AND tn2.tenant_id = @tenant_id AND tn2.publication_status_id = 1 
-                        WHERE nt.node_id = n.id
-                    ) t
-             ) "Tags"
-             FROM node n
-        	 join article a on a.id = n.id
-             join simple_text_node stn on stn.id = n.id
-        	 join publisher p on p.id = n.publisher_id
-             JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = @tenant_id AND tn.publication_status_id = 1 
-        	 ORDER BY n.changed_date_time DESC
-        	 LIMIT @length OFFSET @start_index
-        	)
-        """;
-
-
-    const string FETCH_ARTICLES_FILTERED = """
-        fetch_articles_filtered as (	
-            select
-            case when tna.url_path is null then '/node/' || tna.url_id
-                else '/' || tna.url_path
-            end "Path",
-            n.title "Title",
-            stn.teaser "Text",
+        select
             jsonb_build_object(
-                'Id', p.id,
-                'Name', p.name,
-                'CreatedDateTime', n.created_date_time,
-                'ChangedDateTime', n.changed_date_time 
-            ) "Authoring",
-            true "HasBeenPublished", 
+                'TermNames',
+                terms,
+                'ArticleList',
+                documents
+            ) document
+        from(
+            select
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'Id',
+        		    id,
+        		    'Name',
+        		    title,
+                    'Selected',
+                    selected
+        	    )
+            ) terms,
             (
-                select 
-                    jsonb_agg(
-                        jsonb_build_object(
-                            'Path', t.path,
-                            'Title', t.name
-                        )
-                    )
-                    FROM (
-                        SELECT
+        	    select
+        	    jsonb_build_object(
+        		    'NumberOfEntries',
+        		    number_of_elements,
+        		    'Entries',
+        		    elements
+        	    ) documents
+        	    from(
+        		    select
+        		    number_of_elements,
+        		    jsonb_agg(
+        			    jsonb_build_object(
+        				    'Path',
+        				    path,
+        				    'Title',
+        				    title,
+        				    'Text',
+        				    teaser,
+        				    'HasBeenPublished',
+        				    has_been_published,
+        				    'Weight',
+        				    weight,
+                            'Tags',
+                            terms
+        			    )
+        		    ) elements
+        		    from(
+        			    select
+        				    node_id,
+                            number_of_elements,
+        				    title,
+        				    teaser,
+        				    path,
+                            changed_date_time,
+        				    case 
+        					    when status = 1 then true
+        					    else false
+        				    end has_been_published,
+        				    sum(weight) weight,
+                            jsonb_agg(
+                                jsonb_build_object(
+                                    'Path',
+                                    term_path,
+                                    'Title',
+                                    term_name
+                                )
+                            ) terms
+        			    from(
+        				    select 
+                            count(*) over() number_of_elements,
+        				    t.id term_id,
+        				    nt.node_id,
+        				    n.title,
+                            n.changed_date_time,
+        				    stn.teaser,
+        				    case
+        					    when tn.url_path is null then '/node/' || tn.url_id
+        					    else '/' || tn.url_path
+        				    end path,
+        			        case
+        					    when tn.publication_status_id = 0 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 0
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    join user_group ug on ug.id = ugu.user_group_id
+        					    WHERE ugu.user_group_id = 
+        					    case
+        						    when tn.subgroup_id is null then tn.tenant_id 
+        						    else tn.subgroup_id 
+        					    end 
+        					    AND ugu.user_role_id = ug.administrator_role_id
+        					    AND ugu.user_id = @user_id
+        				    )
+        				    when tn.publication_status_id = 1 then 1
+        				    when tn.publication_status_id = 2 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 1
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    WHERE ugu.user_group_id = 
+        						    case
+        							    when tn.subgroup_id is null then tn.tenant_id 
+        							    else tn.subgroup_id 
+        						    end
+        						    AND ugu.user_id = @user_id
+        				    )
+        				    end status,
+                            t.name term_name,
                             case 
                                 when tn2.url_path is null then '/node/' || tn2.url_id
                                 else '/' || tn2.url_path
-                            end path,
-                            t.name
-                        FROM node_term nt
-                        JOIN tenant_node tn1 on tn1.node_id = nt.node_id AND tn1.tenant_id = @tenant_id AND tn1.publication_status_id = 1 
-                        JOIN term t on t.id = nt.term_id
-                        JOIN tenant_node tn2 on tn2.node_id = t.nameable_id AND tn2.tenant_id = @tenant_id AND tn2.publication_status_id = 1 
-                        WHERE nt.node_id = n.id
-                    ) t
-             ) "Tags"
-            FROM node n
-            join publisher p on p.id = n.publisher_id
-            join simple_text_node stn on stn.id = n.id
-            JOIN tenant_node tna on tna.node_id = n.id AND tna.tenant_id = @tenant_id AND tna.publication_status_id = 1
-            join article a on a.id = n.id
-            join tenant te on te.id = @tenant_id
-            join tenant_node tnt on tnt.url_id = any(@terms) AND tnt.tenant_id = @tenant_id AND tnt.publication_status_id = 1 
-            JOIN nameable nm on nm.id = tnt.node_id
-            JOIN term t on t.nameable_id = tnt.node_id and t.vocabulary_id = te.vocabulary_id_tagging
-            left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
-        	GROUP BY
-            tna.url_id,
-            tna.url_path,
-        	n.id,
-            n.title,
-            stn.teaser,
-            p.id,
-            p.name,
-            n.created_date_time,
-            n.changed_date_time 
-            HAVING COUNT(n.id) = COUNT(nt.node_id)
-            ORDER BY n.changed_date_time DESC
-            LIMIT 10
-        )
-        """;
-
-    const string COUNT_ARTICLES_FILTERED = """
-        count_articles_filtered as(
-            select
-                count(*) count
+                            end term_path,
+        				    case 
+        					    when n.node_type_id = 41 then 5
+        					    when n.node_type_id = 23 then 2
+        					    else 1
+        				    end weight
+        				    from node n
+                            join simple_text_node stn on stn.id = n.id
+        				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
+        				    join node_term nt on nt.node_id = n.id 
+        				    join term t on t.id = nt.term_id
+                            join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
+        				    where (@terms is null or n.id in (
+                                select
+                                node_id
+                                from (
+                                    select
+                                    nt.node_id,
+                                    count(*) over() c
+                                    from term t
+                                    left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
+                                    where t.id = ANY(@terms)
+                                ) x
+                                group by node_id, c
+                                having count(node_id) = c
+                            ))
+                            and n.node_type_id in (10, 36)
+                            and stn.teaser <> ''
+        			    ) x
+        			    WHERE status > 0
+        			    GROUP BY 
+        				    node_id,
+        				    title,
+        				    path,
+        				    teaser,
+        				    has_been_published,
+                            number_of_elements,
+                            changed_date_time
+        			    ORDER BY changed_date_time desc
+                        LIMIT @length OFFSET @start_index
+        		    ) x
+                    GROUP BY number_of_elements
+        	    ) x
+            ) documents
             from(
-                select
-        		    n.id
-                FROM node n
-                JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = 1 AND tn.publication_status_id = 1 
-                join article a on a.id = n.id
-                JOIN tenant_node tn2 on tn2.url_id = any(@terms) AND tn2.tenant_id =1 AND tn2.publication_status_id = 1 
-                join term t on t.nameable_id = tn2.node_id
-                left join node_term nt on nt.node_id = n.id and nt.term_id = t.id
-                GROUP BY n.id
-                HAVING COUNT(n.id) = COUNT(nt.node_id)
-            ) c
-        )
+        	    select
+        	    id,
+        	    title,
+                selected,
+        	    sum(weight) weight
+        	    from(
+        		    select
+        		    x.id,
+        		    x.title,
+        		    x.weight,
+                    CASE
+                        WHEN x.id = any(@terms) THEN true
+                        ELSE false
+                    END selected
+                    from(
+        			    select
+        				    t.id,
+        				    n.title,
+        				    case
+        					    when tn.publication_status_id = 0 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 0
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    join user_group ug on ug.id = ugu.user_group_id
+        					    WHERE ugu.user_group_id = 
+        					    case
+        						    when tn.subgroup_id is null then tn.tenant_id 
+        						    else tn.subgroup_id 
+        					    end 
+        					    AND ugu.user_role_id = ug.administrator_role_id
+        					    AND ugu.user_id = @user_id
+        				    )
+        				    when tn.publication_status_id = 1 then 1
+        				    when tn.publication_status_id = 2 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 1
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    WHERE ugu.user_group_id = 
+        						    case
+        							    when tn.subgroup_id is null then tn.tenant_id 
+        							    else tn.subgroup_id 
+        						    end
+        						    AND ugu.user_id = @user_id
+        				    )
+        				    end status_term,
+        				    case
+        					    when tn2.publication_status_id = 0 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 0
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    join user_group ug on ug.id = ugu.user_group_id
+        					    WHERE ugu.user_group_id = 
+        					    case
+        						    when tn2.subgroup_id is null then tn2.tenant_id 
+        						    else tn2.subgroup_id 
+        					    end 
+        					    AND ugu.user_role_id = ug.administrator_role_id
+        					    AND ugu.user_id = @user_id
+        				    )
+        				    when tn2.publication_status_id = 1 then 1
+        				    when tn2.publication_status_id = 2 then (
+        					    select
+        						    case 
+        							    when count(*) > 0 then 1
+        							    else -1
+        						    end status
+        					    from user_group_user_role_user ugu
+        					    WHERE ugu.user_group_id = 
+        						    case
+        							    when tn2.subgroup_id is null then tn2.tenant_id 
+        							    else tn2.subgroup_id 
+        						    end
+        						    AND ugu.user_id = @user_id
+        				    )
+        				    end status_node,		
+        				    case 
+        					    when n.node_type_id = 41 then 5
+        					    when n.node_type_id = 23 then 2
+        					    else 1
+        				    end weight
+        			    from node n
+        			    join term t on t.nameable_id = n.id 
+        			    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
+        			    join vocabulary v on v.id = t.vocabulary_id
+        			    join node_term nt on nt.term_id = t.id
+        			    join node n2 on n2.id = nt.node_id
+                        join simple_text_node stn on stn.id = n2.id
+        			    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
+        			    where v.name = 'Topics'
+        			    and (@terms is null or n2.id in (
+                            select
+                            node_id
+                            from (
+                                select
+                                nt.node_id,
+                                count(*) over() c
+                                from term t
+                                left join node_term nt on nt.term_id = t.id and nt.node_id = n2.id
+                                where t.id = ANY(@terms)
+                            ) x
+                            group by node_id, c
+                            having count(node_id) = c
+                        ))
+                        and n2.node_type_id in (10, 36)
+                        and stn.teaser <> ''
+        		    ) x
+        		    where status_node > 0 and status_term > 0
+        	    )x
+        	    group by 
+        	    x.id,
+        	    x.title,
+                x.selected
+        	    order by sum(x.weight) desc
+        	    LIMIT 25 OFFSET 0
+            ) x
+        ) x
         """;
 
-    const string COUNT_ARTICLES_UNFILTERED = """
-        count_articles_unfiltered as(
-            select
-                count(n.id)
-            FROM node n
-            JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = 1 AND tn.publication_status_id = 1 
-            join article a on a.id = n.id
-        )
-        """;
-
-    const string FETCHS_ARTICLES_DOCUMENTS_UNFILTERED = """
-        fetch_articles_document_unfiltered as(
-        	select jsonb_agg(to_jsonb(x)) agg
-        	from fetch_articles_unfiltered x
-        )
-        """;
-    const string FETCHS_ARTICLES_DOCUMENTS_FILTERED = """
-        fetch_articles_document_filtered as(
-        	select jsonb_agg(to_jsonb(x)) agg
-        	from fetch_articles_filtered x
-        )
-        """;
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

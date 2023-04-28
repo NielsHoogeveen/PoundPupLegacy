@@ -39,16 +39,6 @@ public record Document : Node
         }
     }
 
-
-    public List<DocumentableDocument> documentableDocuments = new();
-    public required List<DocumentableDocument> DocumentableDocuments {
-        get => documentableDocuments;
-        init {
-            if (value is not null) {
-                documentableDocuments = value;
-            }
-        }
-    }
     public required DocumentType[] DocumentTypes { get; init; }
     private List<Tag> tags = new();
 

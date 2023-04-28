@@ -1,0 +1,16 @@
+﻿@if (Value is not null)
+{
+    <div class="labeled-value labeled-string-value">
+        <label>@Label: </label>
+        <a href="@Value">@Value.Host</a>
+    </div>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Uri? Value { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public string Label { get; set; } = string.Empty;
+}

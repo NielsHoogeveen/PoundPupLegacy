@@ -111,8 +111,9 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
         						join document_type dt on dt.id = d.document_type_id
         						join node n2 on n2.id = dt.id
         						join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = 1
-        						join documentable_document dd on dd.document_id = d.id
-        						join tenant_node tn3 on tn3.node_id = dd.documentable_id and tn3.tenant_id = 1
+        						join node_term nt on nt.node_id = d.id
+                                join term t on t.id = nt.term_id
+        						join tenant_node tn3 on tn3.node_id = t.nameable_id and tn3.tenant_id = 1
         						where tn2.url_id = 61030 and tn3.url_id = tn.url_id
         						order by n2.title
         				) x

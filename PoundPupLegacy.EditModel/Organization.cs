@@ -60,15 +60,6 @@ public record Organization : Party
         }
     }
 
-    public List<DocumentableDocument> documents = new();
-    public List<DocumentableDocument> Documents {
-        get => documents;
-        init {
-            if (value is not null) {
-                documents = value;
-            }
-        }
-    }
     private List<Tag> tags = new();
 
     public List<Tag> Tags {

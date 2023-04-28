@@ -22,8 +22,6 @@ where TResponse : class, Node
         WITH
         {TENANT_NODES_DOCUMENT},
         {TENANTS_DOCUMENT},
-        {DOCUMENTABLE_DOCUMENTS_DOCUMENT},
-        {DOCUMENT_DOCUMENTABLES_DOCUMENT},
         {DOCUMENT_TYPES_DOCUMENT},
         {ATTACHMENTS_DOCUMENT},
         {ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT},
@@ -104,48 +102,6 @@ where TResponse : class, Node
             join tenant_node tn on tn.node_id = t.vocabulary_id
             where tn.tenant_id = 1 and tn.url_id = 4126
             group by c.country_id
-        )
-        """;
-
-    const string DOCUMENTABLE_DOCUMENTS_DOCUMENT = """
-        documentable_documents_document as (
-            select
-                jsonb_agg(
-        	        jsonb_build_object(
-        		        'DocumentId',
-        		        dd.document_id,
-        		        'DocumentableId',
-        		        dd.documentable_id,
-        		        'Title',
-        		        n.title
-        	        )
-                ) document
-            from documentable_document dd
-            join document d on d.id = dd.document_id
-            join node n on n.id = d.id
-            join tenant_node tn on tn.node_id = dd.documentable_id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
-        )
-        """;
-
-    const string DOCUMENT_DOCUMENTABLES_DOCUMENT = """
-        document_documentables_document as (
-            select
-                jsonb_agg(
-        	        jsonb_build_object(
-        		        'DocumentId',
-        		        dd.document_id,
-        		        'DocumentableId',
-        		        dd.documentable_id,
-        		        'Title',
-        		        n.title
-        	        )
-                ) document
-            from documentable_document dd
-            join documentable d on d.id = dd.documentable_id
-            join node n on n.id = d.id
-            join tenant_node tn on tn.node_id = dd.document_id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         )
         """;
 

@@ -33,8 +33,6 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
         	    lower(published),
         	    'PublicationDateTo',
         	    upper(published),
-                'DocumentableDocuments',
-                (select document from document_documentables_document),
                 'DocumentTypes',
                 (select document from document_types_document),
                 'TenantNodes',

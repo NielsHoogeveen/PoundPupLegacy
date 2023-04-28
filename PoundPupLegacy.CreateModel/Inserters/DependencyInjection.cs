@@ -53,7 +53,6 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<DeportationCase>, DeportationCaseInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Discussion>, DiscussionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<DisruptedPlacementCase>, DisruptedPlacementCaseInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<DocumentableDocument>, DocumentableDocumentInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Documentable>, DocumentableInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Document>, DocumentInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<DocumentType>, DocumentTypeInserterFactory>();

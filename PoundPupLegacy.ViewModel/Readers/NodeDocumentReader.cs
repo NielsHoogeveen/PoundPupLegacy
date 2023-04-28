@@ -1548,9 +1548,10 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	            lower(d.published) sort_date,
                         lower(d.published) publication_date_from,
                         upper(d.published) publication_date_to  
-                    from documentable_document dd
-                    join tenant_node tn on tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.node_id = dd.documentable_id
-                    join tenant_node tn2 on tn2.node_id = dd.document_id and tn2.tenant_id = @tenant_id
+                    from node_term nt
+                    join term t on t.id = nt.term_id
+                    join tenant_node tn on tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.node_id = t.nameable_id
+                    join tenant_node tn2 on tn2.node_id = nt.node_id and tn2.tenant_id = @tenant_id
                     join node n2 on n2.Id = tn2.node_id
                     join "document" d on d.id = n2.id
                 ) x
@@ -2068,9 +2069,10 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			        AND ugu.user_id = @user_id
         		        )
                 end status	
-            from documentable_document dd
-            join tenant_node tn2 on tn2.node_id = dd.document_id
-            join node n on n.id = dd.documentable_id
+            from node_term nt
+            join term t on t.id = nt.term_id
+            join tenant_node tn2 on tn2.node_id = nt.node_id
+            join node n on n.id = t.nameable_id
             join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
             where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
             ) x 

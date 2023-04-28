@@ -248,7 +248,9 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
                     }
             };
 
-            if (!organizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(miscellaneous)) {
+            var toSkipForPPL = new List<int> { 34447, 42413, 46479, 48178, 39305, 45402, 46671, 33634, 48051 };
+
+            if (!organizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(miscellaneous) && !toSkipForPPL.Contains(id)) {
                 tenantNodes.Add(new TenantNode {
                     Id = null,
                     TenantId = Constants.PPL,

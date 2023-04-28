@@ -2,5 +2,5 @@
 
 public interface Documentable : Node
 {
-    List<DocumentableDocument> Documents { get; }
+    
 }

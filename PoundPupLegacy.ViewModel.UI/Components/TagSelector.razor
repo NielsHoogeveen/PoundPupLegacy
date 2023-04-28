@@ -9,7 +9,7 @@
                     else {
                         <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" />
                     }
-                    <label class="term-name-label" for="term-name-@termName.Id">@termName.Name</label>
+                    <label title="@termName.Name" class="term-name-label" for="term-name-@termName.Id">@termName.Name</label>
                 </div>
             }
         </div>
@@ -26,7 +26,7 @@ else {
                 else {
                     <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" />
                 }
-                <label class="term-name-label" for="term-name-@termName.Id" @onclick="async () => await OnSelectTerm(termName.Id)">@termName.Name</label>
+                <label title="@termName.Name" class="term-name-label" for="term-name-@termName.Id" @onclick="async () => await OnSelectTerm(termName.Id)">@termName.Name</label>
             </div>
         }
     </div>

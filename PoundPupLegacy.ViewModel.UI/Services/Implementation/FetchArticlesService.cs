@@ -33,8 +33,11 @@ internal sealed class FetchArticlesService : IFetchArticlesService
                 Length = length
             });
             var result = articles is not null ? articles : new Articles {
-                Entries = Array.Empty<ArticleListEntry>(),
-                NumberOfEntries = 0
+                TermNames = Array.Empty<SelectionItem>(),
+                ArticleList = new ArticleList {
+                    Entries = Array.Empty<ArticleListEntry>(),
+                    NumberOfEntries = 0
+                }
             };
             return result;
         }

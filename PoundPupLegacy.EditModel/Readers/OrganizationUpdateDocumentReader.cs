@@ -61,8 +61,6 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     (select document from locations_document),
                     'Countries',
                     (select document from countries_document),
-                    'Documents',
-                    (select document from documentable_documents_document),
                     'Countries',
                     (select document from countries_document)
                 ) document
