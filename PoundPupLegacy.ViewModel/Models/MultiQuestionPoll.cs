@@ -23,8 +23,8 @@ public record class MultiQuestionPoll : Poll, SimpleTextNode
         }
     }
 
-    private BasicLink[] tags = Array.Empty<BasicLink>();
-    public BasicLink[] Tags {
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public TagListEntry[] Tags {
         get => tags;
         init {
             if (value is not null) {

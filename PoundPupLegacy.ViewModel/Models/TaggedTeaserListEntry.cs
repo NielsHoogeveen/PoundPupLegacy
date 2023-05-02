@@ -2,6 +2,6 @@
 
 public interface TaggedTeaserListEntry : TeaserListEntry
 {
-    BasicLink[] Tags { get; }
+    TagListEntry[] Tags { get; }
 
 }

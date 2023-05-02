@@ -1,9 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class CaseTypeInserterFactory : SingleIdInserterFactory<CaseType>
+using Request = CaseType;
+
+internal sealed class CaseTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    protected override string TableName => "case_type";
+    internal static NonNullableStringDatabaseParameter Text = new() { Name = "text" };
 
-    protected override bool AutoGenerateIdentity => false;
+    public override string TableName => "case_type";
 
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
+    {
+        return new ParameterValue[] {
+            ParameterValue.Create(Text, request.Text)
+        };
+    }
 }

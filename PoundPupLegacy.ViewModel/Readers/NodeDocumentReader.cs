@@ -1417,8 +1417,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             SELECT
                 jsonb_agg(
                     jsonb_build_object(
-                        'Path',  t.path,
-                        'Title', t.name
+                        'Path',  
+                        t.path,
+                        'Title', 
+                        t.name,
+                        'NodeTypeName', 
+                        t.node_type_name
                     )
                 ) as document
             FROM (
@@ -1427,10 +1431,29 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         when tn2.url_path is null then '/node/' || tn2.url_id
                         else '/' || tn2.url_path
                     end path,
-                    t.name
+                    t.name,
+                    case
+                        when nt2.id in (11, 12) then 'Regions'
+                        when nt2.id in (13, 14, 15, 16, 20, 21) then 'Countries'
+                        when nt2.id in (17, 18, 19, 22) then 'Subdivisions'
+                        when nt2.id in (23, 63) then 'Organizations'
+                        when nt2.id in (24, 59, 60) then 'Persons'
+                        when nt2.id in (41) then 'Topics'
+                        when nt2.id in (56, 57) then 'Bills'
+                        when nt2.id in (26) then 'Abuse cases'
+                        when nt2.id in (29) then 'Child trafficking cases'
+                        when nt2.id in (30) then 'Coerced adoption cases'
+                        when nt2.id in (31) then 'Deportation cases'
+                        when nt2.id in (32) then 'Father''s rights violation cases'
+                        when nt2.id in (33) then 'Wrongful medication cases'
+                        when nt2.id in (34) then 'Wrongful removal cases'
+                        else nt2.name
+                    end node_type_name
                 FROM node_term nt 
                 JOIN tenant_node tn on tn.node_id = nt.node_id
                 JOIN term t on t.id = nt.term_id
+                join node n on n.id = t.nameable_id
+                join node_type nt2 on nt2.id = n.node_type_id
                 JOIN tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id and tn2.publication_status_id = 1
                 WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
             ) t

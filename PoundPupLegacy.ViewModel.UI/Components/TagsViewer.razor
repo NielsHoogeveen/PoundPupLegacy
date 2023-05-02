@@ -1,12 +1,14 @@
 ﻿@if (@Tags.Any()) {
     <div class="tags">
-        @foreach (var tag in @Tags) {
-            <span class="tag"><a href="@tag.Path">@tag.Title</a></span>
+        
+        @foreach (var nodeTypeTags in @Tags.GroupBy(x => x.NodeTypeName)) { 
+            <LabeledLinkListViewer Links="@nodeTypeTags" Label="@nodeTypeTags.Key" />
         }
     </div>
 }
 @code {
     [Parameter]
     [EditorRequired]
-    public Link[] Tags { get; set; } = Array.Empty<Link>();
+    public TagListEntry[] Tags { get; set; } = Array.Empty<TagListEntry>();
+
 }

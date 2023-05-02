@@ -20,7 +20,7 @@ internal sealed class FetchCasesService : IFetchCasesService
         _casesDocumentReaderFactory = casesDocumentReaderFactory;
     }
 
-    public async Task<Cases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, CaseType caseType)
+    public async Task<Cases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId)
     {
         var startIndex = (pageNumber - 1) * pageSize;
 
@@ -31,13 +31,13 @@ internal sealed class FetchCasesService : IFetchCasesService
                 Limit = pageSize,
                 Offset = startIndex,
                 TenantId = tenantId,
-                UserId = userId,
-                CaseType = caseType
+                UserId = userId
             });
             var result = cases is not null
                 ? cases
                 : new Cases {
                     Entries = Array.Empty<CaseListEntry>(),
+                    CaseTypes = Array.Empty<CaseTypeListEntry>(),
                     NumberOfEntries = 0,
                 };
 

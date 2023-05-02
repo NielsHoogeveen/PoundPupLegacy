@@ -44,7 +44,7 @@ public interface Node
     public string Title { get; }
     public Authoring Authoring { get; }
     public bool HasBeenPublished { get; }
-    public BasicLink[] Tags { get; }
+    public TagListEntry[] Tags { get; }
     public CommentListItem[] CommentListItems { get; }
     public Comment[] Comments { get; }
     public BasicLink[] BreadCrumElements { get; }

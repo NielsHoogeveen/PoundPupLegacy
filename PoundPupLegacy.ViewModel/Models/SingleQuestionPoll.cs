@@ -25,8 +25,8 @@ public record class SingleQuestionPoll : Poll, PollQuestion
         }
     }
 
-    private BasicLink[] tags = Array.Empty<BasicLink>();
-    public BasicLink[] Tags {
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public TagListEntry[] Tags {
         get => tags;
         init {
             if (value is not null) {

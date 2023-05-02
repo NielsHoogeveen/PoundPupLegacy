@@ -23,7 +23,17 @@ public record BasicPollQuestion : PollQuestion
 
     public BasicLink[] SeeAlsoBoxElements => Array.Empty<BasicLink>();
 
-    public BasicLink[] Tags => Array.Empty<BasicLink>();
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public TagListEntry[] Tags {
+        get => tags;
+        init {
+            if (value is not null) {
+                tags = value;
+            }
+
+        }
+    }
+
 
     public CommentListItem[] CommentListItems => Array.Empty<CommentListItem>();
 

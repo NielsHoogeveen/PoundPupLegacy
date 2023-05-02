@@ -10,7 +10,6 @@ public sealed record CasesDocumentReaderRequest : IRequest
     public required int UserId { get; init; }
     public required int Limit { get; init; }
     public required int Offset { get; init; }
-    public required CaseType CaseType { get; init; }
 }
 internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Cases>
 {
@@ -18,7 +17,6 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
     private static readonly NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
     private static readonly NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
-    private static readonly NullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
 
     private static readonly FieldValueReader<Cases> DocumentReader = new() { Name = "document" };
 
@@ -108,7 +106,6 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             		join "case" c on c.id = n.id
             		join node_type nt on nt.id = n.node_type_id
             		WHERE tn.tenant_id = @tenant_id
-                    AND (@node_type_id is null or n.node_type_id = @node_type_id)
             	) an
             	order by date_from desc
             	LIMIT @limit OFFSET @offset
@@ -124,7 +121,6 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             ParameterValue.Create(UserIdParameter, request.UserId),
             ParameterValue.Create(LimitParameter, request.Limit),
             ParameterValue.Create(OffsetParameter, request.Offset),
-            ParameterValue.Create(NodeTypeIdParameter, request.CaseType == CaseType.Any ? null: (int)request.CaseType)
         };
     }
 

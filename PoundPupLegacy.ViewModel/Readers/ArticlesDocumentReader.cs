@@ -86,7 +86,9 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
                                     'Path',
                                     term_path,
                                     'Title',
-                                    term_name
+                                    term_name,
+                                    'NodeTypeName',
+                                    term_type_name
                                 )
                             ) terms
         			    from(
@@ -139,6 +141,23 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
                                 when tn2.url_path is null then '/node/' || tn2.url_id
                                 else '/' || tn2.url_path
                             end term_path,
+                            case
+                                when nt2.id in (11, 12) then 'Regions'
+                                when nt2.id in (13, 14, 15, 16, 20, 21) then 'Countries'
+                                when nt2.id in (17, 18, 19, 22) then 'Subdivisions'
+                                when nt2.id in (23, 63) then 'Organizations'
+                                when nt2.id in (24, 59, 60) then 'Persons'
+                                when nt2.id in (41) then 'Topics'
+                                when nt2.id in (56, 57) then 'Bills'
+                                when nt2.id in (26) then 'Abuse cases'
+                                when nt2.id in (29) then 'Child trafficking cases'
+                                when nt2.id in (30) then 'Coerced adoption cases'
+                                when nt2.id in (31) then 'Deportation cases'
+                                when nt2.id in (32) then 'Father''s rights violation cases'
+                                when nt2.id in (33) then 'Wrongful medication cases'
+                                when nt2.id in (34) then 'Wrongful removal cases'
+                                else nt2.name
+                            end term_type_name,
         				    case 
         					    when n.node_type_id = 41 then 5
         					    when n.node_type_id = 23 then 2
@@ -149,6 +168,8 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
         				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
         				    join node_term nt on nt.node_id = n.id 
         				    join term t on t.id = nt.term_id
+                            join node n2 on n2.id = t.nameable_id
+                            join node_type nt2 on nt2.id = n2.node_type_id
                             join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
         				    where (@terms is null or n.id in (
                                 select

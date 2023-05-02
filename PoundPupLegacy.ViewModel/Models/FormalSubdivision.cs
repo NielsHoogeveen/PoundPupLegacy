@@ -13,8 +13,8 @@ public record FormalSubdivision : Subdivision
     public required BasicLink Country { get; init; }
     public required string ISO3166_2_Code { get; init; }
 
-    private BasicLink[] tags = Array.Empty<BasicLink>();
-    public required BasicLink[] Tags {
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public TagListEntry[] Tags {
         get => tags;
         init {
             if (value is not null) {

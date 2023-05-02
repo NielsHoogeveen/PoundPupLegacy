@@ -8,7 +8,7 @@ public record ArticleListEntry : TeaserListEntry, TaggedTeaserListEntry
 
     public required string Text { get; init; }
 
-    public required BasicLink[] Tags { get; init; }
+    public required TagListEntry[] Tags { get; init; }
 
     public required bool HasBeenPublished { get; init; }
 

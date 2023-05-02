@@ -13,8 +13,8 @@ public record CountryAndSubdivision : TopLevelCountry, IsoCodedSubdivision
     public required string ISO3166_2_Code { get; init; }
     public required BasicLink GlobalRegion { get; init; }
 
-    private BasicLink[] tags = Array.Empty<BasicLink>();
-    public required BasicLink[] Tags {
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public required TagListEntry[] Tags {
         get => tags;
         init {
             if (value is not null) {

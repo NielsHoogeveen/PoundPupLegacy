@@ -10,8 +10,8 @@ public record GlobalRegion : GeographicalEntity
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
 
-    private BasicLink[] tags = Array.Empty<BasicLink>();
-    public required BasicLink[] Tags {
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public required TagListEntry[] Tags {
         get => tags;
         init {
             if (value is not null) {

@@ -10,7 +10,7 @@
 <CascadingValue Value="UserId" Name="UserId">
     <CascadingValue Value="TenantId" Name="TenantId">
         <Header LogoName="@LogoName" Subtitle="@SubTitle" />
-        <div class="main">
+        <main>
             <UserMenu />
             @if(notFound) {
                 <NotFound />
@@ -19,7 +19,7 @@
                     @Body
                 </ContentViewer>
             }
-        </div>
+        </main>
         <Footer MenuItems="FooterMenuItems" Name="@FooterTitle"/>
     </CascadingValue>
 </CascadingValue>

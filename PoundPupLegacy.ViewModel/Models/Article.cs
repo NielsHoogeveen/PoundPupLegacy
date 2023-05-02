@@ -11,10 +11,13 @@ public record Article : SimpleTextNode
 
     public required bool HasBeenPublished { get; init; }
 
-    private BasicLink[]? tags;
-    public required BasicLink[] Tags {
-        get => tags is null ? Array.Empty<BasicLink>() : tags;
-        init => tags = value;
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public required TagListEntry[] Tags {
+        get => tags;
+        init { 
+            if(value is not null)
+                tags = value;
+        }
     }
 
     private BasicLink[]? seeAlsoBoxElements;

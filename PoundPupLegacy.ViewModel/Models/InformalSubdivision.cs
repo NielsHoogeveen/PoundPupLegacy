@@ -11,8 +11,8 @@ public record InformalSubdivision : Subdivision
     public required bool HasBeenPublished { get; init; }
     public required BasicLink Country { get; init; }
 
-    private BasicLink[] tags = Array.Empty<BasicLink>();
-    public required BasicLink[] Tags {
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public TagListEntry[] Tags {
         get => tags;
         init {
             if (value is not null) {

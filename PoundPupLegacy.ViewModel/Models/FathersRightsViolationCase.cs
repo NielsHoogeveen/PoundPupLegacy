@@ -23,8 +23,8 @@ public record FathersRightsViolationCase : Case
             return null;
         }
     }
-    private BasicLink[] tags = Array.Empty<BasicLink>();
-    public required BasicLink[] Tags {
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public required TagListEntry[] Tags {
         get => tags;
         init {
             if (value is not null) {

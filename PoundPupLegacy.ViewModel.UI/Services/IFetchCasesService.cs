@@ -3,5 +3,5 @@
 public interface IFetchCasesService
 {
     [RequireNamedArgs]
-    Task<Cases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, CaseType caseType);
+    Task<Cases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId);
 }

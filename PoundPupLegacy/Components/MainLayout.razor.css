@@ -1,4 +1,4 @@
-﻿.main {
+﻿main {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -9,7 +9,7 @@ content {
 }
 
 @media screen and (min-width: 880px) {
-    .main {
+    main {
         flex-direction: row;
     }
 

@@ -12,8 +12,8 @@ public record BoundCountry : Country, IsoCodedSubdivision
     public required string ISO3166_2_Code { get; init; }
     public required BasicLink BindingCountry { get; init; }
 
-    private BasicLink[] tags = Array.Empty<BasicLink>();
-    public required BasicLink[] Tags {
+    private TagListEntry[] tags = Array.Empty<TagListEntry>();
+    public required TagListEntry[] Tags {
         get => tags;
         init {
             if (value is not null) {

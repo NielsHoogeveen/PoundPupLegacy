@@ -1,0 +1,18 @@
+﻿@inject IFetchAbuseCasesService FetchCasesService
+@inherits PagedViewer<CaseListEntry>
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage" />
+
+@code {
+
+    protected override int PageSize => 10;
+
+    protected override async Task<IPagedList<CaseListEntry>> GetListEntriesAsync()
+    {
+        return await FetchCasesService.FetchCases(
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            tenantId: TenantId, 
+            userId: UserId);
+    }
+}
