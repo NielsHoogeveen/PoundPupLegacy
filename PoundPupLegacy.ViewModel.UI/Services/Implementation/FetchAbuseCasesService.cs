@@ -20,7 +20,7 @@ internal sealed class FetchAbuseCasesService : IFetchAbuseCasesService
         _abuseCasesDocumentReaderFactory = abuseCasesDocumentReaderFactory;
     }
 
-    public async Task<AbuseCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId)
+    public async Task<AbuseCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms, string termNamePrefix)
     {
         var startIndex = (pageNumber - 1) * pageSize;
 
@@ -28,16 +28,20 @@ internal sealed class FetchAbuseCasesService : IFetchAbuseCasesService
             await _connection.OpenAsync();
             await using var reader = await _abuseCasesDocumentReaderFactory.CreateAsync(_connection);
             var cases = await reader.ReadAsync(new AbuseCasesDocumentReaderRequest {
-                Limit = pageSize,
-                Offset = startIndex,
+                StartIndex = pageSize,
+                Length = startIndex,
                 TenantId = tenantId,
-                UserId = userId
+                UserId = userId,
+                SelectedTerms = selectedTerms
             });
             var result = cases is not null
                 ? cases
                 : new AbuseCases {
-                    Entries = Array.Empty<CaseListEntry>(),
-                    NumberOfEntries = 0,
+                    Items = new AbuseCaseList {
+                        Entries = Array.Empty<CaseListEntry>(),
+                        NumberOfEntries = 0,
+                    },
+                    TermNames = Array.Empty<SelectionItem>()
                 };
 
             return result;

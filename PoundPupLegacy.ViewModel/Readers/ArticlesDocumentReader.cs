@@ -5,7 +5,8 @@ using Request = ArticlesDocumentReaderRequest;
 public sealed record ArticlesDocumentReaderRequest : IRequest
 {
     public required int TenantId { get; init; }
-    public required List<int> SelectedTerms { get; init; }
+    public required int UserId { get; init; }
+    public required int[] SelectedTerms { get; init; }
     public required int StartIndex { get; init; }
     public required int Length { get; init; }
 }
@@ -13,6 +14,7 @@ public sealed record ArticlesDocumentReaderRequest : IRequest
 internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Articles>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
     private static readonly NullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
     private static readonly NullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
     private static readonly NullableIntegerArrayDatabaseParameter TermsParameter = new() { Name = "terms" };
@@ -26,7 +28,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
             jsonb_build_object(
                 'TermNames',
                 terms,
-                'ArticleList',
+                'Items',
                 documents
             ) document
         from(
@@ -141,23 +143,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
                                 when tn2.url_path is null then '/node/' || tn2.url_id
                                 else '/' || tn2.url_path
                             end term_path,
-                            case
-                                when nt2.id in (11, 12) then 'Regions'
-                                when nt2.id in (13, 14, 15, 16, 20, 21) then 'Countries'
-                                when nt2.id in (17, 18, 19, 22) then 'Subdivisions'
-                                when nt2.id in (23, 63) then 'Organizations'
-                                when nt2.id in (24, 59, 60) then 'Persons'
-                                when nt2.id in (41) then 'Topics'
-                                when nt2.id in (56, 57) then 'Bills'
-                                when nt2.id in (26) then 'Abuse cases'
-                                when nt2.id in (29) then 'Child trafficking cases'
-                                when nt2.id in (30) then 'Coerced adoption cases'
-                                when nt2.id in (31) then 'Deportation cases'
-                                when nt2.id in (32) then 'Father''s rights violation cases'
-                                when nt2.id in (33) then 'Wrongful medication cases'
-                                when nt2.id in (34) then 'Wrongful removal cases'
-                                else nt2.name
-                            end term_type_name,
+                            nt2.tag_label_name term_type_name,
         				    case 
         					    when n.node_type_id = 41 then 5
         					    when n.node_type_id = 23 then 2
@@ -169,7 +155,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
         				    join node_term nt on nt.node_id = n.id 
         				    join term t on t.id = nt.term_id
                             join node n2 on n2.id = t.nameable_id
-                            join node_type nt2 on nt2.id = n2.node_type_id
+                            left join nameable_type nt2 on nt2.id = n2.node_type_id
                             join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
         				    where (@terms is null or n.id in (
                                 select
@@ -336,9 +322,10 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
     {
         return new ParameterValue[] {
             ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
             ParameterValue.Create(LengthParameter, request.Length),
             ParameterValue.Create(StartIndexParameter, request.StartIndex),
-            ParameterValue.Create(TermsParameter, request.SelectedTerms is null ? null : request.SelectedTerms.Any() ? request.SelectedTerms.ToArray(): null)
+            ParameterValue.Create(TermsParameter, request.SelectedTerms is null ? null : request.SelectedTerms.Any() ? request.SelectedTerms: null)
         };
     }
 

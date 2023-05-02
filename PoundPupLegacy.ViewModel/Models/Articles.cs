@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Articles 
+public record Articles: TermedList<ArticleList, ArticleListEntry>
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
     public SelectionItem[] TermNames {
@@ -11,5 +11,5 @@ public record Articles
             }
         }
     }
-    public required ArticleList ArticleList { get; init; }
+    public required ArticleList Items { get; init; }
 }
