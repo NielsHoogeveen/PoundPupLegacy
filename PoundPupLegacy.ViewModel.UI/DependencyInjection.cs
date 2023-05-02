@@ -14,12 +14,18 @@ public static class DependencyInjection
     {
         services.AddViewModelReaders();
         services.AddTransient<ICongressionalDataService, CongressionalDataService>();
+        services.AddTransient<IFetchAbuseCasesService, FetchAbuseCasesService>();
         services.AddTransient<IFetchAttachmentService, FetchAttachmentService>();
         services.AddTransient<IFetchArticlesService, FetchArticlesService>();
         services.AddTransient<IFetchBlogService, FetchBlogService>();
         services.AddTransient<IFetchBlogsService, FetchBlogsService>();
         services.AddTransient<IFetchCasesService, FetchCasesService>();
+        services.AddTransient<IFetchChildTraffickingCasesService, FetchChildTraffickingCasesService>();
+        services.AddTransient<IFetchCoercedAdoptionCasesService, FetchCoercedAdoptionCasesService>();
         services.AddTransient<IFetchCountriesService, FetchCountriesService>();
+        services.AddTransient<IFetchDeportationCasesService, FetchDeportationCasesService>();
+        services.AddTransient<IFetchDisruptedPlacementCasesService, FetchDisruptedPlacementCasesService>();
+        services.AddTransient<IFetchFathersRightsViolationCasesService, FetchFathersRightsViolationCasesService>();
         services.AddTransient<IFetchNodeService, FetchNodeService>();
         services.AddTransient<IFetchOrganizationsService, FetchOrganizationsService>();
         services.AddTransient<IFetchPersonService, FetchPersonsService>();
@@ -27,5 +33,7 @@ public static class DependencyInjection
         services.AddTransient<IFetchSearchService, FetchSearchService>();
         services.AddTransient<IFetchSubgroupService, FetchSubgroupService>();
         services.AddTransient<IFetchTopicsService, FetchTopicsService>();
+        services.AddTransient<IFetchWrongfulMedicationCasesService, FetchWrongfulMedicationCasesService>();
+        services.AddTransient<IFetchWrongfulRemovalCasesService, FetchWrongfulRemovalCasesService>();
     }
 }

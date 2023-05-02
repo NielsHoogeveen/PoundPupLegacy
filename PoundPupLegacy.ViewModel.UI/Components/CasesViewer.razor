@@ -2,18 +2,17 @@
 @inherits PagedViewer<CaseListEntry>
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
-        <h1>Cases</h1>
-        <div>
-        @foreach(var caseType in CaseTypeListEntries) {
-            <div class="case-type">
-                <a href="@caseType.Path">@caseType.Title</a>
-                <div>
-                    @((MarkupString)caseType.Text)
-                </div>
+    <h1>Cases</h1>
+    <div>
+    @foreach(var caseType in CaseTypeListEntries.OrderBy(x => x.Title)) {
+        <div class="case-type">
+            <a href="@caseType.Path">@caseType.Title</a>
+            <div>
+                @((MarkupString)caseType.Text)
             </div>
-        }
         </div>
     }
+    </div>
 </TeaserListViewer>
 
 @code {

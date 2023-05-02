@@ -18,6 +18,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreator<BasicAction>, BasicActionCreator>();
         services.AddTransient<IEntityCreator<BasicCountry>, BasicCountryCreator>();
         services.AddTransient<IEntityCreator<BasicNameable>, BasicNameableCreator>();
+        services.AddTransient<IEntityCreator<BasicNameableType>, BasicNameableTypeCreator>();
         services.AddTransient<IEntityCreator<BasicSecondLevelSubdivision>, BasicSecondLevelSubdivisionCreator>();
         services.AddTransient<IEntityCreator<BillActionType>, BillActionTypeCreator>();
         services.AddTransient<IEntityCreator<BindingCountry>, BindingCountryCreator>();
@@ -104,6 +105,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreator<User>, UserCreator>();
         services.AddTransient<IEntityCreator<UserGroupUserRoleUser>, UserGroupUserRoleUserCreator>();
         services.AddTransient<IEntityCreator<Vocabulary>, VocabularyCreator>();
+        services.AddTransient<IEntityCreator<ViewNodeTypeListAction>, ViewNodeTypeListActionCreator>();
         services.AddTransient<IEntityCreator<WrongfulMedicationCase>, WrongfulMedicationCaseCreator>();
         services.AddTransient<IEntityCreator<WrongfulRemovalCase>, WrongfulRemovalCaseCreator>();
 

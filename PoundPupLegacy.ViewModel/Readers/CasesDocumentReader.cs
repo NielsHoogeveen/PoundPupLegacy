@@ -25,6 +25,24 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
     private const string SQL = """
             select
             	jsonb_build_object(
+                    'CaseTypes',
+                    (
+                        select jsonb_agg
+                        (
+                            jsonb_build_object(
+                            'Path', 
+            				ba.path,
+                            'Title', 
+                            nt.name,
+                            'Text',
+                            ct.text
+                            )
+                        ) 
+                        from case_type ct
+                        join node_type nt on nt.id = ct.id
+            			join view_node_type_list_action nta on nta.node_type_id = nt.id
+            			join basic_action ba on ba.id = nta.basic_action_id
+                    ),
             		'NumberOfEntries', 
                     number_of_entries,
             		'Entries', 

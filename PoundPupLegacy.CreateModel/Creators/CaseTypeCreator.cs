@@ -29,6 +29,7 @@ internal sealed class CaseTypeCreator : EntityCreator<CaseType>
 
         await foreach (var caseType in caseTypes) {
             await nodeTypeWriter.InsertAsync(caseType);
+            await nameableTypeWriter.InsertAsync(caseType);
             await caseTypeWriter.InsertAsync(caseType);
             foreach (var caseRelationTypeId in caseType.CaseRelationTypeIds) {
                 await caseTypeCaseRelationTypeWriter.InsertAsync(new CaseTypeCasePartyType {

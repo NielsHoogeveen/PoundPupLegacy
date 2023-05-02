@@ -89,6 +89,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<MultiQuestionPoll>, MultiQuestionPollInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<MultiQuestionPollPollQuestion>, MultiQuestionPollPollQuestionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Nameable>, NameableInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<NameableType>, NameableTypeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NodeFile>, NodeFileInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Node>, NodeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NodeTerm>, NodeTermInserterFactory>();
@@ -148,6 +149,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<UserGroupUserRoleUser>, UserGroupUserRoleUserInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<User>, UserInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<UserRole>, UserRoleInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<ViewNodeTypeListAction>, ViewNodeTypeListActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Vocabulary>, VocabularyInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<WrongfulMedicationCase>, WrongfulMedicationCaseInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<WrongfulRemovalCase>, WrongfulRemovalCaseInserterFactory>();

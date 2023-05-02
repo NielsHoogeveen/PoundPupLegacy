@@ -3,6 +3,8 @@
 internal sealed class CaseTypeMigrator : MigratorPPL
 {
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
+    private readonly IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> _actionIdReaderFactory;
+    private readonly IEntityCreator<ViewNodeTypeListAction> _viewNodeTypeListActionCreator;
     private readonly IEntityCreator<CaseType> _caseTypeCreator;
     private readonly IEntityCreator<CreateNodeAction> _createNodeActionCreator;
     private readonly IEntityCreator<DeleteNodeAction> _deleteNodeActionCreator;
@@ -13,6 +15,8 @@ internal sealed class CaseTypeMigrator : MigratorPPL
     public CaseTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderFactory,
+        IEntityCreator<ViewNodeTypeListAction> viewNodeTypeListActionCreator,
         IEntityCreator<CaseType> caseTypeCreator,
         IEntityCreator<CreateNodeAction> createNodeActionCreator,
         IEntityCreator<DeleteNodeAction> deleteNodeActionCreator,
@@ -20,6 +24,8 @@ internal sealed class CaseTypeMigrator : MigratorPPL
     ) : base(databaseConnections)
     {
         _nodeIdReaderFactory = nodeIdReaderFactory;
+        _viewNodeTypeListActionCreator = viewNodeTypeListActionCreator;
+        _actionIdReaderFactory = actionIdReaderFactory;
         _caseTypeCreator = caseTypeCreator;
         _createNodeActionCreator = createNodeActionCreator;
         _deleteNodeActionCreator = deleteNodeActionCreator;
@@ -28,7 +34,9 @@ internal sealed class CaseTypeMigrator : MigratorPPL
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var actionIdReader = await _actionIdReaderFactory.CreateAsync(_postgresConnection);
         await _caseTypeCreator.CreateAsync(GetCaseTypes(nodeIdReader), _postgresConnection);
+        await _viewNodeTypeListActionCreator.CreateAsync(GetViewNodeTypeListActions(actionIdReader), _postgresConnection);
         await _createNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
         await _deleteNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
         await _editNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
@@ -192,5 +200,72 @@ internal sealed class CaseTypeMigrator : MigratorPPL
         };
 
     }
+
+    private async IAsyncEnumerable<ViewNodeTypeListAction> GetViewNodeTypeListActions(IMandatorySingleItemDatabaseReader<ActionIdReaderByPathRequest, int> reader)
+    {
+        await Task.CompletedTask;
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/organizations"
+            }),
+            NodeTypeId = 23
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/persons"
+            }),
+            NodeTypeId = 24
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/abuse_cases"
+            }),
+            NodeTypeId = 26
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/child_trafficking_cases"
+            }),
+            NodeTypeId = 29
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/coerced_adoption_cases"
+            }),
+            NodeTypeId = 30
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/deportation_cases"
+            }),
+            NodeTypeId = 31
+
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/fathers_rights_violation_cases"
+            }),
+            NodeTypeId = 32
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/wrongful_medication_cases"
+            }),
+            NodeTypeId = 33
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/wrongful_removal_cases"
+            }),
+            NodeTypeId = 34
+        };
+        yield return new ViewNodeTypeListAction {
+            BasicActionId = await reader.ReadAsync(new ActionIdReaderByPathRequest {
+                Path = "/disrupted_placement_cases"
+            }),
+            NodeTypeId = 44
+        };
+    }
+
 
 }

@@ -34,19 +34,10 @@ internal sealed class ActionMigrator : MigratorPPL
         await _editOwnNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Where(x => x.AuthorSpecific).Select(x => new EditOwnNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
     }
 
+
     private async IAsyncEnumerable<BasicAction> GetBasicActions()
     {
         await Task.CompletedTask;
-        yield return new BasicAction {
-            Id = null,
-            Path = "/articles",
-            Description = "Show all articles"
-        };
-        yield return new BasicAction {
-            Id = null,
-            Path = "/blogs",
-            Description = "Show all blogs"
-        };
         yield return new BasicAction {
             Id = null,
             Path = "/organizations",
@@ -59,8 +50,53 @@ internal sealed class ActionMigrator : MigratorPPL
         };
         yield return new BasicAction {
             Id = null,
-            Path = "/polls",
-            Description = "Show all persons"
+            Path = "/abuse_cases",
+            Description = "Show all abuse cases"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/child_trafficking_cases",
+            Description = "Show all child trafficking cases"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/coerced_adoption_cases",
+            Description = "Show all coerced adoption cases"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/deportation_cases",
+            Description = "Show all deportation cases"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/fathers_rights_violation_cases",
+            Description = "Show all father's rights violation cases"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/wrongful_medication_cases",
+            Description = "Show all wrongful medication cases"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/wrongful_removal_cases",
+            Description = "Show all wrongful removal cases"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/disrupted_placement_cases",
+            Description = "Show all disrupted placement cases"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/articles",
+            Description = "Show all articles"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/blogs",
+            Description = "Show all blogs"
         };
         yield return new BasicAction {
             Id = null,
@@ -79,46 +115,6 @@ internal sealed class ActionMigrator : MigratorPPL
         };
         yield return new BasicAction {
             Id = null,
-            Path = "/abuse_cases",
-            Description = "Show all abuse cases"
-        };
-        yield return new BasicAction {
-            Id = null,
-            Path = "/child_trafficking_cases",
-            Description = "Show all child trafficking cases"
-        };
-        yield return new BasicAction {
-            Id = null,
-            Path = "/deportation_cases",
-            Description = "Show all deportation cases"
-        };
-        yield return new BasicAction {
-            Id = null,
-            Path = "/wrongful_removal_cases",
-            Description = "Show all wrongful removal cases"
-        };
-        yield return new BasicAction {
-            Id = null,
-            Path = "/wrongful_medication_cases",
-            Description = "Show all wrongful medication cases"
-        };
-        yield return new BasicAction {
-            Id = null,
-            Path = "/fathers_rights_violation_cases",
-            Description = "Show all father's rights violation cases"
-        };
-        yield return new BasicAction {
-            Id = null,
-            Path = "/coerced_adoption_cases",
-            Description = "Show all coerced adoption cases"
-        };
-        yield return new BasicAction {
-            Id = null,
-            Path = "/disrupted_placement_cases",
-            Description = "Show all disrupted placement cases"
-        };
-        yield return new BasicAction {
-            Id = null,
             Path = "/contact",
             Description = "Contact page"
         };
@@ -126,6 +122,11 @@ internal sealed class ActionMigrator : MigratorPPL
             Id = null,
             Path = "/search",
             Description = "Full text search"
+        };
+        yield return new BasicAction {
+            Id = null,
+            Path = "/polls",
+            Description = "Show all polls"
         };
 
         yield return new BasicAction {

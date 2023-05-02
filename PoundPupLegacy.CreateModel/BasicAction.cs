@@ -8,3 +8,4 @@ public record BasicAction : Action
 
     public required string Description { get; init; }
 }
+
