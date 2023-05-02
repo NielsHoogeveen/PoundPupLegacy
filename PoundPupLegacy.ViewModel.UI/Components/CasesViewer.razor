@@ -1,11 +1,11 @@
 ﻿@inject IFetchCasesService FetchCasesService
-@inherits PagedViewer<CaseListEntry>
+@inherits PagedViewer<NonSpecificCaseListEntry>
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
     <h1>Cases</h1>
     <div>
     @foreach(var caseType in CaseTypeListEntries.OrderBy(x => x.Title)) {
-        <div class="case-type">
+        <div class="case-type @caseType.Title.Replace(" ", "-").Replace("'", "")">
             <a href="@caseType.Path">@caseType.Title</a>
             <div>
                 @((MarkupString)caseType.Text)
@@ -21,7 +21,7 @@
 
     private CaseTypeListEntry[] CaseTypeListEntries { get; set; } = Array.Empty<CaseTypeListEntry>();
 
-    protected override async Task<IPagedList<CaseListEntry>> GetListEntriesAsync()
+    protected override async Task<IPagedList<NonSpecificCaseListEntry>> GetListEntriesAsync()
     {
         var result = await FetchCasesService.FetchCases(
             pageSize: PagedListSettings.PageSize, 

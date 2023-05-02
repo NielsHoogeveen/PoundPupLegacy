@@ -2,7 +2,7 @@
     <div class="tags">
         
         @foreach (var nodeTypeTags in @Tags.GroupBy(x => x.NodeTypeName)) { 
-            <LabeledLinkListViewer Links="@nodeTypeTags" Label="@nodeTypeTags.Key" />
+            <LabeledCommaSeparatedLinkListViewer Links="@nodeTypeTags" Label="@nodeTypeTags.Key" />
         }
     </div>
 }

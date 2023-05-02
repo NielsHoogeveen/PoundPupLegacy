@@ -8,3 +8,7 @@
 .teaser-list-element:last-of-type {
     border-bottom: 0;
 }
+
+.details{
+    margin-bottom: 1em;
+}

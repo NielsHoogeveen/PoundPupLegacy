@@ -8,6 +8,14 @@
     @if (ListEntry is AuthoredTeaserListEntry authoredEntry) {
         <AuthoringViewer Model="@authoredEntry.Authoring" />
     }
+    <div class="details">
+    @if (ListEntry is NonSpecificCaseListEntry nonSpecificCaseListEntry) {
+        <LabeledNonNullableStringViewer Label="Case type" Value="@nonSpecificCaseListEntry.CaseType" />
+    }
+    @if (ListEntry is CaseListEntry caseListEntry) {
+        <LabeledNullableFuzzyDateViewer Label="Date" Value="caseListEntry.Date" />
+    }
+    </div>
     <LargeTextViewer Value="@ListEntry.Text" />
     @if (ListEntry is TaggedTeaserListEntry taggedEntry && taggedEntry.Tags is not null) {
         <TagsViewer Tags="taggedEntry.Tags" />

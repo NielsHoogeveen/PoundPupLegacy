@@ -55,17 +55,43 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
                             url_path,
             				'Text', 
                             description,
-            				'DateFrom', 
-                            date_from,
-            				'DateTo', 
-                            date_to,
+                            'DateTimeRange',
+                            jsonb_build_object(
+                                'From',
+                                date_from,
+                                'To',
+                                date_to
+                            ),
             				'CaseType',	
                             node_type_name,
             				'HasBeenPublished', 
                             case 
             					when status = 0 then false
             					else true
-            				end 
+            				end,
+                            'Tags',
+                            (
+                                select jsonb_agg
+                                (
+                                    jsonb_build_object(
+                                        'Path',
+                                        case when tn.url_path is null then '/node/' || tn.url_id
+                                            else '/' || url_path
+                                        end,
+                                        'Title',
+                                        n.title,
+                                        'NodeTypeName',
+                                        nty.tag_label_name
+                                    )
+                                )
+                                from node_term nt
+                                join term t on t.id = nt.term_id
+                                join node n on n.id = t.nameable_id
+                                left join nameable_type nty on nty.id = n.node_type_id
+                                join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
+                                where nt.node_id = an.id
+
+                            )
             			)
             		)
             	) "document"
@@ -74,6 +100,7 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             	*
             	from(
             		select
+                    n.id,
             		n.title,
             		c.description,
             		nt.name node_type_name,

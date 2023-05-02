@@ -1,0 +1,16 @@
+﻿@if (Links.Any())
+{
+    <div class="labeled-value labeled-link-list">
+        <label>@Label:</label>
+        <CommaSeparatedLinkListViewer Model="@Links" />
+    </div>
+}
+@code{
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<Link> Links { get; set; } = Array.Empty<Link>();
+
+    [Parameter]
+    [EditorRequired]
+    public string Label { get; set; } = string.Empty;
+}

@@ -36,7 +36,7 @@ internal sealed class FetchCasesService : IFetchCasesService
             var result = cases is not null
                 ? cases
                 : new Cases {
-                    Entries = Array.Empty<CaseListEntry>(),
+                    Entries = Array.Empty<NonSpecificCaseListEntry>(),
                     CaseTypes = Array.Empty<CaseTypeListEntry>(),
                     NumberOfEntries = 0,
                 };
