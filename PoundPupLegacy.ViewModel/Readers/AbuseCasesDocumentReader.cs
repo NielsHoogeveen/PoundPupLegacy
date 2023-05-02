@@ -78,120 +78,130 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
         			    )
         		    ) elements
         		    from(
-        			    select
-        				    node_id,
-                            number_of_elements,
-        				    title,
-        				    teaser,
-        				    path,
-                            changed_date_time,
-        				    case 
-        					    when status = 1 then true
-        					    else false
-        				    end has_been_published,
-                            fuzzy_date,
-        				    sum(weight) weight,
-                            jsonb_agg(
-                                jsonb_build_object(
-                                    'Path',
-                                    term_path,
-                                    'Title',
-                                    term_name,
-                                    'NodeTypeName',
-                                    term_type_name
-                                )
-                            ) terms
-        			    from(
-        				    select 
-                            count(*) over() number_of_elements,
-        				    t.id term_id,
-        				    nt.node_id,
-        				    n.title,
-                            n.changed_date_time,
-        				    cs.description teaser,
-                            cs.fuzzy_date,
-        				    case
-        					    when tn.url_path is null then '/node/' || tn.url_id
-        					    else '/' || tn.url_path
-        				    end path,
-        			        case
-        					    when tn.publication_status_id = 0 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 0
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    join user_group ug on ug.id = ugu.user_group_id
-        					    WHERE ugu.user_group_id = 
-        					    case
-        						    when tn.subgroup_id is null then tn.tenant_id 
-        						    else tn.subgroup_id 
-        					    end 
-        					    AND ugu.user_role_id = ug.administrator_role_id
-        					    AND ugu.user_id = @user_id
-        				    )
-        				    when tn.publication_status_id = 1 then 1
-        				    when tn.publication_status_id = 2 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 1
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    WHERE ugu.user_group_id = 
-        						    case
-        							    when tn.subgroup_id is null then tn.tenant_id 
-        							    else tn.subgroup_id 
-        						    end
-        						    AND ugu.user_id = @user_id
-        				    )
-        				    end status,
-                            t.name term_name,
-                            case 
-                                when tn2.url_path is null then '/node/' || tn2.url_id
-                                else '/' || tn2.url_path
-                            end term_path,
-                            nt2.tag_label_name term_type_name,
-        				    case 
-        					    when n.node_type_id = 41 then 5
-        					    when n.node_type_id = 23 then 2
-        					    else 1
-        				    end weight
-        				    from node n
-                            join "case" cs on cs.id = n.id
-                            join abuse_case ac on ac.id = n.id
-        				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
-        				    join node_term nt on nt.node_id = n.id 
-        				    join term t on t.id = nt.term_id
-                            join node n2 on n2.id = t.nameable_id
-                            left join nameable_type nt2 on nt2.id = n2.node_type_id
-                            join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
-        				    where (@terms is null or n.id in (
-                                select
-                                node_id
-                                from (
+                        select 
+                        node_id,
+                        number_of_elements,
+                        title,
+                        teaser,
+                        path,
+                        changed_date_time,
+                        has_been_published,
+                        fuzzy_date,
+                        terms
+                        from(
+        			        select
+        				        node_id,
+                                count(*) over() number_of_elements,
+        				        title,
+        				        teaser,
+        				        path,
+                                changed_date_time,
+        				        case 
+        					        when status = 1 then true
+        					        else false
+        				        end has_been_published,
+                                fuzzy_date,
+        				        sum(weight) weight,
+                                jsonb_agg(
+                                    jsonb_build_object(
+                                        'Path',
+                                        term_path,
+                                        'Title',
+                                        term_name,
+                                        'NodeTypeName',
+                                        term_type_name
+                                    )
+                                ) terms
+        			        from(
+        				        select 
+        				        t.id term_id,
+        				        nt.node_id,
+        				        n.title,
+                                n.changed_date_time,
+        				        cs.description teaser,
+                                cs.fuzzy_date,
+        				        case
+        					        when tn.url_path is null then '/node/' || tn.url_id
+        					        else '/' || tn.url_path
+        				        end path,
+        			            case
+        					        when tn.publication_status_id = 0 then (
+        					        select
+        						        case 
+        							        when count(*) > 0 then 0
+        							        else -1
+        						        end status
+        					        from user_group_user_role_user ugu
+        					        join user_group ug on ug.id = ugu.user_group_id
+        					        WHERE ugu.user_group_id = 
+        					        case
+        						        when tn.subgroup_id is null then tn.tenant_id 
+        						        else tn.subgroup_id 
+        					        end 
+        					        AND ugu.user_role_id = ug.administrator_role_id
+        					        AND ugu.user_id = @user_id
+        				        )
+        				        when tn.publication_status_id = 1 then 1
+        				        when tn.publication_status_id = 2 then (
+        					        select
+        						        case 
+        							        when count(*) > 0 then 1
+        							        else -1
+        						        end status
+        					        from user_group_user_role_user ugu
+        					        WHERE ugu.user_group_id = 
+        						        case
+        							        when tn.subgroup_id is null then tn.tenant_id 
+        							        else tn.subgroup_id 
+        						        end
+        						        AND ugu.user_id = @user_id
+        				        )
+        				        end status,
+                                t.name term_name,
+                                case 
+                                    when tn2.url_path is null then '/node/' || tn2.url_id
+                                    else '/' || tn2.url_path
+                                end term_path,
+                                nt2.tag_label_name term_type_name,
+        				        case 
+        					        when n.node_type_id = 41 then 5
+        					        when n.node_type_id = 23 then 2
+        					        else 1
+        				        end weight
+        				        from node n
+                                join "case" cs on cs.id = n.id
+                                join abuse_case ac on ac.id = n.id
+        				        join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
+        				        join node_term nt on nt.node_id = n.id 
+        				        join term t on t.id = nt.term_id
+                                join node n2 on n2.id = t.nameable_id
+                                left join nameable_type nt2 on nt2.id = n2.node_type_id
+                                join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
+        				        where (@terms is null or n.id in (
                                     select
-                                    nt.node_id,
-                                    count(*) over() c
-                                    from term t
-                                    left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
-                                    where t.id = ANY(@terms)
-                                ) x
-                                group by node_id, c
-                                having count(node_id) = c
-                            ))
-        			    ) x
-        			    WHERE status > 0
-        			    GROUP BY 
-        				    node_id,
-        				    title,
-        				    path,
-        				    teaser,
-        				    has_been_published,
-                            number_of_elements,
-                            changed_date_time,
-                            fuzzy_date
+                                    node_id
+                                    from (
+                                        select
+                                        nt.node_id,
+                                        count(*) over() c
+                                        from term t
+                                        left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
+                                        where t.id = ANY(@terms)
+                                    ) x
+                                    group by node_id, c
+                                    having count(node_id) = c
+                                ))
+        			        ) x
+        			        WHERE status > 0
+        			        GROUP BY 
+        				        node_id,
+        				        title,
+        				        path,
+        				        teaser,
+        				        has_been_published,
+                                changed_date_time,
+                                fuzzy_date
+                        ) x
         			    ORDER BY lower(fuzzy_date) desc
                         LIMIT @length OFFSET @start_index
         		    ) x

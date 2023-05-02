@@ -8,14 +8,14 @@
 
     protected override int PageSize => 10;
 
-    protected override async Task<TermedList<ArticleList, ArticleListEntry>> GetTermedList(int[] termIds)
+    protected override async Task<TermedList<ArticleList, ArticleListEntry>> GetTermedList()
     {
         return await FetchArticlesService.GetArticles(
             tenantId: TenantId, 
             userId: UserId,
-            selectedTerms: termIds, 
+            selectedTerms: PagedListSettings.SelectedTermIds, 
             pageNumber: PagedListSettings.PageNumber, 
             pageSize: PagedListSettings.PageSize, 
-            termNamePrefix: TERM_NAME_PREFIX);
+            termNamePrefix: PagedTermedListSettings.TERM_NAME_PREFIX);
     }
 }

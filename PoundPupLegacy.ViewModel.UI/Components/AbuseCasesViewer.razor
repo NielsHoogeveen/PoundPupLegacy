@@ -7,7 +7,7 @@
 @code {
     protected override int PageSize => 10;
 
-    protected override async Task<TermedList<AbuseCaseList, CaseListEntry>> GetTermedList(int[] termIds)
+    protected override async Task<TermedList<AbuseCaseList, CaseListEntry>> GetTermedList()
     {
 
         return await FetchCasesService.FetchCases(
@@ -15,8 +15,8 @@
             pageNumber: PagedListSettings.PageNumber, 
             tenantId: TenantId, 
             userId: UserId,
-            selectedTerms: termIds,
-            termNamePrefix: TERM_NAME_PREFIX
+            selectedTerms: PagedListSettings.SelectedTermIds,
+            termNamePrefix: PagedTermedListSettings.TERM_NAME_PREFIX
         );
 
     }

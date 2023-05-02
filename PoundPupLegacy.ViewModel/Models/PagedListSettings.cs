@@ -76,3 +76,15 @@ public record PagedSearchListSettings : PagedListSettings
         return base.GetQueryString(pageNumber) + $"&search_term={SearchTerm}&search_option={SearchOptionAsText(SearchOption)}";
     }
 }
+public record PagedTermedListSettings : PagedListSettings
+{
+    public int[] SelectedTermIds { get; set; } = Array.Empty<int>();
+
+    public const string TERM_NAME_PREFIX = "term-name-";
+
+    public override string GetQueryString(int pageNumber)
+    {
+        var termNames = SelectedTermIds.Select(id => $"{TERM_NAME_PREFIX}{id}=on").Aggregate("", (a, b) => a + "&"+b);
+        return base.GetQueryString(pageNumber) + termNames;
+    }
+}
