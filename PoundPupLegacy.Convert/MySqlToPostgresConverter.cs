@@ -107,6 +107,7 @@ internal partial class MySqlToPostgresConverter
         await _serviceProvider.Migrate<SearchableMigrator>();
         await _serviceProvider.Migrate<NodeTermMigrator>();
         await _serviceProvider.Migrate<TermHierarchyMigrator>();
+        await AddSubdivisionTermsToCases();
         await PrepareFiles();
     }
 
@@ -286,6 +287,28 @@ internal partial class MySqlToPostgresConverter
         }
     }
 
+    private async Task AddSubdivisionTermsToCases()
+    {
+        using var command = _databaseConnections.PostgressConnection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandText = """
+        INSERT INTO node_term(node_id, term_id)
+        select
+        n.id node_id,
+        t.id term_id
+        from "case" c
+        join node n on n.id = c.id
+        join location_locatable ll on ll.locatable_id = c.id
+        join location l on l.id = ll.location_id
+        join subdivision s on s.id = l.subdivision_id
+        join term t on t.nameable_id = s.id
+        join vocabulary v on v.id = t.vocabulary_id
+        left join node_term nt on nt.node_id = c.id and nt.term_id = t.id
+        where v.name = 'Topics'
+        and nt.node_id is null;
+        """;
+        await command.ExecuteNonQueryAsync();
+    }
     private async Task AddTenantDefaultCountry()
     {
         using var command = _databaseConnections.PostgressConnection.CreateCommand();

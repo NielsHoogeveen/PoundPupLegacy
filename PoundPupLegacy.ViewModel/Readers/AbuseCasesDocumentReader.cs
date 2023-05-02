@@ -164,8 +164,8 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
                                 end term_path,
                                 nt2.tag_label_name term_type_name,
         				        case 
-        					        when n.node_type_id = 41 then 5
-        					        when n.node_type_id = 23 then 2
+        					        when n.node_type_id = 41 then 1
+        					        when n.node_type_id = 23 then 1
         					        else 1
         				        end weight
         				        from node n
@@ -226,7 +226,7 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
                     from(
         			    select
         				    t.id,
-        				    n.title,
+        				    t.name title,
         				    case
         					    when tn.publication_status_id = 0 then (
         					    select
@@ -294,8 +294,8 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
         				    )
         				    end status_node,		
         				    case 
-        					    when n.node_type_id = 41 then 5
-        					    when n.node_type_id = 23 then 2
+        					    when n.node_type_id = 41 then 1
+        					    when n.node_type_id = 23 then 1
         					    else 1
         				    end weight
         			    from node n
