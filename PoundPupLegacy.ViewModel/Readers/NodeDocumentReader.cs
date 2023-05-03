@@ -3728,7 +3728,50 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'SubTopics', (SELECT document from subtopics_document),
                     'SuperTopics', (SELECT document from supertopics_document),
                     'CaseParties', (SELECT document from case_case_parties_document),
-                    'Files', (SELECT document FROM files_document)
+                    'Files', (SELECT document FROM files_document),
+                    'TypesOfAbuse', 
+                    (
+                        select jsonb_agg(
+                            jsonb_build_object(
+                                'Path', 
+                                case 
+                                    when tn.url_path is null then '/node/' || tn.url_id
+                                    else tn.url_path
+                                end,
+                                'Title', 
+                                t.name
+                            )
+                        ) 
+                        from abuse_case_type_of_abuse at
+                        join type_of_abuse toa on toa.id = at.type_of_abuse_id
+                        join term t on t.nameable_id = toa.id
+                        join vocabulary v on v.id = t.vocabulary_id
+                        join tenant_node tn on tn.node_id = toa.id and tn.tenant_id = @tenant_id
+                        where at.abuse_case_id = n.node_id
+                        and v.name = 'Type of Abuse'
+                    ),
+                    'TypesOfAbuser', 
+                    (
+                        select jsonb_agg(
+                            jsonb_build_object(
+                                'Path', 
+                                case 
+                                    when tn.url_path is null then '/node/' || tn.url_id
+                                    else tn.url_path
+                                end,
+                                'Title', 
+                                t.name
+                            )
+                        ) 
+                        from abuse_case_type_of_abuser at
+                        join type_of_abuser toa on toa.id = at.type_of_abuser_id
+                        join term t on t.nameable_id = toa.id
+                        join vocabulary v on v.id = t.vocabulary_id
+                        join tenant_node tn on tn.node_id = toa.id and tn.tenant_id = @tenant_id
+                        where at.abuse_case_id = n.node_id
+                        and v.name = 'Type of Abuser'
+                    )
+        
                 ) document
             FROM (
                 SELECT

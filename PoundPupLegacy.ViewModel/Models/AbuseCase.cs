@@ -45,6 +45,28 @@ public record AbuseCase : Case
         }
     }
 
+    private BasicLink[] typesOfAbuse = Array.Empty<BasicLink>();
+    public required BasicLink[] TypesOfAbuse {
+        get => typesOfAbuse;
+        init {
+            if (value is not null) {
+                typesOfAbuse = value;
+            }
+        }
+    }
+
+
+    private BasicLink[] typesOfAbuser = Array.Empty<BasicLink>();
+    public required BasicLink[] TypesOfAbuser {
+        get => typesOfAbuser;
+        init {
+            if (value is not null) {
+                typesOfAbuser = value;
+            }
+
+        }
+    }
+
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
     public CommentListItem[] CommentListItems {
         get => commentListItems;
