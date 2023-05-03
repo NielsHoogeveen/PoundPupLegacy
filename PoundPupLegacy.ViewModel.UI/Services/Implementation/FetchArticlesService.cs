@@ -19,7 +19,7 @@ internal sealed class FetchArticlesService : IFetchArticlesService
         _articlesDocumentReaderFactory = articlesDocumentReaderFactory;
     }
 
-    public async Task<Articles> GetArticles(int tenantId, int userId, int[] selectedTerms, int pageNumber, int length, string termNamePrefix)
+    public async Task<Articles> GetArticles(int tenantId, int userId, int[] selectedTerms, int pageNumber, int length)
     {
 
         var startIndex = (pageNumber - 1) * length;

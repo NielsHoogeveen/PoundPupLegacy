@@ -1,8 +1,16 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record FathersRightsViolationCases : IPagedList<CaseListEntry>
+public record FathersRightsViolationCases: TermedList<FathersRightsViolationCaseList, CaseListEntry> 
 {
-    public required CaseListEntry[] Entries { get; init; }
-    public required int NumberOfEntries { get; init; }
+    private SelectionItem[] termNames = Array.Empty<SelectionItem>();
+    public SelectionItem[] TermNames {
+        get => termNames;
+        set {
+            if (value != null) {
+                termNames = value;
+            }
+        }
+    }
+    public required FathersRightsViolationCaseList Items { get; init; }
 
 }

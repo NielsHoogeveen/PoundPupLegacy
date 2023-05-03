@@ -1,18 +1,22 @@
 ﻿@inject IFetchWrongfulRemovalCasesService FetchCasesService
-@inherits PagedViewer<CaseListEntry>
+@inherits PagedTermedViewer<CaseListEntry, WrongfulRemovalCaseList>
 <BreadCrumElementViewer Model="BreadCrumElements" />
+<TagSelector TermNames="TermNames" OnSelectTerm="SelectTerm" />
 <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage" />
 
 @code {
-
     protected override int PageSize => 10;
 
-    protected override async Task<IPagedList<CaseListEntry>> GetListEntriesAsync()
+    protected override async Task<TermedList<WrongfulRemovalCaseList, CaseListEntry>> GetTermedList()
     {
+
         return await FetchCasesService.FetchCases(
-            pageSize: PagedListSettings.PageSize, 
-            pageNumber: PagedListSettings.PageNumber, 
-            tenantId: TenantId, 
-            userId: UserId);
+            pageSize: PagedListSettings.PageSize,
+            pageNumber: PagedListSettings.PageNumber,
+            tenantId: TenantId,
+            userId: UserId,
+            selectedTerms: PagedListSettings.SelectedTermIds
+        );
+
     }
 }

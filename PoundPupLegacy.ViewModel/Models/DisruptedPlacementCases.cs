@@ -1,8 +1,16 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record DisruptedPlacementCases : IPagedList<CaseListEntry>
+public record DisruptedPlacementCases: TermedList<DisruptedPlacementCaseList, CaseListEntry> 
 {
-    public required CaseListEntry[] Entries { get; init; }
-    public required int NumberOfEntries { get; init; }
+    private SelectionItem[] termNames = Array.Empty<SelectionItem>();
+    public SelectionItem[] TermNames {
+        get => termNames;
+        set {
+            if (value != null) {
+                termNames = value;
+            }
+        }
+    }
+    public required DisruptedPlacementCaseList Items { get; init; }
 
 }

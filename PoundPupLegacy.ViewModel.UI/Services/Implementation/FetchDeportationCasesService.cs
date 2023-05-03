@@ -20,7 +20,7 @@ internal sealed class FetchDeportationCasesService : IFetchDeportationCasesServi
         _abuseCasesDocumentReaderFactory = abuseCasesDocumentReaderFactory;
     }
 
-    public async Task<DeportationCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId)
+    public async Task<DeportationCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms)
     {
         var startIndex = (pageNumber - 1) * pageSize;
 
@@ -28,16 +28,20 @@ internal sealed class FetchDeportationCasesService : IFetchDeportationCasesServi
             await _connection.OpenAsync();
             await using var reader = await _abuseCasesDocumentReaderFactory.CreateAsync(_connection);
             var cases = await reader.ReadAsync(new DeportationCasesDocumentReaderRequest {
-                Limit = pageSize,
-                Offset = startIndex,
+                Length = pageSize,
+                StartIndex = startIndex,
                 TenantId = tenantId,
-                UserId = userId
+                UserId = userId,
+                SelectedTerms = selectedTerms
             });
             var result = cases is not null
                 ? cases
                 : new DeportationCases {
-                    Entries = Array.Empty<CaseListEntry>(),
-                    NumberOfEntries = 0,
+                    TermNames = Array.Empty<SelectionItem>(),
+                    Items = new DeportationCaseList {
+                        Entries = Array.Empty<CaseListEntry>(),
+                        NumberOfEntries = 0,
+                    }
                 };
 
             return result;

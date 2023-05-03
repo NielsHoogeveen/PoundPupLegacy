@@ -3,5 +3,5 @@
 public interface IFetchWrongfulMedicationCasesService
 {
     [RequireNamedArgs]
-    Task<WrongfulMedicationCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId);
+    Task<WrongfulMedicationCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms);
 }

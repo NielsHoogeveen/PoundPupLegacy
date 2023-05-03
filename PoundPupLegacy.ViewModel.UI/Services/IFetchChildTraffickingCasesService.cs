@@ -3,5 +3,5 @@
 public interface IFetchChildTraffickingCasesService
 {
     [RequireNamedArgs]
-    Task<ChildTraffickingCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId);
+    Task<ChildTraffickingCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms);
 }

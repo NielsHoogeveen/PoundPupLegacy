@@ -339,8 +339,8 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
         return new ParameterValue[] {
             ParameterValue.Create(TenantIdParameter, request.TenantId),
             ParameterValue.Create(UserIdParameter, request.UserId),
-            ParameterValue.Create(LengthParameter, request.StartIndex),
-            ParameterValue.Create(StartIndexParameter, request.Length),
+            ParameterValue.Create(LengthParameter, request.Length),
+            ParameterValue.Create(StartIndexParameter, request.StartIndex),
             ParameterValue.Create(TermsParameter, request.SelectedTerms is null ? null : request.SelectedTerms.Any() ? request.SelectedTerms.ToArray(): null)
         };
     }
