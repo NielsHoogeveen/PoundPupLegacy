@@ -1,14 +1,16 @@
 ﻿<LargeTextViewer Value="@Model.Description" />
-<LabeledNullableFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
-@if(Model is AbuseCase abuseCase) {
-    <AbuseCaseViewer Model="@abuseCase" />
-}
-@if (Model is ChildTraffickingCase childTraffickingCase) {
-    <ChildTraffickingCaseViewer Model="@childTraffickingCase" />
-}
-@if (Model is DeportationCase deportationCase) {
-    <DeportationCaseViewer Model="@deportationCase" />
-}
+<div class="details">
+    <LabeledNullableFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
+    @if(Model is AbuseCase abuseCase) {
+        <AbuseCaseViewer Model="@abuseCase" />
+    }
+    @if (Model is ChildTraffickingCase childTraffickingCase) {
+        <ChildTraffickingCaseViewer Model="@childTraffickingCase" />
+    }
+    @if (Model is DeportationCase deportationCase) {
+        <DeportationCaseViewer Model="@deportationCase" />
+    }
+</div>
 <CasePartiesViewer Model="@Model.CaseParties" />
 @code{
     [Parameter]

@@ -17,6 +17,8 @@ internal static class DependencyInjection
     public static void AddMigrators(this IServiceCollection services)
     {
         services.AddMigrator<AbuseCaseMigrator>();
+        services.AddMigrator<AbuseCaseTypeOfAbuseMigrator>();
+        services.AddMigrator<AbuseCaseTypeOfAbuserMigrator>();
         services.AddMigrator<AccessRolePrivilegeMigrator>();
         services.AddMigrator<ActionMigrator>();
         services.AddMigrator<ActMigrator>();

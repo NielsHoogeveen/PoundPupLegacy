@@ -41,11 +41,11 @@
     @if(Model is Nameable nameable) {
         <NameableViewer Model="@nameable" />
     }
-    @if(Model is Locatable locatable) {
-        <LocatableViewer Model="locatable" />
-    }
     <TagsViewer Tags="Model.Tags" />
     <FilesViewer Model="Model.Files" />
+    @if (Model is Locatable locatable) {
+        <LocatableViewer Model="locatable" />
+    }
 </ArticleViewer>
 @code{
     [Parameter]

@@ -172,7 +172,36 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
                                 join "case" cs on cs.id = n.id
                                 join abuse_case ac on ac.id = n.id
         				        join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
-        				        join node_term nt on nt.node_id = n.id 
+        			            join (
+                                    select
+                                    distinct
+                                    *
+                                    from(
+                                        select
+                                        actoa.abuse_case_id node_id,
+                                        t.id term_id
+                                        from type_of_abuse ta
+                                        join term t on t.nameable_id = ta.id
+                                        join vocabulary v on v.id = t.vocabulary_id
+                                        join abuse_case_type_of_abuser actoa on actoa.type_of_abuser_id = ta.id
+                                        where v.name = 'Topics'
+                                        union
+                                        select
+                                        actoa.abuse_case_id node_id,
+                                        t.id term_id
+                                        from type_of_abuse ta
+                                        join term t on t.nameable_id = ta.id
+                                        join vocabulary v on v.id = t.vocabulary_id
+                                        join abuse_case_type_of_abuse actoa on actoa.type_of_abuse_id = ta.id
+                                        where v.name = 'Topics'
+                                        union
+                                        select
+                                        node_id,
+                                        term_id
+                                        from node_term
+                                    ) x
+                                )
+                                nt on nt.node_id = n.id 
         				        join term t on t.id = nt.term_id
                                 join node n2 on n2.id = t.nameable_id
                                 left join nameable_type nt2 on nt2.id = n2.node_type_id
@@ -185,7 +214,35 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
                                         nt.node_id,
                                         count(*) over() c
                                         from term t
-                                        left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
+                                        left join (
+                                            select
+                                            distinct
+                                            *
+                                            from(
+                                                select
+                                                actoa.abuse_case_id node_id,
+                                                t.id term_id
+                                                from type_of_abuse ta
+                                                join term t on t.nameable_id = ta.id
+                                                join vocabulary v on v.id = t.vocabulary_id
+                                                join abuse_case_type_of_abuser actoa on actoa.type_of_abuser_id = ta.id
+                                                where v.name = 'Topics'
+                                                union
+                                                select
+                                                actoa.abuse_case_id node_id,
+                                                t.id term_id
+                                                from type_of_abuse ta
+                                                join term t on t.nameable_id = ta.id
+                                                join vocabulary v on v.id = t.vocabulary_id
+                                                join abuse_case_type_of_abuse actoa on actoa.type_of_abuse_id = ta.id
+                                                where v.name = 'Topics'
+                                                union
+                                                select
+                                                node_id,
+                                                term_id
+                                                from node_term
+                                            ) x
+                                        ) nt on nt.term_id = t.id and nt.node_id = n.id
                                         where t.id = ANY(@terms)
                                     ) x
                                     group by node_id, c
@@ -302,7 +359,36 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
         			    join term t on t.nameable_id = n.id 
         			    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
         			    join vocabulary v on v.id = t.vocabulary_id
-        			    join node_term nt on nt.term_id = t.id
+        			    join (
+                            select
+                            distinct
+                            *
+                            from(
+                                select
+                                actoa.abuse_case_id node_id,
+                                t.id term_id
+                                from type_of_abuse ta
+                                join term t on t.nameable_id = ta.id
+                                join vocabulary v on v.id = t.vocabulary_id
+                                join abuse_case_type_of_abuser actoa on actoa.type_of_abuser_id = ta.id
+                                where v.name = 'Topics'
+                                union
+                                select
+                                actoa.abuse_case_id node_id,
+                                t.id term_id
+                                from type_of_abuse ta
+                                join term t on t.nameable_id = ta.id
+                                join vocabulary v on v.id = t.vocabulary_id
+                                join abuse_case_type_of_abuse actoa on actoa.type_of_abuse_id = ta.id
+                                where v.name = 'Topics'
+                                union
+                                select
+                                node_id,
+                                term_id
+                                from node_term
+                            ) x
+                        )
+                        nt on nt.term_id = t.id
         			    join node n2 on n2.id = nt.node_id
                         join abuse_case ac on ac.id = n2.id
         			    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
@@ -315,7 +401,35 @@ internal sealed class AbuseCasesDocumentReaderFactory : SingleItemDatabaseReader
                                 nt.node_id,
                                 count(*) over() c
                                 from term t
-                                left join node_term nt on nt.term_id = t.id and nt.node_id = n2.id
+                                left join (
+                                    select
+                                    distinct
+                                    *
+                                    from(
+                                        select
+                                        actoa.abuse_case_id node_id,
+                                        t.id term_id
+                                        from type_of_abuse ta
+                                        join term t on t.nameable_id = ta.id
+                                        join vocabulary v on v.id = t.vocabulary_id
+                                        join abuse_case_type_of_abuser actoa on actoa.type_of_abuser_id = ta.id
+                                        where v.name = 'Topics'
+                                        union
+                                        select
+                                        actoa.abuse_case_id node_id,
+                                        t.id term_id
+                                        from type_of_abuse ta
+                                        join term t on t.nameable_id = ta.id
+                                        join vocabulary v on v.id = t.vocabulary_id
+                                        join abuse_case_type_of_abuse actoa on actoa.type_of_abuse_id = ta.id
+                                        where v.name = 'Topics'
+                                        union
+                                        select
+                                        node_id,
+                                        term_id
+                                        from node_term
+                                    ) x
+                                ) nt on nt.term_id = t.id and nt.node_id = n2.id
                                 where t.id = ANY(@terms)
                             ) x
                             group by node_id, c

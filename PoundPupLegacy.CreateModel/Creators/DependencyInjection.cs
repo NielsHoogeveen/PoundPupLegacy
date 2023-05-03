@@ -8,6 +8,8 @@ internal static class DependencyInjection
     {
         services.AddCreateModelInserters();
         services.AddTransient<IEntityCreator<AbuseCase>, AbuseCaseCreator>();
+        services.AddTransient<IEntityCreator<AbuseCaseTypeOfAbuse>, AbuseCaseTypeOfAbuseCreator>();
+        services.AddTransient<IEntityCreator<AbuseCaseTypeOfAbuser>, AbuseCaseTypeOfAbuserCreator>();
         services.AddTransient<IEntityCreator<AccessRole>, AccessRoleCreator>();
         services.AddTransient<IEntityCreator<AccessRolePrivilege>, AccessRolePrivilegeCreator>();
         services.AddTransient<IEntityCreator<Act>, ActCreator>();

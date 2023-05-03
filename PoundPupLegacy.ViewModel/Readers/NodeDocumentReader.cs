@@ -38,6 +38,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             {PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {ORGANIZATION_PERSON_RELATIONS_DOCUMENT},
             {TAGS_DOCUMENT},
+            {TAGS_DOCUMENT_ABUSE_CASE},
             {BILL_ACTIONS_DOCUMENT},
             {SUBTOPICS_DOCUMENT},
             {SUPERTOPICS_DOCUMENT},
@@ -1433,20 +1434,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     end path,
                     t.name,
                     case
-                        when nt2.id in (11, 12) then 'Regions'
-                        when nt2.id in (13, 14, 15, 16, 20, 21) then 'Countries'
-                        when nt2.id in (17, 18, 19, 22) then 'Subdivisions'
-                        when nt2.id in (23, 63) then 'Organizations'
-                        when nt2.id in (24, 59, 60) then 'Persons'
-                        when nt2.id in (41) then 'Topics'
-                        when nt2.id in (56, 57) then 'Bills'
-                        when nt2.id in (26) then 'Abuse cases'
-                        when nt2.id in (29) then 'Child trafficking cases'
-                        when nt2.id in (30) then 'Coerced adoption cases'
-                        when nt2.id in (31) then 'Deportation cases'
-                        when nt2.id in (32) then 'Father''s rights violation cases'
-                        when nt2.id in (33) then 'Wrongful medication cases'
-                        when nt2.id in (34) then 'Wrongful removal cases'
+                        when nmt.tag_label_name is not null then nmt.tag_label_name
                         else nt2.name
                     end node_type_name
                 FROM node_term nt 
@@ -1454,6 +1442,71 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 JOIN term t on t.id = nt.term_id
                 join node n on n.id = t.nameable_id
                 join node_type nt2 on nt2.id = n.node_type_id
+                left join nameable_type nmt on nmt.id = n.node_type_id
+                JOIN tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id and tn2.publication_status_id = 1
+                WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
+            ) t
+        )
+        """;
+
+    const string TAGS_DOCUMENT_ABUSE_CASE = """
+        tags_document_abuse_case AS (
+            SELECT
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Path',  
+                        t.path,
+                        'Title', 
+                        t.name,
+                        'NodeTypeName', 
+                        t.node_type_name
+                    )
+                ) as document
+            FROM (
+                select
+                    case 
+                        when tn2.url_path is null then '/node/' || tn2.url_id
+                        else '/' || tn2.url_path
+                    end path,
+                    t.name,
+                    case
+                        when nmt.tag_label_name is not null then nmt.tag_label_name
+                        else nt2.name
+                    end node_type_name
+                FROM (
+                    select
+                    distinct
+                    *
+                    from(
+                        select
+                        actoa.abuse_case_id node_id,
+                        t.id term_id
+                        from type_of_abuse ta
+                        join term t on t.nameable_id = ta.id
+                        join vocabulary v on v.id = t.vocabulary_id
+                        join abuse_case_type_of_abuser actoa on actoa.type_of_abuser_id = ta.id
+                        where v.name = 'Topics'
+                        union
+                        select
+                        actoa.abuse_case_id node_id,
+                        t.id term_id
+                        from type_of_abuse ta
+                        join term t on t.nameable_id = ta.id
+                        join vocabulary v on v.id = t.vocabulary_id
+                        join abuse_case_type_of_abuse actoa on actoa.type_of_abuse_id = ta.id
+                        where v.name = 'Topics'
+                        union
+                        select
+                        node_id,
+                        term_id
+                        from node_term
+                    ) x
+                ) nt 
+                JOIN tenant_node tn on tn.node_id = nt.node_id
+                JOIN term t on t.id = nt.term_id
+                join node n on n.id = t.nameable_id
+                join node_type nt2 on nt2.id = n.node_type_id
+                left join nameable_type nmt on nmt.id = n.node_type_id
                 JOIN tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id and tn2.publication_status_id = 1
                 WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
             ) t
@@ -3668,7 +3721,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'FundamentalFaithInvolved', n.fundamental_faith_involved,
                     'DisabilitiesInvolved', n.disabilities_involved,
                     'BreadCrumElements', (SELECT document FROM abuse_case_bread_crum_document),
-                    'Tags', (SELECT document FROM tags_document),
+                    'Tags', (SELECT document FROM tags_document_abuse_case),
                     'CommentListItems', (SELECT document FROM  comments_document),
                     'Documents', (SELECT document FROM documents_document),
                     'Locations', (SELECT document FROM locations_document),

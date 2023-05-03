@@ -7,6 +7,8 @@ internal static class DependencyInjection
     internal static void AddCreateModelInserters(this IServiceCollection services)
     {
         services.AddTransient<IDatabaseInserterFactory<AbuseCase>, AbuseCaseInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<AbuseCaseTypeOfAbuse>, AbuseCaseTypeOfAbuseInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<AbuseCaseTypeOfAbuser>, AbuseCaseTypeOfAbuserInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<AccessRole>, AccessRoleInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<AccessRolePrivilege>, AccessRolePrivilegeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Act>, ActInserterFactory>();
