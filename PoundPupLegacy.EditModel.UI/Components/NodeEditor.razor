@@ -17,7 +17,7 @@
     @if (Model is Organization organization) {
         <OrganizationEditor Model="organization" />
     }
-    <Tags Elems="Model.Tags" NodeId="Model.NodeId" />
+    <TagsEditor NodeTypesTags="Model.Tags" NodeId="Model.NodeId" />
     <TenantNodesEditor Node="@Model" />
     <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />
     @if (Model is Locatable locatable) {

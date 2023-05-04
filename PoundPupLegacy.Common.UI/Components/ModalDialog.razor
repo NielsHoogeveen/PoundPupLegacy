@@ -1,17 +1,15 @@
 ﻿@{
         <dialog open class="modal" >
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">@Title</h4>
-                    <button type="button" class="btn-close" @onclick="Cancel">&times;</button>
-                </div>
-                <div class="modal-body">
-                    @DialogContent
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" @onclick="Ok">OK</button>
-                    <button class="btn" @onclick="Cancel">Cancel</button>
-                </div>
+            <div class="modal-header">
+                <h4 class="modal-title">@Title</h4>
+                <button type="button" class="btn-close" @onclick="Cancel">&times;</button>
+            </div>
+            <div class="modal-body">
+                @DialogContent
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="Ok">OK</button>
+                <button type="button" class="btn" @onclick="Cancel">Cancel</button>
             </div>
         </dialog>
 }
@@ -35,8 +33,6 @@
     [Parameter]
     [EditorRequired]
     public Action? OnCancel { get; set; }
-
-    private string className => displayState == DisplayState.Open ? "" : "modal";
 
     private DisplayState displayState = DisplayState.Closed;
 

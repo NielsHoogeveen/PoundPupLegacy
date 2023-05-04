@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using SearchOption = PoundPupLegacy.Common.SearchOption;
+
+namespace PoundPupLegacy.ViewModel.Models;
 
 public interface IPagedList
 {

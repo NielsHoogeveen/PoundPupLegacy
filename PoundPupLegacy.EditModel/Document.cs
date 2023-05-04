@@ -40,9 +40,9 @@ public record Document : Node
     }
 
     public required DocumentType[] DocumentTypes { get; init; }
-    private List<Tag> tags = new();
+    private List<Tags> tags = new();
 
-    public List<Tag> Tags {
+    public List<Tags> Tags {
         get => tags;
         init {
             if (value is not null) {

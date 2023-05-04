@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
-using SearchOption = PoundPupLegacy.ViewModel.Models.SearchOption;
+using SearchOption = PoundPupLegacy.Common.SearchOption;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 

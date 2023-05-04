@@ -44,10 +44,11 @@ internal abstract class SimpleTextNodeEditServiceBase<T, TCreate> : NodeEditServ
         var items = new List<TCreate> { item };
         await EntityCreator.CreateAsync(items.ToAsyncEnumerable(), connection);
         simpleTextNode.UrlId = item.Id;
-        foreach (var topic in simpleTextNode.Tags) {
-            topic.NodeId = simpleTextNode.UrlId;
+        foreach (var nodeTypeTopics in simpleTextNode.Tags) {
+            foreach (var topic in nodeTypeTopics.Entries) {
+                topic.NodeId = simpleTextNode.UrlId;
+            }
         }
-        await _tagSaveService.SaveAsync(simpleTextNode.Tags, connection);
     }
 
     protected sealed override async Task StoreExisting(T article, NpgsqlConnection connection)
@@ -59,7 +60,6 @@ internal abstract class SimpleTextNodeEditServiceBase<T, TCreate> : NodeEditServ
             Teaser = _textService.FormatTeaser(article.Text),
             NodeId = article.NodeId!.Value
         });
-        await _tagSaveService.SaveAsync(article.Tags, connection);
     }
 
 }

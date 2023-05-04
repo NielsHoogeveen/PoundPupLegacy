@@ -20,6 +20,7 @@ where TResponse : class, Node
 {
     protected const string CTE_EDIT = $"""
         WITH
+        {TAGS_DOCUMENT},
         {TENANT_NODES_DOCUMENT},
         {TENANTS_DOCUMENT},
         {DOCUMENT_TYPES_DOCUMENT},
@@ -36,7 +37,56 @@ where TResponse : class, Node
         {TENANTS_DOCUMENT}
         """;
 
-
+    const string TAGS_DOCUMENT = """
+        tags_document as (
+            select
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'TagNodeType',
+        		    jsonb_build_object(
+        			    'NodeTypeIds',
+        			    node_type_ids,
+        			    'TagLabelName',
+        			    tag_label_name
+        		    ),
+        		    'Entries',
+        		    tags
+        	    )
+            ) "document"
+            from(
+        	    select
+        	    jsonb_agg(
+        		    nt.id
+        	    ) node_type_ids,
+        	    nt.tag_label_name,
+        	    (
+        		    select 
+        		    jsonb_agg(
+        			    jsonb_build_object(
+        				    'NodeId',
+        				    nt2.node_id,
+        				    'TermId',
+        				    t.id,
+        				    'Name',
+        				    t.name,
+        				    'NodeTypeId',
+        				    n.node_type_id
+        			    )
+        		    ) 
+        		    from node_term nt2
+        		    join tenant_node tn on tn.node_id = nt2.node_id
+        		    join term t on t.id = nt2.term_id
+        		    join node n on n.id = t.nameable_id
+        		    where tn.tenant_id = @tenant_id
+        		    AND tn.url_id = @url_id
+        		    AND n.node_type_id = ANY(ARRAY_AGG(nt.id))
+        	    ) tags 
+        	    from nameable_type nt
+        	    join node_type nt3 on nt3.id = nt.id
+        	    group by nt.tag_label_name
+            ) x        
+        )
+        """;
     const string DOCUMENT_TYPES_DOCUMENT = """
         document_types_document as (
             select

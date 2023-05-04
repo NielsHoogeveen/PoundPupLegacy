@@ -1,21 +1,26 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
 using Request = TagDocumentsReaderRequest;
+using SearchOption = Common.SearchOption;
 
 public sealed record TagDocumentsReaderRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required int TenantId { get; init; }
     public required string SearchString { get; init; }
+    public required int[] NodeTypeIds { get; init; }
 }
 
 internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tag>
 {
     private static readonly NonNullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly SearchOptionDatabaseParameter SearchOptionParameter = new() { Name = "search_option" };
     private static readonly NonNullableStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
+    private static readonly NonNullableIntegerArrayDatabaseParameter NodeTypeIds = new() { Name = "node_type_ids" };
 
     private static readonly IntValueReader NodeIdReader = new() { Name = "node_id" };
+    private static readonly IntValueReader NodeTypeIdReader = new() { Name = "node_type_id" };
     private static readonly IntValueReader TermIdReader = new() { Name = "term_id" };
     private static readonly StringValueReader NameReader = new() { Name = "name" };
 
@@ -26,21 +31,28 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
         distinct
         id term_id,
         name,
-        @node_id node_id
+        @node_id node_id,
+        node_type_id 
         from(
             select
             t.id,
-            t.name
+            t.name,
+            n.node_type_id
             from term t
+            join node n on n.id = t.nameable_id
             join tenant tt on tt.id = @tenant_id
             where t.vocabulary_id = tt.vocabulary_id_tagging and t.name = @search_string
+            and n.node_type_id = any(@node_type_ids)
             union
             select
             t.id,
-            t.name
+            t.name,
+            n.node_type_id
             from term t
+            join node n on n.id = t.nameable_id
             join tenant tt on tt.id = @tenant_id
-            where t.vocabulary_id = tt.vocabulary_id_tagging and t.name ilike @search_string
+            where t.vocabulary_id = tt.vocabulary_id_tagging and t.name ilike @search_option
+            and n.node_type_id = any(@node_type_ids)
             LIMIT 50
         ) x
         """;
@@ -51,7 +63,9 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
         return new ParameterValue[] {
             ParameterValue.Create(NodeIdParameter, request.NodeId),
             ParameterValue.Create(TenantIdParameter, request.TenantId),
-            ParameterValue.Create(SearchStringParameter, request.SearchString)
+            ParameterValue.Create(SearchStringParameter, request.SearchString),
+            ParameterValue.Create(SearchOptionParameter, (request.SearchString, SearchOption.StartsWith)),
+            ParameterValue.Create(NodeTypeIds, request.NodeTypeIds)
         };
     }
 
@@ -61,8 +75,9 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
             Name = NameReader.GetValue(reader),
             NodeId = NodeIdReader.GetValue(reader),
             TermId = TermIdReader.GetValue(reader),
+            NodeTypeId = NodeTypeIdReader.GetValue(reader),
             HasBeenDeleted = false,
-            IsStored = false,
+            IsStored = false
         };
     }
 

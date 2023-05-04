@@ -7,7 +7,7 @@ public interface Node
     int PublisherId { get; set; }
     int OwnerId { get; set; }
     string Title { get; set; }
-    List<Tag> Tags { get; }
+    List<Tags> Tags { get; }
     List<Tenant> Tenants { get; }
     List<TenantNode> TenantNodes { get; }
     List<File> Files { get; }

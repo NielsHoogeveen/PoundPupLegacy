@@ -1,4 +1,4 @@
-﻿using SearchOption = PoundPupLegacy.ViewModel.Models.SearchOption;
+﻿using SearchOption = PoundPupLegacy.Common.SearchOption;
 
 namespace PoundPupLegacy.ViewModel.UI.Components;
 public abstract partial class PagedSearchViewer<TListEntry> : PagedViewerBase<PagedSearchListSettings, TListEntry>

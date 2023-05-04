@@ -1,6 +1,8 @@
 ﻿@if (Model is not null)
 {
-    <CKEditor Id="#editor" @bind-Value=@Model.Text />
+    <div class="details">
+        <CKEditor Id="#editor" @bind-Value=@Model.Text />
+    </div>
 }
 @code {
     [Parameter]

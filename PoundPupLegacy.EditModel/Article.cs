@@ -12,9 +12,9 @@ public record Article : SimpleTextNode
 
     public required string Text { get; set; }
 
-    private List<Tag> tags = new();
+    private List<Tags> tags = new();
 
-    public List<Tag> Tags {
+    public List<Tags> Tags {
         get => tags;
         init {
             if (value is not null) {

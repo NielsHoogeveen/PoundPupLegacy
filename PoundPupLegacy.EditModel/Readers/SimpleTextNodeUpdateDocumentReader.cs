@@ -20,19 +20,8 @@ where TResponse : class, SimpleTextNode
                     n.title,
                     'Text', 
                     stn.text,
-            		'Tags', (
-            			select 
-            			jsonb_agg(jsonb_build_object(
-            				'NodeId', tn.node_id,
-            				'TermId', t.id,
-            				'Name', t.name
-            			))
-            			from node_term nt
-            			join tenant tt on tt.id = @tenant_id
-            			join term t on t.id = nt.term_id and t.vocabulary_id = tt.vocabulary_id_tagging
-            			join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
-            			where nt.node_id = n.id
-            		),
+            		'Tags', 
+                    (select document from tags_document),
                     'TenantNodes',
                     (select document from tenant_nodes_document),
                     'Tenants',

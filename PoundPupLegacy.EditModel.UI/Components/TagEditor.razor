@@ -1,40 +1,45 @@
 ﻿@inherits ViewerBase
 @inject ITopicSearchService topicSearchService
 
-@if(Elems is not null)
-{
-    <input id="tag-search" @bind="@topicSearch" @oninput="OnSetTopicSearch" />
+<div class="node-type-group">
+
+    <div class="term-selector">
+        <label for="node-type-@NodeTypeTags.TagNodeType.TagLabelName">@NodeTypeTags.TagNodeType.TagLabelName</label>
+        <input name="node-type-@NodeTypeTags.TagNodeType.TagLabelName" class="tag-search" @bind="@topicSearch" @oninput="OnSetTopicSearch" />
+    </div>
 
     @if (termOptions.Any())
     {
         <div class="term-options">
         @foreach (var elem in termOptions)
         {
-            <div class="term-option" @onclick="() => SelectTerm(elem.TermId)">@elem.Name</div>
+                <div class="term-option" @onclick="() => SelectTerm(elem.TermId)">@elem.Name</div>
         }
         </div>
     }
-    @if (Elems.Any())
+    @if (NodeTypeTags.Entries.Any())
     {
         <div class="tag-elements">
-        @foreach (var elem in Elems)
+        @foreach (var elem in NodeTypeTags.Entries)
         {
 
+                            
             if (!elem.HasBeenDeleted)
             {
-                <div class="tag-element">@elem.Name</div>
-                <div class="close" @onclick="() => SetTagToDeleted(elem.TermId)">&times;</div>
+                <div class="tag-element">
+                        <span class="tag-element-name">@elem.Name</span>
+                    <button type="button" @onclick="() => SetTagToDeleted(elem.TermId)">delete</button>
+                </div>
             }
-
         }
         </div>
     }
-}
+</div>
 
 @code {
     [Parameter]
     [EditorRequired]
-    public List<Tag>? Elems { get; set; }
+    public Tags NodeTypeTags { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -47,12 +52,12 @@
     private void SelectTerm(int termId)
     {
         var tag = termOptions.FirstOrDefault(x => x.TermId == termId);
-        if (tag is not null && Elems is not null)
+        if (tag is not null)
         {
-            var elem = Elems.FirstOrDefault(x => x.TermId == termId);
+            var elem = NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId);
             if (elem is null)
             {
-                Elems.Add(tag);
+                NodeTypeTags.Entries.Add(tag);
             }
             else
             {
@@ -74,29 +79,28 @@
             termOptions = await topicSearchService.GetTerms(
                 nodeId: NodeId.Value, 
                 tenantId: TenantId, 
-                searchString: searchString);
+                searchString: searchString,
+                nodeTypeIds: NodeTypeTags.TagNodeType.NodeTypeIds
+            );
         }
         StateHasChanged();
     }
 
     private void SetTagToDeleted(int termId)
     {
-
-        if (Elems is not null)
+        
+        var elem = NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId);
+        if (elem is not null)
         {
-            var elem = Elems.FirstOrDefault(x => x.TermId == termId);
-            if (elem is not null)
+            if (elem.IsStored)
             {
-                if (elem.IsStored)
-                {
-                    elem.SetToDeleted();
-                }
-                else
-                {
-                    Elems.Remove(elem);
-                }
-                StateHasChanged();
+                elem.SetToDeleted();
             }
+            else
+            {
+                NodeTypeTags.Entries.Remove(elem);
+            }
+            StateHasChanged();
         }
     }
 }

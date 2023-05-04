@@ -13,9 +13,9 @@ public record Discussion : SimpleTextNode
 
     public required int OwnerId { get; set; }
 
-    private List<Tag> tags = new();
+    private List<Tags> tags = new();
 
-    public List<Tag> Tags {
+    public List<Tags> Tags {
         get => tags;
         init {
             if (value is not null) {

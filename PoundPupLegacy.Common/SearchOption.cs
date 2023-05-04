@@ -1,6 +1,7 @@
-﻿using NpgsqlTypes;
+﻿using Npgsql;
+using NpgsqlTypes;
 
-namespace PoundPupLegacy.ViewModel.Models;
+namespace PoundPupLegacy.Common;
 
 public enum SearchOption
 {

@@ -1,0 +1,17 @@
+﻿.label-value {
+    display: grid;
+    grid-template-columns: 2fr 5fr;
+}
+.container {
+    display: grid;
+    grid-template-columns: 1fr 10em 1fr;
+}
+button {
+    margin: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: #6290fa;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}

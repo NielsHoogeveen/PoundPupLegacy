@@ -1,0 +1,21 @@
+﻿@inherits ViewerBase
+
+@if(NodeTypesTags is not null)
+{
+    <div class="tags">
+        @foreach(var nodeTypeTags in NodeTypesTags) {
+            <TagEditor NodeId="NodeId" NodeTypeTags="nodeTypeTags"/>
+        }
+    </div>
+
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public List<Tags>? NodeTypesTags { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public int? NodeId { get; set; }
+}

@@ -99,6 +99,7 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
                         from
                         (
             	            select
+                                distinct
             	                tn.id,
             	                n.title,
             	                n.node_type_id,

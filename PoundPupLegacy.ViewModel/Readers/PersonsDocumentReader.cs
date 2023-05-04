@@ -2,6 +2,7 @@
 
 using PoundPupLegacy.ViewModel.Models;
 using Request = PersonsDocumentReaderRequest;
+using SearchOption = Common.SearchOption;
 
 public sealed record PersonsDocumentReaderRequest : IRequest
 {

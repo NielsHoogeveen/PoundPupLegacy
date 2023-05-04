@@ -34,7 +34,7 @@ internal abstract class NodeEditServiceBase<T, TCreate>
     protected abstract Task StoreNew(T node, NpgsqlConnection connection);
     protected virtual async Task StoreAdditional(T node)
     {
-        await _tagSaveService.SaveAsync(node.Tags, _connection);
+        await _tagSaveService.SaveAsync(node.Tags.SelectMany(x => x.Entries), _connection);
         await _tenantNodesSaveService.SaveAsync(node.TenantNodes, _connection);
         await _filesSaveService.SaveAsync(node.Files, _connection);
     }
