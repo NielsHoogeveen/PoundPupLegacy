@@ -2,16 +2,6 @@
 @using Microsoft.Extensions.Logging
 @inject ILogger<AttachmentEditor> logger
 @inject IAttachmentStoreService attachmentService
-<style>
-    .error{
-        background-color: #662222;
-        color: red;
-    }
-    .files{
-        display: grid;
-        grid-template-columns: 5fr 2fr 1fr 1fr;
-    }
-</style>
 @if (Files is not null)
 {
     <div class="editor-section">

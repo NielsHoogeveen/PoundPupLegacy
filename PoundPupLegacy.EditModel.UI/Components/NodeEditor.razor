@@ -3,29 +3,30 @@
 @inject IJSRuntime JSRuntime
 @inject IEditService<T> editService
 
-<EditForm Model="@Model" OnSubmit="@HandleSubmit">
-    <InputText @bind-Value="Model.Title" id="name" class="title-editor" type="text"/>
-    @if(Model is Nameable nameable) {
-        <NameableEditor Model="nameable" />
-    }
-    @if(Model is SimpleTextNode simpleTextNode){
-        <SimpleTextNodeEditor Model="simpleTextNode"/>
-    }
-    @if(Model is Document document) {
-        <DocumentEditor Model="document"/>
-    }
-    @if (Model is Organization organization) {
-        <OrganizationEditor Model="organization" />
-    }
-    <TagsEditor NodeTypesTags="Model.Tags" NodeId="Model.NodeId" />
-    <TenantNodesEditor Node="@Model" />
-    <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />
-    @if (Model is Locatable locatable) {
-        <LocationsEditor Locatable="locatable" />
-    }
-    <button type="submit">Submit</button>
-</EditForm>
-
+<div class="editor-form">
+    <EditForm Model="@Model" OnSubmit="@HandleSubmit">
+        <InputText @bind-Value="Model.Title" id="name" class="title-editor" type="text"/>
+        @if(Model is Nameable nameable) {
+            <NameableEditor Model="nameable" />
+        }
+        @if(Model is SimpleTextNode simpleTextNode){
+            <SimpleTextNodeEditor Model="simpleTextNode"/>
+        }
+        @if(Model is Document document) {
+            <DocumentEditor Model="document"/>
+        }
+        @if (Model is Organization organization) {
+            <OrganizationEditor Model="organization" />
+        }
+        <TagsEditor NodeTypesTags="Model.Tags" NodeId="Model.NodeId" />
+        <TenantNodesEditor Node="@Model" />
+        <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />
+        @if (Model is Locatable locatable) {
+            <LocationsEditor Locatable="locatable" />
+        }
+        <button type="submit">Submit</button>
+    </EditForm>
+</div>
 @code {
     [Parameter]
     [EditorRequired]

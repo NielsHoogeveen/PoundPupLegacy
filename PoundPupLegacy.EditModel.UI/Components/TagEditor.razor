@@ -5,7 +5,7 @@
 
     <div class="term-selector">
         <label for="node-type-@NodeTypeTags.TagNodeType.TagLabelName">@NodeTypeTags.TagNodeType.TagLabelName</label>
-        <input name="node-type-@NodeTypeTags.TagNodeType.TagLabelName" class="tag-search" @bind="@topicSearch" @oninput="OnSetTopicSearch" />
+        <input type="text" name="node-type-@NodeTypeTags.TagNodeType.TagLabelName" class="tag-search" @bind="@topicSearch" @oninput="OnSetTopicSearch" />
     </div>
 
     @if (termOptions.Any())

@@ -127,10 +127,6 @@ input[type=file] {
     display: none;
 }
 
-.editor-section{
-    border-bottom: solid 1px #838383;
-}
-
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

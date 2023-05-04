@@ -4,7 +4,21 @@
 
 @if (Node is not null)
 {
-    <div style="display: grid; grid-template-columns: 1fr 10fr 10fr 10fr 10fr;">
+    <div class="tenant-node-editor" >
+        <div class="header"></div>
+        <div class="header">
+            Tenant
+        </div>
+        <div class="header">
+            Path
+        </div>
+        <div class="header">
+            Publication status
+        </div>
+        <div class="header">
+            Subgroup
+        </div>
+
     @foreach(var tenant in Node.Tenants) {
         if(tenant.TenantNode is not null && !tenant.TenantNode.HasBeenDeleted)
         {

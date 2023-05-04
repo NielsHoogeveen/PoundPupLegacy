@@ -1,27 +1,25 @@
 label{
     font-weight: bold;
 }
-.tags {
-    background-color: #e4e8f1;
-}
 .tag-search {
     display: block;
     width: 20%;
     font-size: 125%;
-    outline-color: cadetblue;
+    outline-color: #76b1db;
     margin-top: 0.5em;
     margin-bottom: 0.25em;
     padding-left: 0.15em;
     padding-right: 0.15em;
 }
 
-.node-type-group{
-    border-bottom: solid thin #ccc;
+.node-type-group {
+    border-bottom: solid 1px #82bae2;
     padding-top: 0.5em;
 }
 
 .term-selector {
     margin-bottom: 1em;
+    padding-left: 0.25em;
 }
 
 .term-options {
@@ -54,8 +52,8 @@ label{
     user-select: none;
     padding-right: 0.5em;
     min-width: 15em;
-    background-color: #dae0ee;
-    border-bottom: solid thin #eeeeee    
+    background-color: #cedaec;
+    padding-left: 0.25em;
 }
 
 button {
@@ -70,5 +68,5 @@ button {
 
 
 .tag-elements div:nth-of-type(2n+1) {
-    background-color: #f0f2f9;
+    background-color: #c7d1e1;
 }

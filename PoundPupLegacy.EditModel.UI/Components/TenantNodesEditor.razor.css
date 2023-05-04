@@ -1,0 +1,19 @@
+﻿.tenant-node-editor {
+    display: grid;
+    grid-template-columns: 1fr 10fr 10fr 10fr 10fr;
+    background-color: #b8d0e1;
+    padding-bottom: 1em;
+    margin-top: 1em;
+    border: solid 2px #76b1db;
+    border-radius: 5px;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+.header {
+    background-color: #c7d1e1;
+    border-bottom: solid 1px #76b1db;
+    margin-bottom: 1em;
+}
+
+input, select {
+    outline-color: #76b1db;
+}

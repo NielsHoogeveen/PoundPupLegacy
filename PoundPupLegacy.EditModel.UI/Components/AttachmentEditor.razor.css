@@ -11,3 +11,27 @@
     border-radius: 5px;
     cursor: pointer;
 }
+.error {
+    background-color: #662222;
+    color: red;
+}
+
+.files {
+    display: grid;
+    grid-template-columns: 5fr 2fr 1fr 1fr;
+}
+
+.editor-section {
+    margin-top: 1em;
+    background-color: #b8d0e1;
+    padding-left: 0.25em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    border: solid 2px #76b1db;
+    border-radius:5px;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+.editor-section h4{
+    margin:0;
+    padding:0;
+}

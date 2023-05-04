@@ -1,4 +1,4 @@
-﻿.details{
-    padding-bottom: 1em;
-    border-bottom: solid thin grey;
+﻿.details {
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+    border-radius: 5px;
 }

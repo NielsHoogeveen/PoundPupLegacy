@@ -1,9 +1,20 @@
 ﻿button {
-    margin: 0.25em;
+    margin-top: 1em;
+    margin-left: 0.25em;
     padding: 0.5em 1em;
     border: 0;
     background-color: #6290fa;
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+
+.editor-form {
+    padding: 1em;
+    border-bottom: solid thin #ccc;
+}
+
+::deep .title-editor {
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
 }
