@@ -1,6 +1,5 @@
 ﻿@{
-    <div class="modal open" id="@Id" aria-modal="true" role="dialog" @onclick="Cancel">
-        <div class="modal-dialog" @onclick:preventDefault="true" @onclick:stopPropagation="true">
+        <dialog open class="modal" >
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">@Title</h4>
@@ -14,8 +13,7 @@
                     <button class="btn" @onclick="Cancel">Cancel</button>
                 </div>
             </div>
-        </div>
-    </div>
+        </dialog>
 }
 @code {
     [Parameter]

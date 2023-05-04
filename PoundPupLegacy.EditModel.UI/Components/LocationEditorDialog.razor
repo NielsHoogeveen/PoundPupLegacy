@@ -72,10 +72,10 @@
         <div>
         @if (canValidate)
         {
-            <button @onclick="Validate" style="display: block">Validate</button>
+            <button type="button" @onclick="Validate" style="display: block">Validate</button>
         }
         @if (canAccept) {
-            <button @onclick="Accept" style="display: block; margin-top: 1em;">Accept</button>
+                <button type="button" @onclick="Accept" style="display: block; margin-top: 1em;">Accept</button>
         }
     </div>
         <div>

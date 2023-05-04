@@ -47,7 +47,7 @@
         (var countryId, var countryName) = DefaultCountryService.GetDefaultCountry(TenantId);
         locationToEdit = new Location {
             LocationId = null,
-            LocatableId = null,
+            LocatableId = Locatable.NodeId,
             Street = null,
             Addition = null,
             PostalCode = null,  
