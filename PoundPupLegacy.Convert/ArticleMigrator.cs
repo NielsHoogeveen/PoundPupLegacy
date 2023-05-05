@@ -2,22 +2,22 @@
 
 internal sealed class ArticleMigrator : MigratorPPL
 {
-    private readonly IEntityCreator<Article> _articleCreator;
+    private readonly IEntityCreator<Document> _articleCreator;
     public ArticleMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<Article> articleCreator
+        IEntityCreator<Document> articleCreator
     ) : base(databaseConnections)
     {
         _articleCreator = articleCreator;
     }
 
-    protected override string Name => "articles";
+    protected override string Name => "documents (articles)";
 
     protected override async Task MigrateImpl()
     {
         await _articleCreator.CreateAsync(ReadArticles(), _postgresConnection);
     }
-    private async IAsyncEnumerable<Article> ReadArticles()
+    private async IAsyncEnumerable<Document> ReadArticles()
     {
 
         var sql = $"""
@@ -42,7 +42,7 @@ internal sealed class ArticleMigrator : MigratorPPL
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            yield return new Article {
+            yield return new Document {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
@@ -62,7 +62,11 @@ internal sealed class ArticleMigrator : MigratorPPL
                         UrlId = reader.GetInt32("id")
                     }
                 },
-                NodeTypeId = 36,
+                NodeTypeId = 10,
+                Documentables = new List<int>(),
+                PublicationDate = null,
+                SourceUrl = null,
+                DocumentTypeId = null,
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
             };

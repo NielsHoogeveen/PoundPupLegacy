@@ -49,37 +49,6 @@ internal class SearchableMigrator : MigratorPPL
                 from (
                     select
                     n.id,
-                    to_tsvector(
-                        'english', 
-                        replace(
-                            regexp_replace(
-                                concat(
-                                    a.text,
-                                    ' ' ,
-                                    n.title,
-                                    ' ', 
-                                    string_agg(cm.text, ' ')
-                                 ), 
-                                 E'<[^>]+>', 
-                                 '', 
-                                 'gi'
-                             ), 
-                             '&nbsp;', 
-                             ' '
-                        )
-                    ) tsvector
-                    from simple_text_node a
-                    join article b on b.id = a.id
-                    join node n  on n.id = a.id
-                    left join "comment" cm on cm.node_id = n.id
-                    group by n.id, a.text, n.title
-                ) subquery
-                where searchable.id = subquery.id;
-                UPDATE searchable
-                set tsvector = subquery.tsvector
-                from (
-                    select
-                    n.id,
                     to_tsvector('english', regexp_replace(concat(a.text,' ' ,n.title,' ', string_agg(cm.text, ' ')), E'<[^>]+>', '', 'gi')) tsvector
                     from simple_text_node a
                     join discussion b on b.id = a.id

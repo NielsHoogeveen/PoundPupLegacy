@@ -147,7 +147,6 @@ public static class Constants
     public const int WRONGFUL_MEDICATION_CASE = 33;
     public const int WRONGFUL_REMOVAL_CASE = 34;
     public const int BLOG_POST = 35;
-    public const int ARTICLE = 36;
     public const int DISCUSSION = 37;
     public const int DISRUPTED_PLACEMENT_CASE = 44;
 

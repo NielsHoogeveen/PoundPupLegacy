@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Articles: TermedList<ArticleList, ArticleListEntry>
+public record Documents: TermedList<ArticleList, ArticleListEntry>
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
     public SelectionItem[] TermNames {

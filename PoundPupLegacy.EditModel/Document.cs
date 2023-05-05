@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record Document : Node
+public record Document : SimpleTextNode
 {
-    public int? NodeId { get; init; }
+    public int? NodeId { get; set; }
     public int? UrlId { get; set; }
     public required string Title { get; set; }
     public required int PublisherId { get; set; }

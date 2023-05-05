@@ -20,7 +20,6 @@ public static class DependencyInjection
         services.AddEditModelInserters();
         services.AddEditModelUpdaters();
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
-        services.AddTransient<IEditService<Article>, ArticleEditService>();
         services.AddTransient<IEditService<BlogPost>, BlogPostEditService>();
         services.AddTransient<IEditService<Discussion>, DiscussionEditService>();
         services.AddTransient<IEditService<Organization>, OrganizationEditService>();

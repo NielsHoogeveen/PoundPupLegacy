@@ -74,6 +74,8 @@ internal sealed class NodeTypeMigrator : MigratorPPL
         yield return BasicNameableType.Create(23, "organization", "A collection of people working together. Therefore a bill or a trip is also regarderd an organization, even though it does not have a formal position as such.", false, "Organizations");
         yield return BasicNameableType.Create(24, "person", "Person", false, "Persons");
 
+        yield return BasicNameableType.Create(36, "act", "Act", false, "Acts");
+
         yield return BasicNameableType.Create(56, "house bill", "A bill that is introduced in the US house of representatives", false, "Bills");
         yield return BasicNameableType.Create(57, "senate bill", "A bill that is introduced in the US senate", false, "Bills");
 
@@ -108,7 +110,6 @@ internal sealed class NodeTypeMigrator : MigratorPPL
         yield return BasicNodeType.Create(10, "document", "A text based document", false);
         
         yield return BasicNodeType.Create(35, "blog post", "Blog post", true);
-        yield return BasicNodeType.Create(36, "article", "Article", true);
         yield return BasicNodeType.Create(37, "discussion", "Discussion", true);
         yield return BasicNodeType.Create(38, "vocabulary", "A set of terms", false);
         yield return BasicNodeType.Create(42, "page", "A simpe text node", false);

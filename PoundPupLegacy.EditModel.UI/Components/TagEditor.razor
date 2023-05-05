@@ -74,10 +74,10 @@
     {
         termOptions.Clear();
         var searchString = args.Value?.ToString() ?? string.Empty;
-        if (!string.IsNullOrEmpty(searchString) && NodeId.HasValue)
+        if (!string.IsNullOrEmpty(searchString))
         {
             termOptions = await topicSearchService.GetTerms(
-                nodeId: NodeId.Value, 
+                nodeId: NodeId, 
                 tenantId: TenantId, 
                 searchString: searchString,
                 nodeTypeIds: NodeTypeTags.TagNodeType.NodeTypeIds

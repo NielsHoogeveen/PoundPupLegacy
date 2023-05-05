@@ -19,22 +19,45 @@ internal sealed class UserTenantActionReaderFactory : EnumerableDatabaseReaderFa
 
     const string SQL = """
         select
-            distinct
-            ugur.user_id,
-            t.id tenant_id,
-            ba.path action
+        	distinct
+        	ugur.user_id,
+        	t.id tenant_id,
+        	ba.path action
         from basic_action ba
         join access_role_privilege arp on arp.action_id = ba.id
         join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
         join tenant t on t.id = ugur.user_group_id
         union
         select
-            distinct
-            0,
-            t.id tenant_id,
-            ba.path
+        	distinct
+        	0,
+        	t.id tenant_id,
+        	ba.path
         from basic_action ba
         join access_role_privilege arp on arp.action_id = ba.id
+        join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+        join tenant t on t.id = ugur.user_group_id
+        where arp.access_role_id = t.access_role_id_not_logged_in
+        union
+        select
+        	distinct
+        	ugur.user_id,
+        	t.id tenant_id,
+        	'/' || replace(nt.name, ' ', '_') || '/create' "action"
+        from create_node_action cna
+        join node_type nt on nt.id = cna.node_type_id
+        join access_role_privilege arp on arp.action_id = cna.id
+        join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+        join tenant t on t.id = ugur.user_group_id
+        union
+        select
+        	distinct
+        	0,
+        	t.id tenant_id,
+        	'/' || replace(nt.name, ' ', '_') || '/create' "action"
+        from create_node_action cna
+        join node_type nt on nt.id = cna.node_type_id
+        join access_role_privilege arp on arp.action_id = cna.id
         join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
         join tenant t on t.id = ugur.user_group_id
         where arp.access_role_id = t.access_role_id_not_logged_in

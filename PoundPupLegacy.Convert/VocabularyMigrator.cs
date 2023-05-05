@@ -45,7 +45,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.CHILD_PLACEMENT_TYPE
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
         yield return new Vocabulary {
@@ -69,7 +69,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.TYPE_OF_ABUSE
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
         yield return new Vocabulary {
@@ -93,7 +93,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.TYPE_OF_ABUSER
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
         yield return new Vocabulary {
@@ -117,7 +117,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.FAMILY_SIZE
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
         yield return new Vocabulary {
@@ -141,7 +141,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.BILL_ACTION
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
         yield return new Vocabulary {
@@ -165,7 +165,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.ORGANIZATION_ACT_RELATION_TYPE
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
         yield return new Vocabulary {
@@ -189,7 +189,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.SUBDIVISION_TYPE
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
         yield return new Vocabulary {
@@ -213,7 +213,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
         yield return new Vocabulary {
@@ -237,7 +237,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                         UrlId = Constants.CASE_PARTY_TYPE
                     }
                 },
-            NodeTypeId = 36,
+            NodeTypeId = 38,
             Description = ""
         };
     }

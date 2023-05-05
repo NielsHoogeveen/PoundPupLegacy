@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 using PoundPupLegacy.ViewModel.Models;
-using Request = ArticlesDocumentReaderRequest;
+using Request = DocumentsDocumentReaderRequest;
 
-public sealed record ArticlesDocumentReaderRequest : IRequest
+public sealed record DocumentsDocumentReaderRequest : IRequest
 {
     public required int TenantId { get; init; }
     public required int UserId { get; init; }
@@ -11,7 +11,7 @@ public sealed record ArticlesDocumentReaderRequest : IRequest
     public required int Length { get; init; }
 }
 
-internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Articles>
+internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, Documents>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -19,7 +19,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
     private static readonly NullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
     private static readonly NullableIntegerArrayDatabaseParameter TermsParameter = new() { Name = "terms" };
 
-    private static readonly FieldValueReader<Articles> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<Documents> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -171,7 +171,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
                                 group by node_id, c
                                 having count(node_id) = c
                             ))
-                            and n.node_type_id in (10, 36)
+                            and n.node_type_id = 10
                             and stn.teaser <> ''
         			    ) x
         			    WHERE status > 0
@@ -302,7 +302,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
                             group by node_id, c
                             having count(node_id) = c
                         ))
-                        and n2.node_type_id in (10, 36)
+                        and n2.node_type_id = 10
                         and stn.teaser <> ''
         		    ) x
         		    where status_node > 0 and status_term > 0
@@ -329,7 +329,7 @@ internal sealed class ArticlesDocumentReaderFactory : SingleItemDatabaseReaderFa
         };
     }
 
-    protected override Articles Read(NpgsqlDataReader reader)
+    protected override Documents Read(NpgsqlDataReader reader)
     {
         return DocumentReader.GetValue(reader);
     }

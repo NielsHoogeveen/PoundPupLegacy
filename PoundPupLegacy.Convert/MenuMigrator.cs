@@ -48,8 +48,8 @@ internal sealed class MenuMigrator : MigratorPPL
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/articles" }),
-            Name = "Articles",
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/documents" }),
+            Name = "Documents",
             Weight = 3,
         };
         yield return new ActionMenuItem {
@@ -102,8 +102,8 @@ internal sealed class MenuMigrator : MigratorPPL
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 36 }),
-            Name = "Create Article",
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest { NodeTypeId = 10 }),
+            Name = "Create Document",
             Weight = 12,
         };
         yield return new ActionMenuItem {

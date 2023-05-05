@@ -2,14 +2,14 @@
 
 public record TenantNode
 {
-    public int? Id { get; init; }
-    public required int TenantId { get; init; }
-    public int? UrlId { get; init; }
+    public int? Id { get; set; }
+    public required int TenantId { get; set; }
+    public int? UrlId { get; set; }
     public required string? UrlPath { get; set; }
-    public int? NodeId { get; init; }
+    public int? NodeId { get; set; }
     public int? SubgroupId { get; set; }
     public required int PublicationStatusId { get; set; }
-    public required bool HasBeenStored { get; init; }
+    public required bool HasBeenStored { get; set; }
     public bool HasBeenDeleted { get; set; } = false;
     public bool CanBeUnchecked { get; set; } = true;
 }

@@ -1,0 +1,38 @@
+﻿namespace PoundPupLegacy.EditModel.Readers;
+
+internal sealed class DocumentCreateDocumentReaderFactory : NodeCreateDocumentReaderFactory<Document>
+{
+    public override string Sql => SQL;
+
+    protected override int NodeTypeId => Constants.DOCUMENT;
+
+    private const string SQL = $"""
+            {CTE_CREATE}
+            select
+                jsonb_build_object(
+                    'NodeId', 
+                    null,
+                    'UrlId', 
+                    null,
+                    'PublisherId',
+                    @user_id,
+                    'OwnerId',
+                    @tenant_id,
+                    'Title', 
+                    '',
+                    'Text', 
+                    '',
+            		'Tags', null,
+                    'TenantNodes',
+                    null,
+                    'Tenants',
+                    (select document from tenants_document),
+                    'Files',
+                    null,
+                    'DocumentTypes',
+                    (select document from document_types_document),
+                    'Tags',
+                    (select document from tags_document)
+                ) document
+        """;
+}

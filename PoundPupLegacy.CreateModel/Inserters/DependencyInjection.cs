@@ -15,7 +15,6 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<Action>, ActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ActionMenuItem>, ActionMenuItemInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<AdministratorRole>, AdministratorRoleInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<Article>, ArticleInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<BasicAction>, BasicActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<BasicCountry>, BasicCountryInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<BasicNameable>, BasicNameableInserterFactory>();

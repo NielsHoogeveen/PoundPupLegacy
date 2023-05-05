@@ -118,7 +118,7 @@ internal sealed class CountryAndIntermediateLevelSubdivisionCreator : EntityCrea
                         UrlId = null
                     }
                 },
-                NodeTypeId = 36,
+                NodeTypeId = 38,
                 Description = $"Contains unique names for all subdivisions of {country.Name}"
             };
             await _vocabularyCreator.CreateAsync(vocabulary, connection);

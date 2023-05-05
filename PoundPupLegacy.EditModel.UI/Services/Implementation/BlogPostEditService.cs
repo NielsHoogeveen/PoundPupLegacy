@@ -37,7 +37,7 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
             await _connection.OpenAsync();
             await using var reader = await _createDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.ARTICLE,
+                NodeTypeId = Constants.BLOG_POST,
                 UserId = userId,
                 TenantId = tenantId
             });

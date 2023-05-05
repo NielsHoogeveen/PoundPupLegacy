@@ -1,9 +1,36 @@
 ﻿button {
-    margin: 0.25em;
     padding: 0.5em 1em;
     border: 0;
     background-color: #6290fa;
     color: white;
     border-radius: 5px;
     cursor: pointer;
+}
+.location {
+    display: grid;
+    grid-template-columns: 3fr 3fr 1fr 2fr 2fr 3fr 3em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    
+}
+
+.location:not(:last-of-type) {
+    border-bottom: solid 1px #82bae2;
+}
+
+.editor-section {
+    margin-top: 1em;
+    background-color: #b8d0e1;
+    padding-right: 0.25em;
+    padding-left: 0.25em;
+    padding-bottom: 0.25em;
+    border: solid 2px #76b1db;
+    border-radius: 5px;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+
+.header {
+    background-color: #c7d1e1;
+    border-bottom: solid 1px #76b1db;
+    margin-bottom: 1em;
 }

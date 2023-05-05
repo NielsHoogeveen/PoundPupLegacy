@@ -4,36 +4,36 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
-internal sealed class FetchArticlesService : IFetchArticlesService
+internal sealed class FetchDocumentsService : IFetchDocumentsService
 {
     private readonly NpgsqlConnection _connection;
 
-    public readonly ISingleItemDatabaseReaderFactory<ArticlesDocumentReaderRequest, Articles> _articlesDocumentReaderFactory;
-    public FetchArticlesService(
+    public readonly ISingleItemDatabaseReaderFactory<DocumentsDocumentReaderRequest, Documents> _documentsDocumentReaderFactory;
+    public FetchDocumentsService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<ArticlesDocumentReaderRequest, Articles> articlesDocumentReaderFactory)
+        ISingleItemDatabaseReaderFactory<DocumentsDocumentReaderRequest, Documents> documentsDocumentReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         _connection = (NpgsqlConnection)connection;
-        _articlesDocumentReaderFactory = articlesDocumentReaderFactory;
+        _documentsDocumentReaderFactory = documentsDocumentReaderFactory;
     }
 
-    public async Task<Articles> GetArticles(int tenantId, int userId, int[] selectedTerms, int pageNumber, int length)
+    public async Task<Documents> GetArticles(int tenantId, int userId, int[] selectedTerms, int pageNumber, int length)
     {
 
         var startIndex = (pageNumber - 1) * length;
         try {
             await _connection.OpenAsync();
-            await using var reader = await _articlesDocumentReaderFactory.CreateAsync(_connection);
-            var articles = await reader.ReadAsync(new ArticlesDocumentReaderRequest {
+            await using var reader = await _documentsDocumentReaderFactory.CreateAsync(_connection);
+            var articles = await reader.ReadAsync(new DocumentsDocumentReaderRequest {
                 TenantId = tenantId,
                 UserId = userId,
                 SelectedTerms = selectedTerms,
                 StartIndex = startIndex,
                 Length = length
             });
-            var result = articles is not null ? articles : new Articles {
+            var result = articles is not null ? articles : new Documents {
                 TermNames = Array.Empty<SelectionItem>(),
                 Items = new ArticleList {
                     Entries = Array.Empty<ArticleListEntry>(),

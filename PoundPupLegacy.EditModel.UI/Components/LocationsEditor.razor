@@ -13,9 +13,18 @@
 
     <div class="locations editor-section">
         <h4>Locations</h4>
+        <div class="location">
+        <div class="header">Street</div>
+        <div class="header"></div>
+        <div class="header">Postal code</div>
+        <div class="header">City</div>
+        <div class="header">Subdivision</div>
+        <div class="header">Country</div>
+        <div class="header"></div>
+        </div>
         @foreach(var location in Locatable.Locations) {
             @if (location is not null) {
-                <div class="location" style="display:grid;grid-template-columns:3fr 3fr 1fr 2fr 2fr 3fr 3em">
+                <div class="location">
                     <div>@location.Street</div>
                     <div>@location.Addition</div>
                     <div>@location.PostalCode</div>

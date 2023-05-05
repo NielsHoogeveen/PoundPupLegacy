@@ -47,6 +47,18 @@ internal abstract class NodeEditServiceBase<T, TCreate>
             try {
                 if (node.NodeId is null) {
                     await StoreNew(node, _connection);
+                    node.UrlId = node.NodeId;
+                    foreach (var tagNodeType in node.Tags) {
+                        foreach (var tag in tagNodeType.Entries) {
+                            tag.NodeId = node.NodeId;
+                        }
+                    }
+                    foreach(var tenantNode in node.TenantNodes) {
+                        tenantNode.NodeId = node.NodeId;
+                    }
+                    foreach(var file in node.Files) {
+                        file.NodeId = node.NodeId;
+                    }
                 }
                 else {
                     await StoreExisting(node, _connection);

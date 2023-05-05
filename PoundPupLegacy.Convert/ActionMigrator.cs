@@ -90,8 +90,8 @@ internal sealed class ActionMigrator : MigratorPPL
         };
         yield return new BasicAction {
             Id = null,
-            Path = "/articles",
-            Description = "Show all articles"
+            Path = "/documents",
+            Description = "Show all documents"
         };
         yield return new BasicAction {
             Id = null,

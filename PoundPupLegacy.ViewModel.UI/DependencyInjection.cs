@@ -16,7 +16,7 @@ public static class DependencyInjection
         services.AddTransient<ICongressionalDataService, CongressionalDataService>();
         services.AddTransient<IFetchAbuseCasesService, FetchAbuseCasesService>();
         services.AddTransient<IFetchAttachmentService, FetchAttachmentService>();
-        services.AddTransient<IFetchArticlesService, FetchArticlesService>();
+        services.AddTransient<IFetchDocumentsService, FetchDocumentsService>();
         services.AddTransient<IFetchBlogService, FetchBlogService>();
         services.AddTransient<IFetchBlogsService, FetchBlogsService>();
         services.AddTransient<IFetchCasesService, FetchCasesService>();

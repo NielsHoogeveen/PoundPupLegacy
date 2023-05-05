@@ -43,7 +43,7 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
         yield return new AccessRolePrivilege {
             AccessRoleId = 4,
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
-                NodeTypeId = 36
+                NodeTypeId = 10
             })
         };
         yield return new AccessRolePrivilege {
@@ -61,7 +61,7 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
         yield return new AccessRolePrivilege {
             AccessRoleId = 42,
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
-                NodeTypeId = 36
+                NodeTypeId = 10
             })
         };
         yield return new AccessRolePrivilege {
@@ -109,7 +109,7 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 12,
-            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/articles" })
+            ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/documents" })
         };
         yield return new AccessRolePrivilege {
             AccessRoleId = 12,

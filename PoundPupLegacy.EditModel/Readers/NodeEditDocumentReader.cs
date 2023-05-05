@@ -20,10 +20,10 @@ where TResponse : class, Node
 {
     protected const string CTE_EDIT = $"""
         WITH
-        {TAGS_DOCUMENT},
+        {TAGS_DOCUMENT_EDIT},
         {TENANT_NODES_DOCUMENT},
         {TENANTS_DOCUMENT},
-        {DOCUMENT_TYPES_DOCUMENT},
+        {DOCUMENT_TYPES_DOCUMENT_EDIT},
         {ATTACHMENTS_DOCUMENT},
         {ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT},
         {ORGANIZATION_TYPES_DOCUMENT},
@@ -34,10 +34,41 @@ where TResponse : class, Node
 
     protected const string CTE_CREATE = $"""
         WITH
-        {TENANTS_DOCUMENT}
+        {TENANTS_DOCUMENT},
+        {DOCUMENT_TYPES_DOCUMENT_CREATE},
+        {TAGS_DOCUMENT_CREATE}
         """;
 
-    const string TAGS_DOCUMENT = """
+    const string TAGS_DOCUMENT_CREATE = """
+        tags_document as (
+            select
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'TagNodeType',
+        		    jsonb_build_object(
+        			    'NodeTypeIds',
+        			    node_type_ids,
+        			    'TagLabelName',
+        			    tag_label_name
+        		    ),
+        		    'Entries',
+        		    null
+        	    )
+            ) "document"
+            from(
+        	    select
+        	    jsonb_agg(
+        		    nt.id
+        	    ) node_type_ids,
+        	    nt.tag_label_name
+        	    from nameable_type nt
+        	    join node_type nt3 on nt3.id = nt.id
+        	    group by nt.tag_label_name
+            ) x        
+        )
+        """;
+
+    const string TAGS_DOCUMENT_EDIT = """
         tags_document as (
             select
             jsonb_agg(
@@ -87,7 +118,26 @@ where TResponse : class, Node
             ) x        
         )
         """;
-    const string DOCUMENT_TYPES_DOCUMENT = """
+    const string DOCUMENT_TYPES_DOCUMENT_CREATE = """
+        document_types_document as (
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'Id',
+        		        n.id,
+        		        'Name',
+        		        n.title
+        	        )
+                ) document
+            from document_type dt
+            join term t on t.nameable_id = dt.id
+            join tenant_node tn on tn.node_id = t.vocabulary_id
+            join node n on n.id = dt.id 
+            where tn.url_id = 42416 and tn.tenant_id = 1
+        )
+        """;
+
+    const string DOCUMENT_TYPES_DOCUMENT_EDIT = """
         document_types_document as (
             select
                 jsonb_agg(

@@ -6,11 +6,10 @@ public static class DependencyInjection
 {
     public static void AddEditModelReaders(this IServiceCollection services)
     {
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Article>, ArticleCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost>, BlogPostCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Document>, DocumentCreateDocumentReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem>, CountryListItemsReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion>, DiscussionCreateDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Article>, ArticleUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost>, BlogPostUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion>, DiscussionUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document>, DocumentUpdateDocumentReaderFactory>();

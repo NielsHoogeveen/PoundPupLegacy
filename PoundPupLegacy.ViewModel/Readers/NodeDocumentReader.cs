@@ -53,7 +53,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             {PAGE_BREADCRUM_DOCUMENT},
             {ORGANIZATION_BREADCRUM_DOCUMENT},
             {DOCUMENT_BREADCRUM_DOCUMENT},
-            {ARTICLE_BREADCRUM_DOCUMENT},
             {POLL_BREADCRUM_DOCUMENT},
             {ABUSE_CASE_BREADCRUM_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT},
@@ -71,7 +70,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             {BLOG_POST_DOCUMENT},
             {PAGE_DOCUMENT},
             {DISCUSSION_DOCUMENT},
-            {ARTICLE_DOCUMENT},
             {DOCUMENT_DOCUMENT},
             {SINGLE_QUESTION_POLL_DOCUMENT},
             {MULTIPLE_QUESTION_POLL_DOCUMENT},
@@ -1711,33 +1709,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         )
         """;
 
-    const string ARTICLE_BREADCRUM_DOCUMENT = """
-        article_bread_crum_document AS (
-            SELECT jsonb_agg(
-                jsonb_build_object(
-                    'Path', url,
-                    'Title', "name"
-                ) 
-            ) document
-            FROM(
-            SELECT
-        	    url,
-        	    "name"
-            FROM(
-                SELECT 
-                    '/home' url, 
-                    'Home' "name", 
-                    0 "order"
-                UNION
-                SELECT 
-                    '/articles', 
-                    'aricles', 
-                    1
-                ) bce
-                ORDER BY bce."order"
-            ) bces
-        )
-        """;
     const string DOCUMENT_BREADCRUM_DOCUMENT = """
         document_bread_crum_document AS (
             SELECT jsonb_agg(
@@ -3528,47 +3499,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         ) 
         """;
 
-    const string ARTICLE_DOCUMENT = """
-        article_document AS (
-            SELECT 
-                jsonb_build_object(
-                    'UrlId', n.url_id,
-                    'NodeId', n.node_id,
-                    'NodeTypeId', n.node_type_id,
-                    'Title', n.title, 
-                    'Text', n.text,
-                    'HasBeenPublished', n.has_been_published,
-                    'Authoring', jsonb_build_object(
-                        'Id', n.publisher_id, 
-                        'Name', n.publisher_name,
-                        'CreatedDateTime', n.created_date_time,
-                        'ChangedDateTime', n.changed_date_time
-                    ),
-                    'HasBeenPublished', n.has_been_published,
-                    'BreadCrumElements', (SELECT document FROM article_bread_crum_document),
-                    'Tags', (SELECT document FROM tags_document),
-                    'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
-                    'CommentListItems', (SELECT document FROM  comments_document),
-                    'Files', (SELECT document FROM files_document)
-                ) document
-            FROM (
-                SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    stn.text, 
-                    an.publisher_id, 
-                    p.name publisher_name,
-                    an.has_been_published
-                FROM authenticated_node an
-                join simple_text_node stn on stn.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
-            ) n
-        ) 
-        """;
 
     const string DISCUSSION_DOCUMENT = """
         discussion_document AS (
@@ -4295,7 +4225,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     when an.node_type_id = 33 then (select document from wrongful_medication_case_document)
                     when an.node_type_id = 34 then (select document from wrongful_removal_case_document)
                     when an.node_type_id = 35 then (select document from blog_post_document)
-                    when an.node_type_id = 36 then (select document from article_document)
                     when an.node_type_id = 37 then (select document from discussion_document)
                     when an.node_type_id = 39 then (select document from basic_nameable_document)
                     when an.node_type_id = 40 then (select document from basic_nameable_document)
@@ -4361,7 +4290,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             33 => reader.GetFieldValue<WrongfulMedicationCase>(1),
             34 => reader.GetFieldValue<WrongfulRemovalCase>(1),
             35 => reader.GetFieldValue<BlogPost>(1),
-            36 => reader.GetFieldValue<Article>(1),
             37 => reader.GetFieldValue<Discussion>(1),
             39 => reader.GetFieldValue<BasicNameable>(1),
             40 => reader.GetFieldValue<BasicNameable>(1),

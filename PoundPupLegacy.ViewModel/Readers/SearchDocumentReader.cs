@@ -104,7 +104,7 @@ internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFact
                         			    else tn.url_path
                         		    end "path",
                         		    case 
-                        			    when nt.id in (10, 35,36,37,42) then (select teaser from simple_text_node_teaser stnt where stnt.id = n.id)
+                        			    when nt.id in (10, 35,37,42) then (select teaser from simple_text_node_teaser stnt where stnt.id = n.id)
                                         when nt.id in (26,29,30,31,32,33,34,44) then (select description from case_teaser ct where ct.id = n.id)
                         			    else ''
                         		    end teaser,	

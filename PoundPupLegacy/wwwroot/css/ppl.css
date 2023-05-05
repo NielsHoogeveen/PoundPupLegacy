@@ -145,3 +145,7 @@ input[type=file] {
     margin-bottom: 0.5em;
     border: solid 1px #aaa
 }
+
+.ck-content{
+    min-height: 25em;
+}

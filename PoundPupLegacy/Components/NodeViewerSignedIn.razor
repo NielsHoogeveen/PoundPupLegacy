@@ -36,9 +36,6 @@
                 @if (Model is ViewModel.Models.BlogPost){
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.BlogPost"/>
                 }
-                @if (Model is ViewModel.Models.Article) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Article" />
-                }
                 @if (Model is ViewModel.Models.Discussion) {
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.Discussion" />
                 }

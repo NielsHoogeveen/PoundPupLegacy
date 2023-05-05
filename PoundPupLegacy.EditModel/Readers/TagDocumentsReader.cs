@@ -5,7 +5,7 @@ using SearchOption = Common.SearchOption;
 
 public sealed record TagDocumentsReaderRequest : IRequest
 {
-    public required int NodeId { get; init; }
+    public required int? NodeId { get; init; }
     public required int TenantId { get; init; }
     public required string SearchString { get; init; }
     public required int[] NodeTypeIds { get; init; }
@@ -13,13 +13,13 @@ public sealed record TagDocumentsReaderRequest : IRequest
 
 internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tag>
 {
-    private static readonly NonNullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
+    private static readonly NullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly SearchOptionDatabaseParameter SearchOptionParameter = new() { Name = "search_option" };
     private static readonly NonNullableStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
     private static readonly NonNullableIntegerArrayDatabaseParameter NodeTypeIds = new() { Name = "node_type_ids" };
 
-    private static readonly IntValueReader NodeIdReader = new() { Name = "node_id" };
+    private static readonly NullableIntValueReader NodeIdReader = new() { Name = "node_id" };
     private static readonly IntValueReader NodeTypeIdReader = new() { Name = "node_type_id" };
     private static readonly IntValueReader TermIdReader = new() { Name = "term_id" };
     private static readonly StringValueReader NameReader = new() { Name = "name" };

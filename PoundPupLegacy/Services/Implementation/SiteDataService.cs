@@ -118,6 +118,7 @@ internal sealed class SiteDataService : ISiteDataService
         if (path == "/") {
             return true;
         }
+        var userActions = _data.UserTenantActions.Where(x => x.UserId == userId && x.TenantId == tenantId);
         return _data.UserTenantActions.Contains(
             new UserTenantAction {
                 UserId = userId,

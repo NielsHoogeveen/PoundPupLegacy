@@ -37,7 +37,7 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
             await _connection.OpenAsync();
             await using var reader = await _createDocumentReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.ARTICLE,
+                NodeTypeId = Constants.DISCUSSION,
                 UserId = userId,
                 TenantId = tenantId
             });
