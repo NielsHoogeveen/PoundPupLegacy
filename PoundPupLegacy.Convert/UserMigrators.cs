@@ -94,6 +94,19 @@ internal sealed class UserMigrator : MigratorPPL
             },
             PublicationStatusIdDefault = 1,
             CountryIdDefault = null,
+            FrontPageText = """
+            <h1>Pound Pup Legacy</h1>
+            <p>
+            Inspired by stories shared by birth parents, adoptive parents, and adult adoptees, PPL explores the dark side of adoption, and the consequences illegal and unethical actions have on future family-life and the well-being of those affected by adoption.
+            </p>
+            <p>
+            Too many children are placed for the benefit of agencies and based on the demands of prospective adoptive parents.
+            </p>
+            Too many children are placed in inappropriate homes because the business interests of adoption agencies have higher priority than the safety of children.
+            <p>
+            Pound Pup Legacy documents and archives <a href="/cases">cases</a> where the child placement system did not work in the best interest of the child and we offer a platform for those who want to express their thoughts and feelings about the dark side of child adoption.
+            </p>
+            """
         };
         yield return new Tenant {
             Id = Constants.CPCT,
@@ -112,6 +125,7 @@ internal sealed class UserMigrator : MigratorPPL
             },
             PublicationStatusIdDefault = 2,
             CountryIdDefault = null,
+            FrontPageText = null,
         };
     }
 

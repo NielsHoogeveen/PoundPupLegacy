@@ -25,6 +25,7 @@ public interface ISiteDataService
     [RequireNamedArgs]
     IEnumerable<MenuItem> GetMenuItemsForUser(int userId, int tenantId);
 
+    string? GetFrontPageText(int tenantId);
     string GetLogoName(int tenantId);
 
     string GetSubTitle(int tenantId);

@@ -4,16 +4,19 @@
 
 :root {
     --header-bg-color: linear-gradient(180deg, #2c2c2c 0%, #2c2c2c 100%);
-    --content-bg-color: white;
+    --content-bg-color: #f8f4f0;
     --content-title-color: #080b42;
     --nav-bg-color: #444;
     --nav-bg-hover-color: #222;
     --nav-border-color: #808080;
     --nav-text-color: silver;
     --footer-bg-color: #2c2c2c;
-    --breadcrum-bg-color: #ca9a63;
+    --breadcrum-bg-color: #e4ba86;
+    --breadcrum-color: #fdf3e6;
     --term-bg-color: #e0d7ca;
     --term-bg-color-selected: #cdbea9;
+    --term-border-color: #9b7542;
+    --teaser-list-element-border-color: #9b7542;
     --watermark-color: #999;
     --comment-border-color: #bbb;
     --comment-bg-color: #eaecf3;
@@ -149,4 +152,32 @@ input[type=file] {
 
 .ck-content{
     min-height: 25em;
+}
+
+.frontpage {
+    flex: 1;
+    background-image: url("/frontpage.jpg");
+    display: flex;
+}
+
+.front-page-text {
+    user-select: none;
+    margin: auto;
+    width: 50%;
+    background-color: #e8e2d9;
+    padding: 1em;
+    border-radius: 1em;
+    text-align: center;
+    color: #333;
+    justify-content: center;
+    box-shadow: 6px 6px 2px 1px rgba(25, 20, 20, .25);
+    border: solid 6px #b1aaa1;
+    border: solid 6px #e4ba86;
+}
+
+h1 {
+    user-select: none;
+    color: #413d2d;
+    border: 0;
+    outline: 0;
 }

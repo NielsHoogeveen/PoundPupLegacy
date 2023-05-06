@@ -329,15 +329,15 @@ internal sealed class SiteDataService : ISiteDataService
 
     public Link[] GetFooterMenuItems(int tenantId)
     {
-        if (tenantId == 1) {
-            return new Link[] {
-                new BasicLink { Title = "About", Path = "/about_us" },
-                new BasicLink { Title = "Our Position", Path = "/our_position" },
-                new BasicLink { Title = "FAQ", Path = "/faq" },
-                new BasicLink { Title = "Ways to help", Path = "/ways_to_help" },
-                new BasicLink { Title = "Contact", Path = "/contact" },
-            };
-        }
+        //if (tenantId == 1) {
+        //    return new Link[] {
+        //        new BasicLink { Title = "About", Path = "/about_us" },
+        //        new BasicLink { Title = "Our Position", Path = "/our_position" },
+        //        new BasicLink { Title = "FAQ", Path = "/faq" },
+        //        new BasicLink { Title = "Ways to help", Path = "/ways_to_help" },
+        //        new BasicLink { Title = "Contact", Path = "/contact" },
+        //    };
+        //}
         return Array.Empty<Link>();
     }
 
@@ -347,5 +347,9 @@ internal sealed class SiteDataService : ISiteDataService
             return "Pound Pup Legacy";
         }
         return "";
+    }
+    public string? GetFrontPageText(int tenantId)
+    {
+        return _data.Tenants.First(x => x.Id == tenantId).FrontPageText;
     }
 }

@@ -1,6 +1,6 @@
 ﻿.teaser-list-element {
     padding-bottom: 1.5em;
-    border-bottom: solid thin black;
+    border-bottom: solid thin var(--teaser-list-element-border-color);
     clear: both;
     block-size: fit-content;
 }

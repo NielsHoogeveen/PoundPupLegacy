@@ -17,6 +17,7 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
     private static readonly StringValueReader DomainNameReader = new() { Name = "domain_name" };
     private static readonly IntValueReader CountryIdDefaultReader = new() { Name = "country_id_default" };
     private static readonly StringValueReader CountryNameDefault = new() { Name = "country_name" };
+    private static readonly NullableStringValueReader FrontPageText = new() { Name = "front_page_text" };
 
     public override string Sql => SQL;
 
@@ -25,7 +26,8 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
         t.id tenant_id,
         t.domain_name,
         t.country_id_default,
-        n.title country_name
+        n.title country_name,
+        t.front_page_text
         from tenant t
         join node n on n.id = t.country_id_default
         """;
@@ -43,7 +45,8 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
             CountryIdDefault = CountryIdDefaultReader.GetValue(reader),
             CountryNameDefault = CountryNameDefault.GetValue(reader),
             IdToUrl = new Dictionary<int, string>(),
-            UrlToId = new Dictionary<string, int>()
+            UrlToId = new Dictionary<string, int>(),
+            FrontPageText = FrontPageText.GetValue(reader),
         };
     }
 }

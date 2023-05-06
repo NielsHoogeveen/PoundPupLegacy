@@ -5,6 +5,7 @@ using Request = Tenant;
 internal sealed class TenantInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     private static readonly NonNullableStringDatabaseParameter DomainName = new() { Name = "domain_name" };
+    private static readonly NullableStringDatabaseParameter FrontPageText = new() { Name = "front_page_text" };
     private static readonly NullableIntegerDatabaseParameter VocabularyIdTagging = new() { Name = "vocabulary_id_tagging" };
     private static readonly NullCheckingIntegerDatabaseParameter AccessRoleIdNotLoggedIn = new() { Name = "access_role_id_not_logged_in" };
 
@@ -13,6 +14,7 @@ internal sealed class TenantInserterFactory : IdentifiableDatabaseInserterFactor
     {
         return new ParameterValue[] {
             ParameterValue.Create(DomainName, request.DomainName),
+            ParameterValue.Create(FrontPageText, request.FrontPageText),
             ParameterValue.Create(VocabularyIdTagging, request.VocabularyIdTagging),
             ParameterValue.Create(AccessRoleIdNotLoggedIn, request.AccessRoleNotLoggedIn?.Id),
         };
