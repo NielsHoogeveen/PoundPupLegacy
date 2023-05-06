@@ -33,6 +33,7 @@ internal sealed class SiteDataService : ISiteDataService
 
     private readonly NpgsqlConnection _connection;
     private readonly ILogger<SiteDataService> _logger;
+    private readonly IConfiguration _configuration;
     private readonly IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant> _tenantsReaderFactory;
     private readonly IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode> _tenantNodesReaderFactory;
     private readonly IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems> _menuItemsReaderFactory;
@@ -45,6 +46,7 @@ internal sealed class SiteDataService : ISiteDataService
     public SiteDataService(
         IDbConnection connection,
         ILogger<SiteDataService> logger,
+        IConfiguration configuration,
         IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant> tenantsReaderFactory,
         IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode> tenantNodesReaderFactory,
         IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems> menuItemsReaderFactory,
@@ -57,6 +59,7 @@ internal sealed class SiteDataService : ISiteDataService
         _connection = (NpgsqlConnection)connection;
 
         _logger = logger;
+        _configuration = configuration;
         _tenantsReaderFactory = tenantsReaderFactory;
         _tenantNodesReaderFactory = tenantNodesReaderFactory;
         _menuItemsReaderFactory = menuItemsReaderFactory;
@@ -132,7 +135,17 @@ internal sealed class SiteDataService : ISiteDataService
     {
         var domainName = uri.Host;
         if (domainName == "localhost") {
-            return 6;
+            var localHostTenantString = _configuration["LocalHostTenant"];
+            if (localHostTenantString is null) {
+                _logger.LogError("Local host tenant is not defined in appsettings.json");
+                return 1;
+            }
+            if (int.TryParse(localHostTenantString, out int localHostTenant)) {
+                if(_data.Tenants.Find(x => x.Id == localHostTenant) is not null) {
+                    return localHostTenant;
+                }
+                return 1;
+            }
         }
         var tenant = _data.Tenants.Find(x => x.DomainName == domainName);
         if (tenant is not null) {

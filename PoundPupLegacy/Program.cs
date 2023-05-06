@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
@@ -20,6 +21,9 @@ public sealed class Program
                 options.AccessDeniedPath = "/Forbidden/";
 
             });
+        builder.Services.AddAuthentication(
+            CertificateAuthenticationDefaults.AuthenticationScheme)
+            .AddCertificate();
 
         builder.Services.AddLogging(loggingBuilder => {
             loggingBuilder.AddApplicationInsights(
