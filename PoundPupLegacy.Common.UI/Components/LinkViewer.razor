@@ -1,8 +1,18 @@
-﻿<a href="@Link.Path">@Link.Title</a>
+﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+<a href="@Link.Path" @onclick="() => OnClick()">@Link.Title</a>
 
 @code {
     [Parameter]
     [EditorRequired]
     public Link Link { get; set; } = default!;
 
+    [CascadingParameter(Name = "HamburgerMenuOpen")]
+    public bool HamburgerMenuOpen { get; set; }
+
+    private async Task OnClick()
+    {
+        await JSRuntime.InvokeVoidAsync("closeHamburgerMenu", Array.Empty<object>());
+        NavigationManager.NavigateTo(Link.Path);
+    }
 }

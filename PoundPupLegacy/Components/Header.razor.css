@@ -16,7 +16,7 @@ header {
 
 header .logo {
     font-family: 'Raleway', sans-serif;
-    margin-left: 0.25em;
+    margin-left: 2em;
     color: silver;
     flex-grow: 0;
     font-size: clamp(16px, 6vw, 36px);

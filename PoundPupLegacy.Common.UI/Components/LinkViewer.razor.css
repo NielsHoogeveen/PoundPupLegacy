@@ -1,4 +1,4 @@
 ﻿a {
-    color: #002ea8;
+    color: var(--link-color);
     text-decoration: none;
 }

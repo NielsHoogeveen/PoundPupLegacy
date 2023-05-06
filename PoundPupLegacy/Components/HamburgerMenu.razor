@@ -1,0 +1,22 @@
+﻿<div class="nav-container">
+    @if (HamburgerMenuOpen)
+    {
+        <input type="checkbox" checked id="hamburger-button" />
+    }
+    else {
+        <input type="checkbox" id="hamburger-button" />
+    }
+    <label class="hamburger-lines" for="hamburger-button">
+            <span class="line line1"></span>
+            <span class="line line2"></span>
+            <span class="line line3"></span>
+    </label>
+    <div class="user-menu">
+        <UserMenu />
+    </div>
+</div>
+
+@code{
+    [CascadingParameter(Name = "HamburgerMenuOpen")]
+    public bool HamburgerMenuOpen { get; set; }
+}

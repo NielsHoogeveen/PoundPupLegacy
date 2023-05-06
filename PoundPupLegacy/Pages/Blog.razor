@@ -1,9 +1,9 @@
 ﻿@page "/blog/{Id:int}"
 @using PoundPupLegacy.Components
 @inherits Page
-
-<BlogViewer Id="@Id" />
-
+<PageViewer>
+    <BlogViewer Id="@Id" />
+</PageViewer>
 @code {
     [Parameter]
     public int Id { get; set; }

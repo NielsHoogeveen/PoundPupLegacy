@@ -1,8 +1,9 @@
 ﻿@page "/united_states_house_of_representatives/{Id:int}"
+@using PoundPupLegacy.Components
 @inherits Page
-
+<PageViewer>
 <UnitedStatesHouseOfRepresentativesMeetingViewer Number="@Id" />
-
+</PageViewer>
 @code {
     [Parameter]
     public int Id { get; set; }

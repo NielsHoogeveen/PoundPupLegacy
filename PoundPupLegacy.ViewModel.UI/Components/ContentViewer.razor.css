@@ -1,3 +1,5 @@
-content{
-    flex-grow:1;
+.content {
+    background-color: var(--content-bg-color);
+    flex-grow: 1;
+    display:flex;
 }

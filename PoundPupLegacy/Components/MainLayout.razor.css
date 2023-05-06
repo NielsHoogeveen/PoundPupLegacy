@@ -3,17 +3,13 @@
     flex-direction: column;
     flex-grow: 1;
 }
-content {
-    background-color: var(--content-bg-color);
-    flex-grow: 1;
-}
 
 @media screen and (min-width: 880px) {
     main {
         flex-direction: row;
     }
 
-    content {
+    .content {
         width: calc(50% - 10em);
     }
 }

@@ -64,3 +64,7 @@ function setClickEventHandlersForSearchForm() {
         })
     })
 }
+
+function closeHamburgerMenu() {
+    document.getElementById('hamburger-button').checked = false;
+}

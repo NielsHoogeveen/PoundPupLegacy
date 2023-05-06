@@ -2,9 +2,9 @@
 @using PoundPupLegacy.Components
 @inject NavigationManager NavigationManager
 @inherits Page
-
+<PageViewer>
 <NodeViewer Id="@Id" />
-
+</PageViewer>
 @code {
     [Parameter]
     public int Id { get; set; }

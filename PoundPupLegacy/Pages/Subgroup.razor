@@ -1,9 +1,9 @@
 ﻿@page "/subgroup/{Id:int}"
 @using PoundPupLegacy.Components
 @inherits Page
-
+<PageViewer>
 <SubgroupViewer Id="@Id" />
-
+</PageViewer>
 @code {
     [Parameter]
     public int Id { get; set; }

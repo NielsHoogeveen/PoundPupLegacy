@@ -2,10 +2,21 @@
 @using PoundPupLegacy.Components
 @inherits Page
 
-<BreadCrumElementViewer Model="BreadCrumElements"/>
-<ArticleViewer>
-    <p>Welcome to Pound Pup Legacy</p>
-</ArticleViewer>
+<div class="frontpage">
+    <div class="front-page-text">
+        <h1>Pound Pup Legacy</h1>
+        <p>
+        Inspired by stories shared by birth parents, adoptive parents, and adult adoptees, PPL explores the dark side of adoption, and the consequences illegal and unethical actions have on future family-life and the well-being of those affected by adoption.
+        </p>
+        <p>
+        Too many children are placed for the benefit of agencies and based on the demands of prospective adoptive parents.
+        </p>
+        Too many children are placed in inappropriate homes because the business interests of adoption agencies have higher priority than the safety of children.
+        <p>
+        Pound Pup Legacy documents and archives <a href="/cases">cases</a> where the child placement system did not work in the best interest of the child and we offer a platform for those who want to express their thoughts and feelings about the dark side of child adoption.
+        </p>
+    </div>
+</div>
 @code{
     private Link[] BreadCrumElements { get; set; } = Array.Empty<Link>();
 }

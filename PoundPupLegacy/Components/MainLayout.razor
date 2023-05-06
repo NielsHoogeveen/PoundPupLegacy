@@ -7,23 +7,27 @@
 @inject IUserService UserService
 
 <PageTitle>Pound Pup Legacy</PageTitle>
-<CascadingValue Value="UserId" Name="UserId">
-    <CascadingValue Value="TenantId" Name="TenantId">
-        <Header LogoName="@LogoName" Subtitle="@SubTitle" />
-        <main>
-            <UserMenu />
-            @if(notFound) {
-                <NotFound />
-            }else{
-                <ContentViewer>
-                    @Body
-                </ContentViewer>
-            }
-        </main>
-        <Footer MenuItems="FooterMenuItems" Name="@FooterTitle"/>
+<CascadingValue Value="HamburgerMenuOpen" Name="HamburgerMenuOpen">
+    <CascadingValue Value="UserId" Name="UserId">
+        <CascadingValue Value="TenantId" Name="TenantId">
+            <Header LogoName="@LogoName" Subtitle="@SubTitle" />
+            <main>
+                <HamburgerMenu />
+                @if(notFound) {
+                    <NotFound />
+                }else{
+                    <ContentViewer>
+                        @Body
+                    </ContentViewer>
+                }
+            </main>
+            <Footer MenuItems="FooterMenuItems" Name="@FooterTitle"/>
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 @code{
+    private bool HamburgerMenuOpen { get; set; } = false;
+
     private int TenantId { get; set; }
 
     private int UserId { get; set; }

@@ -11,13 +11,14 @@
     --nav-border-color: #808080;
     --nav-text-color: silver;
     --footer-bg-color: #2c2c2c;
-    --breadcrum-bg-color: #9aaddf;
-    --term-bg-color: #d8e0f3;
-    --term-bg-color-selected: #c5d0ed;
+    --breadcrum-bg-color: #ca9a63;
+    --term-bg-color: #e0d7ca;
+    --term-bg-color-selected: #cdbea9;
     --watermark-color: #999;
     --comment-border-color: #bbb;
     --comment-bg-color: #eaecf3;
     --comment-title-color: #05072f;
+    --link-color: #3a3123;
 }
 
 html {
@@ -46,7 +47,7 @@ input:-webkit-autofill:active {
 }
 
 a {
-    color: #163893;
+    color: var(--link-color);
     text-decoration: none;
 }
 
