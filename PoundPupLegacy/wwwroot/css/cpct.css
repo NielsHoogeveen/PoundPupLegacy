@@ -3,15 +3,15 @@
 }
 
 :root {
-    --header-bg-color: linear-gradient(180deg, #2c2c2c 0%, #2c2c2c 100%);
+    --header-bg-color: #1c206e;
     --content-bg-color: #f8f4f0;
     --content-title-color: #080b42;
     --nav-bg-color: #444;
     --nav-bg-hover-color: #222;
     --nav-border-color: #808080;
     --nav-text-color: silver;
-    --footer-bg-color: #2c2c2c;
-    --breadcrum-bg-color: #e4ba86;
+    --footer-bg-color: white;
+    --breadcrum-bg-color: #787dd2;
     --breadcrum-color: #fdf3e6;
     --term-bg-color: #e0d7ca;
     --term-bg-color-selected: #cdbea9;
