@@ -21,6 +21,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL_Y-3alaKm4UQqh9nxsOuVrR_LCxmGNU&callback=initMap&v=weekly" defer></script>
     <script src="~/js/site.js"></script>
+    <link href="/css/site.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     @{
         var request = HttpContext.Request;
         var uri = new UriBuilder(request.Scheme, request.Host.Host, request.Host.Port ?? -1, request.PathBase).Uri;
