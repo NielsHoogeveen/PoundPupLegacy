@@ -26,6 +26,7 @@
 
 html {
     display: block;
+    background: var(--footer-bg-color);
 }
 
 body {
@@ -156,7 +157,9 @@ input[type=file] {
 
 .frontpage {
     flex: 1;
+    background-color: var(--footer-bg-color);
     background-image: url("/frontpage.jpg");
+    background-repeat: no-repeat;
     display: flex;
 }
 
@@ -171,7 +174,6 @@ input[type=file] {
     color: #333;
     justify-content: center;
     box-shadow: 6px 6px 2px 1px rgba(25, 20, 20, .25);
-    border: solid 6px #b1aaa1;
     border: solid 6px #e4ba86;
 }
 

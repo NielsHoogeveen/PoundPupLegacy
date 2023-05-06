@@ -18,6 +18,10 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
     private static readonly IntValueReader CountryIdDefaultReader = new() { Name = "country_id_default" };
     private static readonly StringValueReader CountryNameDefault = new() { Name = "country_name" };
     private static readonly NullableStringValueReader FrontPageText = new() { Name = "front_page_text" };
+    private static readonly NullableStringValueReader Logo = new() { Name = "logo" };
+    private static readonly NullableStringValueReader CssFile = new() { Name = "css_file" };
+    private static readonly NullableStringValueReader SubTitle = new() { Name = "sub_title" };
+    private static readonly NullableStringValueReader FooterText = new() { Name = "footer_text" };
 
     public override string Sql => SQL;
 
@@ -27,7 +31,11 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
         t.domain_name,
         t.country_id_default,
         n.title country_name,
-        t.front_page_text
+        t.front_page_text,
+        t.logo,
+        t.sub_title,
+        t.footer_text,
+        t.css_file
         from tenant t
         join node n on n.id = t.country_id_default
         """;
@@ -47,6 +55,10 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
             IdToUrl = new Dictionary<int, string>(),
             UrlToId = new Dictionary<string, int>(),
             FrontPageText = FrontPageText.GetValue(reader),
+            Logo = Logo.GetValue(reader),
+            CssFile = CssFile.GetValue(reader),
+            SubTitle = SubTitle.GetValue(reader),
+            FooterText = FooterText.GetValue(reader),
         };
     }
 }

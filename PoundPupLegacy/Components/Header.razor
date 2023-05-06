@@ -1,10 +1,18 @@
 ﻿<header>
     <div class="logo">
-        @LogoName
+        @if (Logo is not null)
+        {
+            @((MarkupString)Logo)
+        }
     </div>
     <div class="central-header">
         <div>
-            <div class="subtitle">@Subtitle</div>
+            <div class="subtitle">
+            @if (Subtitle is not null)
+            {
+                @Subtitle
+            }
+            </div>
         </div>
         <form action="search">
             <input type="text" name="search_term" />
@@ -17,10 +25,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public string LogoName { get; set; } = string.Empty;
+    public string? Logo { get; set; } = string.Empty;
 
     [Parameter]
     [EditorRequired]
-    public string Subtitle { get; set; } = string.Empty;
+    public string? Subtitle { get; set; } = string.Empty;
 
 }

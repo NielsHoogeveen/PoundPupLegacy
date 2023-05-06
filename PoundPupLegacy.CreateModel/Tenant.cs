@@ -7,6 +7,10 @@ public sealed record Tenant : Owner, PublishingUserGroup
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required string? FrontPageText { get; init; }
+    public required string? SubTitle { get; init; }
+    public required string? Logo { get; init; }
+    public required string? FooterText { get; init; }
+    public required string? CssFile { get; init; }
     public required string DomainName { get; init; }
     public required int? VocabularyIdTagging { get; init; }
     public required int? CountryIdDefault { get; init; }

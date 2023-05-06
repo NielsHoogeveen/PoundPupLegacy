@@ -131,8 +131,8 @@ internal sealed class SiteDataService : ISiteDataService
     public int GetTenantId(Uri uri)
     {
         var domainName = uri.Host;
-        if (domainName == "localhost:7141") {
-            return 1;
+        if (domainName == "localhost") {
+            return 6;
         }
         var tenant = _data.Tenants.Find(x => x.DomainName == domainName);
         if (tenant is not null) {
@@ -279,20 +279,6 @@ internal sealed class SiteDataService : ISiteDataService
             return new List<MenuItem>();
         }
     }
-
-    public string GetLayout(int userId, int tenantId)
-    {
-        var signedIn = userId != 0;
-
-        return (tenantId, signedIn) switch {
-            (1, false) => "_LayoutPPL",
-            (1, true) => "_LayoutPPL",
-            (6, false) => "_LayoutCPCT",
-            (6, true) => "_LayoutCPCT",
-            _ => "_LayoutPPL"
-        };
-    }
-
     public bool CanEdit(Node node, int userId, int tenantId)
     {
         if (_data.UserTenantEditActions.Contains(new UserTenantEditAction { UserId = userId, TenantId = tenantId, NodeTypeId = node.NodeTypeId })) {
@@ -306,50 +292,27 @@ internal sealed class SiteDataService : ISiteDataService
         return false;
     }
 
-    public string GetLogoName(int tenantId)
+    public string? GetLogo(int tenantId)
     {
-        if (tenantId == 1) {
-            return "PPL";
-        }
-        else if (tenantId == 6) {
-            return "CPCT";
-        }
-        else {
-            return "";
-        }
+        return _data.Tenants.First(x => x.Id == tenantId).Logo;
     }
 
-    public string GetSubTitle(int tenantId)
+    public string? GetSubTitle(int tenantId)
     {
-        if (tenantId == 1) {
-            return "exposing the dark side of adoption";
-        }
-        return "";
+        return _data.Tenants.First(x => x.Id == tenantId).SubTitle;
     }
 
-    public Link[] GetFooterMenuItems(int tenantId)
+    public string? GetFooterText(int tenantId)
     {
-        //if (tenantId == 1) {
-        //    return new Link[] {
-        //        new BasicLink { Title = "About", Path = "/about_us" },
-        //        new BasicLink { Title = "Our Position", Path = "/our_position" },
-        //        new BasicLink { Title = "FAQ", Path = "/faq" },
-        //        new BasicLink { Title = "Ways to help", Path = "/ways_to_help" },
-        //        new BasicLink { Title = "Contact", Path = "/contact" },
-        //    };
-        //}
-        return Array.Empty<Link>();
-    }
-
-    public string GetFooterTitle(int tenantId)
-    {
-        if (tenantId == 1) {
-            return "Pound Pup Legacy";
-        }
-        return "";
+        return _data.Tenants.First(x => x.Id == tenantId).FooterText;
     }
     public string? GetFrontPageText(int tenantId)
     {
         return _data.Tenants.First(x => x.Id == tenantId).FrontPageText;
     }
+    public string? GetCssFile(int tenantId)
+    {
+        return _data.Tenants.First(x => x.Id == tenantId).CssFile;
+    }
+
 }

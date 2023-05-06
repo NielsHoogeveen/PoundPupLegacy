@@ -26,13 +26,14 @@ public interface ISiteDataService
     IEnumerable<MenuItem> GetMenuItemsForUser(int userId, int tenantId);
 
     string? GetFrontPageText(int tenantId);
-    string GetLogoName(int tenantId);
 
-    string GetSubTitle(int tenantId);
+    string? GetLogo(int tenantId);
 
-    string GetFooterTitle(int tenantId);
+    string? GetSubTitle(int tenantId);
 
-    Link[] GetFooterMenuItems(int tenantId);
+    string? GetFooterText(int tenantId);
+
+    string? GetCssFile(int tenantId);
 
     Task RefreshTenants();
 }

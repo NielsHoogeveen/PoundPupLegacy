@@ -10,7 +10,7 @@
 <CascadingValue Value="HamburgerMenuOpen" Name="HamburgerMenuOpen">
     <CascadingValue Value="UserId" Name="UserId">
         <CascadingValue Value="TenantId" Name="TenantId">
-            <Header LogoName="@LogoName" Subtitle="@SubTitle" />
+            <Header Logo="@Logo" Subtitle="@SubTitle" />
             <main>
                 <HamburgerMenu />
                 @if(notFound) {
@@ -21,7 +21,7 @@
                     </ContentViewer>
                 }
             </main>
-            <Footer MenuItems="FooterMenuItems" Name="@FooterTitle"/>
+            <Footer Text="@FooterText"/>
         </CascadingValue>
     </CascadingValue>
 </CascadingValue>
@@ -34,13 +34,11 @@
 
     private bool notFound;
 
-    private string LogoName { get; set; } = "";
+    private string? Logo { get; set; }
 
-    private string SubTitle { get; set; } = "";
+    private string? SubTitle { get; set; } 
 
-    private string FooterTitle { get; set; } = "";
-
-    private Link[] FooterMenuItems { get; set; } = Array.Empty<Link>();
+    private string? FooterText { get; set; }
 
     protected override void OnInitialized() => NotFoundListener.OnNotFound += SetNotFound;
 
@@ -54,10 +52,9 @@
     {
         var uri = new Uri(NavigationManager.Uri);
         TenantId = SiteDataService.GetTenantId(uri);
-        LogoName = SiteDataService.GetLogoName(TenantId);
+        Logo = SiteDataService.GetLogo(TenantId);
         SubTitle = SiteDataService.GetSubTitle(TenantId);
-        FooterTitle = SiteDataService.GetFooterTitle(TenantId);
-        FooterMenuItems = SiteDataService.GetFooterMenuItems(TenantId);
+        FooterText = SiteDataService.GetFooterText(TenantId);
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity is not null) 

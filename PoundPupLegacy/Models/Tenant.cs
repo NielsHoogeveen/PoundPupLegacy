@@ -12,6 +12,15 @@ public record Tenant
 
     public required string? FrontPageText { get; init; }
 
+    public required string? Logo { get; init; }
+
+    public required string? SubTitle { get; init; }
+
+    public required string? FooterText { get; init; }
+
+    public required string? CssFile { get; init; }
+
     public required Dictionary<string, int> UrlToId { get; init; }
+
     public required Dictionary<int, string> IdToUrl { get; init; }
 }

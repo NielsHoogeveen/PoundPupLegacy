@@ -94,6 +94,10 @@ internal sealed class UserMigrator : MigratorPPL
             },
             PublicationStatusIdDefault = 1,
             CountryIdDefault = null,
+            Logo = "PPL",
+            SubTitle = "exposing the dark side of adoption",
+            FooterText = "<h2>Pound Pup Legacy</h2>",
+            CssFile = "ppl.css",
             FrontPageText = """
             <h1>Pound Pup Legacy</h1>
             <p>
@@ -125,6 +129,10 @@ internal sealed class UserMigrator : MigratorPPL
             },
             PublicationStatusIdDefault = 2,
             CountryIdDefault = null,
+            Logo = "CPCT",
+            CssFile = "cpct.css",
+            SubTitle = null,
+            FooterText = null,
             FrontPageText = null,
         };
     }

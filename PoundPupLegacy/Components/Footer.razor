@@ -1,15 +1,12 @@
 ﻿<footer>
-    <LinkListViewer Links="MenuItems"/>
-    <h2>@Name</h2>
+    @if (Text is not null)
+    {
+        @((MarkupString)Text)
+    }
 </footer>
 
 @code {
     [Parameter]
     [EditorRequired]
-    public string Name { get; set; } = string.Empty;
-
-    [Parameter]
-    [EditorRequired]
-    public Link[] MenuItems { get; set; } = Array.Empty<Link>();
-
+    public string? Text { get; set; } = string.Empty;
 }
