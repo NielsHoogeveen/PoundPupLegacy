@@ -729,7 +729,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 from tenant_node tn
         		join tenant tt on tt.id = tn.tenant_id
                 join node n on n.id = tn.node_id
-        		join term t1 on t1.nameable_id =  n.id and t1.vocabulary_id = tt.vocabulary_id_tagging
+                join system_group sg on sg.id = 0
+        		join term t1 on t1.nameable_id =  n.id and t1.vocabulary_id = sg.vocabulary_id_tagging
         		join term_hierarchy th on th.term_id_child = t1.id
         		join term t2 on t2.id = th.term_id_parent
         		join tenant_node tn2 on tn2.tenant_id = tn.tenant_id and tn2.node_id = t2.nameable_id
@@ -791,7 +792,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 from tenant_node tn
         		join tenant tt on tt.id = tn.tenant_id
                 join node n on n.id = tn.node_id
-        		join term t1 on t1.nameable_id =  n.id and t1.vocabulary_id = tt.vocabulary_id_tagging
+                join system_group sg on sg.id = 0
+        		join term t1 on t1.nameable_id =  n.id and t1.vocabulary_id = sg.vocabulary_id_tagging
         		join term_hierarchy th on th.term_id_parent = t1.id
         		join term t2 on t2.id = th.term_id_child
         		join tenant_node tn2 on tn2.tenant_id = tn.tenant_id and tn2.node_id = t2.nameable_id
@@ -1820,9 +1822,10 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	        join tenant t on t.id = tn.tenant_id
         	        join subdivision s on s.country_id = c.id
         	        join node n on n.id = s.subdivision_type_id
-        	        join tenant_node tn2 on tn2.node_id = s.id and tn.tenant_id = 1
-        	        join term tp on tp.nameable_id = c.id and tp.vocabulary_id = t.vocabulary_id_tagging
-        	        join term tc on tc.nameable_id = s.id and tc.vocabulary_id = t.vocabulary_id_tagging
+        	        join tenant_node tn2 on tn2.node_id = s.id and tn.tenant_id = t.id
+                    join system_group sg on sg.id = 0
+        	        join term tp on tp.nameable_id = c.id and tp.vocabulary_id = sg.vocabulary_id_tagging
+        	        join term tc on tc.nameable_id = s.id and tc.vocabulary_id = sg.vocabulary_id_tagging
         	        join term_hierarchy th on th.term_id_parent = tp.id and th.term_id_child = tc.id
                 ) x
                 GROUP BY subdivision_type_name
@@ -1860,8 +1863,9 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     join subdivision s on s.id = bsls.id
         	        join node n on n.id = s.subdivision_type_id
         	        join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = @tenant_id
-        	        join term tp on tp.nameable_id = sd.id and tp.vocabulary_id = t.vocabulary_id_tagging
-        	        join term tc on tc.nameable_id = s.id and tc.vocabulary_id = t.vocabulary_id_tagging
+                    join system_group sg on sg.id = 0
+        	        join term tp on tp.nameable_id = sd.id and tp.vocabulary_id = sg.vocabulary_id_tagging
+        	        join term tc on tc.nameable_id = s.id and tc.vocabulary_id = sg.vocabulary_id_tagging
         	        join term_hierarchy th on th.term_id_parent = tp.id and th.term_id_child = tc.id
                 ) x
                 GROUP BY subdivision_type_name

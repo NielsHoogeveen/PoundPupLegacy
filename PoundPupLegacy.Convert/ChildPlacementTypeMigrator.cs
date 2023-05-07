@@ -93,7 +93,7 @@ internal sealed class ChildPlacementTypeMigrator : MigratorPPL
                     parentNames.Add(parentTopicName);
                 }
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = parentNames

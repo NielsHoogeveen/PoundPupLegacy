@@ -93,7 +93,8 @@ internal sealed class TopicsDocumentReaderFactory : SingleItemDatabaseReaderFact
             			    )
             	    end status	 
                 from tenant tt
-                join term tm on tm.vocabulary_id = tt.vocabulary_id_tagging
+                join system_group sg on sg.id = 0
+                join term tm on tm.vocabulary_id = sg.vocabulary_id_tagging
                 join node n on n.id = tm.nameable_id
                 join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tt.id
                 where tt.id = @tenant_id

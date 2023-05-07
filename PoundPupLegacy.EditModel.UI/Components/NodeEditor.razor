@@ -1,19 +1,25 @@
-﻿@inherits ViewerBase
+﻿@inherits EditorBase
 @typeparam T where T: class, Node
 @inject IJSRuntime JSRuntime
 @inject IEditService<T> editService
 
 <div class="editor-form">
-    <EditForm Model="@Model" OnSubmit="@HandleSubmit">
-        <InputText @bind-Value="Model.Title" id="name" class="title-editor" type="text"/>
+    <h1>@Title</h1>
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <label for="title">Title</label>
+            <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text"/>
+            <ValidationMessage For="@(() => Model.Title)" />
+        </div>
         @if(Model is Nameable nameable) {
-            <NameableEditor Model="nameable" />
+            <NameableEditor Model="nameable" @ref="nameableEditor"/>
         }
         @if(Model is SimpleTextNode simpleTextNode){
-            <SimpleTextNodeEditor Model="simpleTextNode"/>
+            <SimpleTextNodeEditor Model="simpleTextNode" @ref="simpleTextNodeEditor"/>
         }
         @if(Model is Document document) {
-            <DocumentEditor Model="document"/>
+            <DocumentEditor Model="document" @ref="documentEditor"/>
         }
         @if (Model is Organization organization) {
             <OrganizationEditor Model="organization" />
@@ -32,11 +38,57 @@
     [EditorRequired]
     public T Model { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public string Title { get; set; } = default!;
+
+    private EditContext? editContext;
+    private ValidationMessageStore? validationMessageStore;
+
+    private NameableEditor? nameableEditor;
+
+    private SimpleTextNodeEditor? simpleTextNodeEditor;
+
+    private DocumentEditor? documentEditor;
+
+    private OrganizationEditor? organizationEditor;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(Model);
+        validationMessageStore = new ValidationMessageStore(editContext);
+    }
+
+    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    {
+        await Task.CompletedTask;
+        if (Model.Title is null || Model.Title == string.Empty) {
+            validationMessageStore!.Add(editContext!.Field(nameof(Model.Title)), "Title is required.");
+            invalidIds.Add("title");
+        }
+
+    }
+
     private async Task HandleSubmit()
     {
-        if (Model is not null) {
-            await editService.SaveAsync(Model);
-            await JSRuntime.InvokeVoidAsync("reloadNode", Model.UrlId);
+        if (Model is not null && validationMessageStore is not null && editContext is not null)
+        {
+            validationMessageStore.Clear();
+            var invalidIds = new List<string>();
+            Validate(validationMessageStore, invalidIds);
+            if(simpleTextNodeEditor is not null) {
+                simpleTextNodeEditor.Validate(validationMessageStore, invalidIds);
+            }
+            if (invalidIds.Any()) {
+                editContext.NotifyValidationStateChanged();
+                await JSRuntime.InvokeVoidAsync("scrollToFirstError", new object[] { "title" });
+                return;
+            }
+            if (editContext is not null && validationMessageStore is not null)
+            {
+                //await editService.SaveAsync(Model);
+                //await JSRuntime.InvokeVoidAsync("reloadNode", Model.UrlId);
+            }
         }
     }
 }

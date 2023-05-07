@@ -68,3 +68,10 @@ function setClickEventHandlersForSearchForm() {
 function closeHamburgerMenu() {
     document.getElementById('hamburger-button').checked = false;
 }
+
+function scrollToFirstError(id) {
+    var elem = document.getElementById(id);
+    if (elem != null) {
+        elem.parentElement.scrollIntoView();
+    }
+}

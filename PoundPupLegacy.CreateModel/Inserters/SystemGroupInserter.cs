@@ -1,9 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class SystemGroupInserterFactory : SingleIdInserterFactory<SystemGroup>
+using Request = SystemGroup;
+
+internal sealed class SystemGroupInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    protected override string TableName => "system_group";
+    private static readonly NullCheckingIntegerDatabaseParameter VocabularyIdTagging = new() { Name = "vocabulary_id_tagging" };
 
-    protected override bool AutoGenerateIdentity => false;
-
+    public override string TableName => "system_group";
+    protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
+    {
+        return new ParameterValue[] {
+            ParameterValue.Create(VocabularyIdTagging, request.VocabularyTagging?.Id),
+        };
+    }
 }

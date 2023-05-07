@@ -74,7 +74,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Saint Barthélemy",
                     ParentNames = new List<string> { "Caribbean" },
@@ -141,7 +141,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "Saint Martin",
                         ParentNames = new List<string>{ "Caribbean" },
@@ -208,7 +208,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "French Southern Territories",
                         ParentNames = new List<string>{ "Southern Africa" },
@@ -322,7 +322,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = new List<string>{ regionName },

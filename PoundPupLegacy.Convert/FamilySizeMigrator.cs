@@ -192,7 +192,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
                     },
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "mega families",
                         ParentNames = new List<string>(),

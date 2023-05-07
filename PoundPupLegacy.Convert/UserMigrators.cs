@@ -4,7 +4,7 @@ internal sealed class UserMigrator : MigratorPPL
 {
     protected override string Name => "users";
     private readonly IAnonimousUserCreator _anonimousUserCreator;
-    private readonly ISystemGroupCreator _systemGroupCreator;
+    private readonly IEntityCreator<SystemGroup> _systemGroupCreator;
     private readonly IEntityCreator<AccessRole> _accessRoleCreator;
     private readonly IEntityCreator<Tenant> _tenantCreator;
     private readonly IEntityCreator<ContentSharingGroup> _contentSharingGroupCreator;
@@ -17,7 +17,7 @@ internal sealed class UserMigrator : MigratorPPL
     public UserMigrator(
         IDatabaseConnections databaseConnections,
         IAnonimousUserCreator anonimousUserCreator,
-        ISystemGroupCreator systemGroupCreator,
+        IEntityCreator<SystemGroup> systemGroupCreator,
         IEntityCreator<AccessRole> accessRoleCreator,
         IEntityCreator<Tenant> tenantCreator,
         IEntityCreator<ContentSharingGroup> contentSharingGroupCreator,
@@ -82,7 +82,6 @@ internal sealed class UserMigrator : MigratorPPL
             DomainName = "poundpuplegacy.org",
             Name = "Pound Pup Legacy",
             Description = "",
-            VocabularyIdTagging = null,
             AccessRoleNotLoggedIn = new AccessRole {
                 Id = 12,
                 Name = "Everyone",
@@ -117,7 +116,6 @@ internal sealed class UserMigrator : MigratorPPL
             DomainName = "cpctresearch.info",
             Name = "CPCT Research",
             Description = "",
-            VocabularyIdTagging = null,
             AccessRoleNotLoggedIn = new AccessRole {
                 Id = 13,
                 Name = "Everyone",
@@ -270,12 +268,51 @@ internal sealed class UserMigrator : MigratorPPL
     protected override async Task MigrateImpl()
     {
         await _anonimousUserCreator.CreateAsync(_postgresConnection);
-        await _systemGroupCreator.CreateAsync(_postgresConnection);
         await _tenantCreator.CreateAsync(GetTenants(), _postgresConnection);
+        await _userCreator.CreateAsync(ReadUsers(), _postgresConnection);
+        await _systemGroupCreator.CreateAsync(new SystemGroup 
+        {
+            VocabularyTagging = new Vocabulary{
+            Id = null,
+            Name = Constants.VOCABULARY_TOPICS,
+            PublisherId = 1,
+            CreatedDateTime = DateTime.Now,
+            ChangedDateTime = DateTime.Now,
+            Title = Constants.VOCABULARY_TOPICS,
+            OwnerId = Constants.OWNER_SYSTEM,
+            TenantNodes = new List<TenantNode>()
+                {
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.TOPICS
+                    },
+                    new TenantNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.TOPICS
+                    }
+
+                },
+            NodeTypeId = 38,
+            Description = ""
+            }
+        },_postgresConnection);
+        
         await _contentSharingGroupCreator.CreateAsync(GetContentSharingGroups(), _postgresConnection);
         await _subgroupCreator.CreateAsync(GetSubgroups(), _postgresConnection);
         await _accessRoleCreator.CreateAsync(GetAccessRoles(), _postgresConnection);
-        await _userCreator.CreateAsync(ReadUsers(), _postgresConnection);
+        
         await _collectiveCreator.CreateAsync(GetCollectives(), _postgresConnection);
         await _collectiveUserCreator.CreateAsync(GetCollectiveUsers(), _postgresConnection);
         await _userGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);

@@ -88,7 +88,7 @@ internal sealed class DenominationMigrator : MigratorPPL
             };
             if (topicName != null) {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = new List<string>()

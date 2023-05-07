@@ -2,6 +2,7 @@
 
 public static class Constants
 {
+    public const int OWNER_SYSTEM = 0;
     public const int PPL = 1;
     public const int OWNER_GEOGRAPHY = 2;
     public const int OWNER_PARTIES = 3;
@@ -81,6 +82,8 @@ public static class Constants
     public const int INSTITUTION_CASE_TYPE = 161;
     public const int THERAPY_CASE_TYPE = 162;
     public const int AUTHORITIES_CASE_TYPE = 163;
+
+    public const int TOPICS = 4126;
 
     public const string POLITICAL_PARTY_NAME = "Political party";
 

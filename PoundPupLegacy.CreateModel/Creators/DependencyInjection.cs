@@ -95,7 +95,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreator<SingleQuestionPoll>, SingleQuestionPollCreator>();
         services.AddTransient<IEntityCreator<SubdivisionType>, SubdivisionTypeCreator>();
         services.AddTransient<IEntityCreator<Subgroup>, SubgroupCreator>();
-        services.AddTransient<ISystemGroupCreator, SystemGroupCreator>();
+        services.AddTransient<IEntityCreator<SystemGroup>, SystemGroupCreator>();
         services.AddTransient<IEntityCreator<Tenant>, TenantCreator>();
         services.AddTransient<IEntityCreator<TenantNodeMenuItem>, TenantNodeMenuItemCreator>();
         services.AddTransient<IEntityCreator<TermHierarchy>, TermHierarchyCreator>();

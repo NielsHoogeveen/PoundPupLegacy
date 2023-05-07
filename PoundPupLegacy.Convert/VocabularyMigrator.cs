@@ -1,24 +1,19 @@
-﻿using PoundPupLegacy.CreateModel.Updaters;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class VocabularyMigrator : MigratorPPL
 {
     private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
     private readonly IEntityCreator<Vocabulary> _vocabularyCreator;
-    private readonly IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabularyRequest> _tenantUpdaterSetTaggingVocabularyFactory;
 
     protected override string Name => "vocabularies";
     public VocabularyMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        IEntityCreator<Vocabulary> vocabularyCreator,
-        IDatabaseUpdaterFactory<TenantUpdaterSetTaggingVocabularyRequest> tenantUpdaterSetTaggingVocabularyFactory
+        IEntityCreator<Vocabulary> vocabularyCreator
     ) : base(databaseConnections)
     {
         _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
         _vocabularyCreator = vocabularyCreator;
-        _tenantUpdaterSetTaggingVocabularyFactory = tenantUpdaterSetTaggingVocabularyFactory;
     }
 
     private static async IAsyncEnumerable<Vocabulary> GetVocabularies()
@@ -245,7 +240,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
     private static string GetVocabularyName(int id, string name)
     {
         return id switch {
-            4126 => Constants.VOCABULARY_TOPICS,
+            Constants.TOPICS => Constants.VOCABULARY_TOPICS,
             12622 => Constants.VOCABULARY_ORGANIZATION_TYPE,
             12637 => Constants.VOCABULARY_INTERORGANIZATIONAL_RELATION_TYPE,
             12652 => Constants.VOCABULARY_POLITICAL_ENTITY_RELATION_TYPE,
@@ -261,6 +256,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
     private static int GetOwner(int id)
     {
         return id switch {
+            Constants.TOPICS => Constants.OWNER_SYSTEM,
             3797 => Constants.OWNER_GEOGRAPHY,
             12622 => Constants.OWNER_PARTIES,
             12637 => Constants.OWNER_PARTIES,
@@ -280,14 +276,6 @@ internal sealed class VocabularyMigrator : MigratorPPL
         await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         await _vocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
         await _vocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
-        await using var tenantUpdater = await _tenantUpdaterSetTaggingVocabularyFactory.CreateAsync(_postgresConnection);
-        await tenantUpdater.UpdateAsync(new TenantUpdaterSetTaggingVocabularyRequest {
-            TenantId = Constants.PPL,
-            VocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 4126
-            })
-        });
     }
     private async IAsyncEnumerable<Vocabulary> ReadVocabularies()
     {
@@ -307,7 +295,7 @@ internal sealed class VocabularyMigrator : MigratorPPL
                 nr.body description
             FROM node n
             JOIN node_revisions nr ON nr.nid = n.nid AND nr.vid = n.vid
-            WHERE n.`type` = 'category_cont' AND n.nid not in (220, 12707, 42422, 23399, 3797)
+            WHERE n.`type` = 'category_cont' AND n.nid not in (220, 12707, 42422, 23399, 3797, 4126)
             """;
         using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;

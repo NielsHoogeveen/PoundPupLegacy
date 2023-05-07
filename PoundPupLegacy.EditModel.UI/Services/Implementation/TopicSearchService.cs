@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using PoundPupLegacy.CreateModel.Readers;
 using PoundPupLegacy.EditModel.Readers;
 using System.Data;
 
@@ -10,15 +11,18 @@ internal sealed class TopicSearchService : ITopicSearchService
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
     private readonly IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag> _tagDocumentsReaderFactory;
+    private readonly IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest> _doesTopcExistReaderFactory;
 
     public TopicSearchService(
         IDbConnection connection,
+        IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest> doesTopcExistReaderFactory,
         IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag> tagDocumentsReaderFactory)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         _connection = (NpgsqlConnection)connection;
         _tagDocumentsReaderFactory = tagDocumentsReaderFactory;
+        _doesTopcExistReaderFactory = doesTopcExistReaderFactory;
     }
     public async Task<List<Tag>> GetTerms(int? nodeId, int tenantId, string searchString, int[] nodeTypeIds)
     {
@@ -44,5 +48,10 @@ internal sealed class TopicSearchService : ITopicSearchService
             }
             semaphore.Release();
         }
+    }
+    public async Task<bool> DoesTopicExist(string name)
+    {
+        var reader = await _doesTopcExistReaderFactory.CreateAsync(_connection);
+        return await  reader.ReadAsync(new TopicExistsRequest { Name = name });
     }
 }

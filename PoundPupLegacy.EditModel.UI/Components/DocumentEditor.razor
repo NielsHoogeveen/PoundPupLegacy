@@ -1,5 +1,10 @@
-﻿@code {
+﻿@inherits EditorBase
+@code {
     [Parameter]
     [EditorRequired]
     public Document Model { get; set; } = default!;
+    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    {
+        await Task.CompletedTask;
+    }
 }

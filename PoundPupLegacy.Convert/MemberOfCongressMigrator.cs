@@ -674,7 +674,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
                     var vocabularyNames = new List<VocabularyName> {
                         new VocabularyName {
-                            OwnerId = Constants.PPL,
+                            OwnerId = Constants.OWNER_SYSTEM,
                             Name = Constants.VOCABULARY_TOPICS,
                             TermName = title,
                             ParentNames = new List<string>(),

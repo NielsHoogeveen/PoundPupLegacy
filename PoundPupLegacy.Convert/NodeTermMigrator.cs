@@ -103,7 +103,7 @@ internal sealed class NodeTermMigrator : MigratorPPL
             });
 
             var term = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_SYSTEM,
                 NameableId = nameableId,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
             });

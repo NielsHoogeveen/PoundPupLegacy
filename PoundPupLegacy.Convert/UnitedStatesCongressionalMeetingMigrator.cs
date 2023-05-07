@@ -31,7 +31,7 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = title,
                         ParentNames = new List<string>{ "United States Congress" },

@@ -1,5 +1,4 @@
-﻿@inherits ViewerBase
-
+﻿@inherits EditorBase
 
 <OrganizationOrganizationTypesEditor Model="Model" />
 <FuzzyDateEditor @bind-Value=" Model.Establishment" />
@@ -8,4 +7,9 @@
     [Parameter]
     [EditorRequired]
     public Organization Model { get; set; } = default!;
+
+    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    {
+        await Task.CompletedTask;
+    }
 }

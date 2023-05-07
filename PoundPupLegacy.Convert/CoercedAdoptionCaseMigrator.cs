@@ -104,7 +104,7 @@ internal sealed class CoercedAdoptionCaseMigrator : MigratorPPL
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = new List<string>{ "coerced adoption"},

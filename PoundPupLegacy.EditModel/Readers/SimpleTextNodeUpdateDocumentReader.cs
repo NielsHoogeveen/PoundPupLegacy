@@ -10,6 +10,8 @@ where TResponse : class, SimpleTextNode
                 jsonb_build_object(
                     'NodeId', 
                     n.id,
+                    'NodeTypeName',
+                    nt.name,
                     'UrlId', 
                     tn.url_id,
                     'PublisherId', 
@@ -30,6 +32,7 @@ where TResponse : class, SimpleTextNode
                     (select document from attachments_document)
                 ) document
             from node n
+            join node_type nt on nt.id = n.node_type_id
             join simple_text_node stn on stn.id = n.id
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id

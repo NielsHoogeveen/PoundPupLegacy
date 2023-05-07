@@ -1,12 +1,28 @@
-﻿@if (Model is not null)
+﻿@inherits EditorBase
+@if (Model is not null)
 {
-    <div class="details">
-        <CKEditor Id="#editor" @bind-Value=@Model.Text />
+    <div class="form-group">
+        <label for="editor">Text</label>
+        <ValidationMessage For="@(() => Model.Text)" />
+        <CKEditor Id="editor" @bind-Value=@Model.Text />
     </div>
 }
 @code {
     [Parameter]
     [EditorRequired]
     public SimpleTextNode Model { get; set; } = default!;
+
+    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    {
+        await Task.CompletedTask;
+        if (Model is not null)
+        {
+            if(Model.Text is null || Model.Text == string.Empty)
+            {
+                validationMessageStore.Add(() => Model.Text, "Text is required");
+                invalidIds.Add("editor");
+            };
+        }
+    }
 
 }

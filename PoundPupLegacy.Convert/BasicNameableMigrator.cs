@@ -120,7 +120,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "organizations",
                     ParentNames = new List<string>(),
@@ -138,7 +138,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = name,
                         ParentNames = parentNames,
@@ -201,7 +201,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "US senate bill",
                     ParentNames = new List<string>{"United States Congress"},
@@ -235,7 +235,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "US house bill",
                     ParentNames = new List<string>{"United States Congress"},
@@ -269,7 +269,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "US act",
                     ParentNames = new List<string>{"United States Congress"},

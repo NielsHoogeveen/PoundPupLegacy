@@ -33,6 +33,12 @@ namespace PoundPupLegacy.Common
     {
         public Task<TResponse> ReadAsync(TRequest request);
     }
+    public interface IDoesRecordExistDatabaseReader<TRequest> : IDatabaseReader<TRequest, bool>
+        where TRequest : IRequest
+    {
+        public Task<bool> ReadAsync(TRequest request);
+    }
+
 
     public interface IEnumerableDatabaseReader<TRequest, TResponse> : IDatabaseReader<TRequest, TResponse>
         where TRequest : IRequest
@@ -45,6 +51,12 @@ namespace PoundPupLegacy.Common
     {
         public Task<ISingleItemDatabaseReader<TRequest, TResponse>> CreateAsync(IDbConnection connection);
     }
+    public interface IDoesRecordExistDatabaseReaderFactory<TRequest> : IDatabaseReaderFactory<TRequest, bool>
+        where TRequest : IRequest
+    {
+        public Task<IDoesRecordExistDatabaseReader<TRequest>> CreateAsync(IDbConnection connection);
+    }
+
 
     public abstract class SingleItemDatabaseReaderFactory<TRequest, TResponse> : DatabaseReaderFactory<TRequest, TResponse>, ISingleItemDatabaseReaderFactory<TRequest, TResponse>
         where TResponse : class
@@ -72,8 +84,16 @@ namespace PoundPupLegacy.Common
         {
             return new IntDatabaseReader<TRequest>(await GetCommand(connection), IntValueReader, GetParameterValues, GetErrorMessage);
         }
-
     }
+    public abstract class DoesRecordExistDatabaseReaderFactory<TRequest> : DatabaseReaderFactory<TRequest, bool>, IDoesRecordExistDatabaseReaderFactory<TRequest>
+    where TRequest : IRequest
+    {
+        public async Task<IDoesRecordExistDatabaseReader<TRequest>> CreateAsync(IDbConnection connection)
+        {
+            return new DoesRecordExistDatabaseReader<TRequest>(await GetCommand(connection), GetParameterValues);
+        }
+    }
+
     public abstract class MandatorySingleItemDatabaseReaderFactory<TRequest, TResponse> : DatabaseReaderFactory<TRequest, TResponse>, IMandatorySingleItemDatabaseReaderFactory<TRequest, TResponse>
         where TRequest : IRequest
     {
@@ -132,8 +152,37 @@ namespace PoundPupLegacy.Common
     public class IntDatabaseReader<TRequest> : MandatorySingleItemDatabaseReader<TRequest, int>
         where TRequest : IRequest
     {
-        public IntDatabaseReader(NpgsqlCommand command, IntValueReader IntValueReader, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper, Func<TRequest, string> errorMessageFunction) : base(command, parameterMapper, (reader) => IntValueReader.GetValue(reader), errorMessageFunction)
+        public IntDatabaseReader(
+            NpgsqlCommand command, 
+            IntValueReader IntValueReader, 
+            Func<TRequest, IEnumerable<ParameterValue>> parameterMapper, 
+            Func<TRequest, string> errorMessageFunction) : 
+            base(command, parameterMapper, (reader) => IntValueReader.GetValue(reader), errorMessageFunction)
         {
+        }
+    }
+
+    public class DoesRecordExistDatabaseReader<TRequest> : DatabaseAccessor<TRequest>, IDoesRecordExistDatabaseReader<TRequest>
+        where TRequest : IRequest
+    {
+        private readonly Func<TRequest, IEnumerable<ParameterValue>> _parameterMapper;
+
+        public DoesRecordExistDatabaseReader(NpgsqlCommand command, Func<TRequest, IEnumerable<ParameterValue>> parameterMapper) : base(command)
+        {
+            _parameterMapper = parameterMapper;
+        }
+        protected override IEnumerable<ParameterValue> GetParameterValues(TRequest request)
+        {
+            return _parameterMapper(request);
+        }
+
+        public async Task<bool> ReadAsync(TRequest request)
+        {
+            foreach (var parameter in GetParameterValues(request)) {
+                parameter.Set(_command);
+            }
+            await using var reader = await _command.ExecuteReaderAsync();
+            return reader.HasRows;
         }
     }
 

@@ -57,7 +57,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 Name = parts[11]
             });
             var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_SYSTEM,
                 NameableId = subdivisionId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
@@ -99,7 +99,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = title,
                         ParentNames = new List<string> { topicName },
@@ -138,7 +138,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 Iso3166Code = parts[11]
             });
             var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_SYSTEM,
                 NameableId = subdivisionId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
@@ -183,7 +183,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = title,
                         ParentNames = new List<string> { topicName },
@@ -281,7 +281,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
                     ParentNames = new List<string>{ subdivisioName },

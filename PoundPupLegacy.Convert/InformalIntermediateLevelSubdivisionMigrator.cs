@@ -48,7 +48,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : MigratorPPL
             });
             var countryName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 NameableId = countryId,
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_SYSTEM,
                 VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
             yield return new InformalIntermediateLevelSubdivision {
@@ -59,7 +59,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = title,
                         ParentNames = new List<string> { countryName },
@@ -166,7 +166,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
                     ParentNames = new List<string>{ "United States of America" },

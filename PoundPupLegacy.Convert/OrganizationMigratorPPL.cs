@@ -64,7 +64,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Colorado Adoption Center",
                     ParentNames = new List<string>{ "adoption agencies" },
@@ -122,7 +122,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Popular Democratic Party",
                     ParentNames = new List<string>{ "political party" },
@@ -180,7 +180,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Libertarian Party",
                     ParentNames = new List<string>{ "political party" },
@@ -238,7 +238,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Government of Italy",
                     ParentNames = new List<string>{ "governmental organization" },
@@ -408,7 +408,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                 foreach (var organizationTypeId in organizationTypeIds) {
                     var res = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                         NameableId = organizationTypeId,
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         VocabularyName = Constants.VOCABULARY_TOPICS
                     });
                     yield return res!.Name;
@@ -459,7 +459,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     .ToList();
 
             vocabularyNames.Add(new VocabularyName {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_SYSTEM,
                 Name = Constants.VOCABULARY_TOPICS,
                 TermName = topicName,
                 ParentNames = topicParentNames,

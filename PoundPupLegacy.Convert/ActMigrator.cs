@@ -122,7 +122,7 @@ internal sealed class ActMigrator : MigratorPPL
                     .ToList();
 
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = topicParentNames,
@@ -130,7 +130,7 @@ internal sealed class ActMigrator : MigratorPPL
             }
             else {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
                     ParentNames = new List<string> { "US house bill" },

@@ -216,7 +216,7 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
                 foreach (var organizationTypeId in organizationTypeIds) {
                     var res = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                         NameableId = organizationTypeId,
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         VocabularyName = Constants.VOCABULARY_TOPICS
                     });
                     yield return res!.Name;
@@ -224,7 +224,7 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
             }
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypes.Select(x => x.OrganizationTypeId)).ToListAsync(),

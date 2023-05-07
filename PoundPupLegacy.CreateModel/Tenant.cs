@@ -12,7 +12,6 @@ public sealed record Tenant : Owner, PublishingUserGroup
     public required string? FooterText { get; init; }
     public required string? CssFile { get; init; }
     public required string DomainName { get; init; }
-    public required int? VocabularyIdTagging { get; init; }
     public required int? CountryIdDefault { get; init; }
     public required AccessRole AccessRoleNotLoggedIn { get; init; }
     public required AdministratorRole AdministratorRole { get; init; }

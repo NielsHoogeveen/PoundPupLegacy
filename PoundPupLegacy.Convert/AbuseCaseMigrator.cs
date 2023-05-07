@@ -140,7 +140,7 @@ internal sealed class AbuseCaseMigrator : MigratorPPL
                 .ToList();
 
             vocabularyNames.Add(new VocabularyName {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_SYSTEM,
                 Name = Constants.VOCABULARY_TOPICS,
                 TermName = topicName,
                 ParentNames = topicParentNames,

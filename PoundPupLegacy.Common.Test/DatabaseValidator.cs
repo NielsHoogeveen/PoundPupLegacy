@@ -59,9 +59,14 @@ public abstract class DatabaseValidatorBase
 
     }
 
+    public static NpgsqlConnection GetConnection() 
+    {
+        return new NpgsqlConnection(ConnectStringPostgresql);
+    }
+
     public async Task ValidateDatabaseAccessors(Type t)
     {
-        using var connection = new NpgsqlConnection(ConnectStringPostgresql);
+        using var connection = GetConnection();
         connection.Open();
         var creatorAssembly = Assembly.GetAssembly(t);
         var types = creatorAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseAccessorFactory)) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);

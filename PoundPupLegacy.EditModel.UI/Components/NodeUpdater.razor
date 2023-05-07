@@ -3,7 +3,7 @@
 @inject IEditService<T> editService
 @if (Model is not null) {
 
-    <NodeEditor Model="Model" T="T" />
+    <NodeEditor Model="Model" T="T" Title="@Title"/>
 }
 @code {
 
@@ -25,4 +25,6 @@
             tenant.TenantNode = tenantNode;
         }
     }
+
+    public string Title => $"Update {Model?.NodeTypeName}";
 }

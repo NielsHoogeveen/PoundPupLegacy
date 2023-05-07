@@ -155,7 +155,7 @@ internal sealed class BillMigrator : MigratorPPL
                     .ToList();
 
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = topicParentNames,
@@ -163,7 +163,7 @@ internal sealed class BillMigrator : MigratorPPL
             }
             else {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
                     ParentNames = new List<string> { "US house bill" },
@@ -332,7 +332,7 @@ internal sealed class BillMigrator : MigratorPPL
                     .ToList();
 
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = topicParentNames,
@@ -340,7 +340,7 @@ internal sealed class BillMigrator : MigratorPPL
             }
             else {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
                     ParentNames = new List<string> { "US senate bill" },

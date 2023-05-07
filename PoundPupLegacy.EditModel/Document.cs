@@ -1,23 +1,35 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PoundPupLegacy.EditModel;
 
 public record Document : SimpleTextNode
 {
     public int? NodeId { get; set; }
+
     public int? UrlId { get; set; }
+
+    public required string NodeTypeName { get; set; }
+
     public required string Title { get; set; }
+
     public required int PublisherId { get; set; }
+
     public required int OwnerId { get; set; }
+
     public string? SourceUrl { get; set; }
+
     public required string Text { get; set; }
 
     public int? DocumentTypeId { get; set; }
 
     public DateTime? PublicationDateFrom { get; set; }
+
     public DateTime? PublicationDateTo { get; set; }
 
-
     private bool _publishedSet;
+
     private FuzzyDate? _published;
+
     public FuzzyDate? Published {
         get {
             if (!_publishedSet) {
@@ -40,6 +52,7 @@ public record Document : SimpleTextNode
     }
 
     public required DocumentType[] DocumentTypes { get; init; }
+
     private List<Tags> tags = new();
 
     public List<Tags> Tags {

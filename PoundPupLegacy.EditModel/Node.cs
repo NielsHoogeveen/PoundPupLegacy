@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PoundPupLegacy.EditModel;
 
 public interface Node
 {
@@ -11,4 +13,5 @@ public interface Node
     List<Tenant> Tenants { get; }
     List<TenantNode> TenantNodes { get; }
     List<File> Files { get; }
+    string NodeTypeName { get; }
 }

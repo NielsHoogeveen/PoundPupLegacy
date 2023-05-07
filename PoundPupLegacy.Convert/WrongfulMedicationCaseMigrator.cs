@@ -49,7 +49,7 @@ internal sealed class WrongfulMedicationCaseMigrator : MigratorPPL
             var title = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = title,
                     ParentNames = new List<string>{ "overmedication in foster care"},

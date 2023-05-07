@@ -117,7 +117,7 @@ internal sealed class TypeOfAbuseMigrator : MigratorPPL
                 }
 
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = lst

@@ -40,8 +40,8 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
             n.node_type_id
             from term t
             join node n on n.id = t.nameable_id
-            join tenant tt on tt.id = @tenant_id
-            where t.vocabulary_id = tt.vocabulary_id_tagging and t.name = @search_string
+            join system_group sg on sg.id = 0
+            where t.vocabulary_id = sg.vocabulary_id_tagging and t.name = @search_string
             and n.node_type_id = any(@node_type_ids)
             union
             select
@@ -50,8 +50,8 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
             n.node_type_id
             from term t
             join node n on n.id = t.nameable_id
-            join tenant tt on tt.id = @tenant_id
-            where t.vocabulary_id = tt.vocabulary_id_tagging and t.name ilike @search_option
+            join system_group sg on sg.id = 0
+            where t.vocabulary_id = sg.vocabulary_id_tagging and t.name ilike @search_option
             and n.node_type_id = any(@node_type_ids)
             LIMIT 50
         ) x

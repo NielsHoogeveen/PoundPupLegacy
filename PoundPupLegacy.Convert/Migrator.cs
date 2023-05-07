@@ -178,7 +178,8 @@ internal abstract class Migrator
             Console.WriteLine($" took {stopwatch.ElapsedMilliseconds} ms");
             await tx.CommitAsync();
         }
-        catch (Exception) {
+        catch (Exception e) {
+            Console.WriteLine($"Failed to migrate {e}");
             await tx.RollbackAsync();
             throw;
         }

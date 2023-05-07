@@ -20,7 +20,7 @@ internal sealed class DocumentableDocumentCreator : EntityCreator<DocumentableDo
         await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(connection);
         await foreach (var documentableDocument in documentableDocuments) {
             var term = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_SYSTEM,
                 NameableId = documentableDocument.DocumentableId,
                 VocabularyName = Constants.VOCABULARY_TOPICS,
             });

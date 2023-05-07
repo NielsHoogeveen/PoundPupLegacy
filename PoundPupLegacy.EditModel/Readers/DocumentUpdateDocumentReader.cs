@@ -12,6 +12,8 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
             jsonb_build_object(
         	    'NodeId',
         	    d.id,
+                'NodeTypeName',
+                nt.name,
                 'UrlId',
                 tn.url_id,
                 'PublisherId', 
@@ -45,6 +47,7 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
         from document d
         join simple_text_node stn on stn.id = d.id
         join node n on n.id = d.id
+        join node_type nt on nt.id = n.node_type_id
         join tenant_node tn on tn.node_id = d.id
         where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         """;

@@ -1,4 +1,9 @@
-﻿.details {
+﻿.form-group {
     box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
     border-radius: 5px;
+}
+label {
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 0.25em;
 }

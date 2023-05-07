@@ -12,6 +12,8 @@ internal sealed class DocumentCreateDocumentReaderFactory : NodeCreateDocumentRe
                 jsonb_build_object(
                     'NodeId', 
                     null,
+                    'NodeTypeName',
+                    nt.name,
                     'UrlId', 
                     null,
                     'PublisherId',
@@ -34,5 +36,7 @@ internal sealed class DocumentCreateDocumentReaderFactory : NodeCreateDocumentRe
                     'Tags',
                     (select document from tags_document)
                 ) document
+                from node_type nt
+                where nt.id = @node_type_id
         """;
 }

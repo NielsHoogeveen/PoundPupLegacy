@@ -133,3 +133,12 @@ input[type=file] {
 .ck-content {
     min-height: 25em;
 }
+
+.validation-message{
+    color:red;
+    font-weight: bold;
+    border: solid 1px red;
+    padding: 0.5em;
+    margin-bottom: 1em;
+    background-color: lightpink;
+}

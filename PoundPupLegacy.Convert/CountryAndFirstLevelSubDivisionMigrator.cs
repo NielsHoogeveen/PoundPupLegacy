@@ -91,7 +91,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "Åland",
                         ParentNames = new List<string>{ "Northern Europe" },
@@ -161,7 +161,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "Curaçao",
                         ParentNames = new List<string>{ "Caribbean" },
@@ -231,7 +231,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "Sint Maarten",
                         ParentNames = new List<string>{ "Caribbean" },
@@ -301,7 +301,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = "United States Minor Outlying Islands",
                         ParentNames = new List<string>{ "Oceania" },
@@ -408,7 +408,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
                     ParentNames = new List<string>{ regionName },

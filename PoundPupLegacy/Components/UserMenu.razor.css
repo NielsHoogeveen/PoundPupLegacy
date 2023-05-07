@@ -1,4 +1,6 @@
 ﻿nav {
+    position:absolute;
+    z-index: 100;
     border-top-style: solid;
     border-top-width: thin;
     border-right-style: solid;

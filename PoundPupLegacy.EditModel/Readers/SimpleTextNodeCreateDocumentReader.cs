@@ -10,6 +10,8 @@ where TResponse : class, SimpleTextNode
                 jsonb_build_object(
                     'NodeId', 
                     null,
+                    'NodeTypeName',
+                    nt.name,
                     'UrlId', 
                     null,
                     'PublisherId',
@@ -28,6 +30,8 @@ where TResponse : class, SimpleTextNode
                     'Files',
                     null
                 ) document
+                from node_type nt
+                where nt.id = @node_type_id
         """;
 
 }

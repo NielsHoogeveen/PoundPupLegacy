@@ -162,7 +162,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Antigua and Barbuda",
                     ParentNames = new List<string>{ "Caribbean" },
@@ -213,7 +213,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Palestine",
                     ParentNames = new List<string>{ "Western Asia" },
@@ -264,7 +264,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "Saint Helena, Ascension and Tristan da Cunha",
                     ParentNames = new List<string>{ "Western Africa" },
@@ -316,7 +316,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = "South Sudan",
                     ParentNames = new List<string>{ "Eastern Africa" },
@@ -464,7 +464,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = new List<string>{ regionName },

@@ -49,7 +49,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
                 UrlId = int.Parse(parts[7])
             });
             var countryName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.PPL,
+                OwnerId = Constants.OWNER_SYSTEM,
                 NameableId = countryId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
@@ -62,7 +62,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.PPL,
+                        OwnerId = Constants.OWNER_SYSTEM,
                         Name = Constants.VOCABULARY_TOPICS,
                         TermName = title,
                         ParentNames = new List<string> { countryName },
@@ -455,7 +455,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = new List<string>{ countryName },

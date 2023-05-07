@@ -134,7 +134,7 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
                     ParentNames = new List<string>()
                 },
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = topicName,
                     ParentNames = topicParentNames,
@@ -229,7 +229,7 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
                     ParentNames = new List<string>(),
                 },
                 new VocabularyName {
-                    OwnerId = Constants.PPL,
+                    OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = Constants.POLITICAL_PARTY_NAME.ToLower(),
                     ParentNames = new List<string>{ "organizations" },
