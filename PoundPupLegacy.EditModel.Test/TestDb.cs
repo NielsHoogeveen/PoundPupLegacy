@@ -3,16 +3,23 @@ using PoundPupLegacy.Common;
 using PoundPupLegacy.Common.Test;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
+using Xunit.Abstractions;
 
 namespace PoundPupLegacy.Edit.Test;
 
 public class TestDb
 {
 
+    private readonly ITestOutputHelper _testOutputHelper;
+    public TestDb(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
     [Fact]
     public async void AllDatabaseAccessorFactoriesCreateAnAccessorThatHasValidSQLAndTheCorrectParameters()
     {
-        await new DatabaseValidator().ValidateDatabaseAccessors(typeof(Node));
+        await new DatabaseValidator(_testOutputHelper).ValidateDatabaseAccessors(typeof(Node));
     }
 
     [Theory]

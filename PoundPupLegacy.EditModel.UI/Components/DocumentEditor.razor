@@ -1,4 +1,27 @@
 ﻿@inherits EditorBase
+
+<div class="form-group">
+    <label>Document type</label>
+    <select @onchange="HandleChange">
+        @foreach(var documentType in Model.DocumentTypes) {
+            @if (documentType.IsSelected) {
+                <option selected value="@documentType.Id">@documentType.Name</option>
+            }
+            else {
+                <option value="@documentType.Id">@documentType.Name</option>
+            }
+        }
+    </select>
+</div>
+<div class="form-group">
+    <label>Source</label>
+    <InputText type="text" @bind-Value="Model.SourceUrl" />
+</div>
+
+<div class="form-group">
+    <label>Publication date</label>
+    <FuzzyDateEditor @bind-Value="Model.Published" />
+</div>
 @code {
     [Parameter]
     [EditorRequired]
@@ -6,5 +29,19 @@
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
+    }
+
+    private void HandleChange(ChangeEventArgs e)
+    {
+        var documentTypeIdString = e.Value?.ToString();
+        if (int.TryParse(documentTypeIdString, out int documentTypeId))
+        {
+            var documentType = Model.DocumentTypes.FirstOrDefault(x => x.Id == documentTypeId);
+            if (documentType is not null)
+            {
+                documentType.IsSelected = true;
+                Model.DocumentTypeId = documentTypeId;
+            }
+        }
     }
 }

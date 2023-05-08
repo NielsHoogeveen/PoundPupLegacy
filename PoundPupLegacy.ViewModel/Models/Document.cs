@@ -37,17 +37,6 @@ public record Document : SimpleTextNode
 
         }
     }
-    private BasicLink[] documentables = Array.Empty<BasicLink>();
-    public BasicLink[] Documentables {
-        get => documentables;
-        init {
-            if (value is not null) {
-                documentables = value;
-            }
-
-        }
-    }
-
     private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
     public CommentListItem[] CommentListItems {
         get => commentListItems;

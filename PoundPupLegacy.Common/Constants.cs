@@ -142,6 +142,7 @@ public static class Constants
 
     public const int DOCUMENT = 10;
     public const int ORGANIZATION = 23;
+    public const int PERSON = 24;
     public const int ABUSE_CASE = 26;
     public const int CHILD_TRAFFICKING_CASE = 29;
     public const int COERCED_ADOPTION_CASE = 30;

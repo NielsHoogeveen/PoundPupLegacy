@@ -67,7 +67,7 @@ internal class SearchableMigrator : MigratorPPL
                             replace(
                 		        regexp_replace(
                 			        concat(
-                				        c.description,
+                				        nm.description,
                 				        ' ' ,
                 				        n.title, 
                 				        ' ',
@@ -90,6 +90,7 @@ internal class SearchableMigrator : MigratorPPL
                             )
                 	    ) tsvector
                     from "case" c
+                    join nameable nm on nm.id = c.id
                     join node n  on n.id = c.id
                 	left join case_case_parties ccp on ccp.case_id = c.id
                 	left join case_parties cp on cp.id = ccp.case_parties_id
@@ -100,7 +101,7 @@ internal class SearchableMigrator : MigratorPPL
                     left join "comment" cm on cm.node_id = n.id
                 	group by 
                 	n.id, 
-                	c.description,
+                	nm.description,
                 	n.title
                 ) subquery
                 where searchable.id = subquery.id;

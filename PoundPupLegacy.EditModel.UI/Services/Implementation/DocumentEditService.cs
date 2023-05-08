@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.EditModel.Readers;
+using PoundPupLegacy.EditModel.Updaters;
 using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
@@ -9,6 +10,7 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
 {
     private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Document> _createDocumentReaderFactory;
     private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document> _documentUpdateDocumentReaderFactory;
+    private readonly IDatabaseUpdaterFactory<DocumentUpdaterRequest> _documentUpdaterFactory;
     private readonly IEntityCreator<CreateModel.Document> _documentCreator;
     private readonly ITextService _textService;
 
@@ -17,6 +19,7 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
         IDbConnection connection,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Document> createDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document> documentUpdateDocumentReaderFactory,
+        IDatabaseUpdaterFactory<DocumentUpdaterRequest> documentUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
@@ -36,6 +39,7 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
         _createDocumentReaderFactory = createDocumentReaderFactory;
         _documentCreator = documentCreator;
         _textService = textService;
+        _documentUpdaterFactory = documentUpdaterFactory;
     }
     public async Task<Document?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -106,6 +110,16 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
 
     protected sealed override async Task StoreExisting(Document document, NpgsqlConnection connection)
     {
-        await Task.CompletedTask;
+        await using var updater = await _documentUpdaterFactory.CreateAsync(connection);
+        await updater.UpdateAsync(new DocumentUpdaterRequest {
+            Title = document.Title,
+            Text = _textService.FormatText(document.Text),
+            Teaser = _textService.FormatTeaser(document.Text),
+            NodeId = document.NodeId!.Value,
+            SourceUrl = document.SourceUrl,
+            DocumentTypeId = document.DocumentTypeId,
+            Published = document.Published,
+        });
+
     }
 }

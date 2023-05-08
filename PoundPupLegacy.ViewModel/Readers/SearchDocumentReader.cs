@@ -33,9 +33,9 @@ internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFact
                 ),
                 case_teaser as(
                     select
-                    id,
+                    c.id,
                     description
-                    from "case" c
+                    from nameable c
                 )
                 select
                     jsonb_build_object(

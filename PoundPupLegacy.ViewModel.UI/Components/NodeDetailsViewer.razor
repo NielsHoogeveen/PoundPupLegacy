@@ -10,8 +10,10 @@
     @if (Model is Document document) {
         <DocumentViewer Model="document" />
     }
+    @if (Model is Discussion || Model is BlogPost) {
+        <AuthoringViewer Model="Model.Authoring" />
+    }
     @if (Model is SimpleTextNode simpleTextNode) {
-        <AuthoringViewer Model="simpleTextNode.Authoring" />
         <SimpleTextNodeViewer Model="simpleTextNode"/>
     }
     @if (Model is Country country) {

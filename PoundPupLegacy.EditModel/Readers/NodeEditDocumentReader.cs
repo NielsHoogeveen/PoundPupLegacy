@@ -126,7 +126,9 @@ where TResponse : class, Node
         		        'Id',
         		        n.id,
         		        'Name',
-        		        n.title
+        		        n.title,
+                        'IsSelected',
+                        case when n.title = 'News paper article' then true else false end
         	        )
                 ) document
             from document_type dt
@@ -145,13 +147,22 @@ where TResponse : class, Node
         		        'Id',
         		        n.id,
         		        'Name',
-        		        n.title
+        		        n.title,
+                        'IsSelected',
+                        d.document_type_id is not null
         	        )
                 ) document
             from document_type dt
             join term t on t.nameable_id = dt.id
             join tenant_node tn on tn.node_id = t.vocabulary_id
             join node n on n.id = dt.id 
+            left join (
+                select 
+                d.document_type_id
+                from document d
+                join tenant_node tn2 on tn2.node_id = d.id
+                where tn2.url_id = @url_id and tn2.tenant_id = @tenant_id
+            ) d on d.document_type_id = dt.id
             where tn.url_id = 42416 and tn.tenant_id = 1
         )
         """;

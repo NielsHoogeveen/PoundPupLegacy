@@ -102,7 +102,7 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             		select
                     n.id,
             		n.title,
-            		c.description,
+            		nm.description,
             		nt.name node_type_name,
             		n.node_type_id,
             		COUNT(*) OVER() number_of_entries,
@@ -148,6 +148,7 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             		from
             		tenant_node tn
             		join node n on n.id = tn.node_id
+                    join nameable nm on nm.id = n.id
             		join "case" c on c.id = n.id
             		join node_type nt on nt.id = n.node_type_id
             		WHERE tn.tenant_id = @tenant_id

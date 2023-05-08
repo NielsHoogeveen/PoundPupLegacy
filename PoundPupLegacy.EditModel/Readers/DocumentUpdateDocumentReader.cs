@@ -42,7 +42,9 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
                 'Tenants',
                 (select document from tenants_document),
                 'Files',
-                (select document from attachments_document)
+                (select document from attachments_document),
+                'Tags',
+                (select document from tags_document)
             ) document
         from document d
         join simple_text_node stn on stn.id = d.id

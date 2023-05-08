@@ -75,20 +75,23 @@
         {
             validationMessageStore.Clear();
             var invalidIds = new List<string>();
-            Validate(validationMessageStore, invalidIds);
+            await Validate(validationMessageStore, invalidIds);
             if(simpleTextNodeEditor is not null) {
-                simpleTextNodeEditor.Validate(validationMessageStore, invalidIds);
+                await simpleTextNodeEditor.Validate(validationMessageStore, invalidIds);
+            }
+            if (documentEditor is not null) {
+                await documentEditor.Validate(validationMessageStore, invalidIds);
+            }
+            if (organizationEditor is not null) {
+                await organizationEditor.Validate(validationMessageStore, invalidIds);
             }
             if (invalidIds.Any()) {
                 editContext.NotifyValidationStateChanged();
                 await JSRuntime.InvokeVoidAsync("scrollToFirstError", new object[] { "title" });
                 return;
             }
-            if (editContext is not null && validationMessageStore is not null)
-            {
-                //await editService.SaveAsync(Model);
-                //await JSRuntime.InvokeVoidAsync("reloadNode", Model.UrlId);
-            }
+            await editService.SaveAsync(Model);
+            await JSRuntime.InvokeVoidAsync("reloadNode", Model.UrlId);
         }
     }
 }

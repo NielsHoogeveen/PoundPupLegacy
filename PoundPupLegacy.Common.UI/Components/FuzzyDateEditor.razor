@@ -138,6 +138,7 @@
         {
             selectedDay = null;
         }
+        SetFuzzyDateValue();
         StateHasChanged();
     }
     private void SetFuzzyDateValue()
@@ -146,6 +147,6 @@
             Value = null;
             return;
         }
-        Value = new FuzzyDate(selectedYear.Value, selectedMonth, selectedDay);
+        CurrentValue = new FuzzyDate(selectedYear.Value, selectedMonth, selectedDay);
     }
 }

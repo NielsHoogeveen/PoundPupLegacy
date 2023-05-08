@@ -20,8 +20,14 @@ public static class DependencyInjection
         services.AddEditModelInserters();
         services.AddEditModelUpdaters();
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
+        services.AddTransient<IEditService<AbuseCase>, AbuseCaseEditService>();
         services.AddTransient<IEditService<BlogPost>, BlogPostEditService>();
+        services.AddTransient<IEditService<ChildTraffickingCase>, ChildTraffickingCaseEditService>();
+        services.AddTransient<IEditService<CoercedAdoptionCase>, CoercedAdoptionCaseEditService>();
+        services.AddTransient<IEditService<DeportationCase>, DeportationCaseEditService>();
         services.AddTransient<IEditService<Discussion>, DiscussionEditService>();
+        services.AddTransient<IEditService<DisruptedPlacementCase>, DisruptedPlacementCaseEditService>();
+        services.AddTransient<IEditService<FathersRightsViolationCase>, FathersRightsViolationCaseEditService>();
         services.AddTransient<IEditService<Organization>, OrganizationEditService>();
         services.AddTransient<IEditService<Document>, DocumentEditService>();
         services.AddTransient<ILocationService, LocationService>();
@@ -31,5 +37,7 @@ public static class DependencyInjection
         services.AddTransient<ISaveService<IEnumerable<Location>>, LocationsSaveService>();
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();
+        services.AddTransient<IEditService<WrongfulMedicationCase>, WrongfulMedicationCaseEditService>();
+        services.AddTransient<IEditService<WrongfulRemovalCase>, WrongfulRemovalCaseEditService>();
     }
 }

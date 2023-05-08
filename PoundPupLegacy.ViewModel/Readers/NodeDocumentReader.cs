@@ -23,7 +23,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             {AUTHENTICATED_NODE},
             {FILES_DOCUMENT},
             {SEE_ALSO_DOCUMENT},
-            {DOCUMENTABLES_DOCUMENT},
             {LOCATIONS_DOCUMENT},
             {POLL_OPTIONS_DOCUMENT},
             {POLL_QUESTIONS_DOCUMENT},
@@ -2069,67 +2068,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         )
         """;
 
-    const string DOCUMENTABLES_DOCUMENT = """
-        documentables_document as (
-            select
-                jsonb_agg(
-                    jsonb_build_object(
-                        'Title', 
-                        documentable_name, 
-                        'Path', 
-                        documentable_path
-                    )
-                ) document
-                from(
-                select
-                n.title documentable_name,
-                case 
-        	        when tn.url_path is null then '/node/' || tn.url_id
-        	        else tn.url_path
-                end documentable_path,
-                case
-        	        when tn.publication_status_id = 0 then (
-        		        select
-        			        case 
-        				        when count(*) > 0 then 0
-        				        else -1
-        			        end status
-        		        from user_group_user_role_user ugu
-        		        join user_group ug on ug.id = ugu.user_group_id
-        		        WHERE ugu.user_group_id = 
-        		        case
-        			        when tn.subgroup_id is null then tn.tenant_id 
-        			        else tn.subgroup_id 
-        		        end 
-        		        AND ugu.user_role_id = ug.administrator_role_id
-        		        AND ugu.user_id = @user_id
-        	        )
-        	        when tn.publication_status_id = 1 then 1
-        	        when tn.publication_status_id = 2 then (
-        		        select
-        			        case 
-        				        when count(*) > 0 then 1
-        				        else -1
-        			        end status
-        		        from user_group_user_role_user ugu
-        		        WHERE ugu.user_group_id = 
-        			        case
-        				        when tn.subgroup_id is null then tn.tenant_id 
-        				        else tn.subgroup_id 
-        			        end
-        			        AND ugu.user_id = @user_id
-        		        )
-                end status	
-            from node_term nt
-            join term t on t.id = nt.term_id
-            join tenant_node tn2 on tn2.node_id = nt.node_id
-            join node n on n.id = t.nameable_id
-            join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
-            where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
-            ) x 
-            where status <> -1
-        )
-        """;
 
     const string CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT = """
         child_trafficking_case_bread_crum_document AS (
@@ -3051,7 +2989,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'BreadCrumElements', (SELECT document FROM document_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
-                    'Documentables', (SELECT document FROM documentables_document),
                     'Files', (SELECT document FROM files_document)
             ) document
             FROM(

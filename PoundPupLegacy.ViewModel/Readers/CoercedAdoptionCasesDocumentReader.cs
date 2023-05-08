@@ -118,7 +118,7 @@ internal sealed class CoercedAdoptionCasesDocumentReaderFactory : SingleItemData
         				        nt.node_id,
         				        n.title,
                                 n.changed_date_time,
-        				        cs.description teaser,
+        				        nm.description teaser,
                                 cs.fuzzy_date,
         				        case
         					        when tn.url_path is null then '/node/' || tn.url_id
@@ -169,6 +169,7 @@ internal sealed class CoercedAdoptionCasesDocumentReaderFactory : SingleItemData
         					        else 1
         				        end weight
         				        from node n
+                                join nameable nm on nm.id = n.id
                                 join "case" cs on cs.id = n.id
                                 join coerced_adoption_case ac on ac.id = n.id
         				        join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id

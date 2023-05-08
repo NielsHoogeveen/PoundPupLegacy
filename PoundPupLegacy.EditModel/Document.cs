@@ -20,7 +20,7 @@ public record Document : SimpleTextNode
 
     public required string Text { get; set; }
 
-    public int? DocumentTypeId { get; set; }
+    public int DocumentTypeId { get; set; }
 
     public DateTime? PublicationDateFrom { get; set; }
 

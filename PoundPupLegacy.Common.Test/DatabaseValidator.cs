@@ -1,10 +1,12 @@
 using Npgsql;
 using System.Reflection;
+using Xunit.Abstractions;
 
 namespace PoundPupLegacy.Common.Test;
 
 public class DatabaseValidator : DatabaseValidatorBase
 {
+    public DatabaseValidator(ITestOutputHelper testOutputHelper): base(testOutputHelper) { }
     protected override Type GetClassTypeForInterface(Type interfaceType)
     {
         var types = interfaceType.Assembly!.GetTypes().Where(x => x.IsAssignableTo(interfaceType) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
@@ -18,6 +20,12 @@ public class DatabaseValidator : DatabaseValidatorBase
 
 public abstract class DatabaseValidatorBase
 {
+    private ITestOutputHelper _testOutputHelper;
+    public DatabaseValidatorBase(ITestOutputHelper testOutputHelper) 
+    { 
+        _testOutputHelper = testOutputHelper;
+    }
+
     const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
 
     private static Type? GetRequestType(Type t)
@@ -72,6 +80,7 @@ public abstract class DatabaseValidatorBase
         var types = creatorAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseAccessorFactory)) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
         bool foundTypes = false;
         foreach (var type in types) {
+            _testOutputHelper.WriteLine(type.FullName);
             foundTypes = true;
             var factory = (IDatabaseAccessorFactory)Activator.CreateInstance(type)!;
             var createMethod = type.GetMethod("CreateAsync", new Type[] { typeof(NpgsqlConnection) });
