@@ -71,6 +71,18 @@ public record Organization : Party
             }
         }
     }
+
+    private List<InterOrganizationalRelation> interOrganizationalRelations = new();
+
+    public List<InterOrganizationalRelation> InterOrganizationalRelations {
+        get => interOrganizationalRelations;
+        init {
+            if (value is not null) {
+                interOrganizationalRelations = value;
+            }
+        }
+    }
+
     private List<TenantNode> tenantNodes = new();
 
     public List<TenantNode> TenantNodes {
@@ -151,6 +163,14 @@ public record Organization : Party
             }
         }
     }
+    private List<InterOrganizationalRelationType> interOrganizationalRelationTypes = new();
 
-
+    public List<InterOrganizationalRelationType> InterOrganizationalRelationTypes {
+        get => interOrganizationalRelationTypes;
+        init {
+            if (value is not null) {
+                interOrganizationalRelationTypes = value;
+            }
+        }
+    }
 }

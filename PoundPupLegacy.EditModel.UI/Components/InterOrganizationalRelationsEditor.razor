@@ -1,0 +1,43 @@
+﻿@inherits EditorBase
+<div class="relations">
+    <div class="header">From</div>
+    <div class="header">To</div>
+    <div class="header">Type</div>
+    <div class="header">Start</div>
+    <div class="header">End</div>
+    <div class="header"></div>
+    @foreach(var relation in Model) {
+        <div>
+            @relation.OrganizationNameFrom
+        </div>
+        <div>
+            @relation.OrganizationNameTo
+        </div>
+        <div>
+            @relation.InterOrganizationalRelationTypeName
+        </div>
+        <div>
+            @relation.DateFrom
+        </div>
+        <div>
+            @relation.DateTo
+        </div>
+        <div>
+            <button type="button">edit</button>
+        </div>
+    }
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public List<InterOrganizationalRelation> Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public List<InterOrganizationalRelationType> RelationTypes { get; set; } = default!;
+
+    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    {
+        await Task.CompletedTask;
+    }
+}

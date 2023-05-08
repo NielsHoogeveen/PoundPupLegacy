@@ -1,0 +1,26 @@
+.relations {
+    background-color: #b8d0e1;
+    margin-top: 1em;
+    border-top: solid thin #ccc;
+    border: solid 2px #76b1db;
+    border-radius: 5px;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+    display: grid;
+    grid-template-columns: 3fr 3fr 2fr 1fr 1fr 4em;
+}
+
+.header {
+    background-color: #c7d1e1;
+    border-bottom: solid 1px #76b1db;
+    margin-bottom: 1em;
+}
+
+button {
+    margin: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: #6290fa;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}

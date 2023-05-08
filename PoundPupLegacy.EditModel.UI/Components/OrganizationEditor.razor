@@ -1,8 +1,17 @@
 ﻿@inherits EditorBase
-
-<OrganizationOrganizationTypesEditor Model="Model" />
-<FuzzyDateEditor @bind-Value=" Model.Establishment" />
-<FuzzyDateEditor @bind-Value="Model.Termination" />
+<div class="form-group">
+    <label>Organization types</label>
+    <OrganizationOrganizationTypesEditor Model="Model" />
+</div>
+<div class="form-group">
+    <label>Established</label>
+    <FuzzyDateEditor @bind-Value=" Model.Establishment" />
+</div>
+<div class="form-group">
+    <label>Terminated</label>
+    <FuzzyDateEditor @bind-Value="Model.Termination" />
+</div>
+<InterOrganizationalRelationsEditor Model="Model.InterOrganizationalRelations" RelationTypes="Model.InterOrganizationalRelationTypes" />
 @code {
     [Parameter]
     [EditorRequired]

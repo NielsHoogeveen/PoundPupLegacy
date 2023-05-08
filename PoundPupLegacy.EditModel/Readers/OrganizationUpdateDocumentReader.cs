@@ -20,6 +20,8 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     n.owner_id,
                     'Title' , 
                     n.title,
+                    'NodeTypeName',
+                    nt.name,
                     'Description', 
                     nm.description,
                     'WebSiteUrl',
@@ -51,9 +53,14 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     'Countries',
                     (select document from countries_document),
                     'Countries',
-                    (select document from countries_document)
+                    (select document from countries_document),
+                    'InterOrganizationalRelations',
+                    (select document from inter_organizational_relations_document),
+                    'InterOrganizationalRelationTypes',
+                    (select document from inter_organizational_relation_types_document)
                 ) document
             from node n
+            join node_type nt on nt.id = n.node_type_id
             join organization o on o.id = n.id
             join nameable nm on nm.id = n.id
             join tenant_node tn on tn.node_id = n.id
