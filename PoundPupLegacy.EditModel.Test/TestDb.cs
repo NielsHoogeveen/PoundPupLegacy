@@ -60,23 +60,18 @@ public class TestDb
             };
         }
         var tasks = new List<Task> {
-            new Task(async () => await GetList("a")),
-            new Task(async () => await GetList("b")),
-            new Task(async () => await GetList("c")),
-            new Task(async () => await GetList("d")),
-            new Task(async () => await GetList("e")),
-            new Task(async () => await GetList("f")),
-            new Task(async () => await GetList("g")),
+            GetList("a"),
+            GetList("b"),
+            GetList("c"),
+            GetList("d"),
+            GetList("e"),
+            GetList("f"),
+            GetList("g"),
         };
-        foreach (var task in tasks) {
-            task.Start();
-        }
-        tasks.Add(Task.Delay(3000));
         try {
             await Task.WhenAll(tasks.ToArray());
         }catch (Exception ex) {
             Assert.Fail($"Expected no exception, but found {ex.Message}");
         }
     }
-
 }

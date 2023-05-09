@@ -35,12 +35,8 @@ internal abstract class SearchService<TListItem, TRequest> : ISearchService<TLis
             }
             return items;
         }
-        catch(Exception e) {
-            Console.WriteLine(e.ToString());
-            throw;
-        }
         finally {
-            if (_connection.State != ConnectionState.Closed) {
+            if (_connection.State == ConnectionState.Open) {
                 await _connection.CloseAsync();
             }
             semaphore.Release();
