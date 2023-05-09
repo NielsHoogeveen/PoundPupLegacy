@@ -38,7 +38,8 @@ where TResponse : class, Node
         WITH
         {TENANTS_DOCUMENT},
         {DOCUMENT_TYPES_DOCUMENT_CREATE},
-        {TAGS_DOCUMENT_CREATE}
+        {TAGS_DOCUMENT_CREATE},
+        {INTER_ORGANIZATIONAL_RELATION_TYPES_DOCUMENT}
         """;
 
     const string TAGS_DOCUMENT_CREATE = """
@@ -823,7 +824,9 @@ where TResponse : class, Node
                         'Id', 
                         n.id,
                         'Name', 
-                        n.title
+                        n.title,
+                        'IsSymmetric',
+                        t.is_symmetric
                     )
                 ) "document"
             from inter_organizational_relation_type t

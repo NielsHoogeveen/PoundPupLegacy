@@ -3,6 +3,9 @@ using PoundPupLegacy.Common;
 using PoundPupLegacy.Common.Test;
 using PoundPupLegacy.EditModel;
 using PoundPupLegacy.EditModel.Readers;
+using PoundPupLegacy.EditModel.UI;
+using PoundPupLegacy.EditModel.UI.Services;
+using System.Data;
 using Xunit.Abstractions;
 
 namespace PoundPupLegacy.Edit.Test;
@@ -37,6 +40,43 @@ public class TestDb
         Assert.Equal(exists, await reader.ReadAsync(new TopicExistsRequest { Name = name }));
         await connection.CloseAsync();
 
+    }
+    [Fact]
+    public async Task SearchServicesSynchronizeProperly()
+    {
+        using var connection = DatabaseValidatorBase.GetConnection();
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddTransient<IDbConnection>((sp) => {
+            return connection;
+        });
+        serviceCollection.AddEditModels();
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var personListSearch = serviceProvider.GetRequiredService<ISearchService<PersonListItem>>();
+        async Task GetList(string str)
+        {
+            var items = await personListSearch!.GetItems(1, str);
+            foreach (var item in items) {
+                _testOutputHelper.WriteLine(item.Name);
+            };
+        }
+        var tasks = new List<Task> {
+            new Task(async () => await GetList("a")),
+            new Task(async () => await GetList("b")),
+            new Task(async () => await GetList("c")),
+            new Task(async () => await GetList("d")),
+            new Task(async () => await GetList("e")),
+            new Task(async () => await GetList("f")),
+            new Task(async () => await GetList("g")),
+        };
+        foreach (var task in tasks) {
+            task.Start();
+        }
+        tasks.Add(Task.Delay(3000));
+        try {
+            await Task.WhenAll(tasks.ToArray());
+        }catch (Exception ex) {
+            Assert.Fail($"Expected no exception, but found {ex.Message}");
+        }
     }
 
 }

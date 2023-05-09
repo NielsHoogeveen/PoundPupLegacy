@@ -35,6 +35,9 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulRemovalCase>, WrongfulRemovalCaseUpdateDocumentReaderFactory>();
 
         services.AddTransient<IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem>, CountryListItemsReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<DocumentsReaderRequest, DocumentListItem>, DocumentsReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, OrganizationListItem>, OrganizationsReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<PersonsReaderRequest, PersonListItem>, PersonsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem>, SubdivisionListItemsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag>, TagDocumentsReaderFactory>();
         services.AddTransient<IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest>, TopicExistsFactory>();

@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-using PoundPupLegacy.CreateModel.Readers;
 using PoundPupLegacy.EditModel.Readers;
 using System.Data;
 
@@ -9,7 +8,7 @@ internal sealed class TopicSearchService : ITopicSearchService
 {
     private readonly NpgsqlConnection _connection;
 
-    private SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
+    private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
     private readonly IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag> _tagDocumentsReaderFactory;
     private readonly IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest> _doesTopcExistReaderFactory;
 
@@ -26,7 +25,7 @@ internal sealed class TopicSearchService : ITopicSearchService
     }
     public async Task<List<Tag>> GetTerms(int? nodeId, int tenantId, string searchString, int[] nodeTypeIds)
     {
-        await semaphore.WaitAsync(TimeSpan.FromMilliseconds(100));
+        await semaphore.WaitAsync();
         List<Tag> tags = new();
         try {
             await _connection.OpenAsync();

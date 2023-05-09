@@ -62,11 +62,11 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : MigratorCPCT
                         n.`status` status,
                         FROM_UNIXTIME(n.created) created_date_time, 
                         FROM_UNIXTIME(n.changed) changed_date_time,
-                        n2.nid organization_id_from,
+                        n2.nid organization_id_to,
                         case 
                         when n3.nid = 30638 then 14681
                         else n3.nid
-                        end organization_id_to,
+                        end organization_id_from,
                         STR_TO_DATE(REPLACE(p.field_date_from_value, '-00', '-01'),'%Y-%m-%d') start_date,
                 				STR_TO_DATE(REPLACE(p.field_end_date_0_value,'-00', '-01'),'%Y-%m-%d') end_date,
                 				c.cid nameable_id,
@@ -80,7 +80,6 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : MigratorCPCT
                     JOIN node n3 ON n3.nid = p.field_organization_to_nid AND n3.nid not in (11108)
                     JOIN category_node cn ON cn.nid = n.nid
                     JOIN category c ON c.cid = cn.cid AND c.cnid = 12637
-
                     WHERE n.nid > 33162
                 ) x
                 """;

@@ -7,3 +7,8 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.type-and-swap{
+    display: grid;
+    grid-template-columns: 10fr 1fr;
+}

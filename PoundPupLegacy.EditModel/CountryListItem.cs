@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record CountryListItem
+public record CountryListItem: EditListItem
 {
     public required int Id { get; init; }
 

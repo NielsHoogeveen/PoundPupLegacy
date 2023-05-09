@@ -9,7 +9,7 @@ using PoundPupLegacy.EditModel.UI.Services.Implementation;
 using PoundPupLegacy.EditModel.Updaters;
 using File = PoundPupLegacy.EditModel.File;
 
-namespace PoundPupLegacy.ViewModel.UI;
+namespace PoundPupLegacy.EditModel.UI;
 
 public static class DependencyInjection
 {
@@ -40,6 +40,9 @@ public static class DependencyInjection
         services.AddTransient<ISaveService<IEnumerable<Tag>>, TagsSaveService>();
         services.AddTransient<ISaveService<IEnumerable<Location>>, LocationsSaveService>();
         services.AddTransient<ITextService, TextService>();
+        services.AddTransient<ISearchService<DocumentListItem>, DocumentSearchService>();
+        services.AddTransient<ISearchService<OrganizationListItem>, OrganizationSearchService>();
+        services.AddTransient<ISearchService<PersonListItem>, PersonSearchService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();
         services.AddTransient<IEditService<WrongfulMedicationCase>, WrongfulMedicationCaseEditService>();
         services.AddTransient<IEditService<WrongfulRemovalCase>, WrongfulRemovalCaseEditService>();

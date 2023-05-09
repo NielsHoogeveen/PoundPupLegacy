@@ -26,7 +26,7 @@ public abstract class DatabaseValidatorBase
         _testOutputHelper = testOutputHelper;
     }
 
-    const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
+    const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True;";
 
     private static Type? GetRequestType(Type t)
     {

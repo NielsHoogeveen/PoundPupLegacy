@@ -1,36 +1,41 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
 <div>
-    @if (OrganizationId is not null && OrganizationId != InterOrganizationalRelation.OrganizationIdTo) {
-        <input type="text" />
-    }
-    <div>
-        @InterOrganizationalRelation.OrganizationNameTo
-    </div>
-
-</div>
-<div>
-    @if (OrganizationId is not null && OrganizationId != InterOrganizationalRelation.OrganizationIdFrom) {
+    @if (ThisOrganizationIsFrom) {
         <input type="text" />
     }
     <div>
         @InterOrganizationalRelation.OrganizationNameFrom
     </div>
 </div>
-<CKEditor Id="relation-editor" @bind-Value="InterOrganizationalRelation.Description" />
-<div class="form-group">
-    <label for="relation-type">Relation type</label>
-    <select id="relation-type">
-        @foreach(var relationType in InterOrganizationalRelationTypes) {
-            @if(relationType.Id == InterOrganizationalRelation.InterOrganizationalRelationTypeId) {
-                <option selected value="@relationType.Id">@relationType.Name</option>
+<div class="type-and-swap">
+    <div class="form-group">
+        <label for="relation-type">Relation type</label>
+        <select id="relation-type" @onchange="OnChangeRelationType">
+            @foreach (var relationType in InterOrganizationalRelationTypes) {
+                @if (relationType.Id == InterOrganizationalRelationType.Id) {
+                    <option selected value="@relationType.Id">@relationType.Name</option>
+                }
+                else {
+                    <option value="@relationType.Id">@relationType.Name</option>
+                }
             }
-            else {
-                <option value="@relationType.Id">@relationType.Name</option>
-            }
-        }
-    </select>
+        </select>
+    </div>
+    @if (!InterOrganizationalRelationType.IsSymmetric) {
+        <button type="button" @onclick="Swap">Swap</button>
+    }
+
 </div>
+<div>
+    @if (!ThisOrganizationIsFrom) {
+        <input type="text" />
+    }
+    <div>
+        @InterOrganizationalRelation.OrganizationNameTo
+    </div>
+</div>
+<CKEditor Id="relation-editor" @bind-Value="InterOrganizationalRelation.Description" />
 <div class="form-group">
     <label>Start</label>
     <InputDate @bind-Value="InterOrganizationalRelation.DateFrom" />
@@ -52,5 +57,39 @@
     [Parameter]
     [EditorRequired]
     public List<InterOrganizationalRelationType> InterOrganizationalRelationTypes { get; set; } = default!;
+
+    private bool ThisOrganizationIsFrom = true;
+
+    private InterOrganizationalRelationType InterOrganizationalRelationType { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        if (OrganizationId is not null) {
+            ThisOrganizationIsFrom = OrganizationId == InterOrganizationalRelation.OrganizationIdFrom;
+        }
+        InterOrganizationalRelationType = InterOrganizationalRelationTypes.First(x => x.Id == InterOrganizationalRelation.InterOrganizationalRelationTypeId);
+    }
+
+    private void Swap()
+    {
+        var tmpId = InterOrganizationalRelation.OrganizationIdFrom;
+        var tmpName = InterOrganizationalRelation.OrganizationNameFrom;
+        InterOrganizationalRelation.OrganizationIdFrom = InterOrganizationalRelation.OrganizationIdTo;
+        InterOrganizationalRelation.OrganizationIdTo = tmpId;
+        InterOrganizationalRelation.OrganizationNameFrom = InterOrganizationalRelation.OrganizationNameTo;
+        InterOrganizationalRelation.OrganizationNameTo = tmpName;
+        ThisOrganizationIsFrom = !ThisOrganizationIsFrom;
+        StateHasChanged();
+    }
+
+    private void OnChangeRelationType(ChangeEventArgs args)
+    {
+        if(args.Value is not null && args.Value is string str) {
+            if(int.TryParse(str, out var organizationTypeId)) {
+                InterOrganizationalRelationType = InterOrganizationalRelationTypes.First(x => x.Id == organizationTypeId);
+                StateHasChanged();
+            }
+        }
+    }
 }
 
