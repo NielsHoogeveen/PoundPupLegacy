@@ -11,7 +11,10 @@
     <label>Terminated</label>
     <FuzzyDateEditor @bind-Value="Model.Termination" />
 </div>
-<InterOrganizationalRelationsEditor Model="Model.InterOrganizationalRelations" RelationTypes="Model.InterOrganizationalRelationTypes" />
+<InterOrganizationalRelationsEditor 
+    Model="Model.InterOrganizationalRelations" 
+    RelationTypes="Model.InterOrganizationalRelationTypes" 
+    OrganizationId="Model.NodeId"/>
 @code {
     [Parameter]
     [EditorRequired]

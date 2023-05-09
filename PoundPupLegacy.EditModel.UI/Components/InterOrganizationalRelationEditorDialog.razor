@@ -1,0 +1,56 @@
+﻿@inject ILocationService LocationService
+@inject IJSRuntime JSRuntime
+<div>
+    @if (OrganizationId is not null && OrganizationId != InterOrganizationalRelation.OrganizationIdTo) {
+        <input type="text" />
+    }
+    <div>
+        @InterOrganizationalRelation.OrganizationNameTo
+    </div>
+
+</div>
+<div>
+    @if (OrganizationId is not null && OrganizationId != InterOrganizationalRelation.OrganizationIdFrom) {
+        <input type="text" />
+    }
+    <div>
+        @InterOrganizationalRelation.OrganizationNameFrom
+    </div>
+</div>
+<CKEditor Id="relation-editor" @bind-Value="InterOrganizationalRelation.Description" />
+<div class="form-group">
+    <label for="relation-type">Relation type</label>
+    <select id="relation-type">
+        @foreach(var relationType in InterOrganizationalRelationTypes) {
+            @if(relationType.Id == InterOrganizationalRelation.InterOrganizationalRelationTypeId) {
+                <option selected value="@relationType.Id">@relationType.Name</option>
+            }
+            else {
+                <option value="@relationType.Id">@relationType.Name</option>
+            }
+        }
+    </select>
+</div>
+<div class="form-group">
+    <label>Start</label>
+    <InputDate @bind-Value="InterOrganizationalRelation.DateFrom" />
+</div>
+<div class="form-group">
+    <label>End</label>
+    <InputDate @bind-Value="InterOrganizationalRelation.DateTo" />
+</div>
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public InterOrganizationalRelation InterOrganizationalRelation { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public int? OrganizationId { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public List<InterOrganizationalRelationType> InterOrganizationalRelationTypes { get; set; } = default!;
+}
+

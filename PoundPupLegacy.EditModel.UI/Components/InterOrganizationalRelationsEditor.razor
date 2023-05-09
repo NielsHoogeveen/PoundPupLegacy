@@ -1,4 +1,15 @@
 ﻿@inherits EditorBase
+@if (_relationToEdit is not null) {
+    <ModalDialog Title="Add inter-organizational relation" Id="inter-organizational-relation-dialog" OnOk="OnOk" OnCancel="OnCancel">
+        <DialogContent>
+            <InterOrganizationalRelationEditorDialog  
+                InterOrganizationalRelation="_relationToEdit" 
+                InterOrganizationalRelationTypes="@RelationTypes"
+                OrganizationId="OrganizationId"/>
+        </DialogContent>
+    </ModalDialog>
+}
+
 <div class="relations">
     <div class="header">From</div>
     <div class="header">To</div>
@@ -23,7 +34,7 @@
             @relation.DateTo
         </div>
         <div>
-            <button type="button">edit</button>
+            <button type="button" @onclick="() => EditRelation(relation)">edit</button>
         </div>
     }
 </div>
@@ -34,10 +45,31 @@
 
     [Parameter]
     [EditorRequired]
+    public int? OrganizationId { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
     public List<InterOrganizationalRelationType> RelationTypes { get; set; } = default!;
+
+    private InterOrganizationalRelation? _relationToEdit = null;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
+    }
+    private void EditRelation(InterOrganizationalRelation relationToEdit)
+    {
+        _relationToEdit = relationToEdit;
+        StateHasChanged();
+    }
+    private void OnOk()
+    {
+        _relationToEdit = null;
+        StateHasChanged();
+    }
+    private void OnCancel()
+    {
+        _relationToEdit = null;
+        StateHasChanged();
     }
 }

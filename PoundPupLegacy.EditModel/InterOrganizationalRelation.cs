@@ -71,28 +71,11 @@ public record InterOrganizationalRelation : Node
 
     public required string OrganizationNameTo { get; set; }
 
-    public required DateTime? DateFrom { get; init; }
-    public required DateTime? DateTo { get; init; }
+    public required DateTime? DateFrom { get; set; }
+    public required DateTime? DateTo { get; set; }
 
-    private bool _dateRangeIsSet = false;
-
-    private DateTimeRange? _dateRange;
-    public DateTimeRange? DateRange {
-        get {
-            if (!_dateRangeIsSet) {
-                if (DateFrom is not null && DateTo is not null) {
-                    _dateRange = new DateTimeRange(DateFrom, DateTo);
-                }
-                else {
-                    _dateRange = null;
-                }
-                _dateRangeIsSet = true;
-            }
-            return _dateRange;
-        }
-        set {
-            _dateRange = value;
-        }
+    public DateTimeRange DateRange {
+        get => new DateTimeRange(DateFrom, DateTo);
     }
     public int? DocumentIdProof { get; set; }
     public string? DocumentNameProof { get; set; }

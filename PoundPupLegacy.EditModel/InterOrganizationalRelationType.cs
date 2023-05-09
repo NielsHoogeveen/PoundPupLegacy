@@ -6,5 +6,4 @@ public record InterOrganizationalRelationType
 
     public required string Name { get; init; }
 
-    public bool IsSelected { get; set; }
 }
