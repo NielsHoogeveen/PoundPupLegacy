@@ -1,36 +1,45 @@
 ﻿button {
     padding: 0.5em 1em;
+    margin-left: 0.25em;
     border: 0;
-    background-color: #6290fa;
+    background-color: var(--button-color);
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
-.location {
+button:hover {
+    background-color: var(--button-hover-color);
+}
+.locations {
     display: grid;
-    grid-template-columns: 3fr 3fr 1fr 2fr 2fr 3fr 3em;
-    padding-top: 0.5em;
+    grid-template-columns: 3fr 3fr 1fr 2fr 2fr 3fr 4em;
     padding-bottom: 0.5em;
     
 }
-
-.location:not(:last-of-type) {
-    border-bottom: solid 1px #82bae2;
+.header {
+    padding-left: 0.25em;
+}
+.item {
+    padding:0.25em;
+    border-bottom: solid 1px var(--editor-border-color);
 }
 
 .editor-section {
     margin-top: 1em;
-    background-color: #b8d0e1;
-    padding-right: 0.25em;
-    padding-left: 0.25em;
+    background-color: var(--editor-element-background);
     padding-bottom: 0.25em;
-    border: solid 2px #76b1db;
+    border: solid 2px var(--editor-border-color);
     border-radius: 5px;
-    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+    box-shadow: var(--input-shadow);
+}
+
+h4 {
+    margin: 0;
+    padding: 0;
+    padding: 0.25em;
+    background-color: var(--editor-header-background);
 }
 
 .header {
-    background-color: #c7d1e1;
-    border-bottom: solid 1px #76b1db;
-    margin-bottom: 1em;
+    background-color: var(--editor-header-background);
 }

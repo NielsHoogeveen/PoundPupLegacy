@@ -1,0 +1,63 @@
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+label::after {
+    content: ":";
+}
+.name-and-clear-button {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: solid 1px #82bae2;
+}
+
+.form-group {
+    padding-left:0.5em;
+    padding-bottom: 0.5em;
+}
+.item-search {
+    display: block;
+    width: 50%;
+    font-size: 125%;
+    outline-color: #76b1db;
+    margin-bottom: 1em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+}
+
+.item-selector {
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+}
+
+.options {
+    background-color: white;
+    position: absolute;
+    max-height: 10em;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 10;
+    min-width: 20%;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+}
+
+.option {
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+button {
+    margin: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: #6290fa;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}

@@ -59,17 +59,11 @@ public record InterOrganizationalRelation : Node
         }
     }
 
-    public required int InterOrganizationalRelationTypeId { get; set; }
+    public required InterOrganizationalRelationType InterOrganizationalRelationType { get; set; }
 
-    public required string InterOrganizationalRelationTypeName { get; init; }
+    public required OrganizationListItem OrganizationFrom { get; set; }
 
-    public required int OrganizationIdFrom { get; set; }
-
-    public required string OrganizationNameFrom { get; set; }
-
-    public required int OrganizationIdTo { get; set; }
-
-    public required string OrganizationNameTo { get; set; }
+    public required OrganizationListItem OrganizationTo { get; set; }
 
     public required DateTime? DateFrom { get; set; }
     public required DateTime? DateTo { get; set; }
@@ -77,11 +71,9 @@ public record InterOrganizationalRelation : Node
     public DateTimeRange DateRange {
         get => new DateTimeRange(DateFrom, DateTo);
     }
-    public int? DocumentIdProof { get; set; }
-    public string? DocumentNameProof { get; set; }
+    public DocumentListItem? DocumentProof { get; set; }
     public decimal? MoneyInvolved { get; set; }
     public int? NumberOfChildrenInvolved { get; set; }
-    public required int? GeographicalEntityId { get; init; }
-    public string? GeographicalEntityName { get; init; }
+    public required GeographicalEntityListItem? GeographicalEntity { get; set; }
 
 }

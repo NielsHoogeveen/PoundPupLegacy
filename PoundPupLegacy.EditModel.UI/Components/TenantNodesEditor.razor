@@ -24,16 +24,16 @@
         {
             if (tenant.TenantNode.CanBeUnchecked)
             {
-                <input type="checkbox" name="tenant-@tenant.Id" checked @onclick="() => Uncheck(tenant.Id)" />
+                <input class="item" type="checkbox" name="tenant-@tenant.Id" checked @onclick="() => Uncheck(tenant.Id)" />
             }
             else {
-                <input type="checkbox" name="tenant-@tenant.Id" checked  disabled/>
+                <input class="item" type="checkbox" name="tenant-@tenant.Id" checked disabled />
             }
-            <div>@tenant.DomainName</div>
-            <div>
+            <div class="item domain-name">@tenant.DomainName</div>
+            <div class="item">
                 <input type="text" value="@tenant.TenantNode!.UrlPath"/>
             </div>
-            <div>
+            <div class="item">
                 <select @onchange="(e) => OnSelectPublicationStatus(tenant.Id, e)">
                 @foreach(var option in new List<(int, string)> {(0, "unpublished"), (1, "published"), (2, "private") }) 
                 {
@@ -48,7 +48,7 @@
                 }
                 </select>
             </div>
-            <div>
+            <div class="item">
                 @if (tenant.Subgroups.Any()) 
                 {
                     <select @onchange="(e) => OnSelectSubgroup(tenant.Id, e)">
@@ -73,11 +73,11 @@
         }
         else 
         {
-            <input type="checkbox" name="tenant-@tenant.Id" @onclick="() => Check(tenant.Id)" />
-            <div>@tenant.DomainName</div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <input class="item" type="checkbox" name="tenant-@tenant.Id" @onclick="() => Check(tenant.Id)" />
+            <div class="item">@tenant.DomainName</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
         }
     }
     </div>

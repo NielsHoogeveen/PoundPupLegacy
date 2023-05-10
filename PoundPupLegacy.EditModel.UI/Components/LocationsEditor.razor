@@ -11,30 +11,28 @@
         </ModalDialog>
     }
 
-    <div class="locations editor-section">
+    <div class="editor-section">
         <h4>Locations</h4>
-        <div class="location">
-        <div class="header">Street</div>
-        <div class="header"></div>
-        <div class="header">Postal code</div>
-        <div class="header">City</div>
-        <div class="header">Subdivision</div>
-        <div class="header">Country</div>
-        <div class="header"></div>
-        </div>
-        @foreach(var location in Locatable.Locations) {
-            @if (location is not null) {
-                <div class="location">
-                    <div>@location.Street</div>
-                    <div>@location.Addition</div>
-                    <div>@location.PostalCode</div>
-                    <div>@location.City</div>
-                    <div>@location.SubdivisionName</div>
-                    <div>@location.CountryName</div>
-                    <div><button type="button" @onclick="() => EditLocation(location)">Edit</button></div>
-                </div>
+        <div class="locations">
+            <div class="header">Street</div>
+            <div class="header"></div>
+            <div class="header">Postal code</div>
+            <div class="header">City</div>
+            <div class="header">Subdivision</div>
+            <div class="header">Country</div>
+            <div class="header"></div>
+            @foreach(var location in Locatable.Locations) {
+                @if (location is not null) {
+                    <div class="item">@location.Street</div>
+                    <div class="item">@location.Addition</div>
+                    <div class="item">@location.PostalCode</div>
+                    <div class="item">@location.City</div>
+                    <div class="item">@location.SubdivisionName</div>
+                    <div class="item">@location.CountryName</div>
+                    <div class="item"><button type="button" @onclick="() => EditLocation(location)">Edit</button></div>
+                }
             }
-        }
+        </div>
         <button type="button" @onclick="AddLocation">Add location</button>
     </div>
 }

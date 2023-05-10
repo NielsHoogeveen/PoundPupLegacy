@@ -41,6 +41,7 @@ public static class DependencyInjection
         services.AddTransient<ISaveService<IEnumerable<Location>>, LocationsSaveService>();
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ISearchService<DocumentListItem>, DocumentSearchService>();
+        services.AddTransient<ISearchService<GeographicalEntityListItem>, GeographicalEntitySearchService>();
         services.AddTransient<ISearchService<OrganizationListItem>, OrganizationSearchService>();
         services.AddTransient<ISearchService<PersonListItem>, PersonSearchService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();

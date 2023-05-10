@@ -55,42 +55,45 @@ th {
     border-top: solid thin grey;
     border-bottom: solid thin grey;
     text-align: left;
-    background-color: #ccc;
+    background-color: var(--table-header-bg-color);
 }
 
-    th:first-of-type {
-        border-left: solid thin grey;
-    }
+th:first-of-type {
+    border-left: solid thin grey;
+}
 
-    th:last-of-type, td:last-of-type {
-        border-right: solid thin grey;
-    }
+th:last-of-type, td:last-of-type {
+    border-right: solid thin grey;
+}
 
+tr{
+    background-color: var(--table-row-bg-color);
+}
 tr:nth-of-type(2n+1) {
-    background-color: #eee;
+    background-color: var(--table-row-bg-color-even);
 }
 
 .label-value {
     margin-bottom: 0.5em;
 }
 
-    .label-value label {
-        font-weight: 200;
-        vertical-align: central;
-    }
+.label-value label {
+    font-weight: 200;
+    vertical-align: central;
+}
 
 input[type=text], input[type=password], select {
     border-radius: 3px;
     border: 0;
-    outline: solid 2px #bed1fd;
+    outline: solid 2px var(--input-outline-color);
     background-color: white;
     padding: 0.25em 0.15em 0.25em 0.15em;
     font-size: 90%;
 }
 
-    input[type=text]:focus, select:focus {
-        outline-color: #b3ebfc;
-    }
+input[type=text]:focus, select:focus {
+    outline-color: var(--input-outline-focus-color);
+}
 
 .edit-form input, .edit-form select {
     display: block;

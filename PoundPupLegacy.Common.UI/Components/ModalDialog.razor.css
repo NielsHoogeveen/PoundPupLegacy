@@ -5,6 +5,7 @@
     border-radius: 10px;
     padding:0;
     top:5em;
+    z-index:1;
 }
 
 .modal-dialog {

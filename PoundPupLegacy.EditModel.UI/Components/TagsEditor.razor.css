@@ -1,8 +1,8 @@
 .tags {
-    background-color: #b8d0e1;
+    background-color: var(--editor-element-background);
     margin-top: 1em;
     border-top: solid thin #ccc;
-    border: solid 2px #76b1db;
+    border: solid 2px var(--editor-header-background);
     border-radius: 5px;
-    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+    box-shadow: var(--input-shadow);
 }

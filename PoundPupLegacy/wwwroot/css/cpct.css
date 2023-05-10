@@ -17,6 +17,16 @@
     --comment-border-color: #bbb;
     --comment-bg-color: #eaecf3;
     --comment-title-color: #05072f;
-    --link-color: #3a3123;
+    --link-color: #495cc4;
+    --editor-element-background: transparent;
+    --editor-header-background: #f6dab4;
+    --editor-border-color: #f6dab4;
+    --input-outline-color: #f6dab4;
+    --input-outline-focus-color: #f4cc97;
+    --input-shadow: 4px 4px 2px 1px rgba(68, 43, 8, 0.2);
+    --button-color: #6290fa;
+    --button-hover-color: #799df0;
+    --table-header-bg-color: #f6dab4;
+    --table-row-bg-color: #faf6f0;
+    --table-row-bg-color-even: #f1ebe2;
 }
-

@@ -6,7 +6,21 @@
           id="@Id"
           class="@CssClass"
           value="@CurrentValue"></textarea>
+<style>
+    :root{
+        --ck-color-focus-border: var(--editor-border-color);
+    }    
+    .ck.ck-editor {
+        border-radius: 5px;
+        border: solid 2px var(--editor-border-color);
+        box-shadow: var(--input-shadow);
+        margin-bottom: 1em;
+    }
 
+    .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused){
+        border-color: var(--editor-border-color);
+    }
+</style>
 @code {
 
     [Parameter]

@@ -6,11 +6,16 @@
     margin-top: 1em;
     margin-bottom: 0.25em;
     border: 0;
-    background-color: #6290fa;
+    background-color: var(--button-color);
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
+
+.file-upload:hover {
+    background-color: var(--button-hover-color);
+}
+
 .error {
     background-color: #662222;
     color: red;
@@ -23,13 +28,13 @@
 
 .editor-section {
     margin-top: 1em;
-    background-color: #b8d0e1;
+    background-color: var(--editor-element-background);
     padding-left: 0.25em;
     padding-top: 0.25em;
     padding-bottom: 0.25em;
-    border: solid 2px #76b1db;
-    border-radius:5px;
-    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+    border: solid 2px var(--editor-border-color);
+    border-radius: 5px;
+    box-shadow: var(--input-shadow);
 }
 .editor-section h4{
     margin:0;

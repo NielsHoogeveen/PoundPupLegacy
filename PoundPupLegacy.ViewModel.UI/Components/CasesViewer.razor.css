@@ -4,11 +4,12 @@
     border-bottom: solid thin gray;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
+    background-color: var(--table-row-bg-color);
 }
 .case-type:first-of-type {
     border-top: solid thin gray;
 }
 
-.case-type:nth-of-type(2n+1){
-    background-color: #eceef3;
+.case-type:nth-of-type(2n+1) {
+    background-color: var(--table-row-bg-color-even);
 }

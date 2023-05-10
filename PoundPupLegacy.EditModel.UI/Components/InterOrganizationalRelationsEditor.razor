@@ -1,9 +1,13 @@
 ﻿@inherits EditorBase
 @if (_relationToEdit is not null) {
-    <ModalDialog Title="Add inter-organizational relation" Id="inter-organizational-relation-dialog" OnOk="OnOk" OnCancel="OnCancel">
+    <ModalDialog 
+        Title="Add inter-organizational relation" 
+        Id="inter-organizational-relation-dialog" 
+        OnOk="OnOk" 
+        OnCancel="OnCancel">
         <DialogContent>
             <InterOrganizationalRelationEditorDialog  
-                InterOrganizationalRelation="_relationToEdit" 
+                @bind-InterOrganizationalRelation="_relationToEdit" 
                 InterOrganizationalRelationTypes="@RelationTypes"
                 OrganizationId="OrganizationId"/>
         </DialogContent>
@@ -11,29 +15,29 @@
 }
 
 <div class="relations">
-    <div class="header">From</div>
+    <div class="header first">From</div>
     <div class="header">Type</div>
     <div class="header">To</div>
     <div class="header">Start</div>
     <div class="header">End</div>
     <div class="header"></div>
     @foreach(var relation in Model) {
-        <div>
-            @relation.OrganizationNameFrom
+        <div class="row first">
+            @relation.OrganizationFrom.Name
         </div>
-        <div>
-            @relation.InterOrganizationalRelationTypeName
+        <div class="row">
+            @relation.InterOrganizationalRelationType.Name
         </div>
-        <div>
-            @relation.OrganizationNameTo
+        <div class="row">
+            @relation.OrganizationTo.Name
         </div>
-        <div>
+        <div class="row">
             @relation.DateFrom
         </div>
-        <div>
+        <div class="row">
             @relation.DateTo
         </div>
-        <div>
+        <div class="row">
             <button type="button" @onclick="() => EditRelation(relation)">edit</button>
         </div>
     }

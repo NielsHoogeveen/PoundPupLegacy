@@ -1,19 +1,28 @@
 label{
     font-weight: bold;
+
 }
+label::after{
+    content: ":";
+}
+
 .tag-search {
     display: block;
     width: 20%;
     font-size: 125%;
-    outline-color: #76b1db;
+    outline-color: var(--input-outline-color);
     margin-top: 0.5em;
     margin-bottom: 0.25em;
     padding-left: 0.15em;
     padding-right: 0.15em;
 }
 
+.tag-search:focus {
+    outline-color: var(--input-outline-focus-color);
+}
+
 .node-type-group {
-    border-bottom: solid 1px #82bae2;
+    border-bottom: solid 1px var(--editor-border-color);
     padding-top: 0.5em;
 }
 
@@ -52,21 +61,25 @@ label{
     user-select: none;
     padding-right: 0.5em;
     min-width: 15em;
-    background-color: #cedaec;
+    padding-top: 0.15em;
+    padding-bottom: 0.15em;
     padding-left: 0.25em;
+    background-color: #fde4c3;
 }
 
 button {
     margin: 0.25em;
     padding: 0.5em 1em;
     border: 0;
-    background-color: #6290fa;
+    background-color: var(--button-color);
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
-
+button:hover{
+    background-color: var(--button-hover-color);
+}
 
 .tag-elements div:nth-of-type(2n+1) {
-    background-color: #c7d1e1;
+    background-color: #fbebd6;
 }
