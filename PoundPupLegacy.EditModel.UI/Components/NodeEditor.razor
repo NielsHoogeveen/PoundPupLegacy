@@ -27,6 +27,30 @@
         @if (Model is Person person) {
             <PersonEditor Model="person" />
         }
+        @if (Model is AbuseCase abuseCase) {
+            <AbuseCaseEditor Model="abuseCase" />
+        }
+        @if (Model is ChildTraffickingCase childTraffickingCase) {
+            <ChildTraffickingCaseEditor Model="childTraffickingCase" />
+        }
+        @if (Model is CoercedAdoptionCase coercedAdoptionCase) {
+            <CoercedAdoptionCaseEditor Model="coercedAdoptionCase" />
+        }
+        @if (Model is DeportationCase deportationCase) {
+            <DeportationCaseEditor Model="deportationCase" />
+        }
+        @if (Model is DisruptedPlacementCase disruptedPlacementCase) {
+            <DisruptedPlacementCaseEditor Model="disruptedPlacementCase" />
+        }
+        @if (Model is FathersRightsViolationCase fathersRightsViolationCase) {
+            <FathersRightsViolationCaseEditor Model="fathersRightsViolationCase" />
+        }
+        @if (Model is WrongfulMedicationCase wrongfulMedicationCase) {
+            <WrongfulMedicationCaseEditor Model="wrongfulMedicationCase" />
+        }
+        @if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
+            <WrongfulRemovalCaseEditor Model="wrongfulRemovalCase" />
+        }
         <TagsEditor NodeTypesTags="Model.Tags" NodeId="Model.NodeId" />
         <TenantNodesEditor Node="@Model" />
         <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />

@@ -48,6 +48,30 @@
                 @if (Model is ViewModel.Models.Person) {
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.Person" />
                 }
+                @if (Model is ViewModel.Models.AbuseCase) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.AbuseCase" />
+                }
+                @if (Model is ViewModel.Models.ChildTraffickingCase) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.ChildTraffickingCase" />
+                }
+                @if (Model is ViewModel.Models.CoercedAdoptionCase) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.CoercedAdoptionCase" />
+                }
+                @if (Model is ViewModel.Models.DeportationCase) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.DeportationCase" />
+                }
+                @if (Model is ViewModel.Models.DisruptedPlacementCase) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.DisruptedPlacementCase" />
+                }
+                @if (Model is ViewModel.Models.FathersRightsViolationCase) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.FathersRightsViolationCase" />
+                }
+                @if (Model is ViewModel.Models.WrongfulMedicationCase) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.WrongfulMedicationCase" />
+                }
+                @if (Model is ViewModel.Models.WrongfulRemovalCase) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.WrongfulRemovalCase" />
+                }
             </ArticleViewer>
         </div>
     }

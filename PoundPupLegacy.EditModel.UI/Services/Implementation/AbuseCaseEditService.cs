@@ -8,7 +8,7 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, CreateModel.AbuseCase>, IEditService<AbuseCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, AbuseCase> _createAbuseCaseReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, AbuseCase> _abuseCaseCreateReaderFactory;
     private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, AbuseCase> _abuseCaseUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<AbuseCaseUpdaterRequest> _abuseCaseUpdaterFactory;
     private readonly IEntityCreator<CreateModel.AbuseCase> _abuseCaseCreator;
@@ -17,7 +17,7 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Crea
 
     public AbuseCaseEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, AbuseCase> createAbuseCaseReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, AbuseCase> abuseCaseCreateReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, AbuseCase> abuseCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<AbuseCaseUpdaterRequest> abuseCaseUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
@@ -36,7 +36,7 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Crea
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
         _abuseCaseUpdateDocumentReaderFactory = abuseCaseUpdateDocumentReaderFactory;
-        _createAbuseCaseReaderFactory = createAbuseCaseReaderFactory;
+        _abuseCaseCreateReaderFactory = abuseCaseCreateReaderFactory;
         _abuseCaseCreator = abuseCaseCreator;
         _textService = textService;
         _abuseCaseUpdaterFactory = abuseCaseUpdaterFactory;
@@ -63,7 +63,7 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Crea
     {
         try {
             await _connection.OpenAsync();
-            await using var reader = await _createAbuseCaseReaderFactory.CreateAsync(_connection);
+            await using var reader = await _abuseCaseCreateReaderFactory.CreateAsync(_connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.DOCUMENT,
                 UserId = userId,

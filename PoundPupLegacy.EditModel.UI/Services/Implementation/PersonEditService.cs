@@ -10,6 +10,7 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateMod
 {
 
     private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Person> _personUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Person> _personCreateDocumentReaderFactory;
     private readonly ISaveService<IEnumerable<Location>> _locationsSaveService;
     private readonly IDatabaseUpdaterFactory<PersonUpdaterRequest> _personUpdateFactory;
     private readonly IEntityCreator<CreateModel.Person> _personEntityCreator;
@@ -17,6 +18,7 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateMod
         IDbConnection connection,
         ITenantRefreshService tenantRefreshService,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Person> personUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Person> personCreateDocumentReaderFactory,
         IDatabaseUpdaterFactory<PersonUpdaterRequest> personUpdateFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -34,6 +36,7 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateMod
         tenantRefreshService)
     {
         _personUpdateDocumentReaderFactory = personUpdateDocumentReaderFactory;
+        _personCreateDocumentReaderFactory = personCreateDocumentReaderFactory;
         _locationsSaveService = locationsSaveService;
         _personUpdateFactory = personUpdateFactory;
         _personEntityCreator = personEntityCreator;
@@ -63,8 +66,20 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateMod
     }
     public async Task<Person?> GetViewModelAsync(int userId, int tenantId)
     {
-        await Task.CompletedTask;
-        throw new NotImplementedException();
+        try {
+            await _connection.OpenAsync();
+            await using var reader = await _personCreateDocumentReaderFactory.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeCreateDocumentRequest {
+                NodeTypeId = Constants.PERSON,
+                UserId = userId,
+                TenantId = tenantId
+            });
+        }
+        finally {
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
+        }
     }
     protected sealed override async Task StoreNew(Person person, NpgsqlConnection connection)
     {

@@ -10,6 +10,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
 {
 
     private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization> _organizationUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Organization> _organizationCreateDocumentReaderFactory;
     private readonly ISaveService<IEnumerable<Location>> _locationsSaveService;
     private readonly IDatabaseUpdaterFactory<OrganizationUpdaterRequest> _organizationUpdateFactory;
     private readonly IEntityCreator<CreateModel.Organization> _organizationEntityCreator;
@@ -17,6 +18,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         IDbConnection connection,
         ITenantRefreshService tenantRefreshService,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization> organizationUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Organization> organizationCreateDocumentReaderFactory,
         IDatabaseUpdaterFactory<OrganizationUpdaterRequest> organizationUpdateFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -34,6 +36,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         tenantRefreshService)
     {
         _organizationUpdateDocumentReaderFactory = organizationUpdateDocumentReaderFactory;
+        _organizationCreateDocumentReaderFactory = organizationCreateDocumentReaderFactory;
         _locationsSaveService = locationsSaveService;
         _organizationUpdateFactory = organizationUpdateFactory;
         _organizationEntityCreator = organizationEntityCreator;
@@ -63,8 +66,20 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
     }
     public async Task<Organization?> GetViewModelAsync(int userId, int tenantId)
     {
-        await Task.CompletedTask;
-        throw new NotImplementedException();
+        try {
+            await _connection.OpenAsync();
+            await using var reader = await _organizationCreateDocumentReaderFactory.CreateAsync(_connection);
+            return await reader.ReadAsync(new NodeCreateDocumentRequest {
+                NodeTypeId = Constants.PERSON,
+                UserId = userId,
+                TenantId = tenantId
+            });
+        }
+        finally {
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
+        }
     }
     protected sealed override async Task StoreNew(Organization organization, NpgsqlConnection connection)
     {

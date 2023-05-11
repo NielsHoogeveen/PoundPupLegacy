@@ -22,7 +22,7 @@ internal sealed class PersonCreateDocumentReaderFactory : NodeCreateDocumentRead
                     @tenant_id,
                     'Title', 
                     '',
-                    'Text', 
+                    'Description', 
                     '',
             		'Tags', null,
                     'TenantNodes',
