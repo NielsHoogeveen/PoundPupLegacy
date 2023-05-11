@@ -24,6 +24,9 @@
         @if (Model is Organization organization) {
             <OrganizationEditor Model="organization" />
         }
+        @if (Model is Person person) {
+            <PersonEditor Model="person" />
+        }
         <TagsEditor NodeTypesTags="Model.Tags" NodeId="Model.NodeId" />
         <TenantNodesEditor Node="@Model" />
         <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />

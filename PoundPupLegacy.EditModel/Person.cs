@@ -70,26 +70,7 @@ public record Person : Party
             }
         }
     }
-    private List<OrganizationOrganizationType> organizationOrganizationTypes = new();
 
-    public List<OrganizationOrganizationType> OrganizationOrganizationTypes {
-        get => organizationOrganizationTypes;
-        init {
-            if (value is not null) {
-                organizationOrganizationTypes = value;
-            }
-        }
-    }
-    private List<OrganizationType> organizationTypes = new();
-
-    public List<OrganizationType> OrganizationTypes {
-        get => organizationTypes;
-        init {
-            if (value is not null) {
-                organizationTypes = value;
-            }
-        }
-    }
     private List<CountryListItem> countries = new();
 
     public List<CountryListItem> Countries {
@@ -97,6 +78,72 @@ public record Person : Party
         init {
             if (value is not null) {
                 countries = value;
+            }
+        }
+    }
+
+    private List<InterPersonalRelation> interPersonalRelations = new();
+
+    public List<InterPersonalRelation> InterPersonalRelations {
+        get => interPersonalRelations;
+        init {
+            if (value is not null) {
+                interPersonalRelations = value;
+            }
+        }
+    }
+
+    private List<InterPersonalRelationTypeListItem> interPersonalRelationTypes = new();
+
+    public List<InterPersonalRelationTypeListItem> InterPersonalRelationTypes {
+        get => interPersonalRelationTypes;
+        init {
+            if (value is not null) {
+                interPersonalRelationTypes = value;
+            }
+        }
+    }
+
+    private List<PersonOrganizationRelation> personOrganizationRelations = new();
+
+    public List<PersonOrganizationRelation> PersonOrganizationRelations {
+        get => personOrganizationRelations;
+        init {
+            if (value is not null) {
+                personOrganizationRelations = value;
+            }
+        }
+    }
+
+    private List<PersonOrganizationRelationTypeListItem> personOrganizationRelationTypes = new();
+
+    public List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes {
+        get => personOrganizationRelationTypes;
+        init {
+            if (value is not null) {
+                personOrganizationRelationTypes = value;
+            }
+        }
+    }
+
+    private List<PartyPoliticalEntityRelation> partyPoliticalEntityRelations = new();
+
+    public List<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations {
+        get => partyPoliticalEntityRelations;
+        init {
+            if (value is not null) {
+                partyPoliticalEntityRelations = value;
+            }
+        }
+    }
+
+    private List<PartyPoliticalEntityRelationTypeListItem> partyPoliticalEntityRelationTypes = new();
+
+    public List<PartyPoliticalEntityRelationTypeListItem> PartyPoliticalEntityRelationTypes {
+        get => partyPoliticalEntityRelationTypes;
+        init {
+            if (value is not null) {
+                partyPoliticalEntityRelationTypes = value;
             }
         }
     }

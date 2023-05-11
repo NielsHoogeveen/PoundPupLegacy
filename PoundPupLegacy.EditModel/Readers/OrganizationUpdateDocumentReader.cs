@@ -58,8 +58,6 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     (select document from locations_document),
                     'Countries',
                     (select document from countries_document),
-                    'Countries',
-                    (select document from countries_document),
                     'InterOrganizationalRelations',
                     (select document from inter_organizational_relations_document),
                     'InterOrganizationalRelationTypes',

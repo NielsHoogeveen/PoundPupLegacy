@@ -57,8 +57,8 @@ public record InterPersonalRelation : Node
         }
     }
 
-    public required DateTime? DateFrom { get; init; }
-    public required DateTime? DateTo { get; init; }
+    public required DateTime? DateFrom { get; set; }
+    public required DateTime? DateTo { get; set; }
 
     private bool _dateRangeIsSet = false;
 
@@ -80,6 +80,7 @@ public record InterPersonalRelation : Node
             _dateRange = value;
         }
     }
+    public string? Description { get; set; }
     public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
     public required PersonListItem PersonFrom { get; set; }
     public required PersonListItem PersonTo { get; set; }

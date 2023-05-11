@@ -1,0 +1,23 @@
+﻿@inherits EditorBase
+<InterPersonalRelationsEditor 
+    Relations="Model.InterPersonalRelations" 
+    RelationTypes="Model.InterPersonalRelationTypes" 
+    PersonId="Model.NodeId"/>
+<PartyPoliticalEntityRelationsEditor 
+    Relations="Model.PartyPoliticalEntityRelations"
+    RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
+<PersonOrganizationRelationsEditor 
+    IsPersonLeading = "true"
+    Relations="Model.PersonOrganizationRelations"
+    RelationTypes="Model.PersonOrganizationRelationTypes" />
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Person Model { get; set; } = default!;
+
+    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    {
+        await Task.CompletedTask;
+    }
+}

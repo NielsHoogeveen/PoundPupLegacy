@@ -3,14 +3,14 @@
 <SearchItemEditor 
     T="PersonListItem" 
     IsMandatory="true"
-    @bind-Value="Relation.Person" 
-    EnableEdit="!IsPersonLeading" 
-    Label="Person"/>
+    @bind-Value="Relation.PersonFrom" 
+    EnableEdit="!ThisPersonIsFrom" 
+    Label="Person from"/>
 
 <div class="type-and-swap">
     <div>
         <label for="relation-type">Relation type</label>
-        <select id="relation-type" @onchange="OnChangeRelationType">
+        <select id="relation-type" @onchange="OnChangeType">
             @foreach (var relationType in RelationTypes.OrderBy(x => x.Name)) {
                 @if (relationType.Id == RelationType.Id) {
                     <option selected value="@relationType.Id">@relationType.Name</option>
@@ -21,19 +21,17 @@
             }
         </select>
     </div>
+    @if (!RelationType.IsSymmetric) {
+        <button type="button" @onclick="Swap">Swap To/From</button>
+    }
+
 </div>
 <SearchItemEditor 
-    T="OrganizationListItem"
+    T="PersonListItem"
     IsMandatory="true"
-    @bind-Value="Relation.Organization" 
-    EnableEdit="IsPersonLeading" 
-    Label="Organization"/>
-<SearchItemEditor 
-    T="GeographicalEntityListItem"
-    IsMandatory="false"
-    @bind-Value="Relation.GeographicalEntity"
-    EnableEdit="true"
-    Label="Geographical entity" />
+    @bind-Value="Relation.PersonTo" 
+    EnableEdit="ThisPersonIsFrom" 
+    Label="Person to"/>
 <SearchItemEditor T="DocumentListItem"
     IsMandatory="false"
     @bind-Value="Relation.ProofDocument"
@@ -54,31 +52,45 @@
 @code {
 
     [Parameter]
-    public PersonOrganizationRelation Relation { get; set; } = default!;
+    public InterPersonalRelation Relation { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<PersonOrganizationRelation> RelationChanged { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public List<PersonOrganizationRelationTypeListItem> RelationTypes { get; set; } = default!;
+    public EventCallback<InterPersonalRelation> RelationChanged { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public bool IsPersonLeading { get; set; } 
+    public int? PersonId { get; set; } = default!;
 
-    private PersonOrganizationRelationTypeListItem RelationType { get; set; } = default!;
+    [Parameter]
+    [EditorRequired]
+    public List<InterPersonalRelationTypeListItem> RelationTypes { get; set; } = default!;
+
+    private bool ThisPersonIsFrom = true;
+
+    private InterPersonalRelationTypeListItem RelationType { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        RelationType = RelationTypes.First(x => x.Id == Relation.PersonOrganizationRelationType.Id);
+        if (PersonId is not null) {
+            ThisPersonIsFrom = PersonId == Relation.PersonFrom.Id;
+        }
+        RelationType = RelationTypes.First(x => x.Id == Relation.InterPersonalRelationType.Id);
     }
 
-    private void OnChangeRelationType(ChangeEventArgs args)
+    private void Swap()
+    {
+        var tmp = Relation.PersonFrom;
+        Relation.PersonFrom = Relation.PersonTo;
+        Relation.PersonTo = tmp;
+        ThisPersonIsFrom = !ThisPersonIsFrom;
+        StateHasChanged();
+    }
+
+    private void OnChangeType(ChangeEventArgs args)
     {
         if(args.Value is not null && args.Value is string str) {
-            if(int.TryParse(str, out var organizationTypeId)) {
-                RelationType = RelationTypes.First(x => x.Id == organizationTypeId);
+            if(int.TryParse(str, out var typeId)) {
+                RelationType = RelationTypes.First(x => x.Id == typeId);
                 StateHasChanged();
             }
         }

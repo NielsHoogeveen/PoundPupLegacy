@@ -1,0 +1,31 @@
+﻿button {
+    margin: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: #6290fa;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-group{
+    padding-left:1em;
+    margin-bottom: 1em;
+}
+
+.type-and-swap {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    margin-left: 0.5em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: solid 1px #82bae2;
+}
+label{
+    display: block;
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+label::after{
+    content: ":";
+}

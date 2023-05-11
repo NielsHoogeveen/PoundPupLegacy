@@ -11,7 +11,6 @@ public record PersonUpdaterRequest : IRequest
     public required DateTime? DateOfDeath { get; init; }
     public required int? FileIdPortrait { get; init; }
     public required int? FileIdTileImage { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
     public required string? FirstName { get; init; }
     public required string? MiddleName { get; init; }
     public required string? LastName { get; init; }

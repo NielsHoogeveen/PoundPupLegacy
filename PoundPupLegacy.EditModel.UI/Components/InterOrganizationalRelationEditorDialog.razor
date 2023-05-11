@@ -3,7 +3,7 @@
 <SearchItemEditor 
     T="OrganizationListItem" 
     IsMandatory="true"
-    @bind-Value="InterOrganizationalRelation.OrganizationFrom" 
+    @bind-Value="Relation.OrganizationFrom" 
     EnableEdit="!ThisOrganizationIsFrom" 
     Label="Organization from"/>
 
@@ -11,8 +11,8 @@
     <div>
         <label for="relation-type">Relation type</label>
         <select id="relation-type" @onchange="OnChangeRelationType">
-            @foreach (var relationType in InterOrganizationalRelationTypes.OrderBy(x => x.Name)) {
-                @if (relationType.Id == InterOrganizationalRelationType.Id) {
+            @foreach (var relationType in RelationTypes.OrderBy(x => x.Name)) {
+                @if (relationType.Id == RelationType.Id) {
                     <option selected value="@relationType.Id">@relationType.Name</option>
                 }
                 else {
@@ -21,7 +21,7 @@
             }
         </select>
     </div>
-    @if (!InterOrganizationalRelationType.IsSymmetric) {
+    @if (!RelationType.IsSymmetric) {
         <button type="button" @onclick="Swap">Swap To/From</button>
     }
 
@@ -29,47 +29,47 @@
 <SearchItemEditor 
     T="OrganizationListItem"
     IsMandatory="true"
-    @bind-Value="InterOrganizationalRelation.OrganizationTo" 
+    @bind-Value="Relation.OrganizationTo" 
     EnableEdit="ThisOrganizationIsFrom" 
     Label="Organization to"/>
 <SearchItemEditor 
     T="GeographicalEntityListItem"
     IsMandatory="false"
-    @bind-Value="InterOrganizationalRelation.GeographicalEntity"
+    @bind-Value="Relation.GeographicalEntity"
     EnableEdit="true"
     Label="Geographical entity" />
 <SearchItemEditor T="DocumentListItem"
     IsMandatory="false"
-    @bind-Value="InterOrganizationalRelation.DocumentProof"
+    @bind-Value="Relation.DocumentProof"
     EnableEdit="true"
     Label="Proof document" />
 <div class="form-group">
     <label for="money-involved">Money involved</label>
-    <InputNumber id="money-involved" @bind-Value="InterOrganizationalRelation.MoneyInvolved" />
+    <InputNumber id="money-involved" @bind-Value="Relation.MoneyInvolved" />
 </div>
 <div class="form-group">
     <label for="number-of-children-involved">Number of children involved</label>
-    <InputNumber id="number-of-children-involved" @bind-Value="InterOrganizationalRelation.NumberOfChildrenInvolved" />
+    <InputNumber id="number-of-children-involved" @bind-Value="Relation.NumberOfChildrenInvolved" />
 </div>
 <div class="form-group">
     <label>Description</label>
-    <CKEditor Id="relation-editor" @bind-Value="InterOrganizationalRelation.Description" />
+    <CKEditor Id="relation-editor" @bind-Value="Relation.Description" />
 </div>
 <div class="form-group">
     <label>Start date</label>
-    <InputDate @bind-Value="InterOrganizationalRelation.DateFrom" />
+    <InputDate @bind-Value="Relation.DateFrom" />
 </div>
 <div class="form-group">
     <label>End date</label>
-    <InputDate @bind-Value="InterOrganizationalRelation.DateTo" />
+    <InputDate @bind-Value="Relation.DateTo" />
 </div>
 @code {
 
     [Parameter]
-    public InterOrganizationalRelation InterOrganizationalRelation { get; set; } = default!;
+    public InterOrganizationalRelation Relation { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<InterOrganizationalRelation> InterOrganizationalRelationChanged { get; set; } = default!;
+    public EventCallback<InterOrganizationalRelation> RelationChanged { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -77,25 +77,25 @@
 
     [Parameter]
     [EditorRequired]
-    public List<InterOrganizationalRelationType> InterOrganizationalRelationTypes { get; set; } = default!;
+    public List<InterOrganizationalRelationTypeListItem> RelationTypes { get; set; } = default!;
 
     private bool ThisOrganizationIsFrom = true;
 
-    private InterOrganizationalRelationType InterOrganizationalRelationType { get; set; } = default!;
+    private InterOrganizationalRelationTypeListItem RelationType { get; set; } = default!;
 
     protected override void OnInitialized()
     {
         if (OrganizationId is not null) {
-            ThisOrganizationIsFrom = OrganizationId == InterOrganizationalRelation.OrganizationFrom.Id;
+            ThisOrganizationIsFrom = OrganizationId == Relation.OrganizationFrom.Id;
         }
-        InterOrganizationalRelationType = InterOrganizationalRelationTypes.First(x => x.Id == InterOrganizationalRelation.InterOrganizationalRelationType.Id);
+        RelationType = RelationTypes.First(x => x.Id == Relation.InterOrganizationalRelationType.Id);
     }
 
     private void Swap()
     {
-        var tmp = InterOrganizationalRelation.OrganizationFrom;
-        InterOrganizationalRelation.OrganizationFrom = InterOrganizationalRelation.OrganizationTo;
-        InterOrganizationalRelation.OrganizationTo = tmp;
+        var tmp = Relation.OrganizationFrom;
+        Relation.OrganizationFrom = Relation.OrganizationTo;
+        Relation.OrganizationTo = tmp;
         ThisOrganizationIsFrom = !ThisOrganizationIsFrom;
         StateHasChanged();
     }
@@ -103,8 +103,8 @@
     private void OnChangeRelationType(ChangeEventArgs args)
     {
         if(args.Value is not null && args.Value is string str) {
-            if(int.TryParse(str, out var organizationTypeId)) {
-                InterOrganizationalRelationType = InterOrganizationalRelationTypes.First(x => x.Id == organizationTypeId);
+            if(int.TryParse(str, out var typeId)) {
+                RelationType = RelationTypes.First(x => x.Id == typeId);
                 StateHasChanged();
             }
         }

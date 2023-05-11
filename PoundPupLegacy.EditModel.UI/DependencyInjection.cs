@@ -27,9 +27,11 @@ public static class DependencyInjection
         services.AddTransient<IEditService<DeportationCase>, DeportationCaseEditService>();
         services.AddTransient<IEditService<Discussion>, DiscussionEditService>();
         services.AddTransient<IEditService<DisruptedPlacementCase>, DisruptedPlacementCaseEditService>();
+        services.AddTransient<IEditService<Document>, DocumentEditService>();
         services.AddTransient<IEditService<FathersRightsViolationCase>, FathersRightsViolationCaseEditService>();
         services.AddTransient<IEditService<Organization>, OrganizationEditService>();
-        services.AddTransient<IEditService<Document>, DocumentEditService>();
+        services.AddTransient<IEditService<Person>, PersonEditService>();
+        
         services.AddTransient<ILocationService, LocationService>();
         services.AddTransient<ISaveService<IEnumerable<InterOrganizationalRelation>>, InterOrganizationalRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<InterPersonalRelation>>, InterPersonalRelationSaveService>();

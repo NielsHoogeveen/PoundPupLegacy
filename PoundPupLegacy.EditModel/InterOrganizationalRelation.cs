@@ -59,7 +59,7 @@ public record InterOrganizationalRelation : Node
         }
     }
 
-    public required InterOrganizationalRelationType InterOrganizationalRelationType { get; set; }
+    public required InterOrganizationalRelationTypeListItem InterOrganizationalRelationType { get; set; }
 
     public required OrganizationListItem OrganizationFrom { get; set; }
 

@@ -164,9 +164,9 @@ public record Organization : Party
         }
     }
 
-    private List<InterOrganizationalRelationType> interOrganizationalRelationTypes = new();
+    private List<InterOrganizationalRelationTypeListItem> interOrganizationalRelationTypes = new();
 
-    public List<InterOrganizationalRelationType> InterOrganizationalRelationTypes {
+    public List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes {
         get => interOrganizationalRelationTypes;
         init {
             if (value is not null) {

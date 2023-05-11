@@ -7,6 +7,7 @@
         OnCancel="OnCancel">
         <DialogContent>
             <PersonOrganizationRelationEditorDialog 
+                IsPersonLeading = "IsPersonLeading"
                 @bind-Relation="_relationToEdit" 
                 RelationTypes="@RelationTypes"/>
         </DialogContent>
@@ -49,6 +50,9 @@
     [Parameter]
     [EditorRequired]
     public List<PersonOrganizationRelationTypeListItem> RelationTypes { get; set; } = default!;
+    [Parameter]
+    [EditorRequired]
+    public bool IsPersonLeading { get; set; } 
 
     private PersonOrganizationRelation? _relationToEdit = null;
 

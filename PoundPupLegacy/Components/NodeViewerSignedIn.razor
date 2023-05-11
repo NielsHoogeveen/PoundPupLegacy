@@ -45,6 +45,9 @@
                 @if (Model is ViewModel.Models.Organization) {
                     <NodeUpdater UrlId="Model.UrlId" T="EditModel.Organization" />
                 }
+                @if (Model is ViewModel.Models.Person) {
+                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Person" />
+                }
             </ArticleViewer>
         </div>
     }
