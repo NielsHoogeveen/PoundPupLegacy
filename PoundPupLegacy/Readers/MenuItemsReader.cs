@@ -19,12 +19,12 @@ internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<R
         with 
         user_action as (
         	select
+            distinct
         	uar.user_id,
         	uar.tenant_id,	
         	arp.action_id
         	from(
         		select
-        		distinct
         		u.id user_id,
         		u.id access_role_id,
         		t.id tenant_id
@@ -45,6 +45,16 @@ internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<R
         		t.access_role_id_not_logged_in,
         		t.id tenant_id
         		from tenant t
+                union
+                select
+                distinct
+                ugur.user_id,
+                ugur2.user_role_id,
+                t.id tenant_id
+                from tenant t
+                join user_group ug on ug.id = t.id
+                JOIN user_group_user_role_user ugur on ugur.user_group_id = ug.id and ugur.user_role_id = ug.administrator_role_id
+                JOIN user_group_user_role_user ugur2 on ugur2.user_group_id = ug.id
         	) uar
         	join access_role_privilege arp on arp.access_role_id = uar.access_role_id
         )

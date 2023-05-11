@@ -152,8 +152,37 @@ public static class Constants
     public const int WRONGFUL_REMOVAL_CASE = 34;
     public const int BLOG_POST = 35;
     public const int DISCUSSION = 37;
+    public const int VOCABULARY = 38;
     public const int DISRUPTED_PLACEMENT_CASE = 44;
 
     public const int UNITED_STATES_HOUSE_OF_REPRESENTATIVES = 12660;
     public const int UNITED_STATES_SENATE = 12662;
+
+    public const int PPL_MEMBER = 4;
+    public const int PPL_ADMINISTRATOR = 6;
+    public const int PPL_EDITOR = 11;
+    public const int PPL_EVERYONE = 12;
+
+    public const int CPCT_EVERYONE = 13;
+    public const int CPCT_MEMBER = 16;
+    public const int CPCT_EDITOR = 18;
+    public const int CPCT_ADMINISTRATOR = 19;
+
+    public const int ADULT_AFTERMATH_ADMINSTRATOR = 41;
+    public const int ADULT_AFTERMATH_MEMBER = 42;
+    public const int ADULT_AFTERMATH_EDITOR = 43;
+
+    public const int SYSTEM_ADMINISTRATOR = 21;
+    public const int GEOGRAPHY_ADMINISTRATOR = 29;
+    public const int PARTIES_ADMINISTRATOR = 31;
+    public const int CASES_ADMINISTRATOR = 33;
+    public const int DOCUMENTATION_ADMINISTRATOR = 34;
+
+    public const int USER_ADMINISTRATOR = 1;
+    public const int USER_NIELS = 2;
+    public const int USER_KERRY = 3;
+    public const int USER_ROELIE = 131;
+
+    public const int COLLECTIVE_NIELS_KERRY = 72;
+
 }
