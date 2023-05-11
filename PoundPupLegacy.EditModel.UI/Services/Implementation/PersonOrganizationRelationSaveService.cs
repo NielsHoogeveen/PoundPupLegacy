@@ -35,13 +35,13 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
             await updater.UpdateAsync(new PersonOrganizationRelationUpdaterRequest {
                 NodeId = relation.NodeId!.Value,
                 Title = relation.Title,
-                PersonId = relation.PersonId,
-                OrganizationId = relation.OrganizationId,
-                PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationTypeId,
+                PersonId = relation.Person.Id,
+                OrganizationId = relation.Organization.Id,
+                PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationType.Id,
                 DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
-                DocumentIdProof = relation.DocumentIdProof,
+                DocumentIdProof = relation.ProofDocument?.Id,
                 Description = relation.Description,
-                GeographicalEntityId = relation.GeographicalEntityId
+                GeographicalEntityId = relation.GeographicalEntity?.Id
             });
         }
         IEnumerable<CreateModel.PersonOrganizationRelation> GetRelationsToInsert()
@@ -67,12 +67,12 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
                         UrlId = null
                     }).ToList(),
                     NodeTypeId = 47,
-                    PersonId = relation.PersonId,
-                    OrganizationId = relation.OrganizationId,
-                    PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationTypeId,
+                    PersonId = relation.Person.Id,
+                    OrganizationId = relation.Organization.Id,
+                    PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
-                    DocumentIdProof = relation.DocumentIdProof,
-                    GeographicalEntityId = relation.GeographicalEntityId,
+                    DocumentIdProof = relation.ProofDocument?.Id,
+                    GeographicalEntityId = relation.GeographicalEntity?.Id,
                     Description = relation.Description,
                 };
             }

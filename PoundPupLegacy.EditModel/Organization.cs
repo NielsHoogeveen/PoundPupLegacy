@@ -72,17 +72,6 @@ public record Organization : Party
         }
     }
 
-    private List<InterOrganizationalRelation> interOrganizationalRelations = new();
-
-    public List<InterOrganizationalRelation> InterOrganizationalRelations {
-        get => interOrganizationalRelations;
-        init {
-            if (value is not null) {
-                interOrganizationalRelations = value;
-            }
-        }
-    }
-
     private List<TenantNode> tenantNodes = new();
 
     public List<TenantNode> TenantNodes {
@@ -163,6 +152,18 @@ public record Organization : Party
             }
         }
     }
+
+    private List<InterOrganizationalRelation> interOrganizationalRelations = new();
+
+    public List<InterOrganizationalRelation> InterOrganizationalRelations {
+        get => interOrganizationalRelations;
+        init {
+            if (value is not null) {
+                interOrganizationalRelations = value;
+            }
+        }
+    }
+
     private List<InterOrganizationalRelationType> interOrganizationalRelationTypes = new();
 
     public List<InterOrganizationalRelationType> InterOrganizationalRelationTypes {
@@ -173,4 +174,50 @@ public record Organization : Party
             }
         }
     }
+
+    private List<PersonOrganizationRelation> personOrganizationRelations = new();
+
+    public List<PersonOrganizationRelation> PersonOrganizationRelations {
+        get => personOrganizationRelations;
+        init {
+            if (value is not null) {
+                personOrganizationRelations = value;
+            }
+        }
+    }
+
+    private List<PersonOrganizationRelationTypeListItem> personOrganizationRelationTypes = new();
+
+    public List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes {
+        get => personOrganizationRelationTypes;
+        init {
+            if (value is not null) {
+                personOrganizationRelationTypes = value;
+            }
+        }
+    }
+
+    private List<PartyPoliticalEntityRelation> partyPoliticalEntityRelations = new();
+
+    public List<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations {
+        get => partyPoliticalEntityRelations;
+        init {
+            if (value is not null) {
+                partyPoliticalEntityRelations = value;
+            }
+        }
+    }
+
+    private List<PartyPoliticalEntityRelationTypeListItem> partyPoliticalEntityRelationTypes = new();
+
+    public List<PartyPoliticalEntityRelationTypeListItem> PartyPoliticalEntityRelationTypes {
+        get => partyPoliticalEntityRelationTypes;
+        init {
+            if (value is not null) {
+                partyPoliticalEntityRelationTypes = value;
+            }
+        }
+    }
+
+
 }

@@ -43,7 +43,9 @@ public static class DependencyInjection
         services.AddTransient<ISearchService<DocumentListItem>, DocumentSearchService>();
         services.AddTransient<ISearchService<GeographicalEntityListItem>, GeographicalEntitySearchService>();
         services.AddTransient<ISearchService<OrganizationListItem>, OrganizationSearchService>();
+        services.AddTransient<ISearchService<PartyListItem>, PartySearchService>();
         services.AddTransient<ISearchService<PersonListItem>, PersonSearchService>();
+        services.AddTransient<ISearchService<PoliticalEntityListItem>, PoliticalEntitySearchService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();
         services.AddTransient<IEditService<WrongfulMedicationCase>, WrongfulMedicationCaseEditService>();
         services.AddTransient<IEditService<WrongfulRemovalCase>, WrongfulRemovalCaseEditService>();

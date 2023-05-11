@@ -1,0 +1,32 @@
+.relations {
+    background-color: var(--editor-element-background);
+    margin-top: 1em;
+    border-top: solid thin #ccc;
+    border-radius: 5px;
+    border: solid 2px var(--editor-header-background);
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+    display: grid;
+    grid-template-columns: 3fr 3fr 2fr 1fr 1fr 4em;
+}
+
+.header {
+    background-color: var(--editor-header-background);
+    
+    margin-bottom: 1em;
+}
+.first{
+    padding-left: 0.5em;
+}
+
+button {
+    margin: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: var(--button-hover-color);
+}

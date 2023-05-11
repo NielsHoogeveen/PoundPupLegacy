@@ -35,11 +35,11 @@ internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<Inter
             await updater.UpdateAsync(new InterPersonalRelationUpdaterRequest {
                 NodeId = relation.NodeId!.Value,
                 Title = relation.Title,
-                PersonIdFrom = relation.PersonIdFrom,
-                PersonIdTo = relation.PersonIdTo,
-                InterPersonalRelationTypeId = relation.InterPersonalRelationTypeId,
+                PersonIdFrom = relation.PersonFrom.Id,
+                PersonIdTo = relation.PersonTo.Id,
+                InterPersonalRelationTypeId = relation.InterPersonalRelationType.Id,
                 DateRange = relation.DateRange,
-                DocumentIdProof = relation.DocumentIdProof,
+                DocumentIdProof = relation.ProofDocument?.Id,
             });
         }
         IEnumerable<CreateModel.InterPersonalRelation> GetRelationsToInsert()
@@ -65,11 +65,11 @@ internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<Inter
                         UrlId = null
                     }).ToList(),
                     NodeTypeId = 47,
-                    PersonIdFrom = relation.PersonIdFrom,
-                    PersonIdTo = relation.PersonIdTo,
-                    InterPersonalRelationTypeId = relation.InterPersonalRelationTypeId,
+                    PersonIdFrom = relation.PersonFrom.Id,
+                    PersonIdTo = relation.PersonTo.Id,
+                    InterPersonalRelationTypeId = relation.InterPersonalRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
-                    DocumentIdProof = relation.DocumentIdProof,
+                    DocumentIdProof = relation.ProofDocument?.Id,
                 };
             }
         }

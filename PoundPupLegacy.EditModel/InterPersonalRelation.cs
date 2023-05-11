@@ -80,9 +80,9 @@ public record InterPersonalRelation : Node
             _dateRange = value;
         }
     }
-    public required int InterPersonalRelationTypeId { get; set; }
-    public required int PersonIdFrom { get; set; }
-    public required int PersonIdTo { get; set; }
-    public int? DocumentIdProof { get; set; }
+    public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
+    public required PersonListItem PersonFrom { get; set; }
+    public required PersonListItem PersonTo { get; set; }
+    public DocumentListItem? ProofDocument { get; set; }
 
 }

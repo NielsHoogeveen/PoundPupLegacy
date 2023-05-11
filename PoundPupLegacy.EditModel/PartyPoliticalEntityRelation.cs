@@ -57,8 +57,8 @@ public record PartyPoliticalEntityRelation : Node
         }
     }
 
-    public required DateTime? DateFrom { get; init; }
-    public required DateTime? DateTo { get; init; }
+    public required DateTime? DateFrom { get; set; }
+    public required DateTime? DateTo { get; set; }
 
     private bool _dateRangeIsSet = false;
 
@@ -80,10 +80,10 @@ public record PartyPoliticalEntityRelation : Node
             _dateRange = value;
         }
     }
-    public required int PartyPoliticalEntityRelationTypeId { get; set; }
-    public required int PartyId { get; set; }
-    public required int PoliticalEntityId { get; set; }
-    public int? DocumentIdProof { get; set; }
+    public required PartyPoliticalEntityRelationTypeListItem PartyPoliticalEntityRelationType { get; set; }
+    public required PartyListItem Party { get; set; }
+    public required PoliticalEntityListItem PoliticalEntity  { get; set; }
+    public DocumentListItem? ProofDocument { get; set; }
     public required string Description { get; set; }
 
 }

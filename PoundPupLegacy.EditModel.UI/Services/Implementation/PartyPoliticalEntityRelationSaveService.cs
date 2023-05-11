@@ -35,11 +35,11 @@ internal class PartyPoliticalEntityRelationSaveService : ISaveService<IEnumerabl
             await updater.UpdateAsync(new PartyPoliticalEntityRelationUpdaterRequest {
                 NodeId = relation.NodeId!.Value,
                 Title = relation.Title,
-                PartyId = relation.PartyId,
-                PoliticalEntityId = relation.PoliticalEntityId,
-                PartyPoliticalEntityRelationTypeId = relation.PartyPoliticalEntityRelationTypeId,
+                PartyId = relation.Party.Id,
+                PoliticalEntityId = relation.PoliticalEntity.Id,
+                PartyPoliticalEntityRelationTypeId = relation.PartyPoliticalEntityRelationType.Id,
                 DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
-                DocumentIdProof = relation.DocumentIdProof
+                DocumentIdProof = relation.ProofDocument?.Id
             });
         }
         IEnumerable<CreateModel.PartyPoliticalEntityRelation> GetRelationsToInsert()
@@ -65,11 +65,11 @@ internal class PartyPoliticalEntityRelationSaveService : ISaveService<IEnumerabl
                         UrlId = null
                     }).ToList(),
                     NodeTypeId = 47,
-                    PartyId = relation.PartyId,
-                    PoliticalEntityId = relation.PoliticalEntityId,
-                    PartyPoliticalEntityRelationTypeId = relation.PartyPoliticalEntityRelationTypeId,
+                    PartyId = relation.Party.Id,
+                    PoliticalEntityId = relation.PoliticalEntity.Id,
+                    PartyPoliticalEntityRelationTypeId = relation.PartyPoliticalEntityRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
-                    DocumentIdProof = relation.DocumentIdProof,
+                    DocumentIdProof = relation.ProofDocument?.Id,
                 };
             }
         }

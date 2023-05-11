@@ -12,9 +12,16 @@
     <FuzzyDateEditor @bind-Value="Model.Termination" />
 </div>
 <InterOrganizationalRelationsEditor 
-    Model="Model.InterOrganizationalRelations" 
+    Relations="Model.InterOrganizationalRelations" 
     RelationTypes="Model.InterOrganizationalRelationTypes" 
     OrganizationId="Model.NodeId"/>
+<PartyPoliticalEntityRelationsEditor 
+    Relations="Model.PartyPoliticalEntityRelations"
+    RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
+<PersonOrganizationRelationsEditor 
+    Relations="Model.PersonOrganizationRelations"
+    RelationTypes="Model.PersonOrganizationRelationTypes" />
+
 @code {
     [Parameter]
     [EditorRequired]

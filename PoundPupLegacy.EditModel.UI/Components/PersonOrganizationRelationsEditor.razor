@@ -1,15 +1,14 @@
 ﻿@inherits EditorBase
 @if (_relationToEdit is not null) {
     <ModalDialog 
-        Title="Add inter-organizational relation" 
-        Id="inter-organizational-relation-dialog" 
+        Title="Add person-organization relation" 
+        Id="party-person-organization-dialog" 
         OnOk="OnOk" 
         OnCancel="OnCancel">
         <DialogContent>
-            <InterOrganizationalRelationEditorDialog  
-                @bind-InterOrganizationalRelation="_relationToEdit" 
-                InterOrganizationalRelationTypes="@RelationTypes"
-                OrganizationId="OrganizationId"/>
+            <PersonOrganizationRelationEditorDialog 
+                @bind-Relation="_relationToEdit" 
+                RelationTypes="@RelationTypes"/>
         </DialogContent>
     </ModalDialog>
 }
@@ -23,13 +22,13 @@
     <div class="header"></div>
     @foreach(var relation in Relations) {
         <div class="row first">
-            @relation.OrganizationFrom.Name
+            @relation.Person.Name
         </div>
         <div class="row">
-            @relation.InterOrganizationalRelationType.Name
+            @relation.PersonOrganizationRelationType.Name
         </div>
         <div class="row">
-            @relation.OrganizationTo.Name
+            @relation.Organization.Name
         </div>
         <div class="row">
             @relation.DateFrom
@@ -45,23 +44,19 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<InterOrganizationalRelation> Relations { get; set; } = default!;
+    public List<PersonOrganizationRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public int? OrganizationId { get; set; } = default!;
+    public List<PersonOrganizationRelationTypeListItem> RelationTypes { get; set; } = default!;
 
-    [Parameter]
-    [EditorRequired]
-    public List<InterOrganizationalRelationType> RelationTypes { get; set; } = default!;
-
-    private InterOrganizationalRelation? _relationToEdit = null;
+    private PersonOrganizationRelation? _relationToEdit = null;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
     }
-    private void EditRelation(InterOrganizationalRelation relationToEdit)
+    private void EditRelation(PersonOrganizationRelation relationToEdit)
     {
         _relationToEdit = relationToEdit;
         StateHasChanged();

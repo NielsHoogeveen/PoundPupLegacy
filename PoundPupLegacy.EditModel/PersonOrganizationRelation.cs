@@ -57,8 +57,8 @@ public record PersonOrganizationRelation : Node
         }
     }
 
-    public required DateTime? DateFrom { get; init; }
-    public required DateTime? DateTo { get; init; }
+    public required DateTime? DateFrom { get; set; }
+    public required DateTime? DateTo { get; set; }
 
     private bool _dateRangeIsSet = false;
 
@@ -80,12 +80,11 @@ public record PersonOrganizationRelation : Node
             _dateRange = value;
         }
     }
-    public required int PersonOrganizationRelationTypeId { get; set; }
-    public required int PersonId { get; set; }
-    public required int OrganizationId { get; set; }
-    public int? DocumentIdProof { get; set; }
-
+    public required PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
+    public required PersonListItem Person { get; set; }
+    public required OrganizationListItem Organization { get; set; }
+    public DocumentListItem? ProofDocument { get; set; }
     public required string Description { get; set; }
-    public required int? GeographicalEntityId { get; init; }
+    public GeographicalEntityListItem? GeographicalEntity { get; set; }
 
 }

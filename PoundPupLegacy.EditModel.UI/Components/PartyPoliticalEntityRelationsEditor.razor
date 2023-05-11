@@ -1,15 +1,14 @@
 ﻿@inherits EditorBase
 @if (_relationToEdit is not null) {
     <ModalDialog 
-        Title="Add inter-organizational relation" 
-        Id="inter-organizational-relation-dialog" 
+        Title="Add party political entity relation" 
+        Id="party-political-relation-dialog" 
         OnOk="OnOk" 
         OnCancel="OnCancel">
         <DialogContent>
-            <InterOrganizationalRelationEditorDialog  
-                @bind-InterOrganizationalRelation="_relationToEdit" 
-                InterOrganizationalRelationTypes="@RelationTypes"
-                OrganizationId="OrganizationId"/>
+            <PartyPoliticalEntityRelationEditorDialog  
+                @bind-Relation="_relationToEdit" 
+                RelationTypes="@RelationTypes"/>
         </DialogContent>
     </ModalDialog>
 }
@@ -23,13 +22,13 @@
     <div class="header"></div>
     @foreach(var relation in Relations) {
         <div class="row first">
-            @relation.OrganizationFrom.Name
+            @relation.Party.Name
         </div>
         <div class="row">
-            @relation.InterOrganizationalRelationType.Name
+            @relation.PartyPoliticalEntityRelationType.Name
         </div>
         <div class="row">
-            @relation.OrganizationTo.Name
+            @relation.PoliticalEntity.Name
         </div>
         <div class="row">
             @relation.DateFrom
@@ -45,23 +44,19 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<InterOrganizationalRelation> Relations { get; set; } = default!;
+    public List<PartyPoliticalEntityRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public int? OrganizationId { get; set; } = default!;
+    public List<PartyPoliticalEntityRelationTypeListItem> RelationTypes { get; set; } = default!;
 
-    [Parameter]
-    [EditorRequired]
-    public List<InterOrganizationalRelationType> RelationTypes { get; set; } = default!;
-
-    private InterOrganizationalRelation? _relationToEdit = null;
+    private PartyPoliticalEntityRelation? _relationToEdit = null;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
     }
-    private void EditRelation(InterOrganizationalRelation relationToEdit)
+    private void EditRelation(PartyPoliticalEntityRelation relationToEdit)
     {
         _relationToEdit = relationToEdit;
         StateHasChanged();
