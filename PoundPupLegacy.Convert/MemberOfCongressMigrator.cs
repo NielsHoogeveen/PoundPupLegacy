@@ -428,6 +428,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                                 ChangedDateTime = DateTime.Now,
                                 Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
                                 OwnerId = Constants.OWNER_PARTIES,
+                                AuthoringStatusId = 1,
                                 TenantNodes = new List<TenantNode> {
                                     new TenantNode {
                                         Id = null,
@@ -453,6 +454,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                         ChangedDateTime = DateTime.Now,
                         Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
                         OwnerId = Constants.OWNER_PARTIES,
+                        AuthoringStatusId = 1,
                         TenantNodes = new List<TenantNode> {
                                         new TenantNode {
                                             Id = null,
@@ -489,6 +491,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                             ChangedDateTime = DateTime.Now,
                             Title = $"{name} is senator",
                             OwnerId = Constants.OWNER_PARTIES,
+                            AuthoringStatusId = 1,
                             TenantNodes = new List<TenantNode> {
                                 new TenantNode {
                                     Id = null,
@@ -522,6 +525,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                             ChangedDateTime = DateTime.Now,
                             Title = $"{name} is representative",
                             OwnerId = Constants.OWNER_PARTIES,
+                            AuthoringStatusId = 1,
                             TenantNodes = new List<TenantNode> {
                                     new TenantNode {
                                         Id = null,
@@ -688,6 +692,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                         ChangedDateTime = DateTime.Now,
                         Title = title,
                         OwnerId = Constants.OWNER_PARTIES,
+                        AuthoringStatusId = 1,
                         TenantNodes = new List<TenantNode> {
                             new TenantNode {
                                 Id = null,
@@ -996,6 +1001,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                 ChangedDateTime = now,
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

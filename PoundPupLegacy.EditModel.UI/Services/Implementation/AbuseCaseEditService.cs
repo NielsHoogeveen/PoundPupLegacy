@@ -88,6 +88,7 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Crea
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
             OwnerId = abuseCase.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = abuseCase.PublisherId,
             TenantNodes = abuseCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

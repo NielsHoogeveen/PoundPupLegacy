@@ -183,8 +183,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                             AND ugu.user_id = @user_id
                         )
                     end status	
-                    from
-                    tenant_node tn
+                    from tenant_node tn
                     join node n on n.id = tn.node_id
                     WHERE tn.tenant_id = @tenant_id AND tn.url_id = @url_id
                 ) an

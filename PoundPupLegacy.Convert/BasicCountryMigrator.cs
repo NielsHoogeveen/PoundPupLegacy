@@ -142,6 +142,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Antigua and Barbuda",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -193,6 +194,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Palestine",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                 new TenantNode
@@ -244,6 +246,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Saint Helena, Ascension and Tristan da Cunha",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                 new TenantNode
@@ -296,6 +299,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "South Sudan",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                 new TenantNode
@@ -477,6 +481,7 @@ internal sealed class BasicCountryMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

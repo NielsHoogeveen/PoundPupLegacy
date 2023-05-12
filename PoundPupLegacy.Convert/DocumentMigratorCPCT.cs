@@ -147,6 +147,7 @@ internal sealed class DocumentMigratorCPCT : MigratorCPCT
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_DOCUMENTATION,
+                AuthoringStatusId = 1,
                 TenantNodes = tenantNodes,
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 PublicationDate = publicationDate,

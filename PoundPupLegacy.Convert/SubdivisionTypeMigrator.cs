@@ -108,6 +108,7 @@ internal sealed class SubdivisionTypeMigrator : MigratorPPL
                 ChangedDateTime = DateTime.Now,
                 Title = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

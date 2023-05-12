@@ -67,6 +67,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 ChangedDateTime = DateTime.Parse(parts[2]),
                 NodeTypeId = int.Parse(parts[4]),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -148,6 +149,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 ChangedDateTime = DateTime.Parse(parts[2]),
                 NodeTypeId = int.Parse(parts[4]),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -295,6 +297,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
                 Title = title,
                 Name = reader.GetString("title"),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

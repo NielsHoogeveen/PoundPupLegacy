@@ -69,6 +69,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : MigratorPPL
                 FileIdTileImage = null,
                 NodeTypeId = int.Parse(parts[4]),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -180,6 +181,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = title,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

@@ -41,6 +41,7 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator : MigratorPPL
                 FileIdTileImage = null,
                 NodeTypeId = 52,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

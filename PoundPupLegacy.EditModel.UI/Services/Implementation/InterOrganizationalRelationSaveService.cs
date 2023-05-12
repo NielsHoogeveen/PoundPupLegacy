@@ -58,6 +58,7 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
                     ChangedDateTime = now,
                     Title = relation.Title,
                     OwnerId = relation.OwnerId,
+                    AuthoringStatusId = 1,
                     TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode
                     {
                         Id = null,

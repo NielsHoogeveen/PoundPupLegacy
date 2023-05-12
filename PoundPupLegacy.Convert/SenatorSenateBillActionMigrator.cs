@@ -92,6 +92,7 @@ internal sealed class SenatorSenateBillActionMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

@@ -137,6 +137,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT : MigratorCPCT
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
                 TenantNodes = tenantNodes,
                 NodeTypeId = 48,
                 PersonId = personId,

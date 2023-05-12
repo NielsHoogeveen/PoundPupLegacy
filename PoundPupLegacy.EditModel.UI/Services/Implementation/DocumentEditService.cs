@@ -89,6 +89,7 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
             OwnerId = document.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = document.PublisherId,
             TenantNodes = document.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

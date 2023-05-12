@@ -88,6 +88,7 @@ internal sealed class DisruptedPlacementCaseEditService : NodeEditServiceBase<Di
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
             OwnerId = disruptedPlacementCase.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = disruptedPlacementCase.PublisherId,
             TenantNodes = disruptedPlacementCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

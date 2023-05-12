@@ -8,6 +8,7 @@ public sealed record Document : SimpleTextNode
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
     public required int OwnerId { get; init; }
+    public required int AuthoringStatusId { get; init; }
     public required int NodeTypeId { get; init; }
     public required FuzzyDate? PublicationDate { get; init; }
     public required string? SourceUrl { get; init; }

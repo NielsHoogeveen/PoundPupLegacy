@@ -42,6 +42,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             Title = "Saint Barthélemy",
             Name = "Saint Barthélemy",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                 new TenantNode
@@ -109,6 +110,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             Title = "Saint Martin",
             Name = "Saint Martin",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -176,6 +178,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
             Title = "French Southern Territories",
             Name = "French Southern Territories",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -338,6 +341,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
                 Title = name,
                 Name = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

@@ -146,6 +146,7 @@ internal sealed class AdoptionImportMigrator : MigratorPPL
             DateTimeRange = GetDateTimeRange(countryIdTo, year),
             Title = title,
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             PublisherId = 1,
             ChangedDateTime = DateTime.Now,
             CreatedDateTime = DateTime.Now,

@@ -124,6 +124,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.CPCT,
+                AuthoringStatusId = 1,
                 TenantNodes = tenantNodes,
                 NodeTypeId = 47,
                 PersonIdFrom = personIdFrom,

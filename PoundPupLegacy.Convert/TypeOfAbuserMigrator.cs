@@ -123,6 +123,7 @@ internal sealed class TypeOfAbuserMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
                 OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

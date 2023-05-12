@@ -135,6 +135,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
                 TenantNodes = tenantNodes,
                 NodeTypeId = 49,
                 PartyId = partyId,

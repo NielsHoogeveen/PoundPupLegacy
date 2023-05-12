@@ -8,6 +8,7 @@ public sealed record CountryAndIntermediateLevelSubdivision : ISOCodedFirstLevel
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
     public required int OwnerId { get; init; }
+    public required int AuthoringStatusId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }

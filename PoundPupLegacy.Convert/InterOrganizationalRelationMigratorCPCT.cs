@@ -133,6 +133,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT : MigratorCPCT
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
+                AuthoringStatusId = 1,
                 TenantNodes = tenantNodes,
                 NodeTypeId = 47,
                 OrganizationIdFrom = organizationIdFrom,

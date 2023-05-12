@@ -10,7 +10,7 @@ internal partial class MySqlToPostgresConverter
     {
 
         await TruncateDatabase();
-
+        await _serviceProvider.Migrate<AuthoringStatusMigrator>();
         await _serviceProvider.Migrate<PollStatusMigrator>();
         await _serviceProvider.Migrate<PublicationStatusMigrator>();
         await _serviceProvider.Migrate<NodeTypeMigrator>();
@@ -128,6 +128,9 @@ internal partial class MySqlToPostgresConverter
         Console.Write("Cleaning database");
         var sql = """
             alter table tenant alter column country_id_default DROP NOT NULL;	
+            TRUNCATE authorization_status
+            RESTART IDENTITY
+            CASCADE;
             TRUNCATE case_parties
             RESTART IDENTITY
             CASCADE;

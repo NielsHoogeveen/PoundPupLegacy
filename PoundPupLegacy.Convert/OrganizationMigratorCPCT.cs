@@ -269,6 +269,7 @@ internal sealed class OrganizationMigratorCPCT : MigratorCPCT
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
                 TenantNodes = tenantNodes,
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),

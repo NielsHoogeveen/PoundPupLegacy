@@ -88,6 +88,7 @@ internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<Wr
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
             OwnerId = wrongfulMedicationCase.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = wrongfulMedicationCase.PublisherId,
             TenantNodes = wrongfulMedicationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

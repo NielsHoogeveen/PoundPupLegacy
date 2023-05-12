@@ -23,6 +23,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "1 to 4",
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -67,6 +68,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "4 to 8",
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -111,6 +113,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "8 to 12",
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -155,6 +158,7 @@ internal sealed class FamilySizeMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "more than 12",
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

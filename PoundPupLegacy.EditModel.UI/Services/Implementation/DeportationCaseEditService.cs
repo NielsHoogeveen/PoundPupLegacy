@@ -88,6 +88,7 @@ internal sealed class DeportationCaseEditService : NodeEditServiceBase<Deportati
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
             OwnerId = deportationCase.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = deportationCase.PublisherId,
             TenantNodes = deportationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

@@ -25,6 +25,7 @@ internal static class DependencyInjection
         services.AddMigrator<AdoptionImportMigrator>();
         services.AddMigrator<AdultAftermathMigrator>();
         services.AddMigrator<ArticleMigrator>();
+        services.AddMigrator<AuthoringStatusMigrator>();
         services.AddMigrator<BasicCountryMigrator>();
         services.AddMigrator<BasicNameableMigrator>();
         services.AddMigrator<BasicSecondLevelSubdivisionMigrator>();

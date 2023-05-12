@@ -79,6 +79,7 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
             CreatedDateTime = now,
             NodeTypeId = Constants.BLOG_POST,
             OwnerId = item.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = item.PublisherId,
             TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

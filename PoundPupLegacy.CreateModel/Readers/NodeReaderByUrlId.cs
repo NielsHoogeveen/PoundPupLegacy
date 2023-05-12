@@ -54,6 +54,7 @@ internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseRead
             ChangedDateTime = ChangedDateTimeReader.GetValue(reader),
             NodeTypeId = NodeTypeIdReader.GetValue(reader),
             OwnerId = OwnerIdReader.GetValue(reader),
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>(),
         };
         return node;

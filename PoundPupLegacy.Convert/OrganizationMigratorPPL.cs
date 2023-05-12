@@ -32,6 +32,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Colorado Adoption Center",
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -90,6 +91,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Popular Democratic Party",
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                     new TenantNode
@@ -148,6 +150,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Libertarian Party",
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                     new TenantNode
@@ -206,6 +209,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Government of Italy",
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -473,6 +477,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = reader.GetString("title"),
                     OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
                     TenantNodes = new List<TenantNode> {
                         new TenantNode {
                             Id = null,
@@ -524,6 +529,7 @@ internal sealed class OrganizationMigratorPPL : MigratorPPL
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
                     TenantNodes = new List<TenantNode>
                     {
                     new TenantNode

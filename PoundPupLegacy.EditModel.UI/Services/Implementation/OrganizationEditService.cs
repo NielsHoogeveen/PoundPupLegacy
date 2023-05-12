@@ -102,6 +102,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                 OrganizationTypeId = x.OrganizationTypeId
             }).ToList(),
             OwnerId = organization.OwnerId,
+            AuthoringStatusId = 1,
             TenantNodes = organization.TenantNodes.Select(x => new CreateModel.TenantNode {
                 NodeId = null,
                 TenantId = x.TenantId,

@@ -51,6 +51,7 @@ internal sealed class BlogPostMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

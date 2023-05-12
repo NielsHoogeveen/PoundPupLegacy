@@ -100,6 +100,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "organizations",
             OwnerId = 1,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                 new TenantNode
@@ -152,6 +153,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = name,
                 OwnerId = 1,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -181,6 +183,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "US senate bill",
             OwnerId = 1,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                 new TenantNode
@@ -215,6 +218,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "US house bill",
             OwnerId = 1,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                 new TenantNode
@@ -249,6 +253,7 @@ internal sealed class BasicNameableMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "US act",
             OwnerId = 1,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
             {
                 new TenantNode

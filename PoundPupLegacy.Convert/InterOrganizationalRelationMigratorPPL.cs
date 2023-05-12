@@ -148,6 +148,7 @@ internal sealed class InterOrganizationalRelationMigratorPPL : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

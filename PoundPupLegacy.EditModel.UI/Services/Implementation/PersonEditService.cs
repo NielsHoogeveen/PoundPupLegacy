@@ -94,6 +94,7 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateMod
             FileIdTileImage = null,
             NodeTypeId = Constants.ORGANIZATION,
             OwnerId = person.OwnerId,
+            AuthoringStatusId = 1,
             TenantNodes = person.TenantNodes.Select(x => new CreateModel.TenantNode {
                 NodeId = null,
                 TenantId = x.TenantId,

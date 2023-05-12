@@ -88,6 +88,7 @@ internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<Wrong
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
             OwnerId = wrongfulRemovalCase.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = wrongfulRemovalCase.PublisherId,
             TenantNodes = wrongfulRemovalCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

@@ -88,6 +88,7 @@ internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<Chil
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
             OwnerId = childTraffickingCase.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = childTraffickingCase.PublisherId,
             TenantNodes = childTraffickingCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

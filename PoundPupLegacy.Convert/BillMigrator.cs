@@ -177,6 +177,7 @@ internal sealed class BillMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = title,
                 OwnerId = Constants.PPL,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -355,6 +356,7 @@ internal sealed class BillMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = title,
                 OwnerId = Constants.PPL,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

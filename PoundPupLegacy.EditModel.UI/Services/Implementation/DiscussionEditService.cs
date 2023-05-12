@@ -79,6 +79,7 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
             CreatedDateTime = now,
             NodeTypeId = Constants.DISCUSSION,
             OwnerId = item.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = item.PublisherId,
             TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

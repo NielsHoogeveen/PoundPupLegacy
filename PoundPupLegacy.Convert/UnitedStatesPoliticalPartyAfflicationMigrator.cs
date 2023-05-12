@@ -28,6 +28,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = Constants.DEMOCRAT_NAME,
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -77,6 +78,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = Constants.REPUBLICAN_NAME,
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -125,6 +127,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = Constants.INDEPENDENT_NAME,
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -170,6 +173,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = Constants.POPULAR_DEMOCRAT_NAME,
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -218,6 +222,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = Constants.LIBERTARIAN_NAME,
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

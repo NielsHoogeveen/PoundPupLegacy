@@ -59,6 +59,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             Title = "Åland",
             Name = "Åland",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -129,6 +130,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             Title = "Curaçao",
             Name = "Curaçao",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -199,6 +201,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             Title = "Sint Maarten",
             Name = "Sint Maarten",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -269,6 +272,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
             Title = "United States Minor Outlying Islands",
             Name = "United States Minor Outlying Islands",
             OwnerId = Constants.OWNER_GEOGRAPHY,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -424,6 +428,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator : CountryMigrator
                 Title = name,
                 Name = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

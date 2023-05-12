@@ -88,6 +88,7 @@ internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<Coerc
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
             OwnerId = coercedAdoptionCase.OwnerId,
+            AuthoringStatusId = 1,
             PublisherId = coercedAdoptionCase.PublisherId,
             TenantNodes = coercedAdoptionCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
                 Id = null,

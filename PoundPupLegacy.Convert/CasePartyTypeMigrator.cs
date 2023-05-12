@@ -28,6 +28,7 @@ internal sealed class CasePartyTypeMigrator : MigratorPPL
             ChangedDateTime = now,
             Title = Constants.HOMESTUDY_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
               {
                     new TenantNode
@@ -72,6 +73,7 @@ internal sealed class CasePartyTypeMigrator : MigratorPPL
             ChangedDateTime = now,
             Title = Constants.PLACEMENT_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
               {
                     new TenantNode
@@ -116,6 +118,7 @@ internal sealed class CasePartyTypeMigrator : MigratorPPL
             ChangedDateTime = now,
             Title = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
               {
                     new TenantNode
@@ -160,6 +163,7 @@ internal sealed class CasePartyTypeMigrator : MigratorPPL
             ChangedDateTime = now,
             Title = Constants.FACILITATION_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
               {
                     new TenantNode
@@ -204,6 +208,7 @@ internal sealed class CasePartyTypeMigrator : MigratorPPL
             ChangedDateTime = now,
             Title = Constants.INSTITUTION_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
               {
                     new TenantNode
@@ -248,6 +253,7 @@ internal sealed class CasePartyTypeMigrator : MigratorPPL
             ChangedDateTime = now,
             Title = Constants.THERAPY_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
               {
                     new TenantNode
@@ -292,6 +298,7 @@ internal sealed class CasePartyTypeMigrator : MigratorPPL
             ChangedDateTime = now,
             Title = Constants.AUTHORITIES_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
               {
                     new TenantNode

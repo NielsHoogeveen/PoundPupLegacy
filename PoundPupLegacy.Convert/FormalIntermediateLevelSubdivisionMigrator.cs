@@ -70,6 +70,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : MigratorPPL
                 FileIdTileImage = null,
                 NodeTypeId = int.Parse(parts[4]),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

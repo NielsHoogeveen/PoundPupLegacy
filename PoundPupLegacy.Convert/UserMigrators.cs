@@ -292,30 +292,31 @@ internal sealed class UserMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = Constants.VOCABULARY_TOPICS,
             OwnerId = Constants.OWNER_SYSTEM,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>()
+            {
+                new TenantNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.TOPICS
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.TOPICS
-                    }
-
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.TOPICS
                 },
+                new TenantNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.TOPICS
+                }
+
+            },
             NodeTypeId = Constants.VOCABULARY,
             Description = ""
             }

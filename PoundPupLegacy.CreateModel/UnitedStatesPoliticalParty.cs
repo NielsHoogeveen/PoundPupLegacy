@@ -8,6 +8,7 @@ public sealed record UnitedStatesPoliticalParty : Organization
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
     public required int OwnerId { get; init; }
+    public required int AuthoringStatusId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string? WebsiteUrl { get; init; }
     public required string? EmailAddress { get; init; }

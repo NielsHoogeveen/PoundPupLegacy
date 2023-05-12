@@ -8,6 +8,7 @@ public sealed record BasicFirstAndSecondLevelSubdivision : FirstAndSecondLevelSu
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
     public required int OwnerId { get; init; }
+    public required int AuthoringStatusId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string ISO3166_2_Code { get; set; }
     public required string Name { get; init; }

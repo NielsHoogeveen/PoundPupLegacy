@@ -81,6 +81,7 @@ internal sealed class BindingCountryCreator : EntityCreator<BindingCountry>
                 ChangedDateTime = DateTime.Now,
                 Title = $"Subdivision names of {country.Name}",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

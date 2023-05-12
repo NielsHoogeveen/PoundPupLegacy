@@ -148,6 +148,7 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -193,6 +194,7 @@ internal sealed class OrganizationTypeMigrator : MigratorPPL
             ChangedDateTime = now,
             Title = Constants.POLITICAL_PARTY_NAME,
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                {
                     new TenantNode

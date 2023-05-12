@@ -249,6 +249,7 @@ internal sealed class DocumentMigratorPPL : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed"),
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_DOCUMENTATION,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

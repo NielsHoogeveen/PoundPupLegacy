@@ -111,6 +111,7 @@ internal sealed class ProfessionMigrator : MigratorPPL
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -154,6 +155,7 @@ internal sealed class ProfessionMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Senator",
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode
@@ -200,6 +202,7 @@ internal sealed class ProfessionMigrator : MigratorPPL
             ChangedDateTime = DateTime.Now,
             Title = "Representative",
             OwnerId = Constants.OWNER_PARTIES,
+            AuthoringStatusId = 1,
             TenantNodes = new List<TenantNode>
                 {
                     new TenantNode

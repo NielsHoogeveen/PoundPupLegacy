@@ -16,6 +16,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreator<ActionMenuItem>, ActionMenuItemCreator>();
         services.AddTransient<IEntityCreator<ActionMenuItem>, ActionMenuItemCreator>();
         services.AddTransient<IAnonimousUserCreator, AnonimousUserCreator>();
+        services.AddTransient<IEntityCreator<AuthoringStatus>, AuthoringStatusCreator>();
         services.AddTransient<IEntityCreator<BasicAction>, BasicActionCreator>();
         services.AddTransient<IEntityCreator<BasicCountry>, BasicCountryCreator>();
         services.AddTransient<IEntityCreator<BasicNameable>, BasicNameableCreator>();
