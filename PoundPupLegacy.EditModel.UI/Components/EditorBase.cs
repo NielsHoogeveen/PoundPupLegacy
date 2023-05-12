@@ -6,4 +6,6 @@ namespace PoundPupLegacy.EditModel.UI.Components;
 public abstract class EditorBase: ViewerBase
 {
     public abstract Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds);
+
+    public abstract void OnTitleChange(string title);
 }

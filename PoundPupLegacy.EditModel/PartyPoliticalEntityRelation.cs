@@ -82,7 +82,7 @@ public record PartyPoliticalEntityRelation : Node
     }
     public required PartyPoliticalEntityRelationTypeListItem PartyPoliticalEntityRelationType { get; set; }
     public required PartyListItem Party { get; set; }
-    public required PoliticalEntityListItem PoliticalEntity  { get; set; }
+    public required PoliticalEntityListItem? PoliticalEntity  { get; set; }
     public DocumentListItem? ProofDocument { get; set; }
     public required string Description { get; set; }
 

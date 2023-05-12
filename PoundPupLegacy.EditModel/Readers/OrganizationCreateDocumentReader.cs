@@ -7,7 +7,10 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
     protected override int NodeTypeId => Constants.ORGANIZATION;
 
     private const string SQL = $"""
-            {CTE_CREATE}
+            {CTE_CREATE},
+            {SharedSql.INTER_ORGANIZATIONAL_RELATION_TYPES_DOCUMENT},
+            {SharedSql.PERSON_ORGANIZATION_RELATION_TYPES_DOCUMENT},
+            {SharedSql.PARTY_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeId', 
@@ -22,7 +25,7 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
                     @tenant_id,
                     'Title', 
                     '',
-                    'Text', 
+                    'Description', 
                     '',
             		'Tags', null,
                     'TenantNodes',
@@ -32,9 +35,17 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
                     'Files',
                     null,
                     'Tags',
-                    (select document from tags_document)
+                    (select document from tags_document),
+                    'PartyPoliticalEntityRelationTypes',
+                    (select document from party_political_entity_relation_types_document),
+                    'InterOrganizationalRelationTypes',
+                    (select document from inter_organizational_relation_types_document),
+                    'PersonOrganizationRelationTypes',
+                    (select document from person_organization_relation_types_document)
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id
         """;
+
+
 }

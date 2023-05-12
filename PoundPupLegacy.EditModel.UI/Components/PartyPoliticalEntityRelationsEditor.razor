@@ -1,7 +1,7 @@
 ﻿@inherits EditorBase
 @if (_relationToEdit is not null) {
     <ModalDialog 
-        Title="Add party political entity relation" 
+        Title="Edit party political entity relation" 
         Id="party-political-relation-dialog" 
         OnOk="OnOk" 
         OnCancel="OnCancel">
@@ -12,32 +12,41 @@
         </DialogContent>
     </ModalDialog>
 }
-
-<div class="relations">
-    <div class="header first">From</div>
-    <div class="header">Type</div>
-    <div class="header">To</div>
-    <div class="header">Start</div>
-    <div class="header">End</div>
-    <div class="header"></div>
-    @foreach(var relation in Relations) {
-        <div class="row first">
-            @relation.Party.Name
-        </div>
-        <div class="row">
-            @relation.PartyPoliticalEntityRelationType.Name
-        </div>
-        <div class="row">
-            @relation.PoliticalEntity.Name
-        </div>
-        <div class="row">
-            @relation.DateFrom
-        </div>
-        <div class="row">
-            @relation.DateTo
-        </div>
-        <div class="row">
-            <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+<div class="relations-editor">
+    <div class="header">
+        <h4>Relations between this @PartyTypeName and political entities</h4>
+        <button type="button" @onclick="OnAdd">Add</button>
+    </div>
+    @if (Relations.Any())
+    {
+        <div class="relations">
+            <div class="grid-header first">From</div>
+            <div class="grid-header">Type</div>
+            <div class="grid-header">To</div>
+            <div class="grid-header">Start</div>
+            <div class="grid-header">End</div>
+            <div class="grid-header"></div>
+            @foreach (var relation in Relations)
+            {
+                <div class="row first">
+                    @relation.Party.Name
+                </div>
+                <div class="row">
+                    @relation.PartyPoliticalEntityRelationType.Name
+                </div>
+                <div class="row">
+                    @relation.PoliticalEntity?.Name
+                </div>
+                <div class="row">
+                    @relation.DateFrom
+                </div>
+                <div class="row">
+                    @relation.DateTo
+                </div>
+                <div class="row">
+                    <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+                </div>
+            }
         </div>
     }
 </div>
@@ -50,12 +59,26 @@
     [EditorRequired]
     public List<PartyPoliticalEntityRelationTypeListItem> RelationTypes { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public PartyListItem Party { get; set; } = default!;
+
+
+    [Parameter]
+    [EditorRequired]
+    public string PartyTypeName { get; set; } = default!;
+
     private PartyPoliticalEntityRelation? _relationToEdit = null;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
     }
+    public override void OnTitleChange(string title)
+    {
+
+    }
+
     private void EditRelation(PartyPoliticalEntityRelation relationToEdit)
     {
         _relationToEdit = relationToEdit;
@@ -63,12 +86,39 @@
     }
     private void OnOk()
     {
+        if (_relationToEdit is not null && !_relationToEdit.NodeId.HasValue) {
+            Relations.Add(_relationToEdit);
+        }
         _relationToEdit = null;
         StateHasChanged();
     }
     private void OnCancel()
     {
         _relationToEdit = null;
+        StateHasChanged();
+    }
+    private void OnAdd()
+    {
+        _relationToEdit = new PartyPoliticalEntityRelation {
+            Party = Party,
+            PartyPoliticalEntityRelationType = RelationTypes.First(),
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeId = null,
+            NodeTypeName = "party political entity relation",
+            OwnerId = TenantId,
+            PublisherId = UserId,
+            PoliticalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+            UrlId = null,           
+        };
         StateHasChanged();
     }
 }

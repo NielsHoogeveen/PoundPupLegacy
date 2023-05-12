@@ -4,6 +4,8 @@
     RelationTypes="Model.InterPersonalRelationTypes" 
     PersonId="Model.NodeId"/>
 <PartyPoliticalEntityRelationsEditor 
+    PartyTypeName="person"
+    Party="Party"
     Relations="Model.PartyPoliticalEntityRelations"
     RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditor 
@@ -20,4 +22,17 @@
     {
         await Task.CompletedTask;
     }
+
+    public override void OnTitleChange(string title)
+    {
+        foreach (var relation in Model.PartyPoliticalEntityRelations) {
+            relation.Party.Name = title;
+        };
+        StateHasChanged();
+    }
+
+    private PartyListItem Party => new PartyListItem {
+        Id = Model.NodeId,
+        Name = Model.Title
+    };
 }

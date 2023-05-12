@@ -9,7 +9,7 @@
         <DataAnnotationsValidator />
         <div class="form-group">
             <label for="title">Title</label>
-            <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text"/>
+            <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange"/>
             <ValidationMessage For="@(() => Model.Title)" />
         </div>
         @if(Model is Nameable nameable) {
@@ -22,34 +22,34 @@
             <DocumentEditor Model="document" @ref="documentEditor"/>
         }
         @if (Model is Organization organization) {
-            <OrganizationEditor Model="organization" />
+            <OrganizationEditor Model="organization" @ref=organizationEditor/>
         }
         @if (Model is Person person) {
-            <PersonEditor Model="person" />
+            <PersonEditor Model="person" @ref=personEditor/>
         }
         @if (Model is AbuseCase abuseCase) {
-            <AbuseCaseEditor Model="abuseCase" />
+            <AbuseCaseEditor Model="abuseCase" @ref=abuseCaseEditor/>
         }
         @if (Model is ChildTraffickingCase childTraffickingCase) {
-            <ChildTraffickingCaseEditor Model="childTraffickingCase" />
+            <ChildTraffickingCaseEditor Model="childTraffickingCase" @ref=childTraffickingCaseEditor/>
         }
         @if (Model is CoercedAdoptionCase coercedAdoptionCase) {
-            <CoercedAdoptionCaseEditor Model="coercedAdoptionCase" />
+            <CoercedAdoptionCaseEditor Model="coercedAdoptionCase" @ref=coercedAdoptionCaseEditor/>
         }
         @if (Model is DeportationCase deportationCase) {
-            <DeportationCaseEditor Model="deportationCase" />
+            <DeportationCaseEditor Model="deportationCase" @ref=deportationCaseEditor/>
         }
         @if (Model is DisruptedPlacementCase disruptedPlacementCase) {
-            <DisruptedPlacementCaseEditor Model="disruptedPlacementCase" />
+            <DisruptedPlacementCaseEditor Model="disruptedPlacementCase" @ref=disruptedPlacementCaseEditor/>
         }
         @if (Model is FathersRightsViolationCase fathersRightsViolationCase) {
-            <FathersRightsViolationCaseEditor Model="fathersRightsViolationCase" />
+            <FathersRightsViolationCaseEditor Model="fathersRightsViolationCase" @ref=fathersRightsViolationCaseEditor/>
         }
         @if (Model is WrongfulMedicationCase wrongfulMedicationCase) {
-            <WrongfulMedicationCaseEditor Model="wrongfulMedicationCase" />
+            <WrongfulMedicationCaseEditor Model="wrongfulMedicationCase" @ref=wrongfulMedicationCaseEditor/>
         }
         @if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
-            <WrongfulRemovalCaseEditor Model="wrongfulRemovalCase" />
+            <WrongfulRemovalCaseEditor Model="wrongfulRemovalCase" @ref=wrongfulRemovalCaseEditor/>
         }
         <TagsEditor NodeTypesTags="Model.Tags" NodeId="Model.NodeId" />
         <TenantNodesEditor Node="@Model" />
@@ -80,6 +80,40 @@
 
     private OrganizationEditor? organizationEditor;
 
+    private PersonEditor? personEditor;
+
+    private AbuseCaseEditor? abuseCaseEditor;
+
+    private ChildTraffickingCaseEditor? childTraffickingCaseEditor;
+
+    private CoercedAdoptionCaseEditor? coercedAdoptionCaseEditor;
+
+    private DeportationCaseEditor? deportationCaseEditor;
+
+    private DisruptedPlacementCaseEditor? disruptedPlacementCaseEditor;
+
+    private FathersRightsViolationCaseEditor? fathersRightsViolationCaseEditor;
+
+    private WrongfulMedicationCaseEditor? wrongfulMedicationCaseEditor;
+
+    private WrongfulRemovalCaseEditor? wrongfulRemovalCaseEditor;
+
+    private EditorBase?[] editors => new EditorBase?[]{
+        nameableEditor, 
+        simpleTextNodeEditor, 
+        documentEditor, 
+        organizationEditor, 
+        personEditor, 
+        abuseCaseEditor, 
+        childTraffickingCaseEditor, 
+        coercedAdoptionCaseEditor, 
+        deportationCaseEditor, 
+        disruptedPlacementCaseEditor, 
+        fathersRightsViolationCaseEditor, 
+        wrongfulMedicationCaseEditor, 
+        wrongfulRemovalCaseEditor 
+    };
+
     protected override void OnInitialized()
     {
         editContext = new EditContext(Model);
@@ -95,6 +129,16 @@
         }
 
     }
+    public void OnTitleChange(ChangeEventArgs args)
+    {
+        OnTitleChange(args.Value!.ToString()!);
+    }
+    public override void OnTitleChange(string title)
+    {
+        foreach(var editor in editors) {
+            editor?.OnTitleChange(title);
+        }
+    }
 
     private async Task HandleSubmit()
     {
@@ -103,14 +147,10 @@
             validationMessageStore.Clear();
             var invalidIds = new List<string>();
             await Validate(validationMessageStore, invalidIds);
-            if(simpleTextNodeEditor is not null) {
-                await simpleTextNodeEditor.Validate(validationMessageStore, invalidIds);
-            }
-            if (documentEditor is not null) {
-                await documentEditor.Validate(validationMessageStore, invalidIds);
-            }
-            if (organizationEditor is not null) {
-                await organizationEditor.Validate(validationMessageStore, invalidIds);
+            foreach(var editor in editors) {
+                if(editor is not null) {
+                    await editor.Validate(validationMessageStore, invalidIds);
+                }
             }
             if (invalidIds.Any()) {
                 editContext.NotifyValidationStateChanged();
