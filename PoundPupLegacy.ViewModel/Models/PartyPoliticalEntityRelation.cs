@@ -12,5 +12,5 @@ public record PartyPoliticalEntityRelation
 
     public DateTime? DateTo { get; init; }
 
-    public BasicLink? DocumentProof { get; init; }
+    public BasicLink? ProofDocument { get; init; }
 }

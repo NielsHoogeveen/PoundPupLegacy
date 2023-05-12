@@ -14,14 +14,15 @@
 <InterOrganizationalRelationsEditor 
     Relations="Model.InterOrganizationalRelations" 
     RelationTypes="Model.InterOrganizationalRelationTypes" 
-    OrganizationId="Model.NodeId"/>
+    Organization="Organization"/>
 <PartyPoliticalEntityRelationsEditor 
     PartyTypeName="organization"
-    Party="Party"
+    Party="Organization"
     Relations="Model.PartyPoliticalEntityRelations"
     RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditor 
     IsPersonLeading = "false"
+    LeadingParty="Organization"
     Relations="Model.PersonOrganizationRelations"
     RelationTypes="Model.PersonOrganizationRelationTypes" />
 
@@ -41,10 +42,38 @@
         {
             relation.Party.Name = title;
         };
+        foreach(var relation in Model.PersonOrganizationRelations)
+        {
+            relation.Organization!.Name = title;
+        };
+        foreach (var relation in Model.InterOrganizationalRelations) {
+            if (relation.OrganizationFrom is not null)
+            {
+                if (relation.OrganizationFrom.Id.HasValue) {
+                    if (relation.OrganizationFrom.Id == Model.NodeId)
+                    {
+                        relation.OrganizationFrom.Name = title;
+                    }
+                }
+                else {
+                    relation.OrganizationFrom.Name = title;
+                }
+            }
+            if (relation.OrganizationTo is not null) {
+                if (relation.OrganizationTo.Id.HasValue) {
+                    if (relation.OrganizationTo.Id == Model.NodeId) {
+                        relation.OrganizationTo.Name = title;
+                    }
+                }
+                else {
+                    relation.OrganizationTo.Name = title;
+                }
+            }
+        };
         StateHasChanged();
     }
 
-    private PartyListItem Party => new PartyListItem {
+    private OrganizationListItem Organization => new OrganizationListItem {
         Id = Model.NodeId,
         Name = Model.Title
     };

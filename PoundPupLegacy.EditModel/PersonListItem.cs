@@ -1,7 +1,5 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record PersonListItem : EditListItem
+public record PersonListItem : PartyListItem
 {
-    public required int? Id { get; init; }
-    public required string Name { get; set; }
 }

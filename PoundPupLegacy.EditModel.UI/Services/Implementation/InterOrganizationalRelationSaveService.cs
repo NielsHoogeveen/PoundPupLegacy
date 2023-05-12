@@ -41,7 +41,7 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
                 InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationType.Id!.Value,
                 DateRange = relation.DateRange,
                 GeographicalEntityId = relation.GeographicalEntity?.Id,
-                DocumentIdProof = relation.DocumentProof?.Id,
+                DocumentIdProof = relation.ProofDocument?.Id,
                 MoneyInvolved = relation.MoneyInvolved,
                 NumberOfChildrenInvolved = relation.NumberOfChildrenInvolved,
             });
@@ -74,7 +74,7 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
                     GeographicalEntityId = relation.GeographicalEntity?.Id,
                     InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationType.Id!.Value,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
-                    DocumentIdProof = relation.DocumentProof?.Id,
+                    DocumentIdProof = relation.ProofDocument?.Id,
                     Description = relation.Description,
                     MoneyInvolved = relation.MoneyInvolved,
                     NumberOfChildrenInvolved = relation.NumberOfChildrenInvolved,

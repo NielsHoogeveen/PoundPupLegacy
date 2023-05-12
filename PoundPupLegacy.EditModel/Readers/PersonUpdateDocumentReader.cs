@@ -100,7 +100,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                             'Name',
                             inter_personal_relation_type_name
                         ),
-        		        'DocumentProof',
+        		        'ProofDocument',
                         case
                             when document_id_proof is null then null
                             else jsonb_build_object(

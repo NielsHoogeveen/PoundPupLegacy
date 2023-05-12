@@ -5,11 +5,12 @@
     PersonId="Model.NodeId"/>
 <PartyPoliticalEntityRelationsEditor 
     PartyTypeName="person"
-    Party="Party"
+    Party="Person"
     Relations="Model.PartyPoliticalEntityRelations"
     RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditor 
     IsPersonLeading = "true"
+    LeadingParty="Person"
     Relations="Model.PersonOrganizationRelations"
     RelationTypes="Model.PersonOrganizationRelationTypes" />
 
@@ -28,10 +29,36 @@
         foreach (var relation in Model.PartyPoliticalEntityRelations) {
             relation.Party.Name = title;
         };
+        foreach (var relation in Model.PersonOrganizationRelations) {
+            relation.Person!.Name = title;
+        };
+        foreach (var relation in Model.InterPersonalRelations) {
+            if (relation.PersonFrom is not null) {
+                if (relation.PersonFrom.Id.HasValue) {
+                    if (relation.PersonFrom.Id == Model.NodeId) {
+                        relation.PersonFrom.Name = title;
+                    }
+                }
+                else {
+                    relation.PersonFrom.Name = title;
+                }
+            }
+            if (relation.PersonTo is not null) {
+                if (relation.PersonTo.Id.HasValue) {
+                    if (relation.PersonTo.Id == Model.NodeId) {
+                        relation.PersonTo.Name = title;
+                    }
+                }
+                else {
+                    relation.PersonTo.Name = title;
+                }
+            }
+        };
+
         StateHasChanged();
     }
 
-    private PartyListItem Party => new PartyListItem {
+    private PersonListItem Person => new PersonListItem {
         Id = Model.NodeId,
         Name = Model.Title
     };

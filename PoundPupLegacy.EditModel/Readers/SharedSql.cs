@@ -92,7 +92,7 @@ internal static class SharedSql
                             'Name',
                             party_political_entity_relation_type_name
                         ),
-                        'DocumentProof',
+                        'ProofDocument',
                         case
                             when document_id_proof is null then null
                             else jsonb_build_object(
@@ -279,7 +279,7 @@ internal static class SharedSql
                             'Name',
                             person_organization_relation_type_name
                         ),
-                	    'DocumentProof',
+                	    'ProofDocument',
                         case
                             when document_id_proof is null then null
                             else jsonb_build_object(

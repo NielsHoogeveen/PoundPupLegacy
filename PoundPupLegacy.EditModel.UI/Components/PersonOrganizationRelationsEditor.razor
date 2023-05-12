@@ -13,32 +13,41 @@
         </DialogContent>
     </ModalDialog>
 }
+<div class="relations-editor">
+    <div class="header">
+        <h4>Relations between a person and an organization</h4>
+        <button type="button" @onclick="OnAdd">Add</button>
+    </div>
+    @if (Relations.Any())
+    {
 
-<div class="relations">
-    <div class="header first">From</div>
-    <div class="header">Type</div>
-    <div class="header">To</div>
-    <div class="header">Start</div>
-    <div class="header">End</div>
-    <div class="header"></div>
-    @foreach(var relation in Relations) {
-        <div class="row first">
-            @relation.Person.Name
-        </div>
-        <div class="row">
-            @relation.PersonOrganizationRelationType.Name
-        </div>
-        <div class="row">
-            @relation.Organization.Name
-        </div>
-        <div class="row">
-            @relation.DateFrom
-        </div>
-        <div class="row">
-            @relation.DateTo
-        </div>
-        <div class="row">
-            <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+        <div class="relations">
+            <div class="grid-header first">From</div>
+            <div class="grid-header">Type</div>
+            <div class="grid-header">To</div>
+            <div class="grid-header">Start</div>
+            <div class="grid-header">End</div>
+            <div class="grid-header"></div>
+            @foreach(var relation in Relations) {
+                <div class="row first">
+                    @relation.Person?.Name
+                </div>
+                <div class="row">
+                    @relation.PersonOrganizationRelationType.Name
+                </div>
+                <div class="row">
+                    @relation.Organization?.Name
+                </div>
+                <div class="row">
+                    @relation.DateFrom
+                </div>
+                <div class="row">
+                    @relation.DateTo
+                </div>
+                <div class="row">
+                    <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+                </div>
+            }
         </div>
     }
 </div>
@@ -50,9 +59,14 @@
     [Parameter]
     [EditorRequired]
     public List<PersonOrganizationRelationTypeListItem> RelationTypes { get; set; } = default!;
+
     [Parameter]
     [EditorRequired]
     public bool IsPersonLeading { get; set; } 
+
+    [Parameter]
+    [EditorRequired]
+    public PartyListItem LeadingParty { get; set; } = default!;
 
     private PersonOrganizationRelation? _relationToEdit = null;
 
@@ -72,6 +86,9 @@
     }
     private void OnOk()
     {
+        if (_relationToEdit is not null && !_relationToEdit.NodeId.HasValue) {
+            Relations.Add(_relationToEdit);
+        }
         _relationToEdit = null;
         StateHasChanged();
     }
@@ -80,4 +97,40 @@
         _relationToEdit = null;
         StateHasChanged();
     }
+    private void OnAdd()
+    {
+        _relationToEdit = new PersonOrganizationRelation {
+                Person = IsPersonLeading 
+                    ? new PersonListItem {
+                        Id = LeadingParty.Id,
+                        Name = LeadingParty.Name,
+                    }
+                    : null,
+                Organization = IsPersonLeading 
+                    ? null
+                    : new OrganizationListItem {
+                        Id = LeadingParty.Id,
+                        Name = LeadingParty.Name,
+                    },
+                PersonOrganizationRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                HasBeenDeleted = false,
+                NodeId = null,
+                NodeTypeName = "party political entity relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                GeographicalEntity = null,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+                UrlId = null,
+            };
+        StateHasChanged();
+    }
+
 }

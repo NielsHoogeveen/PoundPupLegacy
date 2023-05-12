@@ -309,7 +309,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         ),
                         'DateFrom', lower(date_range),
                         'DateTo', upper(date_range),
-                        'DocumentProof', case
+                        'ProofDocument', case
         	                when status4 is null or status4 = -1 then null
         	                else jsonb_build_object(
         		                'Title', document_proof_name,

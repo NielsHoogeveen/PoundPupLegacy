@@ -116,7 +116,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                             'Name',
                             inter_organizational_relation_type_name
                         ),
-        		        'DocumentProof',
+        		        'ProofDocument',
                         case
                             when document_id_proof is null then null
                             else jsonb_build_object(

@@ -81,8 +81,8 @@ public record PersonOrganizationRelation : Node
         }
     }
     public required PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
-    public required PersonListItem Person { get; set; }
-    public required OrganizationListItem Organization { get; set; }
+    public required PersonListItem? Person { get; set; }
+    public required OrganizationListItem? Organization { get; set; }
     public DocumentListItem? ProofDocument { get; set; }
     public required string Description { get; set; }
     public GeographicalEntityListItem? GeographicalEntity { get; set; }
