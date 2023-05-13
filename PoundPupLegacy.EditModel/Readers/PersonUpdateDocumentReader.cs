@@ -10,7 +10,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
             {CTE_EDIT},
             {SharedSql.INTER_PERSONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_PERSONAL_RELATION_TYPES_DOCUMENT},
-            {SharedSql.PARTY_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT},
+            {SharedSql.PERSON_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT},
             {INTER_PERSONAL_RELATIONS_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {SharedSql.PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT}
@@ -47,7 +47,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     'PersonOrganizationRelationTypes',
                     (select document from person_organization_relation_types_document),
                     'PartyPoliticalEntityRelationTypes',
-                    (select document from party_political_entity_relation_types_document),
+                    (select document from person_political_entity_relation_types_document),
                     'InterPersonalRelations',
                     (select document from inter_personal_relations_document),
                     'PersonOrganizationRelations',

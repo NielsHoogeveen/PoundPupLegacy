@@ -110,7 +110,9 @@ internal partial class MySqlToPostgresConverter
         await _serviceProvider.Migrate<NodeTermMigrator>();
         await _serviceProvider.Migrate<TermHierarchyMigrator>();
         await AddSubdivisionTermsToCases();
+        await AddPartyPoliticalEntityRelationTypes();
         await PrepareFiles();
+
     }
 
     private readonly IDatabaseConnections _databaseConnections;
@@ -343,4 +345,29 @@ internal partial class MySqlToPostgresConverter
         await command.ExecuteNonQueryAsync();
 
     }
+
+    private async Task AddPartyPoliticalEntityRelationTypes()
+    {
+        using var command = _databaseConnections.PostgressConnection.CreateCommand();
+        command.CommandType = CommandType.Text;
+        command.CommandText = """
+        insert into organization_political_entity_relation_type
+        select
+        distinct
+        prt.id
+        from party_political_entity_relation pr
+        join organization p on p.id = pr.party_id
+        join party_political_entity_relation_type prt on prt.id = pr.party_political_entity_relation_type_id;
+        insert into person_political_entity_relation_type
+        select
+        distinct
+        prt.id
+        from party_political_entity_relation pr
+        join person p on p.id = pr.party_id
+        join party_political_entity_relation_type prt on prt.id = pr.party_political_entity_relation_type_id;
+        """;
+        await command.ExecuteNonQueryAsync();
+
+    }
+
 }

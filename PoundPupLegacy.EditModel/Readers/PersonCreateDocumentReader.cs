@@ -10,7 +10,7 @@ internal sealed class PersonCreateDocumentReaderFactory : NodeCreateDocumentRead
             {CTE_CREATE},
             {SharedSql.INTER_PERSONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_PERSONAL_RELATION_TYPES_DOCUMENT},
-            {SharedSql.PARTY_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT}
+            {SharedSql.PERSON_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeId', 
@@ -41,7 +41,7 @@ internal sealed class PersonCreateDocumentReaderFactory : NodeCreateDocumentRead
                     'PersonOrganizationRelationTypes',
                     (select document from person_organization_relation_types_document),
                     'PartyPoliticalEntityRelationTypes',
-                    (select document from party_political_entity_relation_types_document)
+                    (select document from person_political_entity_relation_types_document)
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id

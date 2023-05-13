@@ -11,7 +11,7 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
             {SharedSql.ORGANIZATION_TYPES_DOCUMENT},
             {SharedSql.INTER_ORGANIZATIONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATION_TYPES_DOCUMENT},
-            {SharedSql.PARTY_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT}
+            {SharedSql.ORGANIZATION_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeId', 
@@ -40,7 +40,7 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
                     'OrganizationTypes',
                     (select document from organization_types_document),
                     'PartyPoliticalEntityRelationTypes',
-                    (select document from party_political_entity_relation_types_document),
+                    (select document from organization_political_entity_relation_types_document),
                     'InterOrganizationalRelationTypes',
                     (select document from inter_organizational_relation_types_document),
                     'PersonOrganizationRelationTypes',

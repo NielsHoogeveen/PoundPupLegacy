@@ -37,8 +37,8 @@ internal static class SharedSql
         )
         """;
 
-    internal const string PARTY_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT = """
-        party_political_entity_relation_types_document as(
+    internal const string PERSON_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT = """
+        person_political_entity_relation_types_document as(
             select
                 jsonb_agg(
                     jsonb_build_object(
@@ -49,7 +49,24 @@ internal static class SharedSql
                     )
                     order by n.title
                 ) "document"
-            from party_political_entity_relation_type t
+            from person_political_entity_relation_type t
+            join node n on n.id = t.id
+        )
+        """;
+
+    internal const string ORGANIZATION_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT = """
+        organization_political_entity_relation_types_document as(
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Id', 
+                        n.id,
+                        'Name', 
+                        n.title
+                    )
+                    order by n.title
+                ) "document"
+            from organization_political_entity_relation_type t
             join node n on n.id = t.id
         )
         """;
