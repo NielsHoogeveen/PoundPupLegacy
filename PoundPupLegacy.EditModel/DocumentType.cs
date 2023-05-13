@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(DocumentType))]
+public partial class DocumentTypeJsonContext : JsonSerializerContext { }
+
 public record DocumentType
 {
     public required int Id { get; init; }

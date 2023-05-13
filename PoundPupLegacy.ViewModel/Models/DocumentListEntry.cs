@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(DocumentListEntry))]
+public partial class DocumentListEntryJsonContext : JsonSerializerContext { }
+
 public record DocumentListEntry : ListEntry
 {
     public required string Path { get; init; }

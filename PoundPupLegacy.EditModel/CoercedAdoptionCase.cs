@@ -1,5 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(CoercedAdoptionCase))]
+public partial class CoercedAdoptionCaseJsonContext : JsonSerializerContext { }
 public record CoercedAdoptionCase : Case
 {
     public int? NodeId { get; set; }

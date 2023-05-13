@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(FathersRightsViolationCase))]
+public partial class FathersRightsViolationCaseJsonContext : JsonSerializerContext { }
+
 public record FathersRightsViolationCase : Case
 {
     public int? NodeId { get; set; }

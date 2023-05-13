@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(SubdivisionType))]
+public partial class SubdivisionTypeJsonContext : JsonSerializerContext { }
+
 public record SubdivisionType
 {
     public required string Name { get; init; }

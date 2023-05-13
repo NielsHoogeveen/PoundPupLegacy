@@ -1,4 +1,9 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(Blog))]
+public partial class BlogJsonContext : JsonSerializerContext { }
 
 public record Blog : IPagedList<BlogPostTeaser>
 {

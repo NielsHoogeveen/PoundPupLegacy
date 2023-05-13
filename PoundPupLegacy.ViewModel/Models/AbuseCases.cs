@@ -1,4 +1,9 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(AbuseCases))]
+public partial class AbuseCasesJsonContext : JsonSerializerContext { }
 
 public record AbuseCases: TermedList<AbuseCaseList, CaseListEntry> 
 {

@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(Documents))]
+public partial class DocumentsJsonContext : JsonSerializerContext { }
+
 public record Documents: TermedList<ArticleList, ArticleListEntry>
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();

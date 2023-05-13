@@ -1,4 +1,9 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(BillAction))]
+public partial class BillActionJsonContext : JsonSerializerContext { }
 
 public record BillAction
 {

@@ -1,4 +1,13 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(List<BlogListEntry>))]
+public partial class BlogEntryListJsonContext : JsonSerializerContext { }
+
+
+[JsonSerializable(typeof(BlogListEntry))]
+public partial class BlogListEntryJsonContext : JsonSerializerContext { }
 
 public record BlogListEntry : ListEntry
 {

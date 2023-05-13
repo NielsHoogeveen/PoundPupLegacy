@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(DateTimeInterval))]
+public partial class DateTimeIntervalJsonContext : JsonSerializerContext { }
+
 public record DateTimeInterval
 {
     public required DateTime? From { get; init; }

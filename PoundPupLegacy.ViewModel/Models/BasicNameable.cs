@@ -1,4 +1,9 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(BasicNameable))]
+public partial class BasicNameableJsonContext : JsonSerializerContext { }
 
 public record BasicNameable : Nameable
 {

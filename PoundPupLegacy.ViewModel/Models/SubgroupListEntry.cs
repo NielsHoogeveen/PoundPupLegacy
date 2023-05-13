@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(SubgroupListEntry))]
+public partial class SubgroupListEntryJsonContext : JsonSerializerContext { }
+
 public record SubgroupListEntry : ListEntry
 {
     public required string Title { get; init; }

@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(TenantNode))]
+public partial class TenantNodeJsonContext : JsonSerializerContext { }
+
 public record TenantNode
 {
     public int? Id { get; set; }

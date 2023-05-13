@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(WrongfulMedicationCase))]
+public partial class WrongfulMedicationCaseJsonContext : JsonSerializerContext { }
+
 public record WrongfulMedicationCase : Case
 {
     public required string Description { get; init; }

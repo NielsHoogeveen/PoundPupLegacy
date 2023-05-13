@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(DisruptedPlacementCase))]
+public partial class DisruptedPlacementCaseJsonContext : JsonSerializerContext { }
+
 public record DisruptedPlacementCase : Case
 {
     public required string Description { get; init; }

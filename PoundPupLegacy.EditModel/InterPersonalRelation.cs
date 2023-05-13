@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(InterPersonalRelation))]
+public partial class InterPersonalRelationJsonContext : JsonSerializerContext { }
+
 public record InterPersonalRelation : Node
 {
     public int? NodeId { get; init; }

@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(MemberOfCongress))]
+public partial class MultiQuestionPollJsonContext : JsonSerializerContext { }
+
 public record class MultiQuestionPoll : Poll, SimpleTextNode
 {
     public required int NodeId { get; init; }

@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(CoercedAdoptionCase))]
+public partial class CoercedAdoptionCaseJsonContext : JsonSerializerContext { }
+
 public record CoercedAdoptionCase : Case
 {
     public required string Description { get; init; }

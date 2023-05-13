@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(OrganizationPersonRelation))]
+public partial class OrganizationPersonRelationJsonContext : JsonSerializerContext { }
+
 public record OrganizationPersonRelation
 {
     public required BasicLink Organization { get; init; }

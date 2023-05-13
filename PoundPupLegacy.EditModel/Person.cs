@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(Person))]
+public partial class PersonJsonContext : JsonSerializerContext { }
+
 public record Person : Party
 {
     public int? NodeId { get; init; }

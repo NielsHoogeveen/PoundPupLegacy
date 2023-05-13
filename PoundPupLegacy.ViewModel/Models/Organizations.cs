@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(Organizations))]
+public partial class OrganizationsJsonContext : JsonSerializerContext { }
+
 public record Organizations : IPagedList<OrganizationListEntry>
 {
     private OrganizationListEntry[] _entries = Array.Empty<OrganizationListEntry>();

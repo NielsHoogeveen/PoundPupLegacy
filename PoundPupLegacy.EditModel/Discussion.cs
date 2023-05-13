@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(Discussion))]
+public partial class DiscussionJsonContext : JsonSerializerContext { }
+
 public record Discussion : SimpleTextNode
 {
     public int? NodeId { get; init; }

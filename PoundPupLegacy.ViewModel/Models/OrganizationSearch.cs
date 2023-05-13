@@ -1,5 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(OrganizationSearch))]
+public partial class OrganizationSearchJsonContext : JsonSerializerContext { }
 
 public record OrganizationSearch
 {

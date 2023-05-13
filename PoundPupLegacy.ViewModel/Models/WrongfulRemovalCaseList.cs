@@ -1,4 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
+[JsonSerializable(typeof(WrongfulRemovalCaseList))]
+public partial class WrongfulRemovalCaseListJsonContext : JsonSerializerContext { }
 
 public record WrongfulRemovalCaseList : IPagedList<CaseListEntry>
 {

@@ -24,6 +24,7 @@
     <PackageReference Include="RequireNamedArguments" Version="0.0.2.1" />
     <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0-preview.3.23174.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PoundPupLegacy.Common.UI\PoundPupLegacy.Common.UI.csproj" />

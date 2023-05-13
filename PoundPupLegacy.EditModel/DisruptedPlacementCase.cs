@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(DisruptedPlacementCase))]
+public partial class DisruptedPlacementCaseJsonContext : JsonSerializerContext { }
+
 public record DisruptedPlacementCase : Case
 {
     public int? NodeId { get; set; }

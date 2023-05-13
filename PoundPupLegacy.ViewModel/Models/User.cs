@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(User))]
+public partial class UserJsonContext : JsonSerializerContext { }
+
 public record User
 {
     public required int Id { get; init; }

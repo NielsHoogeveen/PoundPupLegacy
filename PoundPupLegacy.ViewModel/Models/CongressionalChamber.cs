@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(CongressionalChamber))]
+public partial class CongressionalChamberJsonContext : JsonSerializerContext { }
+
 public record CongressionalChamber
 {
     public required string ImagePath { get; init; }

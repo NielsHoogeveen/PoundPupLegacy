@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(ChildTraffickingCase))]
+public partial class ChildTraffickingCaseJsonContext : JsonSerializerContext { }
+
 public record ChildTraffickingCase : Case
 {
     public required BasicLink? CountryFrom { get; init; }

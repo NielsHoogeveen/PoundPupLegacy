@@ -1,9 +1,11 @@
-namespace PoundPupLegacy.ViewModel.Models
-{
-    public class ErrorViewModel
-    {
-        public string? RequestId { get; set; }
+namespace PoundPupLegacy.ViewModel.Models;
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-    }
+[JsonSerializable(typeof(ErrorViewModel))]
+public partial class ErrorViewModelJsonContext : JsonSerializerContext { }
+
+public record ErrorViewModel
+{
+    public string? RequestId { get; set; }
+
+    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }

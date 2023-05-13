@@ -1,4 +1,10 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(AdoptionImport))]
+public partial class AdoptionImportJsonContext : JsonSerializerContext { }
+
 public enum RowType
 {
     Line = 1,

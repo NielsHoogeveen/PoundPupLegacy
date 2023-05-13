@@ -58,6 +58,9 @@ public record PagedListSettings
     }
 }
 
+[JsonSerializable(typeof(PagedSearchListSettings))]
+public partial class PagedSearchListSettingsJsonContext : JsonSerializerContext { }
+
 public record PagedSearchListSettings : PagedListSettings
 {
     public string SearchTerm { get; set; } = string.Empty;
@@ -78,6 +81,10 @@ public record PagedSearchListSettings : PagedListSettings
         return base.GetQueryString(pageNumber) + $"&search_term={SearchTerm}&search_option={SearchOptionAsText(SearchOption)}";
     }
 }
+
+[JsonSerializable(typeof(PagedTermedListSettings))]
+public partial class PagedTermedListSettingsJsonContext : JsonSerializerContext { }
+
 public record PagedTermedListSettings : PagedListSettings
 {
     public int[] SelectedTermIds { get; set; } = Array.Empty<int>();

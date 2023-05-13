@@ -1,4 +1,9 @@
-﻿namespace PoundPupLegacy.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.Models;
+
+[JsonSerializable(typeof(TenantNode))]
+internal partial class TenantNodeJsonContext : JsonSerializerContext { }
 
 public record TenantNode
 {

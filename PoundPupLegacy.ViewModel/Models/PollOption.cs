@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(PollOption))]
+public partial class PollOptionJsonContext : JsonSerializerContext { }
+
 public record PollOption
 {
     public required string Text { get; init; }

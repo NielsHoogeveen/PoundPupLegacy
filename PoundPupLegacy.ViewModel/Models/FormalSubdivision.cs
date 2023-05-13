@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(FormalSubdivision))]
+public partial class FormalSubdivisionJsonContext : JsonSerializerContext { }
+
 public record FormalSubdivision : Subdivision
 {
     public required string Description { get; init; }

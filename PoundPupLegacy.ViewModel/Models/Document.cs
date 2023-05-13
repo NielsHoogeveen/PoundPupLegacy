@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(Document))]
+public partial class DocumentJsonContext : JsonSerializerContext { }
+
 public record Document : SimpleTextNode
 {
     public required int NodeId { get; init; }

@@ -1,4 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(CongressionalMeetingChamber))]
+public partial class CongressionalMeetingChamberJsonContext : JsonSerializerContext { }
+
 public record CongressionalMeetingChamber
 {
     public required string MeetingName { get; init; }

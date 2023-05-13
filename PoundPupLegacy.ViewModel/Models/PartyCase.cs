@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(PartyCase))]
+public partial class PartyCaseJsonContext : JsonSerializerContext { }
+
 public record PartyCase
 {
     public required string CasePartyTypeName { get; init; }

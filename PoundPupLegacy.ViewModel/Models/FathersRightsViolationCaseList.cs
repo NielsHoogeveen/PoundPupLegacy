@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(FathersRightsViolationCaseList))]
+public partial class FathersRightsViolationCaseListJsonContext : JsonSerializerContext { }
+
 public record FathersRightsViolationCaseList : IPagedList<CaseListEntry>
 {
     private CaseListEntry[] _entries = Array.Empty<CaseListEntry>();

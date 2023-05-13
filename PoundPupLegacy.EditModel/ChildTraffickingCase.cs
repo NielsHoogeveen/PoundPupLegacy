@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace PoundPupLegacy.EditModel;
 
-namespace PoundPupLegacy.EditModel;
+[JsonSerializable(typeof(ChildTraffickingCase))]
+public partial class ChildTraffickingCaseJsonContext : JsonSerializerContext { }
 
 public record ChildTraffickingCase : Case
 {

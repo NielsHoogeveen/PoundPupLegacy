@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(Polls))]
+public partial class PollsJsonContext : JsonSerializerContext { }
+
 public record Polls : IPagedList<PollListEntry>
 {
     private PollListEntry[] _entries = Array.Empty<PollListEntry>();

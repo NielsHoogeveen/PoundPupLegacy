@@ -1,4 +1,9 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(BasicCountry))]
+public partial class BasicCountryJsonContext : JsonSerializerContext { }
 
 public record BasicCountry : TopLevelCountry
 {

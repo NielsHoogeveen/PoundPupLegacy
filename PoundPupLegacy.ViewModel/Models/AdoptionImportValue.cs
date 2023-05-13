@@ -1,6 +1,9 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
 
+namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(AdoptionImportValue))]
+public partial class AdoptionImportValueJsonContext : JsonSerializerContext { }
 
 public record AdoptionImportValue
 {

@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(SecondLevelRegionListEntry))]
+public partial class SecondLevelRegionListEntryJsonContext : JsonSerializerContext { }
+
 public record SecondLevelRegionListEntry : ListEntry
 {
     public required string Title { get; init; }

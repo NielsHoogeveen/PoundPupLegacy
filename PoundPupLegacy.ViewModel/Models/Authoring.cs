@@ -1,4 +1,9 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(Authoring))]
+public partial class AuthoringJsonContext : JsonSerializerContext { }
 
 public record Authoring
 {

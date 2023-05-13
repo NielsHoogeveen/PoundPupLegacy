@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(Tenant))]
+public partial class TenantJsonContext : JsonSerializerContext { }
+
 public record Tenant
 {
     private Subgroup[] subgroups = Array.Empty<Subgroup>();

@@ -1,4 +1,9 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(CaseListEntry))]
+public partial class CaseListEntryJsonContext : JsonSerializerContext { }
 
 public record CaseListEntry : TaggedTeaserListEntry
 {

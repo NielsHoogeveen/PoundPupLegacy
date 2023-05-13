@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(Location))]
+public partial class LocationJsonContext : JsonSerializerContext { }
+
 public record Location
 {
     public required string? Street { get; init; }

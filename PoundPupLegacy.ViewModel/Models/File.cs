@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(File))]
+public partial class FileJsonContext : JsonSerializerContext { }
+
 public record File
 {
     public required int Id { get; init; }

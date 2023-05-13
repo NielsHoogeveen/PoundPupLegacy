@@ -1,6 +1,7 @@
-﻿using System.Windows.Markup;
+﻿namespace PoundPupLegacy.EditModel;
 
-namespace PoundPupLegacy.EditModel;
+[JsonSerializable(typeof(TagNodeType))]
+public partial class TagNodeTypeJsonContext : JsonSerializerContext { }
 
 public record TagNodeType
 {

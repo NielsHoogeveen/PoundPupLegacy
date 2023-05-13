@@ -2,6 +2,9 @@
 
 namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(Document))]
+public partial class DocumentJsonContext : JsonSerializerContext { }
+
 public record Document : SimpleTextNode
 {
     public int? NodeId { get; set; }

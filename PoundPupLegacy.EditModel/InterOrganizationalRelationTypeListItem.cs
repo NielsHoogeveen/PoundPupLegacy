@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(InterOrganizationalRelationTypeListItem))]
+public partial class InterOrganizationalRelationTypeListItemJsonContext : JsonSerializerContext { }
+
 public record InterOrganizationalRelationTypeListItem: EditListItem
 {
     public required int? Id { get; init; }

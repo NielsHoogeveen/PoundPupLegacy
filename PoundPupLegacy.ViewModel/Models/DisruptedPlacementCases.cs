@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(DisruptedPlacementCases))]
+public partial class DisruptedPlacementCasesJsonContext : JsonSerializerContext { }
+
 public record DisruptedPlacementCases: TermedList<DisruptedPlacementCaseList, CaseListEntry> 
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();

@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(SelectionItem))]
+public partial class SelectionItemJsonContext : JsonSerializerContext { }
+
 public record SelectionItem 
 {
     public required int Id { get; init; }

@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(SingleQuestionPoll))]
+public partial class SingleQuestionPollJsonContext : JsonSerializerContext { }
+
 public record class SingleQuestionPoll : Poll, PollQuestion
 {
     public required int NodeId { get; init; }

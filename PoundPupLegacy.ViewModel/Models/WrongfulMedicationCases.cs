@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(WrongfulMedicationCases))]
+public partial class WrongfulMedicationCasesJsonContext : JsonSerializerContext { }
+
 public record WrongfulMedicationCases: TermedList<WrongfulMedicationCaseList, CaseListEntry> 
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();

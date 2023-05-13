@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+[JsonSerializable(typeof(WrongfulRemovalCase))]
+public partial class WrongfulRemovalCaseJsonContext : JsonSerializerContext { }
+
 public record WrongfulRemovalCase : Case
 {
     public int? NodeId { get; set; }

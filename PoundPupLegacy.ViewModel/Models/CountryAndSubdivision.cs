@@ -1,5 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
+[JsonSerializable(typeof(CountryAndSubdivision))]
+public partial class CountryAndSubdivisionJsonContext : JsonSerializerContext { }
+
 public record CountryAndSubdivision : TopLevelCountry, IsoCodedSubdivision
 {
     public required string Description { get; init; }

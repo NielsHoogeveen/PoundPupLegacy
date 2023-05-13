@@ -4,6 +4,7 @@ using Npgsql;
 using PoundPupLegacy.Services;
 using Quartz;
 using System.Data;
+using System.Text.Json.Serialization.Metadata;
 
 namespace PoundPupLegacy;
 
@@ -34,10 +35,169 @@ public sealed class Program
         builder.Services.AddRazorPages();
         builder.Services.AddControllersWithViews();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddTransient<IDbConnection>((sp) => {
+        builder.Services.AddSingleton<NpgsqlDataSource>((sp) => 
+        {
             var configuration = sp.GetService<IConfiguration>()!;
             var connectString = configuration["ConnectString"]!;
-            return new NpgsqlConnection(connectString);
+            var dataSource = new NpgsqlDataSourceBuilder(connectString)
+                .UseSystemTextJson(new System.Text.Json.JsonSerializerOptions 
+                { 
+                    TypeInfoResolver = JsonTypeInfoResolver
+                    .Combine(
+                        Models.MenuItemJsonContext.Default,
+                        Models.TenantJsonContext.Default,
+                        Models.TenantNodeJsonContext.Default,
+                        Models.UserTenantActionJsonContext.Default,
+                        Models.UserTenantEditOwnActionJsonContext.Default,
+                        Models.UserTenantMenuItemsJsonContext.Default,
+                        ViewModel.Models.AbuseCaseJsonContext.Default,
+                        ViewModel.Models.AbuseCaseListJsonContext.Default,
+                        ViewModel.Models.AbuseCasesJsonContext.Default,
+                        ViewModel.Models.ArticleListEntryJsonContext.Default,
+                        ViewModel.Models.ArticleListJsonContext.Default,
+                        ViewModel.Models.AuthoringJsonContext.Default,
+                        ViewModel.Models.BasicCountryJsonContext.Default,
+                        ViewModel.Models.BasicListEntryJsonContext.Default,
+                        ViewModel.Models.BasicNameableJsonContext.Default,
+                        ViewModel.Models.BasicPollQuestionJsonContext.Default,
+                        ViewModel.Models.BillActionJsonContext.Default,
+                        ViewModel.Models.BindingCountryJsonContext.Default,
+                        ViewModel.Models.BlogJsonContext.Default,
+                        ViewModel.Models.BlogEntryListJsonContext.Default,
+                        ViewModel.Models.BlogPostJsonContext.Default,
+                        ViewModel.Models.BlogPostTeaserJsonContext.Default,
+                        ViewModel.Models.BoundCountryJsonContext.Default,
+                        ViewModel.Models.CaseListEntryJsonContext.Default,
+                        ViewModel.Models.CasePartiesJsonContext.Default,
+                        ViewModel.Models.CasesJsonContext.Default,
+                        ViewModel.Models.CaseTypeListEntryJsonContext.Default,
+                        ViewModel.Models.ChildTraffickingCaseJsonContext.Default,
+                        ViewModel.Models.ChildTraffickingCaseListJsonContext.Default,
+                        ViewModel.Models.ChildTraffickingCasesJsonContext.Default,
+                        ViewModel.Models.CoercedAdoptionCaseJsonContext.Default,
+                        ViewModel.Models.CoercedAdoptionCaseListJsonContext.Default,
+                        ViewModel.Models.CoercedAdoptionCasesJsonContext.Default,
+                        ViewModel.Models.CommentJsonContext.Default,
+                        ViewModel.Models.CommentListItemJsonContext.Default,
+                        ViewModel.Models.CongressionalChamberJsonContext.Default,
+                        ViewModel.Models.CongressionalChamberMeetingsJsonContext.Default,
+                        ViewModel.Models.CongressionalMeetingChamberJsonContext.Default,
+                        ViewModel.Models.CongressionalTermJsonContext.Default,
+                        ViewModel.Models.CountryAndSubdivisionJsonContext.Default,
+                        ViewModel.Models.CountryListEntryJsonContext.Default,
+                        ViewModel.Models.DateTimeIntervalJsonContext.Default,
+                        ViewModel.Models.DeportationCaseJsonContext.Default,
+                        ViewModel.Models.DeportationCaseListJsonContext.Default,
+                        ViewModel.Models.DeportationCasesJsonContext.Default,
+                        ViewModel.Models.DiscussionJsonContext.Default,
+                        ViewModel.Models.DisruptedPlacementCaseJsonContext.Default,
+                        ViewModel.Models.DisruptedPlacementCaseListJsonContext.Default,
+                        ViewModel.Models.DisruptedPlacementCasesJsonContext.Default,
+                        ViewModel.Models.DocumentJsonContext.Default,
+                        ViewModel.Models.DocumentsJsonContext.Default,
+                        ViewModel.Models.DocumentListEntryJsonContext.Default,
+                        ViewModel.Models.ErrorViewModelJsonContext.Default,
+                        ViewModel.Models.ExecutiveCompensationJsonContext.Default,
+                        ViewModel.Models.FathersRightsViolationCaseJsonContext.Default,
+                        ViewModel.Models.FathersRightsViolationCaseListJsonContext.Default,
+                        ViewModel.Models.FathersRightsViolationCasesJsonContext.Default,
+                        ViewModel.Models.FileJsonContext.Default,
+                        ViewModel.Models.FirstLevelRegionListEntryJsonContext.Default,
+                        ViewModel.Models.FormalSubdivisionJsonContext.Default,
+                        ViewModel.Models.GlobalRegionJsonContext.Default,
+                        ViewModel.Models.ImageJsonContext.Default,
+                        ViewModel.Models.InformalSubdivisionJsonContext.Default,
+                        ViewModel.Models.InterOrganizationalRelationJsonContext.Default,
+                        ViewModel.Models.InterPersonalRelationJsonContext.Default,
+                        ViewModel.Models.LocationJsonContext.Default,
+                        ViewModel.Models.MemberOfCongressJsonContext.Default,
+                        ViewModel.Models.MultiQuestionPollJsonContext.Default,
+                        ViewModel.Models.NonSpecificCaseListEntryJsonContext.Default,
+                        ViewModel.Models.OrganizationJsonContext.Default,
+                        ViewModel.Models.OrganizationListEntryJsonContext.Default,
+                        ViewModel.Models.OrganizationPersonRelationJsonContext.Default,
+                        ViewModel.Models.OrganizationSearchJsonContext.Default,
+                        ViewModel.Models.OrganizationsJsonContext.Default,
+                        ViewModel.Models.OrganizationTypeWithOrganizationsJsonContext.Default,
+                        ViewModel.Models.PagedSearchListSettingsJsonContext.Default,
+                        ViewModel.Models.PagedTermedListSettingsJsonContext.Default,
+                        ViewModel.Models.PageJsonContext.Default,
+                        ViewModel.Models.PartyCaseJsonContext.Default,
+                        ViewModel.Models.PartyCaseTypeJsonContext.Default,
+                        ViewModel.Models.PartyMembershipJsonContext.Default,
+                        ViewModel.Models.PartyPoliticalEntityRelationJsonContext.Default,
+                        ViewModel.Models.PersonJsonContext.Default,
+                        ViewModel.Models.PersonListEntryJsonContext.Default,
+                        ViewModel.Models.PersonOrganizationRelationJsonContext.Default,
+                        ViewModel.Models.PersonsJsonContext.Default,
+                        ViewModel.Models.PollListEntryJsonContext.Default,
+                        ViewModel.Models.PollOptionJsonContext.Default,
+                        ViewModel.Models.PollsJsonContext.Default,
+                        ViewModel.Models.SearchResultJsonContext.Default,
+                        ViewModel.Models.SearchResultListEntryJsonContext.Default,
+                        ViewModel.Models.SecondLevelRegionListEntryJsonContext.Default,
+                        ViewModel.Models.SelectionItemJsonContext.Default,
+                        ViewModel.Models.SingleQuestionPollJsonContext.Default,
+                        ViewModel.Models.StateRepresentationJsonContext.Default,
+                        ViewModel.Models.SubdivisionListEntryJsonContext.Default,
+                        ViewModel.Models.SubdivisionTypeJsonContext.Default,
+                        ViewModel.Models.SubgroupListEntryJsonContext.Default,
+                        ViewModel.Models.SubgroupPagedListJsonContext.Default,
+                        ViewModel.Models.TagListEntryJsonContext.Default,
+                        ViewModel.Models.TopicListEntryJsonContext.Default,
+                        ViewModel.Models.TopicsJsonContext.Default,
+                        ViewModel.Models.UnitedStatesCongressJsonContext.Default,
+                        ViewModel.Models.WrongfulMedicationCaseJsonContext.Default,
+                        ViewModel.Models.WrongfulMedicationCaseListJsonContext.Default,
+                        ViewModel.Models.WrongfulMedicationCasesJsonContext.Default,
+                        ViewModel.Models.WrongfulRemovalCaseJsonContext.Default,
+                        ViewModel.Models.WrongfulRemovalCaseListJsonContext.Default,
+                        ViewModel.Models.WrongfulRemovalCasesJsonContext.Default,
+
+                        EditModel.AbuseCaseJsonContext.Default,
+                        EditModel.BlogPostJsonContext.Default,
+                        EditModel.ChildTraffickingCaseJsonContext.Default,
+                        EditModel.CoercedAdoptionCaseJsonContext.Default,
+                        EditModel.CountryListItemJsonContext.Default,
+                        EditModel.DeportationCaseJsonContext.Default,
+                        EditModel.DiscussionJsonContext.Default,
+                        EditModel.DisruptedPlacementCaseJsonContext.Default,
+                        EditModel.DocumentJsonContext.Default,
+                        EditModel.DocumentListItemJsonContext.Default,
+                        EditModel.DocumentTypeJsonContext.Default,
+                        EditModel.FathersRightsViolationCaseJsonContext.Default,
+                        EditModel.FileJsonContext.Default,
+                        EditModel.GeographicalEntityListItemJsonContext.Default,
+                        EditModel.InterOrganizationalRelationJsonContext.Default,
+                        EditModel.InterPersonalRelationJsonContext.Default,
+                        EditModel.LocationJsonContext.Default,
+                        EditModel.OrganizationJsonContext.Default,
+                        EditModel.OrganizationListItemJsonContext.Default,
+                        EditModel.OrganizationTypeJsonContext.Default,
+                        EditModel.PartyListItemJsonContext.Default,
+                        EditModel.PartyPoliticalEntityRelationJsonContext.Default,
+                        EditModel.PartyPoliticalEntityRelationTypeListItemJsonContext.Default,
+                        EditModel.PersonJsonContext.Default,
+                        EditModel.PersonListItemJsonContext.Default,
+                        EditModel.PersonOrganizationRelationJsonContext.Default,
+                        EditModel.PersonOrganizationRelationTypeListItemJsonContext.Default,
+                        EditModel.PoliticalEntityListItemJsonContext.Default,
+                        EditModel.SubdivisionListItemJsonContext.Default,
+                        EditModel.SubgroupJsonContext.Default,
+                        EditModel.TagNodeTypeJsonContext.Default,
+                        EditModel.TenantJsonContext.Default,
+                        EditModel.TenantNodeJsonContext.Default,
+                        EditModel.TermJsonContext.Default,
+                        EditModel.WrongfulMedicationCaseJsonContext.Default,
+                        EditModel.WrongfulRemovalCaseJsonContext.Default
+                    )
+                })
+                .Build();
+            return dataSource;
+        });
+        builder.Services.AddTransient<IDbConnection>((sp) => {
+            var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
+            return dataSource.CreateConnection();
         });
         builder.Services.AddApplicationServices();
         builder.Services.AddQuartz(q => {

@@ -1,4 +1,8 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
+
+[JsonSerializable(typeof(StateRepresentation))]
+public partial class StateRepresentationJsonContext : JsonSerializerContext { }
+
 public record StateRepresentation
 {
     public required BasicLink State { get; set; }
