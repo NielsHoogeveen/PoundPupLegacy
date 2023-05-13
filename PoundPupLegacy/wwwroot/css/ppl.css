@@ -20,6 +20,8 @@
     --link-color: #725a35;
     --editor-element-background: transparent;
     --editor-header-background: #f6dab4;
+    --editor-secondary-header-background: #efe4d5;
+    --editor-deleted-row-background: #c6d0e3;
     --editor-border-color: #f6dab4;
     --input-outline-color: #f6dab4;
     --input-outline-focus-color: #f4cc97;
@@ -61,3 +63,7 @@ h1 {
     outline: 0;
 }
 
+.row span {
+    padding-top: 0.5em;
+    display: inline-block;
+}

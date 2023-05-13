@@ -5,81 +5,85 @@
 @if (Node is not null)
 {
     <div class="tenant-node-editor" >
-        <div class="header"></div>
-        <div class="header">
-            Tenant
-        </div>
-        <div class="header">
-            Path
-        </div>
-        <div class="header">
-            Publication status
-        </div>
-        <div class="header">
-            Subgroup
-        </div>
-
-    @foreach(var tenant in Node.Tenants) {
-        if(tenant.TenantNode is not null && !tenant.TenantNode.HasBeenDeleted)
-        {
-            if (tenant.TenantNode.CanBeUnchecked)
-            {
-                <input class="item" type="checkbox" name="tenant-@tenant.Id" checked @onclick="() => Uncheck(tenant.Id)" />
-            }
-            else {
-                <input class="item" type="checkbox" name="tenant-@tenant.Id" checked disabled />
-            }
-            <div class="item domain-name">@tenant.DomainName</div>
-            <div class="item">
-                <input type="text" value="@tenant.TenantNode!.UrlPath"/>
-            </div>
-            <div class="item">
-                <select @onchange="(e) => OnSelectPublicationStatus(tenant.Id, e)">
-                @foreach(var option in new List<(int, string)> {(0, "unpublished"), (1, "published"), (2, "private") }) 
-                {
-                    @if(tenant.TenantNode.PublicationStatusId == option.Item1) 
+        <h4>Publications</h4>
+        @if(Node.Tenants.Any()){
+            <div class="tenant-nodes">
+                <div class="grid-header"></div>
+                <div class="grid-header">
+                    Tenant
+                </div>
+                <div class="grid-header">
+                    Path
+                </div>
+                <div class="grid-header">
+                    Publication status
+                </div>
+                <div class="grid-header">
+                    Subgroup
+                </div>
+                @foreach(var tenant in Node.Tenants) {
+                    @if(tenant.TenantNode is not null && !tenant.TenantNode.HasBeenDeleted)
                     {
-                        <option selected value="@option.Item1">@option.Item2</option>
-                    }
-                    else
-                    {
-                        <option value="@option.Item1">@option.Item2</option>
-                    }
-                }
-                </select>
-            </div>
-            <div class="item">
-                @if (tenant.Subgroups.Any()) 
-                {
-                    <select @onchange="(e) => OnSelectSubgroup(tenant.Id, e)">
-                    @if (tenant.AllowAccess) 
-                    {
-                        <option value=""></option>
-                    }
-                        
-                    @foreach(var subgroup in tenant.Subgroups) 
-                    {
-                        @if(subgroup.Id == tenant.TenantNode!.SubgroupId) 
+                        if (tenant.TenantNode.CanBeUnchecked)
                         {
-                            <option selected value="@subgroup.Id">@subgroup.Name</option>
-                        }else
-                        {
-                            <option value="@subgroup.Id">@subgroup.Name</option>
+                            <input class="item" type="checkbox" name="tenant-@tenant.Id" checked @onclick="() => Uncheck(tenant.Id)" />
                         }
+                        else {
+                            <input class="item" type="checkbox" name="tenant-@tenant.Id" checked disabled />
+                        }
+                        <div class="item domain-name">@tenant.DomainName</div>
+                        <div class="item">
+                            <input type="text" value="@tenant.TenantNode!.UrlPath"/>
+                        </div>
+                        <div class="item">
+                            <select @onchange="(e) => OnSelectPublicationStatus(tenant.Id, e)">
+                            @foreach(var option in new List<(int, string)> {(0, "unpublished"), (1, "published"), (2, "private") }) 
+                            {
+                                @if(tenant.TenantNode.PublicationStatusId == option.Item1) 
+                                {
+                                    <option selected value="@option.Item1">@option.Item2</option>
+                                }
+                                else
+                                {
+                                    <option value="@option.Item1">@option.Item2</option>
+                                }
+                            }
+                            </select>
+                        </div>
+                        <div class="item">
+                            @if (tenant.Subgroups.Any()) 
+                            {
+                                <select @onchange="(e) => OnSelectSubgroup(tenant.Id, e)">
+                                @if (tenant.AllowAccess) 
+                                {
+                                    <option value=""></option>
+                                }
+                        
+                                @foreach(var subgroup in tenant.Subgroups) 
+                                {
+                                    @if(subgroup.Id == tenant.TenantNode!.SubgroupId) 
+                                    {
+                                        <option selected value="@subgroup.Id">@subgroup.Name</option>
+                                    }else
+                                    {
+                                        <option value="@subgroup.Id">@subgroup.Name</option>
+                                    }
+                                }
+                                </select>
+                            }
+                        </div>
                     }
-                    </select>
+                    else 
+                    {
+                        <input class="item" type="checkbox" name="tenant-@tenant.Id" @onclick="() => Check(tenant.Id)" />
+                        <div class="item">@tenant.DomainName</div>
+                        <div class="item"></div>
+                        <div class="item"></div>
+                        <div class="item"></div>
+                    }
                 }
             </div>
         }
-        else 
-        {
-            <input class="item" type="checkbox" name="tenant-@tenant.Id" @onclick="() => Check(tenant.Id)" />
-            <div class="item">@tenant.DomainName</div>
-            <div class="item"></div>
-            <div class="item"></div>
-            <div class="item"></div>
-        }
-    }
     </div>
 }
 @code {

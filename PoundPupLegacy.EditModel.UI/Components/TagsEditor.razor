@@ -3,6 +3,7 @@
 @if(NodeTypesTags is not null)
 {
     <div class="tags">
+        <h4>Tags</h4>
         @foreach(var nodeTypeTags in NodeTypesTags) {
             <TagEditor NodeId="NodeId" NodeTypeTags="nodeTypeTags"/>
         }

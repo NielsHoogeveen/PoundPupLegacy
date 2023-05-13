@@ -14,10 +14,7 @@
     </ModalDialog>
 }
 <div class="relations-editor">
-    <div class="header">
-        <h4>Relations between this organization and another one</h4>
-        <button type="button" @onclick="OnAdd">Add</button>
-    </div>
+    <h4>Relations between this organization and another one</h4>
     @if (Relations.Any())
     {
         <div class="relations">
@@ -27,28 +24,43 @@
             <div class="grid-header">Start</div>
             <div class="grid-header">End</div>
             <div class="grid-header"></div>
+            <div class="grid-header"></div>
             @foreach(var relation in Relations) {
-                <div class="row first">
+                var classString = relation.HasBeenDeleted ? "row deleted" : "row";
+                <div class="@classString first">
                     @relation.OrganizationFrom?.Name
                 </div>
-                <div class="row">
+                <div class="@classString">
                     @relation.InterOrganizationalRelationType.Name
                 </div>
-                <div class="row">
+                <div class="@classString">
                     @relation.OrganizationTo?.Name
                 </div>
-                <div class="row">
+                <div class="@classString">
                     @relation.DateFrom
                 </div>
-                <div class="row">
+                <div class="@classString">
                     @relation.DateTo
                 </div>
-                <div class="row">
-                    <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+                <div class="@classString">
+                    @if (!relation.HasBeenDeleted)
+                    {
+                        <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+                    }
                 </div>
+                <div class="@classString">
+                    @if (relation.HasBeenDeleted) {
+                        <button type="button" @onclick="() => RestoreRelation(relation)">restore</button>
+                    }
+                    else {
+                        <button type="button" @onclick="() => RemoveRelation(relation)">remove</button>
+                    }
+                </div>
+
             }
         </div>
-    }
+    }        
+    <button type="button" @onclick="OnAdd">Add</button>
 </div>
 @code {
     [Parameter]
@@ -73,10 +85,21 @@
     {
 
     }
-
-    private void EditRelation(InterOrganizationalRelation relationToEdit)
+    private void RestoreRelation(InterOrganizationalRelation relation)
     {
-        _relationToEdit = relationToEdit;
+        relation.HasBeenDeleted = false;
+        StateHasChanged();
+    }
+
+    private void RemoveRelation(InterOrganizationalRelation relation)
+    {
+        relation.HasBeenDeleted = true;
+        StateHasChanged();
+    }
+
+    private void EditRelation(InterOrganizationalRelation relation)
+    {
+        _relationToEdit = relation;
         StateHasChanged();
     }
     private void OnOk()
@@ -97,6 +120,7 @@
         _relationToEdit = new InterOrganizationalRelation {
                 OrganizationFrom = Organization,
                 OrganizationTo = null,
+                HasBeenStored = false,
                 InterOrganizationalRelationType = RelationTypes.First(),
                 Title = "",
                 DateFrom = null,

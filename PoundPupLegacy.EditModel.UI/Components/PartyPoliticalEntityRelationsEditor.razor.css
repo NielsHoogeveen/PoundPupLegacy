@@ -8,20 +8,18 @@
 }
 .relations {
     display: grid;
-    grid-template-columns: 3fr 3fr 2fr 1fr 1fr 4em;
+    grid-template-columns: 3fr 3fr 2fr 1fr 1fr 4em 5em;
 }
-h4{
-    padding: 0 0 0 0.25em;
-    margin: 0 0 1em 0;
-}
-.header {
+h4
+{
     background-color: var(--editor-header-background);
-    padding-bottom: 1em;
+    padding: 0.25em 0 0.25em 0.25em;
+    margin: 0;
 }
 
-.grid-header{
-    background-color: silver;
-    padding:0.25em;
+.grid-header {
+    background-color: var(--editor-secondary-header-background);
+    padding: 0.25em;
 }
 
 .first{
@@ -40,3 +38,17 @@ button {
 button:hover {
     background-color: var(--button-hover-color);
 }
+.row.deleted {
+    background-color: var(--editor-deleted-row-background);
+}
+
+.row.deleted.first::after {
+    content: "removed";
+    color: rgba(3,3,3,0.4);
+    font-size: 200%;
+    position: absolute;
+    left: 4em;
+    z-index: 1;
+    transform: rotate(-3deg);
+}
+

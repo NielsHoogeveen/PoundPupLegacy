@@ -9,39 +9,59 @@
             <InterPersonalRelationEditorDialog  
                 @bind-Relation="_relationToEdit" 
                 RelationTypes="@RelationTypes"
-                PersonId="PersonId"/>
+                PersonId="Person.Id"/>
         </DialogContent>
     </ModalDialog>
 }
-
-<div class="relations">
-    <div class="header first">From</div>
-    <div class="header">Type</div>
-    <div class="header">To</div>
-    <div class="header">Start</div>
-    <div class="header">End</div>
-    <div class="header"></div>
-    @foreach(var relation in Relations) {
-        <div class="row first">
-            @relation.PersonFrom.Name
-        </div>
-        <div class="row">
-            @relation.InterPersonalRelationType.Name
-        </div>
-        <div class="row">
-            @relation.PersonTo.Name
-        </div>
-        <div class="row">
-            @relation.DateFrom
-        </div>
-        <div class="row">
-            @relation.DateTo
-        </div>
-        <div class="row">
-            <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+<div class="relations-editor">
+    <h4>Relations between this person and another person</h4>
+    @if (Relations.Any()) {
+        <div class="relations">
+            <div class="grid-header first">From</div>
+            <div class="grid-header">Type</div>
+            <div class="grid-header">To</div>
+            <div class="grid-header">Start</div>
+            <div class="grid-header">End</div>
+            <div class="grid-header"></div>
+            <div class="grid-header"></div>
+            @foreach(var relation in Relations) {
+                var classString = relation.HasBeenDeleted ? "row deleted" : "row";
+                <div class="@classString first">
+                    <span>@relation.PersonFrom?.Name</span>
+                </div>
+                <div class="@classString">
+                    <span>@relation.InterPersonalRelationType.Name</span>
+                </div>
+                <div class="@classString">
+                    <span>@relation.PersonTo?.Name</span>
+                </div>
+                <div class="@classString">
+                    <span>@relation.DateFrom</span>
+                </div>
+                <div class="@classString">
+                    <span>@relation.DateTo</span>
+                </div>
+                <div class="@classString">
+                    @if (!relation.HasBeenDeleted)
+                    {
+                        <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+                    }
+                </div>
+                <div class="@classString">
+                    @if (relation.HasBeenDeleted)
+                    {
+                        <button type="button" @onclick="() => RestoreRelation(relation)">restore</button>
+                    }
+                    else {
+                        <button type="button" @onclick="() => RemoveRelation(relation)">remove</button>
+                    }
+                </div>
+            }
         </div>
     }
+    <button type="button" @onclick="OnAdd">Add</button>
 </div>
+
 @code {
     [Parameter]
     [EditorRequired]
@@ -49,7 +69,7 @@
 
     [Parameter]
     [EditorRequired]
-    public int? PersonId { get; set; } = default!;
+    public PersonListItem Person { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -66,13 +86,27 @@
 
     }
 
-    private void EditRelation(InterPersonalRelation relationToEdit)
+    private void EditRelation(InterPersonalRelation relation)
     {
-        _relationToEdit = relationToEdit;
+        _relationToEdit = relation;
+        StateHasChanged();
+    }
+    private void RestoreRelation(InterPersonalRelation relation)
+    {
+        relation.HasBeenDeleted = false;
+        StateHasChanged();
+    }
+
+    private void RemoveRelation(InterPersonalRelation relation)
+    {
+        relation.HasBeenDeleted = true;
         StateHasChanged();
     }
     private void OnOk()
     {
+        if (_relationToEdit is not null && !_relationToEdit.NodeId.HasValue) {
+            Relations.Add(_relationToEdit);
+        }
         _relationToEdit = null;
         StateHasChanged();
     }
@@ -81,4 +115,30 @@
         _relationToEdit = null;
         StateHasChanged();
     }
+    private void OnAdd()
+    {
+        _relationToEdit = new InterPersonalRelation {
+                PersonFrom = Person,
+                PersonTo = null,
+                HasBeenStored = false,
+                InterPersonalRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                HasBeenDeleted = false,
+                NodeId = null,
+                NodeTypeName = "inter organizational relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+                UrlId = null,
+            };
+        StateHasChanged();
+    }
+
 }

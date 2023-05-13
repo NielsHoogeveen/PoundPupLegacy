@@ -1,16 +1,27 @@
-﻿<div class="organization-organization-types">
-    @foreach(var organizationOrganizationType in Model.OrganizationOrganizationTypes) {
-        <select>
-            @foreach(var organizationType in Model.OrganizationTypes){
-                @if (organizationType.Id == organizationOrganizationType.OrganizationTypeId) {
-                    <option selected value="@organizationType.Id">@organizationType.Name</option>
+﻿@using System.Diagnostics;
+<div class="organization-organization-types-editor">
+    <h4>Organization types</h4>
+    <div class="organization-organization-types">
+        @foreach(var organizationOrganizationType in Model.OrganizationOrganizationTypes) 
+        {
+            <div class="organization-organization-type">
+                <span>@organizationOrganizationType.Name</span>
+                <button type="button" @onclick="() => RemoveOrganizationOrganizationType(organizationOrganizationType)">Remove</button>
+            </div>       
+        }
+        <button type="button" @onclick="AddOrganizationOrganizationType">Add</button>
+        <select @onchange="OnChange">
+            @foreach (var organizationType in OrganizationTypes) {
+                @if (SelectedOrganizationType is not null && organizationType.Id == SelectedOrganizationType.Id) {
+                    <option value="@organizationType.Id" selected>@organizationType.Name</option>
                 }
                 else {
                     <option value="@organizationType.Id">@organizationType.Name</option>
                 }
             }
         </select>
-    }
+        
+    </div>
 </div>
 
 
@@ -18,4 +29,62 @@
     [Parameter]
     [EditorRequired]
     public Organization Model { get; set; } = default!;
+
+    private OrganizationType? SelectedOrganizationType;
+
+    private List<OrganizationType> OrganizationTypes => Model.OrganizationTypes.Where(x => !Model.OrganizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(x.Id)).ToList();
+
+    protected override void OnInitialized()
+    {
+        SelectedOrganizationType = OrganizationTypes.First();
+    }
+
+    private void OnChange(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            if(int.TryParse(e.Value.ToString(), out var organizationTypeId) && organizationTypeId > 0)
+            {
+                SelectedOrganizationType = OrganizationTypes.First(x => x.Id == organizationTypeId);
+            }
+        }
+    }
+    private void AddOrganizationOrganizationType()
+    {
+        if (SelectedOrganizationType != null)
+        {
+            var item = Model.OrganizationOrganizationTypes.FirstOrDefault(x =>x.OrganizationTypeId == SelectedOrganizationType.Id);
+            if (item is not null)
+            {
+                Debug.Assert(item.HasBeenDeleted);
+                item.HasBeenDeleted = false;
+            }
+            else
+            {
+                Model.OrganizationOrganizationTypes.Add(new OrganizationOrganizationType()
+                    {
+                        OrganizationId = Model.NodeId,
+                        OrganizationTypeId = SelectedOrganizationType.Id,
+                        Name = SelectedOrganizationType.Name,
+                        HasBeenDeleted = false,
+                        HasBeenStored = false
+                    });
+            }
+            SelectedOrganizationType = OrganizationTypes.First();
+            StateHasChanged();
+        }
+    }
+    private void RemoveOrganizationOrganizationType(OrganizationOrganizationType organizationOrganizationType)
+    {
+        if (organizationOrganizationType.HasBeenStored)
+        {
+            organizationOrganizationType.HasBeenDeleted = true;
+        }
+        else
+        {
+            Model.OrganizationOrganizationTypes.Remove(organizationOrganizationType);
+        }
+        SelectedOrganizationType = OrganizationTypes.First();
+        StateHasChanged();
+    }
 }

@@ -11,5 +11,5 @@ public record OrganizationOrganizationType
 
     public required string Name { get; init; }
     public required bool HasBeenStored { get; init; }
-    public required bool HasBeenDeleted { get; init; }
+    public required bool HasBeenDeleted { get; set; }
 }

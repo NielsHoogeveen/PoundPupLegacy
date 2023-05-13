@@ -1,9 +1,25 @@
+.editor-section {
+    background-color: var(--editor-element-background);
+    margin-top: 1em;
+    padding:0;
+    border-top: solid thin #ccc;
+    border: solid 2px var(--editor-header-background);
+    border-radius: 5px;
+    box-shadow: var(--input-shadow);
+}
+h4 {
+    background-color: var(--editor-header-background);
+    padding: 0.25em 0 0.25em 0.25em;
+    margin: 0 0 0.5em 0;
+}
+
+
 .file-upload {
     display: block;
     width: 8em;
     padding: 0.5em 1em;
     font-size: 90%;
-    margin-top: 1em;
+    margin-left: 0.25em;
     margin-bottom: 0.25em;
     border: 0;
     background-color: var(--button-color);
@@ -20,23 +36,29 @@
     background-color: #662222;
     color: red;
 }
-
-.files {
+.files{
+    margin-top:0.5em;
+}
+.file {
     display: grid;
-    grid-template-columns: 5fr 2fr 1fr 1fr;
+    grid-template-columns: 5fr 2fr 1fr 6em;
+    padding: 0.5em;
+    border-top: solid 1px #ccc;
+    vertical-align: central;
 }
 
-.editor-section {
-    margin-top: 1em;
-    background-color: var(--editor-element-background);
-    padding-left: 0.25em;
+.file div{
     padding-top: 0.25em;
-    padding-bottom: 0.25em;
-    border: solid 2px var(--editor-border-color);
-    border-radius: 5px;
-    box-shadow: var(--input-shadow);
 }
-.editor-section h4{
-    margin:0;
-    padding:0;
+button {
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--button-hover-color);
 }

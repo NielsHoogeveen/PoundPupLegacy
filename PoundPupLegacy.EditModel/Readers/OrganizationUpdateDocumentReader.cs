@@ -8,10 +8,12 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
 
         const string SQL = $"""
             {CTE_EDIT},
+            {ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT},
+            {INTER_ORGANIZATIONAL_RELATIONS_DOCUMENT},
+            {SharedSql.ORGANIZATION_TYPES_DOCUMENT},
             {SharedSql.INTER_ORGANIZATIONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATION_TYPES_DOCUMENT},
             {SharedSql.PARTY_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT},
-            {INTER_ORGANIZATIONAL_RELATIONS_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {SharedSql.PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT}
             select
@@ -78,6 +80,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
+
     const string INTER_ORGANIZATIONAL_RELATIONS_DOCUMENT = """
         inter_organizational_relations_document as(
             select
@@ -95,6 +98,8 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                         node_type_name,
                         'UrlId',
                         url_id,
+                        'HasBeenStored',
+                        true,
                         'OrganizationFrom',
                         jsonb_build_object(
                             'Id',
@@ -386,6 +391,31 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
         	    ) x
                 where status_other_organization > -1 and status_relation > -1
         	) x
+        )
+        """;
+    const string ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT = """
+        organization_organization_types_document as (
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'OrganizationId',
+        		        oot.organization_id,
+        		        'OrganizationTypeId',
+        		        oot.organization_type_id,
+                        'Name',
+                        t.name,
+        		        'HasBeenStored',
+        		        true,
+        		        'HasBeenDeleted',
+        		        false
+        	        )
+                ) document
+            from organization_organization_type oot
+            join tenant_node tn on tn.node_id = oot.organization_id
+            join term t on t.nameable_id = oot.organization_type_id
+            join tenant_node tn2 on tn2.node_id = t.vocabulary_id
+            where tn2.tenant_id = 1 and tn2.url_id = 12622
+            and tn.tenant_id = @tenant_id and tn.url_id = @url_id
         )
         """;
 

@@ -1,6 +1,4 @@
 ﻿.tenant-node-editor {
-    display: grid;
-    grid-template-columns: 1fr 10fr 10fr 10fr 10fr;
     background-color: var(--editor-element-background);
     padding-bottom: 1em;
     margin-top: 1em;
@@ -8,23 +6,43 @@
     border-radius: 5px;
     box-shadow: var(--input-shadow);
 }
-.header {
-    background-color: var(--editor-header-background);
-    margin-bottom: 1em;
+.tenant-nodes {
+    display: grid;
+    grid-template-columns: 1fr 10fr 10fr 10fr 10fr;
 }
 
+h4 {
+    background-color: var(--editor-header-background);
+    padding: 0.25em 0 0.25em 0.25em;
+    margin: 0 0 0 0;
+    user-select: none;
+}
+.row, .grid-header {
+    user-select: none;
+}
+
+.first {
+    padding-left: 0.5em;
+}
+
+.grid-header {
+    background-color: var(--editor-secondary-header-background);
+    padding: 0.25em;
+}
+
+.item {
+    margin-top: 0.5em;
+    padding: 0.25em;
+}
 input, select {
     outline-color: var(--input-outline-color);
 }
 input:focus, select:focus {
     outline-color: var(--input-outline-focus-color);
 }
-.item{
-    margin-bottom:1em;
-}
 input[type=checkbox]{
     position: relative;
-    top:-0.05em;
+    top:0.5em;
     width: 1.25em;
     height: 1.25em;
 }

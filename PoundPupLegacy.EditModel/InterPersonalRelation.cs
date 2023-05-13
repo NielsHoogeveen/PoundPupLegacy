@@ -11,6 +11,8 @@ public record InterPersonalRelation : Node
 
     public bool HasBeenDeleted { get; set; }
 
+    public required bool HasBeenStored { get; init; }
+
     public required string NodeTypeName { get; set; }
 
     public required int PublisherId { get; set; }
@@ -85,8 +87,8 @@ public record InterPersonalRelation : Node
     }
     public string? Description { get; set; }
     public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
-    public required PersonListItem PersonFrom { get; set; }
-    public required PersonListItem PersonTo { get; set; }
+    public required PersonListItem? PersonFrom { get; set; }
+    public required PersonListItem? PersonTo { get; set; }
     public DocumentListItem? ProofDocument { get; set; }
 
 }

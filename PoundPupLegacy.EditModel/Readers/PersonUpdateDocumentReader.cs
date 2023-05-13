@@ -86,6 +86,8 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                             'Name',
         		            person_name_from
                         ),
+                        'HasBeenStored',
+                        true,
         		        'PersonTo',
                         jsonb_build_object(
                             'Id',

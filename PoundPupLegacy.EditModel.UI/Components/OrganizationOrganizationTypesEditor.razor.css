@@ -1,4 +1,4 @@
-.relations-editor {
+.organization-organization-types-editor {
     background-color: var(--editor-element-background);
     margin-top: 1em;
     border-top: solid thin #ccc;
@@ -6,25 +6,10 @@
     border: solid 2px var(--editor-header-background);
     box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
 }
-
-.relations {
-    display: grid;
-    grid-template-columns: 3fr 3fr 2fr 1fr 1fr 4em 5em;
-}
-
 h4 {
     background-color: var(--editor-header-background);
     padding: 0.25em 0 0.25em 0.25em;
-    margin: 0;
-}
-
-.grid-header {
-    background-color: var(--editor-secondary-header-background);
-    padding: 0.25em;
-}
-
-.first {
-    padding-left: 0.5em;
+    margin: 0 0 1em 0;
 }
 
 button {
@@ -41,17 +26,15 @@ button:hover {
     background-color: var(--button-hover-color);
 }
 
-.row.deleted{
-    background-color: var(--editor-deleted-row-background);
+.organization-organization-type{
+    margin-top: 0.25em;
+    display: grid;
+    grid-template-columns: 1fr 6em;
 }
 
-.row.deleted.first::after {
-    content: "removed";
-    color: rgba(3,3,3,0.4);
-    font-size: 200%;
-    position: absolute;
-    left: 4em;
-    z-index: 1;
-    transform: rotate(-3deg);
+select {
+    margin-left: 0.5em;
 }
-
+span{
+    padding-left:0.5em;
+}

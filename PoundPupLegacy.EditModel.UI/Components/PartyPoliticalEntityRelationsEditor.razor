@@ -13,10 +13,7 @@
     </ModalDialog>
 }
 <div class="relations-editor">
-    <div class="header">
-        <h4>Relations between this @PartyTypeName and political entities</h4>
-        <button type="button" @onclick="OnAdd">Add</button>
-    </div>
+    <h4>Relations between this @PartyTypeName and a political entity</h4>
     @if (Relations.Any())
     {
         <div class="relations">
@@ -26,29 +23,42 @@
             <div class="grid-header">Start</div>
             <div class="grid-header">End</div>
             <div class="grid-header"></div>
+            <div class="grid-header"></div>
             @foreach (var relation in Relations)
             {
-                <div class="row first">
+                var classString = relation.HasBeenDeleted ? "row deleted" : "row";
+                <div class="@classString first">
                     @relation.Party.Name
                 </div>
-                <div class="row">
+                <div class="@classString">
                     @relation.PartyPoliticalEntityRelationType.Name
                 </div>
-                <div class="row">
+                <div class="@classString">
                     @relation.PoliticalEntity?.Name
                 </div>
-                <div class="row">
+                <div class="@classString">
                     @relation.DateFrom
                 </div>
-                <div class="row">
+                <div class="@classString">
                     @relation.DateTo
                 </div>
-                <div class="row">
-                    <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+                <div class="@classString">
+                    @if (!relation.HasBeenDeleted) {
+                        <button type="button" @onclick="() => EditRelation(relation)">edit</button>
+                    }
+                </div>
+                <div class="@classString">
+                    @if (relation.HasBeenDeleted) {
+                        <button type="button" @onclick="() => RestoreRelation(relation)">restore</button>
+                    }
+                    else {
+                        <button type="button" @onclick="() => RemoveRelation(relation)">remove</button>
+                    }
                 </div>
             }
         </div>
     }
+    <button type="button" @onclick="OnAdd">Add</button>
 </div>
 @code {
     [Parameter]
@@ -77,6 +87,17 @@
     public override void OnTitleChange(string title)
     {
 
+    }
+    private void RestoreRelation(PartyPoliticalEntityRelation relation)
+    {
+        relation.HasBeenDeleted = false;
+        StateHasChanged();
+    }
+
+    private void RemoveRelation(PartyPoliticalEntityRelation relation)
+    {
+        relation.HasBeenDeleted = true;
+        StateHasChanged();
     }
 
     private void EditRelation(PartyPoliticalEntityRelation relationToEdit)

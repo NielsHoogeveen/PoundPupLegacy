@@ -8,6 +8,7 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
 
     private const string SQL = $"""
             {CTE_CREATE},
+            {SharedSql.ORGANIZATION_TYPES_DOCUMENT},
             {SharedSql.INTER_ORGANIZATIONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATION_TYPES_DOCUMENT},
             {SharedSql.PARTY_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT}
@@ -36,6 +37,8 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
                     null,
                     'Tags',
                     (select document from tags_document),
+                    'OrganizationTypes',
+                    (select document from organization_types_document),
                     'PartyPoliticalEntityRelationTypes',
                     (select document from party_political_entity_relation_types_document),
                     'InterOrganizationalRelationTypes',

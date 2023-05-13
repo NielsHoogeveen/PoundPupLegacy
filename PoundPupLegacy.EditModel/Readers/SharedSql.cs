@@ -479,5 +479,25 @@ internal static class SharedSql
         )
         """;
 
+    internal const string ORGANIZATION_TYPES_DOCUMENT = """
+        organization_types_document as(
+            select
+            jsonb_agg(
+                jsonb_build_object(
+                    'Id',
+                    ot.id,
+                    'Name',
+                    t.name,
+                    'HasConcreteSubtype',
+                    ot.has_concrete_subtype
+                )
+                order by t.name
+            ) "document"
+            from organization_type ot
+            join term t on t.nameable_id = ot.id
+            join tenant_node tn on tn.node_id = t.vocabulary_id
+            where tn.tenant_id = 1 and tn.url_id = 12622
+        )
+        """;
 
 }

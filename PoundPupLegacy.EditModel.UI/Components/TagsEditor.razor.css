@@ -6,3 +6,9 @@
     border-radius: 5px;
     box-shadow: var(--input-shadow);
 }
+
+h4 {
+    background-color: var(--editor-header-background);
+    padding: 0.25em 0 0.25em 0.25em;
+    margin: 0 0 1em 0;
+}

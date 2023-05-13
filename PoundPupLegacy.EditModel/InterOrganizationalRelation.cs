@@ -9,6 +9,7 @@ public record InterOrganizationalRelation : Node
 
     public int? UrlId { get; set; }
 
+    public required bool HasBeenStored { get; init; }
     public bool HasBeenDeleted { get; set; }
 
     public required string NodeTypeName { get; set; }

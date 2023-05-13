@@ -6,16 +6,22 @@
 {
     <div class="editor-section">
         <h4> Attachments</h4>
-        <div class="files" style="margin-bottom:1em;">
-        @foreach(var (file, index) in Files.Where(x => !x.HasBeenDeleted).Select((x,y) => (x,y)) ) {
-            <div>@file.Name</div>
-            <div>@file.MimeType</div>
-            <div>@file.Size</div>
-            <div class="close" @onclick="() => SetAttachmentToDeleted(index)">&times;</div>
-        }
-        </div>
         <label class="file-upload" for="file-upload">Upload files</label>
-        <InputFile OnChange="@LoadFiles" multiple id="file-upload"/>
+        <InputFile OnChange="@LoadFiles" multiple id="file-upload" />
+        @if (Files.Any())
+        {
+            <div class="files">
+                @foreach (var (file, index) in Files.Where(x => !x.HasBeenDeleted).Select((x, y) => (x, y)))
+                {
+                    <div class="file">
+                        <div>@file.Name</div>
+                        <div>@file.MimeType</div>
+                        <div>@file.Size</div>
+                        <button type="button" class="close" @onclick="() => SetAttachmentToDeleted(index)">Remove</button>
+                    </div>
+                }
+            </div>
+        }
         <div class="error">@((MarkupString)ErrorMessage)</div>
     </div>
 }
