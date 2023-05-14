@@ -5,7 +5,7 @@ public static class NodeUpdateDocumentReaderFactory
 
 }
 public abstract class NodeUpdateDocumentReaderFactory<TResponse> : NodeEditDocumentReaderFactory<NodeUpdateDocumentRequest, TResponse>
-where TResponse : class, Node
+where TResponse : class, ExistingNode
 {
     private static readonly NonNullableIntegerDatabaseParameter UrlIdParameter = new() { Name = "url_id" };
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };

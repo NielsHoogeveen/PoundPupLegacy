@@ -6,19 +6,19 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateModel.Person>, IEditService<Person>
+internal sealed class PersonEditService : PartyEditServiceBase<Person, ExistingPerson, NewPerson, CreateModel.Person>, IEditService<Person>
 {
 
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Person> _personUpdateDocumentReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Person> _personCreateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewPerson> _personCreateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingPerson> _personUpdateDocumentReaderFactory;
     private readonly ISaveService<IEnumerable<Location>> _locationsSaveService;
     private readonly IDatabaseUpdaterFactory<PersonUpdaterRequest> _personUpdateFactory;
     private readonly IEntityCreator<CreateModel.Person> _personEntityCreator;
     public PersonEditService(
         IDbConnection connection,
         ITenantRefreshService tenantRefreshService,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Person> personUpdateDocumentReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Person> personCreateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewPerson> personCreateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingPerson> personUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<PersonUpdaterRequest> personUpdateFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -59,9 +59,9 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateMod
         }
     }
 
-    protected override async Task StoreAdditional(Person person)
+    protected override async Task StoreAdditional(Person person, int nodeId)
     {
-        await base.StoreAdditional(person);
+        await base.StoreAdditional(person, nodeId);
         await _locationsSaveService.SaveAsync(person.Locations, _connection);
     }
     public async Task<Person?> GetViewModelAsync(int userId, int tenantId)
@@ -81,10 +81,10 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateMod
             }
         }
     }
-    protected sealed override async Task StoreNew(Person person, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewPerson person, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        await _personEntityCreator.CreateAsync(new CreateModel.Person {
+        var creationPerson = new CreateModel.Person {
             Id = null,
             Title = person.Title,
             Description = person.Description,
@@ -116,23 +116,20 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, CreateMod
             MiddleName = null,
             Suffix = null,
             ProfessionalRoles = new List<CreateModel.ProfessionalRole>(),
-            PersonOrganizationRelations  = new List<CreateModel.PersonOrganizationRelation>()
-        }
-        , connection
-        );
+            PersonOrganizationRelations = new List<CreateModel.PersonOrganizationRelation>()
+        };
+        await _personEntityCreator.CreateAsync(creationPerson, connection);
+        return creationPerson.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(Person person, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingPerson person, NpgsqlConnection connection)
     {
-        if (!person.NodeId.HasValue) {
-            throw new Exception("NodeId of person should have a value");
-        }
         var updater = await _personUpdateFactory.CreateAsync(connection);
 
         await updater.UpdateAsync(new PersonUpdaterRequest {
             Title = person.Title,
             Description = person.Description,
-            NodeId = person.NodeId.Value,
+            NodeId = person.NodeId,
             Bioguide = null,
             DateOfBirth = null,
             DateOfDeath = null,

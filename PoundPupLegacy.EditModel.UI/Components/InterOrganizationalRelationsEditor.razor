@@ -7,9 +7,10 @@
         OnCancel="OnCancel">
         <DialogContent>
             <InterOrganizationalRelationEditorDialog  
-                @bind-Relation="_relationToEdit" 
+                Relation="_relationToEdit" 
                 RelationTypes="@RelationTypes"
-                OrganizationId="Organization?.Id"/>
+                OrganizationId="Organization?.Id"
+                @ref="dialog"/>
         </DialogContent>
     </ModalDialog>
 }
@@ -28,13 +29,13 @@
             @foreach(var relation in Relations) {
                 var classString = relation.HasBeenDeleted ? "row deleted" : "row";
                 <div class="@classString first">
-                    @relation.OrganizationFrom?.Name
+                    @relation.OrganizationFromName
                 </div>
                 <div class="@classString">
                     @relation.InterOrganizationalRelationType.Name
                 </div>
                 <div class="@classString">
-                    @relation.OrganizationTo?.Name
+                    @relation.OrganizationToName
                 </div>
                 <div class="@classString">
                     @relation.DateFrom
@@ -65,7 +66,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<InterOrganizationalRelation> Relations { get; set; } = default!;
+    public List<CompletedInterOrganizationalRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -76,6 +77,8 @@
     public List<InterOrganizationalRelationTypeListItem> RelationTypes { get; set; } = default!;
 
     private InterOrganizationalRelation? _relationToEdit = null;
+
+    private InterOrganizationalRelationEditorDialog? dialog;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
@@ -104,8 +107,9 @@
     }
     private void OnOk()
     {
-        if (_relationToEdit is not null && !_relationToEdit.NodeId.HasValue) {
-            Relations.Add(_relationToEdit);
+        if (dialog is not null) {
+            var relation = dialog.GetValidRelation();
+            Relations.Add(relation);
         }
         _relationToEdit = null;
         StateHasChanged();
@@ -117,18 +121,15 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = new InterOrganizationalRelation {
+        _relationToEdit = new NewInterOrganizationalExistingRelation {
                 OrganizationFrom = Organization,
                 OrganizationTo = null,
-                HasBeenStored = false,
                 InterOrganizationalRelationType = RelationTypes.First(),
                 Title = "",
                 DateFrom = null,
                 DateTo = null,
                 Description = "",
                 Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeId = null,
                 NodeTypeName = "inter organizational relation",
                 OwnerId = TenantId,
                 PublisherId = UserId,
@@ -137,7 +138,6 @@
                 Tags = new List<Tags>(),
                 TenantNodes = new List<TenantNode>(),
                 Tenants = new List<Tenant>(),
-                UrlId = null,
             };
         StateHasChanged();
     }

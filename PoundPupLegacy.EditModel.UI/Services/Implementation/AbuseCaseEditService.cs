@@ -6,10 +6,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, CreateModel.AbuseCase>, IEditService<AbuseCase>
+internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, ExistingAbuseCase, NewAbuseCase, CreateModel.AbuseCase>, IEditService<AbuseCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, AbuseCase> _abuseCaseCreateReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, AbuseCase> _abuseCaseUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewAbuseCase> _abuseCaseCreateReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingAbuseCase> _abuseCaseUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<AbuseCaseUpdaterRequest> _abuseCaseUpdaterFactory;
     private readonly IEntityCreator<CreateModel.AbuseCase> _abuseCaseCreator;
     private readonly ITextService _textService;
@@ -17,8 +17,8 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Crea
 
     public AbuseCaseEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, AbuseCase> abuseCaseCreateReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, AbuseCase> abuseCaseUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewAbuseCase> abuseCaseCreateReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingAbuseCase> abuseCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<AbuseCaseUpdaterRequest> abuseCaseUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -77,7 +77,7 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Crea
         }
     }
 
-    protected sealed override async Task StoreNew(AbuseCase abuseCase, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewAbuseCase abuseCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
         var createDocument = new CreateModel.AbuseCase {
@@ -116,16 +116,16 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Crea
             }
         };
         await _abuseCaseCreator.CreateAsync(createDocument, connection);
-        abuseCase.NodeId = createDocument.Id;
+        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(AbuseCase abuseCase, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingAbuseCase abuseCase, NpgsqlConnection connection)
     {
         await using var updater = await _abuseCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new AbuseCaseUpdaterRequest {
             Title = abuseCase.Title,
             Description = abuseCase.Description is null ? "": _textService.FormatText(abuseCase.Description),
-            NodeId = abuseCase.NodeId!.Value,
+            NodeId = abuseCase.NodeId,
             Date = abuseCase.Date,
             ChildPlacementTypeId = abuseCase.ChildPlacementTypeId,
             DisabilitiesInvolved = abuseCase.DisabilitiesInvolved,

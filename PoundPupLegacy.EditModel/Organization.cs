@@ -1,23 +1,75 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(Organization))]
-public partial class OrganizationJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(ExistingOrganization))]
+public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
 
-public record Organization : Party
+[JsonSerializable(typeof(NewOrganization))]
+public partial class NewOrganizationJsonContext : JsonSerializerContext { }
+
+public interface Organization : Party
 {
-    public int? NodeId { get; init; }
-    public int? UrlId { get; set; }
-    public required string NodeTypeName { get; set; }
-    public required string Title { get; set; }
-    public required int PublisherId { get; set; }
-    public required int OwnerId { get; set; }
-    public required string Description { get; set; }
+    string? WebSiteUrl { get; set; }
+    string? EmailAddress { get; set; }
+    DateTime? EstablishmentDateFrom { get; set; }
+    DateTime? EstablishmentDateTo { get; set; }
+    DateTime? TerminationDateFrom { get; set; }
+    DateTime? TerminationDateTo { get; set; }
+    FuzzyDate? Establishment { get; set; }
+    FuzzyDate? Termination { get; set; }
+    List<OrganizationOrganizationType> OrganizationOrganizationTypes { get; }
+    List<OrganizationType> OrganizationTypes { get; }
+    List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes { get; }
+    IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations { get; }
+}
+
+
+public record ExistingOrganization : OrganizationBase, ExistingNode
+{
+    public int NodeId { get; init; }
+    public int UrlId { get; set; }
+
+    private List<ExistingInterOrganizationalRelation> existingInterOrganizationalRelations = new();
+
+    public List<ExistingInterOrganizationalRelation> ExistingInterOrganizationalRelations {
+        get => existingInterOrganizationalRelations;
+        init {
+            if (value is not null) {
+                existingInterOrganizationalRelations = value;
+            }
+        }
+    }
+
+    public override IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations => GetInterOrganizationalRelations();
+    private IEnumerable<CompletedInterOrganizationalRelation> GetInterOrganizationalRelations()
+    {
+        foreach (var elem in ExistingInterOrganizationalRelations) {
+            yield return elem;
+        }
+        foreach (var elem in NewInterOrganizationalRelations) {
+            yield return elem;
+        }
+
+    }
+}
+public record NewOrganization : OrganizationBase, NewNode
+{
+    public override IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations => GetInterOrganizationalRelations();
+    private IEnumerable<CompletedInterOrganizationalRelation> GetInterOrganizationalRelations()
+    {
+        foreach (var elem in NewInterOrganizationalRelations) {
+            yield return elem;
+        }
+
+    }
+}
+public abstract record OrganizationBase : PartyBase, Organization
+{
     public string? WebSiteUrl { get; set; }
     public string? EmailAddress { get; set; }
-    public DateTime? EstablishmentDateFrom { get; init; }
-    public DateTime? EstablishmentDateTo { get; init; }
-    public DateTime? TerminationDateFrom { get; init; }
-    public DateTime? TerminationDateTo { get; init; }
+    public DateTime? EstablishmentDateFrom { get; set; }
+    public DateTime? EstablishmentDateTo { get; set; }
+    public DateTime? TerminationDateFrom { get; set; }
+    public DateTime? TerminationDateTo { get; set; }
 
     private bool _establishmentSet;
     private FuzzyDate? _establishment;
@@ -64,67 +116,6 @@ public record Organization : Party
         }
     }
 
-    private List<Tags> tags = new();
-
-    public List<Tags> Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-        }
-    }
-
-    private List<TenantNode> tenantNodes = new();
-
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
-            }
-        }
-    }
-    private List<Tenant> tenants = new();
-
-    public List<Tenant> Tenants {
-        get => tenants;
-        init {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
-    private List<File> files = new();
-
-    public List<File> Files {
-        get => files;
-        init {
-            if (value is not null) {
-                files = value;
-            }
-        }
-    }
-    private List<Location> locations = new();
-
-    public List<Location> Locations {
-        get => locations;
-        init {
-            if (value is not null) {
-                locations = value;
-            }
-        }
-    }
-    private List<Term> terms = new();
-
-    public List<Term> Terms {
-        get => terms;
-        init {
-            if (value is not null) {
-                terms = value;
-            }
-        }
-    }
     private List<OrganizationOrganizationType> organizationOrganizationTypes = new();
 
     public List<OrganizationOrganizationType> OrganizationOrganizationTypes {
@@ -145,27 +136,8 @@ public record Organization : Party
             }
         }
     }
-    private List<CountryListItem> countries = new();
 
-    public List<CountryListItem> Countries {
-        get => countries;
-        init {
-            if (value is not null) {
-                countries = value;
-            }
-        }
-    }
-
-    private List<InterOrganizationalRelation> interOrganizationalRelations = new();
-
-    public List<InterOrganizationalRelation> InterOrganizationalRelations {
-        get => interOrganizationalRelations;
-        init {
-            if (value is not null) {
-                interOrganizationalRelations = value;
-            }
-        }
-    }
+    public List<CompletedNewInterOrganizationalRelation> NewInterOrganizationalRelations { get; } = new();
 
     private List<InterOrganizationalRelationTypeListItem> interOrganizationalRelationTypes = new();
 
@@ -178,49 +150,5 @@ public record Organization : Party
         }
     }
 
-    private List<PersonOrganizationRelation> personOrganizationRelations = new();
-
-    public List<PersonOrganizationRelation> PersonOrganizationRelations {
-        get => personOrganizationRelations;
-        init {
-            if (value is not null) {
-                personOrganizationRelations = value;
-            }
-        }
-    }
-
-    private List<PersonOrganizationRelationTypeListItem> personOrganizationRelationTypes = new();
-
-    public List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes {
-        get => personOrganizationRelationTypes;
-        init {
-            if (value is not null) {
-                personOrganizationRelationTypes = value;
-            }
-        }
-    }
-
-    private List<PartyPoliticalEntityRelation> partyPoliticalEntityRelations = new();
-
-    public List<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations {
-        get => partyPoliticalEntityRelations;
-        init {
-            if (value is not null) {
-                partyPoliticalEntityRelations = value;
-            }
-        }
-    }
-
-    private List<PartyPoliticalEntityRelationTypeListItem> partyPoliticalEntityRelationTypes = new();
-
-    public List<PartyPoliticalEntityRelationTypeListItem> PartyPoliticalEntityRelationTypes {
-        get => partyPoliticalEntityRelationTypes;
-        init {
-            if (value is not null) {
-                partyPoliticalEntityRelationTypes = value;
-            }
-        }
-    }
-
-
+    public abstract IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations { get; }
 }

@@ -5,17 +5,17 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPost, CreateModel.BlogPost>, IEditService<BlogPost>
+internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPost, ExistingBlogPost, NewBlogPost, CreateModel.BlogPost>, IEditService<BlogPost>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost> _createDocumentReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost> _updateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewBlogPost> _createDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingBlogPost> _updateDocumentReaderFactory;
     private readonly IEntityCreator<CreateModel.BlogPost> _blogPostCreator;
 
     public BlogPostEditService(
         IDbConnection connection,
         ITenantRefreshService tenantRefreshService,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost> createDocumentReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost> updateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewBlogPost> createDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingBlogPost> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -67,7 +67,7 @@ internal sealed class BlogPostEditService : SimpleTextNodeEditServiceBase<BlogPo
 
     }
 
-    protected sealed override CreateModel.BlogPost Map(BlogPost item)
+    protected sealed override CreateModel.BlogPost Map(NewBlogPost item)
     {
         var now = DateTime.Now;
         return new CreateModel.BlogPost {

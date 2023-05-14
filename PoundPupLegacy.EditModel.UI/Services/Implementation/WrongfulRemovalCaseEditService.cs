@@ -6,10 +6,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<WrongfulRemovalCase, CreateModel.WrongfulRemovalCase>, IEditService<WrongfulRemovalCase>
+internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<WrongfulRemovalCase, ExistingWrongfulRemovalCase, NewWrongfulRemovalCase, CreateModel.WrongfulRemovalCase>, IEditService<WrongfulRemovalCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulRemovalCase> _createWrongfulRemovalCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulRemovalCase> _wrongfulRemovalCaseUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulRemovalCase> _createWrongfulRemovalCaseReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulRemovalCase> _wrongfulRemovalCaseUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<WrongfulRemovalCaseUpdaterRequest> _wrongfulRemovalCaseUpdaterFactory;
     private readonly IEntityCreator<CreateModel.WrongfulRemovalCase> _wrongfulRemovalCaseCreator;
     private readonly ITextService _textService;
@@ -17,8 +17,8 @@ internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<Wrong
 
     public WrongfulRemovalCaseEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulRemovalCase> createWrongfulRemovalCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulRemovalCase> wrongfulRemovalCaseUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulRemovalCase> createWrongfulRemovalCaseReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulRemovalCase> wrongfulRemovalCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<WrongfulRemovalCaseUpdaterRequest> wrongfulRemovalCaseUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -77,7 +77,7 @@ internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<Wrong
         }
     }
 
-    protected sealed override async Task StoreNew(WrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewWrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
         var createDocument = new CreateModel.WrongfulRemovalCase {
@@ -111,16 +111,16 @@ internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<Wrong
             },
         };
         await _wrongfulRemovalCaseCreator.CreateAsync(createDocument, connection);
-        wrongfulRemovalCase.NodeId = createDocument.Id;
+        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(WrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingWrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
     {
         await using var updater = await _wrongfulRemovalCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new WrongfulRemovalCaseUpdaterRequest {
             Title = wrongfulRemovalCase.Title,
             Description = wrongfulRemovalCase.Description is null ? "": _textService.FormatText(wrongfulRemovalCase.Description),
-            NodeId = wrongfulRemovalCase.NodeId!.Value,
+            NodeId = wrongfulRemovalCase.NodeId,
             Date = wrongfulRemovalCase.Date,
         });
     }

@@ -1,62 +1,29 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(BlogPost))]
-public partial class BlogPostJsonContext : JsonSerializerContext { }
 
-public record BlogPost : SimpleTextNode
+public interface BlogPost: SimpleTextNode
 {
-    public int? NodeId { get; init; }
 
-    public int? UrlId { get; set; }
+}
+public record BlogPostBase: SimpleTextNodeBase, BlogPost
+{
 
-    public required string NodeTypeName { get; set; }
+}
 
-    public required int PublisherId { get; set; }
+[JsonSerializable(typeof(ExistingBlogPost))]
+public partial class ExistingBlogPostJsonContext : JsonSerializerContext { }
 
-    public required int OwnerId { get; set; }
+public record ExistingBlogPost : BlogPostBase, ExistingNode
+{
+    public int NodeId { get; init; }
 
-    public required string Title { get; set; }
+    public int UrlId { get; set; }
 
-    public required string Text { get; set; }
+}
 
-    private List<Tags> tags = new();
+[JsonSerializable(typeof(NewBlogPost))]
+public partial class NewBlogPostJsonContext : JsonSerializerContext { }
 
-    public List<Tags> Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-        }
-    }
-    private List<TenantNode> tenantNodes = new();
-
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
-            }
-        }
-    }
-    private List<Tenant> tenants = new();
-
-    public List<Tenant> Tenants {
-        get => tenants;
-        init {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
-    private List<File> files = new();
-
-    public required List<File> Files {
-        get => files;
-        init {
-            if (value is not null) {
-                files = value;
-            }
-        }
-    }
+public record NewBlogPost : BlogPostBase, NewNode
+{
 }

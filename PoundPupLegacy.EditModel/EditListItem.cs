@@ -1,8 +1,11 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public interface EditListItem
+public interface Named {
+    public string Name { get; }
+
+}
+public interface EditListItem: Named
 {
     public int? Id { get; }
 
-    public string Name { get; }
 }

@@ -2,8 +2,10 @@
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal abstract class PartyEditServiceBase<T, TCreate> : NodeEditServiceBase<T, TCreate>
-    where T : Party
+internal abstract class PartyEditServiceBase<TEntity, TExisting, TNew, TCreate> : NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
+    where TEntity : class, Party
+    where TExisting: TEntity, ExistingNode
+    where TNew : TEntity, NewNode
     where TCreate : CreateModel.Party
 {
     protected readonly ITextService _textService;

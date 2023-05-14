@@ -5,17 +5,17 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Discussion, CreateModel.Discussion>, IEditService<Discussion>
+internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Discussion, ExistingDiscussion, NewDiscussion, CreateModel.Discussion>, IEditService<Discussion>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion> _createDocumentReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion> _updateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDiscussion> _createDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDiscussion> _updateDocumentReaderFactory;
     private readonly IEntityCreator<CreateModel.Discussion> _discussionCreator;
 
     public DiscussionEditService(
         IDbConnection connection,
         ITenantRefreshService tenantRefreshService,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion> createDocumentReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion> updateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDiscussion> createDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDiscussion> updateDocumentReaderFactory,
         IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -67,7 +67,7 @@ internal sealed class DiscussionEditService : SimpleTextNodeEditServiceBase<Disc
 
     }
 
-    protected sealed override CreateModel.Discussion Map(Discussion item)
+    protected sealed override CreateModel.Discussion Map(NewDiscussion item)
     {
         var now = DateTime.Now;
         return new CreateModel.Discussion {

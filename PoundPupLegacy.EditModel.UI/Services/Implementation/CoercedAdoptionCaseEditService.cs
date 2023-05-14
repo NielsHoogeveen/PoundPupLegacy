@@ -6,10 +6,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<CoercedAdoptionCase, CreateModel.CoercedAdoptionCase>, IEditService<CoercedAdoptionCase>
+internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<CoercedAdoptionCase, ExistingCoercedAdoptionCase, NewCoercedAdoptionCase, CreateModel.CoercedAdoptionCase>, IEditService<CoercedAdoptionCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, CoercedAdoptionCase> _createCoercedAdoptionCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, CoercedAdoptionCase> _coercedAdoptionCaseUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewCoercedAdoptionCase> _createCoercedAdoptionCaseReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingCoercedAdoptionCase> _coercedAdoptionCaseUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<CoercedAdoptionCaseUpdaterRequest> _coercedAdoptionCaseUpdaterFactory;
     private readonly IEntityCreator<CreateModel.CoercedAdoptionCase> _coercedAdoptionCaseCreator;
     private readonly ITextService _textService;
@@ -17,8 +17,8 @@ internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<Coerc
 
     public CoercedAdoptionCaseEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, CoercedAdoptionCase> createCoercedAdoptionCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, CoercedAdoptionCase> coercedAdoptionCaseUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewCoercedAdoptionCase> createCoercedAdoptionCaseReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingCoercedAdoptionCase> coercedAdoptionCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<CoercedAdoptionCaseUpdaterRequest> coercedAdoptionCaseUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -77,7 +77,7 @@ internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<Coerc
         }
     }
 
-    protected sealed override async Task StoreNew(CoercedAdoptionCase coercedAdoptionCase, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewCoercedAdoptionCase coercedAdoptionCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
         var createDocument = new CreateModel.CoercedAdoptionCase {
@@ -111,16 +111,16 @@ internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<Coerc
             },
         };
         await _coercedAdoptionCaseCreator.CreateAsync(createDocument, connection);
-        coercedAdoptionCase.NodeId = createDocument.Id;
+        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(CoercedAdoptionCase coercedAdoptionCase, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingCoercedAdoptionCase coercedAdoptionCase, NpgsqlConnection connection)
     {
         await using var updater = await _coercedAdoptionCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new CoercedAdoptionCaseUpdaterRequest {
             Title = coercedAdoptionCase.Title,
             Description = coercedAdoptionCase.Description is null ? "": _textService.FormatText(coercedAdoptionCase.Description),
-            NodeId = coercedAdoptionCase.NodeId!.Value,
+            NodeId = coercedAdoptionCase.NodeId,
             Date = coercedAdoptionCase.Date,
         });
     }

@@ -6,10 +6,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class DocumentEditService : NodeEditServiceBase<Document, CreateModel.Document>, IEditService<Document>
+internal sealed class DocumentEditService : NodeEditServiceBase<Document, ExistingDocument, NewDocument, CreateModel.Document>, IEditService<Document>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Document> _createDocumentReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document> _documentUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDocument> _createDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDocument> _documentUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<DocumentUpdaterRequest> _documentUpdaterFactory;
     private readonly IEntityCreator<CreateModel.Document> _documentCreator;
     private readonly ITextService _textService;
@@ -17,8 +17,8 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
 
     public DocumentEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Document> createDocumentReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document> documentUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDocument> createDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDocument> documentUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<DocumentUpdaterRequest> documentUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -77,7 +77,7 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
         }
     }
 
-    protected sealed override async Task StoreNew(Document document, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewDocument document, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
         var createDocument = new CreateModel.Document {
@@ -106,17 +106,17 @@ internal sealed class DocumentEditService : NodeEditServiceBase<Document, Create
             SourceUrl = document.SourceUrl,
         };
         await _documentCreator.CreateAsync(createDocument, connection);
-        document.NodeId = createDocument.Id;
+        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(Document document, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingDocument document, NpgsqlConnection connection)
     {
         await using var updater = await _documentUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new DocumentUpdaterRequest {
             Title = document.Title,
             Text = _textService.FormatText(document.Text),
             Teaser = _textService.FormatTeaser(document.Text),
-            NodeId = document.NodeId!.Value,
+            NodeId = document.NodeId,
             SourceUrl = document.SourceUrl,
             DocumentTypeId = document.DocumentTypeId,
             Published = document.Published,

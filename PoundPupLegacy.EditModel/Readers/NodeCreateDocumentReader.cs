@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
 public abstract class NodeCreateDocumentReaderFactory<TResponse> : NodeEditDocumentReaderFactory<NodeCreateDocumentRequest, TResponse>
-where TResponse : class, Node
+where TResponse : class, NewNode
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };

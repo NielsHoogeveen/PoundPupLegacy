@@ -6,10 +6,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<ChildTraffickingCase, CreateModel.ChildTraffickingCase>, IEditService<ChildTraffickingCase>
+internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<ChildTraffickingCase, ExistingChildTraffickingCase, NewChildTraffickingCase, CreateModel.ChildTraffickingCase>, IEditService<ChildTraffickingCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, ChildTraffickingCase> _createChildTraffickingCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ChildTraffickingCase> _childTraffickingCaseUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewChildTraffickingCase> _createChildTraffickingCaseReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingChildTraffickingCase> _childTraffickingCaseUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<ChildTraffickingCaseUpdaterRequest> _childTraffickingCaseUpdaterFactory;
     private readonly IEntityCreator<CreateModel.ChildTraffickingCase> _childTraffickingCaseCreator;
     private readonly ITextService _textService;
@@ -17,8 +17,8 @@ internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<Chil
 
     public ChildTraffickingCaseEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, ChildTraffickingCase> createChildTraffickingCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ChildTraffickingCase> childTraffickingCaseUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewChildTraffickingCase> createChildTraffickingCaseReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingChildTraffickingCase> childTraffickingCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<ChildTraffickingCaseUpdaterRequest> childTraffickingCaseUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -77,7 +77,7 @@ internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<Chil
         }
     }
 
-    protected sealed override async Task StoreNew(ChildTraffickingCase childTraffickingCase, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewChildTraffickingCase childTraffickingCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
         var createDocument = new CreateModel.ChildTraffickingCase {
@@ -113,16 +113,16 @@ internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<Chil
             CountryIdFrom = childTraffickingCase.CountryIdFrom
         };
         await _childTraffickingCaseCreator.CreateAsync(createDocument, connection);
-        childTraffickingCase.NodeId = createDocument.Id;
+        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(ChildTraffickingCase childTraffickingCase, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingChildTraffickingCase childTraffickingCase, NpgsqlConnection connection)
     {
         await using var updater = await _childTraffickingCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new ChildTraffickingCaseUpdaterRequest {
             Title = childTraffickingCase.Title,
             Description = childTraffickingCase.Description is null ? "": _textService.FormatText(childTraffickingCase.Description),
-            NodeId = childTraffickingCase.NodeId!.Value,
+            NodeId = childTraffickingCase.NodeId,
             Date = childTraffickingCase.Date,
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,
             CountryIdFrom = childTraffickingCase.CountryIdFrom

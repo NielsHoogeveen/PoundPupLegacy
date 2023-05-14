@@ -1,62 +1,29 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(Discussion))]
-public partial class DiscussionJsonContext : JsonSerializerContext { }
 
-public record Discussion : SimpleTextNode
+public interface Discussion : SimpleTextNode
 {
-    public int? NodeId { get; init; }
 
-    public int? UrlId { get; set; }
-    public required string NodeTypeName { get; set; }
+}
+public record DiscussionBase : SimpleTextNodeBase, Discussion
+{
 
-    public required string Title { get; set; }
+}
 
-    public required string Text { get; set; }
+[JsonSerializable(typeof(ExistingDiscussion))]
+public partial class ExistingDiscussionJsonContext : JsonSerializerContext { }
 
-    public required int PublisherId { get; set; }
+public record ExistingDiscussion : DiscussionBase, ExistingNode
+{
+    public int NodeId { get; init; }
 
-    public required int OwnerId { get; set; }
+    public int UrlId { get; set; }
 
-    private List<Tags> tags = new();
+}
 
-    public List<Tags> Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-        }
-    }
-    private List<TenantNode> tenantNodes = new();
+[JsonSerializable(typeof(NewDiscussion))]
+public partial class NewDiscussionJsonContext : JsonSerializerContext { }
 
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
-            }
-        }
-    }
-    private List<Tenant> tenants = new();
-
-    public List<Tenant> Tenants {
-        get => tenants;
-        init {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
-    private List<File> files = new();
-
-    public required List<File> Files {
-        get => files;
-        init {
-            if (value is not null) {
-                files = value;
-            }
-        }
-    }
-
+public record NewDiscussion : DiscussionBase, NewNode
+{
 }

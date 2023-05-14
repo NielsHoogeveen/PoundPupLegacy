@@ -1,77 +1,61 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(InterOrganizationalRelation))]
-public partial class InterOrganizationalRelationJsonContext : JsonSerializerContext { }
 
-public record InterOrganizationalRelation : Node
+public interface InterOrganizationalRelation : Node
 {
-    public int? NodeId { get; init; } 
+    string Description { get; set; }
+    InterOrganizationalRelationTypeListItem InterOrganizationalRelationType { get; }
+    DateTime? DateFrom { get; set; }
+    DateTime? DateTo { get; set; }
+    DateTimeRange DateRange { get; }
+    DocumentListItem? ProofDocument { get; set; }
+    decimal? MoneyInvolved { get; set; }
+    int? NumberOfChildrenInvolved { get; set; }
+    GeographicalEntityListItem? GeographicalEntity { get; set; }
+    bool HasBeenDeleted { get; set; }
+    string OrganizationFromName { get; }
+    string OrganizationToName { get; }
+    public OrganizationItem? OrganizationItemFrom { get; }
+    public OrganizationItem? OrganizationItemTo { get; }
+}
 
-    public int? UrlId { get; set; }
+public interface InterOrganizationalRelation<TFrom, TTo> : InterOrganizationalRelation
+    where TFrom : class?, OrganizationItem?
+    where TTo : class?, OrganizationItem?
+{
 
-    public required bool HasBeenStored { get; init; }
-    public bool HasBeenDeleted { get; set; }
+    TFrom OrganizationFrom { get; }
+    TTo OrganizationTo { get; }
 
-    public required string NodeTypeName { get; set; }
+}
 
-    public required int PublisherId { get; set; }
+public interface CompletedInterOrganizationalRelation: InterOrganizationalRelation
+{
 
-    public required int OwnerId { get; set; }
+}
+public interface CompletedInterOrganizationalRelation<TFrom, TTo>: InterOrganizationalRelation<TFrom, TTo>, CompletedInterOrganizationalRelation
+    where TFrom: class, OrganizationItem
+    where TTo : class, OrganizationItem
+{
+}
 
-    public required string Title { get; set; }
+public interface NewInterOrganizationalRelation: InterOrganizationalRelation, NewNode
+{
 
+}
+public interface CompletedNewInterOrganizationalRelation : NewInterOrganizationalRelation, CompletedInterOrganizationalRelation
+{
+}
+public interface ResolvedInterOrganizationalRelation : CompletedInterOrganizationalRelation
+{
+}
+
+public abstract record InterOrganizationalRelationBase : NodeBase, InterOrganizationalRelation
+{
     public required string Description { get; set; }
-
-    private List<Tags> tags = new();
-
-    public List<Tags> Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-        }
-    }
-    private List<TenantNode> tenantNodes = new();
-
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
-            }
-        }
-    }
-    private List<Tenant> tenants = new();
-
-    public List<Tenant> Tenants {
-        get => tenants;
-        init {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
-    private List<File> files = new();
-
-    public required List<File> Files {
-        get => files;
-        init {
-            if (value is not null) {
-                files = value;
-            }
-        }
-    }
-
     public required InterOrganizationalRelationTypeListItem InterOrganizationalRelationType { get; set; }
-
-    public required OrganizationListItem? OrganizationFrom { get; set; }
-
-    public required OrganizationListItem? OrganizationTo { get; set; }
-
     public required DateTime? DateFrom { get; set; }
     public required DateTime? DateTo { get; set; }
-
     public DateTimeRange DateRange {
         get => new DateTimeRange(DateFrom, DateTo);
     }
@@ -79,5 +63,94 @@ public record InterOrganizationalRelation : Node
     public decimal? MoneyInvolved { get; set; }
     public int? NumberOfChildrenInvolved { get; set; }
     public required GeographicalEntityListItem? GeographicalEntity { get; set; }
+    public bool HasBeenDeleted { get; set; }
+    public abstract string OrganizationFromName { get; }
+    public abstract string OrganizationToName { get; }
+    public abstract OrganizationItem? OrganizationItemFrom { get; }
+    public abstract OrganizationItem? OrganizationItemTo { get; }
+}
 
+[JsonSerializable(typeof(ExistingInterOrganizationalRelation))]
+public partial class ExistingInterOrganizationalRelationJsonContext : JsonSerializerContext { }
+
+public record ExistingInterOrganizationalRelation : InterOrganizationalRelationBase, CompletedInterOrganizationalRelation<OrganizationListItem, OrganizationListItem>, ExistingNode, ResolvedInterOrganizationalRelation
+{
+    public required OrganizationListItem OrganizationFrom { get; set; }
+    public required OrganizationListItem OrganizationTo { get; set; }
+    public int NodeId { get; init; } 
+    public int UrlId { get; set; }
+    [JsonIgnore]
+    public override string OrganizationFromName => OrganizationFrom.Name;
+    [JsonIgnore]
+    public override string OrganizationToName => OrganizationTo.Name;
+    [JsonIgnore]
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    [JsonIgnore]
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+}
+
+public record NewInterOrganizationalExistingRelation : InterOrganizationalRelationBase, CompletedInterOrganizationalRelation<OrganizationListItem, OrganizationListItem>, ResolvedInterOrganizationalRelation
+{
+    public required OrganizationListItem OrganizationFrom { get; set; }
+    public required OrganizationListItem OrganizationTo { get; set; }
+    public override string OrganizationFromName => OrganizationFrom.Name;
+    public override string OrganizationToName => OrganizationTo.Name;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+}
+
+public record NewInterOrganizationalExistingFromRelation : InterOrganizationalRelationBase, InterOrganizationalRelation<OrganizationListItem, OrganizationListItem?>, NewInterOrganizationalRelation
+{
+    public required OrganizationListItem OrganizationFrom { get; set; }
+    public required OrganizationListItem? OrganizationTo { get; set; }
+    public override string OrganizationFromName => OrganizationFrom.Name;
+    public override string OrganizationToName => OrganizationTo is null ? "" : OrganizationTo.Name;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+}
+public record NewInterOrganizationalExistingToRelation : InterOrganizationalRelationBase, InterOrganizationalRelation<OrganizationListItem?, OrganizationListItem>, NewInterOrganizationalRelation
+{
+    public required OrganizationListItem? OrganizationFrom { get; set; }
+    public required OrganizationListItem OrganizationTo { get; set; }
+    public override string OrganizationFromName => OrganizationFrom is null ? "" : OrganizationFrom.Name;
+    public override string OrganizationToName => OrganizationTo.Name;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+}
+
+public record CompletedNewInterOrganizationalNewFromRelation : InterOrganizationalRelationBase, CompletedInterOrganizationalRelation<OrganizationName, OrganizationListItem>, CompletedNewInterOrganizationalRelation
+{
+    public required OrganizationName OrganizationFrom { get; set; }
+    public required OrganizationListItem OrganizationTo { get; set; }
+    public override string OrganizationFromName => OrganizationFrom.Name;
+    public override string OrganizationToName => OrganizationTo.Name;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+}
+public record NewInterOrganizationalNewFromRelation : InterOrganizationalRelationBase, InterOrganizationalRelation<OrganizationName, OrganizationListItem?>, NewInterOrganizationalRelation
+{
+    public required OrganizationName OrganizationFrom { get; set; }
+    public required OrganizationListItem? OrganizationTo { get; set; }
+    public override string OrganizationFromName => OrganizationFrom.Name;
+    public override string OrganizationToName => OrganizationTo is null? "": OrganizationTo.Name;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+}
+public record CompletedNewInterOrganizationalNewToRelation : InterOrganizationalRelationBase, CompletedInterOrganizationalRelation<OrganizationListItem, OrganizationName>, CompletedNewInterOrganizationalRelation
+{
+    public required OrganizationListItem OrganizationFrom { get; set; }
+    public required OrganizationName OrganizationTo { get; set; }
+    public override string OrganizationFromName => OrganizationFrom.Name;
+    public override string OrganizationToName => OrganizationTo.Name;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+}
+public record NewInterOrganizationalNewToRelation : InterOrganizationalRelationBase, InterOrganizationalRelation<OrganizationListItem?, OrganizationName>, NewInterOrganizationalRelation
+{
+    public required OrganizationListItem? OrganizationFrom { get; set; }
+    public required OrganizationName OrganizationTo { get; set; }
+    public override string OrganizationFromName => OrganizationFrom is null ? "" : OrganizationFrom.Name;
+    public override string OrganizationToName => OrganizationTo.Name;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
 }

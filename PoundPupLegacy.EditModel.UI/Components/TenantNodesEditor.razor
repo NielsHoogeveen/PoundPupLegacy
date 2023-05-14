@@ -1,5 +1,4 @@
-﻿
-@inherits ViewerBase
+﻿@inherits ViewerBase
 @inject NavigationManager navigationManager;
 
 @if (Node is not null)
@@ -92,33 +91,38 @@
     [EditorRequired]
     public Node? Node { get; set; }
 
+    private int? NodeId => Node switch {
+        ExistingNode n => n.NodeId,
+        _ => null
+    };
+
     protected override async Task OnInitializedAsync()
     {
         await Task.CompletedTask;
         if (Node is not null)
         {
-            if (Node.NodeId is not null)
-            {
-                foreach (var tenant in Node!.Tenants)
-                {
-                    var tenantNode = Node.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
-                    tenant.TenantNode = tenantNode;
-                }
-            }
-            else {
-                var tenant = Node.Tenants.First(x => x.Id == TenantId );
-                tenant.TenantNode = new TenantNode {
-                        Id = null,
-                        TenantId = TenantId,
-                        HasBeenDeleted = false,
-                        NodeId = Node.NodeId,
-                        UrlId = Node.NodeId,
-                        PublicationStatusId = tenant.PublicationStatusIdDefault,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        CanBeUnchecked = false,
-                        HasBeenStored = false
-                    };
+            switch (Node) {
+                case NewNode n:
+                    foreach (var tenant in n.Tenants) {
+                        var tenantNode = n.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+                        tenant.TenantNode = tenantNode;
+                    }
+                    break;
+                case ExistingNode e:
+                    var t = Node.Tenants.First(x => x.Id == TenantId);
+                    t.TenantNode = new TenantNode {
+                            Id = null,
+                            TenantId = TenantId,
+                            HasBeenDeleted = false,
+                            NodeId = e.NodeId,
+                            UrlId = e.NodeId,
+                            PublicationStatusId = t.PublicationStatusIdDefault,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            CanBeUnchecked = false,
+                            HasBeenStored = false
+                        };
+                    break;
             }
         }
     }
@@ -149,18 +153,20 @@
                 tenant.TenantNode.HasBeenDeleted = false;
             }
             else {
-                tenant.TenantNode = new TenantNode {
-                    Id = null,
-                    TenantId = tenantId,
-                    HasBeenDeleted = false,
-                    NodeId = Node.NodeId,
-                    UrlId = Node.NodeId,
-                    PublicationStatusId = tenant.PublicationStatusIdDefault,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    CanBeUnchecked = true,
-                    HasBeenStored = false
-                };
+
+                tenant.TenantNode = new TenantNode
+                    {
+                        Id = null,
+                        TenantId = tenantId,
+                        HasBeenDeleted = false,
+                        NodeId = NodeId,
+                        UrlId = NodeId,
+                        PublicationStatusId = tenant.PublicationStatusIdDefault,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        CanBeUnchecked = true,
+                        HasBeenStored = false
+                    };
             }
             StateHasChanged();
         }

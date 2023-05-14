@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
 public abstract class SimpleTextNodeUpdateDocumentReaderFactory<TResponse> : NodeUpdateDocumentReaderFactory<TResponse>
-where TResponse : class, SimpleTextNode
+where TResponse : class, SimpleTextNode, ExistingNode
 {
     public override string Sql => SQL;
     protected const string SQL = $"""

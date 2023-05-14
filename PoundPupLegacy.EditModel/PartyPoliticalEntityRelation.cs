@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(PartyPoliticalEntityRelation))]
 public partial class PartyPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
-public record PartyPoliticalEntityRelation : Node
+public record PartyPoliticalEntityRelation : DeprecatedNode
 {
     public int? NodeId { get; init; }
 

@@ -31,9 +31,11 @@ public static class DependencyInjection
         services.AddTransient<IEditService<FathersRightsViolationCase>, FathersRightsViolationCaseEditService>();
         services.AddTransient<IEditService<Organization>, OrganizationEditService>();
         services.AddTransient<IEditService<Person>, PersonEditService>();
-        
+        services.AddTransient<IEditService<WrongfulMedicationCase>, WrongfulMedicationCaseEditService>();
+        services.AddTransient<IEditService<WrongfulRemovalCase>, WrongfulRemovalCaseEditService>();
+
         services.AddTransient<ILocationService, LocationService>();
-        services.AddTransient<ISaveService<IEnumerable<InterOrganizationalRelation>>, InterOrganizationalRelationSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelation>>, InterOrganizationalRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<InterPersonalRelation>>, InterPersonalRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<PartyPoliticalEntityRelation>>, PartyPoliticalEntityRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<PersonOrganizationRelation>>, PersonOrganizationRelationSaveService>();
@@ -49,7 +51,5 @@ public static class DependencyInjection
         services.AddTransient<ISearchService<PersonListItem>, PersonSearchService>();
         services.AddTransient<ISearchService<PoliticalEntityListItem>, PoliticalEntitySearchService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();
-        services.AddTransient<IEditService<WrongfulMedicationCase>, WrongfulMedicationCaseEditService>();
-        services.AddTransient<IEditService<WrongfulRemovalCase>, WrongfulRemovalCaseEditService>();
     }
 }

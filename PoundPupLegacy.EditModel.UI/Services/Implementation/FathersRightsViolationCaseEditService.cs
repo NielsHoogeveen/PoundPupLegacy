@@ -6,10 +6,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBase<FathersRightsViolationCase, CreateModel.FathersRightsViolationCase>, IEditService<FathersRightsViolationCase>
+internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBase<FathersRightsViolationCase, ExistingFathersRightsViolationCase, NewFathersRightsViolationCase, CreateModel.FathersRightsViolationCase>, IEditService<FathersRightsViolationCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, FathersRightsViolationCase> _createFathersRightsViolationCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, FathersRightsViolationCase> _fathersRightsViolationCaseUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewFathersRightsViolationCase> _createFathersRightsViolationCaseReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingFathersRightsViolationCase> _fathersRightsViolationCaseUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<FathersRightsViolationCaseUpdaterRequest> _fathersRightsViolationCaseUpdaterFactory;
     private readonly IEntityCreator<CreateModel.FathersRightsViolationCase> _fathersRightsViolationCaseCreator;
     private readonly ITextService _textService;
@@ -17,8 +17,8 @@ internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBas
 
     public FathersRightsViolationCaseEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, FathersRightsViolationCase> createFathersRightsViolationCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, FathersRightsViolationCase> fathersRightsViolationCaseUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewFathersRightsViolationCase> createFathersRightsViolationCaseReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingFathersRightsViolationCase> fathersRightsViolationCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<FathersRightsViolationCaseUpdaterRequest> fathersRightsViolationCaseUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -77,7 +77,7 @@ internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBas
         }
     }
 
-    protected sealed override async Task StoreNew(FathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewFathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
         var createDocument = new CreateModel.FathersRightsViolationCase {
@@ -111,16 +111,16 @@ internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBas
             },
         };
         await _fathersRightsViolationCaseCreator.CreateAsync(createDocument, connection);
-        fathersRightsViolationCase.NodeId = createDocument.Id;
+        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(FathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingFathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
     {
         await using var updater = await _fathersRightsViolationCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new FathersRightsViolationCaseUpdaterRequest {
             Title = fathersRightsViolationCase.Title,
             Description = fathersRightsViolationCase.Description is null ? "": _textService.FormatText(fathersRightsViolationCase.Description),
-            NodeId = fathersRightsViolationCase.NodeId!.Value,
+            NodeId = fathersRightsViolationCase.NodeId,
             Date = fathersRightsViolationCase.Date,
         });
     }

@@ -19,30 +19,14 @@
     [EditorRequired]
     public Person Model { get; set; } = default!;
 
+    private int? NodeId => Model switch {
+        ExistingNode n => n.NodeId,
+        _ => null
+    };
+
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
-        foreach (var relation in Model.InterPersonalRelations) {
-            Debug.Assert(relation.PersonFrom is not null);
-            Debug.Assert(relation.PersonTo is not null);
-            Debug.Assert(relation.PersonFrom.Id.HasValue && relation.PersonFrom.Id != Model.NodeId || relation.PersonTo.Id.HasValue && relation.PersonTo.Id != Model.NodeId);
-            Debug.Assert(Model.NodeId.HasValue && (relation.PersonFrom.Id.HasValue && relation.PersonFrom.Id.Value == Model.NodeId.Value || relation.PersonTo.Id.HasValue && relation.PersonTo.Id == Model.NodeId));
-            Debug.Assert(!Model.NodeId.HasValue && (!relation.PersonFrom.Id.HasValue || !relation.PersonTo.Id.HasValue));
-        }
-        foreach (var relation in Model.PersonOrganizationRelations) {
-            Debug.Assert(relation.Person is not null);
-            Debug.Assert(relation.Organization is not null);
-            Debug.Assert(relation.Organization.Id.HasValue);
-            Debug.Assert(Model.NodeId.HasValue && relation.Person.Id.HasValue);
-            Debug.Assert(!Model.NodeId.HasValue && !relation.Person.Id.HasValue);
-        }
-        foreach (var relation in Model.PartyPoliticalEntityRelations) {
-            Debug.Assert(relation.Party is not null);
-            Debug.Assert(relation.PoliticalEntity is not null);
-            Debug.Assert(relation.PoliticalEntity.Id.HasValue);
-            Debug.Assert(Model.NodeId.HasValue && relation.Party.Id.HasValue);
-            Debug.Assert(!Model.NodeId.HasValue && !relation.Party.Id.HasValue);
-        }
     }
 
     public override void OnTitleChange(string title)
@@ -56,7 +40,7 @@
         foreach (var relation in Model.InterPersonalRelations) {
             if (relation.PersonFrom is not null) {
                 if (relation.PersonFrom.Id.HasValue) {
-                    if (relation.PersonFrom.Id == Model.NodeId) {
+                    if (relation.PersonFrom.Id == NodeId) {
                         relation.PersonFrom.Name = title;
                     }
                 }
@@ -66,7 +50,7 @@
             }
             if (relation.PersonTo is not null) {
                 if (relation.PersonTo.Id.HasValue) {
-                    if (relation.PersonTo.Id == Model.NodeId) {
+                    if (relation.PersonTo.Id == NodeId) {
                         relation.PersonTo.Name = title;
                     }
                 }
@@ -80,7 +64,7 @@
     }
 
     private PersonListItem Person => new PersonListItem {
-        Id = Model.NodeId,
+        Id = NodeId,
         Name = Model.Title
     };
 }

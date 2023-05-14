@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocumentReaderFactory<Organization>
+internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocumentReaderFactory<NewOrganization>
 {
     public override string Sql => SQL;
 

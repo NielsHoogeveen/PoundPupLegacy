@@ -3,8 +3,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal abstract class NodeEditServiceBase<T, TCreate>
-    where T : Node
+internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
+    where TEntity: class, Node
+    where TExisting : ExistingNode, TEntity
+    where TNew : NewNode, TEntity
     where TCreate : CreateModel.Node
 {
     protected readonly NpgsqlConnection _connection;
@@ -15,6 +17,7 @@ internal abstract class NodeEditServiceBase<T, TCreate>
 
     public NodeEditServiceBase(
         IDbConnection connection,
+
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
@@ -30,44 +33,48 @@ internal abstract class NodeEditServiceBase<T, TCreate>
         _filesSaveService = filesSaveService;
         _tenantRefreshService = tenantRefreshService;
     }
-    protected abstract Task StoreExisting(T node, NpgsqlConnection connection);
-    protected abstract Task StoreNew(T node, NpgsqlConnection connection);
-    protected virtual async Task StoreAdditional(T node)
+    protected abstract Task StoreExisting(TExisting node, NpgsqlConnection connection);
+    protected abstract Task<int> StoreNew(TNew node, NpgsqlConnection connection);
+    protected virtual async Task StoreAdditional(TEntity node, int nodeId)
     {
         await _tagSaveService.SaveAsync(node.Tags.SelectMany(x => x.Entries), _connection);
         await _tenantNodesSaveService.SaveAsync(node.TenantNodes, _connection);
         await _filesSaveService.SaveAsync(node.Files, _connection);
     }
 
-    public virtual async Task SaveAsync(T node)
+    public async Task<int> SaveAsync(TEntity node)
+    {
+       return await (node switch {
+            TNew n => SaveAsync(n),
+            TExisting e => SaveAsync(e),
+            _ => throw new Exception("Cannot reach")
+        });
+    }
+
+    protected virtual async Task<int> SaveAsync(TNew node)
     {
         try {
             await _connection.OpenAsync();
             await using var tx = await _connection.BeginTransactionAsync();
             try {
-                if (node.NodeId is null) {
-                    await StoreNew(node, _connection);
-                    node.UrlId = node.NodeId;
-                    foreach (var tagNodeType in node.Tags) {
-                        foreach (var tag in tagNodeType.Entries) {
-                            tag.NodeId = node.NodeId;
-                        }
-                    }
-                    foreach(var tenantNode in node.TenantNodes) {
-                        tenantNode.NodeId = node.NodeId;
-                    }
-                    foreach(var file in node.Files) {
-                        file.NodeId = node.NodeId;
+                var id = await StoreNew(node, _connection);
+                foreach (var tagNodeType in node.Tags) {
+                    foreach (var tag in tagNodeType.Entries) {
+                        tag.NodeId = id;
                     }
                 }
-                else {
-                    await StoreExisting(node, _connection);
+                foreach (var tenantNode in node.TenantNodes) {
+                    tenantNode.NodeId = id;
                 }
-                await StoreAdditional(node);
+                foreach (var file in node.Files) {
+                    file.NodeId = id;
+                }
+                await StoreAdditional(node, id);
                 await tx.CommitAsync();
                 if (node.TenantNodes.Any(x => x.UrlPath is not null)) {
                     await _tenantRefreshService.Refresh();
                 }
+                return id;
             }
             catch (Exception ex) {
                 await tx.RollbackAsync();
@@ -81,5 +88,29 @@ internal abstract class NodeEditServiceBase<T, TCreate>
         }
 
     }
-
+    protected virtual async Task<int> SaveAsync(TExisting node)
+    {
+        try {
+            await _connection.OpenAsync();
+            await using var tx = await _connection.BeginTransactionAsync();
+            try {
+                await StoreExisting(node, _connection);
+                await StoreAdditional(node, node.NodeId);
+                await tx.CommitAsync();
+                if (node.TenantNodes.Any(x => x.UrlPath is not null)) {
+                    await _tenantRefreshService.Refresh();
+                }
+                return node.UrlId;
+            }
+            catch (Exception ex) {
+                await tx.RollbackAsync();
+                throw;
+            }
+        }
+        finally {
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
+            }
+        }
+    }
 }

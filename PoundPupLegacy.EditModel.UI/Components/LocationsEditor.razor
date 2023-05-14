@@ -45,6 +45,11 @@
 
     private Location? locationToEdit = null;
 
+    private int? NodeId => Locatable switch {
+        ExistingNode n => n.NodeId,
+        _ => null
+    };
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -54,7 +59,7 @@
         (var countryId, var countryName) = DefaultCountryService.GetDefaultCountry(TenantId);
         locationToEdit = new Location {
             LocationId = null,
-            LocatableId = Locatable.NodeId,
+            LocatableId = NodeId,
             Street = null,
             Addition = null,
             PostalCode = null,  

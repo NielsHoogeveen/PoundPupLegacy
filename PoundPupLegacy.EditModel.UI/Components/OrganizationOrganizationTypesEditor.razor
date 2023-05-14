@@ -29,6 +29,11 @@
     [EditorRequired]
     public Organization Model { get; set; } = default!;
 
+    private int? NodeId => Model switch {
+        ExistingNode n => n.NodeId,
+        _ => null
+    };
+
     private OrganizationType? SelectedOrganizationType;
 
     private List<OrganizationType> OrganizationTypes => Model.OrganizationTypes.Where(x => !Model.OrganizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(x.Id)).ToList();
@@ -62,7 +67,7 @@
             {
                 Model.OrganizationOrganizationTypes.Add(new OrganizationOrganizationType()
                     {
-                        OrganizationId = Model.NodeId,
+                        OrganizationId = NodeId,
                         OrganizationTypeId = SelectedOrganizationType.Id,
                         Name = SelectedOrganizationType.Name,
                         HasBeenDeleted = false,

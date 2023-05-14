@@ -1,27 +1,43 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace PoundPupLegacy.EditModel;
 
-namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(Document))]
-public partial class DocumentJsonContext : JsonSerializerContext { }
-
-public record Document : SimpleTextNode
+public interface Document: SimpleTextNode
 {
-    public int? NodeId { get; set; }
+    string? SourceUrl { get; set; }
 
-    public int? UrlId { get; set; }
+    int DocumentTypeId { get; set; }
 
-    public required string NodeTypeName { get; set; }
+    DateTime? PublicationDateFrom { get; set; }
 
-    public required string Title { get; set; }
+    DateTime? PublicationDateTo { get; set; }
 
-    public required int PublisherId { get; set; }
+    public FuzzyDate? Published { get; set; }
 
-    public required int OwnerId { get; set; }
+    DocumentType[] DocumentTypes { get; }
+}
+
+
+[JsonSerializable(typeof(ExistingDocument))]
+public partial class ExistingDocumentJsonContext : JsonSerializerContext { }
+
+public record ExistingDocument: DocumentBase, ExistingNode
+{
+    public int NodeId { get; set; }
+
+    public int UrlId { get; set; }
+
+}
+[JsonSerializable(typeof(NewDocument))]
+public partial class NewDocumentJsonContext : JsonSerializerContext { }
+
+public record NewDocument : DocumentBase, NewNode
+{
+}
+
+public record DocumentBase : SimpleTextNodeBase, Document
+{
 
     public string? SourceUrl { get; set; }
-
-    public required string Text { get; set; }
 
     public int DocumentTypeId { get; set; }
 
@@ -55,46 +71,5 @@ public record Document : SimpleTextNode
     }
 
     public required DocumentType[] DocumentTypes { get; init; }
-
-    private List<Tags> tags = new();
-
-    public List<Tags> Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-        }
-    }
-    private List<TenantNode> tenantNodes = new();
-
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
-            }
-        }
-    }
-    private List<Tenant> tenants = new();
-
-    public List<Tenant> Tenants {
-        get => tenants;
-        init {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
-    private List<File> files = new();
-
-    public List<File> Files {
-        get => files;
-        init {
-            if (value is not null) {
-                files = value;
-            }
-        }
-    }
 
 }

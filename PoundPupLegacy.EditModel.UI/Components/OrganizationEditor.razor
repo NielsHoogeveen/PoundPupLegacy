@@ -19,7 +19,7 @@
 </div>
 <OrganizationOrganizationTypesEditor Model="Model" />
 <InterOrganizationalRelationsEditor 
-    Relations="Model.InterOrganizationalRelations" 
+    Relations="Model.InterOrganizationalRelations.ToList()" 
     RelationTypes="Model.InterOrganizationalRelationTypes" 
     Organization="Organization"/>
 <PartyPoliticalEntityRelationsEditor 
@@ -38,34 +38,14 @@
     [EditorRequired]
     public Organization Model { get; set; } = default!;
 
+    private int? NodeId => Model switch {
+        ExistingNode n => n.NodeId,
+        _ => null
+    };
+
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
-        //No double organization types
-        Debug.Assert(Model.OrganizationOrganizationTypes.Select(x => x.OrganizationId).Count() == Model.OrganizationOrganizationTypes.Select(x => x.OrganizationId).Distinct().Count());
-        foreach(var relation in Model.InterOrganizationalRelations) {
-            Debug.Assert(relation.OrganizationFrom is not null);
-            Debug.Assert(relation.OrganizationTo is not null);
-            //Either the from or the to organization is different from the current organization
-            Debug.Assert(relation.OrganizationFrom.Id.HasValue && relation.OrganizationFrom.Id != Model.NodeId || relation.OrganizationTo.Id.HasValue && relation.OrganizationTo.Id != Model.NodeId);
-            //Either the from or the to organization is the current organization
-            Debug.Assert(Model.NodeId.HasValue && (relation.OrganizationFrom.Id.HasValue && relation.OrganizationFrom.Id.Value == Model.NodeId.Value || relation.OrganizationTo.Id.HasValue && relation.OrganizationTo.Id == Model.NodeId));
-            Debug.Assert(!Model.NodeId.HasValue && (!relation.OrganizationFrom.Id.HasValue || !relation.OrganizationTo.Id.HasValue ));
-        }
-        foreach (var relation in Model.PersonOrganizationRelations) {
-            Debug.Assert(relation.Person is not null);
-            Debug.Assert(relation.Organization is not null);
-            Debug.Assert(relation.Person.Id.HasValue);
-            Debug.Assert(Model.NodeId.HasValue && relation.Organization.Id.HasValue);
-            Debug.Assert(!Model.NodeId.HasValue && !relation.Organization.Id.HasValue);
-        }
-        foreach (var relation in Model.PartyPoliticalEntityRelations) {
-            Debug.Assert(relation.Party is not null);
-            Debug.Assert(relation.PoliticalEntity is not null);
-            Debug.Assert(relation.PoliticalEntity.Id.HasValue);
-            Debug.Assert(Model.NodeId.HasValue && relation.Party.Id.HasValue);
-            Debug.Assert(!Model.NodeId.HasValue && !relation.Party.Id.HasValue);
-        }
     }
 
     public override void OnTitleChange(string title)
@@ -79,34 +59,34 @@
             relation.Organization!.Name = title;
         };
         foreach (var relation in Model.InterOrganizationalRelations) {
-            if (relation.OrganizationFrom is not null)
-            {
-                if (relation.OrganizationFrom.Id.HasValue) {
-                    if (relation.OrganizationFrom.Id == Model.NodeId)
-                    {
-                        relation.OrganizationFrom.Name = title;
-                    }
-                }
-                else {
-                    relation.OrganizationFrom.Name = title;
-                }
-            }
-            if (relation.OrganizationTo is not null) {
-                if (relation.OrganizationTo.Id.HasValue) {
-                    if (relation.OrganizationTo.Id == Model.NodeId) {
-                        relation.OrganizationTo.Name = title;
-                    }
-                }
-                else {
-                    relation.OrganizationTo.Name = title;
-                }
-            }
+            //if (relation.OrganizationFrom is not null)
+            //{
+            //    if (relation.OrganizationFrom.Id.HasValue) {
+            //        if (relation.OrganizationFrom.Id == NodeId)
+            //        {
+            //            relation.OrganizationFrom.Name = title;
+            //        }
+            //    }
+            //    else {
+            //        relation.OrganizationFrom.Name = title;
+            //    }
+            //}
+            //if (relation.OrganizationTo is not null) {
+            //    if (relation.OrganizationTo.Id.HasValue) {
+            //        if (relation.OrganizationTo.Id == NodeId) {
+            //            relation.OrganizationTo.Name = title;
+            //        }
+            //    }
+            //    else {
+            //        relation.OrganizationTo.Name = title;
+            //    }
+            //}
         };
         StateHasChanged();
     }
 
     private OrganizationListItem Organization => new OrganizationListItem {
-        Id = Model.NodeId,
+        Id = NodeId,
         Name = Model.Title
     };
 }

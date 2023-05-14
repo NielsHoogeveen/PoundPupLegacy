@@ -6,10 +6,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class DeportationCaseEditService : NodeEditServiceBase<DeportationCase, CreateModel.DeportationCase>, IEditService<DeportationCase>
+internal sealed class DeportationCaseEditService : NodeEditServiceBase<DeportationCase, ExistingDeportationCase, NewDeportationCase, CreateModel.DeportationCase>, IEditService<DeportationCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, DeportationCase> _createDeportationCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, DeportationCase> _deportationCaseUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDeportationCase> _createDeportationCaseReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDeportationCase> _deportationCaseUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<DeportationCaseUpdaterRequest> _deportationCaseUpdaterFactory;
     private readonly IEntityCreator<CreateModel.DeportationCase> _deportationCaseCreator;
     private readonly ITextService _textService;
@@ -17,8 +17,8 @@ internal sealed class DeportationCaseEditService : NodeEditServiceBase<Deportati
 
     public DeportationCaseEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, DeportationCase> createDeportationCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, DeportationCase> deportationCaseUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDeportationCase> createDeportationCaseReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDeportationCase> deportationCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<DeportationCaseUpdaterRequest> deportationCaseUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -77,7 +77,7 @@ internal sealed class DeportationCaseEditService : NodeEditServiceBase<Deportati
         }
     }
 
-    protected sealed override async Task StoreNew(DeportationCase deportationCase, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewDeportationCase deportationCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
         var createDocument = new CreateModel.DeportationCase {
@@ -113,16 +113,16 @@ internal sealed class DeportationCaseEditService : NodeEditServiceBase<Deportati
             CountryIdTo = deportationCase.CountryIdTo
         };
         await _deportationCaseCreator.CreateAsync(createDocument, connection);
-        deportationCase.NodeId = createDocument.Id;
+        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(DeportationCase deportationCase, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingDeportationCase deportationCase, NpgsqlConnection connection)
     {
         await using var updater = await _deportationCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new DeportationCaseUpdaterRequest {
             Title = deportationCase.Title,
             Description = deportationCase.Description is null ? "": _textService.FormatText(deportationCase.Description),
-            NodeId = deportationCase.NodeId!.Value,
+            NodeId = deportationCase.NodeId,
             Date = deportationCase.Date,
             SubdivisionIdFrom = deportationCase.SubdivisionIdFrom,
             CountryIdTo = deportationCase.CountryIdTo

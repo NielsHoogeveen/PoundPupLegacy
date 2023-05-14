@@ -1,12 +1,20 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
-<SearchItemEditor 
-    T="OrganizationListItem" 
-    IsMandatory="true"
-    @bind-Value="Relation.OrganizationFrom" 
-    EnableEdit="!ThisOrganizationIsFrom" 
-    Label="Organization from"/>
-
+@if (Relation.OrganizationItemFrom is OrganizationName) {
+    <div class="form-group">
+        <label>Organization from</label>
+        <div>@Relation.OrganizationFromName</div>
+    </div>
+}
+@if (Relation.OrganizationItemFrom is OrganizationListItem organizationListItemFrom)
+{
+    <SearchItemEditor 
+        T="OrganizationListItem" 
+        IsMandatory="true"
+        @bind-Value="organizationListItemFrom"
+        EnableEdit="!ThisOrganizationIsFrom" 
+        Label="Organization from"/>
+}
 <div class="type-and-swap">
     <div>
         <label for="relation-type">Relation type</label>
@@ -26,12 +34,22 @@
     }
 
 </div>
+@if (Relation.OrganizationItemTo is OrganizationName) {
+    <div class="form-group">
+        <label>Organization from</label>
+        <div>@Relation.OrganizationToName</div>
+    </div>
+}
+@if (Relation.OrganizationItemTo is OrganizationListItem organizationListItemTo)
+{
+
 <SearchItemEditor 
     T="OrganizationListItem"
     IsMandatory="true"
-    @bind-Value="Relation.OrganizationTo" 
+    @bind-Value="organizationListItemTo"
     EnableEdit="ThisOrganizationIsFrom" 
     Label="Organization to"/>
+}
 <SearchItemEditor 
     T="GeographicalEntityListItem"
     IsMandatory="false"
@@ -69,9 +87,6 @@
     public InterOrganizationalRelation Relation { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<InterOrganizationalRelation> RelationChanged { get; set; } = default!;
-
-    [Parameter]
     [EditorRequired]
     public int? OrganizationId { get; set; } = default!;
 
@@ -85,19 +100,19 @@
 
     protected override void OnInitialized()
     {
-        if (OrganizationId is not null) {
-            ThisOrganizationIsFrom = OrganizationId == Relation.OrganizationFrom.Id;
-        }
+        //if (OrganizationId is not null) {
+        //    ThisOrganizationIsFrom = OrganizationId == Relation.OrganizationFrom.Id;
+        //}
         RelationType = RelationTypes.First(x => x.Id == Relation.InterOrganizationalRelationType.Id);
     }
 
     private void Swap()
     {
-        var tmp = Relation.OrganizationFrom;
-        Relation.OrganizationFrom = Relation.OrganizationTo;
-        Relation.OrganizationTo = tmp;
-        ThisOrganizationIsFrom = !ThisOrganizationIsFrom;
-        StateHasChanged();
+        //var tmp = Relation.OrganizationFrom;
+        //Relation.OrganizationFrom = Relation.OrganizationTo;
+        //Relation.OrganizationTo = tmp;
+        //ThisOrganizationIsFrom = !ThisOrganizationIsFrom;
+        //StateHasChanged();
     }
 
     private void OnChangeRelationType(ChangeEventArgs args)
@@ -108,6 +123,11 @@
                 StateHasChanged();
             }
         }
+    }
+
+    public CompletedInterOrganizationalRelation? GetValidRelation()
+    {
+        return null;
     }
 }
 

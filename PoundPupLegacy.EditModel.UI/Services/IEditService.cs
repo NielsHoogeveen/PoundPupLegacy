@@ -7,5 +7,5 @@ public interface IEditService<T>
 
     [RequireNamedArgs]
     Task<T?> GetViewModelAsync(int userId, int tenantId);
-    Task SaveAsync(T item);
+    Task<int> SaveAsync(T item);
 }

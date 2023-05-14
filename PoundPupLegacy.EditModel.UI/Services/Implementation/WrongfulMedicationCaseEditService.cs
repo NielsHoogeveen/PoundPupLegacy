@@ -6,10 +6,10 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<WrongfulMedicationCase, CreateModel.WrongfulMedicationCase>, IEditService<WrongfulMedicationCase>
+internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<WrongfulMedicationCase, ExistingWrongfulMedicationCase, NewWrongfulMedicationCase, CreateModel.WrongfulMedicationCase>, IEditService<WrongfulMedicationCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulMedicationCase> _createWrongfulMedicationCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulMedicationCase> _wrongfulMedicationCaseUpdateDocumentReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulMedicationCase> _createWrongfulMedicationCaseReaderFactory;
+    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulMedicationCase> _wrongfulMedicationCaseUpdateDocumentReaderFactory;
     private readonly IDatabaseUpdaterFactory<WrongfulMedicationCaseUpdaterRequest> _wrongfulMedicationCaseUpdaterFactory;
     private readonly IEntityCreator<CreateModel.WrongfulMedicationCase> _wrongfulMedicationCaseCreator;
     private readonly ITextService _textService;
@@ -17,8 +17,8 @@ internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<Wr
 
     public WrongfulMedicationCaseEditService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulMedicationCase> createWrongfulMedicationCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulMedicationCase> wrongfulMedicationCaseUpdateDocumentReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulMedicationCase> createWrongfulMedicationCaseReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulMedicationCase> wrongfulMedicationCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<WrongfulMedicationCaseUpdaterRequest> wrongfulMedicationCaseUpdaterFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -77,7 +77,7 @@ internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<Wr
         }
     }
 
-    protected sealed override async Task StoreNew(WrongfulMedicationCase wrongfulMedicationCase, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(NewWrongfulMedicationCase wrongfulMedicationCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
         var createDocument = new CreateModel.WrongfulMedicationCase {
@@ -111,16 +111,16 @@ internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<Wr
             },
         };
         await _wrongfulMedicationCaseCreator.CreateAsync(createDocument, connection);
-        wrongfulMedicationCase.NodeId = createDocument.Id;
+        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(WrongfulMedicationCase wrongfulMedicationCase, NpgsqlConnection connection)
+    protected sealed override async Task StoreExisting(ExistingWrongfulMedicationCase wrongfulMedicationCase, NpgsqlConnection connection)
     {
         await using var updater = await _wrongfulMedicationCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new WrongfulMedicationCaseUpdaterRequest {
             Title = wrongfulMedicationCase.Title,
             Description = wrongfulMedicationCase.Description is null ? "": _textService.FormatText(wrongfulMedicationCase.Description),
-            NodeId = wrongfulMedicationCase.NodeId!.Value,
+            NodeId = wrongfulMedicationCase.NodeId,
             Date = wrongfulMedicationCase.Date,
         });
     }

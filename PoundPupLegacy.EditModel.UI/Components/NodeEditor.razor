@@ -9,10 +9,10 @@
         <DataAnnotationsValidator />
         <div class="form-group">
             <label for="title">Title</label>
-            <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange"/>
+            <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" />
             <ValidationMessage For="@(() => Model.Title)" />
         </div>
-        @if(Model is Nameable nameable) {
+        @if (Model is Nameable nameable) {
             <NameableEditor Model="nameable" @ref="nameableEditor"/>
         }
         @if(Model is SimpleTextNode simpleTextNode){
@@ -51,9 +51,9 @@
         @if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
             <WrongfulRemovalCaseEditor Model="wrongfulRemovalCase" @ref=wrongfulRemovalCaseEditor/>
         }
-        <TagsEditor NodeTypesTags="Model.Tags" NodeId="Model.NodeId" />
+        <TagsEditor NodeTypesTags="Model.Tags" NodeId="NodeId" />
         <TenantNodesEditor Node="@Model" />
-        <AttachmentEditor Files="Model.Files" NodeId="Model.NodeId" />
+        <AttachmentEditor Files="Model.Files" NodeId="NodeId" />
         @if (Model is Locatable locatable) {
             <LocationsEditor Locatable="locatable" />
         }
@@ -68,6 +68,12 @@
     [Parameter]
     [EditorRequired]
     public string Title { get; set; } = default!;
+
+    private int? NodeId => Model switch
+    {
+        ExistingNode n => n.NodeId,
+        _ => null
+    };
 
     private EditContext? editContext;
     private ValidationMessageStore? validationMessageStore;
@@ -157,8 +163,8 @@
                 await JSRuntime.InvokeVoidAsync("scrollToFirstError", new object[] { "title" });
                 return;
             }
-            await editService.SaveAsync(Model);
-            await JSRuntime.InvokeVoidAsync("reloadNode", Model.UrlId);
+            var urlId = await editService.SaveAsync(Model);
+            await JSRuntime.InvokeVoidAsync("reloadNode", urlId);
         }
     }
 }
