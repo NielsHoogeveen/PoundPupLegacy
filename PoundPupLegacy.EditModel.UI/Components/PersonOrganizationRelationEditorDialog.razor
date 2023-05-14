@@ -1,11 +1,18 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
-<SearchItemEditor 
-    T="PersonListItem" 
+@if (Relation.PersonItem is PersonName) {
+    <div class="form-group">
+        <label>Person from</label>
+        <div>@Relation.PersonItem.Name</div>
+    </div>
+}
+@if (Relation.PersonItem is PersonListItem personListItem) {
+    <SearchItemEditor T="PersonListItem"
     IsMandatory="true"
-    @bind-Value="Relation.Person" 
-    EnableEdit="!IsPersonLeading" 
-    Label="Person"/>
+    @bind-Value="personListItem"
+    EnableEdit="!IsPersonLeading"
+    Label="Person" />
+}
 
 <div class="type-and-swap">
     <div>
@@ -22,12 +29,21 @@
         </select>
     </div>
 </div>
-<SearchItemEditor 
-    T="OrganizationListItem"
+@if (Relation.OrganizationItem is OrganizationName organizationName) {
+    <div class="form-group">
+        <label>Organization</label>
+        <div>@organizationName.Name</div>
+    </div>
+}
+@if (Relation.OrganizationItem is OrganizationListItem organiztionListItem) {
+    <SearchItemEditor T="OrganizationListItem"
     IsMandatory="true"
-    @bind-Value="Relation.Organization" 
-    EnableEdit="IsPersonLeading" 
-    Label="Organization"/>
+    @bind-Value="organiztionListItem"
+    EnableEdit="IsPersonLeading"
+    Label="Organization" />
+}
+
+
 <SearchItemEditor 
     T="GeographicalEntityListItem"
     IsMandatory="false"
@@ -56,6 +72,7 @@
     [Parameter]
     public PersonOrganizationRelation Relation { get; set; } = default!;
 
+
     [Parameter]
     public EventCallback<PersonOrganizationRelation> RelationChanged { get; set; } = default!;
 
@@ -63,8 +80,6 @@
     [EditorRequired]
     public List<PersonOrganizationRelationTypeListItem> RelationTypes { get; set; } = default!;
 
-    [Parameter]
-    [EditorRequired]
     public bool IsPersonLeading { get; set; } 
 
     private PersonOrganizationRelationTypeListItem RelationType { get; set; } = default!;
@@ -83,5 +98,11 @@
             }
         }
     }
+
+    public CompletedPersonOrganizationRelation? GetValidRelation()
+    {
+        return null;
+    }
+
 }
 

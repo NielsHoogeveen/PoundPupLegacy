@@ -66,9 +66,9 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     (select document from inter_organizational_relation_types_document),
                     'PersonOrganizationRelationTypes',
                     (select document from person_organization_relation_types_document),
-                    'PersonOrganizationRelations',
+                    'ExistingPersonOrganizationRelations',
                     (select document from person_organization_relations_document),
-                    'PartyPoliticalEntityRelations',
+                    'ExistingPartyPoliticalEntityRelations',
                     (select document from party_political_entity_relations_document),
                     'ExistingInterOrganizationalRelations',
                     (select document from inter_organizational_relations_document)
@@ -151,6 +151,8 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
         		        date_to,
         		        'Description',
         		        description,
+                        'SettableRelationSideThisOrganization',
+                        settable_relation_side_this_organization,
                         'Tags',
                         null,
                         'Files',
@@ -180,6 +182,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     date_from,
                     date_to,
                     description,
+                    settable_relation_side_this_organization,
                     case 
         	            when status_relation = 1 then true
         	            else false
@@ -208,6 +211,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                         lower(r.date_range) date_from,
                         upper(r.date_range) date_to,
                         r.description,
+                        0 settable_relation_side_this_organization,
                         case
         	                when tn2.publication_status_id = 0 then (
         		                select
@@ -310,6 +314,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                         lower(r.date_range) date_from,
                         upper(r.date_range) date_to,
                         r.description,
+                        1 settable_relation_side_this_organization,
                         case
         	                when tn2.publication_status_id = 0 then (
         		                select

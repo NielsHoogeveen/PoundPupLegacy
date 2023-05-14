@@ -9,7 +9,6 @@
             <InterOrganizationalRelationEditorDialog  
                 Relation="_relationToEdit" 
                 RelationTypes="@RelationTypes"
-                OrganizationId="Organization?.Id"
                 @ref="dialog"/>
         </DialogContent>
     </ModalDialog>
@@ -70,7 +69,7 @@
 
     [Parameter]
     [EditorRequired]
-    public OrganizationListItem Organization { get; set; } = default!;
+    public OrganizationItem OrganizationItem { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -121,24 +120,46 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = new NewInterOrganizationalExistingRelation {
-                OrganizationFrom = Organization,
-                OrganizationTo = null,
-                InterOrganizationalRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                NodeTypeName = "inter organizational relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            };
+        _relationToEdit = OrganizationItem switch
+        {
+            OrganizationListItem li => new NewInterOrganizationalExistingFromRelation
+                {
+                    OrganizationFrom = li,
+                    OrganizationTo = null,
+                    InterOrganizationalRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    NodeTypeName = "inter organizational relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    GeographicalEntity = null,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+            OrganizationName nm => new NewInterOrganizationalNewFromRelation {
+                    OrganizationFrom = nm,
+                    OrganizationTo = null,
+                    InterOrganizationalRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    NodeTypeName = "inter organizational relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    GeographicalEntity = null,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+        };
         StateHasChanged();
     }
 

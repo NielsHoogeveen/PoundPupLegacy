@@ -7,9 +7,9 @@
         OnCancel="OnCancel">
         <DialogContent>
             <InterPersonalRelationEditorDialog  
-                @bind-Relation="_relationToEdit" 
+                Relation="_relationToEdit" 
                 RelationTypes="@RelationTypes"
-                PersonId="Person.Id"/>
+                @ref=dialog/>
         </DialogContent>
     </ModalDialog>
 }
@@ -27,13 +27,13 @@
             @foreach(var relation in Relations) {
                 var classString = relation.HasBeenDeleted ? "row deleted" : "row";
                 <div class="@classString first">
-                    <span>@relation.PersonFrom?.Name</span>
+                    <span>@relation.PersonFromName</span>
                 </div>
                 <div class="@classString">
                     <span>@relation.InterPersonalRelationType.Name</span>
                 </div>
                 <div class="@classString">
-                    <span>@relation.PersonTo?.Name</span>
+                    <span>@relation.PersonToName</span>
                 </div>
                 <div class="@classString">
                     <span>@relation.DateFrom</span>
@@ -69,11 +69,13 @@
 
     [Parameter]
     [EditorRequired]
-    public PersonListItem Person { get; set; } = default!;
+    public PersonItem Person { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public List<InterPersonalRelationTypeListItem> RelationTypes { get; set; } = default!;
+
+    private InterPersonalRelationEditorDialog? dialog;
 
     private InterPersonalRelation? _relationToEdit = null;
 
@@ -104,8 +106,11 @@
     }
     private void OnOk()
     {
-        if (_relationToEdit is not null && !_relationToEdit.NodeId.HasValue) {
-            Relations.Add(_relationToEdit);
+        if (dialog is not null) {
+            var relation = dialog.GetValidRelation();
+            if(relation is null)
+                return;
+            Relations.Add(relation);
         }
         _relationToEdit = null;
         StateHasChanged();
@@ -117,27 +122,43 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = new InterPersonalRelation {
-                PersonFrom = Person,
-                PersonTo = null,
-                HasBeenStored = false,
-                InterPersonalRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeId = null,
-                NodeTypeName = "inter organizational relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-                UrlId = null,
-            };
+        _relationToEdit = Person switch {
+            PersonListItem li => new NewInterPersonalExistingFromRelation {
+                    PersonFrom = li,
+                    PersonTo = null,
+                    InterPersonalRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    NodeTypeName = "inter organizational relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+            PersonName nm => new NewInterPersonalNewFromRelation {
+                    PersonFrom = nm,
+                    PersonTo = null,
+                    InterPersonalRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    NodeTypeName = "inter organizational relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+             _ => throw new Exception("Cannot reach"),
+        };
         StateHasChanged();
     }
 

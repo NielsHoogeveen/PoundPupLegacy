@@ -24,16 +24,14 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
         await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
         await using var updater = await _personOrganizationRelationUpdaterFactory.CreateAsync(connection);
 
-        foreach (var relation in item.Where(x => x.HasBeenDeleted)) {
-            if (!relation.NodeId.HasValue)
-                throw new Exception("relation has no node id and cannot be unpublished");
+        foreach (var relation in item.OfType<ExistingPersonOrganizationRelation>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
-                NodeId = relation.NodeId.Value
+                NodeId = relation.NodeId
             });
         }
-        foreach (var relation in item.Where(x => x.NodeId.HasValue && !x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingPersonOrganizationRelation>().Where(x => !x.HasBeenDeleted)) {
             await updater.UpdateAsync(new PersonOrganizationRelationUpdaterRequest {
-                NodeId = relation.NodeId!.Value,
+                NodeId = relation.NodeId,
                 Title = relation.Title,
                 PersonId = relation.Person.Id!.Value,
                 OrganizationId = relation.Organization.Id!.Value,
@@ -47,7 +45,7 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
         IEnumerable<CreateModel.PersonOrganizationRelation> GetRelationsToInsert()
         {
 
-            foreach (var relation in item.Where(x => !x.NodeId.HasValue)) {
+            foreach (var relation in item.OfType<CompletedNewPersonOrganizationRelation>()) {
                 var now = DateTime.Now;
                 yield return new CreateModel.PersonOrganizationRelation {
                     Id = null,

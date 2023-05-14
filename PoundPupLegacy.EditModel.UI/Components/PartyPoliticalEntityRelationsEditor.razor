@@ -8,7 +8,8 @@
         <DialogContent>
             <PartyPoliticalEntityRelationEditorDialog  
                 @bind-Relation="_relationToEdit" 
-                RelationTypes="@RelationTypes"/>
+                RelationTypes="@RelationTypes"
+                @ref=dialog/>
         </DialogContent>
     </ModalDialog>
 }
@@ -28,13 +29,13 @@
             {
                 var classString = relation.HasBeenDeleted ? "row deleted" : "row";
                 <div class="@classString first">
-                    @relation.Party.Name
+                    @relation.PartyName
                 </div>
                 <div class="@classString">
                     @relation.PartyPoliticalEntityRelationType.Name
                 </div>
                 <div class="@classString">
-                    @relation.PoliticalEntity?.Name
+                    @relation.PoliticalEntityName
                 </div>
                 <div class="@classString">
                     @relation.DateFrom
@@ -63,7 +64,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<PartyPoliticalEntityRelation> Relations { get; set; } = default!;
+    public List<CompletedPartyPoliticalEntityRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -71,12 +72,15 @@
 
     [Parameter]
     [EditorRequired]
-    public PartyListItem Party { get; set; } = default!;
+    public PartyItem Party { get; set; } = default!;
 
 
     [Parameter]
     [EditorRequired]
     public string PartyTypeName { get; set; } = default!;
+
+
+    private PartyPoliticalEntityRelationEditorDialog dialog;
 
     private PartyPoliticalEntityRelation? _relationToEdit = null;
 
@@ -107,8 +111,11 @@
     }
     private void OnOk()
     {
-        if (_relationToEdit is not null && !_relationToEdit.NodeId.HasValue) {
-            Relations.Add(_relationToEdit);
+        if (dialog is not null) {
+            var relation = dialog.GetValidRelation();
+            if (relation is null)
+                return;
+            Relations.Add(relation);
         }
         _relationToEdit = null;
         StateHasChanged();
@@ -120,25 +127,45 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = new PartyPoliticalEntityRelation {
-            Party = Party,
-            PartyPoliticalEntityRelationType = RelationTypes.First(),
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            HasBeenDeleted = false,
-            NodeId = null,
-            NodeTypeName = "party political entity relation",
-            OwnerId = TenantId,
-            PublisherId = UserId,
-            PoliticalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
-            Tenants = new List<Tenant>(),
-            UrlId = null,           
+        _relationToEdit = Party switch
+        {
+            PartyListItem pli => new NewPartyPoliticalEntityRelationExistingParty
+                {
+                    Party = pli,
+                    PartyPoliticalEntityRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    HasBeenDeleted = false,
+                    NodeTypeName = "party political entity relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    PoliticalEntity = null,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+            PartyName pn => new NewPartyPoliticalEntityRelationNewParty {
+                    Party = pn,
+                    PartyPoliticalEntityRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    HasBeenDeleted = false,
+                    NodeTypeName = "party political entity relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    PoliticalEntity = null,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                }
         };
         StateHasChanged();
     }

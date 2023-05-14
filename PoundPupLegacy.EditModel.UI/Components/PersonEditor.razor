@@ -6,12 +6,12 @@
 <PartyPoliticalEntityRelationsEditor 
     PartyTypeName="person"
     Party="Person"
-    Relations="Model.PartyPoliticalEntityRelations"
+    Relations="Model.PartyPoliticalEntityRelations.ToList()"
     RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditor 
     IsPersonLeading = "true"
     LeadingParty="Person"
-    Relations="Model.PersonOrganizationRelations"
+    Relations="Model.PersonOrganizationRelations.ToList()"
     RelationTypes="Model.PersonOrganizationRelationTypes" />
 
 @code {
@@ -31,35 +31,25 @@
 
     public override void OnTitleChange(string title)
     {
-        foreach (var relation in Model.PartyPoliticalEntityRelations) {
-            relation.Party.Name = title;
+        foreach (var relation in Model.PartyPoliticalEntityRelations.OfType<ExistingPersonOrganizationRelation>()) {
+            relation.Person.Name = title;
         };
-        foreach (var relation in Model.PersonOrganizationRelations) {
-            relation.Person!.Name = title;
+        foreach (var relation in Model.PersonOrganizationRelations.OfType<CompletedNewPersonOrganizationRelation>()) {
+            relation.Person.Name = title;
         };
-        foreach (var relation in Model.InterPersonalRelations) {
-            if (relation.PersonFrom is not null) {
-                if (relation.PersonFrom.Id.HasValue) {
-                    if (relation.PersonFrom.Id == NodeId) {
-                        relation.PersonFrom.Name = title;
-                    }
-                }
-                else {
-                    relation.PersonFrom.Name = title;
-                }
+        foreach (var relation in Model.InterPersonalRelations.OfType<ExistingInterPersonalRelation>()) {
+            if(relation.RelationSideThisPerson == RelationSide.From){
+                relation.PersonFrom.Name = title;
+            }else {
+                relation.PersonTo.Name = title;
             }
-            if (relation.PersonTo is not null) {
-                if (relation.PersonTo.Id.HasValue) {
-                    if (relation.PersonTo.Id == NodeId) {
-                        relation.PersonTo.Name = title;
-                    }
-                }
-                else {
-                    relation.PersonTo.Name = title;
-                }
-            }
-        };
-
+        }
+        foreach (var relation in Model.InterPersonalRelations.OfType<CompletedNewInterPersonalNewFromRelation>()) {
+            relation.PersonFrom.Name = title;
+        }
+        foreach (var relation in Model.InterPersonalRelations.OfType<CompletedNewInterPersonalNewToRelation>()) {
+            relation.PersonTo.Name = title;
+        }
         StateHasChanged();
     }
 

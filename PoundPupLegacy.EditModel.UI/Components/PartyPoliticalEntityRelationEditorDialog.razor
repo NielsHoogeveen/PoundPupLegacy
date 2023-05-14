@@ -1,11 +1,19 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
-<SearchItemEditor 
-    T="PartyListItem" 
+@if (Relation.PartyItem is PartyName) {
+    <div class="form-group">
+        <label>Party</label>
+        <div>@Relation.PartyItem.Name</div>
+    </div>
+}
+@if (Relation.PartyItem is PartyListItem partyListItem) {
+    <SearchItemEditor T="PartyListItem"
     IsMandatory="true"
-    @bind-Value="Relation.Party" 
-    EnableEdit="false" 
-    Label="Party"/>
+    @bind-Value="partyListItem"
+    EnableEdit="false"
+    Label="Party" />
+}
+
 
 <div class="type-and-swap">
     <div>
@@ -22,12 +30,14 @@
         </select>
     </div>
 </div>
-<SearchItemEditor 
-    T="PoliticalEntityListItem"
+@if (Relation.PoliticalEntityItem is PoliticalEntityListItem politicalEntityListItem) {
+    <SearchItemEditor T="PoliticalEntityListItem"
     IsMandatory="true"
-    @bind-Value="Relation.PoliticalEntity" 
-    EnableEdit="true" 
-    Label="Political entity"/>
+    @bind-Value="politicalEntityListItem"
+    EnableEdit="true"
+    Label="Political entity" />
+}
+
 <SearchItemEditor T="DocumentListItem"
     IsMandatory="false"
     @bind-Value="Relation.ProofDocument"
@@ -73,5 +83,10 @@
             }
         }
     }
+    public CompletedPartyPoliticalEntityRelation? GetValidRelation()
+    {
+        return null;
+    }
+
 }
 

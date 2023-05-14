@@ -50,9 +50,9 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     (select document from person_political_entity_relation_types_document),
                     'InterPersonalRelations',
                     (select document from inter_personal_relations_document),
-                    'PersonOrganizationRelations',
+                    'ExistingPersonOrganizationRelations',
                     (select document from person_organization_relations_document),
-                    'PartyPoliticalEntityRelations',
+                    'ExistingPartyPoliticalEntityRelations',
                     (select document from party_political_entity_relations_document)
                 ) document
             from node n

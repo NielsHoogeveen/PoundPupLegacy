@@ -1,93 +1,100 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(PersonOrganizationRelation))]
-public partial class PersonOrganizationRelationJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(ExistingPersonOrganizationRelation))]
+public partial class ExistingPersonOrganizationRelationJsonContext : JsonSerializerContext { }
 
-public record PersonOrganizationRelation : DeprecatedNode
+public enum PartyType
 {
-    public int? NodeId { get; init; }
+    Person,
+    Organization
+}
 
-    public int? UrlId { get; set; }
+public interface PersonOrganizationRelation : Relation
+{
+    PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
+    GeographicalEntityListItem? GeographicalEntity { get; set; }
 
-    public bool HasBeenDeleted { get; set; }
+    PersonItem? PersonItem { get; }
+    OrganizationItem? OrganizationItem { get; }
+    PartyType LeadingPartyType { get; }
+}
 
-    public required string NodeTypeName { get; set; }
+public interface CompletedPersonOrganizationRelation : PersonOrganizationRelation
+{
+    string PersonName { get; }
+    string OrganizationName { get; }
 
-    public required int PublisherId { get; set; }
+}
+public interface ResolvedPersonOrganizationRelation : CompletedPersonOrganizationRelation
+{
 
-    public required int OwnerId { get; set; }
+}
+public record CompletedNewPersonOrganizationRelation: PersonOrganizationRelationBase, NewNode, CompletedPersonOrganizationRelation
+{
+    public required PersonListItem Person { get; set; }
+    public required OrganizationListItem Organization { get; set; }
+    public override PersonItem? PersonItem => Person;
+    public override OrganizationItem? OrganizationItem => Organization;
+    public override PartyType LeadingPartyType => SettableLeadingPartyType;
+    public required PartyType SettableLeadingPartyType { get; init; }
+    public string PersonName => Person.Name;
+    public string OrganizationName => Organization.Name;
+}
 
-    public required string Title { get; set; }
-
-    private List<Tags> tags = new();
-
-    public List<Tags> Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-        }
-    }
-    private List<TenantNode> tenantNodes = new();
-
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
-            }
-        }
-    }
-    private List<Tenant> tenants = new();
-
-    public List<Tenant> Tenants {
-        get => tenants;
-        init {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
-    private List<File> files = new();
-
-    public required List<File> Files {
-        get => files;
-        init {
-            if (value is not null) {
-                files = value;
-            }
-        }
-    }
-
-    public required DateTime? DateFrom { get; set; }
-    public required DateTime? DateTo { get; set; }
-
-    private bool _dateRangeIsSet = false;
-
-    private DateTimeRange? _dateRange;
-    public DateTimeRange? DateRange {
-        get {
-            if (!_dateRangeIsSet) {
-                if (DateFrom is not null && DateTo is not null) {
-                    _dateRange = new DateTimeRange(DateFrom, DateTo);
-                }
-                else {
-                    _dateRange = null;
-                }
-                _dateRangeIsSet = true;
-            }
-            return _dateRange;
-        }
-        set {
-            _dateRange = value;
-        }
-    }
-    public required PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
-    public required PersonListItem? Person { get; set; }
+public record NewPersonOrganizationRelationExistingPerson : PersonOrganizationRelationBase, NewNode
+{
+    public required PersonListItem Person { get; set; }
     public required OrganizationListItem? Organization { get; set; }
-    public DocumentListItem? ProofDocument { get; set; }
-    public required string Description { get; set; }
-    public GeographicalEntityListItem? GeographicalEntity { get; set; }
+    public override PersonItem? PersonItem => Person;
+    public override OrganizationItem? OrganizationItem => Organization;
+    public override PartyType LeadingPartyType => PartyType.Person;
+}
 
+public record NewPersonOrganizationRelationExistingOrganization : PersonOrganizationRelationBase, NewNode
+{
+    public required PersonListItem? Person { get; set; }
+    public required OrganizationListItem Organization { get; set; }
+    public override PersonItem? PersonItem => Person;
+    public override OrganizationItem? OrganizationItem => Organization;
+    public override PartyType LeadingPartyType => PartyType.Organization;
+}
+
+public record NewPersonOrganizationRelationNewOrganization : PersonOrganizationRelationBase, NewNode
+{
+    public required PersonListItem? Person { get; set; }
+    public required OrganizationName Organization { get; set; }
+    public override PersonItem? PersonItem => Person;
+    public override OrganizationItem? OrganizationItem => Organization;
+    public override PartyType LeadingPartyType => PartyType.Organization;
+}
+public record NewPersonOrganizationRelationNewPerson : PersonOrganizationRelationBase, NewNode
+{
+    public required PersonName Person { get; set; }
+    public required OrganizationListItem? Organization { get; set; }
+    public override PersonItem? PersonItem => Person;
+    public override OrganizationItem? OrganizationItem => Organization;
+    public override PartyType LeadingPartyType => PartyType.Person;
+}
+public record ExistingPersonOrganizationRelation: PersonOrganizationRelationBase, ExistingNode, ResolvedPersonOrganizationRelation
+{
+    public int NodeId { get; init; }
+
+    public int UrlId { get; set; }
+    public required PersonListItem Person { get; set; }
+    public required OrganizationListItem Organization { get; set; }
+    public override PersonItem? PersonItem => Person;
+    public override OrganizationItem? OrganizationItem => Organization;
+    public override PartyType LeadingPartyType => SettableLeadingPartyType;
+    public required PartyType SettableLeadingPartyType { get; init; }
+    public string PersonName => Person.Name;
+    public string OrganizationName => Organization.Name;
+
+}
+public abstract record PersonOrganizationRelationBase : RelationBase, PersonOrganizationRelation
+{
+    public required PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
+    public GeographicalEntityListItem? GeographicalEntity { get; set; }
+    public abstract PersonItem? PersonItem { get; }
+    public abstract OrganizationItem? OrganizationItem {get;}
+    public abstract PartyType LeadingPartyType { get; }
 }

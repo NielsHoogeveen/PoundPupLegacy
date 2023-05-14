@@ -1,94 +1,293 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(InterPersonalRelation))]
-public partial class InterPersonalRelationJsonContext : JsonSerializerContext { }
-
-public record InterPersonalRelation : DeprecatedNode
+public interface InterPersonalRelation : Relation
 {
-    public int? NodeId { get; init; }
+    InterPersonalRelationTypeListItem InterPersonalRelationType { get; }
+    string PersonFromName { get; }
+    string PersonToName { get; }
+    PersonItem? PersonItemFrom { get; }
+    PersonItem? PersonItemTo { get; }
+    InterPersonalRelation SwapFromAndTo();
+    RelationSide RelationSideThisPerson { get; }
+}
 
-    public int? UrlId { get; set; }
+public interface CompletedInterPersonalRelation : InterPersonalRelation
+{
 
-    public bool HasBeenDeleted { get; set; }
+}
 
-    public required bool HasBeenStored { get; init; }
+public interface NewInterPersonalRelation : InterPersonalRelation, NewNode
+{
 
-    public required string NodeTypeName { get; set; }
+}
+public interface CompletedNewInterPersonalRelation : NewInterPersonalRelation, CompletedInterPersonalRelation
+{
+}
+public interface ResolvedInterPersonalRelation : CompletedInterPersonalRelation
+{
+}
 
-    public required int PublisherId { get; set; }
-
-    public required int OwnerId { get; set; }
-
-    public required string Title { get; set; }
-
-    private List<Tags> tags = new();
-
-    public List<Tags> Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-        }
-    }
-    private List<TenantNode> tenantNodes = new();
-
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
-            }
-        }
-    }
-    private List<Tenant> tenants = new();
-
-    public List<Tenant> Tenants {
-        get => tenants;
-        init {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
-    private List<File> files = new();
-
-    public required List<File> Files {
-        get => files;
-        init {
-            if (value is not null) {
-                files = value;
-            }
-        }
-    }
-
-    public required DateTime? DateFrom { get; set; }
-    public required DateTime? DateTo { get; set; }
-
-    private bool _dateRangeIsSet = false;
-
-    private DateTimeRange? _dateRange;
-    public DateTimeRange? DateRange {
-        get {
-            if (!_dateRangeIsSet) {
-                if (DateFrom is not null && DateTo is not null) {
-                    _dateRange = new DateTimeRange(DateFrom, DateTo);
-                }
-                else {
-                    _dateRange = null;
-                }
-                _dateRangeIsSet = true;
-            }
-            return _dateRange;
-        }
-        set {
-            _dateRange = value;
-        }
-    }
-    public string? Description { get; set; }
+public abstract record InterPersonalRelationBase : RelationBase, InterPersonalRelation
+{
     public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
-    public required PersonListItem? PersonFrom { get; set; }
-    public required PersonListItem? PersonTo { get; set; }
-    public DocumentListItem? ProofDocument { get; set; }
+    public abstract string PersonFromName { get; }
+    public abstract string PersonToName { get; }
+    public abstract PersonItem? PersonItemFrom { get; }
+    public abstract PersonItem? PersonItemTo { get; }
 
+    public abstract InterPersonalRelation SwapFromAndTo();
+    public abstract RelationSide RelationSideThisPerson { get; }
+}
+
+[JsonSerializable(typeof(ExistingInterPersonalRelation))]
+public partial class ExistingInterPersonalRelationJsonContext : JsonSerializerContext { }
+
+public record ExistingInterPersonalRelation : InterPersonalRelationBase, ExistingNode, ResolvedInterPersonalRelation
+{
+    public required PersonListItem PersonFrom { get; set; }
+    public required PersonListItem PersonTo { get; set; }
+    public int NodeId { get; init; }
+    public int UrlId { get; set; }
+    [JsonIgnore]
+    public override string PersonFromName => PersonFrom.Name;
+    [JsonIgnore]
+    public override string PersonToName => PersonTo.Name;
+    [JsonIgnore]
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    [JsonIgnore]
+    public override PersonItem? PersonItemTo => PersonTo;
+    public override ExistingInterPersonalRelation SwapFromAndTo()
+    {
+        var tmp = PersonFrom;
+        PersonFrom = PersonTo;
+        PersonTo = tmp;
+        if (SettableRelationSideThisPerson == RelationSide.To) {
+            SettableRelationSideThisPerson = RelationSide.From;
+        }
+        else {
+            SettableRelationSideThisPerson = RelationSide.To;
+        }
+        return this;
+    }
+
+    public override RelationSide RelationSideThisPerson => SettableRelationSideThisPerson;
+
+    public required RelationSide SettableRelationSideThisPerson { get; set; }
+}
+
+public record NewInterPersonalExistingRelation : InterPersonalRelationBase, ResolvedInterPersonalRelation
+{
+    public required PersonListItem PersonFrom { get; set; }
+    public required PersonListItem PersonTo { get; set; }
+    public override string PersonFromName => PersonFrom.Name;
+    public override string PersonToName => PersonTo.Name;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
+
+    public override NewInterPersonalExistingRelation SwapFromAndTo()
+    {
+        var tmp = PersonFrom;
+        PersonFrom = PersonTo;
+        PersonTo = tmp;
+        if (SettableRelationSideThisPerson == RelationSide.To) {
+            SettableRelationSideThisPerson = RelationSide.From;
+        }
+        else {
+            SettableRelationSideThisPerson = RelationSide.To;
+        }
+        return this;
+    }
+    public override RelationSide RelationSideThisPerson => SettableRelationSideThisPerson;
+
+    public required RelationSide SettableRelationSideThisPerson { get; set; }
+}
+
+public record NewInterPersonalExistingFromRelation : InterPersonalRelationBase, InterPersonalRelation, NewInterPersonalRelation
+{
+    public required PersonListItem PersonFrom { get; set; }
+    public required PersonListItem? PersonTo { get; set; }
+    public override string PersonFromName => PersonFrom.Name;
+    public override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
+    public override NewInterPersonalExistingToRelation SwapFromAndTo()
+    {
+        return new NewInterPersonalExistingToRelation {
+            PersonFrom = this.PersonTo,
+            PersonTo = this.PersonFrom,
+            DateFrom = this.DateFrom,
+            DateTo = this.DateTo,
+            Description = this.Description,
+            InterPersonalRelationType = this.InterPersonalRelationType,
+            ProofDocument = this.ProofDocument,
+            NodeTypeName = this.NodeTypeName,
+            Files = this.Files,
+            HasBeenDeleted = this.HasBeenDeleted,
+            OwnerId = this.OwnerId,
+            PublisherId = this.PublisherId,
+            Tags = this.Tags,
+            TenantNodes = this.TenantNodes,
+            Tenants = this.Tenants,
+            Title = this.Title,
+        };
+    }
+    public override RelationSide RelationSideThisPerson => RelationSide.From;
+
+}
+public record NewInterPersonalExistingToRelation : InterPersonalRelationBase, InterPersonalRelation, NewInterPersonalRelation
+{
+    public required PersonListItem? PersonFrom { get; set; }
+    public required PersonListItem PersonTo { get; set; }
+    public override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
+    public override string PersonToName => PersonTo.Name;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
+    public override NewInterPersonalExistingFromRelation SwapFromAndTo()
+    {
+        return new NewInterPersonalExistingFromRelation {
+            PersonFrom = this.PersonTo,
+            PersonTo = this.PersonFrom,
+            DateFrom = this.DateFrom,
+            DateTo = this.DateTo,
+            Description = this.Description,
+            InterPersonalRelationType = this.InterPersonalRelationType,
+            ProofDocument = this.ProofDocument,
+            NodeTypeName = this.NodeTypeName,
+            Files = this.Files,
+            HasBeenDeleted = this.HasBeenDeleted,
+            OwnerId = this.OwnerId,
+            PublisherId = this.PublisherId,
+            Tags = this.Tags,
+            TenantNodes = this.TenantNodes,
+            Tenants = this.Tenants,
+            Title = this.Title,
+        };
+    }
+    public override RelationSide RelationSideThisPerson => RelationSide.To;
+}
+
+public record CompletedNewInterPersonalNewFromRelation : InterPersonalRelationBase, CompletedInterPersonalRelation, CompletedNewInterPersonalRelation
+{
+    public required PersonName PersonFrom { get; set; }
+    public required PersonListItem PersonTo { get; set; }
+    public override string PersonFromName => PersonFrom.Name;
+    public override string PersonToName => PersonTo.Name;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
+
+    public override CompletedNewInterPersonalNewToRelation SwapFromAndTo()
+    {
+        return new CompletedNewInterPersonalNewToRelation {
+            PersonFrom = this.PersonTo,
+            PersonTo = this.PersonFrom,
+            DateFrom = this.DateFrom,
+            DateTo = this.DateTo,
+            Description = this.Description,
+            InterPersonalRelationType = this.InterPersonalRelationType,
+            ProofDocument = this.ProofDocument,
+            NodeTypeName = this.NodeTypeName,
+            Files = this.Files,
+            HasBeenDeleted = this.HasBeenDeleted,
+            OwnerId = this.OwnerId,
+            PublisherId = this.PublisherId,
+            Tags = this.Tags,
+            TenantNodes = this.TenantNodes,
+            Tenants = this.Tenants,
+            Title = this.Title,
+        };
+    }
+    public override RelationSide RelationSideThisPerson => RelationSide.From;
+}
+public record NewInterPersonalNewFromRelation : InterPersonalRelationBase, InterPersonalRelation, NewInterPersonalRelation
+{
+    public required PersonName PersonFrom { get; set; }
+    public required PersonListItem? PersonTo { get; set; }
+    public override string PersonFromName => PersonFrom.Name;
+    public override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
+    public override NewInterPersonalNewToRelation SwapFromAndTo()
+    {
+        return new NewInterPersonalNewToRelation {
+            PersonFrom = this.PersonTo,
+            PersonTo = this.PersonFrom,
+            DateFrom = this.DateFrom,
+            DateTo = this.DateTo,
+            Description = this.Description,
+            InterPersonalRelationType = this.InterPersonalRelationType,
+            ProofDocument = this.ProofDocument,
+            NodeTypeName = this.NodeTypeName,
+            Files = this.Files,
+            HasBeenDeleted = this.HasBeenDeleted,
+            OwnerId = this.OwnerId,
+            PublisherId = this.PublisherId,
+            Tags = this.Tags,
+            TenantNodes = this.TenantNodes,
+            Tenants = this.Tenants,
+            Title = this.Title,
+        };
+    }
+    public override RelationSide RelationSideThisPerson => RelationSide.From;
+}
+public record CompletedNewInterPersonalNewToRelation : InterPersonalRelationBase, CompletedInterPersonalRelation, CompletedNewInterPersonalRelation
+{
+    public required PersonListItem PersonFrom { get; set; }
+    public required PersonName PersonTo { get; set; }
+    public override string PersonFromName => PersonFrom.Name;
+    public override string PersonToName => PersonTo.Name;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
+    public override CompletedNewInterPersonalNewFromRelation SwapFromAndTo()
+    {
+        return new CompletedNewInterPersonalNewFromRelation {
+            PersonFrom = this.PersonTo,
+            PersonTo = this.PersonFrom,
+            DateFrom = this.DateFrom,
+            DateTo = this.DateTo,
+            Description = this.Description,
+            InterPersonalRelationType = this.InterPersonalRelationType,
+            ProofDocument = this.ProofDocument,
+            NodeTypeName = this.NodeTypeName,
+            Files = this.Files,
+            HasBeenDeleted = this.HasBeenDeleted,
+            OwnerId = this.OwnerId,
+            PublisherId = this.PublisherId,
+            Tags = this.Tags,
+            TenantNodes = this.TenantNodes,
+            Tenants = this.Tenants,
+            Title = this.Title,
+        };
+    }
+    public override RelationSide RelationSideThisPerson => RelationSide.To;
+}
+public record NewInterPersonalNewToRelation : InterPersonalRelationBase, InterPersonalRelation, NewInterPersonalRelation
+{
+    public required PersonListItem? PersonFrom { get; set; }
+    public required PersonName PersonTo { get; set; }
+    public override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
+    public override string PersonToName => PersonTo.Name;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
+    public override NewInterPersonalNewFromRelation SwapFromAndTo()
+    {
+        return new NewInterPersonalNewFromRelation {
+            PersonFrom = this.PersonTo,
+            PersonTo = this.PersonFrom,
+            DateFrom = this.DateFrom,
+            DateTo = this.DateTo,
+            Description = this.Description,
+            InterPersonalRelationType = this.InterPersonalRelationType,
+            ProofDocument = this.ProofDocument,
+            NodeTypeName = this.NodeTypeName,
+            Files = this.Files,
+            HasBeenDeleted = this.HasBeenDeleted,
+            OwnerId = this.OwnerId,
+            PublisherId = this.PublisherId,
+            Tags = this.Tags,
+            TenantNodes = this.TenantNodes,
+            Tenants = this.Tenants,
+            Title = this.Title,
+        };
+    }
+    public override RelationSide RelationSideThisPerson => RelationSide.To;
 }

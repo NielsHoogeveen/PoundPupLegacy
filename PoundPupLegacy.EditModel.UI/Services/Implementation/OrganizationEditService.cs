@@ -80,6 +80,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                         Id = nodeId,
                         Name = x.OrganizationToName
                     },
+                    SettableRelationSideThisOrganization = RelationSide.To,
                     DateFrom = x.DateFrom,
                     DateTo = x.DateTo,
                     Description = x.Description,
@@ -107,6 +108,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                         Id = nodeId,
                         Name = x.OrganizationFromName
                     },
+                    SettableRelationSideThisOrganization = RelationSide.From,
                     OrganizationTo = x.OrganizationTo,
                     DateFrom = x.DateFrom,
                     DateTo = x.DateTo,

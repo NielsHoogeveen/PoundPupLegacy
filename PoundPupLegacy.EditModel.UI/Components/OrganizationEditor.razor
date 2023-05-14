@@ -21,16 +21,15 @@
 <InterOrganizationalRelationsEditor 
     Relations="Model.InterOrganizationalRelations.ToList()" 
     RelationTypes="Model.InterOrganizationalRelationTypes" 
-    Organization="Organization"/>
+    OrganizationItem="Model.OrganizationItem"/>
 <PartyPoliticalEntityRelationsEditor 
     PartyTypeName="organization"
-    Party="Organization"
-    Relations="Model.PartyPoliticalEntityRelations"
+    Party="Model.OrganizationItem"
+    Relations="Model.PartyPoliticalEntityRelations.ToList()"
     RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditor 
-    IsPersonLeading = "false"
-    LeadingParty="Organization"
-    Relations="Model.PersonOrganizationRelations"
+    LeadingParty="Model.OrganizationItem"
+    Relations="Model.PersonOrganizationRelations.ToList()"
     RelationTypes="Model.PersonOrganizationRelationTypes" />
 
 @code {
@@ -50,43 +49,37 @@
 
     public override void OnTitleChange(string title)
     {
-        foreach(var relation in Model.PartyPoliticalEntityRelations)
+        foreach(var relation in Model.PartyPoliticalEntityRelations.OfType<ExistingPartyPoliticalEntityRelation>())
         {
             relation.Party.Name = title;
         };
-        foreach(var relation in Model.PersonOrganizationRelations)
-        {
-            relation.Organization!.Name = title;
+        foreach (var relation in Model.PartyPoliticalEntityRelations.OfType<CompletedNewPartyPoliticalEntityRelationExistingParty>()) {
+            relation.Party.Name = title;
         };
-        foreach (var relation in Model.InterOrganizationalRelations) {
-            //if (relation.OrganizationFrom is not null)
-            //{
-            //    if (relation.OrganizationFrom.Id.HasValue) {
-            //        if (relation.OrganizationFrom.Id == NodeId)
-            //        {
-            //            relation.OrganizationFrom.Name = title;
-            //        }
-            //    }
-            //    else {
-            //        relation.OrganizationFrom.Name = title;
-            //    }
-            //}
-            //if (relation.OrganizationTo is not null) {
-            //    if (relation.OrganizationTo.Id.HasValue) {
-            //        if (relation.OrganizationTo.Id == NodeId) {
-            //            relation.OrganizationTo.Name = title;
-            //        }
-            //    }
-            //    else {
-            //        relation.OrganizationTo.Name = title;
-            //    }
-            //}
+        foreach (var relation in Model.PartyPoliticalEntityRelations.OfType<CompletedNewPartyPoliticalEntityRelationNewParty>()) {
+            relation.Party.Name = title;
         };
+        foreach (var relation in Model.PersonOrganizationRelations.OfType<ExistingPersonOrganizationRelation>()) {
+            relation.Organization.Name = title;
+        };
+        foreach (var relation in Model.PersonOrganizationRelations.OfType<CompletedNewPersonOrganizationRelation>()) {
+            relation.Organization.Name = title;
+        };
+        foreach (var relation in Model.InterOrganizationalRelations.OfType<CompletedNewInterOrganizationalNewFromRelation>()) {
+            relation.OrganizationFrom.Name = title;
+        }
+        foreach (var relation in Model.InterOrganizationalRelations.OfType<CompletedNewInterOrganizationalNewToRelation>()) {
+            relation.OrganizationTo.Name = title;
+        }
+        foreach (var relation in Model.InterOrganizationalRelations.OfType<ExistingInterOrganizationalRelation>()) {
+            if (relation.RelationSideThisOrganization == RelationSide.From)
+            {
+                relation.OrganizationFrom.Name = title;
+            }
+            else {
+                relation.OrganizationTo.Name = title;
+            }
+        }
         StateHasChanged();
     }
-
-    private OrganizationListItem Organization => new OrganizationListItem {
-        Id = NodeId,
-        Name = Model.Title
-    };
 }

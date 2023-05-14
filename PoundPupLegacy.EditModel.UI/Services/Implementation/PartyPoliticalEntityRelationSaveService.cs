@@ -24,16 +24,14 @@ internal class PartyPoliticalEntityRelationSaveService : ISaveService<IEnumerabl
         await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
         await using var updater = await _partyPoliticalEntityRelationUpdaterFactory.CreateAsync(connection);
 
-        foreach (var relation in item.Where(x => x.HasBeenDeleted)) {
-            if (!relation.NodeId.HasValue)
-                throw new Exception("relation has no node id and cannot be unpublished");
+        foreach (var relation in item.OfType<ExistingPartyPoliticalEntityRelation>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
-                NodeId = relation.NodeId.Value
+                NodeId = relation.NodeId
             });
         }
-        foreach (var relation in item.Where(x => x.NodeId.HasValue && !x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingPartyPoliticalEntityRelation>().Where(x => !x.HasBeenDeleted)) {
             await updater.UpdateAsync(new PartyPoliticalEntityRelationUpdaterRequest {
-                NodeId = relation.NodeId!.Value,
+                NodeId = relation.NodeId,
                 Title = relation.Title,
                 PartyId = relation.Party.Id!.Value,
                 PoliticalEntityId = relation.PoliticalEntity.Id!.Value,
@@ -45,7 +43,7 @@ internal class PartyPoliticalEntityRelationSaveService : ISaveService<IEnumerabl
         IEnumerable<CreateModel.PartyPoliticalEntityRelation> GetRelationsToInsert()
         {
 
-            foreach (var relation in item.Where(x => !x.NodeId.HasValue)) {
+            foreach (var relation in item.OfType<CompletedNewPartyPoliticalEntityRelationExistingParty>()) {
                 var now = DateTime.Now;
                 yield return new CreateModel.PartyPoliticalEntityRelation {
                     Id = null,

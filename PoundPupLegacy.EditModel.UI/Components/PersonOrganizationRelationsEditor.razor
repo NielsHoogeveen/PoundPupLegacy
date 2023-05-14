@@ -9,7 +9,8 @@
             <PersonOrganizationRelationEditorDialog 
                 IsPersonLeading = "IsPersonLeading"
                 @bind-Relation="_relationToEdit" 
-                RelationTypes="@RelationTypes"/>
+                RelationTypes="@RelationTypes"
+                @ref=dialog/>
         </DialogContent>
     </ModalDialog>
 }
@@ -34,13 +35,13 @@
             @foreach(var relation in Relations) {
                 var classString = relation.HasBeenDeleted ? "row deleted" : "row";
                 <div class="@classString first">
-                    @relation.Person?.Name
+                    @relation.PersonName
                 </div>
                 <div class="@classString">
                     @relation.PersonOrganizationRelationType.Name
                 </div>
                 <div class="@classString">
-                    @relation.Organization?.Name
+                    @relation.OrganizationName
                 </div>
                 <div class="@classString">
                     @relation.DateFrom
@@ -69,7 +70,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<PersonOrganizationRelation> Relations { get; set; } = default!;
+    public List<CompletedPersonOrganizationRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -77,11 +78,11 @@
 
     [Parameter]
     [EditorRequired]
-    public bool IsPersonLeading { get; set; } 
+    public PartyItem LeadingParty { get; set; } = default!;
 
-    [Parameter]
-    [EditorRequired]
-    public PartyListItem LeadingParty { get; set; } = default!;
+    private PersonOrganizationRelationEditorDialog? dialog;
+
+    public bool IsPersonLeading => LeadingParty is PersonItem;
 
     private PersonOrganizationRelation? _relationToEdit = null;
 
@@ -112,8 +113,11 @@
     }
     private void OnOk()
     {
-        if (_relationToEdit is not null && !_relationToEdit.NodeId.HasValue) {
-            Relations.Add(_relationToEdit);
+        if (dialog is not null) {
+            var relation = dialog.GetValidRelation();
+            if (relation is null)
+                return;
+            Relations.Add(relation);
         }
         _relationToEdit = null;
         StateHasChanged();
@@ -125,37 +129,85 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = new PersonOrganizationRelation {
-                Person = IsPersonLeading 
-                    ? new PersonListItem {
-                        Id = LeadingParty.Id,
-                        Name = LeadingParty.Name,
-                    }
-                    : null,
-                Organization = IsPersonLeading 
-                    ? null
-                    : new OrganizationListItem {
-                        Id = LeadingParty.Id,
-                        Name = LeadingParty.Name,
-                    },
-                PersonOrganizationRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeId = null,
-                NodeTypeName = "party political entity relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-                UrlId = null,
-            };
+        _relationToEdit = LeadingParty switch {
+            PersonListItem pli => new NewPersonOrganizationRelationExistingPerson {
+                    Person = pli,
+                    Organization = null,
+                    PersonOrganizationRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    HasBeenDeleted = false,
+                    NodeTypeName = "party political entity relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    GeographicalEntity = null,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+            OrganizationListItem oli => new NewPersonOrganizationRelationExistingOrganization {
+                    Person = null,
+                    Organization = oli,
+                    PersonOrganizationRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    HasBeenDeleted = false,
+                    NodeTypeName = "party political entity relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    GeographicalEntity = null,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+            PersonName pn => new NewPersonOrganizationRelationNewPerson {
+                    Person = pn,
+                    Organization = null,
+                    PersonOrganizationRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    HasBeenDeleted = false,
+                    NodeTypeName = "party political entity relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    GeographicalEntity = null,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+            OrganizationName on => new NewPersonOrganizationRelationNewOrganization {
+                    Person = null,
+                    Organization = on,
+                    PersonOrganizationRelationType = RelationTypes.First(),
+                    Title = "",
+                    DateFrom = null,
+                    DateTo = null,
+                    Description = "",
+                    Files = new List<File>(),
+                    HasBeenDeleted = false,
+                    NodeTypeName = "party political entity relation",
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
+                    GeographicalEntity = null,
+                    ProofDocument = null,
+                    Tags = new List<Tags>(),
+                    TenantNodes = new List<TenantNode>(),
+                    Tenants = new List<Tenant>(),
+                },
+            _ => throw new InvalidOperationException("Cannot reach this")
+        };
         StateHasChanged();
     }
 

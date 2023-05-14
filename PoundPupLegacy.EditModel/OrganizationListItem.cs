@@ -3,14 +3,13 @@
 [JsonSerializable(typeof(OrganizationListItem))]
 public partial class OrganizationListItemJsonContext : JsonSerializerContext { }
 
+public interface OrganizationItem : PartyItem
+{
+}
 public record OrganizationListItem : PartyListItem, OrganizationItem
 {
 }
 
-public record OrganizationName: OrganizationItem
-{
-    public required string Name { get; init; }
-}
-public interface OrganizationItem: Named
+public record OrganizationName: PartyName, OrganizationItem
 {
 }

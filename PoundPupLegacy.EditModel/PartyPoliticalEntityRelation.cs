@@ -1,92 +1,81 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(PartyPoliticalEntityRelation))]
-public partial class PartyPoliticalEntityRelationJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(ExistingPartyPoliticalEntityRelation))]
+public partial class ExistingPartyPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
-public record PartyPoliticalEntityRelation : DeprecatedNode
+public interface PartyPoliticalEntityRelation : Relation
 {
-    public int? NodeId { get; init; }
+    PartyPoliticalEntityRelationTypeListItem PartyPoliticalEntityRelationType { get; set; }
 
-    public int? UrlId { get; set; }
+    PartyItem? PartyItem { get; }
+    PoliticalEntityListItem? PoliticalEntityItem { get; }
+}
 
-    public bool HasBeenDeleted { get; set; }
+public interface CompletedPartyPoliticalEntityRelation: PartyPoliticalEntityRelation
+{
+    string PartyName { get; }
 
-    public required string NodeTypeName { get; set; }
+    string PoliticalEntityName { get; }
+}
+public interface ResolvedPartyPoliticalEntityRelation: CompletedPartyPoliticalEntityRelation
+{
 
-    public required int PublisherId { get; set; }
+}
+public record CompletedNewPartyPoliticalEntityRelationNewParty : PartyPoliticalEntityRelationBase, NewNode, CompletedPartyPoliticalEntityRelation
+{
+    public required PartyName Party { get; set; }
+    public required PoliticalEntityListItem PoliticalEntity { get; set; }
+    public string PartyName => Party.Name;
+    public string PoliticalEntityName => PoliticalEntity.Name;
+    public override PartyItem? PartyItem => Party;
+    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
 
-    public required int OwnerId { get; set; }
-
-    public required string Title { get; set; }
-
-    private List<Tags> tags = new();
-
-    public List<Tags> Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-        }
-    }
-    private List<TenantNode> tenantNodes = new();
-
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
-            }
-        }
-    }
-    private List<Tenant> tenants = new();
-
-    public List<Tenant> Tenants {
-        get => tenants;
-        init {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
-    private List<File> files = new();
-
-    public required List<File> Files {
-        get => files;
-        init {
-            if (value is not null) {
-                files = value;
-            }
-        }
-    }
-
-    public required DateTime? DateFrom { get; set; }
-    public required DateTime? DateTo { get; set; }
-
-    private bool _dateRangeIsSet = false;
-
-    private DateTimeRange? _dateRange;
-    public DateTimeRange? DateRange {
-        get {
-            if (!_dateRangeIsSet) {
-                if (DateFrom is not null && DateTo is not null) {
-                    _dateRange = new DateTimeRange(DateFrom, DateTo);
-                }
-                else {
-                    _dateRange = null;
-                }
-                _dateRangeIsSet = true;
-            }
-            return _dateRange;
-        }
-        set {
-            _dateRange = value;
-        }
-    }
-    public required PartyPoliticalEntityRelationTypeListItem PartyPoliticalEntityRelationType { get; set; }
+}
+public record CompletedNewPartyPoliticalEntityRelationExistingParty : PartyPoliticalEntityRelationBase, NewNode, CompletedPartyPoliticalEntityRelation
+{
     public required PartyListItem Party { get; set; }
-    public required PoliticalEntityListItem? PoliticalEntity  { get; set; }
-    public DocumentListItem? ProofDocument { get; set; }
-    public required string Description { get; set; }
+    public required PoliticalEntityListItem PoliticalEntity { get; set; }
+
+    public string PartyName => Party.Name;
+    public string PoliticalEntityName => PoliticalEntity.Name;
+    public override PartyItem? PartyItem => Party;
+    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+}
+
+public record NewPartyPoliticalEntityRelationNewParty : PartyPoliticalEntityRelationBase, NewNode
+{
+    public required PartyName Party { get; set; }
+    public required PoliticalEntityListItem? PoliticalEntity { get; set; }
+    public override PartyItem? PartyItem => Party;
+    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+}
+public record NewPartyPoliticalEntityRelationExistingParty : PartyPoliticalEntityRelationBase, NewNode
+{
+    public required PartyListItem Party { get; set; }
+    public required PoliticalEntityListItem? PoliticalEntity { get; set; }
+    public override PartyItem? PartyItem => Party;
+    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+}
+
+public record ExistingPartyPoliticalEntityRelation : PartyPoliticalEntityRelationBase, ExistingNode, ResolvedPartyPoliticalEntityRelation
+{
+    public int NodeId { get; init; }
+
+    public int UrlId { get; set; }
+    public required PartyListItem Party { get; set; }
+    public required PoliticalEntityListItem PoliticalEntity { get; set; }
+    public string PartyName => Party.Name;
+    public string PoliticalEntityName => PoliticalEntity.Name;
+    public override PartyItem? PartyItem => Party;
+    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+
+
+}
+public abstract record PartyPoliticalEntityRelationBase : RelationBase, PartyPoliticalEntityRelation
+{
+    public required PartyPoliticalEntityRelationTypeListItem PartyPoliticalEntityRelationType { get; set; }
+
+    public abstract PartyItem? PartyItem { get; }
+    public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
 
 }

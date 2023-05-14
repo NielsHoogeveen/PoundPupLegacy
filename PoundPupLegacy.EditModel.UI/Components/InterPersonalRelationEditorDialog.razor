@@ -1,11 +1,20 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
-<SearchItemEditor 
-    T="PersonListItem" 
-    IsMandatory="true"
-    @bind-Value="Relation.PersonFrom" 
-    EnableEdit="!ThisPersonIsFrom" 
-    Label="Person from"/>
+
+@if (WorkRelation!.PersonItemFrom is PersonName) {
+    <div class="form-group">
+        <label>Person from</label>
+        <div>@WorkRelation.PersonFromName</div>
+    </div>
+}
+@if (WorkRelation.PersonItemFrom is PersonListItem personListItemFrom) {
+    <SearchItemEditor
+        T = "PersonListItem"
+        IsMandatory = "true"
+        @bind - Value = "personListItemFrom"
+        EnableEdit="WorkRelation.RelationSideThisPerson == RelationSide.To"
+        Label = "Person from" />
+}
 
 <div class="type-and-swap">
     <div>
@@ -26,12 +35,19 @@
     }
 
 </div>
-<SearchItemEditor 
-    T="PersonListItem"
-    IsMandatory="true"
-    @bind-Value="Relation.PersonTo" 
-    EnableEdit="ThisPersonIsFrom" 
-    Label="Person to"/>
+@if (WorkRelation.PersonItemTo is PersonName) {
+    <div class="form-group">
+        <label>Person from</label>
+        <div>@WorkRelation.PersonToName</div>
+    </div>
+}
+@if (WorkRelation.PersonItemTo is PersonListItem personListItemTo) {
+    <SearchItemEditor T="PersonListItem"
+        IsMandatory="true"
+        @bind-Value="personListItemTo"
+        EnableEdit="WorkRelation.RelationSideThisPerson == RelationSide.From"
+        Label="Person to" />
+}
 <SearchItemEditor T="DocumentListItem"
     IsMandatory="false"
     @bind-Value="Relation.ProofDocument"
@@ -52,37 +68,31 @@
 @code {
 
     [Parameter]
+    [EditorRequired]
     public InterPersonalRelation Relation { get; set; } = default!;
 
-    [Parameter]
-    public EventCallback<InterPersonalRelation> RelationChanged { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public int? PersonId { get; set; } = default!;
+    private InterPersonalRelation? WorkRelation;
 
     [Parameter]
     [EditorRequired]
     public List<InterPersonalRelationTypeListItem> RelationTypes { get; set; } = default!;
 
-    private bool ThisPersonIsFrom = true;
-
     private InterPersonalRelationTypeListItem RelationType { get; set; } = default!;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        WorkRelation = Relation;
+    }
 
     protected override void OnInitialized()
     {
-        if (PersonId is not null) {
-            ThisPersonIsFrom = PersonId == Relation.PersonFrom.Id;
-        }
         RelationType = RelationTypes.First(x => x.Id == Relation.InterPersonalRelationType.Id);
     }
 
     private void Swap()
     {
-        var tmp = Relation.PersonFrom;
-        Relation.PersonFrom = Relation.PersonTo;
-        Relation.PersonTo = tmp;
-        ThisPersonIsFrom = !ThisPersonIsFrom;
+        WorkRelation = WorkRelation?.SwapFromAndTo();
         StateHasChanged();
     }
 
@@ -95,5 +105,10 @@
             }
         }
     }
+    public CompletedInterPersonalRelation? GetValidRelation()
+    {
+        return null;
+    }
+
 }
 

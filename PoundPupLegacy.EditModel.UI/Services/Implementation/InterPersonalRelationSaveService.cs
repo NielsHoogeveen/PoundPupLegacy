@@ -24,16 +24,14 @@ internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<Inter
         await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
         await using var updater = await _interPersonalRelationUpdaterFactory.CreateAsync(connection);
 
-        foreach (var relation in item.Where(x => x.HasBeenDeleted)) {
-            if (!relation.NodeId.HasValue)
-                throw new Exception("relation has no node id and cannot be unpublished");
+        foreach (var relation in item.OfType<ExistingInterPersonalRelation>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
-                NodeId = relation.NodeId.Value
+                NodeId = relation.NodeId
             });
         }
-        foreach (var relation in item.Where(x => x.NodeId.HasValue && !x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingInterPersonalRelation>().Where(x => x.HasBeenDeleted)) {
             await updater.UpdateAsync(new InterPersonalRelationUpdaterRequest {
-                NodeId = relation.NodeId!.Value,
+                NodeId = relation.NodeId,
                 Title = relation.Title,
                 PersonIdFrom = relation.PersonFrom.Id!.Value,
                 PersonIdTo = relation.PersonTo.Id!.Value,
@@ -45,7 +43,7 @@ internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<Inter
         IEnumerable<CreateModel.InterPersonalRelation> GetRelationsToInsert()
         {
 
-            foreach (var relation in item.Where(x => !x.NodeId.HasValue)) {
+            foreach (var relation in item.OfType<NewInterPersonalExistingRelation>()) {
                 var now = DateTime.Now;
                 yield return new CreateModel.InterPersonalRelation {
                     Id = null,

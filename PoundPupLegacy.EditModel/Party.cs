@@ -1,17 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record PartyBase: LocatableBase, Party
+public abstract record PartyBase: LocatableBase, Party
 {
-    private List<PartyPoliticalEntityRelation> partyPoliticalEntityRelations = new();
-
-    public List<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations {
-        get => partyPoliticalEntityRelations;
-        init {
-            if (value is not null) {
-                partyPoliticalEntityRelations = value;
-            }
-        }
-    }
+    public List<CompletedPartyPoliticalEntityRelation> NewPartyPoliticalEntityRelations { get; } = new();
 
     private List<PartyPoliticalEntityRelationTypeListItem> partyPoliticalEntityRelationTypes = new();
 
@@ -23,19 +14,11 @@ public record PartyBase: LocatableBase, Party
             }
         }
     }
-    private List<PersonOrganizationRelation> personOrganizationRelations = new();
-
-    public List<PersonOrganizationRelation> PersonOrganizationRelations {
-        get => personOrganizationRelations;
-        init {
-            if (value is not null) {
-                personOrganizationRelations = value;
-            }
-        }
-    }
+    public abstract IEnumerable<CompletedPartyPoliticalEntityRelation> PartyPoliticalEntityRelations { get; }
+    public abstract IEnumerable<CompletedPersonOrganizationRelation> PersonOrganizationRelations { get; }
+    public List<CompletedNewPersonOrganizationRelation> NewPersonOrganizationRelations { get; } = new();
 
     private List<PersonOrganizationRelationTypeListItem> personOrganizationRelationTypes = new();
-
     public List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes {
         get => personOrganizationRelationTypes;
         init {
@@ -48,11 +31,11 @@ public record PartyBase: LocatableBase, Party
 
 public interface Party : Locatable
 {
-    List<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations { get; }
+    IEnumerable<CompletedPartyPoliticalEntityRelation> PartyPoliticalEntityRelations { get; }
 
     List<PartyPoliticalEntityRelationTypeListItem> PartyPoliticalEntityRelationTypes { get; }
 
-    List<PersonOrganizationRelation> PersonOrganizationRelations { get; }
+    IEnumerable<CompletedPersonOrganizationRelation> PersonOrganizationRelations { get; }
 
     List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; }
 }

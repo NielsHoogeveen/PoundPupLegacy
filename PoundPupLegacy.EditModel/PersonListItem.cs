@@ -3,6 +3,13 @@
 [JsonSerializable(typeof(PersonListItem))]
 public partial class PersonListItemJsonContext : JsonSerializerContext { }
 
-public record PersonListItem : PartyListItem
+
+public interface PersonItem : PartyItem
+{
+}
+public record PersonListItem : PartyListItem, PersonItem
+{
+}
+public record PersonName: PartyName, PersonItem
 {
 }
