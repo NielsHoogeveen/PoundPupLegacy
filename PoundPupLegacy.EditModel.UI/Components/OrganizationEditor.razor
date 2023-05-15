@@ -22,11 +22,11 @@
     Relations="Model.InterOrganizationalRelations.ToList()" 
     RelationTypes="Model.InterOrganizationalRelationTypes" 
     OrganizationItem="Model.OrganizationItem"/>
-<PartyPoliticalEntityRelationsEditor 
+<OrganizationPoliticalEntityRelationsEditor 
     PartyTypeName="organization"
-    Party="Model.OrganizationItem"
-    Relations="Model.PartyPoliticalEntityRelations.ToList()"
-    RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
+    Organization="Model.OrganizationItem"
+    Relations="Model.OrganizationPoliticalEntityRelations.ToList()"
+    RelationTypes="Model.OrganizationPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditor 
     LeadingParty="Model.OrganizationItem"
     Relations="Model.PersonOrganizationRelations.ToList()"
@@ -49,15 +49,14 @@
 
     public override void OnTitleChange(string title)
     {
-        foreach(var relation in Model.PartyPoliticalEntityRelations.OfType<ExistingPartyPoliticalEntityRelation>())
-        {
-            relation.Party.Name = title;
+        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<ExistingOrganizationPoliticalEntityRelation>()) {
+            relation.Organization.Name = title;
         };
-        foreach (var relation in Model.PartyPoliticalEntityRelations.OfType<CompletedNewPartyPoliticalEntityRelationExistingParty>()) {
-            relation.Party.Name = title;
+        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization>()) {
+            relation.Organization.Name = title;
         };
-        foreach (var relation in Model.PartyPoliticalEntityRelations.OfType<CompletedNewPartyPoliticalEntityRelationNewParty>()) {
-            relation.Party.Name = title;
+        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<CompletedNewOrganizationPoliticalEntityRelationNewOrganization>()) {
+            relation.Organization.Name = title;
         };
         foreach (var relation in Model.PersonOrganizationRelations.OfType<ExistingPersonOrganizationRelation>()) {
             relation.Organization.Name = title;

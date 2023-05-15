@@ -33,9 +33,9 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
             await updater.UpdateAsync(new PersonOrganizationRelationUpdaterRequest {
                 NodeId = relation.NodeId,
                 Title = relation.Title,
-                PersonId = relation.Person.Id!.Value,
-                OrganizationId = relation.Organization.Id!.Value,
-                PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationType.Id!.Value,
+                PersonId = relation.Person.Id,
+                OrganizationId = relation.Organization.Id,
+                PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationType.Id,
                 DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
                 DocumentIdProof = relation.ProofDocument?.Id,
                 Description = relation.Description,
@@ -45,7 +45,7 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
         IEnumerable<CreateModel.PersonOrganizationRelation> GetRelationsToInsert()
         {
 
-            foreach (var relation in item.OfType<CompletedNewPersonOrganizationRelation>()) {
+            foreach (var relation in item.OfType<CompletedNewPersonOrganizationRelation>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
                 yield return new CreateModel.PersonOrganizationRelation {
                     Id = null,
@@ -67,8 +67,8 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
                     }).ToList(),
                     NodeTypeId = 47,
                     PersonId = relation.Person.Id,
-                    OrganizationId = relation.Organization.Id!.Value,
-                    PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationType.Id!.Value,
+                    OrganizationId = relation.Organization.Id,
+                    PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
                     GeographicalEntityId = relation.GeographicalEntity?.Id,

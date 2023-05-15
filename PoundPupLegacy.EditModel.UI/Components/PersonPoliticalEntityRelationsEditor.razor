@@ -6,7 +6,7 @@
         OnOk="OnOk" 
         OnCancel="OnCancel">
         <DialogContent>
-            <PartyPoliticalEntityRelationEditorDialog  
+            <PersonPoliticalEntityRelationEditorDialog  
                 @bind-Relation="_relationToEdit" 
                 RelationTypes="@RelationTypes"
                 @ref=dialog/>
@@ -29,10 +29,10 @@
             {
                 var classString = relation.HasBeenDeleted ? "row deleted" : "row";
                 <div class="@classString first">
-                    @relation.PartyName
+                    @relation.PersonName
                 </div>
                 <div class="@classString">
-                    @relation.PartyPoliticalEntityRelationType.Name
+                    @relation.PersonPoliticalEntityRelationType.Name
                 </div>
                 <div class="@classString">
                     @relation.PoliticalEntityName
@@ -64,15 +64,15 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedPartyPoliticalEntityRelation> Relations { get; set; } = default!;
+    public List<CompletedPersonPoliticalEntityRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public List<PartyPoliticalEntityRelationTypeListItem> RelationTypes { get; set; } = default!;
+    public List<PersonPoliticalEntityRelationTypeListItem> RelationTypes { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public PartyItem Party { get; set; } = default!;
+    public PartyItem.PersonItem Person { get; set; } = default!;
 
 
     [Parameter]
@@ -80,9 +80,9 @@
     public string PartyTypeName { get; set; } = default!;
 
 
-    private PartyPoliticalEntityRelationEditorDialog dialog;
+    private PersonPoliticalEntityRelationEditorDialog? dialog;
 
-    private PartyPoliticalEntityRelation? _relationToEdit = null;
+    private PersonPoliticalEntityRelation? _relationToEdit = null;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
@@ -92,19 +92,19 @@
     {
 
     }
-    private void RestoreRelation(PartyPoliticalEntityRelation relation)
+    private void RestoreRelation(PersonPoliticalEntityRelation relation)
     {
         relation.HasBeenDeleted = false;
         StateHasChanged();
     }
 
-    private void RemoveRelation(PartyPoliticalEntityRelation relation)
+    private void RemoveRelation(PersonPoliticalEntityRelation relation)
     {
         relation.HasBeenDeleted = true;
         StateHasChanged();
     }
 
-    private void EditRelation(PartyPoliticalEntityRelation relationToEdit)
+    private void EditRelation(PersonPoliticalEntityRelation relationToEdit)
     {
         _relationToEdit = relationToEdit;
         StateHasChanged();
@@ -127,12 +127,12 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = Party switch
+        _relationToEdit = Person switch
         {
-            PartyListItem pli => new NewPartyPoliticalEntityRelationExistingParty
+            PartyItem.PersonListItem pli => new NewPersonPoliticalEntityRelationExistingPerson
                 {
-                    Party = pli,
-                    PartyPoliticalEntityRelationType = RelationTypes.First(),
+                    Person = pli,
+                    PersonPoliticalEntityRelationType = RelationTypes.First(),
                     Title = "",
                     DateFrom = null,
                     DateTo = null,
@@ -148,9 +148,9 @@
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-            PartyName pn => new NewPartyPoliticalEntityRelationNewParty {
-                    Party = pn,
-                    PartyPoliticalEntityRelationType = RelationTypes.First(),
+            PartyItem.PersonName pn => new NewPersonPoliticalEntityRelationNewPerson {
+                    Person = pn,
+                    PersonPoliticalEntityRelationType = RelationTypes.First(),
                     Title = "",
                     DateFrom = null,
                     DateTo = null,
@@ -165,7 +165,8 @@
                     Tags = new List<Tags>(),
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
-                }
+                },
+            _ => throw new Exception("Cannot reach")
         };
         StateHasChanged();
     }

@@ -1,4 +1,5 @@
-﻿@inherits EditorBase
+﻿@typeparam T where T: PartyListItem;
+@inherits EditorBase
 @if (_relationToEdit is not null) {
     <ModalDialog 
         Title="Add person-organization relation" 
@@ -78,11 +79,11 @@
 
     [Parameter]
     [EditorRequired]
-    public PartyItem LeadingParty { get; set; } = default!;
+    public T LeadingParty { get; set; } = default!;
 
     private PersonOrganizationRelationEditorDialog? dialog;
 
-    public bool IsPersonLeading => LeadingParty is PersonItem;
+    public bool IsPersonLeading => LeadingParty is PartyItem.PersonItem;
 
     private PersonOrganizationRelation? _relationToEdit = null;
 
@@ -130,10 +131,12 @@
     private void OnAdd()
     {
         _relationToEdit = LeadingParty switch {
-            PersonListItem pli => new NewPersonOrganizationRelationExistingPerson {
+            PartyItem.PersonListItem pli => new NewPersonOrganizationRelationExistingPerson {
                     Person = pli,
                     Organization = null,
                     PersonOrganizationRelationType = RelationTypes.First(),
+                    OwnerId = TenantId,
+                    PublisherId = UserId,
                     Title = "",
                     DateFrom = null,
                     DateTo = null,
@@ -141,15 +144,13 @@
                     Files = new List<File>(),
                     HasBeenDeleted = false,
                     NodeTypeName = "party political entity relation",
-                    OwnerId = TenantId,
-                    PublisherId = UserId,
                     GeographicalEntity = null,
                     ProofDocument = null,
                     Tags = new List<Tags>(),
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-            OrganizationListItem oli => new NewPersonOrganizationRelationExistingOrganization {
+            PartyItem.OrganizationListItem oli => new NewPersonOrganizationRelationExistingOrganization {
                     Person = null,
                     Organization = oli,
                     PersonOrganizationRelationType = RelationTypes.First(),
@@ -168,7 +169,7 @@
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-            PersonName pn => new NewPersonOrganizationRelationNewPerson {
+            PartyItem.PersonName pn => new NewPersonOrganizationRelationNewPerson {
                     Person = pn,
                     Organization = null,
                     PersonOrganizationRelationType = RelationTypes.First(),
@@ -187,7 +188,7 @@
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-            OrganizationName on => new NewPersonOrganizationRelationNewOrganization {
+            PartyItem.OrganizationName on => new NewPersonOrganizationRelationNewOrganization {
                     Person = null,
                     Organization = on,
                     PersonOrganizationRelationType = RelationTypes.First(),

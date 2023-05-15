@@ -51,7 +51,7 @@ public class TestDb
         });
         serviceCollection.AddEditModels();
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var personListSearch = serviceProvider.GetRequiredService<ISearchService<PersonListItem>>();
+        var personListSearch = serviceProvider.GetRequiredService<ISearchService<PartyItem.PersonItem.PersonListItem>>();
         async Task GetList(string str)
         {
             var items = await personListSearch!.GetItems(1, str);

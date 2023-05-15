@@ -5,7 +5,7 @@ public partial class InterOrganizationalRelationTypeListItemJsonContext : JsonSe
 
 public record InterOrganizationalRelationTypeListItem: EditListItem
 {
-    public required int? Id { get; init; }
+    public required int Id { get; init; }
 
     public required string Name { get; init; }
 

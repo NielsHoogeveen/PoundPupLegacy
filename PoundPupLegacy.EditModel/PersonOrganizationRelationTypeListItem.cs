@@ -5,6 +5,6 @@ public partial class PersonOrganizationRelationTypeListItemJsonContext : JsonSer
 
 public record PersonOrganizationRelationTypeListItem : EditListItem
 {
-    public required int? Id { get; init; }
+    public required int Id { get; init; }
     public required string Name { get; init; }
 }

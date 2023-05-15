@@ -1,5 +1,5 @@
 ﻿@inherits EditorBase
-@if (_relationToEdit is not null) {
+@if(editContext is not null) {
     <ModalDialog 
         Title="Add inter-organizational relation" 
         Id="inter-organizational-relation-dialog" 
@@ -7,9 +7,9 @@
         OnCancel="OnCancel">
         <DialogContent>
             <InterOrganizationalRelationEditorDialog  
-                Relation="_relationToEdit" 
-                RelationTypes="@RelationTypes"
-                @ref="dialog"/>
+                RelationTypes=RelationTypes
+                EditContext=editContext
+                @ref=dialog/>
         </DialogContent>
     </ModalDialog>
 }
@@ -69,13 +69,31 @@
 
     [Parameter]
     [EditorRequired]
-    public OrganizationItem OrganizationItem { get; set; } = default!;
+    public PartyItem.OrganizationItem OrganizationItem { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public List<InterOrganizationalRelationTypeListItem> RelationTypes { get; set; } = default!;
 
-    private InterOrganizationalRelation? _relationToEdit = null;
+    public interface OrganizationEditContext
+    {
+        EditMode EditMode { get; }
+        InterOrganizationalRelation RelationToEdit { get; }
+    }
+    private class OrganizationUpdateContext : OrganizationEditContext
+    {
+        public EditMode EditMode => EditMode.Update;
+        public required InterOrganizationalRelation RelationToEdit { get; init; }
+        public required CompletedInterOrganizationalRelation CompletedRelationToEdit { get; init; }
+    }
+    private class OrganizationCreateContext : OrganizationEditContext
+    {
+        public EditMode EditMode => EditMode.Create;
+        public required InterOrganizationalRelation RelationToEdit { get; init; }
+    }
+
+    private OrganizationEditContext? editContext;
+
 
     private InterOrganizationalRelationEditorDialog? dialog;
 
@@ -99,31 +117,40 @@
         StateHasChanged();
     }
 
-    private void EditRelation(InterOrganizationalRelation relation)
+    private void EditRelation(CompletedInterOrganizationalRelation relation)
     {
-        _relationToEdit = relation;
+
+        editContext = new OrganizationUpdateContext {
+            CompletedRelationToEdit = relation,
+            RelationToEdit = relation
+        };
         StateHasChanged();
     }
     private void OnOk()
     {
-        if (dialog is not null) {
+        if (dialog is not null && editContext is not null) {
             var relation = dialog.GetValidRelation();
+            if(relation is null)
+                return;
+            if(editContext is OrganizationUpdateContext updateContext) {
+                Relations.Remove(updateContext.CompletedRelationToEdit);
+            }
             Relations.Add(relation);
         }
-        _relationToEdit = null;
+        editContext = null;
         StateHasChanged();
     }
     private void OnCancel()
     {
-        _relationToEdit = null;
+        editContext = null;
         StateHasChanged();
     }
     private void OnAdd()
     {
-        _relationToEdit = OrganizationItem switch
-        {
-            OrganizationListItem li => new NewInterOrganizationalExistingFromRelation
-                {
+
+        editContext = new OrganizationCreateContext{ 
+            RelationToEdit =  OrganizationItem.Match<InterOrganizationalRelation>(
+                li => new NewInterOrganizationalExistingFromRelation {
                     OrganizationFrom = li,
                     OrganizationTo = null,
                     InterOrganizationalRelationType = RelationTypes.First(),
@@ -141,7 +168,7 @@
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-            OrganizationName nm => new NewInterOrganizationalNewFromRelation {
+                nm => new NewInterOrganizationalNewFromRelation {
                     OrganizationFrom = nm,
                     OrganizationTo = null,
                     InterOrganizationalRelationType = RelationTypes.First(),
@@ -158,7 +185,8 @@
                     Tags = new List<Tags>(),
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
-                },
+                }
+            )
         };
         StateHasChanged();
     }

@@ -8,6 +8,11 @@ public partial class NewOrganizationJsonContext : JsonSerializerContext { }
 
 public interface Organization : Party
 {
+    IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations { get; }
+
+    List<OrganizationPoliticalEntityRelationTypeListItem> OrganizationPoliticalEntityRelationTypes { get; }
+
+
     string? WebSiteUrl { get; set; }
     string? EmailAddress { get; set; }
     DateTime? EstablishmentDateFrom { get; set; }
@@ -20,7 +25,7 @@ public interface Organization : Party
     List<OrganizationType> OrganizationTypes { get; }
     List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes { get; }
     IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations { get; }
-    OrganizationItem OrganizationItem { get; }
+    PartyItem.OrganizationItem OrganizationItem { get; }
 }
 
 
@@ -29,23 +34,23 @@ public record ExistingOrganization : OrganizationBase, ExistingNode
     public int NodeId { get; init; }
     public int UrlId { get; set; }
 
-    private List<ExistingPartyPoliticalEntityRelation> existingPartyPoliticalEntityRelations = new();
+    private List<ExistingOrganizationPoliticalEntityRelation> existingOrganizationPoliticalEntityRelations = new();
 
-    public List<ExistingPartyPoliticalEntityRelation> ExistingPartyPoliticalEntityRelations {
-        get => existingPartyPoliticalEntityRelations;
+    public List<ExistingOrganizationPoliticalEntityRelation> ExistingOrganizationPoliticalEntityRelations {
+        get => existingOrganizationPoliticalEntityRelations;
         init {
             if (value is not null) {
-                existingPartyPoliticalEntityRelations = value;
+                existingOrganizationPoliticalEntityRelations = value;
             }
         }
     }
-    public override IEnumerable<CompletedPartyPoliticalEntityRelation> PartyPoliticalEntityRelations => GetPartyPoliticalEntityRelations();
-    private IEnumerable<CompletedPartyPoliticalEntityRelation> GetPartyPoliticalEntityRelations()
+    public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => GetOrganizationPoliticalEntityRelations();
+    private IEnumerable<CompletedOrganizationPoliticalEntityRelation> GetOrganizationPoliticalEntityRelations()
     {
-        foreach (var elem in ExistingPartyPoliticalEntityRelations) {
+        foreach (var elem in ExistingOrganizationPoliticalEntityRelations) {
             yield return elem;
         }
-        foreach (var elem in NewPartyPoliticalEntityRelations) {
+        foreach (var elem in NewOrganizationPoliticalEntityRelations) {
             yield return elem;
         }
     }
@@ -94,17 +99,32 @@ public record ExistingOrganization : OrganizationBase, ExistingNode
 
     }
 
-    public override OrganizationItem OrganizationItem => new OrganizationListItem { Id = NodeId, Name = Title };
+    public override PartyItem.OrganizationItem OrganizationItem => new PartyItem.OrganizationItem.OrganizationListItem { Id = NodeId, Name = Title };
 }
 public record NewOrganization : OrganizationBase, NewNode
 {
-    public override IEnumerable<CompletedPartyPoliticalEntityRelation> PartyPoliticalEntityRelations => NewPartyPoliticalEntityRelations;
+    public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
     public override IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations => NewInterOrganizationalRelations;
     public override IEnumerable<CompletedPersonOrganizationRelation> PersonOrganizationRelations => NewPersonOrganizationRelations;
-    public override OrganizationItem OrganizationItem => new OrganizationName { Name = Title };
+    public override PartyItem.OrganizationItem OrganizationItem => new PartyItem.OrganizationItem.OrganizationName { Name = Title };
 }
 public abstract record OrganizationBase : PartyBase, Organization
 {
+
+    public List<CompletedOrganizationPoliticalEntityRelation> NewOrganizationPoliticalEntityRelations { get; } = new();
+
+    private List<OrganizationPoliticalEntityRelationTypeListItem> personPoliticalEntityRelationTypes = new();
+
+    public List<OrganizationPoliticalEntityRelationTypeListItem> OrganizationPoliticalEntityRelationTypes {
+        get => personPoliticalEntityRelationTypes;
+        init {
+            if (value is not null) {
+                personPoliticalEntityRelationTypes = value;
+            }
+        }
+    }
+    public abstract IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations { get; }
+
     public string? WebSiteUrl { get; set; }
     public string? EmailAddress { get; set; }
     public DateTime? EstablishmentDateFrom { get; set; }
@@ -190,6 +210,6 @@ public abstract record OrganizationBase : PartyBase, Organization
             }
         }
     }
-    public abstract OrganizationItem OrganizationItem { get; }
+    public abstract PartyItem.OrganizationItem OrganizationItem { get; }
     public abstract IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations { get; }
 }

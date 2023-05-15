@@ -1,15 +1,13 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
-@if (WorkRelation.OrganizationItemFrom is OrganizationName) {
+@if (WorkRelation.OrganizationItemFrom is PartyItem.OrganizationItem.OrganizationName) {
     <div class="form-group">
         <label>Organization from</label>
         <div>@WorkRelation.OrganizationFromName</div>
     </div>
 }
-@if (WorkRelation.OrganizationItemFrom is OrganizationListItem organizationListItemFrom)
-{
-    <SearchItemEditor 
-        T="OrganizationListItem" 
+@if (WorkRelation.OrganizationItemFrom is PartyItem.OrganizationItem.OrganizationListItem organizationListItemFrom) {
+    <SearchItemEditor T="PartyItem.OrganizationItem.OrganizationListItem"
         IsMandatory="true"
         @bind-Value="organizationListItemFrom"
         EnableEdit="WorkRelation.RelationSideThisOrganization == RelationSide.To"
@@ -34,16 +32,15 @@
     }
 
 </div>
-@if (WorkRelation.OrganizationItemTo is OrganizationName) {
+@if (WorkRelation.OrganizationItemTo is PartyItem.OrganizationItem.OrganizationName) {
     <div class="form-group">
         <label>Organization from</label>
         <div>@WorkRelation.OrganizationToName</div>
     </div>
 }
-@if (WorkRelation.OrganizationItemTo is OrganizationListItem organizationListItemTo)
-{
-    <SearchItemEditor 
-        T="OrganizationListItem"
+@if (WorkRelation.OrganizationItemTo is PartyItem.OrganizationItem.OrganizationListItem organizationListItemTo) {
+
+    <SearchItemEditor T="PartyItem.OrganizationItem.OrganizationListItem"
         IsMandatory="true"
         @bind-Value="organizationListItemTo"
         EnableEdit="WorkRelation.RelationSideThisOrganization == RelationSide.From"
@@ -83,24 +80,34 @@
 @code {
 
     [Parameter]
-    public InterOrganizationalRelation Relation { get; set; } = default!;
+    [EditorRequired]
+    public InterOrganizationalRelationsEditor.OrganizationEditContext EditContext { get; set; } = default!;
 
-    public InterOrganizationalRelation WorkRelation { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public List<InterOrganizationalRelationTypeListItem> RelationTypes { get; set; } = default!;
 
 
+    private InterOrganizationalRelation WorkRelation { get; set; } = default!;
     private InterOrganizationalRelationTypeListItem RelationType { get; set; } = default!;
-    protected override void OnParametersSet()
-    {
-        WorkRelation = Relation;
-        base.OnParametersSet();
-    }
+    private EditContext? editContext;
+    private ValidationMessageStore? validationMessageStore;
+
 
     protected override void OnInitialized()
     {
+        WorkRelation = EditContext.RelationToEdit;
+        WorkRelation.OrganizationListItemFrom = WorkRelation.OrganizationItemFrom switch {
+            PartyItem.OrganizationItem.OrganizationListItem p => p,
+            _ => null
+        };
+        WorkRelation.OrganizationListItemTo = WorkRelation.OrganizationItemTo switch {
+            PartyItem.OrganizationItem.OrganizationListItem p => p,
+            _ => null
+        };
+        editContext = new EditContext(WorkRelation);
+        validationMessageStore = new ValidationMessageStore(editContext);
 
         RelationType = RelationTypes.First(x => x.Id == WorkRelation.InterOrganizationalRelationType.Id);
     }
@@ -108,6 +115,8 @@
     private void Swap()
     {
         WorkRelation = WorkRelation.SwapFromAndTo();
+        editContext = new EditContext(WorkRelation!);
+        validationMessageStore = new ValidationMessageStore(editContext);
         StateHasChanged();
     }
 
@@ -123,7 +132,33 @@
 
     public CompletedInterOrganizationalRelation? GetValidRelation()
     {
-        return null;
+        validationMessageStore?.Clear();
+        bool hasErrors = false;
+        if (WorkRelation!.OrganizationItemFrom is not PartyItem.OrganizationItem.OrganizationName && WorkRelation.OrganizationListItemFrom is null) {
+            validationMessageStore!.Add(editContext!.Field(nameof(WorkRelation.OrganizationListItemFrom)), "Organization from is required");
+            hasErrors = true;
+            editContext.NotifyValidationStateChanged();
+        }
+        if (WorkRelation!.OrganizationItemTo is not PartyItem.OrganizationItem.OrganizationName && WorkRelation.OrganizationListItemTo is null) {
+            validationMessageStore!.Add(editContext!.Field(nameof(WorkRelation.OrganizationListItemTo)), "Organization to is required");
+            hasErrors = true;
+            editContext.NotifyValidationStateChanged();
+        }
+        if (hasErrors)
+            return null;
+
+        return WorkRelation switch {
+            ExistingInterOrganizationalRelation r => r with { OrganizationFrom = WorkRelation.OrganizationListItemFrom!, OrganizationTo = WorkRelation.OrganizationListItemTo! },
+            NewInterOrganizationalExistingRelation r => r with { OrganizationFrom = WorkRelation.OrganizationListItemFrom!, OrganizationTo = WorkRelation.OrganizationListItemTo! },
+            CompletedNewInterOrganizationalNewFromRelation r => r with { OrganizationTo = WorkRelation.OrganizationListItemTo! },
+            CompletedNewInterOrganizationalNewToRelation r => r with { OrganizationFrom = WorkRelation.OrganizationListItemFrom! },
+            NewInterOrganizationalExistingFromRelation r => r.GetCompletedRelation(WorkRelation.OrganizationListItemTo!),
+            NewInterOrganizationalExistingToRelation r => r.GetCompletedRelation(WorkRelation.OrganizationListItemFrom!),
+            NewInterOrganizationalNewFromRelation r => r.GetCompletedRelation(WorkRelation.OrganizationListItemTo!),
+            NewInterOrganizationalNewToRelation r => r.GetCompletedRelation(WorkRelation.OrganizationListItemFrom!),
+            _ => throw new Exception("Cannot reach")
+        };
+
     }
 }
 

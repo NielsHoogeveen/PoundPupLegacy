@@ -37,7 +37,7 @@ public static class DependencyInjection
         services.AddTransient<ILocationService, LocationService>();
         services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelation>>, InterOrganizationalRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<InterPersonalRelation>>, InterPersonalRelationSaveService>();
-        services.AddTransient<ISaveService<IEnumerable<PartyPoliticalEntityRelation>>, PartyPoliticalEntityRelationSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<OrganizationPoliticalEntityRelation>>, OrganizationPoliticalEntityRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<PersonOrganizationRelation>>, PersonOrganizationRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<File>>, FilesSaveService>();
         services.AddTransient<ISaveService<IEnumerable<TenantNode>>, TenantNodesSaveService>();
@@ -46,9 +46,8 @@ public static class DependencyInjection
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ISearchService<DocumentListItem>, DocumentSearchService>();
         services.AddTransient<ISearchService<GeographicalEntityListItem>, GeographicalEntitySearchService>();
-        services.AddTransient<ISearchService<OrganizationListItem>, OrganizationSearchService>();
-        services.AddTransient<ISearchService<PartyListItem>, PartySearchService>();
-        services.AddTransient<ISearchService<PersonListItem>, PersonSearchService>();
+        services.AddTransient<ISearchService<PartyItem.OrganizationItem.OrganizationListItem>, OrganizationSearchService>();
+        services.AddTransient<ISearchService<PartyItem.PersonItem.PersonListItem>, PersonSearchService>();
         services.AddTransient<ISearchService<PoliticalEntityListItem>, PoliticalEntitySearchService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();
     }

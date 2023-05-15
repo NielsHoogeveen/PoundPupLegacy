@@ -4,12 +4,12 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal class PartyPoliticalEntityRelationSaveService : ISaveService<IEnumerable<PartyPoliticalEntityRelation>>
+internal class PersonPoliticalEntityRelationSaveService : ISaveService<IEnumerable<PersonPoliticalEntityRelation>>
 {
     private readonly IDatabaseUpdaterFactory<NodeUnpublishRequest> _nodeUnpublishFactory;
     private readonly IDatabaseUpdaterFactory<PartyPoliticalEntityRelationUpdaterRequest> _partyPoliticalEntityRelationUpdaterFactory;
     private readonly IEntityCreator<CreateModel.PartyPoliticalEntityRelation> _partyPoliticalEntityRelationCreator;
-    public PartyPoliticalEntityRelationSaveService(
+    public PersonPoliticalEntityRelationSaveService(
         IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
         IDatabaseUpdaterFactory<PartyPoliticalEntityRelationUpdaterRequest> partyPoliticalEntityRelationUpdaterFactory,
         IEntityCreator<CreateModel.PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
@@ -19,23 +19,23 @@ internal class PartyPoliticalEntityRelationSaveService : ISaveService<IEnumerabl
         _partyPoliticalEntityRelationUpdaterFactory = partyPoliticalEntityRelationUpdaterFactory;
         _partyPoliticalEntityRelationCreator = partyPoliticalEntityRelationCreator;
     }
-    public async Task SaveAsync(IEnumerable<PartyPoliticalEntityRelation> item, IDbConnection connection)
+    public async Task SaveAsync(IEnumerable<PersonPoliticalEntityRelation> item, IDbConnection connection)
     {
         await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
         await using var updater = await _partyPoliticalEntityRelationUpdaterFactory.CreateAsync(connection);
 
-        foreach (var relation in item.OfType<ExistingPartyPoliticalEntityRelation>().Where(x => x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingPersonPoliticalEntityRelation>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
                 NodeId = relation.NodeId
             });
         }
-        foreach (var relation in item.OfType<ExistingPartyPoliticalEntityRelation>().Where(x => !x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingPersonPoliticalEntityRelation>().Where(x => !x.HasBeenDeleted)) {
             await updater.UpdateAsync(new PartyPoliticalEntityRelationUpdaterRequest {
                 NodeId = relation.NodeId,
                 Title = relation.Title,
-                PartyId = relation.Party.Id!.Value,
-                PoliticalEntityId = relation.PoliticalEntity.Id!.Value,
-                PartyPoliticalEntityRelationTypeId = relation.PartyPoliticalEntityRelationType.Id!.Value,
+                PartyId = relation.Person.Id,
+                PoliticalEntityId = relation.PoliticalEntity.Id,
+                PartyPoliticalEntityRelationTypeId = relation.PersonPoliticalEntityRelationType.Id,
                 DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
                 DocumentIdProof = relation.ProofDocument?.Id
             });
@@ -43,7 +43,7 @@ internal class PartyPoliticalEntityRelationSaveService : ISaveService<IEnumerabl
         IEnumerable<CreateModel.PartyPoliticalEntityRelation> GetRelationsToInsert()
         {
 
-            foreach (var relation in item.OfType<CompletedNewPartyPoliticalEntityRelationExistingParty>()) {
+            foreach (var relation in item.OfType<CompletedNewPersonPoliticalEntityRelationExistingPerson>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
                 yield return new CreateModel.PartyPoliticalEntityRelation {
                     Id = null,
@@ -64,9 +64,9 @@ internal class PartyPoliticalEntityRelationSaveService : ISaveService<IEnumerabl
                         UrlId = null
                     }).ToList(),
                     NodeTypeId = 47,
-                    PartyId = relation.Party.Id!.Value,
-                    PoliticalEntityId = relation.PoliticalEntity.Id!.Value,
-                    PartyPoliticalEntityRelationTypeId = relation.PartyPoliticalEntityRelationType.Id!.Value,
+                    PartyId = relation.Person.Id,
+                    PoliticalEntityId = relation.PoliticalEntity.Id,
+                    PartyPoliticalEntityRelationTypeId = relation.PersonPoliticalEntityRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
                 };

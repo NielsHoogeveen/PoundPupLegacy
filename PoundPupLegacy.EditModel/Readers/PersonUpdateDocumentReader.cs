@@ -2,7 +2,7 @@
 
 internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<ExistingPerson>
 {
-    public override string Sql => string.Format(SQL, "tn");
+    public override string Sql => string.Format(SQL, "tn", (int)PartyType.Person);
 
     protected override int NodeTypeId => Constants.PERSON;
 
@@ -48,7 +48,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     (select document from person_organization_relation_types_document),
                     'PartyPoliticalEntityRelationTypes',
                     (select document from person_political_entity_relation_types_document),
-                    'InterPersonalRelations',
+                    'ExistingInterPersonalRelations',
                     (select document from inter_personal_relations_document),
                     'ExistingPersonOrganizationRelations',
                     (select document from person_organization_relations_document),

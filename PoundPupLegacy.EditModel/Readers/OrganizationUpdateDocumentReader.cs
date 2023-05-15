@@ -2,7 +2,7 @@
 
 internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<ExistingOrganization>
 {
-    public override string Sql => string.Format(SQL, "tn2");
+    public override string Sql => string.Format(SQL, "tn2", (int)PartyType.Organization);
 
     protected override int NodeTypeId => Constants.ORGANIZATION;
 

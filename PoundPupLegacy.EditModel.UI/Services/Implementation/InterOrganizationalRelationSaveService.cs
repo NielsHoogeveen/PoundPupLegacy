@@ -34,9 +34,9 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
                 NodeId = relation.NodeId,
                 Title = relation.Title,
                 Description = relation.Description,
-                OrganizationIdFrom = relation.OrganizationFrom.Id!.Value,
-                OrganizationIdTo = relation.OrganizationTo.Id!.Value,
-                InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationType.Id!.Value,
+                OrganizationIdFrom = relation.OrganizationFrom.Id,
+                OrganizationIdTo = relation.OrganizationTo.Id,
+                InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationType.Id,
                 DateRange = relation.DateRange,
                 GeographicalEntityId = relation.GeographicalEntity?.Id,
                 DocumentIdProof = relation.ProofDocument?.Id,
@@ -47,7 +47,7 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
         IEnumerable<CreateModel.InterOrganizationalRelation> GetRelationsToInsert()
         {
 
-            foreach (var relation in item.OfType<NewInterOrganizationalExistingRelation>()) {
+            foreach (var relation in item.OfType<NewInterOrganizationalExistingRelation>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
                 yield return new CreateModel.InterOrganizationalRelation {
                     Id = null,
@@ -68,10 +68,10 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
                         UrlId = null
                     }).ToList(),
                     NodeTypeId = 47,
-                    OrganizationIdFrom = relation.OrganizationFrom.Id!.Value,
-                    OrganizationIdTo = relation.OrganizationTo.Id!.Value,
+                    OrganizationIdFrom = relation.OrganizationFrom.Id,
+                    OrganizationIdTo = relation.OrganizationTo.Id,
                     GeographicalEntityId = relation.GeographicalEntity?.Id,
-                    InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationType.Id!.Value,
+                    InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
                     Description = relation.Description,

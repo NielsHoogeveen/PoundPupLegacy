@@ -9,7 +9,7 @@ public sealed record OrganizationsReaderRequest : IRequest
     public required string SearchString { get; init; }
 }
 
-internal sealed class OrganizationsReaderFactory : EnumerableDatabaseReaderFactory<Request, OrganizationListItem>
+internal sealed class OrganizationsReaderFactory : EnumerableDatabaseReaderFactory<Request, PartyItem.OrganizationItem.OrganizationListItem>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly SearchOptionDatabaseParameter SearchOptionParameter = new() { Name = "search_option" };
@@ -53,9 +53,9 @@ internal sealed class OrganizationsReaderFactory : EnumerableDatabaseReaderFacto
         };
     }
 
-    protected override OrganizationListItem Read(NpgsqlDataReader reader)
+    protected override PartyItem.OrganizationItem.OrganizationListItem Read(NpgsqlDataReader reader)
     {
-        return new OrganizationListItem {
+        return new PartyItem.OrganizationItem.OrganizationListItem {
             Id = IdReader.GetValue(reader),
             Name = NameReader.GetValue(reader),
         };

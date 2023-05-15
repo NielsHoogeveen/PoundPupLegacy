@@ -1,21 +1,22 @@
 ﻿@inherits EditorBase
-@if (editContext is not null) {
+@if (_relationToEdit is not null) {
     <ModalDialog 
-        Title="Add inter-personal relation" 
-        Id="inter-personal-relation-dialog" 
+        Title="Edit party political entity relation" 
+        Id="party-political-relation-dialog" 
         OnOk="OnOk" 
         OnCancel="OnCancel">
         <DialogContent>
-            <InterPersonalRelationEditorDialog  
+            <OrganizationPoliticalEntityRelationEditorDialog  
+                @bind-Relation="_relationToEdit" 
                 RelationTypes="@RelationTypes"
-                EditContext="editContext"
                 @ref=dialog/>
         </DialogContent>
     </ModalDialog>
 }
 <div class="relations-editor">
-    <h4>Relations between this person and another person</h4>
-    @if (Relations.Any()) {
+    <h4>Relations between this @PartyTypeName and a political entity</h4>
+    @if (Relations.Any())
+    {
         <div class="relations">
             <div class="grid-header first">From</div>
             <div class="grid-header">Type</div>
@@ -24,32 +25,31 @@
             <div class="grid-header">End</div>
             <div class="grid-header"></div>
             <div class="grid-header"></div>
-            @foreach(var relation in Relations) {
+            @foreach (var relation in Relations)
+            {
                 var classString = relation.HasBeenDeleted ? "row deleted" : "row";
                 <div class="@classString first">
-                    <span>@relation.PersonFromName</span>
+                    @relation.OrganizationName
                 </div>
                 <div class="@classString">
-                    <span>@relation.InterPersonalRelationType.Name</span>
+                    @relation.OrganizationPoliticalEntityRelationType.Name
                 </div>
                 <div class="@classString">
-                    <span>@relation.PersonToName</span>
+                    @relation.PoliticalEntityName
                 </div>
                 <div class="@classString">
-                    <span>@relation.DateFrom</span>
+                    @relation.DateFrom
                 </div>
                 <div class="@classString">
-                    <span>@relation.DateTo</span>
+                    @relation.DateTo
                 </div>
                 <div class="@classString">
-                    @if (!relation.HasBeenDeleted)
-                    {
+                    @if (!relation.HasBeenDeleted) {
                         <button type="button" @onclick="() => EditRelation(relation)">edit</button>
                     }
                 </div>
                 <div class="@classString">
-                    @if (relation.HasBeenDeleted)
-                    {
+                    @if (relation.HasBeenDeleted) {
                         <button type="button" @onclick="() => RestoreRelation(relation)">restore</button>
                     }
                     else {
@@ -61,40 +61,28 @@
     }
     <button type="button" @onclick="OnAdd">Add</button>
 </div>
-
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterPersonalRelation> Relations { get; set; } = default!;
+    public List<CompletedOrganizationPoliticalEntityRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public PartyItem.PersonItem Person { get; set; } = default!;
+    public List<OrganizationPoliticalEntityRelationTypeListItem> RelationTypes { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public List<InterPersonalRelationTypeListItem> RelationTypes { get; set; } = default!;
+    public PartyItem.OrganizationItem Organization { get; set; } = default!;
 
-    public interface PersonEditContext
-    {
-        EditMode EditMode { get; }
-        InterPersonalRelation RelationToEdit { get; }
-    }
-    private class PersonUpdateContext : PersonEditContext
-    {
-        public EditMode EditMode => EditMode.Update;
-        public required InterPersonalRelation RelationToEdit { get; init; }
-        public required CompletedInterPersonalRelation CompletedRelationToEdit { get; init; }
-    }
-    private class PersonCreateContext: PersonEditContext
-    {
-        public EditMode EditMode => EditMode.Create;
-        public required InterPersonalRelation RelationToEdit { get; init; }
-    }
 
-    private PersonEditContext? editContext;
+    [Parameter]
+    [EditorRequired]
+    public string PartyTypeName { get; set; } = default!;
 
-    private InterPersonalRelationEditorDialog? dialog;
+
+    private OrganizationPoliticalEntityRelationEditorDialog? dialog;
+
+    private OrganizationPoliticalEntityRelation? _relationToEdit = null;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
@@ -102,88 +90,84 @@
     }
     public override void OnTitleChange(string title)
     {
-    }
 
-    private void EditRelation(CompletedInterPersonalRelation relation)
-    {
-
-        editContext = new PersonUpdateContext {
-            RelationToEdit = relation,
-            CompletedRelationToEdit = relation,
-        };
-        StateHasChanged();
     }
-    private void RestoreRelation(InterPersonalRelation relation)
+    private void RestoreRelation(OrganizationPoliticalEntityRelation relation)
     {
         relation.HasBeenDeleted = false;
         StateHasChanged();
     }
 
-    private void RemoveRelation(InterPersonalRelation relation)
+    private void RemoveRelation(OrganizationPoliticalEntityRelation relation)
     {
         relation.HasBeenDeleted = true;
         StateHasChanged();
     }
+
+    private void EditRelation(OrganizationPoliticalEntityRelation relationToEdit)
+    {
+        _relationToEdit = relationToEdit;
+        StateHasChanged();
+    }
     private void OnOk()
     {
-        if (dialog is not null && editContext is not null) {
+        if (dialog is not null) {
             var relation = dialog.GetValidRelation();
-            if(relation is null)
+            if (relation is null)
                 return;
-            if (editContext is PersonUpdateContext updateContext) {   
-                Relations.Remove(updateContext.CompletedRelationToEdit);
-            }
             Relations.Add(relation);
         }
-        editContext = null;
+        _relationToEdit = null;
         StateHasChanged();
     }
     private void OnCancel()
     {
-        editContext = null;
+        _relationToEdit = null;
         StateHasChanged();
     }
     private void OnAdd()
     {
-        editContext = new PersonCreateContext {
-            RelationToEdit = Person.Match<InterPersonalRelation>(
-                li => new NewInterPersonalExistingFromRelation {
-                    PersonFrom = li,
-                    PersonTo = null,
-                    InterPersonalRelationType = RelationTypes.First(),
+        _relationToEdit = Organization switch
+        {
+            PartyItem.OrganizationListItem pli => new NewOrganizationPoliticalEntityRelationExistingOrganization
+                {
+                    Organization = pli,
+                    OrganizationPoliticalEntityRelationType = RelationTypes.First(),
                     Title = "",
                     DateFrom = null,
                     DateTo = null,
                     Description = "",
                     Files = new List<File>(),
-                    NodeTypeName = "inter organizational relation",
+                    HasBeenDeleted = false,
+                    NodeTypeName = "party political entity relation",
                     OwnerId = TenantId,
                     PublisherId = UserId,
+                    PoliticalEntity = null,
                     ProofDocument = null,
                     Tags = new List<Tags>(),
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-                nm => new NewInterPersonalNewFromRelation {
-                    PersonFrom = nm,
-                    PersonTo = null,
-                    InterPersonalRelationType = RelationTypes.First(),
+            PartyItem.OrganizationName pn => new NewOrganizationPoliticalEntityRelationNewOrganization {
+                    Organization = pn,
+                    OrganizationPoliticalEntityRelationType = RelationTypes.First(),
                     Title = "",
                     DateFrom = null,
                     DateTo = null,
                     Description = "",
                     Files = new List<File>(),
-                    NodeTypeName = "inter organizational relation",
+                    HasBeenDeleted = false,
+                    NodeTypeName = "party political entity relation",
                     OwnerId = TenantId,
                     PublisherId = UserId,
+                    PoliticalEntity = null,
                     ProofDocument = null,
                     Tags = new List<Tags>(),
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
-                }
-            )
+                },
+            _ => throw new Exception("Cannot reach")
         };
         StateHasChanged();
     }
-
 }

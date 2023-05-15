@@ -1,13 +1,13 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
-@if (Relation.PersonItem is PersonName) {
+@if (Relation.PersonItem is PartyItem.PersonItem.PersonName) {
     <div class="form-group">
         <label>Person from</label>
         <div>@Relation.PersonItem.Name</div>
     </div>
 }
-@if (Relation.PersonItem is PersonListItem personListItem) {
-    <SearchItemEditor T="PersonListItem"
+@if (Relation.PersonItem is PartyItem.PersonItem.PersonListItem personListItem) {
+    <SearchItemEditor T="PartyItem.PersonItem.PersonListItem"
     IsMandatory="true"
     @bind-Value="personListItem"
     EnableEdit="!IsPersonLeading"
@@ -29,14 +29,14 @@
         </select>
     </div>
 </div>
-@if (Relation.OrganizationItem is OrganizationName organizationName) {
+@if (Relation.OrganizationItem is PartyItem.OrganizationItem.OrganizationName organizationName) {
     <div class="form-group">
         <label>Organization</label>
         <div>@organizationName.Name</div>
     </div>
 }
-@if (Relation.OrganizationItem is OrganizationListItem organiztionListItem) {
-    <SearchItemEditor T="OrganizationListItem"
+@if (Relation.OrganizationItem is PartyItem.OrganizationItem.OrganizationListItem organiztionListItem) {
+    <SearchItemEditor T="PartyItem.OrganizationItem.OrganizationListItem"
     IsMandatory="true"
     @bind-Value="organiztionListItem"
     EnableEdit="IsPersonLeading"

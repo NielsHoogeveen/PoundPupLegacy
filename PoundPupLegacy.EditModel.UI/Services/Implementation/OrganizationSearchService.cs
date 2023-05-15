@@ -3,11 +3,11 @@ using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class OrganizationSearchService : SearchService<OrganizationListItem, OrganizationsReaderRequest>
+internal sealed class OrganizationSearchService : SearchService<PartyItem.OrganizationItem.OrganizationListItem, OrganizationsReaderRequest>
 {
     public OrganizationSearchService(
         IDbConnection connection,
-        IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, OrganizationListItem> organizationsReaderFactory): base(connection, organizationsReaderFactory)
+        IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, PartyItem.OrganizationItem.OrganizationListItem> organizationsReaderFactory): base(connection, organizationsReaderFactory)
     {
     }
     protected override OrganizationsReaderRequest GetRequest(int tenantId, string searchString)

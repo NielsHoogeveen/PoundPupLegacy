@@ -3,13 +3,12 @@
     Relations="Model.InterPersonalRelations" 
     RelationTypes="Model.InterPersonalRelationTypes" 
     Person="Person"/>
-<PartyPoliticalEntityRelationsEditor 
+<PersonPoliticalEntityRelationsEditor 
     PartyTypeName="person"
-    Party="Person"
-    Relations="Model.PartyPoliticalEntityRelations.ToList()"
-    RelationTypes="Model.PartyPoliticalEntityRelationTypes" />
+    Person="Person"
+    Relations="Model.PersonPoliticalEntityRelations.ToList()"
+    RelationTypes="Model.PersonPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditor 
-    IsPersonLeading = "true"
     LeadingParty="Person"
     Relations="Model.PersonOrganizationRelations.ToList()"
     RelationTypes="Model.PersonOrganizationRelationTypes" />
@@ -31,7 +30,7 @@
 
     public override void OnTitleChange(string title)
     {
-        foreach (var relation in Model.PartyPoliticalEntityRelations.OfType<ExistingPersonOrganizationRelation>()) {
+        foreach (var relation in Model.PersonPoliticalEntityRelations.OfType<ExistingPersonOrganizationRelation>()) {
             relation.Person.Name = title;
         };
         foreach (var relation in Model.PersonOrganizationRelations.OfType<CompletedNewPersonOrganizationRelation>()) {
@@ -53,8 +52,14 @@
         StateHasChanged();
     }
 
-    private PersonListItem Person => new PersonListItem {
-        Id = NodeId,
-        Name = Model.Title
+    private PartyItem.PersonItem? Person => Model switch {
+        ExistingNode n => new PartyItem.PersonItem.PersonListItem {
+                Id = n.NodeId,
+                Name = Model.Title
+            },
+        NewNode nn => new PartyItem.PersonItem.PersonName {
+            Name = Model.Title
+        },
+        _ => null
     };
 }

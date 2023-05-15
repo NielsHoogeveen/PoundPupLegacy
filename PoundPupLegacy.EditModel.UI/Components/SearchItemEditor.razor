@@ -8,7 +8,7 @@
         @if (options.Any()) {
             <div class="options">
                 @foreach (var elem in options) {
-                    <div class="option" @onclick="() => SelectItem(elem.Id!.Value)">@elem.Name</div>
+                    <div class="option" @onclick="() => SelectItem(elem.Id)">@elem.Name</div>
                 }
             </div>
         }
@@ -65,8 +65,9 @@
         itemSearch = "";
         await ValueChanged.InvokeAsync(Value);
     }
-    private void Clear()
+    private async Task Clear()
     {
         Value = null;
+        await ValueChanged.InvokeAsync(Value);
     }
 }
