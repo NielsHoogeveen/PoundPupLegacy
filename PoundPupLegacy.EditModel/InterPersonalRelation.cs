@@ -5,10 +5,10 @@ public interface InterPersonalRelation : Relation
     InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
     string PersonFromName { get; }
     string PersonToName { get; }
-    PartyItem.PersonItem? PersonItemFrom { get; }
-    PartyItem.PersonItem? PersonItemTo { get; }
-    PartyItem.PersonListItem? PersonListItemFrom { get; set; }
-    PartyItem.PersonListItem? PersonListItemTo { get; set; }
+    PersonItem? PersonItemFrom { get; }
+    PersonItem? PersonItemTo { get; }
+    PersonItem.PersonListItem? PersonListItemFrom { get; set; }
+    PersonItem.PersonListItem? PersonListItemTo { get; set; }
     InterPersonalRelation SwapFromAndTo();
     RelationSide RelationSideThisPerson { get; }
 }
@@ -22,7 +22,7 @@ public interface NewInterPersonalRelation : InterPersonalRelation, NewNode
 }
 public interface IncompleteNewInterPersonalRelation : NewInterPersonalRelation
 {
-    public CompletedInterPersonalRelation GetCompletedRelation(PartyItem.PersonListItem personListItem);
+    public CompletedInterPersonalRelation GetCompletedRelation(PersonItem.PersonListItem personListItem);
 }
 
 public interface CompletedNewInterPersonalRelation : NewInterPersonalRelation, CompletedInterPersonalRelation
@@ -37,13 +37,13 @@ public abstract record InterPersonalRelationBase : RelationBase, InterPersonalRe
     public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
     public abstract string PersonFromName { get; }
     public abstract string PersonToName { get; }
-    public abstract PartyItem.PersonItem? PersonItemFrom { get; }
-    public abstract PartyItem.PersonItem? PersonItemTo { get; }
+    public abstract PersonItem? PersonItemFrom { get; }
+    public abstract PersonItem? PersonItemTo { get; }
 
     public abstract InterPersonalRelation SwapFromAndTo();
     public abstract RelationSide RelationSideThisPerson { get; }
-    public PartyItem.PersonListItem? PersonListItemFrom { get; set; }
-    public PartyItem.PersonListItem? PersonListItemTo { get; set; }
+    public PersonItem.PersonListItem? PersonListItemFrom { get; set; }
+    public PersonItem.PersonListItem? PersonListItemTo { get; set; }
 
 }
 
@@ -52,8 +52,8 @@ public partial class ExistingInterPersonalRelationJsonContext : JsonSerializerCo
 
 public record ExistingInterPersonalRelation : InterPersonalRelationBase, ExistingNode, ResolvedInterPersonalRelation
 {
-    public required PartyItem.PersonListItem PersonFrom { get; set; }
-    public required PartyItem.PersonListItem PersonTo { get; set; }
+    public required PersonItem.PersonListItem PersonFrom { get; set; }
+    public required PersonItem.PersonListItem PersonTo { get; set; }
     public int NodeId { get; init; }
     public int UrlId { get; set; }
     [JsonIgnore]
@@ -61,9 +61,9 @@ public record ExistingInterPersonalRelation : InterPersonalRelationBase, Existin
     [JsonIgnore]
     public override string PersonToName => PersonTo.Name;
     [JsonIgnore]
-    public override PartyItem.PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemFrom => PersonFrom;
     [JsonIgnore]
-    public override PartyItem.PersonItem? PersonItemTo => PersonTo;
+    public override PersonItem? PersonItemTo => PersonTo;
     public override ExistingInterPersonalRelation SwapFromAndTo()
     {
         (PersonTo, PersonFrom) = (PersonFrom, PersonTo);
@@ -85,12 +85,12 @@ public record ExistingInterPersonalRelation : InterPersonalRelationBase, Existin
 
 public record NewInterPersonalExistingRelation : InterPersonalRelationBase, ResolvedInterPersonalRelation
 {
-    public required PartyItem.PersonListItem PersonFrom { get; set; }
-    public required PartyItem.PersonListItem PersonTo { get; set; }
+    public required PersonItem.PersonListItem PersonFrom { get; set; }
+    public required PersonItem.PersonListItem PersonTo { get; set; }
     public override string PersonFromName => PersonFrom.Name;
     public override string PersonToName => PersonTo.Name;
-    public override PartyItem.PersonItem? PersonItemFrom => PersonFrom;
-    public override PartyItem.PersonItem? PersonItemTo => PersonTo;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
 
     public override NewInterPersonalExistingRelation SwapFromAndTo()
     {
@@ -111,12 +111,12 @@ public record NewInterPersonalExistingRelation : InterPersonalRelationBase, Reso
 
 public record NewInterPersonalExistingFromRelation : InterPersonalRelationBase, InterPersonalRelation, IncompleteNewInterPersonalRelation
 {
-    public required PartyItem.PersonListItem PersonFrom { get; set; }
-    public required PartyItem.PersonListItem? PersonTo { get; set; }
+    public required PersonItem.PersonListItem PersonFrom { get; set; }
+    public required PersonItem.PersonListItem? PersonTo { get; set; }
     public override string PersonFromName => PersonFrom.Name;
     public override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
-    public override PartyItem.PersonItem? PersonItemFrom => PersonFrom;
-    public override PartyItem.PersonItem? PersonItemTo => PersonTo;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
     public override NewInterPersonalExistingToRelation SwapFromAndTo()
     {
         return new NewInterPersonalExistingToRelation {
@@ -140,7 +140,7 @@ public record NewInterPersonalExistingFromRelation : InterPersonalRelationBase, 
             PersonListItemTo = PersonListItemFrom,
         };
     }
-    public CompletedInterPersonalRelation GetCompletedRelation(PartyItem.PersonListItem personTo)
+    public CompletedInterPersonalRelation GetCompletedRelation(PersonItem.PersonListItem personTo)
     {
         return new NewInterPersonalExistingRelation {
             PersonFrom = PersonFrom,
@@ -170,12 +170,12 @@ public record NewInterPersonalExistingFromRelation : InterPersonalRelationBase, 
 }
 public record NewInterPersonalExistingToRelation : InterPersonalRelationBase, InterPersonalRelation, IncompleteNewInterPersonalRelation
 {
-    public required PartyItem.PersonListItem? PersonFrom { get; set; }
-    public required PartyItem.PersonListItem PersonTo { get; set; }
+    public required PersonItem.PersonListItem? PersonFrom { get; set; }
+    public required PersonItem.PersonListItem PersonTo { get; set; }
     public override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
     public override string PersonToName => PersonTo.Name;
-    public override PartyItem.PersonItem? PersonItemFrom => PersonFrom;
-    public override PartyItem.PersonItem? PersonItemTo => PersonTo;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
     public override NewInterPersonalExistingFromRelation SwapFromAndTo()
     {
         return new NewInterPersonalExistingFromRelation {
@@ -199,7 +199,7 @@ public record NewInterPersonalExistingToRelation : InterPersonalRelationBase, In
             PersonListItemTo = PersonListItemFrom,
         };
     }
-    public CompletedInterPersonalRelation GetCompletedRelation(PartyItem.PersonListItem personFrom)
+    public CompletedInterPersonalRelation GetCompletedRelation(PersonItem.PersonListItem personFrom)
     {
         return new NewInterPersonalExistingRelation {
             PersonFrom = personFrom,
@@ -228,12 +228,12 @@ public record NewInterPersonalExistingToRelation : InterPersonalRelationBase, In
 
 public record CompletedNewInterPersonalNewFromRelation : InterPersonalRelationBase, CompletedInterPersonalRelation, CompletedNewInterPersonalRelation
 {
-    public required PartyItem.PersonName PersonFrom { get; set; }
-    public required PartyItem.PersonListItem PersonTo { get; set; }
+    public required PersonItem.PersonName PersonFrom { get; set; }
+    public required PersonItem.PersonListItem PersonTo { get; set; }
     public override string PersonFromName => PersonFrom.Name;
     public override string PersonToName => PersonTo.Name;
-    public override PartyItem.PersonItem? PersonItemFrom => PersonFrom;
-    public override PartyItem.PersonItem? PersonItemTo => PersonTo;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
 
     public override CompletedNewInterPersonalNewToRelation SwapFromAndTo()
     {
@@ -262,12 +262,12 @@ public record CompletedNewInterPersonalNewFromRelation : InterPersonalRelationBa
 }
 public record NewInterPersonalNewFromRelation : InterPersonalRelationBase, InterPersonalRelation, IncompleteNewInterPersonalRelation
 {
-    public required PartyItem.PersonName PersonFrom { get; set; }
-    public required PartyItem.PersonListItem? PersonTo { get; set; }
+    public required PersonItem.PersonName PersonFrom { get; set; }
+    public required PersonItem.PersonListItem? PersonTo { get; set; }
     public override string PersonFromName => PersonFrom.Name;
     public override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
-    public override PartyItem.PersonItem? PersonItemFrom => PersonFrom;
-    public override PartyItem.PersonItem? PersonItemTo => PersonTo;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
     public override NewInterPersonalNewToRelation SwapFromAndTo()
     {
         return new NewInterPersonalNewToRelation {
@@ -291,7 +291,7 @@ public record NewInterPersonalNewFromRelation : InterPersonalRelationBase, Inter
             PersonListItemTo = PersonListItemFrom,
         };
     }
-    public CompletedInterPersonalRelation GetCompletedRelation(PartyItem.PersonListItem personTo)
+    public CompletedInterPersonalRelation GetCompletedRelation(PersonItem.PersonListItem personTo)
     {
         return new CompletedNewInterPersonalNewFromRelation {
             PersonFrom = PersonFrom,
@@ -319,12 +319,12 @@ public record NewInterPersonalNewFromRelation : InterPersonalRelationBase, Inter
 }
 public record CompletedNewInterPersonalNewToRelation : InterPersonalRelationBase, CompletedInterPersonalRelation, CompletedNewInterPersonalRelation
 {
-    public required PartyItem.PersonListItem PersonFrom { get; set; }
-    public required PartyItem.PersonName PersonTo { get; set; }
+    public required PersonItem.PersonListItem PersonFrom { get; set; }
+    public required PersonItem.PersonName PersonTo { get; set; }
     public override string PersonFromName => PersonFrom.Name;
     public override string PersonToName => PersonTo.Name;
-    public override PartyItem.PersonItem? PersonItemFrom => PersonFrom;
-    public override PartyItem.PersonItem? PersonItemTo => PersonTo;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
     public override CompletedNewInterPersonalNewFromRelation SwapFromAndTo()
     {
         return new CompletedNewInterPersonalNewFromRelation {
@@ -353,12 +353,12 @@ public record CompletedNewInterPersonalNewToRelation : InterPersonalRelationBase
 }
 public record NewInterPersonalNewToRelation : InterPersonalRelationBase, InterPersonalRelation, IncompleteNewInterPersonalRelation
 {
-    public required PartyItem.PersonListItem? PersonFrom { get; set; }
-    public required PartyItem.PersonName PersonTo { get; set; }
+    public required PersonItem.PersonListItem? PersonFrom { get; set; }
+    public required PersonItem.PersonName PersonTo { get; set; }
     public override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
     public override string PersonToName => PersonTo.Name;
-    public override PartyItem.PersonItem? PersonItemFrom => PersonFrom;
-    public override PartyItem.PersonItem? PersonItemTo => PersonTo;
+    public override PersonItem? PersonItemFrom => PersonFrom;
+    public override PersonItem? PersonItemTo => PersonTo;
     public override NewInterPersonalNewFromRelation SwapFromAndTo()
     {
         return new NewInterPersonalNewFromRelation {
@@ -383,7 +383,7 @@ public record NewInterPersonalNewToRelation : InterPersonalRelationBase, InterPe
         };
     }
 
-    public CompletedInterPersonalRelation GetCompletedRelation(PartyItem.PersonListItem personFrom)
+    public CompletedInterPersonalRelation GetCompletedRelation(PersonItem.PersonListItem personFrom)
     {
         return new CompletedNewInterPersonalNewToRelation {
             PersonFrom = personFrom,

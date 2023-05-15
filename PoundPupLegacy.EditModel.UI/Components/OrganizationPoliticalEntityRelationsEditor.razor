@@ -72,7 +72,7 @@
 
     [Parameter]
     [EditorRequired]
-    public PartyItem.OrganizationItem Organization { get; set; } = default!;
+    public OrganizationItem Organization { get; set; } = default!;
 
 
     [Parameter]
@@ -127,47 +127,44 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = Organization switch
-        {
-            PartyItem.OrganizationListItem pli => new NewOrganizationPoliticalEntityRelationExistingOrganization
-                {
-                    Organization = pli,
-                    OrganizationPoliticalEntityRelationType = RelationTypes.First(),
-                    Title = "",
-                    DateFrom = null,
-                    DateTo = null,
-                    Description = "",
-                    Files = new List<File>(),
-                    HasBeenDeleted = false,
-                    NodeTypeName = "party political entity relation",
-                    OwnerId = TenantId,
-                    PublisherId = UserId,
-                    PoliticalEntity = null,
-                    ProofDocument = null,
-                    Tags = new List<Tags>(),
-                    TenantNodes = new List<TenantNode>(),
-                    Tenants = new List<Tenant>(),
-                },
-            PartyItem.OrganizationName pn => new NewOrganizationPoliticalEntityRelationNewOrganization {
-                    Organization = pn,
-                    OrganizationPoliticalEntityRelationType = RelationTypes.First(),
-                    Title = "",
-                    DateFrom = null,
-                    DateTo = null,
-                    Description = "",
-                    Files = new List<File>(),
-                    HasBeenDeleted = false,
-                    NodeTypeName = "party political entity relation",
-                    OwnerId = TenantId,
-                    PublisherId = UserId,
-                    PoliticalEntity = null,
-                    ProofDocument = null,
-                    Tags = new List<Tags>(),
-                    TenantNodes = new List<TenantNode>(),
-                    Tenants = new List<Tenant>(),
-                },
-            _ => throw new Exception("Cannot reach")
-        };
+        _relationToEdit = Organization.Match<OrganizationPoliticalEntityRelation>(
+            pli => new NewOrganizationPoliticalEntityRelationExistingOrganization{
+                Organization = pli,
+                OrganizationPoliticalEntityRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                HasBeenDeleted = false,
+                NodeTypeName = "party political entity relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                PoliticalEntity = null,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+            },
+            pn => new NewOrganizationPoliticalEntityRelationNewOrganization {
+                Organization = pn,
+                OrganizationPoliticalEntityRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                HasBeenDeleted = false,
+                NodeTypeName = "party political entity relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                PoliticalEntity = null,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+            }
+        );
         StateHasChanged();
     }
 }

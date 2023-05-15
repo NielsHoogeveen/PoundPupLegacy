@@ -8,11 +8,10 @@ public interface InterOrganizationalRelation : Relation
     GeographicalEntityListItem? GeographicalEntity { get; set; }
     string OrganizationFromName { get; }
     string OrganizationToName { get; }
-    PartyItem.OrganizationItem? OrganizationItemFrom { get; }
-    PartyItem.OrganizationItem? OrganizationItemTo { get; }
-    PartyItem.OrganizationListItem? OrganizationListItemFrom { get; set; }
-    PartyItem.OrganizationListItem? OrganizationListItemTo { get; set; }
-
+    OrganizationItem? OrganizationItemFrom { get; }
+    OrganizationItem? OrganizationItemTo { get; }
+    OrganizationItem.OrganizationListItem? OrganizationListItemFrom { get; set; }
+    OrganizationItem.OrganizationListItem? OrganizationListItemTo { get; set; }
     InterOrganizationalRelation SwapFromAndTo();
     RelationSide RelationSideThisOrganization { get; }
 }
@@ -30,7 +29,6 @@ public interface CompletedNewInterOrganizationalRelation : NewInterOrganizationa
 }
 public interface IncompleteNewInterOrganizationalRelation : NewInterOrganizationalRelation
 {
-    public CompletedInterOrganizationalRelation GetCompletedRelation(PartyItem.OrganizationListItem organizationListItem);
 }
 public interface ResolvedInterOrganizationalRelation : CompletedInterOrganizationalRelation
 {
@@ -42,12 +40,12 @@ public abstract record InterOrganizationalRelationBase : RelationBase, InterOrga
     public decimal? MoneyInvolved { get; set; }
     public int? NumberOfChildrenInvolved { get; set; }
     public required GeographicalEntityListItem? GeographicalEntity { get; set; }
-    public PartyItem.OrganizationListItem? OrganizationListItemFrom { get; set; }
-    public PartyItem.OrganizationListItem? OrganizationListItemTo { get; set; }
+    public OrganizationItem.OrganizationListItem? OrganizationListItemFrom { get; set; }
+    public OrganizationItem.OrganizationListItem? OrganizationListItemTo { get; set; }
     public abstract string OrganizationFromName { get; }
     public abstract string OrganizationToName { get; }
-    public abstract PartyItem.OrganizationItem? OrganizationItemFrom { get; }
-    public abstract PartyItem.OrganizationItem? OrganizationItemTo { get; }
+    public abstract OrganizationItem? OrganizationItemFrom { get; }
+    public abstract OrganizationItem? OrganizationItemTo { get; }
     public abstract InterOrganizationalRelation SwapFromAndTo();
     public abstract RelationSide RelationSideThisOrganization { get; }
 }
@@ -57,8 +55,8 @@ public partial class ExistingInterOrganizationalRelationJsonContext : JsonSerial
 
 public record ExistingInterOrganizationalRelation : InterOrganizationalRelationBase, ExistingNode, ResolvedInterOrganizationalRelation
 {
-    public required PartyItem.OrganizationListItem OrganizationFrom { get; set; }
-    public required PartyItem.OrganizationListItem OrganizationTo { get; set; }
+    public required OrganizationItem.OrganizationListItem OrganizationFrom { get; set; }
+    public required OrganizationItem.OrganizationListItem OrganizationTo { get; set; }
     public int NodeId { get; init; } 
     public int UrlId { get; set; }
     [JsonIgnore]
@@ -66,9 +64,9 @@ public record ExistingInterOrganizationalRelation : InterOrganizationalRelationB
     [JsonIgnore]
     public override string OrganizationToName => OrganizationTo.Name;
     [JsonIgnore]
-    public override PartyItem.OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
     [JsonIgnore]
-    public override PartyItem.OrganizationItem? OrganizationItemTo => OrganizationTo;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
     public override ExistingInterOrganizationalRelation SwapFromAndTo()
     {
         (OrganizationTo, OrganizationFrom) = (OrganizationFrom, OrganizationTo);
@@ -88,12 +86,12 @@ public record ExistingInterOrganizationalRelation : InterOrganizationalRelationB
 
 public record NewInterOrganizationalExistingRelation : InterOrganizationalRelationBase, ResolvedInterOrganizationalRelation
 {
-    public required PartyItem.OrganizationListItem OrganizationFrom { get; set; }
-    public required PartyItem.OrganizationListItem OrganizationTo { get; set; }
+    public required OrganizationItem.OrganizationListItem OrganizationFrom { get; set; }
+    public required OrganizationItem.OrganizationListItem OrganizationTo { get; set; }
     public override string OrganizationFromName => OrganizationFrom.Name;
     public override string OrganizationToName => OrganizationTo.Name;
-    public override PartyItem.OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override PartyItem.OrganizationItem? OrganizationItemTo => OrganizationTo;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
 
     public override NewInterOrganizationalExistingRelation SwapFromAndTo()
     {
@@ -114,12 +112,12 @@ public record NewInterOrganizationalExistingRelation : InterOrganizationalRelati
 
 public record NewInterOrganizationalExistingFromRelation : InterOrganizationalRelationBase, InterOrganizationalRelation, IncompleteNewInterOrganizationalRelation
 {
-    public required PartyItem.OrganizationListItem OrganizationFrom { get; set; }
-    public required PartyItem.OrganizationListItem? OrganizationTo { get; set; }
+    public required OrganizationItem.OrganizationListItem OrganizationFrom { get; set; }
+    public required OrganizationItem.OrganizationListItem? OrganizationTo { get; set; }
     public override string OrganizationFromName => OrganizationFrom.Name;
     public override string OrganizationToName => OrganizationTo is null ? "" : OrganizationTo.Name;
-    public override PartyItem.OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override PartyItem.OrganizationItem? OrganizationItemTo => OrganizationTo;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
     public override NewInterOrganizationalExistingToRelation SwapFromAndTo()
     {
         return new NewInterOrganizationalExistingToRelation {
@@ -147,7 +145,7 @@ public record NewInterOrganizationalExistingFromRelation : InterOrganizationalRe
         };
     }
 
-    public CompletedInterOrganizationalRelation GetCompletedRelation(PartyItem.OrganizationListItem organizationListItemTo)
+    public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItemTo)
     {
         return new NewInterOrganizationalExistingRelation {
             OrganizationFrom = OrganizationFrom,
@@ -178,12 +176,12 @@ public record NewInterOrganizationalExistingFromRelation : InterOrganizationalRe
 }
 public record NewInterOrganizationalExistingToRelation : InterOrganizationalRelationBase, InterOrganizationalRelation, IncompleteNewInterOrganizationalRelation
 {
-    public required PartyItem.OrganizationListItem? OrganizationFrom { get; set; }
-    public required PartyItem.OrganizationListItem OrganizationTo { get; set; }
+    public required OrganizationItem.OrganizationListItem? OrganizationFrom { get; set; }
+    public required OrganizationItem.OrganizationListItem OrganizationTo { get; set; }
     public override string OrganizationFromName => OrganizationFrom is null ? "" : OrganizationFrom.Name;
     public override string OrganizationToName => OrganizationTo.Name;
-    public override PartyItem.OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override PartyItem.OrganizationItem? OrganizationItemTo => OrganizationTo;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
     public override NewInterOrganizationalExistingFromRelation SwapFromAndTo()
     {
         return new NewInterOrganizationalExistingFromRelation {
@@ -211,7 +209,7 @@ public record NewInterOrganizationalExistingToRelation : InterOrganizationalRela
         };
     }
 
-    public CompletedInterOrganizationalRelation GetCompletedRelation(PartyItem.OrganizationListItem organizationListItemFrom)
+    public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItemFrom)
     {
         return new NewInterOrganizationalExistingRelation {
             OrganizationFrom = organizationListItemFrom,
@@ -242,12 +240,12 @@ public record NewInterOrganizationalExistingToRelation : InterOrganizationalRela
 
 public record CompletedNewInterOrganizationalNewFromRelation : InterOrganizationalRelationBase, CompletedInterOrganizationalRelation, CompletedNewInterOrganizationalRelation
 {
-    public required PartyItem.OrganizationName OrganizationFrom { get; set; }
-    public required PartyItem.OrganizationListItem OrganizationTo { get; set; }
+    public required OrganizationItem.OrganizationName OrganizationFrom { get; set; }
+    public required OrganizationItem.OrganizationListItem OrganizationTo { get; set; }
     public override string OrganizationFromName => OrganizationFrom.Name;
     public override string OrganizationToName => OrganizationTo.Name;
-    public override PartyItem.OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override PartyItem.OrganizationItem? OrganizationItemTo => OrganizationTo;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
 
     public override CompletedNewInterOrganizationalNewToRelation SwapFromAndTo()
     {
@@ -279,12 +277,12 @@ public record CompletedNewInterOrganizationalNewFromRelation : InterOrganization
 }
 public record NewInterOrganizationalNewFromRelation : InterOrganizationalRelationBase, InterOrganizationalRelation, IncompleteNewInterOrganizationalRelation
 {
-    public required PartyItem.OrganizationName OrganizationFrom { get; set; }
-    public required PartyItem.OrganizationListItem? OrganizationTo { get; set; }
+    public required OrganizationItem.OrganizationName OrganizationFrom { get; set; }
+    public required OrganizationItem.OrganizationListItem? OrganizationTo { get; set; }
     public override string OrganizationFromName => OrganizationFrom.Name;
     public override string OrganizationToName => OrganizationTo is null? "": OrganizationTo.Name;
-    public override PartyItem.OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override PartyItem.OrganizationItem? OrganizationItemTo => OrganizationTo;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
     public override NewInterOrganizationalNewToRelation SwapFromAndTo()
     {
         return new NewInterOrganizationalNewToRelation {
@@ -311,7 +309,7 @@ public record NewInterOrganizationalNewFromRelation : InterOrganizationalRelatio
             OrganizationListItemTo = OrganizationListItemFrom,
         };
     }
-    public CompletedInterOrganizationalRelation GetCompletedRelation(PartyItem.OrganizationListItem organizationListItemTo)
+    public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItemTo)
     {
         return new CompletedNewInterOrganizationalNewFromRelation {
             OrganizationFrom = OrganizationFrom,
@@ -340,12 +338,12 @@ public record NewInterOrganizationalNewFromRelation : InterOrganizationalRelatio
 }
 public record CompletedNewInterOrganizationalNewToRelation : InterOrganizationalRelationBase, CompletedInterOrganizationalRelation, CompletedNewInterOrganizationalRelation
 {
-    public required PartyItem.OrganizationListItem OrganizationFrom { get; set; }
-    public required PartyItem.OrganizationName OrganizationTo { get; set; }
+    public required OrganizationItem.OrganizationListItem OrganizationFrom { get; set; }
+    public required OrganizationItem.OrganizationName OrganizationTo { get; set; }
     public override string OrganizationFromName => OrganizationFrom.Name;
     public override string OrganizationToName => OrganizationTo.Name;
-    public override PartyItem.OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override PartyItem.OrganizationItem? OrganizationItemTo => OrganizationTo;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
     public override CompletedNewInterOrganizationalNewFromRelation SwapFromAndTo()
     {
         return new CompletedNewInterOrganizationalNewFromRelation {
@@ -376,12 +374,12 @@ public record CompletedNewInterOrganizationalNewToRelation : InterOrganizational
 }
 public record NewInterOrganizationalNewToRelation : InterOrganizationalRelationBase, InterOrganizationalRelation, IncompleteNewInterOrganizationalRelation
 {
-    public required PartyItem.OrganizationListItem? OrganizationFrom { get; set; }
-    public required PartyItem.OrganizationName OrganizationTo { get; set; }
+    public required OrganizationItem.OrganizationListItem? OrganizationFrom { get; set; }
+    public required OrganizationItem.OrganizationName OrganizationTo { get; set; }
     public override string OrganizationFromName => OrganizationFrom is null ? "" : OrganizationFrom.Name;
     public override string OrganizationToName => OrganizationTo.Name;
-    public override PartyItem.OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override PartyItem.OrganizationItem? OrganizationItemTo => OrganizationTo;
+    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
 
     public override NewInterOrganizationalNewFromRelation SwapFromAndTo()
     {
@@ -409,7 +407,7 @@ public record NewInterOrganizationalNewToRelation : InterOrganizationalRelationB
             OrganizationListItemTo = OrganizationListItemFrom,
         };
     }
-    public CompletedInterOrganizationalRelation GetCompletedRelation(PartyItem.OrganizationListItem organizationListItemFrom)
+    public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItemFrom)
     {
         return new CompletedNewInterOrganizationalNewToRelation {
             OrganizationFrom = organizationListItemFrom,

@@ -8,6 +8,10 @@ public partial class NewOrganizationJsonContext : JsonSerializerContext { }
 
 public interface Organization : Party
 {
+    IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations { get; }
+
+    List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; }
+
     IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations { get; }
 
     List<OrganizationPoliticalEntityRelationTypeListItem> OrganizationPoliticalEntityRelationTypes { get; }
@@ -25,7 +29,7 @@ public interface Organization : Party
     List<OrganizationType> OrganizationTypes { get; }
     List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes { get; }
     IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations { get; }
-    PartyItem.OrganizationItem OrganizationItem { get; }
+    OrganizationItem OrganizationItem { get; }
 }
 
 
@@ -75,9 +79,9 @@ public record ExistingOrganization : OrganizationBase, ExistingNode
             yield return elem;
         }
     }
-    private List<ExistingPersonOrganizationRelation> existingPersonOrganizationRelations = new();
+    private List<ExistingPersonOrganizationRelationForOrganization> existingPersonOrganizationRelations = new();
 
-    public List<ExistingPersonOrganizationRelation> ExistingPersonOrganizationRelations {
+    public List<ExistingPersonOrganizationRelationForOrganization> ExistingPersonOrganizationRelations {
         get => existingPersonOrganizationRelations;
         init {
             if (value is not null) {
@@ -87,8 +91,8 @@ public record ExistingOrganization : OrganizationBase, ExistingNode
     }
 
 
-    public override IEnumerable<CompletedPersonOrganizationRelation> PersonOrganizationRelations => GetPersonOrganizationRelations();
-    private IEnumerable<CompletedPersonOrganizationRelation> GetPersonOrganizationRelations()
+    public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => GetPersonOrganizationRelations();
+    private IEnumerable<CompletedPersonOrganizationRelationForOrganization> GetPersonOrganizationRelations()
     {
         foreach (var elem in ExistingPersonOrganizationRelations) {
             yield return elem;
@@ -99,14 +103,14 @@ public record ExistingOrganization : OrganizationBase, ExistingNode
 
     }
 
-    public override PartyItem.OrganizationItem OrganizationItem => new PartyItem.OrganizationItem.OrganizationListItem { Id = NodeId, Name = Title };
+    public override OrganizationItem OrganizationItem => new OrganizationItem.OrganizationListItem { Id = NodeId, Name = Title };
 }
 public record NewOrganization : OrganizationBase, NewNode
 {
     public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
     public override IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations => NewInterOrganizationalRelations;
-    public override IEnumerable<CompletedPersonOrganizationRelation> PersonOrganizationRelations => NewPersonOrganizationRelations;
-    public override PartyItem.OrganizationItem OrganizationItem => new PartyItem.OrganizationItem.OrganizationName { Name = Title };
+    public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => NewPersonOrganizationRelations;
+    public override OrganizationItem OrganizationItem => new OrganizationItem.OrganizationName { Name = Title };
 }
 public abstract record OrganizationBase : PartyBase, Organization
 {
@@ -210,6 +214,20 @@ public abstract record OrganizationBase : PartyBase, Organization
             }
         }
     }
-    public abstract PartyItem.OrganizationItem OrganizationItem { get; }
+    public abstract OrganizationItem OrganizationItem { get; }
     public abstract IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations { get; }
+
+    public abstract IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations { get; }
+    public List<CompletedNewPersonOrganizationRelationForOrganization> NewPersonOrganizationRelations { get; } = new();
+
+    private List<PersonOrganizationRelationTypeListItem> personOrganizationRelationTypes = new();
+    public List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes {
+        get => personOrganizationRelationTypes;
+        init {
+            if (value is not null) {
+                personOrganizationRelationTypes = value;
+            }
+        }
+    }
+
 }

@@ -58,10 +58,10 @@
         foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<CompletedNewOrganizationPoliticalEntityRelationNewOrganization>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.PersonOrganizationRelations.OfType<ExistingPersonOrganizationRelation>()) {
+        foreach (var relation in Model.PersonOrganizationRelations.OfType<ExistingPersonOrganizationRelationForOrganization>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.PersonOrganizationRelations.OfType<CompletedNewPersonOrganizationRelation>()) {
+        foreach (var relation in Model.PersonOrganizationRelations.OfType<CompletedNewPersonOrganizationRelationForOrganization>()) {
             relation.Organization.Name = title;
         };
         foreach (var relation in Model.InterOrganizationalRelations.OfType<CompletedNewInterOrganizationalNewFromRelation>()) {

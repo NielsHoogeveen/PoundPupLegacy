@@ -2,14 +2,14 @@
 @inject IJSRuntime JSRuntime
 @if(Relation is not null) {
     <EditForm EditContext="editContext">
-        @if (Relation.PersonItem is PartyItem.PersonName) {
+        @if (Relation.PersonItem is PersonItem.PersonName) {
             <div class="form-group">
                 <label>Party</label>
                 <div>@Relation.PersonItem.Name</div>
             </div>
         }
-        @if (Relation.PersonItem is PartyItem.PersonListItem partyListItem) {
-            <SearchItemEditor T="PartyItem.PersonListItem"
+        @if (Relation.PersonItem is PersonItem.PersonListItem partyListItem) {
+            <SearchItemEditor T="PersonItem.PersonListItem"
             IsMandatory="true"
             @bind-Value="partyListItem"
             EnableEdit="false"

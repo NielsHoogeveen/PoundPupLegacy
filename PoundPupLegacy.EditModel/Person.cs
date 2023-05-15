@@ -14,12 +14,17 @@ public interface Person : Party
 
     List<CompletedInterPersonalRelation> InterPersonalRelations { get; }
     List<InterPersonalRelationTypeListItem> InterPersonalRelationTypes { get; }
+
+    IEnumerable<CompletedPersonOrganizationRelationForPerson> PersonOrganizationRelations { get; }
+
+    List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; }
+
 }
 public record NewPerson : PersonBase, NewNode 
 {
     public override IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
 
-    public override IEnumerable<CompletedPersonOrganizationRelation> PersonOrganizationRelations => NewPersonOrganizationRelations;
+    public override IEnumerable<CompletedPersonOrganizationRelationForPerson> PersonOrganizationRelations => NewPersonOrganizationRelations;
 
 }
 public record ExistingPerson : PersonBase, ExistingNode
@@ -50,9 +55,9 @@ public record ExistingPerson : PersonBase, ExistingNode
 
 
 
-    private List<ExistingPersonOrganizationRelation> existingPersonOrganizationRelations = new();
+    private List<ExistingPersonOrganizationRelationForPerson> existingPersonOrganizationRelations = new();
 
-    public List<ExistingPersonOrganizationRelation> ExistingPersonOrganizationRelations {
+    public List<ExistingPersonOrganizationRelationForPerson> ExistingPersonOrganizationRelations {
         get => existingPersonOrganizationRelations;
         init {
             if (value is not null) {
@@ -62,8 +67,8 @@ public record ExistingPerson : PersonBase, ExistingNode
     }
 
 
-    public override IEnumerable<CompletedPersonOrganizationRelation> PersonOrganizationRelations => GetPersonOrganizationRelations();
-    private IEnumerable<CompletedPersonOrganizationRelation> GetPersonOrganizationRelations()
+    public override IEnumerable<CompletedPersonOrganizationRelationForPerson> PersonOrganizationRelations => GetPersonOrganizationRelations();
+    private IEnumerable<CompletedPersonOrganizationRelationForPerson> GetPersonOrganizationRelations()
     {
         foreach (var elem in ExistingPersonOrganizationRelations) {
             yield return elem;
@@ -112,4 +117,17 @@ public abstract record PersonBase : PartyBase, Person
             }
         }
     }
+    public abstract IEnumerable<CompletedPersonOrganizationRelationForPerson> PersonOrganizationRelations { get; }
+    public List<CompletedNewPersonOrganizationRelationForPerson> NewPersonOrganizationRelations { get; } = new();
+
+    private List<PersonOrganizationRelationTypeListItem> personOrganizationRelationTypes = new();
+    public List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes {
+        get => personOrganizationRelationTypes;
+        init {
+            if (value is not null) {
+                personOrganizationRelationTypes = value;
+            }
+        }
+    }
+
 }

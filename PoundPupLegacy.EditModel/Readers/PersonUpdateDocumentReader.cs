@@ -2,7 +2,7 @@
 
 internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<ExistingPerson>
 {
-    public override string Sql => string.Format(SQL, "tn", (int)PartyType.Person);
+    public override string Sql => string.Format(SQL, "tn");
 
     protected override int NodeTypeId => Constants.PERSON;
 

@@ -2,14 +2,14 @@
 @inject IJSRuntime JSRuntime
 @if(WorkRelation is not null) {
     <EditForm EditContext="editContext">
-        @if (WorkRelation.PersonItemFrom is PartyItem.PersonItem.PersonName) {
+        @if (WorkRelation.PersonItemFrom is PersonItem.PersonName) {
             <div class="form-group">
                 <label>Person from</label>
                 <div>@WorkRelation.PersonFromName</div>
             </div>
         }
         else{
-            <SearchItemEditor T="PartyItem.PersonItem.PersonListItem"
+            <SearchItemEditor T="PersonItem.PersonListItem"
                 IsMandatory = "true"
                 @bind-Value = "WorkRelation.PersonListItemFrom"
                 EnableEdit="WorkRelation.RelationSideThisPerson == RelationSide.To"
@@ -35,14 +35,14 @@
             }
 
         </div>
-        @if (WorkRelation.PersonItemTo is PartyItem.PersonItem.PersonName) {
+        @if (WorkRelation.PersonItemTo is PersonItem.PersonName) {
             <div class="form-group">
                 <label>Person from</label>
                 <div>@WorkRelation.PersonToName</div>
             </div>
         }
         else{
-            <SearchItemEditor T="PartyItem.PersonItem.PersonListItem"
+            <SearchItemEditor T="PersonItem.PersonListItem"
                 IsMandatory="true"
                 @bind-Value="WorkRelation.PersonListItemTo"
                 EnableEdit="WorkRelation.RelationSideThisPerson == RelationSide.From"
@@ -88,11 +88,11 @@
     {
         WorkRelation = EditContext.RelationToEdit;
         WorkRelation.PersonListItemFrom = WorkRelation.PersonItemFrom switch {
-            PartyItem.PersonItem.PersonListItem p => p,
+            PersonItem.PersonListItem p => p,
             _ => null
         };
         WorkRelation.PersonListItemTo = WorkRelation.PersonItemTo switch {
-            PartyItem.PersonItem.PersonListItem p => p,
+            PersonItem.PersonListItem p => p,
             _ => null
         };
         editContext = new EditContext(WorkRelation);
@@ -123,12 +123,12 @@
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
-        if (WorkRelation!.PersonItemFrom is not PartyItem.PersonItem.PersonName && WorkRelation.PersonListItemFrom is null) {
+        if (WorkRelation!.PersonItemFrom is not PersonItem.PersonName && WorkRelation.PersonListItemFrom is null) {
             validationMessageStore!.Add(editContext!.Field(nameof(WorkRelation.PersonListItemFrom)), "Person from is required");
             hasErrors = true;
             editContext.NotifyValidationStateChanged();
         }
-        if (WorkRelation!.PersonItemTo is not PartyItem.PersonItem.PersonName && WorkRelation.PersonListItemTo is null) {
+        if (WorkRelation!.PersonItemTo is not PersonItem.PersonName && WorkRelation.PersonListItemTo is null) {
             validationMessageStore!.Add(editContext!.Field(nameof(WorkRelation.PersonListItemTo)), "Person to is required");
             hasErrors = true;
             editContext.NotifyValidationStateChanged();

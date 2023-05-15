@@ -289,8 +289,6 @@ internal static class SharedSql
                             'Name',
                             organization_name
                         ),
-                        'SettableLeadingPartyType',
-                        {1},
                 	    'PersonOrganizationRelationType',
                         jsonb_build_object(
                             'Id',

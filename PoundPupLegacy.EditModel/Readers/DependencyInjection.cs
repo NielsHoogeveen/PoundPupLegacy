@@ -37,8 +37,8 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem>, CountryListItemsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<GeographicalEntitiesReaderRequest, GeographicalEntityListItem>, GeographicalEntitiesReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<DocumentsReaderRequest, DocumentListItem>, DocumentsReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, PartyItem.OrganizationItem.OrganizationListItem>, OrganizationsReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<PersonsReaderRequest, PartyItem.PersonItem.PersonListItem>, PersonsReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, OrganizationItem.OrganizationListItem>, OrganizationsReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<PersonsReaderRequest, PersonItem.PersonListItem>, PersonsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<PoliticalEntitiesReaderRequest, PoliticalEntityListItem>, PoliticalEntitiesReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem>, SubdivisionListItemsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag>, TagDocumentsReaderFactory>();

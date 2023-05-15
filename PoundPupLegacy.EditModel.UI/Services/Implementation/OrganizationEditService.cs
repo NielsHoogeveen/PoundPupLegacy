@@ -76,7 +76,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                 .OfType<CompletedNewInterOrganizationalNewToRelation>()
                 .Select(x => new NewInterOrganizationalExistingRelation {
                     OrganizationFrom = x.OrganizationFrom,
-                    OrganizationTo = new PartyItem.OrganizationItem.OrganizationListItem {
+                    OrganizationTo = new OrganizationItem.OrganizationListItem {
                         Id = nodeId,
                         Name = x.OrganizationToName
                     },
@@ -104,7 +104,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                 .InterOrganizationalRelations
                 .OfType<CompletedNewInterOrganizationalNewFromRelation>()
                 .Select(x => new NewInterOrganizationalExistingRelation {
-                    OrganizationFrom = new PartyItem.OrganizationItem.OrganizationListItem {
+                    OrganizationFrom = new OrganizationItem.OrganizationListItem {
                         Id = nodeId,
                         Name = x.OrganizationFromName
                     },

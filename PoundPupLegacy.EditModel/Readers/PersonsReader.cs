@@ -9,7 +9,7 @@ public sealed record PersonsReaderRequest : IRequest
     public required string SearchString { get; init; }
 }
 
-internal sealed class PersonsReaderFactory : EnumerableDatabaseReaderFactory<Request, PartyItem.PersonItem.PersonListItem>
+internal sealed class PersonsReaderFactory : EnumerableDatabaseReaderFactory<Request, PersonItem.PersonListItem>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly SearchOptionDatabaseParameter SearchOptionParameter = new() { Name = "search_option" };
@@ -53,9 +53,9 @@ internal sealed class PersonsReaderFactory : EnumerableDatabaseReaderFactory<Req
         };
     }
 
-    protected override PartyItem.PersonItem.PersonListItem Read(NpgsqlDataReader reader)
+    protected override PersonItem.PersonListItem Read(NpgsqlDataReader reader)
     {
-        return new PartyItem.PersonItem.PersonListItem {
+        return new PersonItem.PersonListItem {
             Id = IdReader.GetValue(reader),
             Name = NameReader.GetValue(reader),
         };

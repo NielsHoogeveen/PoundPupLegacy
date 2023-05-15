@@ -1,18 +1,10 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
-@if (Relation.PersonItem is PartyItem.PersonItem.PersonName) {
-    <div class="form-group">
-        <label>Person from</label>
-        <div>@Relation.PersonItem.Name</div>
-    </div>
-}
-@if (Relation.PersonItem is PartyItem.PersonItem.PersonListItem personListItem) {
-    <SearchItemEditor T="PartyItem.PersonItem.PersonListItem"
+<SearchItemEditor T="PersonItem.PersonListItem"
     IsMandatory="true"
-    @bind-Value="personListItem"
-    EnableEdit="!IsPersonLeading"
+    @bind-Value="Relation.PersonItem"
+    EnableEdit=true
     Label="Person" />
-}
 
 <div class="type-and-swap">
     <div>
@@ -29,17 +21,17 @@
         </select>
     </div>
 </div>
-@if (Relation.OrganizationItem is PartyItem.OrganizationItem.OrganizationName organizationName) {
+@if (Relation.OrganizationItem is OrganizationItem.OrganizationName organizationName) {
     <div class="form-group">
         <label>Organization</label>
         <div>@organizationName.Name</div>
     </div>
 }
-@if (Relation.OrganizationItem is PartyItem.OrganizationItem.OrganizationListItem organiztionListItem) {
-    <SearchItemEditor T="PartyItem.OrganizationItem.OrganizationListItem"
+@if (Relation.OrganizationItem is OrganizationItem.OrganizationListItem organiztionListItem) {
+    <SearchItemEditor T="OrganizationItem.OrganizationListItem"
     IsMandatory="true"
     @bind-Value="organiztionListItem"
-    EnableEdit="IsPersonLeading"
+    EnableEdit="false"
     Label="Organization" />
 }
 
@@ -70,17 +62,13 @@
 @code {
 
     [Parameter]
-    public PersonOrganizationRelation Relation { get; set; } = default!;
+    [EditorRequired]
+    public PersonOrganizationRelationForOrganization Relation { get; set; } = default!;
 
-
-    [Parameter]
-    public EventCallback<PersonOrganizationRelation> RelationChanged { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public List<PersonOrganizationRelationTypeListItem> RelationTypes { get; set; } = default!;
-
-    public bool IsPersonLeading { get; set; } 
 
     private PersonOrganizationRelationTypeListItem RelationType { get; set; } = default!;
 
@@ -99,7 +87,7 @@
         }
     }
 
-    public CompletedPersonOrganizationRelation? GetValidRelation()
+    public CompletedPersonOrganizationRelationForOrganization? GetValidRelation()
     {
         return null;
     }

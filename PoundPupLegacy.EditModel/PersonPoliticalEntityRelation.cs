@@ -7,7 +7,7 @@ public interface PersonPoliticalEntityRelation : Relation
 {
     PersonPoliticalEntityRelationTypeListItem PersonPoliticalEntityRelationType { get; set; }
 
-    PartyItem.PersonItem? PersonItem { get; }
+    PersonItem? PersonItem { get; }
     PoliticalEntityListItem? PoliticalEntityItem { get; }
 }
 public interface IncompletePersonPoliticalEntityRelation : PersonPoliticalEntityRelation
@@ -26,30 +26,30 @@ public interface ResolvedPersonPoliticalEntityRelation: CompletedPersonPolitical
 }
 public record CompletedNewPersonPoliticalEntityRelationNewPerson : PersonPoliticalEntityRelationBase, NewNode, CompletedPersonPoliticalEntityRelation
 {
-    public required PartyItem.PersonName Person { get; set; }
+    public required PersonItem.PersonName Person { get; set; }
     public required PoliticalEntityListItem PoliticalEntity { get; set; }
     public string PersonName => Person.Name;
     public string PoliticalEntityName => PoliticalEntity.Name;
-    public override PartyItem.PersonItem? PersonItem => Person;
+    public override PersonItem? PersonItem => Person;
     public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
 
 }
 public record CompletedNewPersonPoliticalEntityRelationExistingPerson : PersonPoliticalEntityRelationBase, NewNode, CompletedPersonPoliticalEntityRelation
 {
-    public required PartyItem.PersonListItem Person { get; set; }
+    public required PersonItem.PersonListItem Person { get; set; }
     public required PoliticalEntityListItem PoliticalEntity { get; set; }
 
     public string PersonName => Person.Name;
     public string PoliticalEntityName => PoliticalEntity.Name;
-    public override PartyItem.PersonItem? PersonItem => Person;
+    public override PersonItem? PersonItem => Person;
     public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
 }
 
 public record NewPersonPoliticalEntityRelationNewPerson : PersonPoliticalEntityRelationBase, NewNode, IncompletePersonPoliticalEntityRelation
 {
-    public required PartyItem.PersonName Person { get; set; }
+    public required PersonItem.PersonName Person { get; set; }
     public required PoliticalEntityListItem? PoliticalEntity { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
+    public override PersonItem? PersonItem => Person;
     public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
     public CompletedPersonPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
     {
@@ -75,9 +75,9 @@ public record NewPersonPoliticalEntityRelationNewPerson : PersonPoliticalEntityR
 }
 public record NewPersonPoliticalEntityRelationExistingPerson : PersonPoliticalEntityRelationBase, NewNode, IncompletePersonPoliticalEntityRelation
 {
-    public required PartyItem.PersonListItem Person { get; set; }
+    public required PersonItem.PersonListItem Person { get; set; }
     public required PoliticalEntityListItem? PoliticalEntity { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
+    public override PersonItem? PersonItem => Person;
     public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
     public CompletedPersonPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
     {
@@ -108,11 +108,11 @@ public record ExistingPersonPoliticalEntityRelation : PersonPoliticalEntityRelat
     public int NodeId { get; init; }
 
     public int UrlId { get; set; }
-    public required PartyItem.PersonListItem Person { get; set; }
+    public required PersonItem.PersonListItem Person { get; set; }
     public required PoliticalEntityListItem PoliticalEntity { get; set; }
     public string PersonName => Person.Name;
     public string PoliticalEntityName => PoliticalEntity.Name;
-    public override PartyItem.PersonItem? PersonItem => Person;
+    public override PersonItem? PersonItem => Person;
     public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
 
 
@@ -121,7 +121,7 @@ public abstract record PersonPoliticalEntityRelationBase : RelationBase, PersonP
 {
     public required PersonPoliticalEntityRelationTypeListItem PersonPoliticalEntityRelationType { get; set; }
 
-    public abstract PartyItem.PersonItem? PersonItem { get; }
+    public abstract PersonItem? PersonItem { get; }
     public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
 
 }

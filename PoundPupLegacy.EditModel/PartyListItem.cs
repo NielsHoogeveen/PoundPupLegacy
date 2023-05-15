@@ -1,49 +1,66 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(PartyItem.PersonListItem))]
+[JsonSerializable(typeof(PersonItem.PersonListItem))]
 public partial class PartyItemPersonListItemJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(PartyItem.PersonName))]
+[JsonSerializable(typeof(PersonItem.PersonName))]
 public partial class PartyItemPersonNameJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(PartyItem.OrganizationListItem))]
+[JsonSerializable(typeof(OrganizationItem.OrganizationListItem))]
 public partial class PartyItemOrganizationListItemJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(PartyItem.OrganizationName))]
+[JsonSerializable(typeof(OrganizationItem.OrganizationName))]
 public partial class PartyItemOrganizationNameJsonContext : JsonSerializerContext { }
 
-public abstract record PartyItem 
+public abstract record OrganizationItem 
 {
-    private PartyItem()
+    private OrganizationItem()
     {
     }
     public abstract string Name { get; set; }
 
     public abstract T Match<T>(
-        Func<PersonListItem, T> personItem, 
-        Func<PersonName, T> personName,
-        Func<OrganizationListItem, T> organizationItem,
-        Func<OrganizationName, T> organizationName);
+        Func<OrganizationListItem, T> personItem,
+        Func<OrganizationName, T> personName);
 
-    public abstract record PersonItem: PartyItem
-    {
-        public abstract T Match<T>(
-            Func<PersonListItem, T> personItem,
-            Func<PersonName, T> personName);
-
-    }
-    public sealed record PersonListItem : PersonItem, EditListItem
+    public sealed record OrganizationListItem : OrganizationItem, EditListItem
     {
         public required int Id { get; init; }
         public required override string Name { get; set; }
         public override T Match<T>(
-            Func<PersonListItem, T> personItem,
-            Func<PersonName, T> personName,
-            Func<OrganizationListItem, T> organizationItem,
-            Func<OrganizationName, T> organizationName)
+            Func<OrganizationListItem, T> personItem,
+            Func<OrganizationName, T> personName)
         {
             return personItem(this);
         }
+    }
+    public sealed record OrganizationName : OrganizationItem, NamedOnly
+    {
+        public required override string Name { get; set; }
+        public override T Match<T>(
+            Func<OrganizationListItem, T> personItem,
+            Func<OrganizationName, T> personName)
+        {
+            return personName(this);
+        }
+    }
+}
+
+public abstract record PersonItem
+{
+    private PersonItem()
+    {
+    }
+    public abstract string Name { get; set; }
+
+    public abstract T Match<T>(
+        Func<PersonListItem, T> personItem,
+        Func<PersonName, T> personName);
+
+    public sealed record PersonListItem : PersonItem, EditListItem
+    {
+        public required int Id { get; init; }
+        public required override string Name { get; set; }
         public override T Match<T>(
             Func<PersonListItem, T> personItem,
             Func<PersonName, T> personName)
@@ -56,63 +73,12 @@ public abstract record PartyItem
         public required override string Name { get; set; }
         public override T Match<T>(
             Func<PersonListItem, T> personItem,
-            Func<PersonName, T> personName,
-            Func<OrganizationListItem, T> organizationItem,
-            Func<OrganizationName, T> organizationName)
-        {
-            return personName(this);
-        }
-        public override T Match<T>(
-            Func<PersonListItem, T> personItem,
             Func<PersonName, T> personName)
         {
             return personName(this);
         }
-
-    }
-    public abstract record OrganizationItem : PartyItem
-    {
-        public abstract T Match<T>(
-            Func<OrganizationListItem, T> organizationItem,
-            Func<OrganizationName, T> organizationName);
-    }
-    public sealed record OrganizationListItem : OrganizationItem, EditListItem
-    {
-        public required int Id { get; init; }
-        public required override string Name { get; set; }
-        public override T Match<T>(
-            Func<PersonListItem, T> personItem,
-            Func<PersonName, T> personName,
-            Func<OrganizationListItem, T> organizationItem,
-            Func<OrganizationName, T> organizationName)
-        {
-            return organizationItem(this);
-        }
-        public override T Match<T>(
-            Func<OrganizationListItem, T> organizationItem,
-            Func<OrganizationName, T> organizationName)
-        {
-            return organizationItem(this);
-        }
-    }
-    public sealed record OrganizationName : OrganizationItem, NamedOnly
-    {
-        public required override string Name { get; set; }
-        public override T Match<T>(
-            Func<PersonListItem, T> personItem,
-            Func<PersonName, T> personName,
-            Func<OrganizationListItem, T> organizationItem,
-            Func<OrganizationName, T> organizationName)
-        {
-            return organizationName(this);
-        }
-        public override T Match<T>(
-            Func<OrganizationListItem, T> organizationItem,
-            Func<OrganizationName, T> organizationName)
-        {
-            return organizationName(this);
-        }
     }
 }
+
 
 

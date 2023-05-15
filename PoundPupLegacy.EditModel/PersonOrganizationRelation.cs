@@ -1,7 +1,10 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(ExistingPersonOrganizationRelation))]
-public partial class ExistingPersonOrganizationRelationJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(ExistingPersonOrganizationRelationForPerson))]
+public partial class ExistingPersonOrganizationRelationForPersonJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(ExistingPersonOrganizationRelationForOrganization))]
+public partial class ExistingPersonOrganizationRelationForOrganizationJsonContext : JsonSerializerContext { }
 
 
 public interface PersonOrganizationRelation : Relation
@@ -9,51 +12,131 @@ public interface PersonOrganizationRelation : Relation
     PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
     GeographicalEntityListItem? GeographicalEntity { get; set; }
 
-    PartyItem.PersonItem? PersonItem { get; }
-    PartyItem.OrganizationItem? OrganizationItem { get; }
-    PartyType LeadingPartyType { get; }
 }
 
-public interface CompletedPersonOrganizationRelation : PersonOrganizationRelation
+public interface PersonOrganizationRelationForPerson : PersonOrganizationRelation
+{
+    PersonItem PersonItem { get; }
+    OrganizationItem.OrganizationListItem? OrganizationItem { get; set; }
+}
+public interface PersonOrganizationRelationForOrganization : PersonOrganizationRelation
+{
+    PersonItem.PersonListItem? PersonItem { get; set; }
+    OrganizationItem OrganizationItem { get; }
+
+}
+public interface CompletedPersonOrganizationRelation: PersonOrganizationRelation
+{
+
+}
+public interface CompletedPersonOrganizationRelationForPerson : CompletedPersonOrganizationRelation, PersonOrganizationRelationForPerson
 {
     string PersonName { get; }
     string OrganizationName { get; }
 
 }
-public interface ResolvedPersonOrganizationRelation : CompletedPersonOrganizationRelation
+public interface CompletedPersonOrganizationRelationForOrganization : CompletedPersonOrganizationRelation, PersonOrganizationRelationForOrganization
 {
+    string PersonName { get; }
+    string OrganizationName { get; }
 
 }
-public record CompletedNewPersonOrganizationRelation: PersonOrganizationRelationBase, NewNode, CompletedPersonOrganizationRelation
+public interface ResolvedPersonOrganizationRelation: CompletedPersonOrganizationRelation
 {
-    public required PartyItem.PersonListItem Person { get; set; }
-    public required PartyItem.OrganizationListItem Organization { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
-    public override PartyItem.OrganizationItem? OrganizationItem => Organization;
-    public override PartyType LeadingPartyType => SettableLeadingPartyType;
-    public required PartyType SettableLeadingPartyType { get; init; }
+}
+public interface ResolvedPersonOrganizationRelationForPerson : ResolvedPersonOrganizationRelation, CompletedPersonOrganizationRelationForPerson
+{
+}
+public interface ResolvedPersonOrganizationRelationForOrganization : ResolvedPersonOrganizationRelation, CompletedPersonOrganizationRelationForOrganization
+{
+}
+public interface ExistingPersonOrganizationRelation : ResolvedPersonOrganizationRelation, ExistingNode
+{
+    PersonItem.PersonListItem Person { get;  }
+    OrganizationItem.OrganizationListItem Organization { get;  }
+
+}
+
+public interface CompletedNewPersonOrganizationRelation: NewNode, CompletedPersonOrganizationRelation
+{
+    PersonItem.PersonListItem Person { get; }
+    OrganizationItem.OrganizationListItem Organization { get; }
+
+
+}
+
+public record CompletedNewPersonOrganizationRelationForOrganization: PersonOrganizationRelationBase, CompletedNewPersonOrganizationRelation, CompletedPersonOrganizationRelationForOrganization
+{
+    public required PersonItem.PersonListItem Person { get; set; }
+    public required OrganizationItem.OrganizationListItem Organization { get; set; }
+
+    private PersonItem.PersonListItem? personItem = null;
+    public PersonItem.PersonListItem? PersonItem {
+        get {
+            if (personItem == null) {
+                personItem = Person;
+            }
+            return personItem;
+        }
+        set {
+            personItem = value;
+        }
+    }
+
+    public OrganizationItem OrganizationItem => Organization;
+    public string PersonName => Person.Name;
+    public string OrganizationName => Organization.Name;
+}
+public record CompletedNewPersonOrganizationRelationForPerson : PersonOrganizationRelationBase, CompletedNewPersonOrganizationRelation, CompletedPersonOrganizationRelationForPerson
+{
+    public required PersonItem.PersonListItem Person { get; set; }
+    public required OrganizationItem.OrganizationListItem Organization { get; set; }
+    public PersonItem PersonItem => Person;
+
+    private OrganizationItem.OrganizationListItem? organizationItem = null;
+    public OrganizationItem.OrganizationListItem? OrganizationItem {
+        get {
+            if (organizationItem == null) {
+                organizationItem = Organization;
+            }
+            return organizationItem;
+        }
+        set {
+            organizationItem = value;
+        }
+    }
     public string PersonName => Person.Name;
     public string OrganizationName => Organization.Name;
 }
 
-public record NewPersonOrganizationRelationExistingPerson : PersonOrganizationRelationBase, NewNode
+public record NewPersonOrganizationRelationExistingPerson : PersonOrganizationRelationBase, NewNode, PersonOrganizationRelationForPerson
 {
-    public required PartyItem.PersonListItem Person { get; set; }
-    public required PartyItem.OrganizationListItem? Organization { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
-    public override PartyItem.OrganizationItem? OrganizationItem => Organization;
-    public override PartyType LeadingPartyType => PartyType.Person;
+    public required PersonItem.PersonListItem Person { get; set; }
+    public required OrganizationItem.OrganizationListItem? Organization { get; set; }
+    public PersonItem PersonItem => Person;
 
-    public CompletedPersonOrganizationRelation GetCompletedRelation(PartyItem.OrganizationListItem organizationListItem)
+    private OrganizationItem.OrganizationListItem? organizationItem = null;
+    public OrganizationItem.OrganizationListItem? OrganizationItem {
+        get {
+            if (organizationItem == null) {
+                organizationItem = Organization;
+            }
+            return organizationItem;
+        }
+        set {
+            organizationItem = value;
+        }
+    }
+
+    public CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItem)
     {
-        return new CompletedNewPersonOrganizationRelation {
+        return new CompletedNewPersonOrganizationRelationForPerson {
             Person = Person,
             Organization = organizationListItem,
             DateFrom = DateFrom,
             DateTo = DateTo,
             PersonOrganizationRelationType = PersonOrganizationRelationType,
             GeographicalEntity = GeographicalEntity,
-            SettableLeadingPartyType = LeadingPartyType,
             Description = Description,
             Files = Files,
             HasBeenDeleted = HasBeenDeleted,
@@ -69,23 +152,32 @@ public record NewPersonOrganizationRelationExistingPerson : PersonOrganizationRe
     }
 }
 
-public record NewPersonOrganizationRelationExistingOrganization : PersonOrganizationRelationBase, NewNode
+public record NewPersonOrganizationRelationExistingOrganization : PersonOrganizationRelationBase, NewNode, PersonOrganizationRelationForOrganization
 {
-    public required PartyItem.PersonListItem? Person { get; set; }
-    public required PartyItem.OrganizationListItem Organization { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
-    public override PartyItem.OrganizationItem? OrganizationItem => Organization;
-    public override PartyType LeadingPartyType => PartyType.Organization;
-    public CompletedPersonOrganizationRelation GetCompletedRelation(PartyItem.PersonListItem personListItem)
+    public required PersonItem.PersonListItem? Person { get; set; }
+    public required OrganizationItem.OrganizationListItem Organization { get; set; }
+    private PersonItem.PersonListItem? personItem = null;
+    public PersonItem.PersonListItem? PersonItem {
+        get {
+            if (personItem == null) {
+                personItem = Person;
+            }
+            return personItem;
+        }
+        set {
+            personItem = value;
+        }
+    }
+    public OrganizationItem OrganizationItem => Organization;
+    public CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonItem.PersonListItem personListItem)
     {
-        return new CompletedNewPersonOrganizationRelation {
+        return new CompletedNewPersonOrganizationRelationForOrganization {
             Person = personListItem,
             Organization = Organization,
             DateFrom = DateFrom,
             DateTo = DateTo,
             PersonOrganizationRelationType = PersonOrganizationRelationType,
             GeographicalEntity = GeographicalEntity,
-            SettableLeadingPartyType = LeadingPartyType,
             Description = Description,
             Files = Files,
             HasBeenDeleted = HasBeenDeleted,
@@ -100,25 +192,47 @@ public record NewPersonOrganizationRelationExistingOrganization : PersonOrganiza
         };
     }
 }
-public record CompletedNewPersonOrganizationRelationNewOrganization : PersonOrganizationRelationBase, NewNode, CompletedPersonOrganizationRelation
+public record CompletedNewPersonOrganizationRelationNewOrganization : PersonOrganizationRelationBase, NewNode, CompletedPersonOrganizationRelationForOrganization
 {
-    public required PartyItem.PersonListItem Person { get; set; }
-    public required PartyItem.OrganizationName Organization { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
-    public override PartyItem.OrganizationItem? OrganizationItem => Organization;
-    public override PartyType LeadingPartyType => PartyType.Organization;
+    public required PersonItem.PersonListItem Person { get; set; }
+    public required OrganizationItem.OrganizationName Organization { get; set; }
+    private PersonItem.PersonListItem? personItem = null;
+    public PersonItem.PersonListItem? PersonItem {
+        get {
+            if (personItem == null) {
+                personItem = Person;
+            }
+            return personItem;
+        }
+        set {
+            personItem = value;
+        }
+    }
+
+    public OrganizationItem OrganizationItem => Organization;
     public string PersonName => Person.Name;
     public string OrganizationName => Organization.Name;
 }
 
-public record NewPersonOrganizationRelationNewOrganization : PersonOrganizationRelationBase, NewNode
+public record NewPersonOrganizationRelationNewOrganization : PersonOrganizationRelationBase, NewNode, PersonOrganizationRelationForOrganization
 {
-    public required PartyItem.PersonListItem? Person { get; set; }
-    public required PartyItem.OrganizationName Organization { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
-    public override PartyItem.OrganizationItem? OrganizationItem => Organization;
-    public override PartyType LeadingPartyType => PartyType.Organization;
-    public CompletedPersonOrganizationRelation GetCompletedRelation(PartyItem.PersonListItem personListItem)
+    public required PersonItem.PersonListItem? Person { get; set; }
+    public required OrganizationItem.OrganizationName Organization { get; set; }
+    private PersonItem.PersonListItem? personItem = null;
+    public PersonItem.PersonListItem? PersonItem {
+        get {
+            if (personItem == null) {
+                personItem = Person;
+            }
+            return personItem;
+        }
+        set {
+            personItem = value;
+        }
+    }
+
+    public OrganizationItem OrganizationItem => Organization;
+    public CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonItem.PersonListItem personListItem)
     {
         return new CompletedNewPersonOrganizationRelationNewOrganization {
             Person = personListItem,
@@ -142,25 +256,47 @@ public record NewPersonOrganizationRelationNewOrganization : PersonOrganizationR
     }
 
 }
-public record CompletedNewPersonOrganizationRelationNewPerson : PersonOrganizationRelationBase, NewNode, CompletedPersonOrganizationRelation
+public record CompletedNewPersonOrganizationRelationNewPerson : PersonOrganizationRelationBase, NewNode, CompletedPersonOrganizationRelationForPerson
 {
-    public required PartyItem.PersonName Person { get; set; }
-    public required PartyItem.OrganizationListItem Organization { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
-    public override PartyItem.OrganizationItem? OrganizationItem => Organization;
-    public override PartyType LeadingPartyType => PartyType.Person;
+    public required PersonItem.PersonName Person { get; set; }
+    public required OrganizationItem.OrganizationListItem Organization { get; set; }
+    public PersonItem PersonItem => Person;
+
+    private OrganizationItem.OrganizationListItem? organizationItem = null;
+    public OrganizationItem.OrganizationListItem? OrganizationItem {
+        get {
+            if (organizationItem == null) {
+                organizationItem = Organization;
+            }
+            return organizationItem;
+        }
+        set {
+            organizationItem = value;
+        }
+    }
     public string PersonName => Person.Name;
     public string OrganizationName => Organization.Name;
 }
 
-public record NewPersonOrganizationRelationNewPerson : PersonOrganizationRelationBase, NewNode
+public record NewPersonOrganizationRelationNewPerson : PersonOrganizationRelationBase, NewNode, PersonOrganizationRelationForPerson
 {
-    public required PartyItem.PersonName Person { get; set; }
-    public required PartyItem.OrganizationListItem? Organization { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
-    public override PartyItem.OrganizationItem? OrganizationItem => Organization;
-    public override PartyType LeadingPartyType => PartyType.Person;
-    public CompletedPersonOrganizationRelation GetCompletedRelation(PartyItem.OrganizationListItem organizationListItem)
+    public required PersonItem.PersonName Person { get; set; }
+    public required OrganizationItem.OrganizationListItem? Organization { get; set; }
+    public PersonItem PersonItem => Person;
+
+    private OrganizationItem.OrganizationListItem? organizationItem = null;
+    public OrganizationItem.OrganizationListItem? OrganizationItem {
+        get {
+            if (organizationItem == null) {
+                organizationItem = Organization;
+            }
+            return organizationItem;
+        }
+        set {
+            organizationItem = value;
+        }
+    }
+    public CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItem)
     {
         return new CompletedNewPersonOrganizationRelationNewPerson {
             Person = Person,
@@ -184,26 +320,71 @@ public record NewPersonOrganizationRelationNewPerson : PersonOrganizationRelatio
     }
 
 }
-public record ExistingPersonOrganizationRelation: PersonOrganizationRelationBase, ExistingNode, ResolvedPersonOrganizationRelation
+public record ExistingPersonOrganizationRelationForOrganization: PersonOrganizationRelationBase, ExistingPersonOrganizationRelation, ResolvedPersonOrganizationRelationForOrganization
 {
     public int NodeId { get; init; }
 
     public int UrlId { get; set; }
-    public required PartyItem.PersonListItem Person { get; set; }
-    public required PartyItem.OrganizationListItem Organization { get; set; }
-    public override PartyItem.PersonItem? PersonItem => Person;
-    public override PartyItem.OrganizationItem? OrganizationItem => Organization;
-    public override PartyType LeadingPartyType => SettableLeadingPartyType;
-    public required PartyType SettableLeadingPartyType { get; init; }
+    public required PersonItem.PersonListItem Person { get; set; }
+    public required OrganizationItem.OrganizationListItem Organization { get; set; }
+
+    private PersonItem.PersonListItem? personItem = null;
+    public PersonItem.PersonListItem? PersonItem {
+        get {
+            if (personItem == null) {
+                personItem = Person;
+            }
+            return personItem;
+        }
+        set {
+            personItem = value;
+        }
+    }
+
+    public OrganizationItem OrganizationItem => Organization;
     public string PersonName => Person.Name;
     public string OrganizationName => Organization.Name;
 
+}
+
+public record ExistingPersonOrganizationRelationForPerson : PersonOrganizationRelationBase, ExistingPersonOrganizationRelation, ResolvedPersonOrganizationRelationForPerson
+{
+    public int NodeId { get; init; }
+
+    public int UrlId { get; set; }
+    public required PersonItem.PersonListItem Person { get; set; }
+    public required OrganizationItem.OrganizationListItem Organization { get; set; }
+    public PersonItem PersonItem => Person;
+
+    private OrganizationItem.OrganizationListItem? organizationItem = null;
+    public OrganizationItem.OrganizationListItem? OrganizationItem {
+        get {
+            if (organizationItem == null) {
+                organizationItem = Organization;
+            }
+            return organizationItem;
+        }
+        set {
+            organizationItem = value;
+        }
+    }
+    public string PersonName => Person.Name;
+    public string OrganizationName => Organization.Name;
+
+}
+public abstract record PersonOrganizationRelationBaseForOrganization : PersonOrganizationRelationBase, PersonOrganizationRelationForOrganization
+{
+    public abstract PersonItem.PersonListItem? PersonItem { get; set; }
+    public abstract OrganizationItem OrganizationItem { get; }
+
+}
+public abstract record PersonOrganizationRelationBaseForPerson : PersonOrganizationRelationBase, PersonOrganizationRelationForPerson
+{
+    public abstract PersonItem PersonItem { get; }
+    public abstract OrganizationItem.OrganizationListItem? OrganizationItem { get; set; }
 }
 public abstract record PersonOrganizationRelationBase : RelationBase, PersonOrganizationRelation
 {
     public required PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
     public GeographicalEntityListItem? GeographicalEntity { get; set; }
-    public abstract PartyItem.PersonItem? PersonItem { get; }
-    public abstract PartyItem.OrganizationItem? OrganizationItem {get;}
-    public abstract PartyType LeadingPartyType { get; }
 }
