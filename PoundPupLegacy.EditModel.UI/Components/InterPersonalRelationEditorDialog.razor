@@ -139,14 +139,11 @@
             return null;
 
         return WorkRelation.Match<CompletedInterPersonalRelation>(
-            existingInterPersonalRelation: r => r with { PersonFrom = WorkRelation.PersonListItemFrom!, PersonTo = WorkRelation.PersonListItemTo! },
-            newInterPersonalExistingRelation: r => r with { PersonFrom = WorkRelation.PersonListItemFrom!, PersonTo = WorkRelation.PersonListItemTo! },
+            incompleteNewInterPersonalFromRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemTo!),
+            incompleteNewInterPersonalToRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemFrom!),
             completedNewInterPersonalNewFromRelation: r => r with { PersonTo = WorkRelation.PersonListItemTo! },
             completedNewInterPersonalNewToRelation: r => r with { PersonFrom = WorkRelation.PersonListItemFrom! },
-            newInterPersonalExistingFromRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemTo!),
-            newInterPersonalExistingToRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemFrom!),
-            newInterPersonalNewFromRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemTo!),
-            newInterPersonalNewToRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemFrom!)
+            resolvedInterPersonalRelation: r => r with { PersonFrom = WorkRelation.PersonListItemFrom!, PersonTo = WorkRelation.PersonListItemTo! }
         );
     }
 }

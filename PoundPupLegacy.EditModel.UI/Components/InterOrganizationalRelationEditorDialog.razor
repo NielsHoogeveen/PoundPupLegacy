@@ -150,14 +150,11 @@
             return null;
 
         return WorkRelation.Match<CompletedInterOrganizationalRelation>(
-            existingInterOrganizationalRelation: r => r with { OrganizationFrom = WorkRelation.OrganizationListItemFrom!, OrganizationTo = WorkRelation.OrganizationListItemTo! },
-            newInterOrganizationalExistingRelation: r => r with { OrganizationFrom = WorkRelation.OrganizationListItemFrom!, OrganizationTo = WorkRelation.OrganizationListItemTo! },
-            newInterOrganizationalExistingFromRelation: r => r.GetCompletedRelation(WorkRelation.OrganizationListItemTo!),
-            newInterOrganizationalExistingToRelation: r => r.GetCompletedRelation(WorkRelation.OrganizationListItemFrom!),
+            newIncompleteInterOrganizationalRelationFrom: r => r.GetCompletedRelation(WorkRelation.OrganizationListItemTo!),
+            newIncompleteInterOrganizationalRelationTo: r => r.GetCompletedRelation(WorkRelation.OrganizationListItemFrom!),
             completedNewInterOrganizationalNewFromRelation: r => r with { OrganizationTo = WorkRelation.OrganizationListItemTo! },
-            newInterOrganizationalNewFromRelation: r => r.GetCompletedRelation(WorkRelation.OrganizationListItemTo!),
             completedNewInterOrganizationalNewToRelation: r => r with { OrganizationFrom = WorkRelation.OrganizationListItemFrom! },
-            newInterOrganizationalNewToRelation: r => r.GetCompletedRelation(WorkRelation.OrganizationListItemFrom!)
+            resolvedInterOrganizationalRelation: r => r with { OrganizationFrom = WorkRelation.OrganizationListItemFrom!, OrganizationTo = WorkRelation.OrganizationListItemTo! }
         );
     }
 }

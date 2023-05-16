@@ -1,6 +1,8 @@
 ﻿using Npgsql;
 using static PoundPupLegacy.EditModel.OrganizationItem;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation;
+using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.ResolvedInterOrganizationalRelation;
+using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation;
+using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.CompletedNewInterOrganizationalRelation;
 using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.EditModel.Updaters;
