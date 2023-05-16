@@ -1,4 +1,10 @@
-﻿@inherits EditorBase
+﻿@using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForOrganization.CompletedPersonOrganizationRelationForOrganization.ResolvedPersonOrganizationRelationForOrganization;
+@using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation;
+@using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.CompletedOrganizationPoliticalEntityRelation;
+@using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.CompletedOrganizationPoliticalEntityRelation.ResolvedOrganizationPoliticalEntityRelation;
+@using static PoundPupLegacy.EditModel.InterOrganizationalRelation;
+
+@inherits EditorBase
 <div class="organization-fields">
     <div class="form-group">
         <label>Website</label>
@@ -27,8 +33,8 @@
     Organization="Model.OrganizationItem"
     Relations="Model.OrganizationPoliticalEntityRelations.ToList()"
     RelationTypes="Model.OrganizationPoliticalEntityRelationTypes" />
-<PersonOrganizationRelationsEditor 
-    LeadingParty="Model.OrganizationItem"
+<PersonOrganizationRelationsEditorForOrganization 
+    Organization="Model.OrganizationItem"
     Relations="Model.PersonOrganizationRelations.ToList()"
     RelationTypes="Model.PersonOrganizationRelationTypes" />
 

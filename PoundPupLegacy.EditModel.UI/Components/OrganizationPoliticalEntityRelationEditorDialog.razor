@@ -1,15 +1,17 @@
-﻿@inject ILocationService LocationService
+﻿@using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation;
+@using static PoundPupLegacy.EditModel.OrganizationItem;
+@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
 @if(Relation is not null) {
     <EditForm EditContext="editContext">
-        @if (Relation.OrganizationItem is OrganizationItem.OrganizationName) {
+        @if (Relation.OrganizationItem is OrganizationName) {
             <div class="form-group">
                 <label>Party</label>
                 <div>@Relation.OrganizationItem.Name</div>
             </div>
         }
-        @if (Relation.OrganizationItem is OrganizationItem.OrganizationListItem partyListItem) {
-            <SearchItemEditor T="OrganizationItem.OrganizationListItem"
+        @if (Relation.OrganizationItem is OrganizationListItem partyListItem) {
+            <SearchItemEditor T="OrganizationListItem"
             IsMandatory="true"
             @bind-Value="partyListItem"
             EnableEdit="false"

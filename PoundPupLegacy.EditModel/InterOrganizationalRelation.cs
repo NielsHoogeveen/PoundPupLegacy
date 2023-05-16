@@ -1,435 +1,544 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using static PoundPupLegacy.EditModel.OrganizationItem;
+using static PoundPupLegacy.EditModel.InterOrganizationalRelation;
 
-public interface InterOrganizationalRelation : Relation
-{
-    InterOrganizationalRelationTypeListItem InterOrganizationalRelationType { get; }
-    decimal? MoneyInvolved { get; set; }
-    int? NumberOfChildrenInvolved { get; set; }
-    GeographicalEntityListItem? GeographicalEntity { get; set; }
-    string OrganizationFromName { get; }
-    string OrganizationToName { get; }
-    OrganizationItem? OrganizationItemFrom { get; }
-    OrganizationItem? OrganizationItemTo { get; }
-    OrganizationItem.OrganizationListItem? OrganizationListItemFrom { get; set; }
-    OrganizationItem.OrganizationListItem? OrganizationListItemTo { get; set; }
-    InterOrganizationalRelation SwapFromAndTo();
-    RelationSide RelationSideThisOrganization { get; }
-}
+namespace PoundPupLegacy.EditModel;
 
-public interface CompletedInterOrganizationalRelation: InterOrganizationalRelation
-{
-}
+[JsonSerializable(typeof(ExistingInterOrganizationalRelation))]
+public partial class ExistingInterOrganizationalRelationJsonContext : JsonSerializerContext { }
 
-public interface NewInterOrganizationalRelation: InterOrganizationalRelation, NewNode
+public abstract record InterOrganizationalRelation : RelationBase
 {
+    private InterOrganizationalRelation()
+    {
+    }
 
-}
-public interface CompletedNewInterOrganizationalRelation : NewInterOrganizationalRelation, CompletedInterOrganizationalRelation
-{
-}
-public interface IncompleteNewInterOrganizationalRelation : NewInterOrganizationalRelation
-{
-}
-public interface ResolvedInterOrganizationalRelation : CompletedInterOrganizationalRelation
-{
-}
+    [RequireNamedArgs]
+    public abstract T Match<T>(
+        Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+        Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+        Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+        Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+        Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+        Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+        Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+        Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+    );
 
-public abstract record InterOrganizationalRelationBase : RelationBase, InterOrganizationalRelation
-{
     public required InterOrganizationalRelationTypeListItem InterOrganizationalRelationType { get; set; }
     public decimal? MoneyInvolved { get; set; }
     public int? NumberOfChildrenInvolved { get; set; }
     public required GeographicalEntityListItem? GeographicalEntity { get; set; }
-    public OrganizationItem.OrganizationListItem? OrganizationListItemFrom { get; set; }
-    public OrganizationItem.OrganizationListItem? OrganizationListItemTo { get; set; }
+    public OrganizationListItem? OrganizationListItemFrom { get; set; }
+    public OrganizationListItem? OrganizationListItemTo { get; set; }
     public abstract string OrganizationFromName { get; }
     public abstract string OrganizationToName { get; }
     public abstract OrganizationItem? OrganizationItemFrom { get; }
     public abstract OrganizationItem? OrganizationItemTo { get; }
     public abstract InterOrganizationalRelation SwapFromAndTo();
     public abstract RelationSide RelationSideThisOrganization { get; }
-}
 
-[JsonSerializable(typeof(ExistingInterOrganizationalRelation))]
-public partial class ExistingInterOrganizationalRelationJsonContext : JsonSerializerContext { }
-
-public record ExistingInterOrganizationalRelation : InterOrganizationalRelationBase, ExistingNode, ResolvedInterOrganizationalRelation
-{
-    public required OrganizationItem.OrganizationListItem OrganizationFrom { get; set; }
-    public required OrganizationItem.OrganizationListItem OrganizationTo { get; set; }
-    public int NodeId { get; init; } 
-    public int UrlId { get; set; }
-    [JsonIgnore]
-    public override string OrganizationFromName => OrganizationFrom.Name;
-    [JsonIgnore]
-    public override string OrganizationToName => OrganizationTo.Name;
-    [JsonIgnore]
-    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    [JsonIgnore]
-    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
-    public override ExistingInterOrganizationalRelation SwapFromAndTo()
+    public abstract record CompletedInterOrganizationalRelation : InterOrganizationalRelation
     {
-        (OrganizationTo, OrganizationFrom) = (OrganizationFrom, OrganizationTo);
-        (OrganizationListItemTo, OrganizationListItemFrom) = (OrganizationListItemFrom, OrganizationListItemTo);
-        if (SettableRelationSideThisOrganization == RelationSide.To) {
-            SettableRelationSideThisOrganization = RelationSide.From;
+    }
+
+    public abstract record CompletedNewInterOrganizationalRelation : CompletedInterOrganizationalRelation, NewNode
+    {
+    }
+    public abstract record ResolvedInterOrganizationalRelation : CompletedInterOrganizationalRelation
+    {
+    }
+    public sealed record ExistingInterOrganizationalRelation : ResolvedInterOrganizationalRelation, ExistingNode
+    {
+        public required OrganizationListItem OrganizationFrom { get; set; }
+        public required OrganizationListItem OrganizationTo { get; set; }
+        public int NodeId { get; init; }
+        public int UrlId { get; set; }
+        [JsonIgnore]
+        public override string OrganizationFromName => OrganizationFrom.Name;
+        [JsonIgnore]
+        public override string OrganizationToName => OrganizationTo.Name;
+        [JsonIgnore]
+        public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+        [JsonIgnore]
+        public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+        public override ExistingInterOrganizationalRelation SwapFromAndTo()
+        {
+            (OrganizationTo, OrganizationFrom) = (OrganizationFrom, OrganizationTo);
+            (OrganizationListItemTo, OrganizationListItemFrom) = (OrganizationListItemFrom, OrganizationListItemTo);
+            if (SettableRelationSideThisOrganization == RelationSide.To) {
+                SettableRelationSideThisOrganization = RelationSide.From;
+            }
+            else {
+                SettableRelationSideThisOrganization = RelationSide.To;
+            }
+            return this;
         }
-        else {
-            SettableRelationSideThisOrganization = RelationSide.To;
+
+        public override RelationSide RelationSideThisOrganization => SettableRelationSideThisOrganization;
+        public required RelationSide SettableRelationSideThisOrganization { get; set; }
+
+        public override T Match<T>(
+            Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+            Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+            Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+            Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+            Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+            Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+            Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+            Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+        )
+        {
+            return existingInterOrganizationalRelation(this);
         }
-        return this;
+
     }
 
-    public override RelationSide RelationSideThisOrganization => SettableRelationSideThisOrganization;
-    public required RelationSide SettableRelationSideThisOrganization { get; set; }
-}
-
-public record NewInterOrganizationalExistingRelation : InterOrganizationalRelationBase, ResolvedInterOrganizationalRelation
-{
-    public required OrganizationItem.OrganizationListItem OrganizationFrom { get; set; }
-    public required OrganizationItem.OrganizationListItem OrganizationTo { get; set; }
-    public override string OrganizationFromName => OrganizationFrom.Name;
-    public override string OrganizationToName => OrganizationTo.Name;
-    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
-
-    public override NewInterOrganizationalExistingRelation SwapFromAndTo()
+    public sealed record NewInterOrganizationalExistingRelation : ResolvedInterOrganizationalRelation
     {
-        (OrganizationTo, OrganizationFrom) = (OrganizationFrom, OrganizationTo);
-        (OrganizationListItemTo, OrganizationListItemFrom) = (OrganizationListItemFrom, OrganizationListItemTo);
-        if (SettableRelationSideThisOrganization == RelationSide.To) {
-            SettableRelationSideThisOrganization = RelationSide.From;
+        public required OrganizationListItem OrganizationFrom { get; set; }
+        public required OrganizationListItem OrganizationTo { get; set; }
+        public override string OrganizationFromName => OrganizationFrom.Name;
+        public override string OrganizationToName => OrganizationTo.Name;
+        public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+        public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+
+        public override NewInterOrganizationalExistingRelation SwapFromAndTo()
+        {
+            (OrganizationTo, OrganizationFrom) = (OrganizationFrom, OrganizationTo);
+            (OrganizationListItemTo, OrganizationListItemFrom) = (OrganizationListItemFrom, OrganizationListItemTo);
+            if (SettableRelationSideThisOrganization == RelationSide.To) {
+                SettableRelationSideThisOrganization = RelationSide.From;
+            }
+            else {
+                SettableRelationSideThisOrganization = RelationSide.To;
+            }
+            return this;
         }
-        else {
-            SettableRelationSideThisOrganization = RelationSide.To;
+        public override RelationSide RelationSideThisOrganization => SettableRelationSideThisOrganization;
+
+        public required RelationSide SettableRelationSideThisOrganization { get; set; }
+        public override T Match<T>(
+            Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+            Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+            Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+            Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+            Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+            Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+            Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+            Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+        )
+        {
+            return newInterOrganizationalExistingRelation(this);
         }
-        return this;
-    }
-    public override RelationSide RelationSideThisOrganization => SettableRelationSideThisOrganization;
 
-    public required RelationSide SettableRelationSideThisOrganization { get; set; }
+    }
+
+    public sealed record NewInterOrganizationalExistingFromRelation : InterOrganizationalRelation
+    {
+        public required OrganizationListItem OrganizationFrom { get; set; }
+        public required OrganizationListItem? OrganizationTo { get; set; }
+        public override string OrganizationFromName => OrganizationFrom.Name;
+        public override string OrganizationToName => OrganizationTo is null ? "" : OrganizationTo.Name;
+        public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+        public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+        public override NewInterOrganizationalExistingToRelation SwapFromAndTo()
+        {
+            return new NewInterOrganizationalExistingToRelation {
+                OrganizationFrom = OrganizationTo,
+                OrganizationTo = OrganizationFrom,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+                OrganizationListItemFrom = OrganizationListItemTo,
+                OrganizationListItemTo = OrganizationListItemFrom,
+            };
+        }
+
+        public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationListItem organizationListItemTo)
+        {
+            return new NewInterOrganizationalExistingRelation {
+                OrganizationFrom = OrganizationFrom,
+                OrganizationTo = organizationListItemTo,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+                SettableRelationSideThisOrganization = RelationSide.To
+            };
+        }
+
+        public override RelationSide RelationSideThisOrganization => RelationSide.From;
+
+        public override T Match<T>(
+            Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+            Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+            Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+            Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+            Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+            Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+            Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+            Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+        )
+        {
+            return newInterOrganizationalExistingFromRelation(this);
+        }
+
+
+    }
+    public sealed record NewInterOrganizationalExistingToRelation : InterOrganizationalRelation
+    {
+        public required OrganizationListItem? OrganizationFrom { get; set; }
+        public required OrganizationListItem OrganizationTo { get; set; }
+        public override string OrganizationFromName => OrganizationFrom is null ? "" : OrganizationFrom.Name;
+        public override string OrganizationToName => OrganizationTo.Name;
+        public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+        public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+        public override NewInterOrganizationalExistingFromRelation SwapFromAndTo()
+        {
+            return new NewInterOrganizationalExistingFromRelation {
+                OrganizationFrom = OrganizationTo,
+                OrganizationTo = OrganizationFrom,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+                OrganizationListItemFrom = OrganizationListItemTo,
+                OrganizationListItemTo = OrganizationListItemFrom,
+            };
+        }
+
+        public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationListItem organizationListItemFrom)
+        {
+            return new NewInterOrganizationalExistingRelation {
+                OrganizationFrom = organizationListItemFrom,
+                OrganizationTo = OrganizationTo,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+                SettableRelationSideThisOrganization = RelationSide.To
+            };
+        }
+        public override T Match<T>(
+            Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+            Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+            Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+            Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+            Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+            Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+            Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+            Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+        )
+        {
+            return newInterOrganizationalExistingToRelation(this);
+        }
+
+        public override RelationSide RelationSideThisOrganization => RelationSide.To;
+    }
+
+    public sealed record CompletedNewInterOrganizationalNewFromRelation : CompletedNewInterOrganizationalRelation
+    {
+        public required OrganizationName OrganizationFrom { get; set; }
+        public required OrganizationListItem OrganizationTo { get; set; }
+        public override string OrganizationFromName => OrganizationFrom.Name;
+        public override string OrganizationToName => OrganizationTo.Name;
+        public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+        public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+
+        public override CompletedNewInterOrganizationalNewToRelation SwapFromAndTo()
+        {
+            return new CompletedNewInterOrganizationalNewToRelation {
+                OrganizationFrom = OrganizationTo,
+                OrganizationTo = OrganizationFrom,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+                OrganizationListItemFrom = OrganizationListItemTo,
+                OrganizationListItemTo = OrganizationListItemFrom,
+            };
+        }
+        public override T Match<T>(
+            Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+            Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+            Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+            Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+            Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+            Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+            Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+            Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+        )
+        {
+            return completedNewInterOrganizationalNewFromRelation(this);
+        }
+
+        public override RelationSide RelationSideThisOrganization => RelationSide.From;
+    }
+    public sealed record NewInterOrganizationalNewFromRelation : InterOrganizationalRelation
+    {
+        public required OrganizationName OrganizationFrom { get; set; }
+        public required OrganizationListItem? OrganizationTo { get; set; }
+        public override string OrganizationFromName => OrganizationFrom.Name;
+        public override string OrganizationToName => OrganizationTo is null ? "" : OrganizationTo.Name;
+        public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+        public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+        public override NewInterOrganizationalNewToRelation SwapFromAndTo()
+        {
+            return new NewInterOrganizationalNewToRelation {
+                OrganizationFrom = OrganizationTo,
+                OrganizationTo = OrganizationFrom,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+                OrganizationListItemFrom = OrganizationListItemTo,
+                OrganizationListItemTo = OrganizationListItemFrom,
+            };
+        }
+        public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationListItem organizationListItemTo)
+        {
+            return new CompletedNewInterOrganizationalNewFromRelation {
+                OrganizationFrom = OrganizationFrom,
+                OrganizationTo = organizationListItemTo,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+            };
+        }
+
+        public override RelationSide RelationSideThisOrganization => RelationSide.From;
+        public override T Match<T>(
+            Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+            Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+            Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+            Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+            Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+            Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+            Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+            Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+        )
+        {
+            return newInterOrganizationalNewFromRelation(this);
+        }
+
+    }
+    public sealed record CompletedNewInterOrganizationalNewToRelation : CompletedNewInterOrganizationalRelation
+    {
+        public required OrganizationListItem OrganizationFrom { get; set; }
+        public required OrganizationName OrganizationTo { get; set; }
+        public override string OrganizationFromName => OrganizationFrom.Name;
+        public override string OrganizationToName => OrganizationTo.Name;
+        public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+        public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+        public override CompletedNewInterOrganizationalNewFromRelation SwapFromAndTo()
+        {
+            return new CompletedNewInterOrganizationalNewFromRelation {
+                OrganizationFrom = OrganizationTo,
+                OrganizationTo = OrganizationFrom,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+                OrganizationListItemFrom = OrganizationListItemTo,
+                OrganizationListItemTo = OrganizationListItemFrom,
+            };
+        }
+        public override RelationSide RelationSideThisOrganization => RelationSide.To;
+        public override T Match<T>(
+            Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+            Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+            Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+            Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+            Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+            Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+            Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+            Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+        )
+        {
+            return completedNewInterOrganizationalNewToRelation(this);
+        }
+
+    }
+    public sealed record NewInterOrganizationalNewToRelation : InterOrganizationalRelation
+    {
+        public required OrganizationListItem? OrganizationFrom { get; set; }
+        public required OrganizationName OrganizationTo { get; set; }
+        public override string OrganizationFromName => OrganizationFrom is null ? "" : OrganizationFrom.Name;
+        public override string OrganizationToName => OrganizationTo.Name;
+        public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
+        public override OrganizationItem? OrganizationItemTo => OrganizationTo;
+
+        public override NewInterOrganizationalNewFromRelation SwapFromAndTo()
+        {
+            return new NewInterOrganizationalNewFromRelation {
+                OrganizationFrom = OrganizationTo,
+                OrganizationTo = OrganizationFrom,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+                OrganizationListItemFrom = OrganizationListItemTo,
+                OrganizationListItemTo = OrganizationListItemFrom,
+            };
+        }
+        public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationListItem organizationListItemFrom)
+        {
+            return new CompletedNewInterOrganizationalNewToRelation {
+                OrganizationFrom = organizationListItemFrom,
+                OrganizationTo = OrganizationTo,
+                DateFrom = DateFrom,
+                DateTo = DateTo,
+                Description = Description,
+                GeographicalEntity = GeographicalEntity,
+                InterOrganizationalRelationType = InterOrganizationalRelationType,
+                MoneyInvolved = MoneyInvolved,
+                NumberOfChildrenInvolved = NumberOfChildrenInvolved,
+                ProofDocument = ProofDocument,
+                NodeTypeName = NodeTypeName,
+                Files = Files,
+                HasBeenDeleted = HasBeenDeleted,
+                OwnerId = OwnerId,
+                PublisherId = PublisherId,
+                Tags = Tags,
+                TenantNodes = TenantNodes,
+                Tenants = Tenants,
+                Title = Title,
+            };
+        }
+        public override RelationSide RelationSideThisOrganization => RelationSide.To;
+        public override T Match<T>(
+            Func<ExistingInterOrganizationalRelation, T> existingInterOrganizationalRelation,
+            Func<NewInterOrganizationalExistingRelation, T> newInterOrganizationalExistingRelation,
+            Func<NewInterOrganizationalExistingFromRelation, T> newInterOrganizationalExistingFromRelation,
+            Func<NewInterOrganizationalExistingToRelation, T> newInterOrganizationalExistingToRelation,
+            Func<CompletedNewInterOrganizationalNewFromRelation, T> completedNewInterOrganizationalNewFromRelation,
+            Func<NewInterOrganizationalNewFromRelation, T> newInterOrganizationalNewFromRelation,
+            Func<CompletedNewInterOrganizationalNewToRelation, T> completedNewInterOrganizationalNewToRelation,
+            Func<NewInterOrganizationalNewToRelation, T> newInterOrganizationalNewToRelation
+        )
+        {
+            return newInterOrganizationalNewToRelation(this);
+        }
+
+    }
 }
 
-public record NewInterOrganizationalExistingFromRelation : InterOrganizationalRelationBase, InterOrganizationalRelation, IncompleteNewInterOrganizationalRelation
-{
-    public required OrganizationItem.OrganizationListItem OrganizationFrom { get; set; }
-    public required OrganizationItem.OrganizationListItem? OrganizationTo { get; set; }
-    public override string OrganizationFromName => OrganizationFrom.Name;
-    public override string OrganizationToName => OrganizationTo is null ? "" : OrganizationTo.Name;
-    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
-    public override NewInterOrganizationalExistingToRelation SwapFromAndTo()
-    {
-        return new NewInterOrganizationalExistingToRelation {
-            OrganizationFrom = OrganizationTo,
-            OrganizationTo = OrganizationFrom,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files   = Files,
-            HasBeenDeleted  = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title  = Title,
-            OrganizationListItemFrom = OrganizationListItemTo,
-            OrganizationListItemTo = OrganizationListItemFrom,
-        };
-    }
-
-    public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItemTo)
-    {
-        return new NewInterOrganizationalExistingRelation {
-            OrganizationFrom = OrganizationFrom,
-            OrganizationTo = organizationListItemTo,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-            SettableRelationSideThisOrganization = RelationSide.To
-        };
-    }
-
-    public override RelationSide RelationSideThisOrganization => RelationSide.From;
-
-}
-public record NewInterOrganizationalExistingToRelation : InterOrganizationalRelationBase, InterOrganizationalRelation, IncompleteNewInterOrganizationalRelation
-{
-    public required OrganizationItem.OrganizationListItem? OrganizationFrom { get; set; }
-    public required OrganizationItem.OrganizationListItem OrganizationTo { get; set; }
-    public override string OrganizationFromName => OrganizationFrom is null ? "" : OrganizationFrom.Name;
-    public override string OrganizationToName => OrganizationTo.Name;
-    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
-    public override NewInterOrganizationalExistingFromRelation SwapFromAndTo()
-    {
-        return new NewInterOrganizationalExistingFromRelation {
-            OrganizationFrom = OrganizationTo,
-            OrganizationTo = OrganizationFrom,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-            OrganizationListItemFrom = OrganizationListItemTo,
-            OrganizationListItemTo = OrganizationListItemFrom,
-        };
-    }
-
-    public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItemFrom)
-    {
-        return new NewInterOrganizationalExistingRelation {
-            OrganizationFrom = organizationListItemFrom,
-            OrganizationTo = OrganizationTo,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-            SettableRelationSideThisOrganization = RelationSide.To
-        };
-    }
-
-    public override RelationSide RelationSideThisOrganization => RelationSide.To;
-}
-
-public record CompletedNewInterOrganizationalNewFromRelation : InterOrganizationalRelationBase, CompletedInterOrganizationalRelation, CompletedNewInterOrganizationalRelation
-{
-    public required OrganizationItem.OrganizationName OrganizationFrom { get; set; }
-    public required OrganizationItem.OrganizationListItem OrganizationTo { get; set; }
-    public override string OrganizationFromName => OrganizationFrom.Name;
-    public override string OrganizationToName => OrganizationTo.Name;
-    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
-
-    public override CompletedNewInterOrganizationalNewToRelation SwapFromAndTo()
-    {
-        return new CompletedNewInterOrganizationalNewToRelation {
-            OrganizationFrom = OrganizationTo,
-            OrganizationTo = OrganizationFrom,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-            OrganizationListItemFrom = OrganizationListItemTo,
-            OrganizationListItemTo = OrganizationListItemFrom,
-        };
-    }
-    public override RelationSide RelationSideThisOrganization => RelationSide.From;
-}
-public record NewInterOrganizationalNewFromRelation : InterOrganizationalRelationBase, InterOrganizationalRelation, IncompleteNewInterOrganizationalRelation
-{
-    public required OrganizationItem.OrganizationName OrganizationFrom { get; set; }
-    public required OrganizationItem.OrganizationListItem? OrganizationTo { get; set; }
-    public override string OrganizationFromName => OrganizationFrom.Name;
-    public override string OrganizationToName => OrganizationTo is null? "": OrganizationTo.Name;
-    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
-    public override NewInterOrganizationalNewToRelation SwapFromAndTo()
-    {
-        return new NewInterOrganizationalNewToRelation {
-            OrganizationFrom = OrganizationTo,
-            OrganizationTo = OrganizationFrom,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-            OrganizationListItemFrom = OrganizationListItemTo,
-            OrganizationListItemTo = OrganizationListItemFrom,
-        };
-    }
-    public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItemTo)
-    {
-        return new CompletedNewInterOrganizationalNewFromRelation {
-            OrganizationFrom = OrganizationFrom,
-            OrganizationTo = organizationListItemTo,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-        };
-    }
-
-    public override RelationSide RelationSideThisOrganization => RelationSide.From;
-}
-public record CompletedNewInterOrganizationalNewToRelation : InterOrganizationalRelationBase, CompletedInterOrganizationalRelation, CompletedNewInterOrganizationalRelation
-{
-    public required OrganizationItem.OrganizationListItem OrganizationFrom { get; set; }
-    public required OrganizationItem.OrganizationName OrganizationTo { get; set; }
-    public override string OrganizationFromName => OrganizationFrom.Name;
-    public override string OrganizationToName => OrganizationTo.Name;
-    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
-    public override CompletedNewInterOrganizationalNewFromRelation SwapFromAndTo()
-    {
-        return new CompletedNewInterOrganizationalNewFromRelation {
-            OrganizationFrom = OrganizationTo,
-            OrganizationTo = OrganizationFrom,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-            OrganizationListItemFrom = OrganizationListItemTo,
-            OrganizationListItemTo = OrganizationListItemFrom,
-        };
-    }
-    public override RelationSide RelationSideThisOrganization => RelationSide.To;
-}
-public record NewInterOrganizationalNewToRelation : InterOrganizationalRelationBase, InterOrganizationalRelation, IncompleteNewInterOrganizationalRelation
-{
-    public required OrganizationItem.OrganizationListItem? OrganizationFrom { get; set; }
-    public required OrganizationItem.OrganizationName OrganizationTo { get; set; }
-    public override string OrganizationFromName => OrganizationFrom is null ? "" : OrganizationFrom.Name;
-    public override string OrganizationToName => OrganizationTo.Name;
-    public override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
-    public override OrganizationItem? OrganizationItemTo => OrganizationTo;
-
-    public override NewInterOrganizationalNewFromRelation SwapFromAndTo()
-    {
-        return new NewInterOrganizationalNewFromRelation {
-            OrganizationFrom = OrganizationTo,
-            OrganizationTo = OrganizationFrom,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-            OrganizationListItemFrom = OrganizationListItemTo,
-            OrganizationListItemTo = OrganizationListItemFrom,
-        };
-    }
-    public CompletedInterOrganizationalRelation GetCompletedRelation(OrganizationItem.OrganizationListItem organizationListItemFrom)
-    {
-        return new CompletedNewInterOrganizationalNewToRelation {
-            OrganizationFrom = organizationListItemFrom,
-            OrganizationTo = OrganizationTo,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            Description = Description,
-            GeographicalEntity = GeographicalEntity,
-            InterOrganizationalRelationType = InterOrganizationalRelationType,
-            MoneyInvolved = MoneyInvolved,
-            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-            ProofDocument = ProofDocument,
-            NodeTypeName = NodeTypeName,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title,
-        };
-    }
-    public override RelationSide RelationSideThisOrganization => RelationSide.To;
-}

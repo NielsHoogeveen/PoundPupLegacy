@@ -1,4 +1,5 @@
-﻿namespace PoundPupLegacy.EditModel.Readers;
+﻿using static PoundPupLegacy.EditModel.OrganizationItem;
+namespace PoundPupLegacy.EditModel.Readers;
 
 using Request = OrganizationsReaderRequest;
 using SearchOption = Common.SearchOption;
@@ -9,7 +10,7 @@ public sealed record OrganizationsReaderRequest : IRequest
     public required string SearchString { get; init; }
 }
 
-internal sealed class OrganizationsReaderFactory : EnumerableDatabaseReaderFactory<Request, OrganizationItem.OrganizationListItem>
+internal sealed class OrganizationsReaderFactory : EnumerableDatabaseReaderFactory<Request, OrganizationListItem>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly SearchOptionDatabaseParameter SearchOptionParameter = new() { Name = "search_option" };
@@ -53,9 +54,9 @@ internal sealed class OrganizationsReaderFactory : EnumerableDatabaseReaderFacto
         };
     }
 
-    protected override OrganizationItem.OrganizationListItem Read(NpgsqlDataReader reader)
+    protected override OrganizationListItem Read(NpgsqlDataReader reader)
     {
-        return new OrganizationItem.OrganizationListItem {
+        return new OrganizationListItem {
             Id = IdReader.GetValue(reader),
             Name = NameReader.GetValue(reader),
         };

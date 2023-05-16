@@ -1,4 +1,8 @@
-﻿@inherits EditorBase
+﻿@using static PoundPupLegacy.EditModel.PersonOrganizationRelation;
+@using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForOrganization;
+@using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForOrganization.CompletedPersonOrganizationRelationForOrganization;
+@using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForOrganization.CompletedPersonOrganizationRelationForOrganization.ResolvedPersonOrganizationRelationForOrganization;
+@inherits EditorBase
 @if (_relationToEdit is not null) {
     <ModalDialog 
         Title="Add person-organization relation" 

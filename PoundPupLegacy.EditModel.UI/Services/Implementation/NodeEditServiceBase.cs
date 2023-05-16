@@ -76,7 +76,7 @@ internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
                 }
                 return id;
             }
-            catch (Exception ex) {
+            catch (Exception) {
                 await tx.RollbackAsync();
                 throw;
             }
@@ -102,7 +102,7 @@ internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
                 }
                 return node.UrlId;
             }
-            catch (Exception ex) {
+            catch (Exception) {
                 await tx.RollbackAsync();
                 throw;
             }

@@ -1,127 +1,188 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.CompletedOrganizationPoliticalEntityRelation;
+using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.CompletedOrganizationPoliticalEntityRelation.ResolvedOrganizationPoliticalEntityRelation;
+using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.IncompleteOrganizationPoliticalEntityRelation;
+using static PoundPupLegacy.EditModel.OrganizationItem;
+namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingOrganizationPoliticalEntityRelation))]
 public partial class ExistingOrganizationPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
-public interface OrganizationPoliticalEntityRelation : Relation
+public abstract record OrganizationPoliticalEntityRelation : RelationBase
 {
-    OrganizationPoliticalEntityRelationTypeListItem OrganizationPoliticalEntityRelationType { get; set; }
+    private OrganizationPoliticalEntityRelation() { }
 
-    OrganizationItem? OrganizationItem { get; }
-    PoliticalEntityListItem? PoliticalEntityItem { get; }
-}
-public interface IncompleteOrganizationPoliticalEntityRelation : OrganizationPoliticalEntityRelation
-{
-    CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity);
-}
-public interface CompletedOrganizationPoliticalEntityRelation: OrganizationPoliticalEntityRelation
-{
-    string OrganizationName { get; }
-
-    string PoliticalEntityName { get; }
-}
-public interface ResolvedOrganizationPoliticalEntityRelation: CompletedOrganizationPoliticalEntityRelation
-{
-
-}
-public record CompletedNewOrganizationPoliticalEntityRelationNewOrganization : OrganizationPoliticalEntityRelationBase, NewNode, CompletedOrganizationPoliticalEntityRelation
-{
-    public required OrganizationItem.OrganizationName Organization { get; set; }
-    public required PoliticalEntityListItem PoliticalEntity { get; set; }
-    public string OrganizationName => Organization.Name;
-    public string PoliticalEntityName => PoliticalEntity.Name;
-    public override OrganizationItem? OrganizationItem => Organization;
-    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-
-}
-public record CompletedNewOrganizationPoliticalEntityRelationExistingOrganization : OrganizationPoliticalEntityRelationBase, NewNode, CompletedOrganizationPoliticalEntityRelation
-{
-    public required OrganizationItem.OrganizationListItem Organization { get; set; }
-    public required PoliticalEntityListItem PoliticalEntity { get; set; }
-
-    public string OrganizationName => Organization.Name;
-    public string PoliticalEntityName => PoliticalEntity.Name;
-    public override OrganizationItem? OrganizationItem => Organization;
-    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-}
-
-public record NewOrganizationPoliticalEntityRelationNewOrganization : OrganizationPoliticalEntityRelationBase, NewNode, IncompleteOrganizationPoliticalEntityRelation
-{
-    public required OrganizationItem.OrganizationName Organization { get; set; }
-    public required PoliticalEntityListItem? PoliticalEntity { get; set; }
-    public override OrganizationItem? OrganizationItem => Organization;
-    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-    public CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
-    {
-        return new CompletedNewOrganizationPoliticalEntityRelationNewOrganization {
-            Organization = Organization,
-            PoliticalEntity = politicalEntity,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
-            Description = Description,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            NodeTypeName = NodeTypeName,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            ProofDocument = ProofDocument,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title
-        };
-    }
-}
-public record NewOrganizationPoliticalEntityRelationExistingOrganization : OrganizationPoliticalEntityRelationBase, NewNode, IncompleteOrganizationPoliticalEntityRelation
-{
-    public required OrganizationItem.OrganizationListItem Organization { get; set; }
-    public required PoliticalEntityListItem? PoliticalEntity { get; set; }
-    public override OrganizationItem? OrganizationItem => Organization;
-    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-    public CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
-    {
-        return new CompletedNewOrganizationPoliticalEntityRelationExistingOrganization {
-            Organization = Organization,
-            PoliticalEntity = politicalEntity,
-            DateFrom = DateFrom,
-            DateTo = DateTo,
-            OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
-            Description = Description,
-            Files = Files,
-            HasBeenDeleted = HasBeenDeleted,
-            NodeTypeName = NodeTypeName,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            ProofDocument = ProofDocument,
-            Tags = Tags,
-            TenantNodes = TenantNodes,
-            Tenants = Tenants,
-            Title = Title
-        };
-    }
-
-}
-
-public record ExistingOrganizationPoliticalEntityRelation : OrganizationPoliticalEntityRelationBase, ExistingNode, ResolvedOrganizationPoliticalEntityRelation
-{
-    public int NodeId { get; init; }
-
-    public int UrlId { get; set; }
-    public required OrganizationItem.OrganizationListItem Organization { get; set; }
-    public required PoliticalEntityListItem PoliticalEntity { get; set; }
-    public string OrganizationName => Organization.Name;
-    public string PoliticalEntityName => PoliticalEntity.Name;
-    public override OrganizationItem? OrganizationItem => Organization;
-    public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-
-
-}
-public abstract record OrganizationPoliticalEntityRelationBase : RelationBase, OrganizationPoliticalEntityRelation
-{
+    [RequireNamedArgs]
+    public abstract T Match<T>(
+        Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+        Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+        Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
+        Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+        Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+     );
     public required OrganizationPoliticalEntityRelationTypeListItem OrganizationPoliticalEntityRelationType { get; set; }
 
     public abstract OrganizationItem? OrganizationItem { get; }
     public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
 
+    public abstract record IncompleteOrganizationPoliticalEntityRelation : OrganizationPoliticalEntityRelation
+    {
+        private IncompleteOrganizationPoliticalEntityRelation() { }
+        public abstract CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity);
+        public sealed record NewOrganizationPoliticalEntityRelationNewOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
+        {
+            public override T Match<T>(
+                Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
+                Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+             )
+            {
+                return newOrganizationPoliticalEntityRelationNewOrganization(this);
+            }
+
+            public required OrganizationName Organization { get; set; }
+            public required PoliticalEntityListItem? PoliticalEntity { get; set; }
+            public override OrganizationItem? OrganizationItem => Organization;
+            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            public override CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
+            {
+                return new CompletedNewOrganizationPoliticalEntityRelationNewOrganization {
+                    Organization = Organization,
+                    PoliticalEntity = politicalEntity,
+                    DateFrom = DateFrom,
+                    DateTo = DateTo,
+                    OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
+                    Description = Description,
+                    Files = Files,
+                    HasBeenDeleted = HasBeenDeleted,
+                    NodeTypeName = NodeTypeName,
+                    OwnerId = OwnerId,
+                    PublisherId = PublisherId,
+                    ProofDocument = ProofDocument,
+                    Tags = Tags,
+                    TenantNodes = TenantNodes,
+                    Tenants = Tenants,
+                    Title = Title
+                };
+            }
+        }
+        public sealed record NewOrganizationPoliticalEntityRelationExistingOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
+        {
+            public override T Match<T>(
+                Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
+                Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+             )
+            {
+                return newOrganizationPoliticalEntityRelationExistingOrganization(this);
+            }
+
+            public required OrganizationListItem Organization { get; set; }
+            public required PoliticalEntityListItem? PoliticalEntity { get; set; }
+            public override OrganizationItem? OrganizationItem => Organization;
+            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            public override CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
+            {
+                return new CompletedNewOrganizationPoliticalEntityRelationExistingOrganization {
+                    Organization = Organization,
+                    PoliticalEntity = politicalEntity,
+                    DateFrom = DateFrom,
+                    DateTo = DateTo,
+                    OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
+                    Description = Description,
+                    Files = Files,
+                    HasBeenDeleted = HasBeenDeleted,
+                    NodeTypeName = NodeTypeName,
+                    OwnerId = OwnerId,
+                    PublisherId = PublisherId,
+                    ProofDocument = ProofDocument,
+                    Tags = Tags,
+                    TenantNodes = TenantNodes,
+                    Tenants = Tenants,
+                    Title = Title
+                };
+            }
+        }
+    }
+    public abstract record CompletedOrganizationPoliticalEntityRelation : OrganizationPoliticalEntityRelation
+    {
+        private CompletedOrganizationPoliticalEntityRelation() { }
+        public abstract string OrganizationName { get; }
+
+        public abstract string PoliticalEntityName { get; }
+        public abstract record ResolvedOrganizationPoliticalEntityRelation : CompletedOrganizationPoliticalEntityRelation
+        {
+            private ResolvedOrganizationPoliticalEntityRelation() { }
+            public sealed record ExistingOrganizationPoliticalEntityRelation : ResolvedOrganizationPoliticalEntityRelation, ExistingNode
+            {
+                public override T Match<T>(
+                    Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                    Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                    Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
+                    Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                    Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+                 )
+                {
+                    return existingOrganizationPoliticalEntityRelation(this);
+                }
+                public int NodeId { get; init; }
+
+                public int UrlId { get; set; }
+                public required OrganizationListItem Organization { get; set; }
+                public required PoliticalEntityListItem PoliticalEntity { get; set; }
+                public override string OrganizationName => Organization.Name;
+                public override string PoliticalEntityName => PoliticalEntity.Name;
+                public override OrganizationItem? OrganizationItem => Organization;
+                public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            }
+            public sealed record CompletedNewOrganizationPoliticalEntityRelationExistingOrganization : ResolvedOrganizationPoliticalEntityRelation, NewNode
+            {
+                public override T Match<T>(
+                    Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                    Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                    Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
+                    Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                    Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+                 )
+                {
+                    return completedNewOrganizationPoliticalEntityRelationExistingOrganization(this);
+                }
+
+                public required OrganizationListItem Organization { get; set; }
+                public required PoliticalEntityListItem PoliticalEntity { get; set; }
+
+                public override string OrganizationName => Organization.Name;
+                public override string PoliticalEntityName => PoliticalEntity.Name;
+                public override OrganizationItem? OrganizationItem => Organization;
+                public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            }
+        }
+        public sealed record CompletedNewOrganizationPoliticalEntityRelationNewOrganization : CompletedOrganizationPoliticalEntityRelation, NewNode
+        {
+            public override T Match<T>(
+                Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
+                Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+             )
+            {
+                return completedNewOrganizationPoliticalEntityRelationNewOrganization(this);
+            }
+
+            public required OrganizationName Organization { get; set; }
+            public required PoliticalEntityListItem PoliticalEntity { get; set; }
+            public override string OrganizationName => Organization.Name;
+            public override string PoliticalEntityName => PoliticalEntity.Name;
+            public override OrganizationItem? OrganizationItem => Organization;
+            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+
+        }
+    }
+
+
 }
+

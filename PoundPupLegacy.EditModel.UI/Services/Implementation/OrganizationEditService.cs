@@ -1,4 +1,6 @@
 ﻿using Npgsql;
+using static PoundPupLegacy.EditModel.OrganizationItem;
+using static PoundPupLegacy.EditModel.InterOrganizationalRelation;
 using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.EditModel.Updaters;
@@ -76,7 +78,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                 .OfType<CompletedNewInterOrganizationalNewToRelation>()
                 .Select(x => new NewInterOrganizationalExistingRelation {
                     OrganizationFrom = x.OrganizationFrom,
-                    OrganizationTo = new OrganizationItem.OrganizationListItem {
+                    OrganizationTo = new OrganizationListItem {
                         Id = nodeId,
                         Name = x.OrganizationToName
                     },
@@ -104,7 +106,7 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                 .InterOrganizationalRelations
                 .OfType<CompletedNewInterOrganizationalNewFromRelation>()
                 .Select(x => new NewInterOrganizationalExistingRelation {
-                    OrganizationFrom = new OrganizationItem.OrganizationListItem {
+                    OrganizationFrom = new OrganizationListItem {
                         Id = nodeId,
                         Name = x.OrganizationFromName
                     },

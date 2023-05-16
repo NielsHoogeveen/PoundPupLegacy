@@ -1,4 +1,6 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
+﻿using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation.ResolvedInterPersonalRelation;
+
+using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.EditModel.Updaters;
 using System.Data;
 

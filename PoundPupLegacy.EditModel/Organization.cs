@@ -1,4 +1,10 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForOrganization;
+using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForOrganization.CompletedPersonOrganizationRelationForOrganization.ResolvedPersonOrganizationRelationForOrganization;
+using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation;
+using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.CompletedOrganizationPoliticalEntityRelation.ResolvedOrganizationPoliticalEntityRelation;
+using static PoundPupLegacy.EditModel.InterOrganizationalRelation;
+using static PoundPupLegacy.EditModel.OrganizationItem;
+namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingOrganization))]
 public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
@@ -103,14 +109,14 @@ public record ExistingOrganization : OrganizationBase, ExistingNode
 
     }
 
-    public override OrganizationItem OrganizationItem => new OrganizationItem.OrganizationListItem { Id = NodeId, Name = Title };
+    public override OrganizationItem OrganizationItem => new OrganizationListItem { Id = NodeId, Name = Title };
 }
 public record NewOrganization : OrganizationBase, NewNode
 {
     public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
     public override IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations => NewInterOrganizationalRelations;
     public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => NewPersonOrganizationRelations;
-    public override OrganizationItem OrganizationItem => new OrganizationItem.OrganizationName { Name = Title };
+    public override OrganizationItem OrganizationItem => new OrganizationName { Name = Title };
 }
 public abstract record OrganizationBase : PartyBase, Organization
 {

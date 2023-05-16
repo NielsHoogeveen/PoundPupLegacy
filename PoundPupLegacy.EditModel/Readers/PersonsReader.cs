@@ -1,4 +1,5 @@
-﻿namespace PoundPupLegacy.EditModel.Readers;
+﻿using static PoundPupLegacy.EditModel.PersonItem;
+namespace PoundPupLegacy.EditModel.Readers;
 
 using Request = PersonsReaderRequest;
 using SearchOption = Common.SearchOption;
@@ -9,7 +10,7 @@ public sealed record PersonsReaderRequest : IRequest
     public required string SearchString { get; init; }
 }
 
-internal sealed class PersonsReaderFactory : EnumerableDatabaseReaderFactory<Request, PersonItem.PersonListItem>
+internal sealed class PersonsReaderFactory : EnumerableDatabaseReaderFactory<Request, PersonListItem>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly SearchOptionDatabaseParameter SearchOptionParameter = new() { Name = "search_option" };
@@ -53,9 +54,9 @@ internal sealed class PersonsReaderFactory : EnumerableDatabaseReaderFactory<Req
         };
     }
 
-    protected override PersonItem.PersonListItem Read(NpgsqlDataReader reader)
+    protected override PersonListItem Read(NpgsqlDataReader reader)
     {
-        return new PersonItem.PersonListItem {
+        return new PersonListItem {
             Id = IdReader.GetValue(reader),
             Name = NameReader.GetValue(reader),
         };

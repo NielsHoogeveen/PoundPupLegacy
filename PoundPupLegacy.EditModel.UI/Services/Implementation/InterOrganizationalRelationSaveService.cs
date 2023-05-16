@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
+﻿using static PoundPupLegacy.EditModel.InterOrganizationalRelation;
+using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.EditModel.Updaters;
 using System.Data;
 

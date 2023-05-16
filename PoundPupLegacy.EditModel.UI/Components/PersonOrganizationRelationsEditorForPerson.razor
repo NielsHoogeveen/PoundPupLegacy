@@ -1,4 +1,6 @@
-﻿@inherits EditorBase
+﻿@using static PoundPupLegacy.EditModel.PersonOrganizationRelation;
+@using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForPerson;
+@inherits EditorBase
 @if (_relationToEdit is not null) {
     <ModalDialog 
         Title="Add person-organization relation" 
@@ -121,7 +123,7 @@
     private void OnAdd()
     {
         _relationToEdit = Person.Match<PersonOrganizationRelationForPerson>(
-            pli => new NewPersonOrganizationRelationExistingPerson {
+            personListItem: pli => new NewPersonOrganizationRelationExistingPerson {
                 Person = pli,
                 Organization = null,
                 PersonOrganizationRelationType = RelationTypes.First(),
@@ -140,7 +142,7 @@
                 TenantNodes = new List<TenantNode>(),
                 Tenants = new List<Tenant>(),
             },
-            pn => new NewPersonOrganizationRelationNewPerson {
+            personName: pn => new NewPersonOrganizationRelationNewPerson {
                 Person = pn,
                 Organization = null,
                 PersonOrganizationRelationType = RelationTypes.First(),

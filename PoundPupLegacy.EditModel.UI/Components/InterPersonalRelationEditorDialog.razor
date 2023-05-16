@@ -1,15 +1,17 @@
-﻿@inject ILocationService LocationService
+﻿@using static PoundPupLegacy.EditModel.InterPersonalRelation;
+@using static PoundPupLegacy.EditModel.PersonItem;
+@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
 @if(WorkRelation is not null) {
     <EditForm EditContext="editContext">
-        @if (WorkRelation.PersonItemFrom is PersonItem.PersonName) {
+        @if (WorkRelation.PersonItemFrom is PersonName) {
             <div class="form-group">
                 <label>Person from</label>
                 <div>@WorkRelation.PersonFromName</div>
             </div>
         }
         else{
-            <SearchItemEditor T="PersonItem.PersonListItem"
+            <SearchItemEditor T="PersonListItem"
                 IsMandatory = "true"
                 @bind-Value = "WorkRelation.PersonListItemFrom"
                 EnableEdit="WorkRelation.RelationSideThisPerson == RelationSide.To"
@@ -35,14 +37,14 @@
             }
 
         </div>
-        @if (WorkRelation.PersonItemTo is PersonItem.PersonName) {
+        @if (WorkRelation.PersonItemTo is PersonName) {
             <div class="form-group">
                 <label>Person from</label>
                 <div>@WorkRelation.PersonToName</div>
             </div>
         }
         else{
-            <SearchItemEditor T="PersonItem.PersonListItem"
+            <SearchItemEditor T="PersonListItem"
                 IsMandatory="true"
                 @bind-Value="WorkRelation.PersonListItemTo"
                 EnableEdit="WorkRelation.RelationSideThisPerson == RelationSide.From"
@@ -88,11 +90,11 @@
     {
         WorkRelation = EditContext.RelationToEdit;
         WorkRelation.PersonListItemFrom = WorkRelation.PersonItemFrom switch {
-            PersonItem.PersonListItem p => p,
+            PersonListItem p => p,
             _ => null
         };
         WorkRelation.PersonListItemTo = WorkRelation.PersonItemTo switch {
-            PersonItem.PersonListItem p => p,
+            PersonListItem p => p,
             _ => null
         };
         editContext = new EditContext(WorkRelation);
@@ -123,12 +125,12 @@
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
-        if (WorkRelation!.PersonItemFrom is not PersonItem.PersonName && WorkRelation.PersonListItemFrom is null) {
+        if (WorkRelation!.PersonItemFrom is not PersonName && WorkRelation.PersonListItemFrom is null) {
             validationMessageStore!.Add(editContext!.Field(nameof(WorkRelation.PersonListItemFrom)), "Person from is required");
             hasErrors = true;
             editContext.NotifyValidationStateChanged();
         }
-        if (WorkRelation!.PersonItemTo is not PersonItem.PersonName && WorkRelation.PersonListItemTo is null) {
+        if (WorkRelation!.PersonItemTo is not PersonName && WorkRelation.PersonListItemTo is null) {
             validationMessageStore!.Add(editContext!.Field(nameof(WorkRelation.PersonListItemTo)), "Person to is required");
             hasErrors = true;
             editContext.NotifyValidationStateChanged();
@@ -136,18 +138,16 @@
         if (hasErrors)
             return null;
 
-        return WorkRelation switch
-        {
-            ExistingInterPersonalRelation r => r with { PersonFrom = WorkRelation.PersonListItemFrom!, PersonTo = WorkRelation.PersonListItemTo! },
-            NewInterPersonalExistingRelation r => r with { PersonFrom = WorkRelation.PersonListItemFrom!, PersonTo = WorkRelation.PersonListItemTo! },
-            CompletedNewInterPersonalNewFromRelation r => r with { PersonTo = WorkRelation.PersonListItemTo! },
-            CompletedNewInterPersonalNewToRelation r => r with { PersonFrom = WorkRelation.PersonListItemFrom! },
-            NewInterPersonalExistingFromRelation r => r.GetCompletedRelation(WorkRelation.PersonListItemTo!),
-            NewInterPersonalExistingToRelation r => r.GetCompletedRelation(WorkRelation.PersonListItemFrom!),
-            NewInterPersonalNewFromRelation r => r.GetCompletedRelation(WorkRelation.PersonListItemTo!),
-            NewInterPersonalNewToRelation r => r.GetCompletedRelation(WorkRelation.PersonListItemFrom!),
-            _ => throw new Exception("Cannot reach")
-        };
+        return WorkRelation.Match<CompletedInterPersonalRelation>(
+            existingInterPersonalRelation: r => r with { PersonFrom = WorkRelation.PersonListItemFrom!, PersonTo = WorkRelation.PersonListItemTo! },
+            newInterPersonalExistingRelation: r => r with { PersonFrom = WorkRelation.PersonListItemFrom!, PersonTo = WorkRelation.PersonListItemTo! },
+            completedNewInterPersonalNewFromRelation: r => r with { PersonTo = WorkRelation.PersonListItemTo! },
+            completedNewInterPersonalNewToRelation: r => r with { PersonFrom = WorkRelation.PersonListItemFrom! },
+            newInterPersonalExistingFromRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemTo!),
+            newInterPersonalExistingToRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemFrom!),
+            newInterPersonalNewFromRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemTo!),
+            newInterPersonalNewToRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemFrom!)
+        );
     }
 }
 

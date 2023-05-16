@@ -1,5 +1,7 @@
 ﻿global using PoundPupLegacy.Common;
-global using PoundPupLegacy.EditModel;
+using static PoundPupLegacy.EditModel.PersonItem;
+using static PoundPupLegacy.EditModel.OrganizationItem;
+using static PoundPupLegacy.EditModel.InterOrganizationalRelation;
 using Microsoft.Extensions.DependencyInjection;
 using PoundPupLegacy.EditModel.Deleters;
 using PoundPupLegacy.EditModel.Inserters;
@@ -7,7 +9,6 @@ using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.EditModel.UI.Services;
 using PoundPupLegacy.EditModel.UI.Services.Implementation;
 using PoundPupLegacy.EditModel.Updaters;
-using File = PoundPupLegacy.EditModel.File;
 
 namespace PoundPupLegacy.EditModel.UI;
 
@@ -46,8 +47,8 @@ public static class DependencyInjection
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ISearchService<DocumentListItem>, DocumentSearchService>();
         services.AddTransient<ISearchService<GeographicalEntityListItem>, GeographicalEntitySearchService>();
-        services.AddTransient<ISearchService<OrganizationItem.OrganizationListItem>, OrganizationSearchService>();
-        services.AddTransient<ISearchService<PersonItem.PersonListItem>, PersonSearchService>();
+        services.AddTransient<ISearchService<OrganizationListItem>, OrganizationSearchService>();
+        services.AddTransient<ISearchService<PersonListItem>, PersonSearchService>();
         services.AddTransient<ISearchService<PoliticalEntityListItem>, PoliticalEntitySearchService>();
         services.AddTransient<ITopicSearchService, TopicSearchService>();
     }

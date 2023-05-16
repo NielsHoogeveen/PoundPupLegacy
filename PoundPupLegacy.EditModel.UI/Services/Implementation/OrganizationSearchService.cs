@@ -1,13 +1,14 @@
-﻿using PoundPupLegacy.EditModel.Readers;
+﻿using static PoundPupLegacy.EditModel.OrganizationItem;
+using PoundPupLegacy.EditModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class OrganizationSearchService : SearchService<OrganizationItem.OrganizationListItem, OrganizationsReaderRequest>
+internal sealed class OrganizationSearchService : SearchService<OrganizationListItem, OrganizationsReaderRequest>
 {
     public OrganizationSearchService(
         IDbConnection connection,
-        IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, OrganizationItem.OrganizationListItem> organizationsReaderFactory): base(connection, organizationsReaderFactory)
+        IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, OrganizationListItem> organizationsReaderFactory): base(connection, organizationsReaderFactory)
     {
     }
     protected override OrganizationsReaderRequest GetRequest(int tenantId, string searchString)

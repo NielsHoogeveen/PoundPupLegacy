@@ -1,4 +1,6 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
+﻿using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.CompletedOrganizationPoliticalEntityRelation;
+using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.CompletedOrganizationPoliticalEntityRelation.ResolvedOrganizationPoliticalEntityRelation;
+using PoundPupLegacy.CreateModel.Creators;
 using PoundPupLegacy.EditModel.Updaters;
 using System.Data;
 

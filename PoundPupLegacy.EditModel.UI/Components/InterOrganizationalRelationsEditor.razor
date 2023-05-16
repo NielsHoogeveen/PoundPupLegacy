@@ -1,4 +1,5 @@
-﻿@inherits EditorBase
+﻿@using static PoundPupLegacy.EditModel.InterOrganizationalRelation
+@inherits EditorBase
 @if(editContext is not null) {
     <ModalDialog 
         Title="Add inter-organizational relation" 
@@ -149,8 +150,8 @@
     {
 
         editContext = new OrganizationCreateContext{ 
-            RelationToEdit =  OrganizationItem.Match<InterOrganizationalRelation>(
-                li => new NewInterOrganizationalExistingFromRelation {
+                RelationToEdit = OrganizationItem.Match<InterOrganizationalRelation>(
+                organizationListItem: li => new NewInterOrganizationalExistingFromRelation {
                     OrganizationFrom = li,
                     OrganizationTo = null,
                     InterOrganizationalRelationType = RelationTypes.First(),
@@ -168,7 +169,7 @@
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-                nm => new NewInterOrganizationalNewFromRelation {
+                organizationName: nm => new NewInterOrganizationalNewFromRelation {
                     OrganizationFrom = nm,
                     OrganizationTo = null,
                     InterOrganizationalRelationType = RelationTypes.First(),

@@ -1,4 +1,11 @@
-﻿@inherits EditorBase
+﻿@using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForPerson;
+@using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForPerson.CompletedPersonOrganizationRelationForPerson;
+@using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForPerson.CompletedPersonOrganizationRelationForPerson.ResolvedPersonOrganizationRelationForPerson;
+@using static PoundPupLegacy.EditModel.PersonItem;
+@using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation;
+@using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation.CompletedNewInterPersonalRelation;
+@using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation.ResolvedInterPersonalRelation;
+@inherits EditorBase
 <InterPersonalRelationsEditor 
     Relations="Model.InterPersonalRelations" 
     RelationTypes="Model.InterPersonalRelationTypes" 
@@ -8,8 +15,8 @@
     Person="Person"
     Relations="Model.PersonPoliticalEntityRelations.ToList()"
     RelationTypes="Model.PersonPoliticalEntityRelationTypes" />
-<PersonOrganizationRelationsEditor 
-    LeadingParty="Person"
+<PersonOrganizationRelationsEditorForPerson 
+    Person="Person"
     Relations="Model.PersonOrganizationRelations.ToList()"
     RelationTypes="Model.PersonOrganizationRelationTypes" />
 
@@ -53,11 +60,11 @@
     }
 
     private PersonItem? Person => Model switch {
-        ExistingNode n => new PersonItem.PersonListItem {
+        ExistingNode n => new PersonListItem {
                 Id = n.NodeId,
                 Name = Model.Title
             },
-        NewNode nn => new PersonItem.PersonName {
+        NewNode nn => new PersonName {
             Name = Model.Title
         },
         _ => null
