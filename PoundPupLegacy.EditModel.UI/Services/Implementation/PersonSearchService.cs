@@ -1,8 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.PersonItem;
-using PoundPupLegacy.EditModel.Readers;
-using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class PersonSearchService : SearchService<PersonListItem, PersonsReaderRequest>
 {

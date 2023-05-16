@@ -1,10 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation.ResolvedInterPersonalRelation;
-
-using PoundPupLegacy.CreateModel.Creators;
-using PoundPupLegacy.EditModel.Updaters;
-using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<InterPersonalRelation>>
 {

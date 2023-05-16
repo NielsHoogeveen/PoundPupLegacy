@@ -1,10 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.ResolvedInterOrganizationalRelation;
-using PoundPupLegacy.CreateModel.Creators;
-using PoundPupLegacy.EditModel.Updaters;
-using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable<ResolvedInterOrganizationalRelation>>
 {

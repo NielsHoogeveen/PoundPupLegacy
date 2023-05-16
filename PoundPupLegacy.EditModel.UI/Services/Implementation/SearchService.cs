@@ -1,7 +1,4 @@
-﻿using Npgsql;
-using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal abstract class SearchService<TListItem, TRequest> : ISearchService<TListItem>
     where TListItem : EditListItem

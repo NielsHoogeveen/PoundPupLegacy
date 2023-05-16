@@ -1,7 +1,4 @@
-﻿using PoundPupLegacy.EditModel.Deleters;
-using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class TagsSaveService : ISaveService<IEnumerable<Tag>>
 {

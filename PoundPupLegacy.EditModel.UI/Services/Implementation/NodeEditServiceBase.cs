@@ -1,7 +1,4 @@
-﻿using Npgsql;
-using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
     where TEntity: class, Node

@@ -1,10 +1,4 @@
-﻿using Npgsql;
-using PoundPupLegacy.CreateModel.Creators;
-using PoundPupLegacy.EditModel.Readers;
-using PoundPupLegacy.EditModel.Updaters;
-using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<CoercedAdoptionCase, ExistingCoercedAdoptionCase, NewCoercedAdoptionCase, CreateModel.CoercedAdoptionCase>, IEditService<CoercedAdoptionCase>
 {

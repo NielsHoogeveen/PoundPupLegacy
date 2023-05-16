@@ -1,11 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.PersonItem;
-using static PoundPupLegacy.EditModel.InterPersonalRelation.IncompleteNewInterPersonalRelation.IncompleteNewInterPersonalToRelation;
-using static PoundPupLegacy.EditModel.InterPersonalRelation.IncompleteNewInterPersonalRelation.IncompleteNewInterPersonalFromRelation;
-using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation;
-using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation.ResolvedInterPersonalRelation;
-using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation.CompletedNewInterPersonalRelation;
-using static PoundPupLegacy.EditModel.InterPersonalRelation.IncompleteNewInterPersonalRelation;
-
+﻿
 namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingInterPersonalRelation))]

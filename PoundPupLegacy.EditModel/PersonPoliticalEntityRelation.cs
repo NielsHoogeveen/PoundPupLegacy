@@ -1,8 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation.CompletedPersonPoliticalEntityRelation;
-using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation.CompletedPersonPoliticalEntityRelation.ResolvedPersonPoliticalEntityRelation;
-using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation.IncompletePersonPoliticalEntityRelation;
-using static PoundPupLegacy.EditModel.PersonItem;
-namespace PoundPupLegacy.EditModel;
+﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingPersonPoliticalEntityRelation))]
 public partial class ExistingPersonPoliticalEntityRelationJsonContext : JsonSerializerContext { }

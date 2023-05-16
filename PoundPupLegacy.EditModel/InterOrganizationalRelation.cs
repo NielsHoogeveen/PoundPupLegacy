@@ -1,11 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.OrganizationItem;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.NewIncompleteInterOrganizationalRelationFrom;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.NewIncompleteInterOrganizationalRelationTo;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.CompletedNewInterOrganizationalRelation;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.ResolvedInterOrganizationalRelation;
-
-namespace PoundPupLegacy.EditModel;
+﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingInterOrganizationalRelation))]
 public partial class ExistingInterOrganizationalRelationJsonContext : JsonSerializerContext { }

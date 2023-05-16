@@ -1,14 +1,4 @@
-﻿using Npgsql;
-using static PoundPupLegacy.EditModel.OrganizationItem;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.ResolvedInterOrganizationalRelation;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.CompletedNewInterOrganizationalRelation;
-using PoundPupLegacy.CreateModel.Creators;
-using PoundPupLegacy.EditModel.Readers;
-using PoundPupLegacy.EditModel.Updaters;
-using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class OrganizationEditService : PartyEditServiceBase<Organization, ExistingOrganization, NewOrganization, CreateModel.Organization>, IEditService<Organization>
 {

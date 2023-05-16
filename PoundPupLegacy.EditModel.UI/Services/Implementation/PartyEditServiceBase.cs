@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal abstract class PartyEditServiceBase<TEntity, TExisting, TNew, TCreate> : NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
     where TEntity : class, Party

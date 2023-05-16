@@ -1,0 +1,20 @@
+﻿global using Npgsql;
+global using PoundPupLegacy.CreateModel.Creators;
+global using PoundPupLegacy.EditModel.Readers;
+global using PoundPupLegacy.EditModel.Updaters;
+global using PoundPupLegacy.EditModel.Deleters;
+global using PoundPupLegacy.EditModel.Inserters;
+global using System.Data;
+
+global using static PoundPupLegacy.EditModel.InterPersonalRelation.CompletedInterPersonalRelation.ResolvedInterPersonalRelation;
+global using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation;
+global using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.ResolvedInterOrganizationalRelation;
+global using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation.CompletedNewInterOrganizationalRelation;
+
+global using static PoundPupLegacy.EditModel.PersonItem;
+global using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation.CompletedPersonPoliticalEntityRelation.ResolvedPersonPoliticalEntityRelation;
+
+global using static PoundPupLegacy.EditModel.OrganizationItem;
+global using static PoundPupLegacy.EditModel.OrganizationPoliticalEntityRelation.CompletedOrganizationPoliticalEntityRelation.ResolvedOrganizationPoliticalEntityRelation;
+
+

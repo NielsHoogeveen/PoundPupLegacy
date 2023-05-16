@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Npgsql;
 using PoundPupLegacy.CreateModel;
-using PoundPupLegacy.CreateModel.Creators;
-using System.Data;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
