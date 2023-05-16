@@ -77,7 +77,7 @@ internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<Chil
         var createDocument = new CreateModel.ChildTraffickingCase {
             Id = null,
             Title = childTraffickingCase.Title,
-            Description = childTraffickingCase.Description is null? "": _textService.FormatText(childTraffickingCase.Description),
+            Description = childTraffickingCase.Description is null ? "" : _textService.FormatText(childTraffickingCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -115,7 +115,7 @@ internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<Chil
         await using var updater = await _childTraffickingCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new ChildTraffickingCaseUpdaterRequest {
             Title = childTraffickingCase.Title,
-            Description = childTraffickingCase.Description is null ? "": _textService.FormatText(childTraffickingCase.Description),
+            Description = childTraffickingCase.Description is null ? "" : _textService.FormatText(childTraffickingCase.Description),
             NodeId = childTraffickingCase.NodeId,
             Date = childTraffickingCase.Date,
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public interface Relation: Node
+public interface Relation : Node
 {
     bool HasBeenDeleted { get; set; }
 
@@ -13,7 +13,7 @@ public interface Relation: Node
 
 }
 
-public abstract record RelationBase: NodeBase, Relation
+public abstract record RelationBase : NodeBase, Relation
 {
     public bool HasBeenDeleted { get; set; }
 

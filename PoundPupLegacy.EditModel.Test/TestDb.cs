@@ -70,7 +70,8 @@ public class TestDb
         };
         try {
             await Task.WhenAll(tasks.ToArray());
-        }catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Assert.Fail($"Expected no exception, but found {ex.Message}");
         }
     }

@@ -93,7 +93,7 @@ public sealed record PagedTermedListSettings : PagedListSettings
 
     public override string GetQueryString(int pageNumber)
     {
-        var termNames = SelectedTermIds.Select(id => $"{TERM_NAME_PREFIX}{id}=on").Aggregate("", (a, b) => a + "&"+b);
+        var termNames = SelectedTermIds.Select(id => $"{TERM_NAME_PREFIX}{id}=on").Aggregate("", (a, b) => a + "&" + b);
         return base.GetQueryString(pageNumber) + termNames;
     }
 }

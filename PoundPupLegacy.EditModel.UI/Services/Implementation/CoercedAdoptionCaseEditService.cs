@@ -77,7 +77,7 @@ internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<Coerc
         var createDocument = new CreateModel.CoercedAdoptionCase {
             Id = null,
             Title = coercedAdoptionCase.Title,
-            Description = coercedAdoptionCase.Description is null? "": _textService.FormatText(coercedAdoptionCase.Description),
+            Description = coercedAdoptionCase.Description is null ? "" : _textService.FormatText(coercedAdoptionCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -113,7 +113,7 @@ internal sealed class CoercedAdoptionCaseEditService : NodeEditServiceBase<Coerc
         await using var updater = await _coercedAdoptionCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new CoercedAdoptionCaseUpdaterRequest {
             Title = coercedAdoptionCase.Title,
-            Description = coercedAdoptionCase.Description is null ? "": _textService.FormatText(coercedAdoptionCase.Description),
+            Description = coercedAdoptionCase.Description is null ? "" : _textService.FormatText(coercedAdoptionCase.Description),
             NodeId = coercedAdoptionCase.NodeId,
             Date = coercedAdoptionCase.Date,
         });

@@ -52,7 +52,7 @@ internal sealed class SystemGroupCreator : EntityCreator<SystemGroup>
             await userRoleWriter.InsertAsync(administratorRole);
             await administratorRoleWriter.InsertAsync(administratorRole);
 
-            
+
         }
     }
 }

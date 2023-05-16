@@ -44,7 +44,7 @@ internal sealed class NodeTypeMigrator : MigratorPPL
     internal async static IAsyncEnumerable<NodeType> GetNodeTypes()
     {
         await Task.CompletedTask;
-        foreach(var nodeType in GetBasicNodeTypes()) {
+        foreach (var nodeType in GetBasicNodeTypes()) {
             yield return nodeType;
         }
         foreach (var nodeType in GetNameableTypes()) {
@@ -108,7 +108,7 @@ internal sealed class NodeTypeMigrator : MigratorPPL
     private static IEnumerable<BasicNodeType> GetBasicNodeTypes()
     {
         yield return BasicNodeType.Create(10, "document", "A text based document", false);
-        
+
         yield return BasicNodeType.Create(35, "blog post", "Blog post", true);
         yield return BasicNodeType.Create(37, "discussion", "Discussion", true);
         yield return BasicNodeType.Create(38, "vocabulary", "A set of terms", false);
@@ -125,7 +125,7 @@ internal sealed class NodeTypeMigrator : MigratorPPL
         yield return BasicNodeType.Create(54, "multi question poll", "Poll that asks a multiple questions", false);
         yield return BasicNodeType.Create(55, "poll question", "Poll question", false);
         yield return BasicNodeType.Create(62, "united states political party affilition", "Political party affiliations as used in the United States of America", false);
-        
+
         yield return BasicNodeType.Create(64, "congressional term political party affiliation", "The political party affiliation of a member of congresss during a term", false);
         yield return BasicNodeType.Create(65, "senate term", "A term of a United States Senator", false);
         yield return BasicNodeType.Create(66, "house term", "A term of a United States Representative", false);

@@ -32,7 +32,7 @@ internal class OrganizationPoliticalEntityRelationSaveService : ISaveService<IEn
                 PartyId = relation.Organization.Id,
                 PoliticalEntityId = relation.PoliticalEntity.Id,
                 PartyPoliticalEntityRelationTypeId = relation.OrganizationPoliticalEntityRelationType.Id,
-                DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
+                DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                 DocumentIdProof = relation.ProofDocument?.Id
             });
         }
@@ -49,8 +49,7 @@ internal class OrganizationPoliticalEntityRelationSaveService : ISaveService<IEn
                     Title = relation.Title,
                     OwnerId = relation.OwnerId,
                     AuthoringStatusId = 1,
-                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode
-                    {
+                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode {
                         Id = null,
                         TenantId = Constants.PPL,
                         PublicationStatusId = tenantNode.PublicationStatusId,
@@ -63,7 +62,7 @@ internal class OrganizationPoliticalEntityRelationSaveService : ISaveService<IEn
                     PartyId = relation.Organization.Id,
                     PoliticalEntityId = relation.PoliticalEntity.Id,
                     PartyPoliticalEntityRelationTypeId = relation.OrganizationPoliticalEntityRelationType.Id,
-                    DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
+                    DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
                 };
             }

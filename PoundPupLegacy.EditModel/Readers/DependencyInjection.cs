@@ -1,6 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.PersonItem;
-using static PoundPupLegacy.EditModel.OrganizationItem;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace PoundPupLegacy.EditModel.Readers;
 
@@ -21,7 +19,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewPerson>, PersonCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulMedicationCase>, WrongfulMedicationCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulRemovalCase>, WrongfulRemovalCaseCreateDocumentReaderFactory>();
-        
+
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingAbuseCase>, AbuseCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingBlogPost>, BlogPostUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingChildTraffickingCase>, ChildTraffickingCaseUpdateDocumentReaderFactory>();

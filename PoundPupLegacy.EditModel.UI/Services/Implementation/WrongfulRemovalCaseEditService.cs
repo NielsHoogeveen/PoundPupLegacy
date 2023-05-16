@@ -77,7 +77,7 @@ internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<Wrong
         var createDocument = new CreateModel.WrongfulRemovalCase {
             Id = null,
             Title = wrongfulRemovalCase.Title,
-            Description = wrongfulRemovalCase.Description is null? "": _textService.FormatText(wrongfulRemovalCase.Description),
+            Description = wrongfulRemovalCase.Description is null ? "" : _textService.FormatText(wrongfulRemovalCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -113,7 +113,7 @@ internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<Wrong
         await using var updater = await _wrongfulRemovalCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new WrongfulRemovalCaseUpdaterRequest {
             Title = wrongfulRemovalCase.Title,
-            Description = wrongfulRemovalCase.Description is null ? "": _textService.FormatText(wrongfulRemovalCase.Description),
+            Description = wrongfulRemovalCase.Description is null ? "" : _textService.FormatText(wrongfulRemovalCase.Description),
             NodeId = wrongfulRemovalCase.NodeId,
             Date = wrongfulRemovalCase.Date,
         });

@@ -503,7 +503,7 @@ public abstract record InterOrganizationalRelation : RelationBase
         }
         public abstract record ResolvedInterOrganizationalRelation : CompletedInterOrganizationalRelation
         {
-            private ResolvedInterOrganizationalRelation() {  }
+            private ResolvedInterOrganizationalRelation() { }
 
             public required OrganizationListItem OrganizationFrom { get; set; }
             public required OrganizationListItem OrganizationTo { get; set; }

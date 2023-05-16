@@ -10,7 +10,7 @@ public sealed record NodeUnpublishRequest : IRequest
 internal sealed class NodeUnpublishFactory : DatabaseUpdaterFactory<Request>
 {
     private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
-    
+
     public override string Sql => $"""
         update tenant_node 
         set 

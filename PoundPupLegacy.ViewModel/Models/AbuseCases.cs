@@ -1,11 +1,9 @@
-﻿using System.Text.Json.Serialization;
-
-namespace PoundPupLegacy.ViewModel.Models;
+﻿namespace PoundPupLegacy.ViewModel.Models;
 
 [JsonSerializable(typeof(AbuseCases))]
 public partial class AbuseCasesJsonContext : JsonSerializerContext { }
 
-public sealed record AbuseCases: TermedList<AbuseCaseList, CaseListEntry> 
+public sealed record AbuseCases : TermedList<AbuseCaseList, CaseListEntry>
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
     public SelectionItem[] TermNames {

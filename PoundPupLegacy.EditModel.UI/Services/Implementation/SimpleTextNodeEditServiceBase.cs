@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal abstract class SimpleTextNodeEditServiceBase<TEntity, TExisting, TNew, TCreate> : NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
-    where TEntity: class, SimpleTextNode
+    where TEntity : class, SimpleTextNode
     where TExisting : TEntity, ExistingNode
     where TNew : TEntity, NewNode
     where TCreate : CreateModel.SimpleTextNode

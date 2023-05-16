@@ -45,10 +45,10 @@ internal sealed class CaseTypeMigrator : MigratorPPL
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
-        yield return new CaseType{ 
-            Id = Constants.ABUSE_CASE, 
-            Name = "abuse case", 
-            Description = "Abuse case of a child that has been placed by court", 
+        yield return new CaseType {
+            Id = Constants.ABUSE_CASE,
+            Name = "abuse case",
+            Description = "Abuse case of a child that has been placed by court",
             TagLabelName = "Cases",
             Text = "The assumption behind child-placement is that the safety and living conditions of a child improve. These cases demonstrate that this assumption is often invalid.",
             CaseRelationTypeIds = new List<int>
@@ -85,10 +85,10 @@ internal sealed class CaseTypeMigrator : MigratorPPL
                 })
             }
         };
-        yield return new CaseType{
-            Id = Constants.CHILD_TRAFFICKING_CASE, 
-            Name = "child trafficking case", 
-            Description = "Trafficking case of children to be adopted", 
+        yield return new CaseType {
+            Id = Constants.CHILD_TRAFFICKING_CASE,
+            Name = "child trafficking case",
+            Description = "Trafficking case of children to be adopted",
             TagLabelName = "Cases",
             Text = "There is often a fine line between adoption and child trafficking. In many cases this line is being crossed.",
             CaseRelationTypeIds = new List<int>
@@ -110,10 +110,10 @@ internal sealed class CaseTypeMigrator : MigratorPPL
                 })
             }
         };
-        yield return new CaseType{
-            Id = Constants.COERCED_ADOPTION_CASE, 
-            Name = "coerced adoption case", 
-            Description = "Adoption that involved coercion", 
+        yield return new CaseType {
+            Id = Constants.COERCED_ADOPTION_CASE,
+            Name = "coerced adoption case",
+            Description = "Adoption that involved coercion",
             TagLabelName = "Cases",
             Text = "Adoption is assumed to be the result of a choice made by the parents of the child. These cases demonstrate women are pressured to give up their children.",
             CaseRelationTypeIds = new List<int>
@@ -133,10 +133,10 @@ internal sealed class CaseTypeMigrator : MigratorPPL
             Text = "Adoptions before 1997, didn't automatically lead to naturalization. As result, people adopted from outside the outside US that ran into problems with the justice system face deportation to their country of birth.",
             CaseRelationTypeIds = new List<int>()
         };
-        yield return new CaseType{
-            Id = Constants.FATHERS_RIGHTS_VIOLATION_CASE, 
-            Name = "father's rights violation case", 
-            Description = "Adoptions where the rights of the biological father were violated", 
+        yield return new CaseType {
+            Id = Constants.FATHERS_RIGHTS_VIOLATION_CASE,
+            Name = "father's rights violation case",
+            Description = "Adoptions where the rights of the biological father were violated",
             TagLabelName = "Cases",
             Text = "Adoption requires the consent of both biological parents. These cases demonstrate that the rights of fathers in adoption cases are being violated.",
             CaseRelationTypeIds = new List<int>
@@ -148,10 +148,10 @@ internal sealed class CaseTypeMigrator : MigratorPPL
                 }),
             }
         };
-        yield return new CaseType{
-            Id = Constants.WRONGFUL_MEDICATION_CASE, 
-            Name= "wrongful medication case", 
-            Description = "Child placement situation where wrongful medication is present", 
+        yield return new CaseType {
+            Id = Constants.WRONGFUL_MEDICATION_CASE,
+            Name = "wrongful medication case",
+            Description = "Child placement situation where wrongful medication is present",
             TagLabelName = "Cases",
             Text = "Children in foster care can have serious mental health issues. Too often these children are given large doses of psychotropic medications, just to keep them quiet.",
             CaseRelationTypeIds = new List<int>
@@ -163,10 +163,10 @@ internal sealed class CaseTypeMigrator : MigratorPPL
                 }),
             }
         };
-        yield return new CaseType{
-            Id = Constants.WRONGFUL_REMOVAL_CASE, 
-            Name = "wrongful removal case", 
-            Description = "Children wrongfully removed from their family", 
+        yield return new CaseType {
+            Id = Constants.WRONGFUL_REMOVAL_CASE,
+            Name = "wrongful removal case",
+            Description = "Children wrongfully removed from their family",
             TagLabelName = "Cases",
             Text = "The removal of children from their family's should always be a last resort. These cases demonstrate that Child Protective Services sometimes remove children for all the wrong reasons",
             CaseRelationTypeIds = new List<int>
@@ -178,10 +178,10 @@ internal sealed class CaseTypeMigrator : MigratorPPL
                 }),
             }
         };
-        yield return new CaseType{
-            Id = Constants.DISRUPTED_PLACEMENT_CASE, 
-            Name = "disrupted placement case", 
-            Description = "A situation where the placement of a child was reverted", 
+        yield return new CaseType {
+            Id = Constants.DISRUPTED_PLACEMENT_CASE,
+            Name = "disrupted placement case",
+            Description = "A situation where the placement of a child was reverted",
             TagLabelName = "Cases",
             Text = "Although the adoptive family is called the \"forever family\" by the adoption industry, adoptions can end in disruption. These cases demonstrate that the \"forever family\" is sometimes only temporary",
             CaseRelationTypeIds = new List<int>

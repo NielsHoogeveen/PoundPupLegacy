@@ -153,10 +153,10 @@ namespace PoundPupLegacy.Common
         where TRequest : IRequest
     {
         public IntDatabaseReader(
-            NpgsqlCommand command, 
-            IntValueReader IntValueReader, 
-            Func<TRequest, IEnumerable<ParameterValue>> parameterMapper, 
-            Func<TRequest, string> errorMessageFunction) : 
+            NpgsqlCommand command,
+            IntValueReader IntValueReader,
+            Func<TRequest, IEnumerable<ParameterValue>> parameterMapper,
+            Func<TRequest, string> errorMessageFunction) :
             base(command, parameterMapper, (reader) => IntValueReader.GetValue(reader), errorMessageFunction)
         {
         }

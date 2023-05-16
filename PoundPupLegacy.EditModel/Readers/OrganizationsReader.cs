@@ -1,5 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.OrganizationItem;
-namespace PoundPupLegacy.EditModel.Readers;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
 using Request = OrganizationsReaderRequest;
 using SearchOption = Common.SearchOption;

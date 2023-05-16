@@ -1,5 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.PersonItem;
-namespace PoundPupLegacy.EditModel.Readers;
+﻿namespace PoundPupLegacy.EditModel.Readers;
 
 using Request = PersonsReaderRequest;
 using SearchOption = Common.SearchOption;

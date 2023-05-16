@@ -142,36 +142,36 @@ internal sealed class UserMigrator : MigratorPPL
             Id = Constants.OWNER_GEOGRAPHY,
             Name = "Geographical Entities",
             Description = "",
-            AdministratorRole = new AdministratorRole { 
-                Id = Constants.GEOGRAPHY_ADMINISTRATOR, 
-                UserGroupId = null 
+            AdministratorRole = new AdministratorRole {
+                Id = Constants.GEOGRAPHY_ADMINISTRATOR,
+                UserGroupId = null
             }
         };
         yield return new ContentSharingGroup {
             Id = Constants.OWNER_PARTIES,
             Name = "Parties",
             Description = "",
-            AdministratorRole = new AdministratorRole { 
-                Id = Constants.PARTIES_ADMINISTRATOR, 
-                UserGroupId = null 
+            AdministratorRole = new AdministratorRole {
+                Id = Constants.PARTIES_ADMINISTRATOR,
+                UserGroupId = null
             }
         };
         yield return new ContentSharingGroup {
             Id = Constants.OWNER_CASES,
             Name = "Cases",
             Description = "",
-            AdministratorRole = new AdministratorRole { 
-                Id = Constants.CASES_ADMINISTRATOR, 
-                UserGroupId = null 
+            AdministratorRole = new AdministratorRole {
+                Id = Constants.CASES_ADMINISTRATOR,
+                UserGroupId = null
             }
         };
         yield return new ContentSharingGroup {
             Id = Constants.OWNER_DOCUMENTATION,
             Name = "Documentation",
             Description = "",
-            AdministratorRole = new AdministratorRole { 
-                Id = Constants.DOCUMENTATION_ADMINISTRATOR, 
-                UserGroupId = null 
+            AdministratorRole = new AdministratorRole {
+                Id = Constants.DOCUMENTATION_ADMINISTRATOR,
+                UserGroupId = null
             }
         };
     }
@@ -282,18 +282,17 @@ internal sealed class UserMigrator : MigratorPPL
         await _anonimousUserCreator.CreateAsync(_postgresConnection);
         await _tenantCreator.CreateAsync(GetTenants(), _postgresConnection);
         await _userCreator.CreateAsync(ReadUsers(), _postgresConnection);
-        await _systemGroupCreator.CreateAsync(new SystemGroup 
-        {
-            VocabularyTagging = new Vocabulary{
-            Id = null,
-            Name = Constants.VOCABULARY_TOPICS,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = Constants.VOCABULARY_TOPICS,
-            OwnerId = Constants.OWNER_SYSTEM,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>()
+        await _systemGroupCreator.CreateAsync(new SystemGroup {
+            VocabularyTagging = new Vocabulary {
+                Id = null,
+                Name = Constants.VOCABULARY_TOPICS,
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = Constants.VOCABULARY_TOPICS,
+                OwnerId = Constants.OWNER_SYSTEM,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode>()
             {
                 new TenantNode
                 {
@@ -317,15 +316,15 @@ internal sealed class UserMigrator : MigratorPPL
                 }
 
             },
-            NodeTypeId = Constants.VOCABULARY,
-            Description = ""
+                NodeTypeId = Constants.VOCABULARY,
+                Description = ""
             }
-        },_postgresConnection);
-        
+        }, _postgresConnection);
+
         await _contentSharingGroupCreator.CreateAsync(GetContentSharingGroups(), _postgresConnection);
         await _subgroupCreator.CreateAsync(GetSubgroups(), _postgresConnection);
         await _accessRoleCreator.CreateAsync(GetAccessRoles(), _postgresConnection);
-        
+
         await _collectiveCreator.CreateAsync(GetCollectives(), _postgresConnection);
         await _collectiveUserCreator.CreateAsync(GetCollectiveUsers(), _postgresConnection);
         await _userGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);

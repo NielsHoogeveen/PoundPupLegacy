@@ -32,7 +32,7 @@ internal sealed class FetchFathersRightsViolationCasesService : IFetchFathersRig
                 StartIndex = startIndex,
                 TenantId = tenantId,
                 UserId = userId,
-                SelectedTerms  = selectedTerms
+                SelectedTerms = selectedTerms
             });
             var result = cases is not null
                 ? cases

@@ -2,7 +2,7 @@
 
 internal abstract class SearchService<TListItem, TRequest> : ISearchService<TListItem>
     where TListItem : EditListItem
-    where TRequest: IRequest
+    where TRequest : IRequest
 {
     private readonly NpgsqlConnection _connection;
 

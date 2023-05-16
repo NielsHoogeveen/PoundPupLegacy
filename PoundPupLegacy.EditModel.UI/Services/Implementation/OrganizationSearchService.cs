@@ -4,7 +4,7 @@ internal sealed class OrganizationSearchService : SearchService<OrganizationList
 {
     public OrganizationSearchService(
         IDbConnection connection,
-        IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, OrganizationListItem> organizationsReaderFactory): base(connection, organizationsReaderFactory)
+        IEnumerableDatabaseReaderFactory<OrganizationsReaderRequest, OrganizationListItem> organizationsReaderFactory) : base(connection, organizationsReaderFactory)
     {
     }
     protected override OrganizationsReaderRequest GetRequest(int tenantId, string searchString)

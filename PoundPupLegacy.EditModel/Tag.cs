@@ -17,7 +17,7 @@ public sealed record Tags
 
 
     private List<Tag> entries = new();
-    public List<Tag> Entries { get => entries; init { if (value is not null) entries = value; } } 
+    public List<Tag> Entries { get => entries; init { if (value is not null) entries = value; } }
 }
 
 public sealed record Tag

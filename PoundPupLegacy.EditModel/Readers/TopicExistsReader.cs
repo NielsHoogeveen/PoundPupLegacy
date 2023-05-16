@@ -22,7 +22,7 @@ internal sealed class TopicExistsFactory : DoesRecordExistDatabaseReaderFactory<
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        return new ParameterValue[] { 
+        return new ParameterValue[] {
             ParameterValue.Create(NameParameter, request.Name)
         };
     }

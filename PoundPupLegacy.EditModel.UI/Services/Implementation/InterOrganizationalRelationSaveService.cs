@@ -53,8 +53,7 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
                     Title = relation.Title,
                     OwnerId = relation.OwnerId,
                     AuthoringStatusId = 1,
-                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode
-                    {
+                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode {
                         Id = null,
                         TenantId = Constants.PPL,
                         PublicationStatusId = tenantNode.PublicationStatusId,
@@ -68,7 +67,7 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
                     OrganizationIdTo = relation.OrganizationTo.Id,
                     GeographicalEntityId = relation.GeographicalEntity?.Id,
                     InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationType.Id,
-                    DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
+                    DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
                     Description = relation.Description,
                     MoneyInvolved = relation.MoneyInvolved,

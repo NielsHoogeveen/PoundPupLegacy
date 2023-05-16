@@ -4,7 +4,7 @@ internal sealed class PersonSearchService : SearchService<PersonListItem, Person
 {
     public PersonSearchService(
         IDbConnection connection,
-        IEnumerableDatabaseReaderFactory<PersonsReaderRequest, PersonListItem> personsReaderFactory): base(connection, personsReaderFactory)
+        IEnumerableDatabaseReaderFactory<PersonsReaderRequest, PersonListItem> personsReaderFactory) : base(connection, personsReaderFactory)
     {
     }
     protected override PersonsReaderRequest GetRequest(int tenantId, string searchString)

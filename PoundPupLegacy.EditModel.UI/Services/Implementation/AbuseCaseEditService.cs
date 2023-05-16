@@ -77,7 +77,7 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Exis
         var createDocument = new CreateModel.AbuseCase {
             Id = null,
             Title = abuseCase.Title,
-            Description = abuseCase.Description is null? "": _textService.FormatText(abuseCase.Description),
+            Description = abuseCase.Description is null ? "" : _textService.FormatText(abuseCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -118,7 +118,7 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Exis
         await using var updater = await _abuseCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new AbuseCaseUpdaterRequest {
             Title = abuseCase.Title,
-            Description = abuseCase.Description is null ? "": _textService.FormatText(abuseCase.Description),
+            Description = abuseCase.Description is null ? "" : _textService.FormatText(abuseCase.Description),
             NodeId = abuseCase.NodeId,
             Date = abuseCase.Date,
             ChildPlacementTypeId = abuseCase.ChildPlacementTypeId,

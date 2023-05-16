@@ -26,7 +26,7 @@ internal sealed class AbuseCaseUpdaterFactory : DatabaseUpdaterFactory<Request>
     private static readonly NullableBooleanDatabaseParameter HomeSchoolingInvolved = new() { Name = "home_schooling_involved" };
     private static readonly NullableBooleanDatabaseParameter FundamentalFaithInvolved = new() { Name = "fundamental_faith_involved" };
     private static readonly NullableBooleanDatabaseParameter DisabilitiesInvolved = new() { Name = "disabilities_involved" };
-    
+
     public override string Sql => $"""
         update node 
         set 

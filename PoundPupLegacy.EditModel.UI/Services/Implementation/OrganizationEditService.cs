@@ -3,7 +3,7 @@
 internal sealed class OrganizationEditService : PartyEditServiceBase<Organization, ExistingOrganization, NewOrganization, CreateModel.Organization>, IEditService<Organization>
 {
 
-    
+
     private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewOrganization> _organizationCreateDocumentReaderFactory;
     private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingOrganization> _organizationUpdateDocumentReaderFactory;
     private readonly ISaveService<IEnumerable<ResolvedInterOrganizationalRelation>> _interOrganizationalRelationSaveService;

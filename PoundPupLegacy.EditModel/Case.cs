@@ -1,6 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public abstract record CaseBase: NameableBase, Case {
+public abstract record CaseBase : NameableBase, Case
+{
     public DateTime? DateFrom { get; set; }
     public DateTime? DateTo { get; set; }
 
@@ -29,7 +30,7 @@ public abstract record CaseBase: NameableBase, Case {
     }
 }
 
-public interface Case: Nameable
+public interface Case : Nameable
 {
     DateTime? DateFrom { get; set; }
     DateTime? DateTo { get; set; }

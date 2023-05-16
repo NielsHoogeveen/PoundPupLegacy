@@ -56,16 +56,14 @@ internal sealed class AbuseCaseTypeOfAbuserMigrator : MigratorPPL
 
         while (await reader.ReadAsync()) {
 
-            yield return new AbuseCaseTypeOfAbuser { 
-                AbuseCaseId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest 
-                {
+            yield return new AbuseCaseTypeOfAbuser {
+                AbuseCaseId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = 1,
-                    UrlId = reader.GetInt32(0) 
+                    UrlId = reader.GetInt32(0)
                 }),
-                TypeOfAbuserId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest 
-                {
+                TypeOfAbuserId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = 1,
-                    UrlId = reader.GetInt32(1) 
+                    UrlId = reader.GetInt32(1)
                 }),
             };
         }

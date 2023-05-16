@@ -77,7 +77,7 @@ internal sealed class DisruptedPlacementCaseEditService : NodeEditServiceBase<Di
         var createDocument = new CreateModel.DisruptedPlacementCase {
             Id = null,
             Title = disruptedPlacementCase.Title,
-            Description = disruptedPlacementCase.Description is null? "": _textService.FormatText(disruptedPlacementCase.Description),
+            Description = disruptedPlacementCase.Description is null ? "" : _textService.FormatText(disruptedPlacementCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -113,7 +113,7 @@ internal sealed class DisruptedPlacementCaseEditService : NodeEditServiceBase<Di
         await using var updater = await _disruptedPlacementCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new DisruptedPlacementCaseUpdaterRequest {
             Title = disruptedPlacementCase.Title,
-            Description = disruptedPlacementCase.Description is null ? "": _textService.FormatText(disruptedPlacementCase.Description),
+            Description = disruptedPlacementCase.Description is null ? "" : _textService.FormatText(disruptedPlacementCase.Description),
             NodeId = disruptedPlacementCase.NodeId,
             Date = disruptedPlacementCase.Date,
         });

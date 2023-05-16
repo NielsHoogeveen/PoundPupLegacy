@@ -1,6 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.PersonItem;
-using static PoundPupLegacy.EditModel.OrganizationItem;
-namespace PoundPupLegacy.EditModel;
+﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(PersonListItem))]
 public partial class PersonListItemJsonContext : JsonSerializerContext { }
@@ -14,7 +12,7 @@ public partial class OrganizationListItemJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(OrganizationName))]
 public partial class OrganizationNameJsonContext : JsonSerializerContext { }
 
-public abstract record OrganizationItem 
+public abstract record OrganizationItem
 {
     private OrganizationItem()
     {

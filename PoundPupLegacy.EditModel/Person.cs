@@ -1,9 +1,4 @@
-﻿using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForPerson;
-using static PoundPupLegacy.EditModel.PersonOrganizationRelation.PersonOrganizationRelationForPerson.CompletedPersonOrganizationRelationForPerson.ResolvedPersonOrganizationRelationForPerson;
-using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation;
-using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation.CompletedPersonPoliticalEntityRelation.ResolvedPersonPoliticalEntityRelation;
-using static PoundPupLegacy.EditModel.InterPersonalRelation;
-namespace PoundPupLegacy.EditModel;
+﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingPerson))]
 public partial class ExistingPersonJsonContext : JsonSerializerContext { }
@@ -25,7 +20,7 @@ public interface Person : Party
     List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; }
 
 }
-public sealed record NewPerson : PersonBase, NewNode 
+public sealed record NewPerson : PersonBase, NewNode
 {
     public override IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
 

@@ -6,7 +6,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
 
     protected override int NodeTypeId => Constants.ORGANIZATION;
 
-        const string SQL = $"""
+    const string SQL = $"""
             {CTE_EDIT},
             {ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT},
             {INTER_ORGANIZATIONAL_RELATIONS_DOCUMENT},

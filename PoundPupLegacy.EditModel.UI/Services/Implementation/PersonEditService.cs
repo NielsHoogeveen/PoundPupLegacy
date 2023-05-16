@@ -131,7 +131,7 @@ internal sealed class PersonEditService : PartyEditServiceBase<Person, ExistingP
             FileIdTileImage = null,
             FirstName = null,
             FullName = null,
-            GovtrackId = null,  
+            GovtrackId = null,
             LastName = null,
             MiddleName = null,
             Suffix = null,

@@ -22,5 +22,5 @@ internal sealed class BasicNameableTypeCreator : EntityCreator<BasicNameableType
             await nodeTypeWriter.InsertAsync(nameableType);
             await nameableTypeWriter.InsertAsync(nameableType);
         }
-        }
     }
+}

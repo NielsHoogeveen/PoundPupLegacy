@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
-    where TEntity: class, Node
+    where TEntity : class, Node
     where TExisting : ExistingNode, TEntity
     where TNew : NewNode, TEntity
     where TCreate : CreateModel.Node
@@ -41,7 +41,7 @@ internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
 
     public async Task<int> SaveAsync(TEntity node)
     {
-       return await (node switch {
+        return await (node switch {
             TNew n => SaveAsync(n),
             TExisting e => SaveAsync(e),
             _ => throw new Exception("Cannot reach")

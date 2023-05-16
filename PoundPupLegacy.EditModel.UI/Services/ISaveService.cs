@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace PoundPupLegacy.EditModel.UI.Services;
+﻿namespace PoundPupLegacy.EditModel.UI.Services;
 
 public interface ISaveService<T>
 {

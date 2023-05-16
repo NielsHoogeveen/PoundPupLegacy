@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Documents))]
 public partial class DocumentsJsonContext : JsonSerializerContext { }
 
-public sealed record Documents: TermedList<ArticleList, ArticleListEntry>
+public sealed record Documents : TermedList<ArticleList, ArticleListEntry>
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
     public SelectionItem[] TermNames {

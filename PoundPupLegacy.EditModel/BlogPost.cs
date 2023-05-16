@@ -1,11 +1,11 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 
-public interface BlogPost: SimpleTextNode
+public interface BlogPost : SimpleTextNode
 {
 
 }
-public abstract record BlogPostBase: SimpleTextNodeBase, BlogPost
+public abstract record BlogPostBase : SimpleTextNodeBase, BlogPost
 {
 
 }

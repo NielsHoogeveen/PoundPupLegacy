@@ -202,7 +202,7 @@ public sealed class Program
         builder
             .Services
             .AddRazorPages()
-            .AddJsonOptions(options => 
+            .AddJsonOptions(options =>
                 options
                 .JsonSerializerOptions
                 .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers));
@@ -213,13 +213,11 @@ public sealed class Program
                 .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers));
 
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddSingleton<NpgsqlDataSource>((sp) => 
-        {
+        builder.Services.AddSingleton<NpgsqlDataSource>((sp) => {
             var configuration = sp.GetService<IConfiguration>()!;
             var connectString = configuration["ConnectString"]!;
             var dataSource = new NpgsqlDataSourceBuilder(connectString)
-                .UseSystemTextJson(new System.Text.Json.JsonSerializerOptions 
-                { 
+                .UseSystemTextJson(new System.Text.Json.JsonSerializerOptions {
                     TypeInfoResolver = JsonTypeInfoResolver
                     .Combine(resolvers)
                 })

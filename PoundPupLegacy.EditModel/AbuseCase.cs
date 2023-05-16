@@ -6,7 +6,7 @@ public partial class ExistingAbuseCaseJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(NewAbuseCase))]
 public partial class NewAbuseCaseJsonContext : JsonSerializerContext { }
 
-public interface AbuseCase: Case
+public interface AbuseCase : Case
 {
     int ChildPlacementTypeId { get; set; }
     int? FamilySizeId { get; set; }

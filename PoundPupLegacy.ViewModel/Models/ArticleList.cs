@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace PoundPupLegacy.ViewModel.Models;
+﻿namespace PoundPupLegacy.ViewModel.Models;
 
 [JsonSerializable(typeof(ArticleList))]
 public partial class ArticleListJsonContext : JsonSerializerContext { }

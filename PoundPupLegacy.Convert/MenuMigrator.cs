@@ -96,72 +96,64 @@ internal sealed class MenuMigrator : MigratorPPL
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = Constants.BLOG_POST 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = Constants.BLOG_POST
             }),
             Name = "Create Blog",
             Weight = 11,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = Constants.DOCUMENT 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = Constants.DOCUMENT
             }),
             Name = "Create Document",
             Weight = 12,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = Constants.DISCUSSION 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = Constants.DISCUSSION
             }),
             Name = "Create Discussion",
             Weight = 13,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = Constants.ORGANIZATION 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = Constants.ORGANIZATION
             }),
             Name = "Create Organization",
             Weight = 14,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = Constants.PERSON 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = Constants.PERSON
             }),
             Name = "Create Person",
             Weight = 15,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = Constants.ABUSE_CASE 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = Constants.ABUSE_CASE
             }),
             Name = "Create Abuse Case",
             Weight = 16,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = Constants.CHILD_TRAFFICKING_CASE 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = Constants.CHILD_TRAFFICKING_CASE
             }),
             Name = "Create Child Trafficking Case",
             Weight = 17,
         };
         yield return new ActionMenuItem {
             Id = null,
-            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest 
-            { 
-                NodeTypeId = Constants.COERCED_ADOPTION_CASE 
+            ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
+                NodeTypeId = Constants.COERCED_ADOPTION_CASE
             }),
             Name = "Create Coerced Adoption Case",
             Weight = 18,

@@ -1,14 +1,7 @@
 ﻿global using PoundPupLegacy.Common;
-using static PoundPupLegacy.EditModel.PersonItem;
-using static PoundPupLegacy.EditModel.OrganizationItem;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.CompletedInterOrganizationalRelation;
 using Microsoft.Extensions.DependencyInjection;
-using PoundPupLegacy.EditModel.Deleters;
-using PoundPupLegacy.EditModel.Inserters;
-using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.EditModel.UI.Services;
 using PoundPupLegacy.EditModel.UI.Services.Implementation;
-using PoundPupLegacy.EditModel.Updaters;
 
 namespace PoundPupLegacy.EditModel.UI;
 

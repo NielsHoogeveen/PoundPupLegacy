@@ -6,7 +6,7 @@ namespace PoundPupLegacy.Common.Test;
 
 public class DatabaseValidator : DatabaseValidatorBase
 {
-    public DatabaseValidator(ITestOutputHelper testOutputHelper): base(testOutputHelper) { }
+    public DatabaseValidator(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
     protected override Type GetClassTypeForInterface(Type interfaceType)
     {
         var types = interfaceType.Assembly!.GetTypes().Where(x => x.IsAssignableTo(interfaceType) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
@@ -21,8 +21,8 @@ public class DatabaseValidator : DatabaseValidatorBase
 public abstract class DatabaseValidatorBase
 {
     private ITestOutputHelper _testOutputHelper;
-    public DatabaseValidatorBase(ITestOutputHelper testOutputHelper) 
-    { 
+    public DatabaseValidatorBase(ITestOutputHelper testOutputHelper)
+    {
         _testOutputHelper = testOutputHelper;
     }
 
@@ -67,7 +67,7 @@ public abstract class DatabaseValidatorBase
 
     }
 
-    public static NpgsqlConnection GetConnection() 
+    public static NpgsqlConnection GetConnection()
     {
         return new NpgsqlConnection(ConnectStringPostgresql);
     }

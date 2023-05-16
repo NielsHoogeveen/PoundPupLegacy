@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(SelectionItem))]
 public partial class SelectionItemJsonContext : JsonSerializerContext { }
 
-public sealed record SelectionItem 
+public sealed record SelectionItem
 {
     public required int Id { get; init; }
     public required string Name { get; init; }

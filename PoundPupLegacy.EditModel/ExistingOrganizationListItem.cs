@@ -8,11 +8,11 @@ public interface _ListItem
 {
     string Name { get; }
 }
-public interface _PartyListItem: _ListItem
+public interface _PartyListItem : _ListItem
 {
 
 }
-public interface _OrganizationListItem: _PartyListItem
+public interface _OrganizationListItem : _PartyListItem
 {
 }
 public interface _PersonListItem : _PartyListItem

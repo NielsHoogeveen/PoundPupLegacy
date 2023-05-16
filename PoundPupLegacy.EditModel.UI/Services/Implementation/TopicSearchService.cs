@@ -47,6 +47,6 @@ internal sealed class TopicSearchService : ITopicSearchService
     public async Task<bool> DoesTopicExist(string name)
     {
         var reader = await _doesTopcExistReaderFactory.CreateAsync(_connection);
-        return await  reader.ReadAsync(new TopicExistsRequest { Name = name });
+        return await reader.ReadAsync(new TopicExistsRequest { Name = name });
     }
 }

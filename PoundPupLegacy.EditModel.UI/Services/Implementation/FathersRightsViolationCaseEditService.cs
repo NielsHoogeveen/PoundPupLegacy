@@ -77,7 +77,7 @@ internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBas
         var createDocument = new CreateModel.FathersRightsViolationCase {
             Id = null,
             Title = fathersRightsViolationCase.Title,
-            Description = fathersRightsViolationCase.Description is null? "": _textService.FormatText(fathersRightsViolationCase.Description),
+            Description = fathersRightsViolationCase.Description is null ? "" : _textService.FormatText(fathersRightsViolationCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -113,7 +113,7 @@ internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBas
         await using var updater = await _fathersRightsViolationCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new FathersRightsViolationCaseUpdaterRequest {
             Title = fathersRightsViolationCase.Title,
-            Description = fathersRightsViolationCase.Description is null ? "": _textService.FormatText(fathersRightsViolationCase.Description),
+            Description = fathersRightsViolationCase.Description is null ? "" : _textService.FormatText(fathersRightsViolationCase.Description),
             NodeId = fathersRightsViolationCase.NodeId,
             Date = fathersRightsViolationCase.Date,
         });

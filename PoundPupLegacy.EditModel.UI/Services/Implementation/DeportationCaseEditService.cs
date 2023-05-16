@@ -77,7 +77,7 @@ internal sealed class DeportationCaseEditService : NodeEditServiceBase<Deportati
         var createDocument = new CreateModel.DeportationCase {
             Id = null,
             Title = deportationCase.Title,
-            Description = deportationCase.Description is null? "": _textService.FormatText(deportationCase.Description),
+            Description = deportationCase.Description is null ? "" : _textService.FormatText(deportationCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -115,7 +115,7 @@ internal sealed class DeportationCaseEditService : NodeEditServiceBase<Deportati
         await using var updater = await _deportationCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new DeportationCaseUpdaterRequest {
             Title = deportationCase.Title,
-            Description = deportationCase.Description is null ? "": _textService.FormatText(deportationCase.Description),
+            Description = deportationCase.Description is null ? "" : _textService.FormatText(deportationCase.Description),
             NodeId = deportationCase.NodeId,
             Date = deportationCase.Date,
             SubdivisionIdFrom = deportationCase.SubdivisionIdFrom,

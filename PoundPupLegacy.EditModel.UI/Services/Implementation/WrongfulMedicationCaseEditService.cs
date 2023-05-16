@@ -77,7 +77,7 @@ internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<Wr
         var createDocument = new CreateModel.WrongfulMedicationCase {
             Id = null,
             Title = wrongfulMedicationCase.Title,
-            Description = wrongfulMedicationCase.Description is null? "": _textService.FormatText(wrongfulMedicationCase.Description),
+            Description = wrongfulMedicationCase.Description is null ? "" : _textService.FormatText(wrongfulMedicationCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -113,7 +113,7 @@ internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<Wr
         await using var updater = await _wrongfulMedicationCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new WrongfulMedicationCaseUpdaterRequest {
             Title = wrongfulMedicationCase.Title,
-            Description = wrongfulMedicationCase.Description is null ? "": _textService.FormatText(wrongfulMedicationCase.Description),
+            Description = wrongfulMedicationCase.Description is null ? "" : _textService.FormatText(wrongfulMedicationCase.Description),
             NodeId = wrongfulMedicationCase.NodeId,
             Date = wrongfulMedicationCase.Date,
         });

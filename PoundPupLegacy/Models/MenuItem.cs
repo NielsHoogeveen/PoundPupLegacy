@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace PoundPupLegacy.Models;
 
 [JsonSerializable(typeof(MenuItem))]
-internal partial class MenuItemJsonContext : JsonSerializerContext 
+internal partial class MenuItemJsonContext : JsonSerializerContext
 {
 
 }

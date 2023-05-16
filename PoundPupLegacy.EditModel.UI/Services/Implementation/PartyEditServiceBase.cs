@@ -2,7 +2,7 @@
 
 internal abstract class PartyEditServiceBase<TEntity, TExisting, TNew, TCreate> : NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
     where TEntity : class, Party
-    where TExisting: TEntity, ExistingNode
+    where TExisting : TEntity, ExistingNode
     where TNew : TEntity, NewNode
     where TCreate : CreateModel.Party
 {

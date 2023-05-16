@@ -32,7 +32,7 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
                 PersonId = relation.Person.Id,
                 OrganizationId = relation.Organization.Id,
                 PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationType.Id,
-                DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
+                DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                 DocumentIdProof = relation.ProofDocument?.Id,
                 Description = relation.Description,
                 GeographicalEntityId = relation.GeographicalEntity?.Id
@@ -51,8 +51,7 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
                     Title = relation.Title,
                     OwnerId = relation.OwnerId,
                     AuthoringStatusId = 1,
-                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode
-                    {
+                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode {
                         Id = null,
                         TenantId = Constants.PPL,
                         PublicationStatusId = tenantNode.PublicationStatusId,
@@ -65,7 +64,7 @@ internal class PersonOrganizationRelationSaveService : ISaveService<IEnumerable<
                     PersonId = relation.Person.Id,
                     OrganizationId = relation.Organization.Id,
                     PersonOrganizationRelationTypeId = relation.PersonOrganizationRelationType.Id,
-                    DateRange = relation.DateRange is null ? new DateTimeRange(null, null): relation.DateRange,
+                    DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
                     GeographicalEntityId = relation.GeographicalEntity?.Id,
                     Description = relation.Description,

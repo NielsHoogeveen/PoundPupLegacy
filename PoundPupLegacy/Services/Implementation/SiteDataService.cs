@@ -141,7 +141,7 @@ internal sealed class SiteDataService : ISiteDataService
                 return 1;
             }
             if (int.TryParse(localHostTenantString, out int localHostTenant)) {
-                if(_data.Tenants.Find(x => x.Id == localHostTenant) is not null) {
+                if (_data.Tenants.Find(x => x.Id == localHostTenant) is not null) {
                     return localHostTenant;
                 }
                 return 1;
