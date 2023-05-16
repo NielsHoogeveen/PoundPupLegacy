@@ -125,7 +125,7 @@
     private void OnAdd()
     {
         _relationToEdit = Organization.Match<PersonOrganizationRelationForOrganization>(
-            oli => new NewPersonOrganizationRelationExistingOrganization {
+            organizationListItem: oli => new NewPersonOrganizationRelationExistingOrganization {
                 Person = null,
                 Organization = oli,
                 PersonOrganizationRelationType = RelationTypes.First(),
@@ -144,7 +144,7 @@
                 TenantNodes = new List<TenantNode>(),
                 Tenants = new List<Tenant>(),
             },
-            on => new NewPersonOrganizationRelationNewOrganization {
+            organizationName: on => new NewPersonOrganizationRelationNewOrganization {
                 Person = null,
                 Organization = on,
                 PersonOrganizationRelationType = RelationTypes.First(),

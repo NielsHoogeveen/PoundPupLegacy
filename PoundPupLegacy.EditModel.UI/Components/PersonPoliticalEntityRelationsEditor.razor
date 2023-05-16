@@ -130,7 +130,7 @@
     private void OnAdd()
     {
         _relationToEdit = Person.Match<PersonPoliticalEntityRelation>(
-            pli => new NewPersonPoliticalEntityRelationExistingPerson{
+            personListItem: pli => new NewPersonPoliticalEntityRelationExistingPerson{
                 Person = pli,
                 PersonPoliticalEntityRelationType = RelationTypes.First(),
                 Title = "",
@@ -148,7 +148,7 @@
                 TenantNodes = new List<TenantNode>(),
                 Tenants = new List<Tenant>(),
             },
-            pn => new NewPersonPoliticalEntityRelationNewPerson {
+            personName: pn => new NewPersonPoliticalEntityRelationNewPerson {
                 Person = pn,
                 PersonPoliticalEntityRelationType = RelationTypes.First(),
                 Title = "",

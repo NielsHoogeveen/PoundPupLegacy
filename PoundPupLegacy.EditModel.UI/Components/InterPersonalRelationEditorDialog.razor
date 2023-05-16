@@ -137,7 +137,6 @@
         }
         if (hasErrors)
             return null;
-
         return WorkRelation.Match<CompletedInterPersonalRelation>(
             incompleteNewInterPersonalFromRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemTo!),
             incompleteNewInterPersonalToRelation: r => r.GetCompletedRelation(WorkRelation.PersonListItemFrom!),

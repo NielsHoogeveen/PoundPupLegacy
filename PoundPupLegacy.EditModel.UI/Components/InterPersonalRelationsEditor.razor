@@ -149,7 +149,7 @@
     {
         editContext = new PersonCreateContext {
             RelationToEdit = Person.Match<InterPersonalRelation>(
-                li => new NewInterPersonalExistingFromRelation {
+                personListItem: li => new NewInterPersonalExistingFromRelation {
                     PersonFrom = li,
                     PersonTo = null,
                     InterPersonalRelationType = RelationTypes.First(),
@@ -166,7 +166,7 @@
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-                nm => new NewInterPersonalNewFromRelation {
+                personName: nm => new NewInterPersonalNewFromRelation {
                     PersonFrom = nm,
                     PersonTo = null,
                     InterPersonalRelationType = RelationTypes.First(),
