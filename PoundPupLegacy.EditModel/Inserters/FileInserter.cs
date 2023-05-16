@@ -2,7 +2,7 @@
 
 using Request = FileInserterRequest;
 
-public record FileInserterRequest : IRequest
+public sealed record FileInserterRequest : IRequest
 {
     public required string Name { get; init; }
     public required string MimeType { get; init; }

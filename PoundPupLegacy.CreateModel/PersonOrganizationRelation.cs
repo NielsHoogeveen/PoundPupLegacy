@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record PersonOrganizationRelation : Node
+public sealed record PersonOrganizationRelation : Node
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

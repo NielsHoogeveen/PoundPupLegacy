@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(CountryListItem))]
 public partial class CountryListItemJsonContext : JsonSerializerContext { }
 
-public record CountryListItem: EditListItem
+public sealed record CountryListItem: EditListItem
 {
     public required int Id { get; init; }
 

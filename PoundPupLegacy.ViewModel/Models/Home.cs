@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-public record Home
+public sealed record Home
 {
 }

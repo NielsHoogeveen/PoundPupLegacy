@@ -61,7 +61,7 @@ public record PagedListSettings
 [JsonSerializable(typeof(PagedSearchListSettings))]
 public partial class PagedSearchListSettingsJsonContext : JsonSerializerContext { }
 
-public record PagedSearchListSettings : PagedListSettings
+public sealed record PagedSearchListSettings : PagedListSettings
 {
     public string SearchTerm { get; set; } = string.Empty;
     public SearchOption SearchOption { get; set; } = SearchOption.Contains;
@@ -85,7 +85,7 @@ public record PagedSearchListSettings : PagedListSettings
 [JsonSerializable(typeof(PagedTermedListSettings))]
 public partial class PagedTermedListSettingsJsonContext : JsonSerializerContext { }
 
-public record PagedTermedListSettings : PagedListSettings
+public sealed record PagedTermedListSettings : PagedListSettings
 {
     public int[] SelectedTermIds { get; set; } = Array.Empty<int>();
 

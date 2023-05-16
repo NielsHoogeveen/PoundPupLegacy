@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record PollVote : IRequest
+public sealed record PollVote : IRequest
 {
     public required int? PollId { get; set; }
 

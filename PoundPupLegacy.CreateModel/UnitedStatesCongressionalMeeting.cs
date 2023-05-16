@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record UnitedStatesCongressionalMeeting : Nameable, Documentable
+public sealed record UnitedStatesCongressionalMeeting : Nameable, Documentable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

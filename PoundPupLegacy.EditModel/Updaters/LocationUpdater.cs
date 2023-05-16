@@ -2,7 +2,7 @@
 
 using Request = LocationUpdaterRequest;
 
-public record LocationUpdaterRequest : IRequest
+public sealed record LocationUpdaterRequest : IRequest
 {
     public required int Id { get; init; }
     public required string? Street { get; init; }

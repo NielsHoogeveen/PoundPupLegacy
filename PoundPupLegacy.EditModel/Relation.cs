@@ -13,7 +13,7 @@ public interface Relation: Node
 
 }
 
-public record RelationBase: NodeBase, Relation
+public abstract record RelationBase: NodeBase, Relation
 {
     public bool HasBeenDeleted { get; set; }
 

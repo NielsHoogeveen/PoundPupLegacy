@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(CongressionalChamberMeetings))]
 public partial class CongressionalChamberMeetingsJsonContext : JsonSerializerContext { }
 
-public record CongressionalChamberMeetings : Link
+public sealed record CongressionalChamberMeetings : Link
 {
     public required string Title { get; init; }
 

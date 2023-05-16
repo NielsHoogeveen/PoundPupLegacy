@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record SystemGroup : UserGroup, Owner
+public sealed record SystemGroup : UserGroup, Owner
 {
     public string Name => "System";
 

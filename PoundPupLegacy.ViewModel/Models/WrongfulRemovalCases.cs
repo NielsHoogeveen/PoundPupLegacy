@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(WrongfulRemovalCases))]
 public partial class WrongfulRemovalCasesJsonContext : JsonSerializerContext { }
 
-public record WrongfulRemovalCases: TermedList<WrongfulRemovalCaseList, CaseListEntry> 
+public sealed record WrongfulRemovalCases: TermedList<WrongfulRemovalCaseList, CaseListEntry> 
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
     public SelectionItem[] TermNames {

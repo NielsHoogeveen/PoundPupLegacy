@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record CaseBase: NameableBase, Case {
+public abstract record CaseBase: NameableBase, Case {
     public DateTime? DateFrom { get; set; }
     public DateTime? DateTo { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record EditNodeAction : Action
+public sealed record EditNodeAction : Action
 {
     public required int? Id { get; set; }
 

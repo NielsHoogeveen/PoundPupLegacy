@@ -5,7 +5,7 @@ namespace PoundPupLegacy.ViewModel.Models;
 [JsonSerializable(typeof(ArticleList))]
 public partial class ArticleListJsonContext : JsonSerializerContext { }
 
-public record ArticleList : IPagedList<ArticleListEntry>
+public sealed record ArticleList : IPagedList<ArticleListEntry>
 {
     private ArticleListEntry[] _entries = Array.Empty<ArticleListEntry>();
     public ArticleListEntry[] Entries {

@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Tenant))]
 public partial class TenantJsonContext : JsonSerializerContext { }
 
-public record Tenant
+public sealed record Tenant
 {
     private Subgroup[] subgroups = Array.Empty<Subgroup>();
     public required Subgroup[] Subgroups {

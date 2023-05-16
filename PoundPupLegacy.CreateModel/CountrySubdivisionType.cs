@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record CountrySubdivisionType : IRequest
+public sealed record CountrySubdivisionType : IRequest
 {
     public required int CountryId { get; set; }
 

@@ -27,22 +27,22 @@ public interface _NewListItem
 {
 }
 
-public record ExistingOrganizationListItem : _OrganizationListItem, _ExistingListItem
+public sealed record ExistingOrganizationListItem : _OrganizationListItem, _ExistingListItem
 {
     public required int Id { get; init; }
     public required string Name { get; set; }
 }
-public record NewOrganizationListItem : _OrganizationListItem, _NewListItem
+public sealed record NewOrganizationListItem : _OrganizationListItem, _NewListItem
 {
     public required string Name { get; set; }
 }
 
-public record ExistingPersonListItem : _PersonListItem, _ExistingListItem
+public sealed record ExistingPersonListItem : _PersonListItem, _ExistingListItem
 {
     public required int Id { get; init; }
     public required string Name { get; set; }
 }
-public record NewPersonListItem : _PersonListItem, _NewListItem
+public sealed record NewPersonListItem : _PersonListItem, _NewListItem
 {
     public required string Name { get; set; }
 }

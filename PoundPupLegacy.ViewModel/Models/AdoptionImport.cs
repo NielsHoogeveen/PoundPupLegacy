@@ -11,7 +11,7 @@ public enum RowType
     Sub = 2,
     Total = 3
 }
-public record AdoptionImport
+public sealed record AdoptionImport
 {
     public required string CountryFrom { get; init; }
 

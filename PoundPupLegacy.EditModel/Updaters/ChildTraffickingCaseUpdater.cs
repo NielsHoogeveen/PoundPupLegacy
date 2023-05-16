@@ -2,7 +2,7 @@
 
 using Request = ChildTraffickingCaseUpdaterRequest;
 
-public record ChildTraffickingCaseUpdaterRequest : IRequest
+public sealed record ChildTraffickingCaseUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

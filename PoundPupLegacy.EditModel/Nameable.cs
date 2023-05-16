@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record NameableBase: NodeBase, Nameable
+public abstract record NameableBase: NodeBase, Nameable
 {
     public required string Description { get; set; }
 

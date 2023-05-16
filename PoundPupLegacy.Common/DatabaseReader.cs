@@ -280,7 +280,7 @@ namespace PoundPupLegacy.Common
 
         public abstract T GetValue(NpgsqlDataReader reader);
     }
-    public record class FieldValueReader<T> : ValueReader<T>
+    public sealed record class FieldValueReader<T> : ValueReader<T>
     {
         public override T GetValue(NpgsqlDataReader reader)
         {
@@ -288,14 +288,14 @@ namespace PoundPupLegacy.Common
         }
     }
 
-    public record class IntValueReader : ValueReader<int>
+    public sealed record class IntValueReader : ValueReader<int>
     {
         public override int GetValue(NpgsqlDataReader reader)
         {
             return reader.GetInt32(reader.GetOrdinal(Name));
         }
     }
-    public record class NullableIntValueReader : ValueReader<int?>
+    public sealed record class NullableIntValueReader : ValueReader<int?>
     {
         public override int? GetValue(NpgsqlDataReader reader)
         {
@@ -305,14 +305,14 @@ namespace PoundPupLegacy.Common
             return reader.GetInt32(ordinal);
         }
     }
-    public record class LongValueReader : ValueReader<long>
+    public sealed record class LongValueReader : ValueReader<long>
     {
         public override long GetValue(NpgsqlDataReader reader)
         {
             return reader.GetInt64(reader.GetOrdinal(Name));
         }
     }
-    public record class NullableLongValueReader : ValueReader<long?>
+    public sealed record class NullableLongValueReader : ValueReader<long?>
     {
         public override long? GetValue(NpgsqlDataReader reader)
         {
@@ -322,14 +322,14 @@ namespace PoundPupLegacy.Common
             return reader.GetInt64(ordinal);
         }
     }
-    public record class StringValueReader : ValueReader<string>
+    public sealed record class StringValueReader : ValueReader<string>
     {
         public override string GetValue(NpgsqlDataReader reader)
         {
             return reader.GetString(reader.GetOrdinal(Name));
         }
     }
-    public record class NullableStringValueReader : ValueReader<string?>
+    public sealed record class NullableStringValueReader : ValueReader<string?>
     {
         public override string? GetValue(NpgsqlDataReader reader)
         {
@@ -341,14 +341,14 @@ namespace PoundPupLegacy.Common
         }
     }
 
-    public record class DateTimeValueReader : ValueReader<DateTime>
+    public sealed record class DateTimeValueReader : ValueReader<DateTime>
     {
         public override DateTime GetValue(NpgsqlDataReader reader)
         {
             return reader.GetDateTime(reader.GetOrdinal(Name));
         }
     }
-    public record class NullableDateTimeValueReader : ValueReader<DateTime?>
+    public sealed record class NullableDateTimeValueReader : ValueReader<DateTime?>
     {
         public override DateTime? GetValue(NpgsqlDataReader reader)
         {
@@ -358,14 +358,14 @@ namespace PoundPupLegacy.Common
             return reader.GetDateTime(ordinal);
         }
     }
-    public record class BooleanValueReader : ValueReader<bool>
+    public sealed record class BooleanValueReader : ValueReader<bool>
     {
         public override bool GetValue(NpgsqlDataReader reader)
         {
             return reader.GetBoolean(reader.GetOrdinal(Name));
         }
     }
-    public record class NullableBooleanValueReader : ValueReader<bool?>
+    public sealed record class NullableBooleanValueReader : ValueReader<bool?>
     {
         public override bool? GetValue(NpgsqlDataReader reader)
         {

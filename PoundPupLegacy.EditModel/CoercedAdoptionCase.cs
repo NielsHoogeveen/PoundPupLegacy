@@ -9,16 +9,16 @@ public partial class NewCoercedAdoptionCaseJsonContext : JsonSerializerContext {
 public interface CoercedAdoptionCase : Case
 {
 }
-public record ExistingCoercedAdoptionCase : CoercedAdoptionCaseBase, ExistingNode
+public sealed record ExistingCoercedAdoptionCase : CoercedAdoptionCaseBase, ExistingNode
 {
     public int NodeId { get; set; }
 
     public int UrlId { get; set; }
 }
-public record NewCoercedAdoptionCase : CoercedAdoptionCaseBase, NewNode
+public sealed record NewCoercedAdoptionCase : CoercedAdoptionCaseBase, NewNode
 {
 }
-public record CoercedAdoptionCaseBase : CaseBase, CoercedAdoptionCase
+public abstract record CoercedAdoptionCaseBase : CaseBase, CoercedAdoptionCase
 {
 
 }

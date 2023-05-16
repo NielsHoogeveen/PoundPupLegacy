@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(CommentListItem))]
 public partial class CommentListItemJsonContext : JsonSerializerContext { }
 
-public record CommentListItem
+public sealed record CommentListItem
 {
     public required int Id { get; init; }
     public required string Title { get; init; }

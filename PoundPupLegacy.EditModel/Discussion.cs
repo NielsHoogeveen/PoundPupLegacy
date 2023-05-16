@@ -5,7 +5,7 @@ public interface Discussion : SimpleTextNode
 {
 
 }
-public record DiscussionBase : SimpleTextNodeBase, Discussion
+public abstract record DiscussionBase : SimpleTextNodeBase, Discussion
 {
 
 }
@@ -13,7 +13,7 @@ public record DiscussionBase : SimpleTextNodeBase, Discussion
 [JsonSerializable(typeof(ExistingDiscussion))]
 public partial class ExistingDiscussionJsonContext : JsonSerializerContext { }
 
-public record ExistingDiscussion : DiscussionBase, ExistingNode
+public sealed record ExistingDiscussion : DiscussionBase, ExistingNode
 {
     public int NodeId { get; init; }
 
@@ -24,6 +24,6 @@ public record ExistingDiscussion : DiscussionBase, ExistingNode
 [JsonSerializable(typeof(NewDiscussion))]
 public partial class NewDiscussionJsonContext : JsonSerializerContext { }
 
-public record NewDiscussion : DiscussionBase, NewNode
+public sealed record NewDiscussion : DiscussionBase, NewNode
 {
 }

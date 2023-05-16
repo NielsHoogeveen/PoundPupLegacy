@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record MultiQuestionPoll : SimpleTextNode, Poll
+public sealed record MultiQuestionPoll : SimpleTextNode, Poll
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

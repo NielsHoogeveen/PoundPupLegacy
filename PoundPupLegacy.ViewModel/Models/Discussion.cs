@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Discussion))]
 public partial class DiscussionJsonContext : JsonSerializerContext { }
 
-public record Discussion : SimpleTextNode
+public sealed record Discussion : SimpleTextNode
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }

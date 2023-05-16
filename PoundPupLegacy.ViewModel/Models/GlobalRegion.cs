@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(GlobalRegion))]
 public partial class GlobalRegionJsonContext : JsonSerializerContext { }
 
-public record GlobalRegion : GeographicalEntity
+public sealed record GlobalRegion : GeographicalEntity
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

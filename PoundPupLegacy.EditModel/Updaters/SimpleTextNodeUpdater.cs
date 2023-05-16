@@ -2,7 +2,7 @@
 
 using Request = SimpleTextNodeUpdaterRequest;
 
-public record SimpleTextNodeUpdaterRequest : IRequest
+public sealed record SimpleTextNodeUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

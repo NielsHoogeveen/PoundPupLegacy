@@ -2,7 +2,7 @@
 
 using Request = InterOrganizationalRelationUpdaterRequest;
 
-public record InterOrganizationalRelationUpdaterRequest : IRequest
+public sealed record InterOrganizationalRelationUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

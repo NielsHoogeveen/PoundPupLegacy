@@ -39,7 +39,7 @@ public interface Organization : Party
 }
 
 
-public record ExistingOrganization : OrganizationBase, ExistingNode
+public sealed record ExistingOrganization : OrganizationBase, ExistingNode
 {
     public int NodeId { get; init; }
     public int UrlId { get; set; }
@@ -111,7 +111,7 @@ public record ExistingOrganization : OrganizationBase, ExistingNode
 
     public override OrganizationItem OrganizationItem => new OrganizationListItem { Id = NodeId, Name = Title };
 }
-public record NewOrganization : OrganizationBase, NewNode
+public sealed record NewOrganization : OrganizationBase, NewNode
 {
     public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
     public override IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations => NewInterOrganizationalRelations;

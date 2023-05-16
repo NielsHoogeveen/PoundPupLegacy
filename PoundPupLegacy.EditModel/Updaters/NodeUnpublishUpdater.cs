@@ -2,7 +2,7 @@
 
 using Request = NodeUnpublishRequest;
 
-public record NodeUnpublishRequest : IRequest
+public sealed record NodeUnpublishRequest : IRequest
 {
     public required int NodeId { get; init; }
 

@@ -2,7 +2,7 @@
 
 using Request = FileDeleterRequest;
 
-public record FileDeleterRequest : IRequest
+public sealed record FileDeleterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required int FileId { get; init; }

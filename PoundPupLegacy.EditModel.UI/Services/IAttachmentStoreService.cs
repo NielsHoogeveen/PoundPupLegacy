@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace PoundPupLegacy.EditModel.UI.Services;
 
-public record FileReturn
+public sealed record FileReturn
 {
     public required Stream Stream { get; init; }
     public required string FileName { get; init; }

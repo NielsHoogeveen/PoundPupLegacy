@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Organizations))]
 public partial class OrganizationsJsonContext : JsonSerializerContext { }
 
-public record Organizations : IPagedList<OrganizationListEntry>
+public sealed record Organizations : IPagedList<OrganizationListEntry>
 {
     private OrganizationListEntry[] _entries = Array.Empty<OrganizationListEntry>();
     public required OrganizationListEntry[] Entries {

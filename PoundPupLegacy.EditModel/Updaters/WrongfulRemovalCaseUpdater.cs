@@ -2,7 +2,7 @@
 
 using Request = WrongfulRemovalCaseUpdaterRequest;
 
-public record WrongfulRemovalCaseUpdaterRequest : IRequest
+public sealed record WrongfulRemovalCaseUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

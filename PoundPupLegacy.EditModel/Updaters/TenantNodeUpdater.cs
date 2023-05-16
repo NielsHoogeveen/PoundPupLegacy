@@ -2,7 +2,7 @@
 
 using Request = TenantNodeUpdaterRequest;
 
-public record TenantNodeUpdaterRequest : IRequest
+public sealed record TenantNodeUpdaterRequest : IRequest
 {
     public required int Id { get; init; }
     public required string? UrlPath { get; init; }

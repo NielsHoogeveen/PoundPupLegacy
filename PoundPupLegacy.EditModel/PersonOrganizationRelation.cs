@@ -292,7 +292,7 @@ public abstract record PersonOrganizationRelation : RelationBase
             public abstract string PersonName { get; }
             public abstract string OrganizationName { get; }
 
-            public record CompletedNewPersonOrganizationRelationNewPerson : CompletedPersonOrganizationRelationForPerson, NewNode
+            public sealed record CompletedNewPersonOrganizationRelationNewPerson : CompletedPersonOrganizationRelationForPerson, NewNode
             {
                 public override T Match<T>(
                     Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
@@ -327,7 +327,7 @@ public abstract record PersonOrganizationRelation : RelationBase
             public abstract record ResolvedPersonOrganizationRelationForPerson : CompletedPersonOrganizationRelationForPerson
             {
 
-                public record ExistingPersonOrganizationRelationForPerson : ResolvedPersonOrganizationRelationForPerson, ExistingPersonOrganizationRelation
+                public sealed record ExistingPersonOrganizationRelationForPerson : ResolvedPersonOrganizationRelationForPerson, ExistingPersonOrganizationRelation
                 {
                     public override T Match<T>(
                         Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
@@ -363,7 +363,7 @@ public abstract record PersonOrganizationRelation : RelationBase
 
                 }
 
-                public record CompletedNewPersonOrganizationRelationForPerson : ResolvedPersonOrganizationRelationForPerson, CompletedNewPersonOrganizationRelation
+                public sealed record CompletedNewPersonOrganizationRelationForPerson : ResolvedPersonOrganizationRelationForPerson, CompletedNewPersonOrganizationRelation
                 {
                     public override T Match<T>(
                         Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
@@ -398,7 +398,7 @@ public abstract record PersonOrganizationRelation : RelationBase
             }
         }
 
-        public record NewPersonOrganizationRelationExistingPerson : PersonOrganizationRelationForPerson, NewNode
+        public sealed record NewPersonOrganizationRelationExistingPerson : PersonOrganizationRelationForPerson, NewNode
         {
             public override T Match<T>(
                 Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
@@ -452,7 +452,7 @@ public abstract record PersonOrganizationRelation : RelationBase
         }
 
 
-        public record NewPersonOrganizationRelationNewPerson : PersonOrganizationRelationForPerson, NewNode
+        public sealed record NewPersonOrganizationRelationNewPerson : PersonOrganizationRelationForPerson, NewNode
         {
             public override T Match<T>(
                 Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,

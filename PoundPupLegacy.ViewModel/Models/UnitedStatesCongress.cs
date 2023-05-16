@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(UnitedStatesCongress))]
 public partial class UnitedStatesCongressJsonContext : JsonSerializerContext { }
 
-public record UnitedStatesCongress
+public sealed record UnitedStatesCongress
 {
     public required CongressionalChamber Senate { get; init; }
 

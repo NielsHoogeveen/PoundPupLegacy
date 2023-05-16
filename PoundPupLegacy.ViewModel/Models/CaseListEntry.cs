@@ -5,7 +5,7 @@ namespace PoundPupLegacy.ViewModel.Models;
 [JsonSerializable(typeof(CaseListEntry))]
 public partial class CaseListEntryJsonContext : JsonSerializerContext { }
 
-public record CaseListEntry : TaggedTeaserListEntry
+public abstract record CaseListEntry : TaggedTeaserListEntry
 {
     public required string Path { get; init; }
     public required string Title { get; init; }

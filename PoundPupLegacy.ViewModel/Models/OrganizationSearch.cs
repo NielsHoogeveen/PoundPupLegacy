@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(OrganizationSearch))]
 public partial class OrganizationSearchJsonContext : JsonSerializerContext { }
 
-public record OrganizationSearch
+public sealed record OrganizationSearch
 {
     private Organizations organizations = new Organizations { Entries = Array.Empty<OrganizationListEntry>(), NumberOfEntries = 0 };
     public required Organizations Organizations {

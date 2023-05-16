@@ -5,7 +5,7 @@ public interface BlogPost: SimpleTextNode
 {
 
 }
-public record BlogPostBase: SimpleTextNodeBase, BlogPost
+public abstract record BlogPostBase: SimpleTextNodeBase, BlogPost
 {
 
 }
@@ -13,7 +13,7 @@ public record BlogPostBase: SimpleTextNodeBase, BlogPost
 [JsonSerializable(typeof(ExistingBlogPost))]
 public partial class ExistingBlogPostJsonContext : JsonSerializerContext { }
 
-public record ExistingBlogPost : BlogPostBase, ExistingNode
+public sealed record ExistingBlogPost : BlogPostBase, ExistingNode
 {
     public int NodeId { get; init; }
 
@@ -24,6 +24,6 @@ public record ExistingBlogPost : BlogPostBase, ExistingNode
 [JsonSerializable(typeof(NewBlogPost))]
 public partial class NewBlogPostJsonContext : JsonSerializerContext { }
 
-public record NewBlogPost : BlogPostBase, NewNode
+public sealed record NewBlogPost : BlogPostBase, NewNode
 {
 }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record TenantFile : IRequest
+public sealed record TenantFile : IRequest
 {
     public required int TenantId { get; init; }
     public required int? FileId { get; set; }

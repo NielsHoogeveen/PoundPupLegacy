@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(CoercedAdoptionCases))]
 public partial class CoercedAdoptionCasesJsonContext : JsonSerializerContext { }
 
-public record CoercedAdoptionCases: TermedList<CoercedAdoptionCaseList, CaseListEntry> 
+public sealed record CoercedAdoptionCases: TermedList<CoercedAdoptionCaseList, CaseListEntry> 
 {
     private SelectionItem[] termNames = Array.Empty<SelectionItem>();
     public SelectionItem[] TermNames {

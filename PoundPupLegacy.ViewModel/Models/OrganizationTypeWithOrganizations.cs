@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(OrganizationTypeWithOrganizations))]
 public partial class OrganizationTypeWithOrganizationsJsonContext : JsonSerializerContext { }
 
-public record OrganizationTypeWithOrganizations
+public sealed record OrganizationTypeWithOrganizations
 {
     public required string OrganizationTypeName { get; init; }
 

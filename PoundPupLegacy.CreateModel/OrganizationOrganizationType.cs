@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record class OrganizationOrganizationType : IRequest
+public sealed record class OrganizationOrganizationType : IRequest
 {
     public required int? OrganizationId { get; set; }
 

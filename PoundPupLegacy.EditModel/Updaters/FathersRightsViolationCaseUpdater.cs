@@ -2,7 +2,7 @@
 
 using Request = FathersRightsViolationCaseUpdaterRequest;
 
-public record FathersRightsViolationCaseUpdaterRequest : IRequest
+public sealed record FathersRightsViolationCaseUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

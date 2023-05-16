@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(MemberOfCongress))]
 public partial class MultiQuestionPollJsonContext : JsonSerializerContext { }
 
-public record class MultiQuestionPoll : Poll, SimpleTextNode
+public sealed record class MultiQuestionPoll : Poll, SimpleTextNode
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }

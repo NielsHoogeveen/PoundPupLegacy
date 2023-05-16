@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(DisruptedPlacementCase))]
 public partial class DisruptedPlacementCaseJsonContext : JsonSerializerContext { }
 
-public record DisruptedPlacementCase : Case
+public sealed record DisruptedPlacementCase : Case
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

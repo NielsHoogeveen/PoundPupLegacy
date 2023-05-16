@@ -2,7 +2,7 @@
 [JsonSerializable(typeof(WrongfulRemovalCaseList))]
 public partial class WrongfulRemovalCaseListJsonContext : JsonSerializerContext { }
 
-public record WrongfulRemovalCaseList : IPagedList<CaseListEntry>
+public sealed record WrongfulRemovalCaseList : IPagedList<CaseListEntry>
 {
     private CaseListEntry[] _entries = Array.Empty<CaseListEntry>();
     public CaseListEntry[] Entries {

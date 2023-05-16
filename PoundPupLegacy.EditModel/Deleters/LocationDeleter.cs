@@ -2,7 +2,7 @@
 
 using Request = LocationDeleterRequest;
 
-public record LocationDeleterRequest : IRequest
+public sealed record LocationDeleterRequest : IRequest
 {
     public required int LocationId { get; init; }
     public required int LocatableId { get; init; }

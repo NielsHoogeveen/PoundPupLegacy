@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(WrongfulRemovalCase))]
 public partial class WrongfulRemovalCaseJsonContext : JsonSerializerContext { }
 
-public record WrongfulRemovalCase : Case
+public sealed record WrongfulRemovalCase : Case
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

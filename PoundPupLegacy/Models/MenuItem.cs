@@ -9,7 +9,7 @@ internal partial class MenuItemJsonContext : JsonSerializerContext
 
 }
 
-public record MenuItem : Link
+public sealed record MenuItem : Link
 {
     public required string Path { get; init; }
     public required string Title { get; init; }

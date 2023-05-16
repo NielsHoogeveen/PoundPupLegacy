@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(SubgroupListEntry))]
 public partial class SubgroupListEntryJsonContext : JsonSerializerContext { }
 
-public record SubgroupListEntry : ListEntry
+public sealed record SubgroupListEntry : ListEntry
 {
     public required string Title { get; init; }
 

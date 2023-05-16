@@ -2,7 +2,7 @@
 
 using Request = AbuseCaseUpdaterRequest;
 
-public record AbuseCaseUpdaterRequest : IRequest
+public sealed record AbuseCaseUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

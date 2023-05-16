@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 [JsonSerializable(typeof(AbuseCase))]
 public partial class AbuseCaseJsonContext : JsonSerializerContext { }
-public record AbuseCase : Case
+public sealed record AbuseCase : Case
 {
     public required BasicLink? ChildPlacementType { get; init; }
 

@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Location))]
 public partial class LocationJsonContext : JsonSerializerContext { }
 
-public record Location
+public sealed record Location
 {
     public required string? Street { get; init; }
     public required string? Additional { get; init; }

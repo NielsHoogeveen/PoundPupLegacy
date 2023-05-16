@@ -3,6 +3,6 @@
 [JsonSerializable(typeof(ExecutiveCompensation))]
 public partial class ExecutiveCompensationJsonContext : JsonSerializerContext { }
 
-public record ExecutiveCompensation
+public sealed record ExecutiveCompensation
 {
 }

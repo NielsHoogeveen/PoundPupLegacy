@@ -2,7 +2,7 @@
 
 using Request = PartyPoliticalEntityRelationUpdaterRequest;
 
-public record PartyPoliticalEntityRelationUpdaterRequest : IRequest
+public sealed record PartyPoliticalEntityRelationUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

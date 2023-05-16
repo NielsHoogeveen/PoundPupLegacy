@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(ChildTraffickingCase))]
 public partial class ChildTraffickingCaseJsonContext : JsonSerializerContext { }
 
-public record ChildTraffickingCase : Case
+public sealed record ChildTraffickingCase : Case
 {
     public required BasicLink? CountryFrom { get; init; }
     public required int? NumberOfChildrenInvolved { get; init; }

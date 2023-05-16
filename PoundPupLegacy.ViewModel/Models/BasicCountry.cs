@@ -5,7 +5,7 @@ namespace PoundPupLegacy.ViewModel.Models;
 [JsonSerializable(typeof(BasicCountry))]
 public partial class BasicCountryJsonContext : JsonSerializerContext { }
 
-public record BasicCountry : TopLevelCountry
+public sealed record BasicCountry : TopLevelCountry
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

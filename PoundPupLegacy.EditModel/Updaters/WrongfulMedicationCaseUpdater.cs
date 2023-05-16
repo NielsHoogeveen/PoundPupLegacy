@@ -2,7 +2,7 @@
 
 using Request = WrongfulMedicationCaseUpdaterRequest;
 
-public record WrongfulMedicationCaseUpdaterRequest : IRequest
+public sealed record WrongfulMedicationCaseUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

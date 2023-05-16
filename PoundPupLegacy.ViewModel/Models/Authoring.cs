@@ -5,7 +5,7 @@ namespace PoundPupLegacy.ViewModel.Models;
 [JsonSerializable(typeof(Authoring))]
 public partial class AuthoringJsonContext : JsonSerializerContext { }
 
-public record Authoring
+public sealed record Authoring
 {
     public required int Id { get; init; }
     public required string Name { get; init; }

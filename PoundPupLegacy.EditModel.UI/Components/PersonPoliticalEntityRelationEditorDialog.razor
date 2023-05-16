@@ -103,11 +103,13 @@
         if (hasErrors)
             return null;
 
-        return Relation switch {
-            CompletedPersonPoliticalEntityRelation r => r ,
-            IncompletePersonPoliticalEntityRelation r => r.GetCompletedRelation(Relation.PoliticalEntityItem!),
-            _ => throw new Exception("Cannot reach")
-        };
+        return Relation.Match<CompletedPersonPoliticalEntityRelation>(
+            newPersonPoliticalEntityRelationNewPerson: r => r.GetCompletedRelation(Relation.PoliticalEntityItem!),
+            newPersonPoliticalEntityRelationExistingPerson: r => r.GetCompletedRelation(Relation.PoliticalEntityItem!),
+            existingPersonPoliticalEntityRelation: r => r,
+            completedNewPersonPoliticalEntityRelationNewPerson: r => r,
+            completedNewPersonPoliticalEntityRelationExistingPerson: r => r
+        );
     }
 }
 

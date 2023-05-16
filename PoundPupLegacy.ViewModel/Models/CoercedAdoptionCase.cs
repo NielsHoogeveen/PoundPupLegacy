@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(CoercedAdoptionCase))]
 public partial class CoercedAdoptionCaseJsonContext : JsonSerializerContext { }
 
-public record CoercedAdoptionCase : Case
+public sealed record CoercedAdoptionCase : Case
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

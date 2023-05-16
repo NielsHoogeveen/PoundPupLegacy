@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(DateTimeInterval))]
 public partial class DateTimeIntervalJsonContext : JsonSerializerContext { }
 
-public record DateTimeInterval
+public sealed record DateTimeInterval
 {
     public required DateTime? From { get; init; }
     public required DateTime? To { get; init; }

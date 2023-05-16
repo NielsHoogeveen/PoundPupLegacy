@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(PersonOrganizationRelation))]
 public partial class PersonOrganizationRelationJsonContext : JsonSerializerContext { }
 
-public record PersonOrganizationRelation
+public sealed record PersonOrganizationRelation
 {
     public required BasicLink Person { get; init; }
     public required string RelationTypeName { get; init; }

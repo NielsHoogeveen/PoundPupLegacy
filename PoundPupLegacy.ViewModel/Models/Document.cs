@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Document))]
 public partial class DocumentJsonContext : JsonSerializerContext { }
 
-public record Document : SimpleTextNode
+public sealed record Document : SimpleTextNode
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }

@@ -25,14 +25,14 @@ public interface Person : Party
     List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; }
 
 }
-public record NewPerson : PersonBase, NewNode 
+public sealed record NewPerson : PersonBase, NewNode 
 {
     public override IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
 
     public override IEnumerable<CompletedPersonOrganizationRelationForPerson> PersonOrganizationRelations => NewPersonOrganizationRelations;
 
 }
-public record ExistingPerson : PersonBase, ExistingNode
+public sealed record ExistingPerson : PersonBase, ExistingNode
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; set; }

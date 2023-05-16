@@ -31,7 +31,7 @@ public interface ExistingNode : Node
     int UrlId { get; }
 
 }
-public record NodeBase : Node
+public abstract record NodeBase : Node
 {
     public required string NodeTypeName { get; set; }
 

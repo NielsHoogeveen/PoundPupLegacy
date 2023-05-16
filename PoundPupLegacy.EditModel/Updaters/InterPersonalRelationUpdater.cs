@@ -2,7 +2,7 @@
 
 using Request = InterPersonalRelationUpdaterRequest;
 
-public record InterPersonalRelationUpdaterRequest : IRequest
+public sealed record InterPersonalRelationUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

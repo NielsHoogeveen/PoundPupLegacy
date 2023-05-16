@@ -15,17 +15,17 @@ public interface AbuseCase: Case
     bool? DisabilitiesInvolved { get; set; }
 }
 
-public record NewAbuseCase : AbuseCaseBase, NewNode
+public sealed record NewAbuseCase : AbuseCaseBase, NewNode
 {
 }
-public record ExistingAbuseCase : AbuseCaseBase, ExistingNode
+public sealed record ExistingAbuseCase : AbuseCaseBase, ExistingNode
 {
     public int NodeId { get; set; }
 
     public int UrlId { get; set; }
 
 }
-public record AbuseCaseBase : CaseBase, AbuseCase
+public abstract record AbuseCaseBase : CaseBase, AbuseCase
 {
 
     public required int ChildPlacementTypeId { get; set; }

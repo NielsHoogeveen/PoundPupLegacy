@@ -6,7 +6,7 @@ public interface SimpleTextNode : Node
 
 }
 
-public record SimpleTextNodeBase: NodeBase, SimpleTextNode
+public abstract record SimpleTextNodeBase: NodeBase, SimpleTextNode
 {
     public required string Text { get; set; }
 }

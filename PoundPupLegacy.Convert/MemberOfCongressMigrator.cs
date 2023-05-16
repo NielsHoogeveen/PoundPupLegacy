@@ -3,7 +3,7 @@ using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Convert;
 
-public record MemberOfCongress
+public sealed record MemberOfCongress
 {
     public int? node_id { get; set; }
     public Id id { get; set; }
@@ -14,13 +14,13 @@ public record MemberOfCongress
 
 }
 
-public record Bio
+public sealed record Bio
 {
     public DateTime? birthday { get; set; }
     public string gender { get; set; }
 }
 
-public record Id
+public sealed record Id
 {
     public string bioguide { get; set; }
     public string thomas { get; set; }
@@ -38,7 +38,7 @@ public record Id
     public string wikidata { get; set; }
     public string google_entity_id { get; set; }
 }
-public record Term
+public sealed record Term
 {
     public string type { get; set; }
     public DateTime start { get; set; }
@@ -55,7 +55,7 @@ public record Term
 
     public PartyAffiliation[] party_affiliations { get; set; }
 }
-public record Name
+public sealed record Name
 {
     public string first { get; set; }
     public string middle { get; set; }
@@ -66,14 +66,14 @@ public record Name
     public string official_full { get; set; }
 }
 
-public record PartyAffiliation
+public sealed record PartyAffiliation
 {
     public DateTime start { get; set; }
     public DateTime end { get; set; }
     public string party { get; set; }
 }
 
-public record LeadershipRole
+public sealed record LeadershipRole
 {
     public DateTime start { get; set; }
     public DateTime end { get; set; }
@@ -86,7 +86,7 @@ public enum MemberType
     Representative,
     Senator
 }
-public record TempTerm
+public sealed record TempTerm
 {
     public int Id { get; set; }
     public DateTime StartDate { get; set; }
@@ -98,7 +98,7 @@ public record TempTerm
 }
 
 
-public record StoredTerm
+public sealed record StoredTerm
 {
     public required int GovtrackId { get; init; }
     public required int PersonId { get; init; }

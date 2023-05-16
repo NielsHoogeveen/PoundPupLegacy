@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Person))]
 public partial class PersonJsonContext : JsonSerializerContext { }
 
-public record Person : Nameable, Documentable, Locatable
+public sealed record Person : Nameable, Documentable, Locatable
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

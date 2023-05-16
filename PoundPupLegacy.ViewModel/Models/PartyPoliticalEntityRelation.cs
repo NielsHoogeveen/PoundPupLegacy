@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(PartyPoliticalEntityRelation))]
 public partial class PartyPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
-public record PartyPoliticalEntityRelation
+public sealed record PartyPoliticalEntityRelation
 {
     public required BasicLink Party { get; init; }
 

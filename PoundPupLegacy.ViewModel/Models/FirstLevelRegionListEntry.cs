@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(FirstLevelRegionListEntry))]
 public partial class FirstLevelRegionListEntryJsonContext : JsonSerializerContext { }
 
-public record FirstLevelRegionListEntry : ListEntry
+public sealed record FirstLevelRegionListEntry : ListEntry
 {
     public required string Title { get; init; }
     public required string Path { get; init; }

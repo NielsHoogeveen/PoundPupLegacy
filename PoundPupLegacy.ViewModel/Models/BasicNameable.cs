@@ -5,7 +5,7 @@ namespace PoundPupLegacy.ViewModel.Models;
 [JsonSerializable(typeof(BasicNameable))]
 public partial class BasicNameableJsonContext : JsonSerializerContext { }
 
-public record BasicNameable : Nameable
+public sealed record BasicNameable : Nameable
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }

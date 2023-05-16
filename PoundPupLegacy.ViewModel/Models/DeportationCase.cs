@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(DeportationCase))]
 public partial class DeportationCaseJsonContext : JsonSerializerContext { }
 
-public record DeportationCase : Case
+public sealed record DeportationCase : Case
 {
     public required BasicLink? CountryTo { get; init; }
     public required BasicLink? SubdivisionFrom { get; init; }

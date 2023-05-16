@@ -43,7 +43,7 @@ internal sealed class ProfessionIdReaderFactory : IntDatabaseReaderFactory<Reque
             ProfessionType.Lawyer => "Lawyer",
             ProfessionType.Representative => "Representative",
             ProfessionType.Therapist => "Therapist",
-            //_ => throw new Exception("Cannot reach"),
+            _ => throw new Exception("Cannot reach"),
         };
     }
 

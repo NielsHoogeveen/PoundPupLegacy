@@ -2,7 +2,7 @@
 
 using Request = CoercedAdoptionCaseUpdaterRequest;
 
-public record CoercedAdoptionCaseUpdaterRequest : IRequest
+public sealed record CoercedAdoptionCaseUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

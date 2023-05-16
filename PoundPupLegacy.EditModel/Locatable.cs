@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public record LocatableBase: NameableBase, Locatable
+public abstract record LocatableBase: NameableBase, Locatable
 {
 
     private List<CountryListItem> countries = new();

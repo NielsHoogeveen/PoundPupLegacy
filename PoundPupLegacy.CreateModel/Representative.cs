@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record Representative : MemberOfCongress
+public sealed record Representative : MemberOfCongress
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

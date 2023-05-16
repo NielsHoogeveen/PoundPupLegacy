@@ -2,7 +2,7 @@
 
 using Request = DeportationCaseUpdaterRequest;
 
-public record DeportationCaseUpdaterRequest : IRequest
+public sealed record DeportationCaseUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

@@ -2,7 +2,7 @@
 
 using Request = OrganizationOrganizationTypeDeleterRequest;
 
-public record OrganizationOrganizationTypeDeleterRequest : IRequest
+public sealed record OrganizationOrganizationTypeDeleterRequest : IRequest
 {
     public required int LocationId { get; init; }
     public required int LocatableId { get; init; }

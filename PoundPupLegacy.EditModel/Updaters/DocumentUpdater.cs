@@ -2,7 +2,7 @@
 
 using Request = DocumentUpdaterRequest;
 
-public record DocumentUpdaterRequest : IRequest
+public sealed record DocumentUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Polls))]
 public partial class PollsJsonContext : JsonSerializerContext { }
 
-public record Polls : IPagedList<PollListEntry>
+public sealed record Polls : IPagedList<PollListEntry>
 {
     private PollListEntry[] _entries = Array.Empty<PollListEntry>();
     public required PollListEntry[] Entries {

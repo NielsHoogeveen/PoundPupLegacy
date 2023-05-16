@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record CongressionalTermPoliticalPartyAffiliation : Documentable
+public sealed record CongressionalTermPoliticalPartyAffiliation : Documentable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

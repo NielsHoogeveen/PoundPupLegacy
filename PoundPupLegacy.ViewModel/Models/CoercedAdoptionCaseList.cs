@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(CoercedAdoptionCaseList))]
 public partial class CoercedAdoptionCaseListJsonContext : JsonSerializerContext { }
 
-public record CoercedAdoptionCaseList : IPagedList<CaseListEntry>
+public sealed record CoercedAdoptionCaseList : IPagedList<CaseListEntry>
 {
     private CaseListEntry[] _entries = Array.Empty<CaseListEntry>();
     public CaseListEntry[] Entries {

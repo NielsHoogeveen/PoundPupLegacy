@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(PartyCaseType))]
 public partial class PartyCaseTypeJsonContext : JsonSerializerContext { }
 
-public record PartyCaseType
+public sealed record PartyCaseType
 {
     public required string CaseTypeName { get; init; }
 

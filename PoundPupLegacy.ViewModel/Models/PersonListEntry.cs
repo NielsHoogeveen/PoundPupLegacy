@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(PersonListEntry))]
 public partial class PersonListEntryJsonContext : JsonSerializerContext { }
 
-public record PersonListEntry : ListEntry
+public sealed record PersonListEntry : ListEntry
 {
     public required string Path { get; init; }
     public required string Title { get; init; }

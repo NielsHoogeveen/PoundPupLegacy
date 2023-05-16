@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(InterOrganizationalRelation))]
 public partial class InterOrganizationalRelationJsonContext : JsonSerializerContext { }
 
-public record InterOrganizationalRelation
+public sealed record InterOrganizationalRelation
 {
     public required BasicLink OrganizationFrom { get; init; }
     public required BasicLink OrganizationTo { get; init; }

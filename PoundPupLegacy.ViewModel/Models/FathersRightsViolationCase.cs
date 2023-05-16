@@ -2,7 +2,7 @@
 [JsonSerializable(typeof(FathersRightsViolationCase))]
 public partial class FathersRightsViolationCaseJsonContext : JsonSerializerContext { }
 
-public record FathersRightsViolationCase : Case
+public sealed record FathersRightsViolationCase : Case
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

@@ -20,7 +20,7 @@ public interface Document: SimpleTextNode
 [JsonSerializable(typeof(ExistingDocument))]
 public partial class ExistingDocumentJsonContext : JsonSerializerContext { }
 
-public record ExistingDocument: DocumentBase, ExistingNode
+public sealed record ExistingDocument: DocumentBase, ExistingNode
 {
     public int NodeId { get; set; }
 
@@ -30,11 +30,11 @@ public record ExistingDocument: DocumentBase, ExistingNode
 [JsonSerializable(typeof(NewDocument))]
 public partial class NewDocumentJsonContext : JsonSerializerContext { }
 
-public record NewDocument : DocumentBase, NewNode
+public sealed record NewDocument : DocumentBase, NewNode
 {
 }
 
-public record DocumentBase : SimpleTextNodeBase, Document
+public abstract record DocumentBase : SimpleTextNodeBase, Document
 {
 
     public string? SourceUrl { get; set; }

@@ -12,16 +12,16 @@ public interface DeportationCase : Case
     int? CountryIdTo { get; set; }
 
 }
-public record ExistingDeportationCase : DeportationCaseBase, ExistingNode
+public sealed record ExistingDeportationCase : DeportationCaseBase, ExistingNode
 {
     public int NodeId { get; set; }
 
     public int UrlId { get; set; }
 }
-public record NewDeportationCase : DeportationCaseBase, NewNode
+public sealed record NewDeportationCase : DeportationCaseBase, NewNode
 {
 }
-public record DeportationCaseBase : CaseBase, DeportationCase
+public abstract record DeportationCaseBase : CaseBase, DeportationCase
 {
     public int? SubdivisionIdFrom { get; set; }
     public int? CountryIdTo { get; set; }

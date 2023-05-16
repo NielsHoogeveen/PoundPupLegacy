@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Models;
 [JsonSerializable(typeof(UserTenantEditAction))]
 internal partial class UserTenantEditActionJsonContext : JsonSerializerContext { }
 
-public record UserTenantEditAction
+public sealed record UserTenantEditAction
 {
     public required int UserId { get; init; }
     public required int TenantId { get; init; }

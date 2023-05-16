@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(WrongfulMedicationCaseList))]
 public partial class WrongfulMedicationCaseListJsonContext : JsonSerializerContext { }
 
-public record WrongfulMedicationCaseList : IPagedList<CaseListEntry>
+public sealed record WrongfulMedicationCaseList : IPagedList<CaseListEntry>
 {
     private CaseListEntry[] _entries = Array.Empty<CaseListEntry>();
     public CaseListEntry[] Entries {

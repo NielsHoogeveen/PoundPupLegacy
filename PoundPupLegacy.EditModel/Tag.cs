@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(TagNodeType))]
 public partial class TagNodeTypeJsonContext : JsonSerializerContext { }
 
-public record TagNodeType
+public sealed record TagNodeType
 {
     public required int[] NodeTypeIds { get; init; }
 
@@ -11,7 +11,7 @@ public record TagNodeType
 
 }
 
-public record Tags
+public sealed record Tags
 {
     public required TagNodeType TagNodeType { get; init; }
 
@@ -20,7 +20,7 @@ public record Tags
     public List<Tag> Entries { get => entries; init { if (value is not null) entries = value; } } 
 }
 
-public record Tag
+public sealed record Tag
 {
     public required int? NodeId { get; set; }
 

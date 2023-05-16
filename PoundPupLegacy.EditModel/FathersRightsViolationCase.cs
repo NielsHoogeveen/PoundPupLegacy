@@ -9,16 +9,16 @@ public partial class NewFathersRightsViolationCaseJsonContext : JsonSerializerCo
 public interface FathersRightsViolationCase : Case
 {
 }
-public record ExistingFathersRightsViolationCase : FathersRightsViolationCaseBase, ExistingNode
+public sealed record ExistingFathersRightsViolationCase : FathersRightsViolationCaseBase, ExistingNode
 {
     public int NodeId { get; set; }
 
     public int UrlId { get; set; }
 }
-public record NewFathersRightsViolationCase : FathersRightsViolationCaseBase, NewNode
+public sealed record NewFathersRightsViolationCase : FathersRightsViolationCaseBase, NewNode
 {
 }
-public record FathersRightsViolationCaseBase : CaseBase, FathersRightsViolationCase
+public abstract record FathersRightsViolationCaseBase : CaseBase, FathersRightsViolationCase
 {
 
 }

@@ -12,16 +12,16 @@ public interface ChildTraffickingCase: Case
     int CountryIdFrom { get; set; }
 
 }
-public record ExistingChildTraffickingCase : ChildTraffickingCaseBase, ExistingNode
+public sealed record ExistingChildTraffickingCase : ChildTraffickingCaseBase, ExistingNode
 {
     public int NodeId { get; set; }
 
     public int UrlId { get; set; }
 }
-public record NewChildTraffickingCase : ChildTraffickingCaseBase, NewNode
+public sealed record NewChildTraffickingCase : ChildTraffickingCaseBase, NewNode
 {
 }
- public record ChildTraffickingCaseBase : CaseBase, ChildTraffickingCase
+ public abstract record ChildTraffickingCaseBase : CaseBase, ChildTraffickingCase
 {
     public int? NumberOfChildrenInvolved { get; set; }
     public required int CountryIdFrom { get; set; }

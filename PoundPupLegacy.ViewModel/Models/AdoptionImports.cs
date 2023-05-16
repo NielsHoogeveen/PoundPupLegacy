@@ -5,7 +5,7 @@ namespace PoundPupLegacy.ViewModel.Models;
 [JsonSerializable(typeof(AdoptionImports))]
 public partial class AdoptionImportsJsonContext : JsonSerializerContext { }
 
-public record AdoptionImports
+public sealed record AdoptionImports
 {
     public required int StartYear { get; init; }
 

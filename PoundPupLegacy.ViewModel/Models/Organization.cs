@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Organization))]
 public partial class OrganizationJsonContext : JsonSerializerContext { }
 
-public record Organization : Nameable, Documentable, Locatable
+public sealed record Organization : Nameable, Documentable, Locatable
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

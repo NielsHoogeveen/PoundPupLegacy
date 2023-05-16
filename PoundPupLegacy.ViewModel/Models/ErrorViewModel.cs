@@ -3,7 +3,7 @@ namespace PoundPupLegacy.ViewModel.Models;
 [JsonSerializable(typeof(ErrorViewModel))]
 public partial class ErrorViewModelJsonContext : JsonSerializerContext { }
 
-public record ErrorViewModel
+public sealed record ErrorViewModel
 {
     public string? RequestId { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record RepresentativeHouseBillAction : Node
+public sealed record RepresentativeHouseBillAction : Node
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(SingleQuestionPoll))]
 public partial class SingleQuestionPollJsonContext : JsonSerializerContext { }
 
-public record class SingleQuestionPoll : Poll, PollQuestion
+public sealed record class SingleQuestionPoll : Poll, PollQuestion
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }

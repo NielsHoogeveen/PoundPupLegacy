@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(CongressionalChamber))]
 public partial class CongressionalChamberJsonContext : JsonSerializerContext { }
 
-public record CongressionalChamber
+public sealed record CongressionalChamber
 {
     public required string ImagePath { get; init; }
 

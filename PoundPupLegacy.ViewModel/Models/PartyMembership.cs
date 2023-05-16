@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(PartyMembership))]
 public partial class PartyMembershipJsonContext : JsonSerializerContext { }
 
-public record PartyMembership : Link
+public sealed record PartyMembership : Link
 {
     public required string Title { get; init; }
     public required string Path { get; init; }

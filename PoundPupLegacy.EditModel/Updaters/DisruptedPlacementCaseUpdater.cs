@@ -2,7 +2,7 @@
 
 using Request = DisruptedPlacementCaseUpdaterRequest;
 
-public record DisruptedPlacementCaseUpdaterRequest : IRequest
+public sealed record DisruptedPlacementCaseUpdaterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required string Title { get; init; }

@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(DisruptedPlacementCaseList))]
 public partial class DisruptedPlacementCaseListJsonContext : JsonSerializerContext { }
 
-public record DisruptedPlacementCaseList : IPagedList<CaseListEntry>
+public sealed record DisruptedPlacementCaseList : IPagedList<CaseListEntry>
 {
     private CaseListEntry[] _entries = Array.Empty<CaseListEntry>();
     public CaseListEntry[] Entries {

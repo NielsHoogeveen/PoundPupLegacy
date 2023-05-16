@@ -4,7 +4,7 @@
 public partial class ImageJsonContext : JsonSerializerContext { }
 
 
-public record Image
+public sealed record Image
 {
     public required string FilePath { get; init; }
 

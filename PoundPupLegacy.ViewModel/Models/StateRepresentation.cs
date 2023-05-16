@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(StateRepresentation))]
 public partial class StateRepresentationJsonContext : JsonSerializerContext { }
 
-public record StateRepresentation
+public sealed record StateRepresentation
 {
     public required BasicLink State { get; set; }
 

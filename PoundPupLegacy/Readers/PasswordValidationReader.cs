@@ -6,7 +6,7 @@ namespace PoundPupLegacy.Readers;
 using Request = PasswordValidationReaderRequest;
 using Response = PasswordValidationReaderResponse;
 
-public record PasswordValidationReaderResponse
+public sealed record PasswordValidationReaderResponse
 {
     public required int UserId { get; init; }
 }

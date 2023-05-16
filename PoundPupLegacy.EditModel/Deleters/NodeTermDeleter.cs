@@ -2,7 +2,7 @@
 
 using Request = NodeTermDeleterRequest;
 
-public record NodeTermDeleterRequest : IRequest
+public sealed record NodeTermDeleterRequest : IRequest
 {
     public required int NodeId { get; init; }
     public required int TermId { get; init; }

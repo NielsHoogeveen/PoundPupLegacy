@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(SearchResultListEntry))]
 public partial class SearchResultListEntryJsonContext : JsonSerializerContext { }
 
-public record SearchResultListEntry : TeaserListEntry
+public sealed record SearchResultListEntry : TeaserListEntry
 {
     public required string Path { get; init; }
 

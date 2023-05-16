@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(FormalSubdivision))]
 public partial class FormalSubdivisionJsonContext : JsonSerializerContext { }
 
-public record FormalSubdivision : Subdivision
+public sealed record FormalSubdivision : Subdivision
 {
     public required string Description { get; init; }
     public required int NodeId { get; init; }

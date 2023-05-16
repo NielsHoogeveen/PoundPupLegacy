@@ -3,7 +3,7 @@ using OneOf.Types;
 
 namespace PoundPupLegacy.ViewModel.UI.Services;
 
-public record FileReturn
+public sealed record FileReturn
 {
     public required Stream Stream { get; init; }
     public required string FileName { get; init; }

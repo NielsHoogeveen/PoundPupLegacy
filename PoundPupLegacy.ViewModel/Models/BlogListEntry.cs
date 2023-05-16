@@ -9,7 +9,7 @@ public partial class BlogEntryListJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(BlogListEntry))]
 public partial class BlogListEntryJsonContext : JsonSerializerContext { }
 
-public record BlogListEntry : ListEntry
+public sealed record BlogListEntry : ListEntry
 {
     public required int Id { get; init; }
     public required string Path { get; init; }

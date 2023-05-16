@@ -11,7 +11,7 @@ public enum SearchOption
     Contains
 }
 
-public record SearchOptionDatabaseParameter : DatabaseParameter<(string, SearchOption)>
+public sealed record SearchOptionDatabaseParameter : DatabaseParameter<(string, SearchOption)>
 {
     public override bool IsNullable => true;
     public override NpgsqlDbType ParameterType => NpgsqlDbType.Varchar;

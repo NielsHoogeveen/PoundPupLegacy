@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public record CasePartyType : Nameable
+public sealed record CasePartyType : Nameable
 {
     public required int? Id { get; set; }
     public required int PublisherId { get; init; }

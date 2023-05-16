@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Models;
 [JsonSerializable(typeof(Tenant))]
 internal partial class TenantJsonContext : JsonSerializerContext { }
 
-public record Tenant
+public sealed record Tenant
 {
     public int Id { get; init; }
 
