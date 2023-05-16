@@ -102,11 +102,8 @@
             return null;
 
         return Relation.Match<CompletedOrganizationPoliticalEntityRelation>(
-            newOrganizationPoliticalEntityRelationNewOrganization: r => r.GetCompletedRelation(Relation.PoliticalEntityItem!),
-            newOrganizationPoliticalEntityRelationExistingOrganization: r => r.GetCompletedRelation(Relation.PoliticalEntityItem!),
-            existingOrganizationPoliticalEntityRelation: r => r,
-            completedNewOrganizationPoliticalEntityRelationNewOrganization: r => r,
-            completedNewOrganizationPoliticalEntityRelationExistingOrganization: r => r
+            incompleteOrganizationPoliticalEntityRelation: r => r.GetCompletedRelation(Relation.PoliticalEntityItem!),
+            completedOrganizationPoliticalEntityRelation: r => r
         );
     }
 }

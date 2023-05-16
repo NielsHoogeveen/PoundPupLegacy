@@ -44,6 +44,11 @@ public abstract record PersonOrganizationRelation : RelationBase
             Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
             Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
         );
+        [RequireNamedArgs]
+        public abstract T Match<T>(
+            Func<CompletedPersonOrganizationRelationForOrganization, T> completedPersonOrganizationRelationForOrganization,
+            Func<IncompletePersonOrganizationRelationForOrganization, T> incompletePersonOrganizationRelationForOrganization
+        );
 
         public abstract record CompletedPersonOrganizationRelationForOrganization : PersonOrganizationRelationForOrganization
         {
@@ -52,6 +57,13 @@ public abstract record PersonOrganizationRelation : RelationBase
             public abstract string PersonName { get; }
             public abstract string OrganizationName { get; }
 
+            public override T Match<T>(
+                Func<CompletedPersonOrganizationRelationForOrganization, T> completedPersonOrganizationRelationForOrganization,
+                Func<IncompletePersonOrganizationRelationForOrganization, T> incompletePersonOrganizationRelationForOrganization
+            )
+            {
+                return completedPersonOrganizationRelationForOrganization(this);
+            }
 
             public sealed record CompletedNewPersonOrganizationRelationNewOrganization : CompletedPersonOrganizationRelationForOrganization, NewNode
             {
@@ -160,108 +172,118 @@ public abstract record PersonOrganizationRelation : RelationBase
                 }
             }
         }
-
-        public sealed record NewPersonOrganizationRelationExistingOrganization : PersonOrganizationRelationForOrganization, NewNode
+        public abstract record IncompletePersonOrganizationRelationForOrganization : PersonOrganizationRelationForOrganization
         {
             public override T Match<T>(
-                Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
-                Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
-                Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
-                Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
-                Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
+                Func<CompletedPersonOrganizationRelationForOrganization, T> completedPersonOrganizationRelationForOrganization,
+                Func<IncompletePersonOrganizationRelationForOrganization, T> incompletePersonOrganizationRelationForOrganization
             )
             {
-                return newPersonOrganizationRelationExistingOrganization(this);
+                return incompletePersonOrganizationRelationForOrganization(this);
             }
+            public abstract CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonListItem personListItem);
+            public sealed record NewPersonOrganizationRelationExistingOrganization : IncompletePersonOrganizationRelationForOrganization, NewNode
+            {
+                public override T Match<T>(
+                    Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
+                    Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
+                    Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
+                    Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
+                    Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
+                )
+                {
+                    return newPersonOrganizationRelationExistingOrganization(this);
+                }
 
-            public required PersonListItem? Person { get; set; }
-            public required OrganizationListItem Organization { get; set; }
-            private PersonListItem? personItem = null;
-            public override PersonListItem? PersonItem {
-                get {
-                    if (personItem == null) {
-                        personItem = Person;
+                public required PersonListItem? Person { get; set; }
+                public required OrganizationListItem Organization { get; set; }
+                private PersonListItem? personItem = null;
+                public override PersonListItem? PersonItem {
+                    get {
+                        if (personItem == null) {
+                            personItem = Person;
+                        }
+                        return personItem;
                     }
-                    return personItem;
-                }
-                set {
-                    personItem = value;
-                }
-            }
-            public override OrganizationItem OrganizationItem => Organization;
-            public CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonListItem personListItem)
-            {
-                return new CompletedNewPersonOrganizationRelationForOrganization {
-                    Person = personListItem,
-                    Organization = Organization,
-                    DateFrom = DateFrom,
-                    DateTo = DateTo,
-                    PersonOrganizationRelationType = PersonOrganizationRelationType,
-                    GeographicalEntity = GeographicalEntity,
-                    Description = Description,
-                    Files = Files,
-                    HasBeenDeleted = HasBeenDeleted,
-                    NodeTypeName = NodeTypeName,
-                    OwnerId = OwnerId,
-                    PublisherId = PublisherId,
-                    ProofDocument = ProofDocument,
-                    Tags = Tags,
-                    TenantNodes = TenantNodes,
-                    Title = Title,
-                    Tenants = Tenants,
-                };
-            }
-        }
-        public sealed record NewPersonOrganizationRelationNewOrganization : PersonOrganizationRelationForOrganization, NewNode
-        {
-            public override T Match<T>(
-                Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
-                Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
-                Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
-                Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
-                Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
-            )
-            {
-                return newPersonOrganizationRelationNewOrganization(this);
-            }
-
-            public required PersonListItem? Person { get; set; }
-            public required OrganizationName Organization { get; set; }
-            private PersonListItem? personItem = null;
-            public override PersonListItem? PersonItem {
-                get {
-                    if (personItem == null) {
-                        personItem = Person;
+                    set {
+                        personItem = value;
                     }
-                    return personItem;
                 }
-                set {
-                    personItem = value;
+                public override OrganizationItem OrganizationItem => Organization;
+                public override CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonListItem personListItem)
+                {
+                    return new CompletedNewPersonOrganizationRelationForOrganization {
+                        Person = personListItem,
+                        Organization = Organization,
+                        DateFrom = DateFrom,
+                        DateTo = DateTo,
+                        PersonOrganizationRelationType = PersonOrganizationRelationType,
+                        GeographicalEntity = GeographicalEntity,
+                        Description = Description,
+                        Files = Files,
+                        HasBeenDeleted = HasBeenDeleted,
+                        NodeTypeName = NodeTypeName,
+                        OwnerId = OwnerId,
+                        PublisherId = PublisherId,
+                        ProofDocument = ProofDocument,
+                        Tags = Tags,
+                        TenantNodes = TenantNodes,
+                        Title = Title,
+                        Tenants = Tenants,
+                    };
                 }
             }
-
-            public override OrganizationItem OrganizationItem => Organization;
-            public CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonListItem personListItem)
+            public sealed record NewPersonOrganizationRelationNewOrganization : IncompletePersonOrganizationRelationForOrganization, NewNode
             {
-                return new CompletedNewPersonOrganizationRelationNewOrganization {
-                    Person = personListItem,
-                    Organization = Organization,
-                    DateFrom = DateFrom,
-                    DateTo = DateTo,
-                    PersonOrganizationRelationType = PersonOrganizationRelationType,
-                    GeographicalEntity = GeographicalEntity,
-                    Description = Description,
-                    Files = Files,
-                    HasBeenDeleted = HasBeenDeleted,
-                    NodeTypeName = NodeTypeName,
-                    OwnerId = OwnerId,
-                    PublisherId = PublisherId,
-                    ProofDocument = ProofDocument,
-                    Tags = Tags,
-                    TenantNodes = TenantNodes,
-                    Title = Title,
-                    Tenants = Tenants,
-                };
+                public override T Match<T>(
+                    Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
+                    Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
+                    Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
+                    Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
+                    Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
+                )
+                {
+                    return newPersonOrganizationRelationNewOrganization(this);
+                }
+
+                public required PersonListItem? Person { get; set; }
+                public required OrganizationName Organization { get; set; }
+                private PersonListItem? personItem = null;
+                public override PersonListItem? PersonItem {
+                    get {
+                        if (personItem == null) {
+                            personItem = Person;
+                        }
+                        return personItem;
+                    }
+                    set {
+                        personItem = value;
+                    }
+                }
+
+                public override OrganizationItem OrganizationItem => Organization;
+                public override CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonListItem personListItem)
+                {
+                    return new CompletedNewPersonOrganizationRelationNewOrganization {
+                        Person = personListItem,
+                        Organization = Organization,
+                        DateFrom = DateFrom,
+                        DateTo = DateTo,
+                        PersonOrganizationRelationType = PersonOrganizationRelationType,
+                        GeographicalEntity = GeographicalEntity,
+                        Description = Description,
+                        Files = Files,
+                        HasBeenDeleted = HasBeenDeleted,
+                        NodeTypeName = NodeTypeName,
+                        OwnerId = OwnerId,
+                        PublisherId = PublisherId,
+                        ProofDocument = ProofDocument,
+                        Tags = Tags,
+                        TenantNodes = TenantNodes,
+                        Title = Title,
+                        Tenants = Tenants,
+                    };
+                }
             }
         }
     }
@@ -280,10 +302,23 @@ public abstract record PersonOrganizationRelation : RelationBase
             Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
         );
 
+        [RequireNamedArgs]
+        public abstract T Match<T>(
+            Func<CompletedPersonOrganizationRelationForPerson, T> completedPersonOrganizationRelationForPerson,
+            Func<IncompletePersonOrganizationRelationForPerson, T> incompletePersonOrganizationRelationForPerson
+        );
+
         public abstract record CompletedPersonOrganizationRelationForPerson : PersonOrganizationRelationForPerson
         {
             public abstract string PersonName { get; }
             public abstract string OrganizationName { get; }
+            public override T Match<T>(
+                Func<CompletedPersonOrganizationRelationForPerson, T> completedPersonOrganizationRelationForPerson,
+                Func<IncompletePersonOrganizationRelationForPerson, T> incompletePersonOrganizationRelationForPerson
+            )
+            {
+                return completedPersonOrganizationRelationForPerson(this);
+            }
 
             public sealed record CompletedNewPersonOrganizationRelationNewPerson : CompletedPersonOrganizationRelationForPerson, NewNode
             {
@@ -390,112 +425,122 @@ public abstract record PersonOrganizationRelation : RelationBase
 
             }
         }
-
-        public sealed record NewPersonOrganizationRelationExistingPerson : PersonOrganizationRelationForPerson, NewNode
+        public abstract record IncompletePersonOrganizationRelationForPerson : PersonOrganizationRelationForPerson, NewNode
         {
             public override T Match<T>(
-                Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
-                Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
-                Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
-                Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
-                Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
+                Func<CompletedPersonOrganizationRelationForPerson, T> completedPersonOrganizationRelationForPerson,
+                Func<IncompletePersonOrganizationRelationForPerson, T> incompletePersonOrganizationRelationForPerson
             )
             {
-                return newPersonOrganizationRelationExistingPerson(this);
+                return incompletePersonOrganizationRelationForPerson(this);
             }
-            public required PersonListItem Person { get; set; }
-            public required OrganizationListItem? Organization { get; set; }
-            public override PersonItem PersonItem => Person;
 
-            private OrganizationListItem? organizationItem = null;
-            public override OrganizationListItem? OrganizationItem {
-                get {
-                    if (organizationItem == null) {
-                        organizationItem = Organization;
+            public abstract CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationListItem organizationListItem);
+
+            public sealed record NewPersonOrganizationRelationExistingPerson : IncompletePersonOrganizationRelationForPerson
+            {
+                public override T Match<T>(
+                    Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
+                    Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
+                    Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
+                    Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
+                    Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
+                )
+                {
+                    return newPersonOrganizationRelationExistingPerson(this);
+                }
+                public required PersonListItem Person { get; set; }
+                public required OrganizationListItem? Organization { get; set; }
+                public override PersonItem PersonItem => Person;
+
+                private OrganizationListItem? organizationItem = null;
+                public override OrganizationListItem? OrganizationItem {
+                    get {
+                        if (organizationItem == null) {
+                            organizationItem = Organization;
+                        }
+                        return organizationItem;
                     }
-                    return organizationItem;
-                }
-                set {
-                    organizationItem = value;
-                }
-            }
-
-            public CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationListItem organizationListItem)
-            {
-                return new CompletedNewPersonOrganizationRelationForPerson {
-                    Person = Person,
-                    Organization = organizationListItem,
-                    DateFrom = DateFrom,
-                    DateTo = DateTo,
-                    PersonOrganizationRelationType = PersonOrganizationRelationType,
-                    GeographicalEntity = GeographicalEntity,
-                    Description = Description,
-                    Files = Files,
-                    HasBeenDeleted = HasBeenDeleted,
-                    NodeTypeName = NodeTypeName,
-                    OwnerId = OwnerId,
-                    PublisherId = PublisherId,
-                    ProofDocument = ProofDocument,
-                    Tags = Tags,
-                    TenantNodes = TenantNodes,
-                    Title = Title,
-                    Tenants = Tenants,
-                };
-            }
-        }
-
-
-        public sealed record NewPersonOrganizationRelationNewPerson : PersonOrganizationRelationForPerson, NewNode
-        {
-            public override T Match<T>(
-                Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
-                Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
-                Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
-                Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
-                Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
-            )
-            {
-                return newPersonOrganizationRelationNewPerson(this);
-            }
-            public required PersonName Person { get; set; }
-            public required OrganizationListItem? Organization { get; set; }
-            public override PersonItem PersonItem => Person;
-
-            private OrganizationListItem? organizationItem = null;
-            public override OrganizationListItem? OrganizationItem {
-                get {
-                    if (organizationItem == null) {
-                        organizationItem = Organization;
+                    set {
+                        organizationItem = value;
                     }
-                    return organizationItem;
                 }
-                set {
-                    organizationItem = value;
+
+                public override CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationListItem organizationListItem)
+                {
+                    return new CompletedNewPersonOrganizationRelationForPerson {
+                        Person = Person,
+                        Organization = organizationListItem,
+                        DateFrom = DateFrom,
+                        DateTo = DateTo,
+                        PersonOrganizationRelationType = PersonOrganizationRelationType,
+                        GeographicalEntity = GeographicalEntity,
+                        Description = Description,
+                        Files = Files,
+                        HasBeenDeleted = HasBeenDeleted,
+                        NodeTypeName = NodeTypeName,
+                        OwnerId = OwnerId,
+                        PublisherId = PublisherId,
+                        ProofDocument = ProofDocument,
+                        Tags = Tags,
+                        TenantNodes = TenantNodes,
+                        Title = Title,
+                        Tenants = Tenants,
+                    };
                 }
-            }
-            public CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationListItem organizationListItem)
-            {
-                return new CompletedNewPersonOrganizationRelationNewPerson {
-                    Person = Person,
-                    Organization = organizationListItem,
-                    DateFrom = DateFrom,
-                    DateTo = DateTo,
-                    PersonOrganizationRelationType = PersonOrganizationRelationType,
-                    GeographicalEntity = GeographicalEntity,
-                    Description = Description,
-                    Files = Files,
-                    HasBeenDeleted = HasBeenDeleted,
-                    NodeTypeName = NodeTypeName,
-                    OwnerId = OwnerId,
-                    PublisherId = PublisherId,
-                    ProofDocument = ProofDocument,
-                    Tags = Tags,
-                    TenantNodes = TenantNodes,
-                    Title = Title,
-                    Tenants = Tenants,
-                };
             }
 
+            public sealed record NewPersonOrganizationRelationNewPerson : IncompletePersonOrganizationRelationForPerson
+            {
+                public override T Match<T>(
+                    Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
+                    Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
+                    Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
+                    Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
+                    Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
+                )
+                {
+                    return newPersonOrganizationRelationNewPerson(this);
+                }
+                public required PersonName Person { get; set; }
+                public required OrganizationListItem? Organization { get; set; }
+                public override PersonItem PersonItem => Person;
+
+                private OrganizationListItem? organizationItem = null;
+                public override OrganizationListItem? OrganizationItem {
+                    get {
+                        if (organizationItem == null) {
+                            organizationItem = Organization;
+                        }
+                        return organizationItem;
+                    }
+                    set {
+                        organizationItem = value;
+                    }
+                }
+                public override CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationListItem organizationListItem)
+                {
+                    return new CompletedNewPersonOrganizationRelationNewPerson {
+                        Person = Person,
+                        Organization = organizationListItem,
+                        DateFrom = DateFrom,
+                        DateTo = DateTo,
+                        PersonOrganizationRelationType = PersonOrganizationRelationType,
+                        GeographicalEntity = GeographicalEntity,
+                        Description = Description,
+                        Files = Files,
+                        HasBeenDeleted = HasBeenDeleted,
+                        NodeTypeName = NodeTypeName,
+                        OwnerId = OwnerId,
+                        PublisherId = PublisherId,
+                        ProofDocument = ProofDocument,
+                        Tags = Tags,
+                        TenantNodes = TenantNodes,
+                        Title = Title,
+                        Tenants = Tenants,
+                    };
+                }
+            }
         }
     }
 }

@@ -15,6 +15,12 @@ public abstract record OrganizationPoliticalEntityRelation : RelationBase
         Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
         Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
      );
+
+    [RequireNamedArgs]
+    public abstract T Match<T>(
+        Func<IncompleteOrganizationPoliticalEntityRelation, T> incompleteOrganizationPoliticalEntityRelation,
+        Func<CompletedOrganizationPoliticalEntityRelation, T> completedOrganizationPoliticalEntityRelation
+     );
     public required OrganizationPoliticalEntityRelationTypeListItem OrganizationPoliticalEntityRelationType { get; set; }
 
     public abstract OrganizationItem? OrganizationItem { get; }
@@ -23,6 +29,14 @@ public abstract record OrganizationPoliticalEntityRelation : RelationBase
     public abstract record IncompleteOrganizationPoliticalEntityRelation : OrganizationPoliticalEntityRelation
     {
         private IncompleteOrganizationPoliticalEntityRelation() { }
+        public override T Match<T>(
+            Func<IncompleteOrganizationPoliticalEntityRelation, T> incompleteOrganizationPoliticalEntityRelation,
+            Func<CompletedOrganizationPoliticalEntityRelation, T> completedOrganizationPoliticalEntityRelation
+         )
+        {
+            return incompleteOrganizationPoliticalEntityRelation(this);
+        }
+
         public abstract CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity);
         public sealed record NewOrganizationPoliticalEntityRelationNewOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
         {
@@ -106,6 +120,14 @@ public abstract record OrganizationPoliticalEntityRelation : RelationBase
     public abstract record CompletedOrganizationPoliticalEntityRelation : OrganizationPoliticalEntityRelation
     {
         private CompletedOrganizationPoliticalEntityRelation() { }
+        public override T Match<T>(
+            Func<IncompleteOrganizationPoliticalEntityRelation, T> incompleteOrganizationPoliticalEntityRelation,
+            Func<CompletedOrganizationPoliticalEntityRelation, T> completedOrganizationPoliticalEntityRelation
+         )
+        {
+            return completedOrganizationPoliticalEntityRelation(this);
+        }
+
         public abstract string OrganizationName { get; }
 
         public abstract string PoliticalEntityName { get; }

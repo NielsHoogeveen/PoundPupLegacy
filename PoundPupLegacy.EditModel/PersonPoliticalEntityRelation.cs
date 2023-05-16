@@ -15,6 +15,12 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
         Func<CompletedNewPersonPoliticalEntityRelationNewPerson, T> completedNewPersonPoliticalEntityRelationNewPerson,
         Func<CompletedNewPersonPoliticalEntityRelationExistingPerson, T> completedNewPersonPoliticalEntityRelationExistingPerson
      );
+    [RequireNamedArgs]
+    public abstract T Match<T>(
+        Func<IncompletePersonPoliticalEntityRelation, T> incompletePersonPoliticalEntityRelation,
+        Func<CompletedPersonPoliticalEntityRelation, T> completedPersonPoliticalEntityRelation
+     );
+
     public required PersonPoliticalEntityRelationTypeListItem PersonPoliticalEntityRelationType { get; set; }
 
     public abstract PersonItem? PersonItem { get; }
@@ -24,6 +30,13 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
     {
         private IncompletePersonPoliticalEntityRelation() { }
         public abstract CompletedPersonPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity);
+        public override T Match<T>(
+            Func<IncompletePersonPoliticalEntityRelation, T> incompletePersonPoliticalEntityRelation,
+            Func<CompletedPersonPoliticalEntityRelation, T> completedPersonPoliticalEntityRelation
+         )
+        {
+            return incompletePersonPoliticalEntityRelation(this); 
+        }
         public sealed record NewPersonPoliticalEntityRelationNewPerson : IncompletePersonPoliticalEntityRelation, NewNode
         {
             public override T Match<T>(
@@ -109,6 +122,14 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
         public abstract string PersonName { get; }
 
         public abstract string PoliticalEntityName { get; }
+        public override T Match<T>(
+            Func<IncompletePersonPoliticalEntityRelation, T> incompletePersonPoliticalEntityRelation,
+            Func<CompletedPersonPoliticalEntityRelation, T> completedPersonPoliticalEntityRelation
+         )
+        {
+            return completedPersonPoliticalEntityRelation(this);
+        }
+
         public abstract record ResolvedPersonPoliticalEntityRelation : CompletedPersonPoliticalEntityRelation
         {
             private ResolvedPersonPoliticalEntityRelation() { }
