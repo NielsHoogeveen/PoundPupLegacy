@@ -1,71 +1,36 @@
 ﻿@inherits EditorBase
-@if(editContext is not null) {
-    <ModalDialog 
-        Title="Add inter-organizational relation" 
-        Id="inter-organizational-relation-dialog" 
-        OnOk="OnOk" 
-        OnCancel="OnCancel">
-        <DialogContent>
-            <InterOrganizationalRelationEditorDialog  
-                RelationTypes=RelationTypes
-                EditContext=editContext
-                @ref=dialog/>
-        </DialogContent>
-    </ModalDialog>
-}
-<div class="relations-editor">
-    <h4>Relations between this organization and another one</h4>
-    @if (Relations.Any())
-    {
-        <div class="relations">
-            <div class="grid-header first">From</div>
-            <div class="grid-header">Type</div>
-            <div class="grid-header">To</div>
-            <div class="grid-header">Start</div>
-            <div class="grid-header">End</div>
-            <div class="grid-header"></div>
-            <div class="grid-header"></div>
-            @foreach(var relation in Relations) {
-                var classString = relation.HasBeenDeleted ? "row deleted" : "row";
-                <div class="@classString first">
-                    @relation.OrganizationFromName
-                </div>
-                <div class="@classString">
-                    @relation.InterOrganizationalRelationType.Name
-                </div>
-                <div class="@classString">
-                    @relation.OrganizationToName
-                </div>
-                <div class="@classString">
-                    @relation.DateFrom
-                </div>
-                <div class="@classString">
-                    @relation.DateTo
-                </div>
-                <div class="@classString">
-                    @if (!relation.HasBeenDeleted)
-                    {
-                        <button type="button" @onclick="() => EditRelation(relation)">edit</button>
-                    }
-                </div>
-                <div class="@classString">
-                    @if (relation.HasBeenDeleted) {
-                        <button type="button" @onclick="() => RestoreRelation(relation)">restore</button>
-                    }
-                    else {
-                        <button type="button" @onclick="() => RemoveRelation(relation)">remove</button>
-                    }
-                </div>
+<InterOrganizationalRelationsFromEditor 
+    Relations="RelationsFrom" 
+    RelationTypes="RelationTypes" 
+    OrganizationItem="OrganizationItem"
+    Swap="Swap"
+    Update="UpdateFrom"
+    Edit="EditRelationFrom"
+    Add="AddRelationFrom"
+    RelationContext="relationContext"
+    Ok="OkFrom"
+    Cancel="CancelFrom"
+    @ref="interOrganizationalRelationsFromEditor" />
 
-            }
-        </div>
-    }        
-    <button type="button" @onclick="OnAdd">Add</button>
-</div>
+<InterOrganizationalRelationsToEditor 
+    Relations="RelationsTo"
+    RelationTypes="RelationTypes"
+    OrganizationItem="OrganizationItem"
+    Swap="Swap"
+    Update="UpdateTo"
+    Edit="EditRelationTo"
+    Add="AddRelationTo"
+    RelationContext="relationContext" Ok="OkTo"
+    Cancel="CancelTo"
+    @ref="interOrganizationalRelationsToEditor" />
+
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterOrganizationalRelation> Relations { get; set; } = default!;
+    public List<CompletedInterOrganizationalRelationFrom> RelationsFrom { get; set; } = default!;
+    [Parameter]
+    [EditorRequired]
+    public List<CompletedInterOrganizationalRelationTo> RelationsTo { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -75,27 +40,345 @@
     [EditorRequired]
     public List<InterOrganizationalRelationTypeListItem> RelationTypes { get; set; } = default!;
 
-    public interface OrganizationEditContext
+    private RelationContext? relationContext = null;
+
+    private InterOrganizationalRelationsFromEditor? interOrganizationalRelationsFromEditor;
+
+    private InterOrganizationalRelationsToEditor? interOrganizationalRelationsToEditor;
+
+    public abstract record RelationContext
     {
-        EditMode EditMode { get; }
-        InterOrganizationalRelation RelationToEdit { get; }
-    }
-    private class OrganizationUpdateContext : OrganizationEditContext
-    {
-        public EditMode EditMode => EditMode.Update;
-        public required InterOrganizationalRelation RelationToEdit { get; init; }
-        public required CompletedInterOrganizationalRelation CompletedRelationToEdit { get; init; }
-    }
-    private class OrganizationCreateContext : OrganizationEditContext
-    {
-        public EditMode EditMode => EditMode.Create;
-        public required InterOrganizationalRelation RelationToEdit { get; init; }
+        private RelationContext() { }
+
+        public abstract RelationContext Swap();
+
+        public abstract record RelationContextFrom: RelationContext
+        {
+            private RelationContextFrom() { }
+            public required InterOrganizationalRelationFrom RelationToEdit { get; init; }
+
+            public abstract override RelationContextTo Swap();
+
+            public abstract void Match(
+                Action<RelationContextFromNew> relationContextFromNew,
+                Action<RelationContextFromEditTo> relationContextFromEditTo,
+                Action<RelationContextFromEditFrom> relationContextFromEditFrom
+            );
+
+            public sealed record RelationContextFromNew : RelationContextFrom
+            {
+                public override RelationContextTo Swap()
+                {
+                    return new RelationContextTo.RelationContextToNew
+                    {
+                            RelationToEdit = this.RelationToEdit.SwapFromAndTo()
+                    };
+                }
+                public override void Match(
+                    Action<RelationContextFromNew> relationContextFromNew,
+                    Action<RelationContextFromEditTo> relationContextFromEditTo,
+                    Action<RelationContextFromEditFrom> relationContextFromEditFrom
+                )
+                {
+                    relationContextFromNew(this);
+                }
+
+            }
+
+            public sealed record RelationContextFromEditTo: RelationContextFrom
+            {
+                public required CompletedInterOrganizationalRelationTo CompletedRelationToRemove { get; init; }
+
+                public override RelationContextTo Swap()
+                {
+                    return new RelationContextTo.RelationContextToEditTo {
+                        RelationToEdit = RelationToEdit.SwapFromAndTo(),
+                        CompletedRelationToRemove = CompletedRelationToRemove
+                    };
+                }
+                public override void Match(
+                    Action<RelationContextFromNew> relationContextFromNew,
+                    Action<RelationContextFromEditTo> relationContextFromEditTo,
+                    Action<RelationContextFromEditFrom> relationContextFromEditFrom
+                )
+                {
+                    relationContextFromEditTo(this);
+                }
+
+            }
+            public sealed record RelationContextFromEditFrom : RelationContextFrom
+            {
+                public required CompletedInterOrganizationalRelationFrom CompletedRelationToRemove { get; init; }
+                public override RelationContextTo Swap()
+                {
+                    return new RelationContextTo.RelationContextToEditFrom {
+                        RelationToEdit = RelationToEdit.SwapFromAndTo(),
+                        CompletedRelationToRemove = CompletedRelationToRemove
+                    };
+                }
+                public override void Match(
+                    Action<RelationContextFromNew> relationContextFromNew,
+                    Action<RelationContextFromEditTo> relationContextFromEditTo,
+                    Action<RelationContextFromEditFrom> relationContextFromEditFrom
+                )
+                {
+                    relationContextFromEditFrom(this);
+                }
+            }
+        }
+        public abstract record RelationContextTo : RelationContext
+        {
+            private RelationContextTo() { }
+            public required InterOrganizationalRelationTo RelationToEdit { get; init; }
+
+            public abstract override RelationContextFrom Swap();
+
+            public abstract void Match(
+                Action<RelationContextToNew> relationContextToNew,
+                Action<RelationContextToEditTo> relationContextToEditTo,
+                Action<RelationContextToEditFrom> relationContextToEditFrom
+            );
+
+            public sealed record RelationContextToNew : RelationContextTo
+            {
+                public override RelationContextFrom Swap()
+                {
+                    return new RelationContextFrom.RelationContextFromNew {
+                        RelationToEdit = this.RelationToEdit.SwapFromAndTo()
+                    };
+                }
+                public override void Match(
+                    Action<RelationContextToNew> relationContextToNew,
+                    Action<RelationContextToEditTo> relationContextToEditTo,
+                    Action<RelationContextToEditFrom> relationContextToEditFrom
+                )
+                {
+                    relationContextToNew(this);
+                }
+            }
+
+            public sealed record RelationContextToEditTo : RelationContextTo
+            {
+                public required CompletedInterOrganizationalRelationTo CompletedRelationToRemove { get; init; }
+                public override RelationContextFrom Swap()
+                {
+                    return new RelationContextFrom.RelationContextFromEditTo {
+                            RelationToEdit = RelationToEdit.SwapFromAndTo(),
+                            CompletedRelationToRemove = CompletedRelationToRemove
+                        };
+                }
+                public override void Match(
+                    Action<RelationContextToNew> relationContextToNew,
+                    Action<RelationContextToEditTo> relationContextToEditTo,
+                    Action<RelationContextToEditFrom> relationContextToEditFrom
+                )
+                {
+                    relationContextToEditTo(this);
+                }
+            }
+            public sealed record RelationContextToEditFrom : RelationContextTo
+            {
+                public required CompletedInterOrganizationalRelationFrom CompletedRelationToRemove { get; init; }
+                public override RelationContextFrom Swap()
+                {
+                    return new RelationContextFrom.RelationContextFromEditFrom {
+                        RelationToEdit = RelationToEdit.SwapFromAndTo(),
+                        CompletedRelationToRemove = CompletedRelationToRemove
+                    };
+                }
+                public override void Match(
+                    Action<RelationContextToNew> relationContextToNew,
+                    Action<RelationContextToEditTo> relationContextToEditTo,
+                    Action<RelationContextToEditFrom> relationContextToEditFrom
+                )
+                {
+                    relationContextToEditFrom(this);
+                }
+            }
+        }
     }
 
-    private OrganizationEditContext? editContext;
+    public void UpdateFrom(RelationContext.RelationContextFrom relationContext)
+    {
 
+    }
+    public void UpdateTo(RelationContext.RelationContextTo relationContext)
+    {
 
-    private InterOrganizationalRelationEditorDialog? dialog;
+    }
+    private void AddRelationFrom()
+    {
+        var relationToEdit = OrganizationItem.Match<IncompleteInterOrganizationalRelationFrom>(
+        organizationListItem: li => new NewInterOrganizationalExistingFromRelation {
+                OrganizationFrom = li,
+                OrganizationTo = null,
+                InterOrganizationalRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                NodeTypeName = "inter organizational relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                GeographicalEntity = null,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+            },
+        organizationName: nm => new NewInterOrganizationalNewFromRelation {
+                OrganizationFrom = nm,
+                OrganizationTo = null,
+                InterOrganizationalRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                NodeTypeName = "inter organizational relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                GeographicalEntity = null,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+            }
+        );
+        relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
+            RelationToEdit = relationToEdit
+        };
+        StateHasChanged();
+    }
+    private void AddRelationTo()
+    {
+        var relationToEdit = OrganizationItem.Match<IncompleteInterOrganizationalRelationTo>(
+            organizationListItem: li => new NewInterOrganizationalExistingToRelation {
+                OrganizationFrom = null,
+                OrganizationTo = li,
+                InterOrganizationalRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                NodeTypeName = "inter organizational relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                GeographicalEntity = null,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+            },
+            organizationName: nm => new NewInterOrganizationalNewToRelation {
+                OrganizationFrom = null,
+                OrganizationTo = nm,
+                InterOrganizationalRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                NodeTypeName = "inter organizational relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                GeographicalEntity = null,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+            }
+        );
+
+        relationContext = new RelationContext.RelationContextTo.RelationContextToNew {
+            RelationToEdit = relationToEdit
+        };
+        StateHasChanged();
+    }
+
+    private void EditRelationFrom(CompletedInterOrganizationalRelationFrom relation)
+    {
+        relationContext = new RelationContext.RelationContextFrom.RelationContextFromEditFrom
+        {
+            RelationToEdit = relation,
+            CompletedRelationToRemove = relation
+        };
+        StateHasChanged();
+    }
+    private void EditRelationTo(CompletedInterOrganizationalRelationTo relation)
+    {
+        relationContext = new RelationContext.RelationContextTo.RelationContextToEditTo {
+            RelationToEdit = relation,
+            CompletedRelationToRemove = relation
+        };
+        StateHasChanged();
+    }
+
+    public void Swap(RelationContext relationContext)
+    {
+        relationContext = relationContext.Swap();        
+        StateHasChanged();
+    }
+
+    public void OkFrom(InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom relationContext)
+    {
+        if (interOrganizationalRelationsFromEditor is not null) {
+            var relation = interOrganizationalRelationsFromEditor.GetValidRelation();
+            if (relation is not null) {
+                relationContext.Match(
+                    relationContextFromNew => {
+                        RelationsFrom.Add(relation);
+                    },
+                    relationContextFromEditTo => {
+                        RelationsFrom.Add(relation);
+                        RelationsTo.Remove(relationContextFromEditTo.CompletedRelationToRemove);
+                    },
+                    relationContextFromEditFrom => {
+                        RelationsFrom.Add(relation);
+                        RelationsFrom.Remove(relationContextFromEditFrom.CompletedRelationToRemove);
+                    }
+                );
+            }
+        }
+        StateHasChanged();
+    }
+    public void CancelFrom()
+    {
+        relationContext = null;
+        StateHasChanged();
+    }
+    public void OkTo(InterOrganizationalRelationsEditor.RelationContext.RelationContextTo relationContext)
+    {
+        if (interOrganizationalRelationsToEditor is not null) {
+            var relation = interOrganizationalRelationsToEditor.GetValidRelation();
+            if(relation is not null) {
+                relationContext.Match(
+                    relationContextToNew =>
+                    {
+                        RelationsTo.Add(relation);
+                    },
+                    relationContextToEditTo =>
+                    {
+                        RelationsTo.Add(relation);
+                        RelationsTo.Remove(relationContextToEditTo.CompletedRelationToRemove);
+                    },
+                    relationContextToEditFrom =>
+                    {
+                        RelationsTo.Add(relation);
+                        RelationsFrom.Remove(relationContextToEditFrom.CompletedRelationToRemove);
+                    }
+                );
+            }
+        }
+        StateHasChanged();
+    }
+    public void CancelTo()
+    {
+        relationContext = null;
+        StateHasChanged();
+    }
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
@@ -103,92 +386,11 @@
     }
     public override void OnTitleChange(string title)
     {
-
-    }
-    private void RestoreRelation(InterOrganizationalRelation relation)
-    {
-        relation.HasBeenDeleted = false;
-        StateHasChanged();
-    }
-
-    private void RemoveRelation(InterOrganizationalRelation relation)
-    {
-        relation.HasBeenDeleted = true;
-        StateHasChanged();
-    }
-
-    private void EditRelation(CompletedInterOrganizationalRelation relation)
-    {
-
-        editContext = new OrganizationUpdateContext {
-            CompletedRelationToEdit = relation,
-            RelationToEdit = relation
-        };
-        StateHasChanged();
-    }
-    private void OnOk()
-    {
-        if (dialog is not null && editContext is not null) {
-            var relation = dialog.GetValidRelation();
-            if(relation is null)
-                return;
-            if(editContext is OrganizationUpdateContext updateContext) {
-                Relations.Remove(updateContext.CompletedRelationToEdit);
-            }
-            Relations.Add(relation);
+        if(interOrganizationalRelationsFromEditor is not null) {
+            interOrganizationalRelationsFromEditor.OnTitleChange(title);
         }
-        editContext = null;
-        StateHasChanged();
+        if (interOrganizationalRelationsToEditor is not null) {
+            interOrganizationalRelationsToEditor.OnTitleChange(title);
+        }
     }
-    private void OnCancel()
-    {
-        editContext = null;
-        StateHasChanged();
-    }
-    private void OnAdd()
-    {
-
-        editContext = new OrganizationCreateContext{ 
-                RelationToEdit = OrganizationItem.Match<InterOrganizationalRelation>(
-                organizationListItem: li => new NewInterOrganizationalExistingFromRelation {
-                    OrganizationFrom = li,
-                    OrganizationTo = null,
-                    InterOrganizationalRelationType = RelationTypes.First(),
-                    Title = "",
-                    DateFrom = null,
-                    DateTo = null,
-                    Description = "",
-                    Files = new List<File>(),
-                    NodeTypeName = "inter organizational relation",
-                    OwnerId = TenantId,
-                    PublisherId = UserId,
-                    GeographicalEntity = null,
-                    ProofDocument = null,
-                    Tags = new List<Tags>(),
-                    TenantNodes = new List<TenantNode>(),
-                    Tenants = new List<Tenant>(),
-                },
-                organizationName: nm => new NewInterOrganizationalNewFromRelation {
-                    OrganizationFrom = nm,
-                    OrganizationTo = null,
-                    InterOrganizationalRelationType = RelationTypes.First(),
-                    Title = "",
-                    DateFrom = null,
-                    DateTo = null,
-                    Description = "",
-                    Files = new List<File>(),
-                    NodeTypeName = "inter organizational relation",
-                    OwnerId = TenantId,
-                    PublisherId = UserId,
-                    GeographicalEntity = null,
-                    ProofDocument = null,
-                    Tags = new List<Tags>(),
-                    TenantNodes = new List<TenantNode>(),
-                    Tenants = new List<Tenant>(),
-                }
-            )
-        };
-        StateHasChanged();
-    }
-
 }

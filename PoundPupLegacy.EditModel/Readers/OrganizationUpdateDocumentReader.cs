@@ -9,7 +9,8 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
     const string SQL = $"""
             {CTE_EDIT},
             {ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT},
-            {INTER_ORGANIZATIONAL_RELATIONS_DOCUMENT},
+            {INTER_ORGANIZATIONAL_RELATIONS_FROM_DOCUMENT},
+            {INTER_ORGANIZATIONAL_RELATIONS_TO_DOCUMENT},
             {SharedSql.ORGANIZATION_TYPES_DOCUMENT},
             {SharedSql.INTER_ORGANIZATIONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATION_TYPES_DOCUMENT},
@@ -70,8 +71,11 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     (select document from person_organization_relations_document),
                     'ExistingPartyPoliticalEntityRelations',
                     (select document from party_political_entity_relations_document),
-                    'ExistingInterOrganizationalRelations',
-                    (select document from inter_organizational_relations_document)
+                    'ExistingInterOrganizationalRelationsFrom',
+                    (select document from inter_organizational_relations_from_document),
+                    'ExistingInterOrganizationalRelationsTo',
+                    (select document from inter_organizational_relations_to_document)
+       
             ) document
             from node n
             join node_type nt on nt.id = n.node_type_id
@@ -81,8 +85,8 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
 
-    const string INTER_ORGANIZATIONAL_RELATIONS_DOCUMENT = """
-        inter_organizational_relations_document as(
+    const string INTER_ORGANIZATIONAL_RELATIONS_FROM_DOCUMENT = """
+        inter_organizational_relations_from_document as(
             select
                 jsonb_agg(
         	        jsonb_build_object(
@@ -290,7 +294,118 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
                     join tenant_node tn3 on tn3.node_id = r.id and tn3.tenant_id = tn.tenant_id
                     where tn.tenant_id = @tenant_id and tn.url_id = @url_id
-                    union
+        	    ) x
+                where status_other_organization > -1 and status_relation > -1
+        	) x
+        )
+        """;
+    const string INTER_ORGANIZATIONAL_RELATIONS_TO_DOCUMENT = """
+        inter_organizational_relations_to_document as(
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'NodeId',
+        		        node_id,
+                        'Title',
+                        title,
+                        'PublisherId',
+                        publisher_id,
+                        'OwnerId',
+                        owner_id,
+                        'NodeTypeName',
+                        node_type_name,
+                        'UrlId',
+                        url_id,
+                        'HasBeenStored',
+                        true,
+                        'OrganizationFrom',
+                        jsonb_build_object(
+                            'Id',
+                	        organization_id_from,
+                            'Name',
+        		            organization_name_from
+                        ),
+        		        'OrganizationTo',
+                        jsonb_build_object(
+                            'Id',
+                            organization_id_to,
+                            'Name',
+                            organization_name_to
+                        ),
+        		        'InterOrganizationalRelationType',
+                        jsonb_build_object(
+                            'Id',
+                            inter_organizational_relation_type_id,
+                            'Name',
+                            inter_organizational_relation_type_name
+                        ),
+        		        'ProofDocument',
+                        case
+                            when document_id_proof is null then null
+                            else jsonb_build_object(
+                                'Id',
+                                document_id_proof,
+                                'Name',
+                                document_title_proof
+                            )
+                        end,
+        		        'GeographicalEntity',
+                        case 
+                            when geographical_entity_id is null then  null
+                            else jsonb_build_object(
+                                'Id',
+                                geographical_entity_id,
+                                'Name',
+                                geographical_entity_name
+                            )
+                        end,
+        		        'MoneyInvolved',
+        		        money_involved,
+        		        'NumberOfChildrenInvolved',
+        		        number_of_children_involved,
+        		        'DateFrom',
+        		        date_from,
+        		        'DateTo',
+        		        date_to,
+        		        'Description',
+        		        description,
+                        'SettableRelationSideThisOrganization',
+                        settable_relation_side_this_organization,
+                        'Tags',
+                        null,
+                        'Files',
+                        null
+        	        )
+                ) "document"
+            from(
+                select
+                    node_id,
+                    title,
+                    publisher_id,
+                    owner_id,
+                    node_type_name,
+                    url_id,
+                    organization_id_from,
+                    organization_name_from,
+                    organization_id_to,
+                    organization_name_to,
+                    inter_organizational_relation_type_id,
+                    inter_organizational_relation_type_name,
+                    document_id_proof,
+                    document_title_proof,
+                    geographical_entity_id,
+                    geographical_entity_name,
+                    money_involved,
+                    number_of_children_involved,
+                    date_from,
+                    date_to,
+                    description,
+                    settable_relation_side_this_organization,
+                    case 
+        	            when status_relation = 1 then true
+        	            else false
+                    end has_been_published	
+                from(
                     select
                         distinct
                         r.id node_id,
@@ -398,6 +513,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
         	) x
         )
         """;
+
     const string ORGANIZATION_ORGANIZATION_TYPES_DOCUMENT = """
         organization_organization_types_document as (
             select

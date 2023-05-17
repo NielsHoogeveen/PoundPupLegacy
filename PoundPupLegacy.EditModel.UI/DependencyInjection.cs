@@ -29,7 +29,8 @@ public static class DependencyInjection
         services.AddTransient<IEditService<WrongfulRemovalCase>, WrongfulRemovalCaseEditService>();
 
         services.AddTransient<ILocationService, LocationService>();
-        services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelation>>, InterOrganizationalRelationSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>>, InterOrganizationalRelationFromSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>>, InterOrganizationalRelationToSaveService>();
         services.AddTransient<ISaveService<IEnumerable<InterPersonalRelation>>, InterPersonalRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<OrganizationPoliticalEntityRelation>>, OrganizationPoliticalEntityRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<PersonOrganizationRelation>>, PersonOrganizationRelationSaveService>();

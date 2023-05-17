@@ -1,0 +1,137 @@
+﻿@inject ILocationService LocationService
+@inject IJSRuntime JSRuntime
+@if(editContext is not null){
+    @if (RelationContext.RelationToEdit.OrganizationItemFrom is OrganizationName) {
+        <div class="form-group">
+            <label>Organization from</label>
+            <div>@RelationContext.RelationToEdit.OrganizationFromName</div>
+        </div>
+    }
+    @if (RelationContext.RelationToEdit.OrganizationItemFrom is OrganizationListItem organizationListItemFrom) {
+        <SearchItemEditor T="OrganizationListItem"
+            IsMandatory="true"
+            @bind-Value="organizationListItemFrom"
+            EnableEdit="RelationContext.RelationToEdit.RelationSideThisOrganization == RelationSide.To"
+            Label="Organization from"/>
+    }
+    <div class="type-and-swap">
+        <div>
+            <label for="relation-type">Relation type</label>
+            <select id="relation-type" @onchange="OnChangeRelationType">
+                @foreach (var relationType in RelationTypes.OrderBy(x => x.Name)) {
+                    @if (relationType.Id == RelationType.Id) {
+                        <option selected value="@relationType.Id">@relationType.Name</option>
+                    }
+                    else {
+                        <option value="@relationType.Id">@relationType.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        @if (!RelationType.IsSymmetric) {
+            <button type="button" @onclick="() => Swap(RelationContext)">Swap To/From</button>
+        }
+
+    </div>
+    @if (RelationContext.RelationToEdit.OrganizationItemTo is OrganizationName) {
+        <div class="form-group">
+            <label>Organization from</label>
+            <div>@RelationContext.RelationToEdit.OrganizationToName</div>
+        </div>
+    }
+    @if (RelationContext.RelationToEdit.OrganizationItemTo is OrganizationListItem organizationListItemTo) {
+
+        <SearchItemEditor T="OrganizationListItem"
+            IsMandatory="true"
+            @bind-Value="organizationListItemTo"
+            EnableEdit="RelationContext.RelationToEdit.RelationSideThisOrganization == RelationSide.From"
+            Label="Organization to"/>
+    }
+    <SearchItemEditor 
+        T="GeographicalEntityListItem"
+        IsMandatory="false"
+        @bind-Value="RelationContext.RelationToEdit.GeographicalEntity"
+        EnableEdit="true"
+        Label="Geographical entity" />
+    <SearchItemEditor T="DocumentListItem"
+        IsMandatory="false"
+    @bind-Value="RelationContext.RelationToEdit.ProofDocument"
+        EnableEdit="true"
+        Label="Proof document" />
+    <div class="form-group">
+        <label for="money-involved">Money involved</label>
+        <InputNumber id="money-involved" @bind-Value="RelationContext.RelationToEdit.MoneyInvolved" />
+    </div>
+    <div class="form-group">
+        <label for="number-of-children-involved">Number of children involved</label>
+        <InputNumber id="number-of-children-involved" @bind-Value="RelationContext.RelationToEdit.NumberOfChildrenInvolved" />
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <CKEditor Id="relation-editor" @bind-Value="RelationContext.RelationToEdit.Description" />
+    </div>
+    <div class="form-group">
+        <label>Start date</label>
+        <InputDate @bind-Value="RelationContext.RelationToEdit.DateFrom" />
+    </div>
+    <div class="form-group">
+        <label>End date</label>
+        <InputDate @bind-Value="RelationContext.RelationToEdit.DateTo" />
+</div>
+}
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom RelationContext { get; set; } = default!;
+
+
+    [Parameter]
+    [EditorRequired]
+    public List<InterOrganizationalRelationTypeListItem> RelationTypes { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public Action<InterOrganizationalRelationsEditor.RelationContext> Swap { get; set; } = default!;
+
+    private InterOrganizationalRelationTypeListItem RelationType { get; set; } = default!;
+    private EditContext? editContext;
+    private ValidationMessageStore? validationMessageStore;
+
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(RelationContext.RelationToEdit);
+        validationMessageStore = new ValidationMessageStore(editContext);
+        RelationType = RelationTypes.First(x => x.Id == RelationContext.RelationToEdit.InterOrganizationalRelationType.Id);
+    }
+
+    private void OnChangeRelationType(ChangeEventArgs args)
+    {
+        if(args.Value is not null && args.Value is string str) {
+            if(int.TryParse(str, out var typeId)) {
+                RelationType = RelationTypes.First(x => x.Id == typeId);
+                StateHasChanged();
+            }
+        }
+    }
+
+    public CompletedInterOrganizationalRelationFrom? GetValidRelation()
+    {
+        validationMessageStore?.Clear();
+        bool hasErrors = false;
+        if (RelationContext.RelationToEdit!.OrganizationItemTo is not OrganizationName && RelationContext.RelationToEdit.OrganizationListItemTo is null) {
+            validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.OrganizationListItemTo)), "Organization to is required");
+            hasErrors = true;
+            editContext.NotifyValidationStateChanged();
+        }
+        if (hasErrors)
+            return null;
+
+        return RelationContext.RelationToEdit.Match<CompletedInterOrganizationalRelationFrom>(
+            incompleteInterOrganizationalRelationFrom: x => x.GetCompletedRelation(RelationContext.RelationToEdit.OrganizationListItemTo!),
+            completedInterOrganizationalRelationFrom: x => x
+        );
+    }
+}
+

@@ -1,4 +1,7 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationFrom;
+using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationTo;
+
+namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingOrganization))]
 public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
@@ -28,7 +31,8 @@ public interface Organization : Party
     List<OrganizationOrganizationType> OrganizationOrganizationTypes { get; }
     List<OrganizationType> OrganizationTypes { get; }
     List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes { get; }
-    IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations { get; }
+    IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom { get; }
+    IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo { get; }
     OrganizationItem OrganizationItem { get; }
 }
 
@@ -59,23 +63,43 @@ public sealed record ExistingOrganization : OrganizationBase, ExistingNode
         }
     }
 
-    private List<ExistingInterOrganizationalRelation> existingInterOrganizationalRelations = new();
+    private List<ExistingInterOrganizationalRelationFrom> existingInterOrganizationalRelationsFrom = new();
 
-    public List<ExistingInterOrganizationalRelation> ExistingInterOrganizationalRelations {
-        get => existingInterOrganizationalRelations;
+    public List<ExistingInterOrganizationalRelationFrom> ExistingInterOrganizationalRelationsFrom {
+        get => existingInterOrganizationalRelationsFrom;
         init {
             if (value is not null) {
-                existingInterOrganizationalRelations = value;
+                existingInterOrganizationalRelationsFrom = value;
             }
         }
     }
-    public override IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations => GetInterOrganizationalRelations();
-    private IEnumerable<CompletedInterOrganizationalRelation> GetInterOrganizationalRelations()
+    private List<ExistingInterOrganizationalRelationTo> existingInterOrganizationalRelationsTo = new();
+
+    public List<ExistingInterOrganizationalRelationTo> ExistingInterOrganizationalRelationsTo {
+        get => existingInterOrganizationalRelationsTo;
+        init {
+            if (value is not null) {
+                existingInterOrganizationalRelationsTo = value;
+            }
+        }
+    }
+    public override IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => GetInterOrganizationalRelationsFrom();
+    private IEnumerable<CompletedInterOrganizationalRelationFrom> GetInterOrganizationalRelationsFrom()
     {
-        foreach (var elem in ExistingInterOrganizationalRelations) {
+        foreach (var elem in ExistingInterOrganizationalRelationsFrom) {
             yield return elem;
         }
-        foreach (var elem in NewInterOrganizationalRelations) {
+        foreach (var elem in NewInterOrganizationalRelationsFrom) {
+            yield return elem;
+        }
+    }
+    public override IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo => GetInterOrganizationalRelationsTo();
+    private IEnumerable<CompletedInterOrganizationalRelationTo> GetInterOrganizationalRelationsTo()
+    {
+        foreach (var elem in ExistingInterOrganizationalRelationsTo) {
+            yield return elem;
+        }
+        foreach (var elem in NewInterOrganizationalRelationsTo) {
             yield return elem;
         }
     }
@@ -108,7 +132,8 @@ public sealed record ExistingOrganization : OrganizationBase, ExistingNode
 public sealed record NewOrganization : OrganizationBase, NewNode
 {
     public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
-    public override IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations => NewInterOrganizationalRelations;
+    public override IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => NewInterOrganizationalRelationsFrom;
+    public override IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo => NewInterOrganizationalRelationsTo;
     public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => NewPersonOrganizationRelations;
     public override OrganizationItem OrganizationItem => new OrganizationName { Name = Title };
 }
@@ -202,7 +227,8 @@ public abstract record OrganizationBase : PartyBase, Organization
         }
     }
 
-    public List<CompletedNewInterOrganizationalRelation> NewInterOrganizationalRelations { get; } = new();
+    public List<CompletedInterOrganizationalRelationFrom> NewInterOrganizationalRelationsFrom { get; } = new();
+    public List<CompletedInterOrganizationalRelationTo> NewInterOrganizationalRelationsTo { get; } = new();
 
     private List<InterOrganizationalRelationTypeListItem> interOrganizationalRelationTypes = new();
 
@@ -215,7 +241,8 @@ public abstract record OrganizationBase : PartyBase, Organization
         }
     }
     public abstract OrganizationItem OrganizationItem { get; }
-    public abstract IEnumerable<CompletedInterOrganizationalRelation> InterOrganizationalRelations { get; }
+    public abstract IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom { get; }
+    public abstract IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo { get; }
 
     public abstract IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations { get; }
     public List<CompletedNewPersonOrganizationRelationForOrganization> NewPersonOrganizationRelations { get; } = new();

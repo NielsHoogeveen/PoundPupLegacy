@@ -6,7 +6,8 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
 
     private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewOrganization> _organizationCreateDocumentReaderFactory;
     private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingOrganization> _organizationUpdateDocumentReaderFactory;
-    private readonly ISaveService<IEnumerable<ResolvedInterOrganizationalRelation>> _interOrganizationalRelationSaveService;
+    private readonly ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>> _interOrganizationalRelationSaveServiceFrom;
+    private readonly ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>> _interOrganizationalRelationSaveServiceTo;
     private readonly ISaveService<IEnumerable<Location>> _locationsSaveService;
     private readonly IDatabaseUpdaterFactory<OrganizationUpdaterRequest> _organizationUpdateFactory;
     private readonly IEntityCreator<CreateModel.Organization> _organizationEntityCreator;
@@ -15,7 +16,8 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         ITenantRefreshService tenantRefreshService,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewOrganization> organizationCreateDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingOrganization> organizationUpdateDocumentReaderFactory,
-        ISaveService<IEnumerable<ResolvedInterOrganizationalRelation>> interOrganizationalRelationSaveService,
+        ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>> interOrganizationalRelationSaveServiceFrom,
+        ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>> interOrganizationalRelationSaveServiceTo,
         IDatabaseUpdaterFactory<OrganizationUpdaterRequest> organizationUpdateFactory,
         ISaveService<IEnumerable<Tag>> tagSaveService,
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
@@ -34,7 +36,8 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
     {
         _organizationUpdateDocumentReaderFactory = organizationUpdateDocumentReaderFactory;
         _organizationCreateDocumentReaderFactory = organizationCreateDocumentReaderFactory;
-        _interOrganizationalRelationSaveService = interOrganizationalRelationSaveService;
+        _interOrganizationalRelationSaveServiceFrom = interOrganizationalRelationSaveServiceFrom;
+        _interOrganizationalRelationSaveServiceTo = interOrganizationalRelationSaveServiceTo;
         _locationsSaveService = locationsSaveService;
         _organizationUpdateFactory = organizationUpdateFactory;
         _organizationEntityCreator = organizationEntityCreator;
@@ -60,21 +63,20 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
     protected override async Task StoreAdditional(Organization organization, int nodeId)
     {
         await base.StoreAdditional(organization, nodeId);
-        List<ResolvedInterOrganizationalRelation> interOrganizationalRelation = organization
-            .InterOrganizationalRelations
-            .OfType<ExistingInterOrganizationalRelation>()
-            .OfType<ResolvedInterOrganizationalRelation>()
+        List<ResolvedInterOrganizationalRelationFrom> interOrganizationalRelation = organization
+            .InterOrganizationalRelationsFrom
+            .OfType<ExistingInterOrganizationalRelationFrom>()
+            .OfType<ResolvedInterOrganizationalRelationFrom>()
             .ToList();
-        IEnumerable<ResolvedInterOrganizationalRelation> newToRelations = organization
-                .InterOrganizationalRelations
-                .OfType<CompletedNewInterOrganizationalNewToRelation>()
-                .Select(x => new NewInterOrganizationalExistingRelation {
-                    OrganizationFrom = x.OrganizationFrom,
-                    OrganizationTo = new OrganizationListItem {
+        IEnumerable<ResolvedInterOrganizationalRelationFrom> newToRelations = organization
+                .InterOrganizationalRelationsFrom
+                .OfType<CompletedNewInterOrganizationalNewFromRelation>()
+                .Select(x => new NewInterOrganizationalExistingRelationFrom {
+                    OrganizationFrom = new OrganizationListItem {
                         Id = nodeId,
-                        Name = x.OrganizationToName
+                        Name = x.OrganizationFromName
                     },
-                    SettableRelationSideThisOrganization = RelationSide.To,
+                    OrganizationTo = x.OrganizationTo,
                     DateFrom = x.DateFrom,
                     DateTo = x.DateTo,
                     Description = x.Description,
@@ -93,16 +95,15 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                     Tenants = x.Tenants,
                     Title = x.Title,
                 })
-                .OfType<ResolvedInterOrganizationalRelation>();
-        IEnumerable<ResolvedInterOrganizationalRelation> newFromRelations = organization
-                .InterOrganizationalRelations
+                .OfType<ResolvedInterOrganizationalRelationFrom>();
+        IEnumerable<ResolvedInterOrganizationalRelationFrom> newFromRelations = organization
+                .InterOrganizationalRelationsFrom
                 .OfType<CompletedNewInterOrganizationalNewFromRelation>()
-                .Select(x => new NewInterOrganizationalExistingRelation {
+                .Select(x => new NewInterOrganizationalExistingRelationFrom {
                     OrganizationFrom = new OrganizationListItem {
                         Id = nodeId,
                         Name = x.OrganizationFromName
                     },
-                    SettableRelationSideThisOrganization = RelationSide.From,
                     OrganizationTo = x.OrganizationTo,
                     DateFrom = x.DateFrom,
                     DateTo = x.DateTo,
@@ -123,12 +124,12 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
                     Title = x.Title,
 
                 })
-                .OfType<ResolvedInterOrganizationalRelation>();
+                .OfType<ResolvedInterOrganizationalRelationFrom>();
         interOrganizationalRelation
             .AddRange(newToRelations);
         interOrganizationalRelation
             .AddRange(newFromRelations);
-        await _interOrganizationalRelationSaveService.SaveAsync(interOrganizationalRelation, _connection);
+        await _interOrganizationalRelationSaveServiceFrom.SaveAsync(interOrganizationalRelation, _connection);
         await _locationsSaveService.SaveAsync(organization.Locations, _connection);
     }
     public async Task<Organization?> GetViewModelAsync(int userId, int tenantId)

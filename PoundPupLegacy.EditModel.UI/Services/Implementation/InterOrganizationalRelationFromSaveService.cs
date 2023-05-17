@@ -1,11 +1,13 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿
 
-internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable<ResolvedInterOrganizationalRelation>>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal class InterOrganizationalRelationFromSaveService : ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>>
 {
     private readonly IDatabaseUpdaterFactory<NodeUnpublishRequest> _nodeUnpublishFactory;
     private readonly IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> _interOrganizationalRelationUpdaterFactory;
     private readonly IEntityCreator<CreateModel.InterOrganizationalRelation> _interOrganizationalRelationCreator;
-    public InterOrganizationalRelationSaveService(
+    public InterOrganizationalRelationFromSaveService(
         IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
         IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> interOrganizationalRelationUpdaterFactory,
         IEntityCreator<CreateModel.InterOrganizationalRelation> interOrganizationalRelationCreator
@@ -15,17 +17,17 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
         _interOrganizationalRelationUpdaterFactory = interOrganizationalRelationUpdaterFactory;
         _interOrganizationalRelationCreator = interOrganizationalRelationCreator;
     }
-    public async Task SaveAsync(IEnumerable<ResolvedInterOrganizationalRelation> item, IDbConnection connection)
+    public async Task SaveAsync(IEnumerable<ResolvedInterOrganizationalRelationFrom> item, IDbConnection connection)
     {
         await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
         await using var updater = await _interOrganizationalRelationUpdaterFactory.CreateAsync(connection);
 
-        foreach (var relation in item.OfType<ExistingInterOrganizationalRelation>().Where(x => x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingInterOrganizationalRelationFrom>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
                 NodeId = relation.NodeId
             });
         }
-        foreach (var relation in item.OfType<ExistingInterOrganizationalRelation>().Where(x => !x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingInterOrganizationalRelationFrom>().Where(x => !x.HasBeenDeleted)) {
             await updater.UpdateAsync(new InterOrganizationalRelationUpdaterRequest {
                 NodeId = relation.NodeId,
                 Title = relation.Title,
@@ -43,7 +45,7 @@ internal class InterOrganizationalRelationSaveService : ISaveService<IEnumerable
         IEnumerable<CreateModel.InterOrganizationalRelation> GetRelationsToInsert()
         {
 
-            foreach (var relation in item.OfType<NewInterOrganizationalExistingRelation>().Where(x => !x.HasBeenDeleted)) {
+            foreach (var relation in item.OfType<NewInterOrganizationalExistingRelationFrom>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
                 yield return new CreateModel.InterOrganizationalRelation {
                     Id = null,

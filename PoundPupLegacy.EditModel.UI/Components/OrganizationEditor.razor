@@ -19,7 +19,8 @@
 </div>
 <OrganizationOrganizationTypesEditor Model="Model" />
 <InterOrganizationalRelationsEditor 
-    Relations="Model.InterOrganizationalRelations.ToList()" 
+    RelationsFrom="Model.InterOrganizationalRelationsFrom.ToList()" 
+    RelationsTo="Model.InterOrganizationalRelationsTo.ToList()" 
     RelationTypes="Model.InterOrganizationalRelationTypes" 
     OrganizationItem="Model.OrganizationItem"/>
 <OrganizationPoliticalEntityRelationsEditor 
@@ -64,21 +65,6 @@
         foreach (var relation in Model.PersonOrganizationRelations.OfType<CompletedNewPersonOrganizationRelationForOrganization>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.InterOrganizationalRelations.OfType<CompletedNewInterOrganizationalNewFromRelation>()) {
-            relation.OrganizationFrom.Name = title;
-        }
-        foreach (var relation in Model.InterOrganizationalRelations.OfType<CompletedNewInterOrganizationalNewToRelation>()) {
-            relation.OrganizationTo.Name = title;
-        }
-        foreach (var relation in Model.InterOrganizationalRelations.OfType<ExistingInterOrganizationalRelation>()) {
-            if (relation.RelationSideThisOrganization == RelationSide.From)
-            {
-                relation.OrganizationFrom.Name = title;
-            }
-            else {
-                relation.OrganizationTo.Name = title;
-            }
-        }
         StateHasChanged();
     }
 }
