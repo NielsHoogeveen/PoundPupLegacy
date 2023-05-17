@@ -1,9 +1,10 @@
-﻿
-namespace PoundPupLegacy.EditModel;
+﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(ExistingInterPersonalRelation))]
-public partial class ExistingInterPersonalRelationJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(ExistingInterPersonalRelationFrom))]
+public partial class ExistingInterPersonalRelationFromJsonContext : JsonSerializerContext { }
 
+[JsonSerializable(typeof(ExistingInterPersonalRelationTo))]
+public partial class ExistingInterPersonalRelationToJsonContext : JsonSerializerContext { }
 
 public abstract record InterPersonalRelation : RelationBase
 {
@@ -11,455 +12,485 @@ public abstract record InterPersonalRelation : RelationBase
     {
     }
 
-    [RequireNamedArgs]
-    public abstract T Match<T>(
-            Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-            Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-            Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-            Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-            Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-            Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-            Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-            Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-        );
-
-    [RequireNamedArgs]
-    public abstract T Match<T>(
-        Func<IncompleteNewInterPersonalFromRelation, T> incompleteNewInterPersonalFromRelation,
-        Func<IncompleteNewInterPersonalToRelation, T> incompleteNewInterPersonalToRelation,
-        Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-        Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-        Func<ResolvedInterPersonalRelation, T> resolvedInterPersonalRelation
-    );
-
     public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
-    public abstract string PersonFromName { get; }
-    public abstract string PersonToName { get; }
-    public abstract PersonItem? PersonItemFrom { get; }
-    public abstract PersonItem? PersonItemTo { get; }
-
-    public abstract InterPersonalRelation SwapFromAndTo();
-    public abstract RelationSide RelationSideThisPerson { get; }
     public PersonListItem? PersonListItemFrom { get; set; }
     public PersonListItem? PersonListItemTo { get; set; }
-    public abstract record IncompleteNewInterPersonalRelation : InterPersonalRelation, NewNode
+    public abstract string PersonFromName { get; }
+    public abstract string PersonToName { get; }
+    public abstract RelationSide RelationSideThisPerson { get; }
+    public abstract record InterPersonalRelationFrom : InterPersonalRelation
     {
+        private InterPersonalRelationFrom() { }
+        public sealed override RelationSide RelationSideThisPerson => RelationSide.From;
+        public abstract InterPersonalRelationTo SwapFromAndTo();
+        public abstract PersonItem? PersonItemFrom { get; }
+        public abstract PersonListItem? PersonItemTo { get; set; }
 
-        private IncompleteNewInterPersonalRelation() { }
-
-        public abstract CompletedInterPersonalRelation GetCompletedRelation(PersonListItem personListItem);
-        public abstract record IncompleteNewInterPersonalFromRelation : IncompleteNewInterPersonalRelation
+        public abstract T Match<T>(
+            Func<IncompleteInterPersonalRelationFrom, T> incompleteInterPersonalRelationFrom,
+            Func<CompletedInterPersonalRelationFrom, T> completedInterPersonalRelationFrom
+            );
+        public abstract record IncompleteInterPersonalRelationFrom : InterPersonalRelationFrom
         {
-
-            private IncompleteNewInterPersonalFromRelation() { }
-            public required PersonListItem? PersonTo { get; set; }
-            public override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
-            public override PersonItem? PersonItemTo => PersonTo;
-            public override T Match<T>(
-                Func<IncompleteNewInterPersonalFromRelation, T> incompleteNewInterPersonalFromRelation,
-                Func<IncompleteNewInterPersonalToRelation, T> incompleteNewInterPersonalToRelation,
-                Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                Func<ResolvedInterPersonalRelation, T> resolvedInterPersonalRelation
+            private IncompleteInterPersonalRelationFrom() { }
+            public sealed override T Match<T>(
+                Func<IncompleteInterPersonalRelationFrom, T> incompleteInterPersonalRelationFrom,
+                Func<CompletedInterPersonalRelationFrom, T> completedInterPersonalRelationFrom
             )
             {
-                return incompleteNewInterPersonalFromRelation(this);
+                return incompleteInterPersonalRelationFrom(this);
+            }
+            public abstract CompletedInterPersonalRelationFrom GetCompletedRelation(PersonListItem organizationListItemFrom);
+            public abstract record NewIncompleteInterPersonalRelationFrom : IncompleteInterPersonalRelationFrom
+            {
+                public required PersonListItem? PersonTo { get; set; }
+
+                private PersonListItem? organizationItemTo = null;
+
+                public sealed override PersonListItem? PersonItemTo {
+                    get {
+                        if (organizationItemTo is null) {
+                            organizationItemTo = PersonTo;
+                        }
+                        return organizationItemTo;
+                    }
+                    set {
+                        organizationItemTo = value;
+                    }
+                }
+                public sealed override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
+
+                public sealed record NewInterPersonalNewFromRelation : NewIncompleteInterPersonalRelationFrom
+                {
+                    public required PersonName PersonFrom { get; set; }
+                    public sealed override string PersonFromName => PersonFrom.Name;
+                    public sealed override PersonItem? PersonItemFrom => PersonFrom;
+                    public sealed override NewInterPersonalNewToRelation SwapFromAndTo()
+                    {
+                        return new NewInterPersonalNewToRelation {
+                            PersonFrom = PersonTo,
+                            PersonTo = PersonFrom,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                            PersonListItemFrom = PersonListItemTo,
+                            PersonListItemTo = PersonListItemFrom,
+                        };
+                    }
+                    public sealed override CompletedInterPersonalRelationFrom GetCompletedRelation(PersonListItem organizationListItemTo)
+                    {
+                        return new CompletedNewInterPersonalNewFromRelation {
+                            PersonFrom = PersonFrom,
+                            PersonTo = organizationListItemTo,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                        };
+                    }
+                }
+
+                public sealed record NewInterPersonalExistingFromRelation : NewIncompleteInterPersonalRelationFrom
+                {
+                    public required PersonListItem PersonFrom { get; set; }
+                    public sealed override string PersonFromName => PersonFrom.Name;
+                    public sealed override PersonItem? PersonItemFrom => PersonFrom;
+                    public sealed override NewInterPersonalExistingToRelation SwapFromAndTo()
+                    {
+                        return new NewInterPersonalExistingToRelation {
+                            PersonFrom = PersonTo,
+                            PersonTo = PersonFrom,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                            PersonListItemFrom = PersonListItemTo,
+                            PersonListItemTo = PersonListItemFrom,
+                        };
+                    }
+
+                    public sealed override CompletedInterPersonalRelationFrom GetCompletedRelation(PersonListItem organizationListItemTo)
+                    {
+                        return new NewInterPersonalExistingRelationFrom {
+                            PersonFrom = PersonFrom,
+                            PersonTo = organizationListItemTo,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                        };
+                    }
+                }
+            }
+        }
+
+        public abstract record CompletedInterPersonalRelationFrom : InterPersonalRelationFrom
+        {
+            public required PersonListItem PersonTo { get; set; }
+
+            private CompletedInterPersonalRelationFrom() { }
+            public sealed override T Match<T>(
+                Func<IncompleteInterPersonalRelationFrom, T> incompleteInterPersonalRelationFrom,
+                Func<CompletedInterPersonalRelationFrom, T> completedInterPersonalRelationFrom
+            )
+            {
+                return completedInterPersonalRelationFrom(this);
             }
 
-            public sealed record NewInterPersonalExistingFromRelation : IncompleteNewInterPersonalFromRelation
+            public abstract void SetName(string name);
+            private PersonListItem? organizationItemTo = null;
+
+            public sealed override PersonListItem? PersonItemTo {
+                get {
+                    if (organizationItemTo is null) {
+                        organizationItemTo = PersonTo;
+                    }
+                    return organizationItemTo;
+                }
+                set {
+                    organizationItemTo = value;
+                }
+            }
+
+            public sealed record CompletedNewInterPersonalNewFromRelation : CompletedInterPersonalRelationFrom
             {
-                public override T Match<T>(
-                    Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-                    Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-                    Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-                    Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-                    Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-                )
+                public required PersonName PersonFrom { get; set; }
+
+                public sealed override void SetName(string name)
                 {
-                    return newInterPersonalExistingFromRelation(this);
+                    PersonFrom.Name = name;
+                }
+                public sealed override string PersonFromName => PersonFrom.Name;
+                public sealed override string PersonToName => PersonTo.Name;
+                public sealed override PersonItem? PersonItemFrom => PersonFrom;
+                public sealed override CompletedNewInterPersonalNewToRelation SwapFromAndTo()
+                {
+                    return new CompletedNewInterPersonalNewToRelation {
+                        PersonFrom = PersonTo,
+                        PersonTo = PersonFrom,
+                        DateFrom = DateFrom,
+                        DateTo = DateTo,
+                        Description = Description,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        ProofDocument = ProofDocument,
+                        NodeTypeName = NodeTypeName,
+                        Files = Files,
+                        HasBeenDeleted = HasBeenDeleted,
+                        OwnerId = OwnerId,
+                        PublisherId = PublisherId,
+                        Tags = Tags,
+                        TenantNodes = TenantNodes,
+                        Tenants = Tenants,
+                        Title = Title,
+                        PersonListItemFrom = PersonListItemTo,
+                        PersonListItemTo = PersonListItemFrom,
+                    };
+                }
+            }
+
+            public abstract record ResolvedInterPersonalRelationFrom : CompletedInterPersonalRelationFrom
+            {
+                private ResolvedInterPersonalRelationFrom() { }
+                public sealed override void SetName(string name)
+                {
+                    PersonFrom.Name = name;
                 }
 
                 public required PersonListItem PersonFrom { get; set; }
-                public override string PersonFromName => PersonFrom.Name;
-                public override PersonItem? PersonItemFrom => PersonFrom;
-                public override NewInterPersonalExistingToRelation SwapFromAndTo()
+                public sealed override string PersonFromName => PersonFrom.Name;
+                public sealed override string PersonToName => PersonTo.Name;
+                public sealed override PersonItem? PersonItemFrom => PersonFrom;
+
+                public sealed record ExistingInterPersonalRelationFrom : ResolvedInterPersonalRelationFrom, ExistingNode
                 {
-                    return new NewInterPersonalExistingToRelation {
-                        PersonFrom = PersonTo,
-                        PersonTo = PersonFrom,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        ProofDocument = ProofDocument,
-                        NodeTypeName = NodeTypeName,
-                        Files = Files,
-                        HasBeenDeleted = HasBeenDeleted,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        Title = Title,
-                        PersonListItemFrom = PersonListItemTo,
-                        PersonListItemTo = PersonListItemFrom,
-                    };
-                }
-                public override CompletedInterPersonalRelation GetCompletedRelation(PersonListItem personTo)
-                {
-                    return new NewInterPersonalExistingRelation {
-                        PersonFrom = PersonFrom,
-                        PersonTo = personTo,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        ProofDocument = ProofDocument,
-                        PersonListItemFrom = PersonListItemFrom,
-                        PersonListItemTo = PersonListItemTo,
-                        HasBeenDeleted = HasBeenDeleted,
-                        Files = Files,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        NodeTypeName = NodeTypeName,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Title = Title,
-                        SettableRelationSideThisPerson = RelationSide.From
-                    };
+                    public int NodeId { get; init; }
+                    public int UrlId { get; set; }
+                    public sealed override ExistingInterPersonalRelationTo SwapFromAndTo()
+                    {
+                        return new ExistingInterPersonalRelationTo {
+                            PersonFrom = PersonTo,
+                            PersonTo = PersonFrom,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                            PersonListItemFrom = PersonListItemTo,
+                            PersonListItemTo = PersonListItemFrom,
+                        };
+
+                    }
+
                 }
 
-                public override RelationSide RelationSideThisPerson => RelationSide.From;
-
-            }
-            public sealed record NewInterPersonalNewFromRelation : IncompleteNewInterPersonalFromRelation
-            {
-                public override T Match<T>(
-                    Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-                    Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-                    Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-                    Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-                    Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-                )
+                public sealed record NewInterPersonalExistingRelationFrom : ResolvedInterPersonalRelationFrom
                 {
-                    return newInterPersonalNewFromRelation(this);
-                }
-                public required PersonName PersonFrom { get; set; }
-                public override string PersonFromName => PersonFrom.Name;
-                public override PersonItem? PersonItemFrom => PersonFrom;
-                public override NewInterPersonalNewToRelation SwapFromAndTo()
-                {
-                    return new NewInterPersonalNewToRelation {
-                        PersonFrom = PersonTo,
-                        PersonTo = PersonFrom,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        ProofDocument = ProofDocument,
-                        NodeTypeName = NodeTypeName,
-                        Files = Files,
-                        HasBeenDeleted = HasBeenDeleted,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        Title = Title,
-                        PersonListItemFrom = PersonListItemTo,
-                        PersonListItemTo = PersonListItemFrom,
-                    };
-                }
-                public override CompletedInterPersonalRelation GetCompletedRelation(PersonListItem personTo)
-                {
-                    return new CompletedNewInterPersonalNewFromRelation {
-                        PersonFrom = PersonFrom,
-                        PersonTo = personTo,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        ProofDocument = ProofDocument,
-                        PersonListItemFrom = PersonListItemFrom,
-                        PersonListItemTo = PersonListItemTo,
-                        HasBeenDeleted = HasBeenDeleted,
-                        Files = Files,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        NodeTypeName = NodeTypeName,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Title = Title,
-                    };
-                }
 
-                public override RelationSide RelationSideThisPerson => RelationSide.From;
-            }
-
-        }
-        public abstract record IncompleteNewInterPersonalToRelation : IncompleteNewInterPersonalRelation
-        {
-
-            private IncompleteNewInterPersonalToRelation() { }
-
-            public PersonListItem? PersonFrom { get; set; }
-            public override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
-            public override PersonItem? PersonItemFrom => PersonFrom;
-            public override T Match<T>(
-                Func<IncompleteNewInterPersonalFromRelation, T> incompleteNewInterPersonalFromRelation,
-                Func<IncompleteNewInterPersonalToRelation, T> incompleteNewInterPersonalToRelation,
-                Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                Func<ResolvedInterPersonalRelation, T> resolvedInterPersonalRelation
-            )
-            {
-                return incompleteNewInterPersonalToRelation(this);
-            }
-
-            public sealed record NewInterPersonalExistingToRelation : IncompleteNewInterPersonalToRelation
-            {
-                public override T Match<T>(
-                    Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-                    Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-                    Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-                    Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-                    Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-                )
-                {
-                    return newInterPersonalExistingToRelation(this);
+                    public sealed override NewInterPersonalExistingRelationTo SwapFromAndTo()
+                    {
+                        return new NewInterPersonalExistingRelationTo {
+                            PersonFrom = PersonTo,
+                            PersonTo = PersonFrom,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                            PersonListItemFrom = PersonListItemTo,
+                            PersonListItemTo = PersonListItemFrom,
+                        };
+                    }
                 }
-
-                public required PersonListItem PersonTo { get; set; }
-                public override string PersonToName => PersonTo.Name;
-                public override PersonItem? PersonItemTo => PersonTo;
-                public override NewInterPersonalExistingFromRelation SwapFromAndTo()
-                {
-                    return new NewInterPersonalExistingFromRelation {
-                        PersonFrom = PersonTo,
-                        PersonTo = PersonFrom,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        ProofDocument = ProofDocument,
-                        NodeTypeName = NodeTypeName,
-                        Files = Files,
-                        HasBeenDeleted = HasBeenDeleted,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        Title = Title,
-                        PersonListItemFrom = PersonListItemTo,
-                        PersonListItemTo = PersonListItemFrom,
-                    };
-                }
-                public override CompletedInterPersonalRelation GetCompletedRelation(PersonListItem personFrom)
-                {
-                    return new NewInterPersonalExistingRelation {
-                        PersonFrom = personFrom,
-                        PersonTo = PersonTo,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        ProofDocument = ProofDocument,
-                        PersonListItemFrom = PersonListItemFrom,
-                        PersonListItemTo = PersonListItemTo,
-                        HasBeenDeleted = HasBeenDeleted,
-                        Files = Files,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        NodeTypeName = NodeTypeName,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Title = Title,
-                        SettableRelationSideThisPerson = RelationSide.To
-                    };
-                }
-                public override RelationSide RelationSideThisPerson => RelationSide.To;
-            }
-            public sealed record NewInterPersonalNewToRelation : IncompleteNewInterPersonalToRelation
-            {
-                public override T Match<T>(
-                    Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-                    Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-                    Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-                    Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-                    Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-                )
-                {
-                    return newInterPersonalNewToRelation(this);
-                }
-
-                public required PersonName PersonTo { get; set; }
-                public override string PersonToName => PersonTo.Name;
-                public override PersonItem? PersonItemTo => PersonTo;
-                public override NewInterPersonalNewFromRelation SwapFromAndTo()
-                {
-                    return new NewInterPersonalNewFromRelation {
-                        PersonFrom = PersonTo,
-                        PersonTo = PersonFrom,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        ProofDocument = ProofDocument,
-                        NodeTypeName = NodeTypeName,
-                        Files = Files,
-                        HasBeenDeleted = HasBeenDeleted,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        Title = Title,
-                        PersonListItemFrom = PersonListItemTo,
-                        PersonListItemTo = PersonListItemFrom,
-                    };
-                }
-
-                public override CompletedInterPersonalRelation GetCompletedRelation(PersonListItem personFrom)
-                {
-                    return new CompletedNewInterPersonalNewToRelation {
-                        PersonFrom = personFrom,
-                        PersonTo = PersonTo,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        ProofDocument = ProofDocument,
-                        PersonListItemFrom = PersonListItemFrom,
-                        PersonListItemTo = PersonListItemTo,
-                        HasBeenDeleted = HasBeenDeleted,
-                        Files = Files,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        NodeTypeName = NodeTypeName,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Title = Title,
-                    };
-                }
-
-                public override RelationSide RelationSideThisPerson => RelationSide.To;
             }
         }
     }
-    public abstract record CompletedInterPersonalRelation : InterPersonalRelation
+    public abstract record InterPersonalRelationTo : InterPersonalRelation
     {
-        private CompletedInterPersonalRelation() { }
-        public abstract record CompletedNewInterPersonalRelation : CompletedInterPersonalRelation, NewNode
+        public abstract PersonListItem? PersonItemFrom { get; set; }
+        public abstract PersonItem? PersonItemTo { get; }
+
+        private InterPersonalRelationTo() { }
+        public abstract T Match<T>(
+            Func<IncompleteInterPersonalRelationTo, T> incompleteInterPersonalRelationTo,
+            Func<CompletedInterPersonalRelationTo, T> completedInterPersonalRelationTo
+        );
+
+        public abstract InterPersonalRelationFrom SwapFromAndTo();
+        public sealed override RelationSide RelationSideThisPerson => RelationSide.To;
+        public abstract record IncompleteInterPersonalRelationTo : InterPersonalRelationTo
         {
-            private CompletedNewInterPersonalRelation() { }
-            public sealed record CompletedNewInterPersonalNewFromRelation : CompletedNewInterPersonalRelation
+            private IncompleteInterPersonalRelationTo() { }
+
+            public sealed override T Match<T>(
+                Func<IncompleteInterPersonalRelationTo, T> incompleteInterPersonalRelationTo,
+                Func<CompletedInterPersonalRelationTo, T> completedInterPersonalRelationTo
+            )
             {
-                public override T Match<T>(
-                    Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-                    Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-                    Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-                    Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-                    Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-                )
-                {
-                    return completedNewInterPersonalNewFromRelation(this);
-                }
-                public override T Match<T>(
-                    Func<IncompleteNewInterPersonalFromRelation, T> incompleteNewInterPersonalFromRelation,
-                    Func<IncompleteNewInterPersonalToRelation, T> incompleteNewInterPersonalToRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<ResolvedInterPersonalRelation, T> resolvedInterPersonalRelation
-                )
-                {
-                    return completedNewInterPersonalNewFromRelation(this);
-                }
-
-                public required PersonName PersonFrom { get; set; }
-                public required PersonListItem PersonTo { get; set; }
-                public override string PersonFromName => PersonFrom.Name;
-                public override string PersonToName => PersonTo.Name;
-                public override PersonItem? PersonItemFrom => PersonFrom;
-                public override PersonItem? PersonItemTo => PersonTo;
-
-                public override CompletedNewInterPersonalNewToRelation SwapFromAndTo()
-                {
-                    return new CompletedNewInterPersonalNewToRelation {
-                        PersonFrom = PersonTo,
-                        PersonTo = PersonFrom,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        InterPersonalRelationType = InterPersonalRelationType,
-                        ProofDocument = ProofDocument,
-                        NodeTypeName = NodeTypeName,
-                        Files = Files,
-                        HasBeenDeleted = HasBeenDeleted,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Tags = Tags,
-                        TenantNodes = TenantNodes,
-                        Tenants = Tenants,
-                        Title = Title,
-                        PersonListItemFrom = PersonListItemTo,
-                        PersonListItemTo = PersonListItemFrom,
-                    };
-                }
-                public override RelationSide RelationSideThisPerson => RelationSide.From;
+                return incompleteInterPersonalRelationTo(this);
             }
-            public sealed record CompletedNewInterPersonalNewToRelation : CompletedNewInterPersonalRelation
+            public abstract CompletedInterPersonalRelationTo GetCompletedRelation(PersonListItem organizationListItemFrom);
+
+            public abstract record NewIncompleteInterPersonalRelationTo : IncompleteInterPersonalRelationTo
             {
-                public override T Match<T>(
-                    Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-                    Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-                    Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-                    Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-                    Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-                )
-                {
-                    return completedNewInterPersonalNewToRelation(this);
+                public required PersonListItem? PersonFrom { get; set; }
+                public sealed override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
+                private PersonListItem? organizationItemFrom = null;
+                public sealed override PersonListItem? PersonItemFrom {
+                    get {
+                        if (organizationItemFrom is null) {
+                            organizationItemFrom = PersonFrom;
+                        }
+                        return organizationItemFrom;
+                    }
+                    set {
+                        organizationItemFrom = value;
+                    }
                 }
-                public override T Match<T>(
-                    Func<IncompleteNewInterPersonalFromRelation, T> incompleteNewInterPersonalFromRelation,
-                    Func<IncompleteNewInterPersonalToRelation, T> incompleteNewInterPersonalToRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<ResolvedInterPersonalRelation, T> resolvedInterPersonalRelation
-                )
+                public sealed record NewInterPersonalExistingToRelation : NewIncompleteInterPersonalRelationTo
                 {
-                    return completedNewInterPersonalNewToRelation(this);
+                    public required PersonListItem PersonTo { get; set; }
+                    public sealed override string PersonToName => PersonTo.Name;
+                    public sealed override PersonItem? PersonItemTo => PersonTo;
+                    public sealed override NewInterPersonalExistingFromRelation SwapFromAndTo()
+                    {
+                        return new NewInterPersonalExistingFromRelation {
+                            PersonFrom = PersonTo,
+                            PersonTo = PersonFrom,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                            PersonListItemFrom = PersonListItemTo,
+                            PersonListItemTo = PersonListItemFrom,
+                        };
+                    }
+
+                    public sealed override CompletedInterPersonalRelationTo GetCompletedRelation(PersonListItem organizationListItemFrom)
+                    {
+                        return new NewInterPersonalExistingRelationTo {
+                            PersonFrom = organizationListItemFrom,
+                            PersonTo = PersonTo,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                        };
+                    }
                 }
 
-                public required PersonListItem PersonFrom { get; set; }
+                public sealed record NewInterPersonalNewToRelation : NewIncompleteInterPersonalRelationTo
+                {
+                    public required PersonName PersonTo { get; set; }
+                    public sealed override string PersonToName => PersonTo.Name;
+                    public sealed override PersonItem? PersonItemTo => PersonTo;
+
+                    public sealed override NewInterPersonalNewFromRelation SwapFromAndTo()
+                    {
+                        return new NewInterPersonalNewFromRelation {
+                            PersonFrom = PersonTo,
+                            PersonTo = PersonFrom,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                            PersonListItemFrom = PersonListItemTo,
+                            PersonListItemTo = PersonListItemFrom,
+                        };
+                    }
+                    public sealed override CompletedInterPersonalRelationTo GetCompletedRelation(PersonListItem organizationListItemFrom)
+                    {
+                        return new CompletedNewInterPersonalNewToRelation {
+                            PersonFrom = organizationListItemFrom,
+                            PersonTo = PersonTo,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                        };
+                    }
+                }
+            }
+        }
+
+        public abstract record CompletedInterPersonalRelationTo : InterPersonalRelationTo
+        {
+            private CompletedInterPersonalRelationTo() { }
+            public required PersonListItem PersonFrom { get; set; }
+
+            private PersonListItem? organizationItemFrom = null;
+            public sealed override PersonListItem? PersonItemFrom {
+                get {
+                    if (organizationItemFrom is null) {
+                        organizationItemFrom = PersonFrom;
+                    }
+                    return organizationItemFrom;
+                }
+                set {
+                    organizationItemFrom = value;
+                }
+            }
+            public sealed override string PersonFromName => PersonFrom.Name;
+
+            public sealed override T Match<T>(
+                Func<IncompleteInterPersonalRelationTo, T> incompleteInterPersonalRelationTo,
+                Func<CompletedInterPersonalRelationTo, T> completedInterPersonalRelationTo
+            )
+            {
+                return completedInterPersonalRelationTo(this);
+            }
+
+            public abstract void SetName(string name);
+            public sealed record CompletedNewInterPersonalNewToRelation : CompletedInterPersonalRelationTo
+            {
                 public required PersonName PersonTo { get; set; }
-                public override string PersonFromName => PersonFrom.Name;
-                public override string PersonToName => PersonTo.Name;
-                public override PersonItem? PersonItemFrom => PersonFrom;
-                public override PersonItem? PersonItemTo => PersonTo;
-                public override CompletedNewInterPersonalNewFromRelation SwapFromAndTo()
+
+                public sealed override void SetName(string name)
+                {
+                    PersonTo.Name = name;
+                }
+                public sealed override string PersonToName => PersonTo.Name;
+
+                public sealed override PersonItem? PersonItemTo => PersonTo;
+                public sealed override CompletedNewInterPersonalNewFromRelation SwapFromAndTo()
                 {
                     return new CompletedNewInterPersonalNewFromRelation {
                         PersonFrom = PersonTo,
@@ -482,101 +513,80 @@ public abstract record InterPersonalRelation : RelationBase
                         PersonListItemTo = PersonListItemFrom,
                     };
                 }
-
-                public override RelationSide RelationSideThisPerson => RelationSide.To;
-            }
-        }
-        public abstract record ResolvedInterPersonalRelation : CompletedInterPersonalRelation
-        {
-            private ResolvedInterPersonalRelation() { }
-            public required PersonListItem PersonFrom { get; set; }
-            public required PersonListItem PersonTo { get; set; }
-            public override string PersonFromName => PersonFrom.Name;
-            public override string PersonToName => PersonTo.Name;
-            public override PersonItem? PersonItemFrom => PersonFrom;
-            public override PersonItem? PersonItemTo => PersonTo;
-            public override T Match<T>(
-                Func<IncompleteNewInterPersonalFromRelation, T> incompleteNewInterPersonalFromRelation,
-                Func<IncompleteNewInterPersonalToRelation, T> incompleteNewInterPersonalToRelation,
-                Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                Func<ResolvedInterPersonalRelation, T> resolvedInterPersonalRelation
-            )
-            {
-                return resolvedInterPersonalRelation(this);
             }
 
-            public sealed record ExistingInterPersonalRelation : ResolvedInterPersonalRelation, ExistingNode
+            public abstract record ResolvedInterPersonalRelationTo : CompletedInterPersonalRelationTo
             {
-                public override T Match<T>(
-                    Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-                    Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-                    Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-                    Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-                    Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-                )
+                private ResolvedInterPersonalRelationTo() { }
+                public required PersonListItem PersonTo { get; set; }
+
+                public sealed override void SetName(string name)
                 {
-                    return existingInterPersonalRelation(this);
+                    PersonTo.Name = name;
                 }
 
-                public int NodeId { get; init; }
-                public int UrlId { get; set; }
-                public override ExistingInterPersonalRelation SwapFromAndTo()
-                {
-                    (PersonTo, PersonFrom) = (PersonFrom, PersonTo);
-                    (PersonListItemTo, PersonListItemFrom) = (PersonListItemFrom, PersonListItemTo);
+                public sealed override string PersonToName => PersonTo.Name;
 
-                    if (SettableRelationSideThisPerson == RelationSide.To) {
-                        SettableRelationSideThisPerson = RelationSide.From;
+                public sealed override PersonItem? PersonItemTo => PersonTo;
+
+                public sealed record ExistingInterPersonalRelationTo : ResolvedInterPersonalRelationTo, ExistingNode
+                {
+                    public int NodeId { get; init; }
+                    public int UrlId { get; set; }
+                    public sealed override ExistingInterPersonalRelationFrom SwapFromAndTo()
+                    {
+                        return new ExistingInterPersonalRelationFrom {
+                            PersonFrom = PersonTo,
+                            PersonTo = PersonFrom,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                            PersonListItemFrom = PersonListItemTo,
+                            PersonListItemTo = PersonListItemFrom,
+                        };
                     }
-                    else {
-                        SettableRelationSideThisPerson = RelationSide.To;
-                    }
-                    return this;
                 }
 
-                public override RelationSide RelationSideThisPerson => SettableRelationSideThisPerson;
-
-                public required RelationSide SettableRelationSideThisPerson { get; set; }
-            }
-
-            public sealed record NewInterPersonalExistingRelation : ResolvedInterPersonalRelation
-            {
-                public override T Match<T>(
-                    Func<ExistingInterPersonalRelation, T> existingInterPersonalRelation,
-                    Func<NewInterPersonalExistingRelation, T> newInterPersonalExistingRelation,
-                    Func<CompletedNewInterPersonalNewFromRelation, T> completedNewInterPersonalNewFromRelation,
-                    Func<CompletedNewInterPersonalNewToRelation, T> completedNewInterPersonalNewToRelation,
-                    Func<NewInterPersonalExistingFromRelation, T> newInterPersonalExistingFromRelation,
-                    Func<NewInterPersonalExistingToRelation, T> newInterPersonalExistingToRelation,
-                    Func<NewInterPersonalNewFromRelation, T> newInterPersonalNewFromRelation,
-                    Func<NewInterPersonalNewToRelation, T> newInterPersonalNewToRelation
-                )
+                public sealed record NewInterPersonalExistingRelationTo : ResolvedInterPersonalRelationTo
                 {
-                    return newInterPersonalExistingRelation(this);
-                }
 
-                public override NewInterPersonalExistingRelation SwapFromAndTo()
-                {
-                    (PersonTo, PersonFrom) = (PersonFrom, PersonTo);
-                    (PersonListItemTo, PersonListItemFrom) = (PersonListItemFrom, PersonListItemTo);
-                    if (SettableRelationSideThisPerson == RelationSide.To) {
-                        SettableRelationSideThisPerson = RelationSide.From;
+                    public sealed override NewInterPersonalExistingRelationFrom SwapFromAndTo()
+                    {
+                        return new NewInterPersonalExistingRelationFrom {
+                            PersonFrom = PersonTo,
+                            PersonTo = PersonFrom,
+                            DateFrom = DateFrom,
+                            DateTo = DateTo,
+                            Description = Description,
+                            InterPersonalRelationType = InterPersonalRelationType,
+                            ProofDocument = ProofDocument,
+                            NodeTypeName = NodeTypeName,
+                            Files = Files,
+                            HasBeenDeleted = HasBeenDeleted,
+                            OwnerId = OwnerId,
+                            PublisherId = PublisherId,
+                            Tags = Tags,
+                            TenantNodes = TenantNodes,
+                            Tenants = Tenants,
+                            Title = Title,
+                            PersonListItemFrom = PersonListItemTo,
+                            PersonListItemTo = PersonListItemFrom,
+                        };
                     }
-                    else {
-                        SettableRelationSideThisPerson = RelationSide.To;
-                    }
-                    return this;
                 }
-                public override RelationSide RelationSideThisPerson => SettableRelationSideThisPerson;
-
-                public required RelationSide SettableRelationSideThisPerson { get; set; }
             }
 
         }
     }
 }
-

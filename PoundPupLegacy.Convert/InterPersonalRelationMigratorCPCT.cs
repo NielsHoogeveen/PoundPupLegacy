@@ -132,6 +132,7 @@ internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
                 InterPersonalRelationTypeId = interPersonalRelationTypeId,
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = null,
+                Description = null,
             };
         }
         await reader.CloseAsync();

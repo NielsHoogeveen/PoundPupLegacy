@@ -151,6 +151,7 @@ internal sealed class InterPersonalRelationMigratorPPL : MigratorPPL
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     }),
+                Description = null,
             };
         }
         await reader.CloseAsync();

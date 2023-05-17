@@ -11,7 +11,7 @@
         <SearchItemEditor T="OrganizationListItem"
             IsMandatory="true"
             @bind-Value="organizationListItemFrom"
-            EnableEdit="RelationContext.RelationToEdit.RelationSideThisOrganization == RelationSide.To"
+            EnableEdit="false"
             Label="Organization from"/>
     }
     <div class="type-and-swap">
@@ -33,20 +33,11 @@
         }
 
     </div>
-    @if (RelationContext.RelationToEdit.OrganizationItemTo is OrganizationName) {
-        <div class="form-group">
-            <label>Organization from</label>
-            <div>@RelationContext.RelationToEdit.OrganizationToName</div>
-        </div>
-    }
-    @if (RelationContext.RelationToEdit.OrganizationItemTo is OrganizationListItem organizationListItemTo) {
-
-        <SearchItemEditor T="OrganizationListItem"
-            IsMandatory="true"
-            @bind-Value="organizationListItemTo"
-            EnableEdit="RelationContext.RelationToEdit.RelationSideThisOrganization == RelationSide.From"
-            Label="Organization to"/>
-    }
+    <SearchItemEditor T="OrganizationListItem"
+        IsMandatory="true"
+        @bind-Value="RelationContext.RelationToEdit.OrganizationItemTo"
+        EnableEdit="true"
+        Label="Organization to"/>
     <SearchItemEditor 
         T="GeographicalEntityListItem"
         IsMandatory="false"
@@ -120,7 +111,7 @@
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
-        if (RelationContext.RelationToEdit!.OrganizationItemTo is not OrganizationName && RelationContext.RelationToEdit.OrganizationListItemTo is null) {
+        if (RelationContext.RelationToEdit.OrganizationListItemTo is null) {
             validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.OrganizationListItemTo)), "Organization to is required");
             hasErrors = true;
             editContext.NotifyValidationStateChanged();
@@ -130,7 +121,7 @@
 
         return RelationContext.RelationToEdit.Match<CompletedInterOrganizationalRelationFrom>(
             incompleteInterOrganizationalRelationFrom: x => x.GetCompletedRelation(RelationContext.RelationToEdit.OrganizationListItemTo!),
-            completedInterOrganizationalRelationFrom: x => x
+            completedInterOrganizationalRelationFrom: x => x with { OrganizationTo = RelationContext.RelationToEdit.OrganizationListItemTo! }
         );
     }
 }

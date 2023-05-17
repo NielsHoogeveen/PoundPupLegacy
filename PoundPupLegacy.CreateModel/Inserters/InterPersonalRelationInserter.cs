@@ -9,6 +9,7 @@ internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabas
     private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
     private static readonly NonNullableIntegerDatabaseParameter InterPersonalRelationTypeId = new() { Name = "inter_personal_relation_type_id" };
     private static readonly NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    private static readonly NullableStringDatabaseParameter Description = new() { Name = "description" };
 
     public override string TableName => "inter_personal_relation";
 
@@ -20,6 +21,7 @@ internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabas
             ParameterValue.Create(InterPersonalRelationTypeId, request.InterPersonalRelationTypeId),
             ParameterValue.Create(DateRange, request.DateRange),
             ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
+            ParameterValue.Create(Description, request.Description),
         };
     }
 }

@@ -17,4 +17,6 @@ public sealed record InterPersonalRelation : Node
     public required DateTimeRange? DateRange { get; init; }
     public required int? DocumentIdProof { get; init; }
 
+    public required string? Description { get; init; }
+
 }

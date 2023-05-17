@@ -1,4 +1,7 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿
+using static PoundPupLegacy.EditModel.InterPersonalRelation.InterPersonalRelationFrom.CompletedInterPersonalRelationFrom.ResolvedInterPersonalRelationFrom;
+
+namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingPerson))]
 public partial class ExistingPersonJsonContext : JsonSerializerContext { }
@@ -12,7 +15,8 @@ public interface Person : Party
 
     List<PersonPoliticalEntityRelationTypeListItem> PersonPoliticalEntityRelationTypes { get; }
 
-    List<CompletedInterPersonalRelation> InterPersonalRelations { get; }
+    IEnumerable<CompletedInterPersonalRelationFrom> InterPersonalRelationsFrom { get; }
+    IEnumerable<CompletedInterPersonalRelationTo> InterPersonalRelationsTo { get; }
     List<InterPersonalRelationTypeListItem> InterPersonalRelationTypes { get; }
 
     IEnumerable<CompletedPersonOrganizationRelationForPerson> PersonOrganizationRelations { get; }
@@ -25,6 +29,9 @@ public sealed record NewPerson : PersonBase, NewNode
     public override IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
 
     public override IEnumerable<CompletedPersonOrganizationRelationForPerson> PersonOrganizationRelations => NewPersonOrganizationRelations;
+
+    public override IEnumerable<CompletedInterPersonalRelationFrom> InterPersonalRelationsFrom => NewInterPersonalRelationsFrom;
+    public override IEnumerable<CompletedInterPersonalRelationTo> InterPersonalRelationsTo => NewInterPersonalRelationsTo;
 
 }
 public sealed record ExistingPerson : PersonBase, ExistingNode
@@ -54,7 +61,6 @@ public sealed record ExistingPerson : PersonBase, ExistingNode
     }
 
 
-
     private List<ExistingPersonOrganizationRelationForPerson> existingPersonOrganizationRelations = new();
 
     public List<ExistingPersonOrganizationRelationForPerson> ExistingPersonOrganizationRelations {
@@ -65,7 +71,50 @@ public sealed record ExistingPerson : PersonBase, ExistingNode
             }
         }
     }
+    private List<ExistingInterPersonalRelationFrom> existingInterPersonalRelationsFrom = new();
 
+    public List<ExistingInterPersonalRelationFrom> ExistingInterPersonalRelationsFrom {
+        get => existingInterPersonalRelationsFrom;
+        init {
+            if (value is not null) {
+                existingInterPersonalRelationsFrom = value;
+            }
+        }
+    }
+    private List<ExistingInterPersonalRelationTo> existingInterPersonalRelationsTo = new();
+
+    public List<ExistingInterPersonalRelationTo> ExistingInterPersonalRelationsTo {
+        get => existingInterPersonalRelationsTo;
+        init {
+            if (value is not null) {
+                existingInterPersonalRelationsTo = value;
+            }
+        }
+    }
+
+
+    public override IEnumerable<CompletedInterPersonalRelationFrom> InterPersonalRelationsFrom => GetInterPersonalRelationsFrom();
+    private IEnumerable<CompletedInterPersonalRelationFrom> GetInterPersonalRelationsFrom()
+    {
+        foreach (var elem in ExistingInterPersonalRelationsFrom) {
+            yield return elem;
+        }
+        foreach (var elem in NewInterPersonalRelationsFrom) {
+            yield return elem;
+        }
+
+    }
+    public override IEnumerable<CompletedInterPersonalRelationTo> InterPersonalRelationsTo => GetInterPersonalRelationsTo();
+    private IEnumerable<CompletedInterPersonalRelationTo> GetInterPersonalRelationsTo()
+    {
+        foreach (var elem in ExistingInterPersonalRelationsTo) {
+            yield return elem;
+        }
+        foreach (var elem in NewInterPersonalRelationsTo) {
+            yield return elem;
+        }
+
+    }
 
     public override IEnumerable<CompletedPersonOrganizationRelationForPerson> PersonOrganizationRelations => GetPersonOrganizationRelations();
     private IEnumerable<CompletedPersonOrganizationRelationForPerson> GetPersonOrganizationRelations()
@@ -96,16 +145,11 @@ public abstract record PersonBase : PartyBase, Person
     }
     public abstract IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations { get; }
 
-    private List<CompletedInterPersonalRelation> interPersonalRelations = new();
+    public abstract IEnumerable<CompletedInterPersonalRelationFrom> InterPersonalRelationsFrom { get; }
+    public abstract IEnumerable<CompletedInterPersonalRelationTo> InterPersonalRelationsTo { get; }
+    public List<CompletedInterPersonalRelationFrom> NewInterPersonalRelationsFrom { get; set; }  = new();
 
-    public List<CompletedInterPersonalRelation> InterPersonalRelations {
-        get => interPersonalRelations;
-        init {
-            if (value is not null) {
-                interPersonalRelations = value;
-            }
-        }
-    }
+    public List<CompletedInterPersonalRelationTo> NewInterPersonalRelationsTo { get; set; } = new();
 
     private List<InterPersonalRelationTypeListItem> interPersonalRelationTypes = new();
 

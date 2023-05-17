@@ -11,7 +11,8 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
             {SharedSql.INTER_PERSONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_PERSONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT},
-            {INTER_PERSONAL_RELATIONS_DOCUMENT},
+            {INTER_PERSONAL_RELATIONS_FROM_DOCUMENT},
+            {INTER_PERSONAL_RELATIONS_TO_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {SharedSql.PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT}
                     select
@@ -48,8 +49,10 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     (select document from person_organization_relation_types_document),
                     'PartyPoliticalEntityRelationTypes',
                     (select document from person_political_entity_relation_types_document),
-                    'ExistingInterPersonalRelations',
-                    (select document from inter_personal_relations_document),
+                    'ExistingInterPersonalRelationsFrom',
+                    (select document from inter_personal_relations_from_document),
+                    'ExistingInterPersonalRelationsTo',
+                    (select document from inter_personal_relations_to_document),
                     'ExistingPersonOrganizationRelations',
                     (select document from person_organization_relations_document),
                     'ExistingPartyPoliticalEntityRelations',
@@ -62,8 +65,8 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
-    const string INTER_PERSONAL_RELATIONS_DOCUMENT = """
-        inter_personal_relations_document as(
+    const string INTER_PERSONAL_RELATIONS_FROM_DOCUMENT = """
+        inter_personal_relations_from_document as(
             select
                 jsonb_agg(
         	        jsonb_build_object(
@@ -244,7 +247,98 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
                     join tenant_node tn3 on tn3.node_id = r.id and tn3.tenant_id = tn.tenant_id
                     where tn.tenant_id = @tenant_id and tn.url_id = @url_id
-                    union
+        	    ) x
+                where status_other_person > -1 and status_relation > -1
+        	) x
+        )
+        """;
+
+    const string INTER_PERSONAL_RELATIONS_TO_DOCUMENT = """
+        inter_personal_relations_to_document as(
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'NodeId',
+        		        node_id,
+                        'Title',
+                        title,
+                        'PublisherId',
+                        publisher_id,
+                        'OwnerId',
+                        owner_id,
+                        'NodeTypeName',
+                        node_type_name,
+                        'UrlId',
+                        url_id,
+                        'PersonFrom',
+                        jsonb_build_object(
+                            'Id',
+                	        person_id_from,
+                            'Name',
+        		            person_name_from
+                        ),
+                        'HasBeenStored',
+                        true,
+        		        'PersonTo',
+                        jsonb_build_object(
+                            'Id',
+                            person_id_to,
+                            'Name',
+                            person_name_to
+                        ),
+        		        'InterPersonalRelationType',
+                        jsonb_build_object(
+                            'Id',
+                            inter_personal_relation_type_id,
+                            'Name',
+                            inter_personal_relation_type_name
+                        ),
+        		        'ProofDocument',
+                        case
+                            when document_id_proof is null then null
+                            else jsonb_build_object(
+                                'Id',
+                                document_id_proof,
+                                'Name',
+                                document_title_proof
+                            )
+                        end,
+        		        'DateFrom',
+        		        date_from,
+        		        'DateTo',
+        		        date_to,
+        		        'Description',
+        		        description,
+                        'Tags',
+                        null,
+                        'Files',
+                        null
+        	        )
+                ) "document"
+            from(
+                select
+                    node_id,
+                    title,
+                    publisher_id,
+                    owner_id,
+                    node_type_name,
+                    url_id,
+                    person_id_from,
+                    person_name_from,
+                    person_id_to,
+                    person_name_to,
+                    inter_personal_relation_type_id,
+                    inter_personal_relation_type_name,
+                    document_id_proof,
+                    document_title_proof,
+                    date_from,
+                    date_to,
+                    description,
+                    case 
+        	            when status_relation = 1 then true
+        	            else false
+                    end has_been_published	
+                from(
                     select
                         distinct
                         r.id node_id,
@@ -346,6 +440,5 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
         	) x
         )
         """;
-
 
 }

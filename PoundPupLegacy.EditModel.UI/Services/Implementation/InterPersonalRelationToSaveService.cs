@@ -1,11 +1,13 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿
 
-internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<InterPersonalRelation>>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal class InterPersonalRelationToSaveService : ISaveService<IEnumerable<ResolvedInterPersonalRelationTo>>
 {
     private readonly IDatabaseUpdaterFactory<NodeUnpublishRequest> _nodeUnpublishFactory;
     private readonly IDatabaseUpdaterFactory<InterPersonalRelationUpdaterRequest> _interPersonalRelationUpdaterFactory;
     private readonly IEntityCreator<CreateModel.InterPersonalRelation> _interPersonalRelationCreator;
-    public InterPersonalRelationSaveService(
+    public InterPersonalRelationToSaveService(
         IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
         IDatabaseUpdaterFactory<InterPersonalRelationUpdaterRequest> interPersonalRelationUpdaterFactory,
         IEntityCreator<CreateModel.InterPersonalRelation> interPersonalRelationCreator
@@ -15,20 +17,21 @@ internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<Inter
         _interPersonalRelationUpdaterFactory = interPersonalRelationUpdaterFactory;
         _interPersonalRelationCreator = interPersonalRelationCreator;
     }
-    public async Task SaveAsync(IEnumerable<InterPersonalRelation> item, IDbConnection connection)
+    public async Task SaveAsync(IEnumerable<ResolvedInterPersonalRelationTo> item, IDbConnection connection)
     {
         await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
         await using var updater = await _interPersonalRelationUpdaterFactory.CreateAsync(connection);
 
-        foreach (var relation in item.OfType<ExistingInterPersonalRelation>().Where(x => x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingInterPersonalRelationTo>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
                 NodeId = relation.NodeId
             });
         }
-        foreach (var relation in item.OfType<ExistingInterPersonalRelation>().Where(x => x.HasBeenDeleted)) {
+        foreach (var relation in item.OfType<ExistingInterPersonalRelationTo>().Where(x => !x.HasBeenDeleted)) {
             await updater.UpdateAsync(new InterPersonalRelationUpdaterRequest {
                 NodeId = relation.NodeId,
                 Title = relation.Title,
+                Description = relation.Description,
                 PersonIdFrom = relation.PersonFrom.Id,
                 PersonIdTo = relation.PersonTo.Id,
                 InterPersonalRelationTypeId = relation.InterPersonalRelationType.Id,
@@ -39,7 +42,7 @@ internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<Inter
         IEnumerable<CreateModel.InterPersonalRelation> GetRelationsToInsert()
         {
 
-            foreach (var relation in item.OfType<NewInterPersonalExistingRelation>().Where(x => !x.HasBeenDeleted)) {
+            foreach (var relation in item.OfType<NewInterPersonalExistingRelationTo>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
                 yield return new CreateModel.InterPersonalRelation {
                     Id = null,
@@ -64,6 +67,7 @@ internal class InterPersonalRelationSaveService : ISaveService<IEnumerable<Inter
                     InterPersonalRelationTypeId = relation.InterPersonalRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
+                    Description = relation.Description,
                 };
             }
         }

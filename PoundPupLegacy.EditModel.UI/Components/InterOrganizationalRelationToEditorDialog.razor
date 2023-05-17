@@ -1,19 +1,11 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
 @if(editContext is not null){
-    @if (RelationContext.RelationToEdit.OrganizationItemFrom is OrganizationName) {
-        <div class="form-group">
-            <label>Organization from</label>
-            <div>@RelationContext.RelationToEdit.OrganizationFromName</div>
-        </div>
-    }
-    @if (RelationContext.RelationToEdit.OrganizationItemFrom is OrganizationListItem organizationListItemFrom) {
-        <SearchItemEditor T="OrganizationListItem"
-            IsMandatory="true"
-            @bind-Value="organizationListItemFrom"
-            EnableEdit="RelationContext.RelationToEdit.RelationSideThisOrganization == RelationSide.To"
-            Label="Organization from"/>
-    }
+    <SearchItemEditor T="OrganizationListItem"
+        IsMandatory="true"
+        @bind-Value="RelationContext.RelationToEdit.OrganizationItemFrom"
+        EnableEdit="true"
+        Label="Organization from"/>
     <div class="type-and-swap">
         <div>
             <label for="relation-type">Relation type</label>
@@ -44,7 +36,7 @@
         <SearchItemEditor T="OrganizationListItem"
             IsMandatory="true"
             @bind-Value="organizationListItemTo"
-            EnableEdit="RelationContext.RelationToEdit.RelationSideThisOrganization == RelationSide.From"
+            EnableEdit="false"
             Label="Organization to"/>
     }
     <SearchItemEditor 
@@ -129,13 +121,8 @@
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
-        if (RelationContext.RelationToEdit!.OrganizationItemFrom is not OrganizationName && RelationContext.RelationToEdit.OrganizationListItemFrom is null) {
-            validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.OrganizationListItemFrom)), "Organization from is required");
-            hasErrors = true;
-            editContext.NotifyValidationStateChanged();
-        }
-        if (RelationContext.RelationToEdit!.OrganizationItemTo is not OrganizationName && RelationContext.RelationToEdit.OrganizationListItemTo is null) {
-            validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.OrganizationListItemTo)), "Organization to is required");
+        if (RelationContext.RelationToEdit.OrganizationListItemFrom is null) {
+            validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.OrganizationListItemFrom)), "Organization to is required");
             hasErrors = true;
             editContext.NotifyValidationStateChanged();
         }
@@ -143,7 +130,7 @@
             return null;
         return RelationContext.RelationToEdit.Match<CompletedInterOrganizationalRelationTo>(
             incompleteInterOrganizationalRelationTo: x => x.GetCompletedRelation(RelationContext.RelationToEdit.OrganizationListItemFrom!),
-            completedInterOrganizationalRelationTo: x => x
+            completedInterOrganizationalRelationTo: x => x with { OrganizationFrom = RelationContext.RelationToEdit.OrganizationListItemFrom! }
         );
     }
 }

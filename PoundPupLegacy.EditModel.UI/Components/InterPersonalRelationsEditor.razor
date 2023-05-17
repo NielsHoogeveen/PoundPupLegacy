@@ -1,162 +1,265 @@
 ﻿@inherits EditorBase
-@if (editContext is not null) {
-    <ModalDialog 
-        Title="Add inter-personal relation" 
-        Id="inter-personal-relation-dialog" 
-        OnOk="OnOk" 
-        OnCancel="OnCancel">
-        <DialogContent>
-            <InterPersonalRelationEditorDialog  
-                RelationTypes="@RelationTypes"
-                EditContext="editContext"
-                @ref=dialog/>
-        </DialogContent>
-    </ModalDialog>
-}
-<div class="relations-editor">
-    <h4>Relations between this person and another person</h4>
-    @if (Relations.Any()) {
-        <div class="relations">
-            <div class="grid-header first">From</div>
-            <div class="grid-header">Type</div>
-            <div class="grid-header">To</div>
-            <div class="grid-header">Start</div>
-            <div class="grid-header">End</div>
-            <div class="grid-header"></div>
-            <div class="grid-header"></div>
-            @foreach(var relation in Relations) {
-                var classString = relation.HasBeenDeleted ? "row deleted" : "row";
-                <div class="@classString first">
-                    <span>@relation.PersonFromName</span>
-                </div>
-                <div class="@classString">
-                    <span>@relation.InterPersonalRelationType.Name</span>
-                </div>
-                <div class="@classString">
-                    <span>@relation.PersonToName</span>
-                </div>
-                <div class="@classString">
-                    <span>@relation.DateFrom</span>
-                </div>
-                <div class="@classString">
-                    <span>@relation.DateTo</span>
-                </div>
-                <div class="@classString">
-                    @if (!relation.HasBeenDeleted)
-                    {
-                        <button type="button" @onclick="() => EditRelation(relation)">edit</button>
-                    }
-                </div>
-                <div class="@classString">
-                    @if (relation.HasBeenDeleted)
-                    {
-                        <button type="button" @onclick="() => RestoreRelation(relation)">restore</button>
-                    }
-                    else {
-                        <button type="button" @onclick="() => RemoveRelation(relation)">remove</button>
-                    }
-                </div>
-            }
-        </div>
-    }
-    <button type="button" @onclick="OnAdd">Add</button>
-</div>
+<InterPersonalRelationsFromEditor 
+    Relations="RelationsFrom"
+    RelationTypes="RelationTypes"
+    PersonItem="PersonItem"
+    Swap="Swap"
+    Update="UpdateFrom"
+    Edit="EditRelationFrom"
+    Add="AddRelationFrom"
+    RelationContext="relationContext"
+    Ok="OkFrom"
+    Cancel="CancelFrom"
+    @ref="interPersonalRelationsFromEditor" />
+
+<InterPersonalRelationsToEditor Relations="RelationsTo"
+    RelationTypes="RelationTypes"
+    PersonItem="PersonItem"
+    Swap="Swap"
+    Update="UpdateTo"
+    Edit="EditRelationTo"
+    Add="AddRelationTo"
+    RelationContext="relationContext" Ok="OkTo"
+    Cancel="CancelTo"
+    @ref="interPersonalRelationsToEditor" />
 
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterPersonalRelation> Relations { get; set; } = default!;
+    public List<CompletedInterPersonalRelationFrom> RelationsFrom { get; set; } = default!;
+    [Parameter]
+    [EditorRequired]
+    public List<CompletedInterPersonalRelationTo> RelationsTo { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public PersonItem Person { get; set; } = default!;
+    public PersonItem PersonItem { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public List<InterPersonalRelationTypeListItem> RelationTypes { get; set; } = default!;
 
-    public interface PersonEditContext
-    {
-        EditMode EditMode { get; }
-        InterPersonalRelation RelationToEdit { get; }
-    }
-    private class PersonUpdateContext : PersonEditContext
-    {
-        public EditMode EditMode => EditMode.Update;
-        public required InterPersonalRelation RelationToEdit { get; init; }
-        public required CompletedInterPersonalRelation CompletedRelationToEdit { get; init; }
-    }
-    private class PersonCreateContext: PersonEditContext
-    {
-        public EditMode EditMode => EditMode.Create;
-        public required InterPersonalRelation RelationToEdit { get; init; }
-    }
+    private RelationContext? relationContext = null;
 
-    private PersonEditContext? editContext;
+    private InterPersonalRelationsFromEditor? interPersonalRelationsFromEditor;
 
-    private InterPersonalRelationEditorDialog? dialog;
+    private InterPersonalRelationsToEditor? interPersonalRelationsToEditor;
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    public abstract record RelationContext
     {
-        await Task.CompletedTask;
-    }
-    public override void OnTitleChange(string title)
-    {
-    }
+        private RelationContext() { }
 
-    private void EditRelation(CompletedInterPersonalRelation relation)
-    {
+        public abstract RelationContext Swap();
 
-        editContext = new PersonUpdateContext {
-            RelationToEdit = relation,
-            CompletedRelationToEdit = relation,
-        };
-        StateHasChanged();
-    }
-    private void RestoreRelation(InterPersonalRelation relation)
-    {
-        relation.HasBeenDeleted = false;
-        StateHasChanged();
-    }
+        public abstract record RelationContextFrom : RelationContext
+        {
+            private RelationContextFrom() { }
+            public required InterPersonalRelationFrom RelationToEdit { get; init; }
 
-    private void RemoveRelation(InterPersonalRelation relation)
-    {
-        relation.HasBeenDeleted = true;
-        StateHasChanged();
-    }
-    private void OnOk()
-    {
-        if (dialog is not null && editContext is not null) {
-            var relation = dialog.GetValidRelation();
-            if(relation is null)
-                return;
-            if (editContext is PersonUpdateContext updateContext) {   
-                Relations.Remove(updateContext.CompletedRelationToEdit);
+            public abstract override RelationContextTo Swap();
+
+            public abstract void Match(
+                Action<RelationContextFromNew> relationContextFromNew,
+                Action<RelationContextFromEditTo> relationContextFromEditTo,
+                Action<RelationContextFromEditFrom> relationContextFromEditFrom
+            );
+
+            public sealed record RelationContextFromNew : RelationContextFrom
+            {
+                public override RelationContextTo Swap()
+                {
+                    return new RelationContextTo.RelationContextToNew {
+                            RelationToEdit = this.RelationToEdit.SwapFromAndTo()
+                        };
+                }
+                public override void Match(
+                    Action<RelationContextFromNew> relationContextFromNew,
+                    Action<RelationContextFromEditTo> relationContextFromEditTo,
+                    Action<RelationContextFromEditFrom> relationContextFromEditFrom
+                )
+                {
+                    relationContextFromNew(this);
+                }
+
             }
-            Relations.Add(relation);
+
+            public sealed record RelationContextFromEditTo : RelationContextFrom
+            {
+                public required CompletedInterPersonalRelationTo CompletedRelationToRemove { get; init; }
+
+                public override RelationContextTo Swap()
+                {
+                    return new RelationContextTo.RelationContextToEditTo {
+                            RelationToEdit = RelationToEdit.SwapFromAndTo(),
+                            CompletedRelationToRemove = CompletedRelationToRemove
+                        };
+                }
+                public override void Match(
+                    Action<RelationContextFromNew> relationContextFromNew,
+                    Action<RelationContextFromEditTo> relationContextFromEditTo,
+                    Action<RelationContextFromEditFrom> relationContextFromEditFrom
+                )
+                {
+                    relationContextFromEditTo(this);
+                }
+
+            }
+            public sealed record RelationContextFromEditFrom : RelationContextFrom
+            {
+                public required CompletedInterPersonalRelationFrom CompletedRelationToRemove { get; init; }
+                public override RelationContextTo Swap()
+                {
+                    return new RelationContextTo.RelationContextToEditFrom {
+                            RelationToEdit = RelationToEdit.SwapFromAndTo(),
+                            CompletedRelationToRemove = CompletedRelationToRemove
+                        };
+                }
+                public override void Match(
+                    Action<RelationContextFromNew> relationContextFromNew,
+                    Action<RelationContextFromEditTo> relationContextFromEditTo,
+                    Action<RelationContextFromEditFrom> relationContextFromEditFrom
+                )
+                {
+                    relationContextFromEditFrom(this);
+                }
+            }
         }
-        editContext = null;
+        public abstract record RelationContextTo : RelationContext
+        {
+            private RelationContextTo() { }
+            public required InterPersonalRelationTo RelationToEdit { get; init; }
+
+            public abstract override RelationContextFrom Swap();
+
+            public abstract void Match(
+                Action<RelationContextToNew> relationContextToNew,
+                Action<RelationContextToEditTo> relationContextToEditTo,
+                Action<RelationContextToEditFrom> relationContextToEditFrom
+            );
+
+            public sealed record RelationContextToNew : RelationContextTo
+            {
+                public override RelationContextFrom Swap()
+                {
+                    return new RelationContextFrom.RelationContextFromNew {
+                            RelationToEdit = this.RelationToEdit.SwapFromAndTo()
+                        };
+                }
+                public override void Match(
+                    Action<RelationContextToNew> relationContextToNew,
+                    Action<RelationContextToEditTo> relationContextToEditTo,
+                    Action<RelationContextToEditFrom> relationContextToEditFrom
+                )
+                {
+                    relationContextToNew(this);
+                }
+            }
+
+            public sealed record RelationContextToEditTo : RelationContextTo
+            {
+                public required CompletedInterPersonalRelationTo CompletedRelationToRemove { get; init; }
+                public override RelationContextFrom Swap()
+                {
+                    return new RelationContextFrom.RelationContextFromEditTo {
+                            RelationToEdit = RelationToEdit.SwapFromAndTo(),
+                            CompletedRelationToRemove = CompletedRelationToRemove
+                        };
+                }
+                public override void Match(
+                    Action<RelationContextToNew> relationContextToNew,
+                    Action<RelationContextToEditTo> relationContextToEditTo,
+                    Action<RelationContextToEditFrom> relationContextToEditFrom
+                )
+                {
+                    relationContextToEditTo(this);
+                }
+            }
+            public sealed record RelationContextToEditFrom : RelationContextTo
+            {
+                public required CompletedInterPersonalRelationFrom CompletedRelationToRemove { get; init; }
+                public override RelationContextFrom Swap()
+                {
+                    return new RelationContextFrom.RelationContextFromEditFrom {
+                            RelationToEdit = RelationToEdit.SwapFromAndTo(),
+                            CompletedRelationToRemove = CompletedRelationToRemove
+                        };
+                }
+                public override void Match(
+                    Action<RelationContextToNew> relationContextToNew,
+                    Action<RelationContextToEditTo> relationContextToEditTo,
+                    Action<RelationContextToEditFrom> relationContextToEditFrom
+                )
+                {
+                    relationContextToEditFrom(this);
+                }
+            }
+        }
+    }
+
+    public void UpdateFrom(RelationContext.RelationContextFrom relationContext)
+    {
+
+    }
+    public void UpdateTo(RelationContext.RelationContextTo relationContext)
+    {
+
+    }
+    private void AddRelationFrom()
+    {
+        var relationToEdit = PersonItem.Match<IncompleteInterPersonalRelationFrom>(
+        personListItem: li => new NewInterPersonalExistingFromRelation {
+                PersonFrom = li,
+                PersonTo = null,
+                InterPersonalRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                NodeTypeName = "inter personal relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+            },
+        personName: nm => new NewInterPersonalNewFromRelation {
+                PersonFrom = nm,
+                PersonTo = null,
+                InterPersonalRelationType = RelationTypes.First(),
+                Title = "",
+                DateFrom = null,
+                DateTo = null,
+                Description = "",
+                Files = new List<File>(),
+                NodeTypeName = "inter personal relation",
+                OwnerId = TenantId,
+                PublisherId = UserId,
+                ProofDocument = null,
+                Tags = new List<Tags>(),
+                TenantNodes = new List<TenantNode>(),
+                Tenants = new List<Tenant>(),
+            }
+        );
+        relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
+                RelationToEdit = relationToEdit
+            };
         StateHasChanged();
     }
-    private void OnCancel()
+    private void AddRelationTo()
     {
-        editContext = null;
-        StateHasChanged();
-    }
-    private void OnAdd()
-    {
-        editContext = new PersonCreateContext {
-            RelationToEdit = Person.Match<InterPersonalRelation>(
-                personListItem: li => new NewInterPersonalExistingFromRelation {
-                    PersonFrom = li,
-                    PersonTo = null,
+        var relationToEdit = PersonItem.Match<IncompleteInterPersonalRelationTo>(
+            personListItem: li => new NewInterPersonalExistingToRelation {
+                    PersonFrom = null,
+                    PersonTo = li,
                     InterPersonalRelationType = RelationTypes.First(),
                     Title = "",
                     DateFrom = null,
                     DateTo = null,
                     Description = "",
                     Files = new List<File>(),
-                    NodeTypeName = "inter organizational relation",
+                    NodeTypeName = "inter personal relation",
                     OwnerId = TenantId,
                     PublisherId = UserId,
                     ProofDocument = null,
@@ -164,16 +267,16 @@
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 },
-                personName: nm => new NewInterPersonalNewFromRelation {
-                    PersonFrom = nm,
-                    PersonTo = null,
+            personName: nm => new NewInterPersonalNewToRelation {
+                    PersonFrom = null,
+                    PersonTo = nm,
                     InterPersonalRelationType = RelationTypes.First(),
                     Title = "",
                     DateFrom = null,
                     DateTo = null,
                     Description = "",
                     Files = new List<File>(),
-                    NodeTypeName = "inter organizational relation",
+                    NodeTypeName = "inter personal relation",
                     OwnerId = TenantId,
                     PublisherId = UserId,
                     ProofDocument = null,
@@ -181,9 +284,103 @@
                     TenantNodes = new List<TenantNode>(),
                     Tenants = new List<Tenant>(),
                 }
-            )
-        };
+        );
+
+        relationContext = new RelationContext.RelationContextTo.RelationContextToNew {
+                RelationToEdit = relationToEdit
+            };
         StateHasChanged();
     }
 
+    private void EditRelationFrom(CompletedInterPersonalRelationFrom relation)
+    {
+        relationContext = new RelationContext.RelationContextFrom.RelationContextFromEditFrom {
+                RelationToEdit = relation,
+                CompletedRelationToRemove = relation
+            };
+        StateHasChanged();
+    }
+    private void EditRelationTo(CompletedInterPersonalRelationTo relation)
+    {
+        relationContext = new RelationContext.RelationContextTo.RelationContextToEditTo {
+                RelationToEdit = relation,
+                CompletedRelationToRemove = relation
+            };
+        StateHasChanged();
+    }
+
+    public void Swap(RelationContext relationContext)
+    {
+        relationContext = relationContext.Swap();
+        StateHasChanged();
+    }
+
+    public void OkFrom(InterPersonalRelationsEditor.RelationContext.RelationContextFrom relationContext)
+    {
+        if (interPersonalRelationsFromEditor is not null) {
+            var relation = interPersonalRelationsFromEditor.GetValidRelation();
+            if (relation is not null) {
+                relationContext.Match(
+                    relationContextFromNew => {
+                        RelationsFrom.Add(relation);
+                    },
+                    relationContextFromEditTo => {
+                        RelationsFrom.Add(relation);
+                        RelationsTo.Remove(relationContextFromEditTo.CompletedRelationToRemove);
+                    },
+                    relationContextFromEditFrom => {
+                        RelationsFrom.Add(relation);
+                        RelationsFrom.Remove(relationContextFromEditFrom.CompletedRelationToRemove);
+                    }
+                );
+            }
+        }
+        StateHasChanged();
+    }
+    public void CancelFrom()
+    {
+        relationContext = null;
+        StateHasChanged();
+    }
+    public void OkTo(InterPersonalRelationsEditor.RelationContext.RelationContextTo relationContext)
+    {
+        if (interPersonalRelationsToEditor is not null) {
+            var relation = interPersonalRelationsToEditor.GetValidRelation();
+            if (relation is not null) {
+                relationContext.Match(
+                    relationContextToNew => {
+                        RelationsTo.Add(relation);
+                    },
+                    relationContextToEditTo => {
+                        RelationsTo.Add(relation);
+                        RelationsTo.Remove(relationContextToEditTo.CompletedRelationToRemove);
+                    },
+                    relationContextToEditFrom => {
+                        RelationsTo.Add(relation);
+                        RelationsFrom.Remove(relationContextToEditFrom.CompletedRelationToRemove);
+                    }
+                );
+            }
+        }
+        StateHasChanged();
+    }
+    public void CancelTo()
+    {
+        relationContext = null;
+        StateHasChanged();
+    }
+
+    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    {
+        await Task.CompletedTask;
+    }
+    public override void OnTitleChange(string title)
+    {
+        if (interPersonalRelationsFromEditor is not null) {
+            interPersonalRelationsFromEditor.OnTitleChange(title);
+        }
+        if (interPersonalRelationsToEditor is not null) {
+            interPersonalRelationsToEditor.OnTitleChange(title);
+        }
+    }
 }

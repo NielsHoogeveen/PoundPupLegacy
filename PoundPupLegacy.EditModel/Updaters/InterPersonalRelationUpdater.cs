@@ -11,6 +11,7 @@ public sealed record InterPersonalRelationUpdaterRequest : IRequest
     public required int PersonIdTo { get; init; }
     public required DateTimeRange? DateRange { get; init; }
     public required int? DocumentIdProof { get; init; }
+    public required string? Description { get; init; }
 
 }
 
@@ -25,6 +26,7 @@ internal sealed class InterPersonalRelationUpdaterFactory : DatabaseUpdaterFacto
     private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
     private static readonly NonNullableIntegerDatabaseParameter InterPersonalRelationTypeId = new() { Name = "inter_personal_relation_type_id" };
     private static readonly NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    private static readonly NullableStringDatabaseParameter Description = new() { Name = "description" };
 
     public override string Sql => $"""
         update node 
@@ -37,7 +39,8 @@ internal sealed class InterPersonalRelationUpdaterFactory : DatabaseUpdaterFacto
             person_id_to = @person_id_to,
             date_range = @date_range,
             inter_personal_relation_type_id = @inter_personal_relation_type_id,
-            document_id_proof = @document_id_proof
+            document_id_proof = @document_id_proof,
+            description = @description
         where id = @node_id;
         """;
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
@@ -50,6 +53,7 @@ internal sealed class InterPersonalRelationUpdaterFactory : DatabaseUpdaterFacto
             ParameterValue.Create(InterPersonalRelationTypeId, request.InterPersonalRelationTypeId),
             ParameterValue.Create(DateRange, request.DateRange),
             ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
+            ParameterValue.Create(Description, request.Description),
         };
     }
 }

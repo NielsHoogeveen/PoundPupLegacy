@@ -1,8 +1,9 @@
 ﻿@inherits EditorBase
 <InterPersonalRelationsEditor 
-    Relations="Model.InterPersonalRelations" 
+    RelationsFrom="Model.InterPersonalRelationsFrom.ToList()" 
+    RelationsTo="Model.InterPersonalRelationsTo.ToList()" 
     RelationTypes="Model.InterPersonalRelationTypes" 
-    Person="Person"/>
+    PersonItem="Person"/>
 <PersonPoliticalEntityRelationsEditor 
     PartyTypeName="person"
     Person="Person"
@@ -36,19 +37,6 @@
         foreach (var relation in Model.PersonOrganizationRelations.OfType<CompletedNewPersonOrganizationRelationForPerson>()) {
             relation.Person.Name = title;
         };
-        foreach (var relation in Model.InterPersonalRelations.OfType<ExistingInterPersonalRelation>()) {
-            if(relation.RelationSideThisPerson == RelationSide.From){
-                relation.PersonFrom.Name = title;
-            }else {
-                relation.PersonTo.Name = title;
-            }
-        }
-        foreach (var relation in Model.InterPersonalRelations.OfType<CompletedNewInterPersonalNewFromRelation>()) {
-            relation.PersonFrom.Name = title;
-        }
-        foreach (var relation in Model.InterPersonalRelations.OfType<CompletedNewInterPersonalNewToRelation>()) {
-            relation.PersonTo.Name = title;
-        }
         StateHasChanged();
     }
 

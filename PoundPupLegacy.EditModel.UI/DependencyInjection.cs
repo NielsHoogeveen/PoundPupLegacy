@@ -31,7 +31,8 @@ public static class DependencyInjection
         services.AddTransient<ILocationService, LocationService>();
         services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>>, InterOrganizationalRelationFromSaveService>();
         services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>>, InterOrganizationalRelationToSaveService>();
-        services.AddTransient<ISaveService<IEnumerable<InterPersonalRelation>>, InterPersonalRelationSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<ResolvedInterPersonalRelationFrom>>, InterPersonalRelationFromSaveService>();
+        services.AddTransient<ISaveService<IEnumerable<ResolvedInterPersonalRelationTo>>, InterPersonalRelationToSaveService>();
         services.AddTransient<ISaveService<IEnumerable<OrganizationPoliticalEntityRelation>>, OrganizationPoliticalEntityRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<PersonOrganizationRelation>>, PersonOrganizationRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<File>>, FilesSaveService>();
