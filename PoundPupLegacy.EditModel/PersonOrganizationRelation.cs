@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using static PoundPupLegacy.EditModel.PersonOrganizationRelation;
+
+namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingPersonOrganizationRelationForPerson))]
 public partial class ExistingPersonOrganizationRelationForPersonJsonContext : JsonSerializerContext { }
@@ -22,6 +24,99 @@ public interface ExistingPersonOrganizationRelation : ResolvedPersonOrganization
 
 public interface CompletedNewPersonOrganizationRelation : ResolvedPersonOrganizationRelation, NewNode
 {
+}
+
+public static class PersonOrganizationRelationExtensions
+{
+    public static PersonOrganizationRelationForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationListItem organizationListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    {
+        return new NewPersonOrganizationRelationExistingOrganization {
+            Person = null,
+            Organization = organizationListItem,
+            PersonOrganizationRelationType = relationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeTypeName = "party political entity relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            GeographicalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static PersonOrganizationRelationForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationName organizationName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    {
+        return new NewPersonOrganizationRelationNewOrganization {
+            Person = null,
+            Organization = organizationName,
+            PersonOrganizationRelationType = relationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeTypeName = "party political entity relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            GeographicalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static PersonOrganizationRelationForPerson GetPersonOrganizationRelationForPerson(this PersonListItem personListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    {
+        return new NewPersonOrganizationRelationExistingPerson {
+            Person = personListItem,
+            Organization = null,
+            PersonOrganizationRelationType = relationType,
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeTypeName = "party political entity relation",
+            GeographicalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static PersonOrganizationRelationForPerson GetPersonOrganizationRelationForPerson(this PersonName personName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    {
+        return new NewPersonOrganizationRelationNewPerson {
+            Person = personName,
+            Organization = null,
+            PersonOrganizationRelationType = relationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeTypeName = "party political entity relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            GeographicalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+
 }
 
 public abstract record PersonOrganizationRelation : RelationBase

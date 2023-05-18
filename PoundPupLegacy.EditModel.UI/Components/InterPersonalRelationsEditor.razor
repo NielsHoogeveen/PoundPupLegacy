@@ -1,27 +1,50 @@
 ﻿@inherits EditorBase
-<InterPersonalRelationsFromEditor 
+@if (relationContext is InterPersonalRelationsEditor.RelationContext.RelationContextFrom ctxFrom) {
+
+    <ModalDialog 
+        Title="Add inter-personal relation"
+        Id="inter-personal-relation-dialog"
+        OnOk="() => OkFrom(ctxFrom)"
+        OnCancel="CancelFrom">
+        <DialogContent>
+            <InterPersonalRelationFromEditorDialog 
+                RelationTypes=RelationTypes
+                RelationContext=ctxFrom
+                Swap=Swap
+            @ref=dialogFrom />
+        </DialogContent>
+    </ModalDialog>
+
+}
+@if (relationContext is InterPersonalRelationsEditor.RelationContext.RelationContextTo ctxTo) {
+
+    <ModalDialog 
+        Title="Add inter-personal relation"
+        Id="inter-personal-relation-dialog"
+        OnOk="() => OkTo(ctxTo)"
+        OnCancel="CancelTo">
+        <DialogContent>
+            <InterPersonalRelationToEditorDialog 
+                RelationTypes=RelationTypes
+                RelationContext=ctxTo
+                Swap=Swap
+            @ref=dialogTo />
+        </DialogContent>
+    </ModalDialog>
+}
+
+<InterPersonalRelationsListEditor 
     Relations="RelationsFrom"
-    RelationTypes="RelationTypes"
-    PersonItem="PersonItem"
-    Swap="Swap"
-    Update="UpdateFrom"
     Edit="EditRelationFrom"
     Add="AddRelationFrom"
-    RelationContext="relationContext"
-    Ok="OkFrom"
-    Cancel="CancelFrom"
-    @ref="interPersonalRelationsFromEditor" />
+    @ref=interPersonalRelationsFromEditor />
 
-<InterPersonalRelationsToEditor Relations="RelationsTo"
-    RelationTypes="RelationTypes"
-    PersonItem="PersonItem"
-    Swap="Swap"
-    Update="UpdateTo"
+<InterPersonalRelationsListEditor 
+    Relations="RelationsTo"
     Edit="EditRelationTo"
     Add="AddRelationTo"
-    RelationContext="relationContext" Ok="OkTo"
-    Cancel="CancelTo"
-    @ref="interPersonalRelationsToEditor" />
+    @ref=interPersonalRelationsToEditor />
+
 
 @code {
     [Parameter]
@@ -41,9 +64,13 @@
 
     private RelationContext? relationContext = null;
 
-    private InterPersonalRelationsFromEditor? interPersonalRelationsFromEditor;
+    private InterPersonalRelationsListEditor<CompletedInterPersonalRelationFrom>? interPersonalRelationsFromEditor;
 
-    private InterPersonalRelationsToEditor? interPersonalRelationsToEditor;
+    private InterPersonalRelationsListEditor<CompletedInterPersonalRelationTo>? interPersonalRelationsToEditor;
+
+    private InterPersonalRelationFromEditorDialog? dialogFrom;
+
+    private InterPersonalRelationToEditorDialog? dialogTo;
 
     public abstract record RelationContext
     {
@@ -207,40 +234,8 @@
     private void AddRelationFrom()
     {
         var relationToEdit = PersonItem.Match<IncompleteInterPersonalRelationFrom>(
-        personListItem: li => new NewInterPersonalExistingFromRelation {
-                PersonFrom = li,
-                PersonTo = null,
-                InterPersonalRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                NodeTypeName = "inter personal relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            },
-        personName: nm => new NewInterPersonalNewFromRelation {
-                PersonFrom = nm,
-                PersonTo = null,
-                InterPersonalRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                NodeTypeName = "inter personal relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            }
+            personListItem: li => li.GetNewInterPersonalRelationFrom(RelationTypes.First(), TenantId, UserId),
+            personName: nm => nm.GetNewInterPersonalRelationFrom(RelationTypes.First(), TenantId, UserId)
         );
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
                 RelationToEdit = relationToEdit
@@ -250,40 +245,8 @@
     private void AddRelationTo()
     {
         var relationToEdit = PersonItem.Match<IncompleteInterPersonalRelationTo>(
-            personListItem: li => new NewInterPersonalExistingToRelation {
-                    PersonFrom = null,
-                    PersonTo = li,
-                    InterPersonalRelationType = RelationTypes.First(),
-                    Title = "",
-                    DateFrom = null,
-                    DateTo = null,
-                    Description = "",
-                    Files = new List<File>(),
-                    NodeTypeName = "inter personal relation",
-                    OwnerId = TenantId,
-                    PublisherId = UserId,
-                    ProofDocument = null,
-                    Tags = new List<Tags>(),
-                    TenantNodes = new List<TenantNode>(),
-                    Tenants = new List<Tenant>(),
-                },
-            personName: nm => new NewInterPersonalNewToRelation {
-                    PersonFrom = null,
-                    PersonTo = nm,
-                    InterPersonalRelationType = RelationTypes.First(),
-                    Title = "",
-                    DateFrom = null,
-                    DateTo = null,
-                    Description = "",
-                    Files = new List<File>(),
-                    NodeTypeName = "inter personal relation",
-                    OwnerId = TenantId,
-                    PublisherId = UserId,
-                    ProofDocument = null,
-                    Tags = new List<Tags>(),
-                    TenantNodes = new List<TenantNode>(),
-                    Tenants = new List<Tenant>(),
-                }
+            personListItem: li => li.GetNewInterPersonalRelationTo(RelationTypes.First(), TenantId, UserId),
+            personName: nm => nm.GetNewInterPersonalRelationTo(RelationTypes.First(), TenantId, UserId)
         );
 
         relationContext = new RelationContext.RelationContextTo.RelationContextToNew {
@@ -317,8 +280,8 @@
 
     public void OkFrom(InterPersonalRelationsEditor.RelationContext.RelationContextFrom relationContext)
     {
-        if (interPersonalRelationsFromEditor is not null) {
-            var relation = interPersonalRelationsFromEditor.GetValidRelation();
+        if (dialogFrom is not null) {
+            var relation = dialogFrom.GetValidRelation();
             if (relation is not null) {
                 relationContext.Match(
                     relationContextFromNew => {
@@ -344,8 +307,8 @@
     }
     public void OkTo(InterPersonalRelationsEditor.RelationContext.RelationContextTo relationContext)
     {
-        if (interPersonalRelationsToEditor is not null) {
-            var relation = interPersonalRelationsToEditor.GetValidRelation();
+        if (dialogTo is not null) {
+            var relation = dialogTo.GetValidRelation();
             if (relation is not null) {
                 relationContext.Match(
                     relationContextToNew => {

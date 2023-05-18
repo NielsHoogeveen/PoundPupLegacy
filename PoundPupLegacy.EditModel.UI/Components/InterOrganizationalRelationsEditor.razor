@@ -1,28 +1,52 @@
 ﻿@inherits EditorBase
-<InterOrganizationalRelationsFromEditor 
-    Relations="RelationsFrom" 
-    RelationTypes="RelationTypes" 
-    OrganizationItem="OrganizationItem"
-    Swap="Swap"
-    Update="UpdateFrom"
+@if (relationContext is InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom ctxFrom) {
+
+    <ModalDialog 
+        Title="Add inter-organizational relation"
+        Id="inter-organizational-relation-dialog"
+        OnOk="() => OkFrom(ctxFrom)"
+        OnCancel="CancelFrom">
+        <DialogContent>
+            <InterOrganizationalRelationFromEditorDialog 
+                RelationTypes=RelationTypes
+                RelationContext=ctxFrom
+                Swap=Swap
+            @ref=fromDialog />
+        </DialogContent>
+    </ModalDialog>
+
+}
+@if (relationContext is InterOrganizationalRelationsEditor.RelationContext.RelationContextTo ctxTo) {
+
+    <ModalDialog 
+        Title="Add inter-organizational relation"
+        Id="inter-organizational-relation-dialog"
+        OnOk="() => OkTo(ctxTo)"
+        OnCancel="CancelTo">
+        <DialogContent>
+            <InterOrganizationalRelationToEditorDialog 
+                RelationTypes=RelationTypes
+                RelationContext=ctxTo
+                Swap=Swap
+            @ref=toDialog />
+        </DialogContent>
+    </ModalDialog>
+
+}
+
+<InterOrganizationalRelationsListEditor 
+    TRelation="CompletedInterOrganizationalRelationFrom"
+    Relations="RelationsFrom"
     Edit="EditRelationFrom"
     Add="AddRelationFrom"
-    RelationContext="relationContext"
-    Ok="OkFrom"
-    Cancel="CancelFrom"
-    @ref="interOrganizationalRelationsFromEditor" />
+    @ref=interOrganizationalRelationsFromEditor />
 
-<InterOrganizationalRelationsToEditor 
+<InterOrganizationalRelationsListEditor 
+    TRelation="CompletedInterOrganizationalRelationTo"
     Relations="RelationsTo"
-    RelationTypes="RelationTypes"
-    OrganizationItem="OrganizationItem"
-    Swap="Swap"
-    Update="UpdateTo"
     Edit="EditRelationTo"
     Add="AddRelationTo"
-    RelationContext="relationContext" Ok="OkTo"
-    Cancel="CancelTo"
-    @ref="interOrganizationalRelationsToEditor" />
+    @ref=interOrganizationalRelationsToEditor />
 
 @code {
     [Parameter]
@@ -42,9 +66,13 @@
 
     private RelationContext? relationContext = null;
 
-    private InterOrganizationalRelationsFromEditor? interOrganizationalRelationsFromEditor;
+    private InterOrganizationalRelationsListEditor<CompletedInterOrganizationalRelationFrom>? interOrganizationalRelationsFromEditor;
 
-    private InterOrganizationalRelationsToEditor? interOrganizationalRelationsToEditor;
+    private InterOrganizationalRelationsListEditor<CompletedInterOrganizationalRelationTo>? interOrganizationalRelationsToEditor;
+
+    private InterOrganizationalRelationFromEditorDialog? fromDialog;
+    private InterOrganizationalRelationToEditorDialog? toDialog;
+
 
     public abstract record RelationContext
     {
@@ -209,42 +237,8 @@
     private void AddRelationFrom()
     {
         var relationToEdit = OrganizationItem.Match<IncompleteInterOrganizationalRelationFrom>(
-        organizationListItem: li => new NewInterOrganizationalExistingFromRelation {
-                OrganizationFrom = li,
-                OrganizationTo = null,
-                InterOrganizationalRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                NodeTypeName = "inter organizational relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            },
-        organizationName: nm => new NewInterOrganizationalNewFromRelation {
-                OrganizationFrom = nm,
-                OrganizationTo = null,
-                InterOrganizationalRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                NodeTypeName = "inter organizational relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            }
+            organizationListItem: li => li.GetNewInterOrganizationalRelationFrom(RelationTypes.First(), TenantId, UserId),
+            organizationName: nm => nm.GetNewInterOrganizationalRelationFrom(RelationTypes.First(), TenantId, UserId)
         );
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
             RelationToEdit = relationToEdit
@@ -254,42 +248,8 @@
     private void AddRelationTo()
     {
         var relationToEdit = OrganizationItem.Match<IncompleteInterOrganizationalRelationTo>(
-            organizationListItem: li => new NewInterOrganizationalExistingToRelation {
-                OrganizationFrom = null,
-                OrganizationTo = li,
-                InterOrganizationalRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                NodeTypeName = "inter organizational relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            },
-            organizationName: nm => new NewInterOrganizationalNewToRelation {
-                OrganizationFrom = null,
-                OrganizationTo = nm,
-                InterOrganizationalRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                NodeTypeName = "inter organizational relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            }
+            organizationListItem: li => li.GetNewInterOrganizationalRelationTo(RelationTypes.First(), TenantId, UserId),
+            organizationName: nm => nm.GetNewInterOrganizationalRelationTo(RelationTypes.First(), TenantId, UserId)
         );
 
         relationContext = new RelationContext.RelationContextTo.RelationContextToNew {
@@ -324,8 +284,8 @@
 
     public void OkFrom(InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom relationContext)
     {
-        if (interOrganizationalRelationsFromEditor is not null) {
-            var relation = interOrganizationalRelationsFromEditor.GetValidRelation();
+        if (interOrganizationalRelationsFromEditor is not null && fromDialog is not null) {
+            var relation = fromDialog.GetValidRelation();
             if (relation is not null) {
                 relationContext.Match(
                     relationContextFromNew => {
@@ -351,8 +311,8 @@
     }
     public void OkTo(InterOrganizationalRelationsEditor.RelationContext.RelationContextTo relationContext)
     {
-        if (interOrganizationalRelationsToEditor is not null) {
-            var relation = interOrganizationalRelationsToEditor.GetValidRelation();
+        if (interOrganizationalRelationsToEditor is not null && toDialog is not null) {
+            var relation = toDialog.GetValidRelation();
             if(relation is not null) {
                 relationContext.Match(
                     relationContextToNew =>

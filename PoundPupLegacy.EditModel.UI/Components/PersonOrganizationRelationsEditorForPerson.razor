@@ -121,44 +121,8 @@
     private void OnAdd()
     {
         _relationToEdit = Person.Match<PersonOrganizationRelationForPerson>(
-            personListItem: pli => new NewPersonOrganizationRelationExistingPerson {
-                Person = pli,
-                Organization = null,
-                PersonOrganizationRelationType = RelationTypes.First(),
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeTypeName = "party political entity relation",
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            },
-            personName: pn => new NewPersonOrganizationRelationNewPerson {
-                Person = pn,
-                Organization = null,
-                PersonOrganizationRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeTypeName = "party political entity relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            });
+            personListItem: pli => pli.GetPersonOrganizationRelationForPerson(RelationTypes.First(), TenantId, UserId),
+            personName: pn => pn.GetPersonOrganizationRelationForPerson(RelationTypes.First(), TenantId, UserId));
         StateHasChanged();
     }
 

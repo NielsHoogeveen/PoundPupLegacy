@@ -6,11 +6,97 @@ public partial class ExistingInterPersonalRelationFromJsonContext : JsonSerializ
 [JsonSerializable(typeof(ExistingInterPersonalRelationTo))]
 public partial class ExistingInterPersonalRelationToJsonContext : JsonSerializerContext { }
 
+public static class InterPersonalRelationExtentions{
+    public static NewInterPersonalExistingFromRelation GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    {
+        return new NewInterPersonalExistingFromRelation {
+            PersonFrom = personListItem,
+            PersonTo = null,
+            InterPersonalRelationType = interPersonalRelationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            NodeTypeName = "inter personal relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static NewInterPersonalExistingToRelation GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    {
+        return new NewInterPersonalExistingToRelation {
+            PersonFrom = null,
+            PersonTo = personListItem,
+            InterPersonalRelationType = interPersonalRelationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            NodeTypeName = "inter personal relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+
+    }
+    public static NewInterPersonalNewFromRelation GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    {
+        return new NewInterPersonalNewFromRelation {
+            PersonFrom = personName,
+            PersonTo = null,
+            InterPersonalRelationType = interPersonalRelationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            NodeTypeName = "inter personal relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static NewInterPersonalNewToRelation GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    {
+        return new NewInterPersonalNewToRelation {
+            PersonFrom = null,
+            PersonTo = personName,
+            InterPersonalRelationType = interPersonalRelationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            NodeTypeName = "inter personal relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+}
+
+
 public abstract record InterPersonalRelation : RelationBase
 {
     private InterPersonalRelation()
     {
     }
+    public abstract void SetName(string name);
 
     public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
     public PersonListItem? PersonListItemFrom { get; set; }
@@ -63,6 +149,10 @@ public abstract record InterPersonalRelation : RelationBase
                 public sealed record NewInterPersonalNewFromRelation : NewIncompleteInterPersonalRelationFrom
                 {
                     public required PersonName PersonFrom { get; set; }
+                    public sealed override void SetName(string name)
+                    {
+                        PersonFrom.Name = name;
+                    }
                     public sealed override string PersonFromName => PersonFrom.Name;
                     public sealed override PersonItem? PersonItemFrom => PersonFrom;
                     public sealed override NewInterPersonalNewToRelation SwapFromAndTo()
@@ -114,6 +204,10 @@ public abstract record InterPersonalRelation : RelationBase
                 public sealed record NewInterPersonalExistingFromRelation : NewIncompleteInterPersonalRelationFrom
                 {
                     public required PersonListItem PersonFrom { get; set; }
+                    public sealed override void SetName(string name)
+                    {
+                        PersonFrom.Name = name;
+                    }
                     public sealed override string PersonFromName => PersonFrom.Name;
                     public sealed override PersonItem? PersonItemFrom => PersonFrom;
                     public sealed override NewInterPersonalExistingToRelation SwapFromAndTo()
@@ -178,7 +272,6 @@ public abstract record InterPersonalRelation : RelationBase
                 return completedInterPersonalRelationFrom(this);
             }
 
-            public abstract void SetName(string name);
             private PersonListItem? organizationItemTo = null;
 
             public sealed override PersonListItem? PersonItemTo {
@@ -348,6 +441,10 @@ public abstract record InterPersonalRelation : RelationBase
                 public sealed record NewInterPersonalExistingToRelation : NewIncompleteInterPersonalRelationTo
                 {
                     public required PersonListItem PersonTo { get; set; }
+                    public sealed override void SetName(string name)
+                    {
+                        PersonTo.Name = name;
+                    }
                     public sealed override string PersonToName => PersonTo.Name;
                     public sealed override PersonItem? PersonItemTo => PersonTo;
                     public sealed override NewInterPersonalExistingFromRelation SwapFromAndTo()
@@ -400,6 +497,10 @@ public abstract record InterPersonalRelation : RelationBase
                 public sealed record NewInterPersonalNewToRelation : NewIncompleteInterPersonalRelationTo
                 {
                     public required PersonName PersonTo { get; set; }
+                    public sealed override void SetName(string name)
+                    {
+                        PersonTo.Name = name;
+                    }
                     public sealed override string PersonToName => PersonTo.Name;
                     public sealed override PersonItem? PersonItemTo => PersonTo;
 
@@ -478,7 +579,6 @@ public abstract record InterPersonalRelation : RelationBase
                 return completedInterPersonalRelationTo(this);
             }
 
-            public abstract void SetName(string name);
             public sealed record CompletedNewInterPersonalNewToRelation : CompletedInterPersonalRelationTo
             {
                 public required PersonName PersonTo { get; set; }

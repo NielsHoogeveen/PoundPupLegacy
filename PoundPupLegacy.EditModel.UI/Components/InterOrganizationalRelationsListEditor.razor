@@ -1,21 +1,6 @@
-﻿@inherits EditorBase
-@if(RelationContext is InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom ctx) {
-    
-    <ModalDialog 
-        Title="Add inter-organizational relation" 
-        Id="inter-organizational-relation-dialog" 
-        OnOk="() => Ok(ctx)" 
-        OnCancel="Cancel">
-        <DialogContent>
-            <InterOrganizationalRelationFromEditorDialog  
-                RelationTypes=RelationTypes
-                RelationContext=ctx
-                Swap=Swap
-                @ref=dialog/>
-        </DialogContent>
-    </ModalDialog>
-    
-}
+﻿@typeparam TRelation where TRelation : InterOrganizationalRelation
+@inherits EditorBase
+
 <div class="relations-editor">
     <h4>Relations between this organization and another one</h4>
     @if (Relations.Any())
@@ -68,46 +53,17 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterOrganizationalRelationFrom> Relations { get; set; } = default!;
+    public List<TRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public OrganizationItem OrganizationItem { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public List<InterOrganizationalRelationTypeListItem> RelationTypes { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public InterOrganizationalRelationsEditor.RelationContext? RelationContext { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action<InterOrganizationalRelationsEditor.RelationContext> Swap { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action<InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom> Update { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action<CompletedInterOrganizationalRelationFrom> Edit { get; set; } = default!;
+    public Action<TRelation> Edit { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public Action Add { get; set; } = default!;
 
-    [Parameter]
-    [EditorRequired]
-    public Action<InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom> Ok { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action Cancel { get; set; } = default!;
-
-    private InterOrganizationalRelationFromEditorDialog? dialog;
-
+    
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
@@ -129,9 +85,4 @@
         relation.HasBeenDeleted = true;
         StateHasChanged();
     }
-    internal CompletedInterOrganizationalRelationFrom? GetValidRelation()
-    {
-        return dialog?.GetValidRelation();
-    }
-
 }

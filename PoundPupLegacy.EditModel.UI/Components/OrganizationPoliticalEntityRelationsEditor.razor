@@ -128,42 +128,8 @@
     private void OnAdd()
     {
         _relationToEdit = Organization.Match<OrganizationPoliticalEntityRelation>(
-            organizationListItem: oli => new NewOrganizationPoliticalEntityRelationExistingOrganization{
-                Organization = oli,
-                OrganizationPoliticalEntityRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeTypeName = "party political entity relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                PoliticalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            },
-            organizationName: on => new NewOrganizationPoliticalEntityRelationNewOrganization {
-                Organization = on,
-                OrganizationPoliticalEntityRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeTypeName = "party political entity relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                PoliticalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            }
+            organizationListItem: oli => oli.GetNewPoliticalEntityRelationOrganization(RelationTypes.First(), TenantId, UserId),
+            organizationName: on => on.GetNewPoliticalEntityRelationOrganization(RelationTypes.First(), TenantId, UserId)
         );
         StateHasChanged();
     }

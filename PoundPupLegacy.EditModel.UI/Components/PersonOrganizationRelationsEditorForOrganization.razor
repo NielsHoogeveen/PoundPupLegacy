@@ -121,44 +121,8 @@
     private void OnAdd()
     {
         _relationToEdit = Organization.Match<PersonOrganizationRelationForOrganization>(
-            organizationListItem: oli => new NewPersonOrganizationRelationExistingOrganization {
-                Person = null,
-                Organization = oli,
-                PersonOrganizationRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeTypeName = "party political entity relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            },
-            organizationName: on => new NewPersonOrganizationRelationNewOrganization {
-                Person = null,
-                Organization = on,
-                PersonOrganizationRelationType = RelationTypes.First(),
-                Title = "",
-                DateFrom = null,
-                DateTo = null,
-                Description = "",
-                Files = new List<File>(),
-                HasBeenDeleted = false,
-                NodeTypeName = "party political entity relation",
-                OwnerId = TenantId,
-                PublisherId = UserId,
-                GeographicalEntity = null,
-                ProofDocument = null,
-                Tags = new List<Tags>(),
-                TenantNodes = new List<TenantNode>(),
-                Tenants = new List<Tenant>(),
-            });
+            organizationListItem: oli => oli.GetPersonOrganizationRelationForOrganization(RelationTypes.First(), TenantId, UserId),
+            organizationName: on => on.GetPersonOrganizationRelationForOrganization(RelationTypes.First(), TenantId, UserId));
         StateHasChanged();
     }
 

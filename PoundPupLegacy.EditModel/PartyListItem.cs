@@ -52,6 +52,7 @@ public abstract record PersonItem
     private PersonItem()
     {
     }
+
     public abstract string Name { get; set; }
 
     [RequireNamedArgs]

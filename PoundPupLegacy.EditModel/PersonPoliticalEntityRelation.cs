@@ -3,6 +3,54 @@
 [JsonSerializable(typeof(ExistingPersonPoliticalEntityRelation))]
 public partial class ExistingPersonPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
+public static class PersonPoliticalEntityRelationExtensions
+{
+    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    {
+        return new NewPersonPoliticalEntityRelationExistingPerson {
+            Person = personListItem,
+            PersonPoliticalEntityRelationType = relationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeTypeName = "party political entity relation",
+            OwnerId = ownerId,
+            PublisherId = publishedId,
+            PoliticalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonName personName, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    {
+        return new NewPersonPoliticalEntityRelationNewPerson {
+            Person = personName,
+            PersonPoliticalEntityRelationType = relationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeTypeName = "party political entity relation",
+            OwnerId = ownerId,
+            PublisherId = publishedId,
+            PoliticalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+
+}
+
+
 public abstract record PersonPoliticalEntityRelation : RelationBase
 {
     private PersonPoliticalEntityRelation() { }

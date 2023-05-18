@@ -5,12 +5,100 @@ public partial class ExistingInterOrganizationalRelationFromJsonContext : JsonSe
 
 [JsonSerializable(typeof(ExistingInterOrganizationalRelationTo))]
 public partial class ExistingInterOrganizationalRelationToJsonContext : JsonSerializerContext { }
+public static class InterOrganizationalRelationExtentions
+{
+    public static NewInterOrganizationalExistingFromRelation GetNewInterOrganizationalRelationFrom(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
+    {
+        return new NewInterOrganizationalExistingFromRelation {
+            OrganizationFrom = organizationListItem,
+            OrganizationTo = null,
+            InterOrganizationalRelationType = interOrganizationalRelationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            NodeTypeName = "inter organizational relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            GeographicalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static NewInterOrganizationalNewFromRelation GetNewInterOrganizationalRelationFrom(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
+    {
+        return new NewInterOrganizationalNewFromRelation {
+            OrganizationFrom = organizationName,
+            OrganizationTo = null,
+            InterOrganizationalRelationType = interOrganizationalRelationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            NodeTypeName = "inter organizational relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            GeographicalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static NewInterOrganizationalExistingToRelation GetNewInterOrganizationalRelationTo(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
+    {
+        return new NewInterOrganizationalExistingToRelation {
+            OrganizationFrom = null,
+            OrganizationTo = organizationListItem,
+            InterOrganizationalRelationType = interOrganizationalRelationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            NodeTypeName = "inter organizational relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            GeographicalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
 
+    }
+    public static NewInterOrganizationalNewToRelation GetNewInterOrganizationalRelationTo(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
+    {
+        return new NewInterOrganizationalNewToRelation {
+            OrganizationFrom = null,
+            OrganizationTo = organizationName,
+            InterOrganizationalRelationType = interOrganizationalRelationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            NodeTypeName = "inter organizational relation",
+            OwnerId = ownerId,
+            PublisherId = publisherId,
+            GeographicalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+}
 public abstract record InterOrganizationalRelation : RelationBase
 {
     private InterOrganizationalRelation()
     {
     }
+    public abstract void SetName(string name);
 
     public required InterOrganizationalRelationTypeListItem InterOrganizationalRelationType { get; set; }
     public decimal? MoneyInvolved { get; set; }
@@ -66,6 +154,11 @@ public abstract record InterOrganizationalRelation : RelationBase
                 public sealed record NewInterOrganizationalNewFromRelation : NewIncompleteInterOrganizationalRelationFrom
                 {
                     public required OrganizationName OrganizationFrom { get; set; }
+
+                    public sealed override void SetName(string name)
+                    {
+                        OrganizationFrom.Name = name;
+                    }
                     public sealed override string OrganizationFromName => OrganizationFrom.Name;
                     public sealed override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
                     public sealed override NewInterOrganizationalNewToRelation SwapFromAndTo()
@@ -123,6 +216,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                 public sealed record NewInterOrganizationalExistingFromRelation : NewIncompleteInterOrganizationalRelationFrom
                 {
                     public required OrganizationListItem OrganizationFrom { get; set; }
+                    public sealed override void SetName(string name)
+                    {
+                        OrganizationFrom.Name = name;
+                    }
                     public sealed override string OrganizationFromName => OrganizationFrom.Name;
                     public sealed override OrganizationItem? OrganizationItemFrom => OrganizationFrom;
                     public sealed override NewInterOrganizationalExistingToRelation SwapFromAndTo()
@@ -193,7 +290,6 @@ public abstract record InterOrganizationalRelation : RelationBase
                 return completedInterOrganizationalRelationFrom(this);
             }
 
-            public abstract void SetName(string name);
             private OrganizationListItem? organizationItemTo = null;
 
             public sealed override OrganizationListItem? OrganizationItemTo {
@@ -372,6 +468,11 @@ public abstract record InterOrganizationalRelation : RelationBase
                 public sealed record NewInterOrganizationalExistingToRelation : NewIncompleteInterOrganizationalRelationTo
                 {
                     public required OrganizationListItem OrganizationTo { get; set; }
+                    public sealed override void SetName(string name)
+                    {
+                        OrganizationTo.Name = name;
+                    }
+
                     public sealed override string OrganizationToName => OrganizationTo.Name;
                     public sealed override OrganizationItem? OrganizationItemTo => OrganizationTo;
                     public sealed override NewInterOrganizationalExistingFromRelation SwapFromAndTo()
@@ -430,6 +531,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                 public sealed record NewInterOrganizationalNewToRelation : NewIncompleteInterOrganizationalRelationTo
                 {
                     public required OrganizationName OrganizationTo { get; set; }
+                    public sealed override void SetName(string name)
+                    {
+                        OrganizationTo.Name = name;
+                    }
                     public sealed override string OrganizationToName => OrganizationTo.Name;
                     public sealed override OrganizationItem? OrganizationItemTo => OrganizationTo;
 
@@ -513,8 +618,6 @@ public abstract record InterOrganizationalRelation : RelationBase
             {
                 return completedInterOrganizationalRelationTo(this);
             }
-
-            public abstract void SetName(string name);
             public sealed record CompletedNewInterOrganizationalNewToRelation : CompletedInterOrganizationalRelationTo
             {
                 public required OrganizationName OrganizationTo { get; set; }

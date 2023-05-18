@@ -1,21 +1,5 @@
-﻿@inherits EditorBase
-@if(RelationContext is InterPersonalRelationsEditor.RelationContext.RelationContextFrom ctx) {
-    
-    <ModalDialog 
-        Title="Add inter-personal relation" 
-        Id="inter-personal-relation-dialog" 
-        OnOk="() => Ok(ctx)" 
-        OnCancel="Cancel">
-        <DialogContent>
-            <InterPersonalRelationFromEditorDialog  
-                RelationTypes=RelationTypes
-                RelationContext=ctx
-                Swap=Swap
-                @ref=dialog/>
-        </DialogContent>
-    </ModalDialog>
-    
-}
+﻿@typeparam TRelation where TRelation: InterPersonalRelation
+@inherits EditorBase
 <div class="relations-editor">
     <h4>Relations between this person and another one</h4>
     @if (Relations.Any())
@@ -68,45 +52,15 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterPersonalRelationFrom> Relations { get; set; } = default!;
+    public List<TRelation> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public PersonItem PersonItem { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public List<InterPersonalRelationTypeListItem> RelationTypes { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public InterPersonalRelationsEditor.RelationContext? RelationContext { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action<InterPersonalRelationsEditor.RelationContext> Swap { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action<InterPersonalRelationsEditor.RelationContext.RelationContextFrom> Update { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action<CompletedInterPersonalRelationFrom> Edit { get; set; } = default!;
+    public Action<TRelation> Edit { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public Action Add { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action<InterPersonalRelationsEditor.RelationContext.RelationContextFrom> Ok { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public Action Cancel { get; set; } = default!;
-
-    private InterPersonalRelationFromEditorDialog? dialog;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
@@ -129,9 +83,4 @@
         relation.HasBeenDeleted = true;
         StateHasChanged();
     }
-    internal CompletedInterPersonalRelationFrom? GetValidRelation()
-    {
-        return dialog?.GetValidRelation();
-    }
-
 }

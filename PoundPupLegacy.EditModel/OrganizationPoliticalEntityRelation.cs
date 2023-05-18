@@ -3,7 +3,52 @@
 [JsonSerializable(typeof(ExistingOrganizationPoliticalEntityRelation))]
 public partial class ExistingOrganizationPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
-public abstract record OrganizationPoliticalEntityRelation : RelationBase
+public static class OrganizationPoliticalEntityRelationExtension
+{
+    public static NewOrganizationPoliticalEntityRelationExistingOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationListItem organizationListItem, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    {
+        return new NewOrganizationPoliticalEntityRelationExistingOrganization {
+            Organization = organizationListItem,
+            OrganizationPoliticalEntityRelationType = relationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeTypeName = "party political entity relation",
+            OwnerId = ownerId,
+            PublisherId = publishedId,
+            PoliticalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+    public static NewOrganizationPoliticalEntityRelationNewOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationName organizationName, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    {
+        return new NewOrganizationPoliticalEntityRelationNewOrganization {
+            Organization = organizationName,
+            OrganizationPoliticalEntityRelationType = relationType,
+            Title = "",
+            DateFrom = null,
+            DateTo = null,
+            Description = "",
+            Files = new List<File>(),
+            HasBeenDeleted = false,
+            NodeTypeName = "party political entity relation",
+            OwnerId = ownerId,
+            PublisherId = publishedId,
+            PoliticalEntity = null,
+            ProofDocument = null,
+            Tags = new List<Tags>(),
+            TenantNodes = new List<TenantNode>(),
+            Tenants = new List<Tenant>(),
+        };
+    }
+}
+    public abstract record OrganizationPoliticalEntityRelation : RelationBase
 {
     private OrganizationPoliticalEntityRelation() { }
 
