@@ -3,8 +3,6 @@
 [JsonSerializable(typeof(BasicListEntry))]
 public partial class BasicListEntryJsonContext : JsonSerializerContext { }
 
-public sealed record BasicListEntry : ListEntry
+public sealed record BasicListEntry : ListEntryBase
 {
-    public required string Path { get; init; }
-    public required string Title { get; init; }
 }

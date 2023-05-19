@@ -3,10 +3,8 @@
 [JsonSerializable(typeof(Cases))]
 public partial class CasesJsonContext : JsonSerializerContext { }
 
-public sealed record Cases : IPagedList<NonSpecificCaseListEntry>
+public sealed record Cases : PagedListBase<NonSpecificCaseListEntry>
 {
     public required CaseTypeListEntry[] CaseTypes { get; init; }
-    public required NonSpecificCaseListEntry[] Entries { get; init; }
-    public required int NumberOfEntries { get; init; }
 
 }

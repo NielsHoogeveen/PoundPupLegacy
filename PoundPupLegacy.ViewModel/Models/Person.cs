@@ -5,7 +5,6 @@ public partial class PersonJsonContext : JsonSerializerContext { }
 
 public sealed record Person : NameableBase
 {
-
     public DateTime? DateOfBirth { get; init; }
     public DateTime? DateOfDeath { get; init; }
     public Image? Portrait { get; init; }

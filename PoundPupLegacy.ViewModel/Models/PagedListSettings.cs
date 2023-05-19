@@ -7,6 +7,20 @@ public interface IPagedList
     public int NumberOfEntries { get; }
 }
 
+public abstract record PagedListBase<T>: IPagedList<T>
+    where T: ListEntry
+{
+    private T[] _entries = Array.Empty<T>();
+    public T[] Entries {
+        get => _entries;
+        set {
+            if (value != null) {
+                _entries = value;
+            }
+        }
+    }
+    public required int NumberOfEntries { get; init; }
+}
 public interface IPagedList<T> : IPagedList
     where T : ListEntry
 {

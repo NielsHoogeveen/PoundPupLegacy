@@ -3,9 +3,6 @@
 [JsonSerializable(typeof(SubgroupPagedList))]
 public partial class SubgroupPagedListJsonContext : JsonSerializerContext { }
 
-public sealed record SubgroupPagedList : IPagedList<SubgroupListEntry>
+public sealed record SubgroupPagedList : PagedListBase<SubgroupListEntry>
 {
-    public required SubgroupListEntry[] Entries { get; init; }
-
-    public int NumberOfEntries { get; set; }
 }

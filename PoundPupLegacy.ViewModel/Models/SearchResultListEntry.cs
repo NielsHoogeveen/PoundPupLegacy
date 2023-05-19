@@ -3,16 +3,8 @@
 [JsonSerializable(typeof(SearchResultListEntry))]
 public partial class SearchResultListEntryJsonContext : JsonSerializerContext { }
 
-public sealed record SearchResultListEntry : TeaserListEntry
+public sealed record SearchResultListEntry : TeaserListEntryBase
 {
-    public required string Path { get; init; }
-
-    public required string Title { get; init; }
-
-    public required string Text { get; init; }
-
     public required string NodeTypeName { get; init; }
-
-    public required bool HasBeenPublished { get; init; } = true;
 
 }

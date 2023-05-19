@@ -1,5 +1,10 @@
 ﻿namespace PoundPupLegacy.Common;
 
+public abstract record LinkBase
+{
+    public required string Path { get; init; }
+    public required string Title { get; init; }
+}
 public interface Link
 {
     string Path { get; }

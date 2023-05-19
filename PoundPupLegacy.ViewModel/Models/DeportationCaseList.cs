@@ -3,18 +3,6 @@
 [JsonSerializable(typeof(DeportationCaseList))]
 public partial class DeportationCaseListJsonContext : JsonSerializerContext { }
 
-public sealed record DeportationCaseList : IPagedList<CaseListEntry>
+public sealed record DeportationCaseList : PagedListBase<CaseListEntry>
 {
-    private CaseListEntry[] _entries = Array.Empty<CaseListEntry>();
-    public CaseListEntry[] Entries {
-        get => _entries;
-        set {
-            if (value != null) {
-                _entries = value;
-            }
-        }
-    }
-
-    public required int NumberOfEntries { get; init; }
-
 }

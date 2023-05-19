@@ -3,12 +3,8 @@
 [JsonSerializable(typeof(DocumentListEntry))]
 public partial class DocumentListEntryJsonContext : JsonSerializerContext { }
 
-public sealed record DocumentListEntry : ListEntry
+public sealed record DocumentListEntry : ListEntryBase
 {
-    public required string Path { get; init; }
-
-    public required string Title { get; init; }
-
     public DateTime? PublicationDateFrom { get; set; }
 
     public DateTime? PublicationDateTo { get; set; }

@@ -3,12 +3,8 @@
 [JsonSerializable(typeof(MemberOfCongress))]
 public partial class MemberOfCongressJsonContext : JsonSerializerContext { }
 
-public sealed record MemberOfCongress : Link
+public sealed record MemberOfCongress : LinkBase
 {
-    public required string Title { get; init; }
-
-    public required string Path { get; init; }
-
     public required string FilePathPortrait { get; init; }
 
 

@@ -3,10 +3,8 @@
 [JsonSerializable(typeof(FirstLevelRegionListEntry))]
 public partial class FirstLevelRegionListEntryJsonContext : JsonSerializerContext { }
 
-public sealed record FirstLevelRegionListEntry : ListEntry
+public sealed record FirstLevelRegionListEntry : ListEntryBase
 {
-    public required string Title { get; init; }
-    public required string Path { get; init; }
 
     private SecondLevelRegionListEntry[] _regions = Array.Empty<SecondLevelRegionListEntry>();
     public required SecondLevelRegionListEntry[] Regions {

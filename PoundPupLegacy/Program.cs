@@ -55,7 +55,6 @@ public sealed class Program
             ViewModel.Models.CongressionalTermJsonContext.Default,
             ViewModel.Models.CountryAndSubdivisionJsonContext.Default,
             ViewModel.Models.CountryListEntryJsonContext.Default,
-            ViewModel.Models.DateTimeIntervalJsonContext.Default,
             ViewModel.Models.DeportationCaseJsonContext.Default,
             ViewModel.Models.DeportationCaseListJsonContext.Default,
             ViewModel.Models.DeportationCasesJsonContext.Default,
