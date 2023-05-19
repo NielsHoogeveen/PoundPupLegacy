@@ -12,7 +12,7 @@ public sealed record FathersRightsViolationCase : Case
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
 
-    public FuzzyDate? Date { get; set; }
+    public FuzzyDate? FuzzyDate { get; set; }
 
     private TagListEntry[] tags = Array.Empty<TagListEntry>();
     public required TagListEntry[] Tags {

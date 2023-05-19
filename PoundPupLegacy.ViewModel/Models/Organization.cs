@@ -3,48 +3,8 @@
 [JsonSerializable(typeof(Organization))]
 public partial class OrganizationJsonContext : JsonSerializerContext { }
 
-public sealed record Organization : Nameable, Documentable, Locatable
+public sealed record Organization : LocatableBase
 {
-    public required string Description { get; init; }
-    public required int NodeId { get; init; }
-    public required int UrlId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Title { get; init; }
-    public required Authoring Authoring { get; init; }
-    public required bool HasBeenPublished { get; init; }
-
-    private TagListEntry[] tags = Array.Empty<TagListEntry>();
-    public TagListEntry[] Tags {
-        get => tags;
-        init {
-            if (value is not null) {
-                tags = value;
-            }
-
-        }
-    }
-    private CommentListItem[] commentListItems = Array.Empty<CommentListItem>();
-    public CommentListItem[] CommentListItems {
-        get => commentListItems;
-        init {
-            if (value is not null) {
-                commentListItems = value;
-            }
-        }
-    }
-
-    public Comment[] Comments => this.GetComments();
-    public required BasicLink[] BreadCrumElements { get; init; }
-
-    private DocumentListEntry[] documents = Array.Empty<DocumentListEntry>();
-    public required DocumentListEntry[] Documents {
-        get => documents;
-        init {
-            if (value is not null) {
-                documents = value;
-            }
-        }
-    }
 
     public string? WebsiteUrl { get; init; }
     public string? EmailAddress { get; init; }
@@ -61,35 +21,6 @@ public sealed record Organization : Nameable, Documentable, Locatable
         }
     }
 
-    private Location[] _locations = Array.Empty<Location>();
-    public Location[] Locations {
-        get => _locations;
-        init {
-            if (value is not null) {
-                _locations = value;
-            }
-        }
-    }
-
-    private BasicLink[] subTopics = Array.Empty<BasicLink>();
-    public BasicLink[] SubTopics {
-        get => subTopics;
-        init {
-            if (value is not null) {
-                subTopics = value;
-            }
-        }
-    }
-
-    private BasicLink[] superTopics = Array.Empty<BasicLink>();
-    public BasicLink[] SuperTopics {
-        get => superTopics;
-        init {
-            if (value is not null) {
-                superTopics = value;
-            }
-        }
-    }
     private InterOrganizationalRelation[] interOrganizationalRelations = Array.Empty<InterOrganizationalRelation>();
     public InterOrganizationalRelation[] InterOrganizationalRelations {
         get => interOrganizationalRelations;
@@ -126,14 +57,4 @@ public sealed record Organization : Nameable, Documentable, Locatable
             }
         }
     }
-    private File[] _files = Array.Empty<File>();
-    public required File[] Files {
-        get => _files;
-        init {
-            if (value is not null) {
-                _files = value;
-            }
-        }
-    }
-
 }
