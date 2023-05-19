@@ -22,10 +22,6 @@ public interface Organization : Party
 
     string? WebSiteUrl { get; set; }
     string? EmailAddress { get; set; }
-    DateTime? EstablishmentDateFrom { get; set; }
-    DateTime? EstablishmentDateTo { get; set; }
-    DateTime? TerminationDateFrom { get; set; }
-    DateTime? TerminationDateTo { get; set; }
     FuzzyDate? Establishment { get; set; }
     FuzzyDate? Termination { get; set; }
     List<OrganizationOrganizationType> OrganizationOrganizationTypes { get; }
@@ -156,55 +152,8 @@ public abstract record OrganizationBase : PartyBase, Organization
 
     public string? WebSiteUrl { get; set; }
     public string? EmailAddress { get; set; }
-    public DateTime? EstablishmentDateFrom { get; set; }
-    public DateTime? EstablishmentDateTo { get; set; }
-    public DateTime? TerminationDateFrom { get; set; }
-    public DateTime? TerminationDateTo { get; set; }
-
-    private bool _establishmentSet;
-    private FuzzyDate? _establishment;
-    public FuzzyDate? Establishment {
-        get {
-            if (!_establishmentSet) {
-                if (EstablishmentDateFrom is not null && EstablishmentDateTo is not null) {
-                    var dateTimeRange = new DateTimeRange(EstablishmentDateFrom, EstablishmentDateTo);
-                    if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
-                        _establishment = result;
-                    }
-                }
-                else {
-                    _establishment = null;
-                }
-                _establishmentSet = true;
-            }
-            return _establishment;
-        }
-        set {
-            _establishment = value;
-        }
-    }
-    private bool _terminationSet;
-    private FuzzyDate? _termination;
-    public FuzzyDate? Termination {
-        get {
-            if (!_terminationSet) {
-                if (TerminationDateFrom is not null && TerminationDateTo is not null) {
-                    var dateTimeRange = new DateTimeRange(TerminationDateFrom, TerminationDateTo);
-                    if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
-                        _termination = result;
-                    }
-                }
-                else {
-                    _termination = null;
-                }
-                _terminationSet = true;
-            }
-            return _termination;
-        }
-        set {
-            _termination = value;
-        }
-    }
+    public FuzzyDate? Establishment { get; set; }
+    public FuzzyDate? Termination { get; set; }
 
     private List<OrganizationOrganizationType> organizationOrganizationTypes = new();
 

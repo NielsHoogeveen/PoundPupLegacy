@@ -99,8 +99,6 @@ public abstract record InterPersonalRelation : RelationBase
     public abstract void SetName(string name);
 
     public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
-    public PersonListItem? PersonListItemFrom { get; set; }
-    public PersonListItem? PersonListItemTo { get; set; }
     public abstract string PersonFromName { get; }
     public abstract string PersonToName { get; }
     public abstract RelationSide RelationSideThisPerson { get; }
@@ -173,9 +171,7 @@ public abstract record InterPersonalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            PersonListItemFrom = PersonListItemTo,
-                            PersonListItemTo = PersonListItemFrom,
+                            Title = Title
                         };
                     }
                     public sealed override CompletedInterPersonalRelationFrom GetCompletedRelation(PersonListItem organizationListItemTo)
@@ -228,9 +224,7 @@ public abstract record InterPersonalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            PersonListItemFrom = PersonListItemTo,
-                            PersonListItemTo = PersonListItemFrom,
+                            Title = Title
                         };
                     }
 
@@ -315,9 +309,7 @@ public abstract record InterPersonalRelation : RelationBase
                         Tags = Tags,
                         TenantNodes = TenantNodes,
                         Tenants = Tenants,
-                        Title = Title,
-                        PersonListItemFrom = PersonListItemTo,
-                        PersonListItemTo = PersonListItemFrom,
+                        Title = Title
                     };
                 }
             }
@@ -357,9 +349,7 @@ public abstract record InterPersonalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            PersonListItemFrom = PersonListItemTo,
-                            PersonListItemTo = PersonListItemFrom,
+                            Title = Title
                         };
 
                     }
@@ -387,9 +377,7 @@ public abstract record InterPersonalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            PersonListItemFrom = PersonListItemTo,
-                            PersonListItemTo = PersonListItemFrom,
+                            Title = Title
                         };
                     }
                 }
@@ -465,9 +453,7 @@ public abstract record InterPersonalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            PersonListItemFrom = PersonListItemTo,
-                            PersonListItemTo = PersonListItemFrom,
+                            Title = Title
                         };
                     }
 
@@ -522,9 +508,7 @@ public abstract record InterPersonalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            PersonListItemFrom = PersonListItemTo,
-                            PersonListItemTo = PersonListItemFrom,
+                            Title = Title
                         };
                     }
                     public sealed override CompletedInterPersonalRelationTo GetCompletedRelation(PersonListItem organizationListItemFrom)
@@ -608,9 +592,7 @@ public abstract record InterPersonalRelation : RelationBase
                         Tags = Tags,
                         TenantNodes = TenantNodes,
                         Tenants = Tenants,
-                        Title = Title,
-                        PersonListItemFrom = PersonListItemTo,
-                        PersonListItemTo = PersonListItemFrom,
+                        Title = Title
                     };
                 }
             }
@@ -651,9 +633,7 @@ public abstract record InterPersonalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            PersonListItemFrom = PersonListItemTo,
-                            PersonListItemTo = PersonListItemFrom,
+                            Title = Title
                         };
                     }
                 }
@@ -679,14 +659,11 @@ public abstract record InterPersonalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            PersonListItemFrom = PersonListItemTo,
-                            PersonListItemTo = PersonListItemFrom,
+                            Title = Title
                         };
                     }
                 }
             }
-
         }
     }
 }

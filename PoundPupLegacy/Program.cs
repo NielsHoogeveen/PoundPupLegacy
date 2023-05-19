@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Services;
 using Quartz;
 using System.Data;
@@ -192,27 +193,36 @@ public sealed class Program
 
         builder.Services.AddLogging(loggingBuilder => {
             loggingBuilder.AddApplicationInsights(
-                        configureTelemetryConfiguration: (config) => config.ConnectionString = "InstrumentationKey=61d8fcaa-1c19-44ec-b880-4fb84d08ee5a;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/",
-                        configureApplicationInsightsLoggerOptions: (options) => { }
-                    );
+                configureTelemetryConfiguration: (config) => config.ConnectionString = "InstrumentationKey=61d8fcaa-1c19-44ec-b880-4fb84d08ee5a;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/",
+                configureApplicationInsightsLoggerOptions: (options) => { }
+            );
         });
         builder.Services.AddScoped<NotFoundListener>();
         builder.Services.AddSignalR(e => {
             e.MaximumReceiveMessageSize = 102400000;
         });
 
-        builder
-            .Services
-            .AddRazorPages()
-            .AddJsonOptions(options =>
-                options
+        builder.Services.AddRazorPages().AddJsonOptions(options => {
+            options
                 .JsonSerializerOptions
-                .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers));
+                .Converters.Add(FuzzyDateJsonConverter.Default);
 
-        builder.Services.AddControllersWithViews().AddJsonOptions(options =>
-                options
+            options
                 .JsonSerializerOptions
-                .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers));
+                .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers);
+
+        });
+
+        builder.Services.AddControllersWithViews().AddJsonOptions(options => {
+            options
+                .JsonSerializerOptions
+                .Converters.Add(FuzzyDateJsonConverter.Default);
+
+            options
+                .JsonSerializerOptions
+                .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers);
+
+        });
 
         builder.Services.AddServerSideBlazor();
         builder.Services.AddSingleton<NpgsqlDataSource>((sp) => {
@@ -220,8 +230,8 @@ public sealed class Program
             var connectString = configuration["ConnectString"]!;
             var dataSource = new NpgsqlDataSourceBuilder(connectString)
                 .UseSystemTextJson(new System.Text.Json.JsonSerializerOptions {
-                    TypeInfoResolver = JsonTypeInfoResolver
-                    .Combine(resolvers)
+                    TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers),
+                    Converters = { FuzzyDateJsonConverter.Default }
                 })
                 .Build();
             return dataSource;

@@ -3,15 +3,14 @@
 [JsonSerializable(typeof(CaseListEntry))]
 public partial class CaseListEntryJsonContext : JsonSerializerContext { }
 
-public abstract record CaseListEntry : TaggedTeaserListEntry
+public record CaseListEntry : TaggedTeaserListEntry
 {
     public required string Path { get; init; }
     public required string Title { get; init; }
 
     public required string? Text { get; init; }
     public required bool HasBeenPublished { get; init; }
-    public required DateTimeInterval? DateTimeRange { get; init; }
-    public FuzzyDate? Date => DateTimeRange?.ToFuzzyDate();
+    public required FuzzyDate? Date { get; init; }
 
     private TagListEntry[] tags = Array.Empty<TagListEntry>();
     public TagListEntry[] Tags {

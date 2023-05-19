@@ -104,8 +104,6 @@ public abstract record InterOrganizationalRelation : RelationBase
     public decimal? MoneyInvolved { get; set; }
     public int? NumberOfChildrenInvolved { get; set; }
     public required GeographicalEntityListItem? GeographicalEntity { get; set; }
-    public OrganizationListItem? OrganizationListItemFrom { get; set; }
-    public OrganizationListItem? OrganizationListItemTo { get; set; }
     public abstract string OrganizationFromName { get; }
     public abstract string OrganizationToName { get; }
     public abstract RelationSide RelationSideThisOrganization { get; }
@@ -182,9 +180,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            OrganizationListItemFrom = OrganizationListItemTo,
-                            OrganizationListItemTo = OrganizationListItemFrom,
+                            Title = Title
                         };
                     }
                     public sealed override CompletedInterOrganizationalRelationFrom GetCompletedRelation(OrganizationListItem organizationListItemTo)
@@ -243,9 +239,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            OrganizationListItemFrom = OrganizationListItemTo,
-                            OrganizationListItemTo = OrganizationListItemFrom,
+                            Title = Title
                         };
                     }
 
@@ -294,9 +288,7 @@ public abstract record InterOrganizationalRelation : RelationBase
 
             public sealed override OrganizationListItem? OrganizationItemTo {
                 get {
-                    if (organizationItemTo is null) {
-                        organizationItemTo = OrganizationTo;
-                    }
+                    organizationItemTo ??= OrganizationTo;
                     return organizationItemTo;
                 }
                 set {
@@ -336,9 +328,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                         Tags = Tags,
                         TenantNodes = TenantNodes,
                         Tenants = Tenants,
-                        Title = Title,
-                        OrganizationListItemFrom = OrganizationListItemTo,
-                        OrganizationListItemTo = OrganizationListItemFrom,
+                        Title = Title
                     };
                 }
             }
@@ -381,13 +371,9 @@ public abstract record InterOrganizationalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            OrganizationListItemFrom = OrganizationListItemTo,
-                            OrganizationListItemTo = OrganizationListItemFrom,
+                            Title = Title
                         };
-
                     }
-
                 }
 
                 public sealed record NewInterOrganizationalExistingRelationFrom : ResolvedInterOrganizationalRelationFrom
@@ -414,9 +400,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            OrganizationListItemFrom = OrganizationListItemTo,
-                            OrganizationListItemTo = OrganizationListItemFrom,
+                            Title = Title
                         };
                     }
                 }
@@ -496,9 +480,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            OrganizationListItemFrom = OrganizationListItemTo,
-                            OrganizationListItemTo = OrganizationListItemFrom,
+                            Title = Title
                         };
                     }
 
@@ -559,9 +541,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            OrganizationListItemFrom = OrganizationListItemTo,
-                            OrganizationListItemTo = OrganizationListItemFrom,
+                            Title = Title
                         };
                     }
                     public sealed override CompletedInterOrganizationalRelationTo GetCompletedRelation(OrganizationListItem organizationListItemFrom)
@@ -600,9 +580,7 @@ public abstract record InterOrganizationalRelation : RelationBase
             private OrganizationListItem? organizationItemFrom = null;
             public sealed override OrganizationListItem? OrganizationItemFrom {
                 get {
-                    if (organizationItemFrom is null) {
-                        organizationItemFrom = OrganizationFrom;
-                    }
+                    organizationItemFrom ??= OrganizationFrom;
                     return organizationItemFrom;
                 }
                 set {
@@ -650,9 +628,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                         Tags = Tags,
                         TenantNodes = TenantNodes,
                         Tenants = Tenants,
-                        Title = Title,
-                        OrganizationListItemFrom = OrganizationListItemTo,
-                        OrganizationListItemTo = OrganizationListItemFrom,
+                        Title = Title
                     };
                 }
             }
@@ -696,9 +672,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            OrganizationListItemFrom = OrganizationListItemTo,
-                            OrganizationListItemTo = OrganizationListItemFrom,
+                            Title = Title
                         };
                     }
                 }
@@ -727,9 +701,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             Tags = Tags,
                             TenantNodes = TenantNodes,
                             Tenants = Tenants,
-                            Title = Title,
-                            OrganizationListItemFrom = OrganizationListItemTo,
-                            OrganizationListItemTo = OrganizationListItemFrom,
+                            Title = Title
                         };
                     }
                 }

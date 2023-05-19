@@ -12,20 +12,7 @@ public sealed record WrongfulMedicationCase : Case
     public required string Title { get; init; }
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
-    public DateTime? DateFrom { get; set; }
-    public DateTime? DateTo { get; set; }
-    public FuzzyDate? FuzzyDate {
-        get {
-            if (DateFrom is not null && DateTo is not null) {
-                var dateTimeRange = new DateTimeRange(DateFrom, DateTo);
-                if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
-                    return result;
-                }
-            }
-            return null;
-        }
-    }
-
+    public FuzzyDate? Date { get; set; }
 
     private TagListEntry[] tags = Array.Empty<TagListEntry>();
     public required TagListEntry[] Tags {

@@ -55,13 +55,8 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
                             url_path,
             				'Text', 
                             description,
-                            'DateTimeRange',
-                            jsonb_build_object(
-                                'From',
-                                date_from,
-                                'To',
-                                date_to
-                            ),
+                            'Date',
+                            fuzzy_date,
             				'CaseType',	
                             node_type_name,
             				'HasBeenPublished', 
@@ -110,8 +105,7 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             			when tn.url_path is null then '/node/' || tn.url_id
             			else '/' || url_path
             		end url_path,
-            		lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to,
+            		c.fuzzy_date,
             		case
             			when tn.publication_status_id = 0 then (
             				select
@@ -153,7 +147,7 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             		join node_type nt on nt.id = n.node_type_id
             		WHERE tn.tenant_id = @tenant_id
             	) an
-            	order by date_from desc
+            	order by lower(fuzzy_date) desc
             	LIMIT @limit OFFSET @offset
             ) an
             where an.status <> -1

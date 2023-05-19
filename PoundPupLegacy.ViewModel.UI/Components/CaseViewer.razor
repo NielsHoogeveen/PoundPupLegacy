@@ -1,6 +1,6 @@
 ﻿<LargeTextViewer Value="@Model.Description" />
 <div class="details">
-    <LabeledNullableFuzzyDateViewer Value="@Model.FuzzyDate" Label="Incident date" />
+    <LabeledNullableFuzzyDateViewer Value="@Model.Date" Label="Incident date" />
     @if(Model is AbuseCase abuseCase) {
         <AbuseCaseViewer Model="@abuseCase" />
     }

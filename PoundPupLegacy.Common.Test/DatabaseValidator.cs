@@ -69,7 +69,13 @@ public abstract class DatabaseValidatorBase
 
     public static NpgsqlConnection GetConnection()
     {
-        return new NpgsqlConnection(ConnectStringPostgresql);
+        var dataSource = new NpgsqlDataSourceBuilder(ConnectStringPostgresql)
+            .UseSystemTextJson(new System.Text.Json.JsonSerializerOptions {
+                Converters = {FuzzyDateJsonConverter.Default}
+            })
+            .Build();
+
+        return dataSource.CreateConnection();
     }
 
     public async Task ValidateDatabaseAccessors(Type t)

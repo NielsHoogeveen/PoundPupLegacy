@@ -48,28 +48,8 @@ public sealed record Organization : Nameable, Documentable, Locatable
 
     public string? WebsiteUrl { get; init; }
     public string? EmailAddress { get; init; }
-
-    public DateTime? EstablishmentDateFrom { get; init; }
-    public DateTime? EstablishmentDateTo { get; init; }
-    public DateTime? TerminationDateFrom { get; init; }
-    public DateTime? TerminationDateTo { get; init; }
-
-    public FuzzyDate? Establishment {
-        get {
-            if (EstablishmentDateFrom is not null && EstablishmentDateTo is not null) {
-                return new DateTimeRange(EstablishmentDateFrom, EstablishmentDateTo).ToFuzzyDate();
-            }
-            return null;
-        }
-    }
-    public FuzzyDate? Termination {
-        get {
-            if (TerminationDateFrom is not null && TerminationDateTo is not null) {
-                return new DateTimeRange(TerminationDateFrom, TerminationDateTo).ToFuzzyDate();
-            }
-            return null;
-        }
-    }
+    public FuzzyDate? Establishment { get; init; }
+    public FuzzyDate? Termination { get; init; }
 
     private BasicLink[] organizationTypes = Array.Empty<BasicLink>();
     public BasicLink[] OrganizationTypes {

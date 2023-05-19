@@ -1,8 +1,24 @@
 ﻿using System.Globalization;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace PoundPupLegacy.Common;
+public class FuzzyDateJsonConverter : JsonConverter<FuzzyDate>
+{
+    private FuzzyDateJsonConverter() { }
+    public static FuzzyDateJsonConverter Default { get; } = new FuzzyDateJsonConverter();
+    public override FuzzyDate Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options) => FuzzyDate.ParseJson(reader.GetString()!);
 
+    public override void Write(
+        Utf8JsonWriter writer,
+        FuzzyDate fuzzyDate,
+        JsonSerializerOptions options) =>
+            writer.WriteStringValue(fuzzyDate.ToJson());
+}
 public partial record FuzzyDate
 {
     public FuzzyDate(int year, int? month, int? day)
@@ -32,6 +48,14 @@ public partial record FuzzyDate
 
     [GeneratedRegex("^(?<year>[0-9]{1,5})(-(?<month>[0-9]{1,2})(-(?<day>[0-9]{1,2}))?)?", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex FuzzyDateRegex();
+
+    const string FuzzyDateJsonRegexString = """
+        ^\["(?<datefrom>[0-9]{4}-[0-9]{2}-[0-9]{2}) 00:00:00","(?<dateto>[0-9]{4}-[0-9]{2}-[0-9]{2}) 23:59:59.999"\)$
+        """;
+
+    [GeneratedRegex(FuzzyDateJsonRegexString)]
+    public static partial Regex FuzzyDateJsonRegex();
+
     public static FuzzyDate FromDateTime(DateTime input)
     {
         return new FuzzyDate(input.Year, input.Month, input.Day);
@@ -56,6 +80,27 @@ public partial record FuzzyDate
         }
         result = null;
         return false;
+    }
+
+    public static FuzzyDate ParseJson(string input)
+    {
+        var regex = FuzzyDateJsonRegex();
+        var m = regex.Match(input);
+        if(m.Success) {
+            var dateFromString = m.Groups["datefrom"];
+            var dateToString = m.Groups["dateto"];
+            var dateFrom = DateTime.Parse(dateFromString.ToString());
+            var dateTo = DateTime.Parse(dateToString.ToString()).AddDays(1).AddMilliseconds(-1);
+            if(TryFromDateTimeRange(new DateTimeRange(dateFrom, dateTo), out var fuzzyDate)) {
+                return fuzzyDate!;
+            }
+            throw new FormatException($"Fuzzy date has incorrect format {input}");
+        }
+        throw new FormatException($"Fuzzy date has incorrect format {input}");
+    }
+    public string ToJson()
+    {
+        throw new Exception("This method is not implemented");
     }
 
     public static bool TryParse(string? input, out FuzzyDate? result)

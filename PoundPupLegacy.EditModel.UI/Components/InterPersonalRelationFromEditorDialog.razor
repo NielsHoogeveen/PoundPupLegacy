@@ -99,8 +99,8 @@
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
-        if (RelationContext.RelationToEdit.PersonListItemTo is null) {
-            validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.PersonListItemTo)), "Person to is required");
+        if (RelationContext.RelationToEdit.PersonItemTo is null) {
+            validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.PersonItemTo)), "Person to is required");
             hasErrors = true;
             editContext.NotifyValidationStateChanged();
         }
@@ -108,8 +108,8 @@
             return null;
 
         return RelationContext.RelationToEdit.Match<CompletedInterPersonalRelationFrom>(
-            incompleteInterPersonalRelationFrom: x => x.GetCompletedRelation(RelationContext.RelationToEdit.PersonListItemTo!),
-            completedInterPersonalRelationFrom: x => x with { PersonTo = RelationContext.RelationToEdit.PersonListItemTo! }
+            incompleteInterPersonalRelationFrom: x => x.GetCompletedRelation(RelationContext.RelationToEdit.PersonItemTo!),
+            completedInterPersonalRelationFrom: x => x with { PersonTo = RelationContext.RelationToEdit.PersonItemTo! }
         );
     }
 }

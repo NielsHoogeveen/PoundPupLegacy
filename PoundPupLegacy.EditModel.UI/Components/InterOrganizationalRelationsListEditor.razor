@@ -2,9 +2,13 @@
 @inherits EditorBase
 
 <div class="relations-editor">
-    <h4>Relations between this organization and another one</h4>
-    @if (Relations.Any())
-    {
+    @if (typeof(TRelation).Name.EndsWith("From")){
+        <h4>Relations between this organization and another one</h4>
+    }
+    @if (typeof(TRelation).Name.EndsWith("To")) {
+        <h4>Relations between another organization and this one</h4>
+    }
+    @if (Relations.Any()) {
         <div class="relations">
             <div class="grid-header first">From</div>
             <div class="grid-header">Type</div>
@@ -64,6 +68,8 @@
     public Action Add { get; set; } = default!;
 
     
+    
+
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;

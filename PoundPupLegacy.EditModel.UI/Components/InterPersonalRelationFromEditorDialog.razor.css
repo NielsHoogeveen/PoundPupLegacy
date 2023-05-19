@@ -1,4 +1,7 @@
-﻿button {
+﻿.dialog-content{
+    width: 40em;
+}
+button {
     margin: 0.25em;
     padding: 0.5em 1em;
     border: 0;
@@ -8,8 +11,8 @@
     cursor: pointer;
 }
 
-.form-group{
-    padding-left:1em;
+.form-group {
+    padding-left: 1em;
     margin-bottom: 1em;
 }
 

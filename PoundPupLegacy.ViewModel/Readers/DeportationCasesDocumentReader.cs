@@ -65,14 +65,9 @@ internal sealed class DeportationCasesDocumentReaderFactory : SingleItemDatabase
         				    'Text',
         				    teaser,
         				    'HasBeenPublished',
-        				    has_been_published,
-                            'DateTimeRange',
-                            jsonb_build_object(
-                                'From',
-                                lower(fuzzy_date),
-                                'To',
-                                upper(fuzzy_date)
-                            ),
+        				    has_been_published,                    
+                            'Date',
+                            fuzzy_date,
                             'Tags',
                             terms
         			    )

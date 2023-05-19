@@ -2981,8 +2981,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'ChangedDateTime', n.changed_date_time
                     ),
                     'HasBeenPublished', n.has_been_published,
-                    'PublicationDateFrom', lower(published),
-                    'PublicationDateTo', upper(published),
+                    'Published', published,
                     'SourceUrl', source_url,
                     'DocumentType', document_type,
                     'BreadCrumElements', (SELECT document FROM document_bread_crum_document),
@@ -3181,10 +3180,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'HasBeenPublished', n.has_been_published,
                 'WebsiteUrl', n.website_url,
                 'EmailAddress', n.email_address,
-                'EstablishmentDateFrom', lower(n.established),
-                'EstablishmentDateTo', upper(n.established),
-                'TerminationDateFrom', lower(n.terminated),
-                'TerminationDateTo', upper(n.terminated),
+                'Establishment', n.established,
+                'Termination', n.terminated,
                 'BreadCrumElements', (SELECT document FROM organization_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -3583,8 +3580,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'DateFrom', n.date_from,
-                    'DateTo', n.date_to,
+                    'Date', n.fuzzy_date,
                     'ChildPlacementType', n.child_placement_type,
                     'FamilySize', n.family_size,
                     'HomeSchoolingInvolved', n.home_schooling_involved,
@@ -3655,8 +3651,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to,
+                    c.fuzzy_date,
                     case 
                         when tn2.node_id is null then null
                         else jsonb_build_object(
@@ -3727,8 +3722,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'DateFrom', n.date_from,
-                    'DateTo', n.date_to,
+                    'Date', n.fuzzy_date,
                     'CountryFrom', n.country_from,
                     'NumberOfChildrenInvolved', n.number_of_children_involved,
                     'BreadCrumElements', (SELECT document FROM child_trafficking_case_bread_crum_document),
@@ -3753,8 +3747,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to,
+                    c.fuzzy_date,
                     case 
                         when tn2.node_id is null then null
                         else jsonb_build_object(
@@ -3800,8 +3793,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'DateFrom', n.date_from,
-                    'DateTo', n.date_to,
+                    'Date', n.fuzzy_date,
                     'BreadCrumElements', (SELECT document FROM coerced_adoption_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3824,8 +3816,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to
+                    c.fuzzy_date
                 FROM authenticated_node an
                 join "case" c on c.id = an.node_id 
                 join coerced_adoption_case ac on ac.id = an.node_id 
@@ -3851,8 +3842,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'DateFrom', n.date_from,
-                    'DateTo', n.date_to,
+                    'Date', n.fuzzy_date,
                     'SubdivisionFrom', n.subdivision_from,
                     'CountryTo', n.country_to,  
                     'BreadCrumElements', (SELECT document FROM deportation_case_bread_crum_document),
@@ -3877,8 +3867,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to,
+                    c.fuzzy_date,
                     case 
                         when tn4.node_id is null then null
                         else jsonb_build_object(
@@ -3941,8 +3930,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'DateFrom', n.date_from,
-                    'DateTo', n.date_to,
+                    'Date', n.fuzzy_date,
                     'BreadCrumElements', (SELECT document FROM disrupted_placement_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3965,8 +3953,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to
+                    c.fuzzy_date
                 FROM authenticated_node an
                 join "case" c on c.id = an.node_id 
                 join disrupted_placement_case ac on ac.id = an.node_id 
@@ -3991,8 +3978,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'DateFrom', n.date_from,
-                    'DateTo', n.date_to,
+                    'Date', n.fuzzy_date,
                     'BreadCrumElements', (SELECT document FROM fathers_rights_violation_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -4015,8 +4001,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to
+                    c.fuzzy_date
                 FROM authenticated_node an
                 join "case" c on c.id = an.node_id 
                 join fathers_rights_violation_case ac on ac.id = an.node_id 
@@ -4041,8 +4026,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'DateFrom', n.date_from,
-                    'DateTo', n.date_to,
+                    'Date', n.fuzzy_date,
                     'BreadCrumElements', (SELECT document FROM wrongful_medication_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -4065,8 +4049,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to
+                    c.fuzzy_date
                 FROM authenticated_node an
                 join "case" c on c.id = an.node_id 
                 join wrongful_medication_case ac on ac.id = an.node_id 
@@ -4091,8 +4074,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'DateFrom', n.date_from,
-                    'DateTo', n.date_to,
+                    'Date', n.fuzzy_date,
                     'BreadCrumElements', (SELECT document FROM wrongful_removal_case_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -4115,8 +4097,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     an.publisher_id, 
                     p.name publisher_name,
                     an.has_been_published,
-                    lower(c.fuzzy_date) date_from,
-                    upper(c.fuzzy_date) date_to
+                    c.fuzzy_date
                 FROM authenticated_node an
                 join "case" c on c.id = an.node_id 
                 join wrongful_removal_case ac on ac.id = an.node_id 

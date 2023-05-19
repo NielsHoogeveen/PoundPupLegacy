@@ -1,37 +1,29 @@
 ﻿@inherits EditorBase
-@if (relationContext is InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom ctxFrom) {
-
+@if(relationContext is not null){
     <ModalDialog 
         Title="Add inter-organizational relation"
         Id="inter-organizational-relation-dialog"
-        OnOk="() => OkFrom(ctxFrom)"
-        OnCancel="CancelFrom">
+        OnOk="() => Ok(relationContext)"
+        OnCancel="Cancel"
+        @ref=dialog>
         <DialogContent>
-            <InterOrganizationalRelationFromEditorDialog 
-                RelationTypes=RelationTypes
-                RelationContext=ctxFrom
-                Swap=Swap
-            @ref=fromDialog />
-        </DialogContent>
+            @if (relationContext is InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom ctxFrom) 
+            {
+                <InterOrganizationalRelationFromEditorDialog 
+                    RelationTypes=RelationTypes
+                    RelationContext=ctxFrom
+                    Swap=Swap
+                    @ref=fromDialog />
+            }
+            @if (relationContext is InterOrganizationalRelationsEditor.RelationContext.RelationContextTo ctxTo) {
+                <InterOrganizationalRelationToEditorDialog 
+                    RelationTypes=RelationTypes
+                    RelationContext=ctxTo
+                    Swap=Swap
+                    @ref=toDialog />
+            }
+    </DialogContent>
     </ModalDialog>
-
-}
-@if (relationContext is InterOrganizationalRelationsEditor.RelationContext.RelationContextTo ctxTo) {
-
-    <ModalDialog 
-        Title="Add inter-organizational relation"
-        Id="inter-organizational-relation-dialog"
-        OnOk="() => OkTo(ctxTo)"
-        OnCancel="CancelTo">
-        <DialogContent>
-            <InterOrganizationalRelationToEditorDialog 
-                RelationTypes=RelationTypes
-                RelationContext=ctxTo
-                Swap=Swap
-            @ref=toDialog />
-        </DialogContent>
-    </ModalDialog>
-
 }
 
 <InterOrganizationalRelationsListEditor 
@@ -70,6 +62,7 @@
 
     private InterOrganizationalRelationsListEditor<CompletedInterOrganizationalRelationTo>? interOrganizationalRelationsToEditor;
 
+    private ModalDialog? dialog;
     private InterOrganizationalRelationFromEditorDialog? fromDialog;
     private InterOrganizationalRelationToEditorDialog? toDialog;
 
@@ -79,6 +72,11 @@
         private RelationContext() { }
 
         public abstract RelationContext Swap();
+
+        public abstract void Match(
+            Action<RelationContextFrom> relationContextFrom,
+            Action<RelationContextTo> relationContextTo
+        );
 
         public abstract record RelationContextFrom: RelationContext
         {
@@ -92,14 +90,21 @@
                 Action<RelationContextFromEditTo> relationContextFromEditTo,
                 Action<RelationContextFromEditFrom> relationContextFromEditFrom
             );
+            public override void Match(
+                Action<RelationContextFrom> relationContextFrom,
+                Action<RelationContextTo> relationContextTo
+            )
+            {
+                relationContextFrom(this);
+            }
 
             public sealed record RelationContextFromNew : RelationContextFrom
             {
-                public override RelationContextTo Swap()
+                public sealed override RelationContextTo Swap()
                 {
                     return new RelationContextTo.RelationContextToNew
                     {
-                            RelationToEdit = this.RelationToEdit.SwapFromAndTo()
+                            RelationToEdit = RelationToEdit.SwapFromAndTo()
                     };
                 }
                 public override void Match(
@@ -117,7 +122,7 @@
             {
                 public required CompletedInterOrganizationalRelationTo CompletedRelationToRemove { get; init; }
 
-                public override RelationContextTo Swap()
+                public sealed override RelationContextTo Swap()
                 {
                     return new RelationContextTo.RelationContextToEditTo {
                         RelationToEdit = RelationToEdit.SwapFromAndTo(),
@@ -137,7 +142,7 @@
             public sealed record RelationContextFromEditFrom : RelationContextFrom
             {
                 public required CompletedInterOrganizationalRelationFrom CompletedRelationToRemove { get; init; }
-                public override RelationContextTo Swap()
+                public sealed override RelationContextTo Swap()
                 {
                     return new RelationContextTo.RelationContextToEditFrom {
                         RelationToEdit = RelationToEdit.SwapFromAndTo(),
@@ -166,13 +171,20 @@
                 Action<RelationContextToEditTo> relationContextToEditTo,
                 Action<RelationContextToEditFrom> relationContextToEditFrom
             );
+            public override void Match(
+                Action<RelationContextFrom> relationContextFrom,
+                Action<RelationContextTo> relationContextTo
+            )
+            {
+                relationContextTo(this);
+            }
 
             public sealed record RelationContextToNew : RelationContextTo
             {
-                public override RelationContextFrom Swap()
+                public sealed override RelationContextFrom Swap()
                 {
                     return new RelationContextFrom.RelationContextFromNew {
-                        RelationToEdit = this.RelationToEdit.SwapFromAndTo()
+                        RelationToEdit = RelationToEdit.SwapFromAndTo()
                     };
                 }
                 public override void Match(
@@ -188,7 +200,7 @@
             public sealed record RelationContextToEditTo : RelationContextTo
             {
                 public required CompletedInterOrganizationalRelationTo CompletedRelationToRemove { get; init; }
-                public override RelationContextFrom Swap()
+                public sealed override RelationContextFrom Swap()
                 {
                     return new RelationContextFrom.RelationContextFromEditTo {
                             RelationToEdit = RelationToEdit.SwapFromAndTo(),
@@ -207,7 +219,7 @@
             public sealed record RelationContextToEditFrom : RelationContextTo
             {
                 public required CompletedInterOrganizationalRelationFrom CompletedRelationToRemove { get; init; }
-                public override RelationContextFrom Swap()
+                public sealed override RelationContextFrom Swap()
                 {
                     return new RelationContextFrom.RelationContextFromEditFrom {
                         RelationToEdit = RelationToEdit.SwapFromAndTo(),
@@ -278,10 +290,21 @@
 
     public void Swap(RelationContext relationContext)
     {
-        relationContext = relationContext.Swap();        
+        this.relationContext = relationContext.Swap();        
         StateHasChanged();
     }
 
+    public void Cancel()
+    {
+        relationContext = null;
+        StateHasChanged();
+    }
+    public void Ok(InterOrganizationalRelationsEditor.RelationContext relationContext)
+    {
+        relationContext.Match(OkFrom, OkTo);
+        this.relationContext = null;
+        StateHasChanged();
+    }
     public void OkFrom(InterOrganizationalRelationsEditor.RelationContext.RelationContextFrom relationContext)
     {
         if (interOrganizationalRelationsFromEditor is not null && fromDialog is not null) {
@@ -302,12 +325,6 @@
                 );
             }
         }
-        StateHasChanged();
-    }
-    public void CancelFrom()
-    {
-        relationContext = null;
-        StateHasChanged();
     }
     public void OkTo(InterOrganizationalRelationsEditor.RelationContext.RelationContextTo relationContext)
     {
@@ -332,12 +349,6 @@
                 );
             }
         }
-        StateHasChanged();
-    }
-    public void CancelTo()
-    {
-        relationContext = null;
-        StateHasChanged();
     }
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)

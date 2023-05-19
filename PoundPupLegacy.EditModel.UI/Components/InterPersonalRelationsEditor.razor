@@ -1,34 +1,28 @@
 ﻿@inherits EditorBase
-@if (relationContext is InterPersonalRelationsEditor.RelationContext.RelationContextFrom ctxFrom) {
-
+@if (relationContext is not null)
+{
     <ModalDialog 
-        Title="Add inter-personal relation"
-        Id="inter-personal-relation-dialog"
-        OnOk="() => OkFrom(ctxFrom)"
-        OnCancel="CancelFrom">
+    Title="Add inter-personal relation"
+    Id="inter-personal-relation-dialog"
+    OnOk="() => Ok(relationContext)"
+    OnCancel="Cancel">
         <DialogContent>
-            <InterPersonalRelationFromEditorDialog 
+            @if (relationContext is InterPersonalRelationsEditor.RelationContext.RelationContextFrom ctxFrom)
+            {
+                <InterPersonalRelationFromEditorDialog 
                 RelationTypes=RelationTypes
                 RelationContext=ctxFrom
                 Swap=Swap
-            @ref=dialogFrom />
-        </DialogContent>
-    </ModalDialog>
-
-}
-@if (relationContext is InterPersonalRelationsEditor.RelationContext.RelationContextTo ctxTo) {
-
-    <ModalDialog 
-        Title="Add inter-personal relation"
-        Id="inter-personal-relation-dialog"
-        OnOk="() => OkTo(ctxTo)"
-        OnCancel="CancelTo">
-        <DialogContent>
-            <InterPersonalRelationToEditorDialog 
+                @ref=dialogFrom />
+            }
+            @if (relationContext is InterPersonalRelationsEditor.RelationContext.RelationContextTo ctxTo)
+            {
+                <InterPersonalRelationToEditorDialog 
                 RelationTypes=RelationTypes
                 RelationContext=ctxTo
                 Swap=Swap
-            @ref=dialogTo />
+                @ref=dialogTo />
+            }
         </DialogContent>
     </ModalDialog>
 }
@@ -78,6 +72,11 @@
 
         public abstract RelationContext Swap();
 
+        public abstract void Match(
+            Action<RelationContextFrom> relationContextFrom,
+            Action<RelationContextTo> relationContextTo
+        );
+
         public abstract record RelationContextFrom : RelationContext
         {
             private RelationContextFrom() { }
@@ -90,6 +89,13 @@
                 Action<RelationContextFromEditTo> relationContextFromEditTo,
                 Action<RelationContextFromEditFrom> relationContextFromEditFrom
             );
+            public override void Match(
+                Action<RelationContextFrom> relationContextFrom,
+                Action<RelationContextTo> relationContextTo
+            )
+            {
+                relationContextFrom(this);
+            }
 
             public sealed record RelationContextFromNew : RelationContextFrom
             {
@@ -163,6 +169,14 @@
                 Action<RelationContextToEditTo> relationContextToEditTo,
                 Action<RelationContextToEditFrom> relationContextToEditFrom
             );
+
+            public override void Match(
+                Action<RelationContextFrom> relationContextFrom,
+                Action<RelationContextTo> relationContextTo
+            )
+            {
+                relationContextTo(this);
+            }
 
             public sealed record RelationContextToNew : RelationContextTo
             {
@@ -258,17 +272,17 @@
     private void EditRelationFrom(CompletedInterPersonalRelationFrom relation)
     {
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromEditFrom {
-                RelationToEdit = relation,
-                CompletedRelationToRemove = relation
-            };
+            RelationToEdit = relation,
+            CompletedRelationToRemove = relation
+        };
         StateHasChanged();
     }
     private void EditRelationTo(CompletedInterPersonalRelationTo relation)
     {
         relationContext = new RelationContext.RelationContextTo.RelationContextToEditTo {
-                RelationToEdit = relation,
-                CompletedRelationToRemove = relation
-            };
+            RelationToEdit = relation,
+            CompletedRelationToRemove = relation
+        };
         StateHasChanged();
     }
 
@@ -278,6 +292,14 @@
         StateHasChanged();
     }
 
+    public void Ok(InterPersonalRelationsEditor.RelationContext relationContext)
+    {
+        relationContext.Match(OkFrom, OkTo);
+        this.relationContext = null;
+        StateHasChanged();
+
+    }
+        
     public void OkFrom(InterPersonalRelationsEditor.RelationContext.RelationContextFrom relationContext)
     {
         if (dialogFrom is not null) {
@@ -298,12 +320,6 @@
                 );
             }
         }
-        StateHasChanged();
-    }
-    public void CancelFrom()
-    {
-        relationContext = null;
-        StateHasChanged();
     }
     public void OkTo(InterPersonalRelationsEditor.RelationContext.RelationContextTo relationContext)
     {
@@ -325,9 +341,8 @@
                 );
             }
         }
-        StateHasChanged();
     }
-    public void CancelTo()
+    public void Cancel()
     {
         relationContext = null;
         StateHasChanged();

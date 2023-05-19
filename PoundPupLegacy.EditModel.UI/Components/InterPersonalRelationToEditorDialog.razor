@@ -79,17 +79,8 @@
 
     protected override void OnInitialized()
     {
-        RelationContext.RelationToEdit.PersonListItemTo = RelationContext.RelationToEdit.PersonItemFrom switch {
-            PersonListItem p => p,
-            _ => null
-        };
-        RelationContext.RelationToEdit.PersonListItemTo = RelationContext.RelationToEdit.PersonItemTo switch {
-            PersonListItem p => p,
-            _ => null
-        };
         editContext = new EditContext(RelationContext.RelationToEdit);
         validationMessageStore = new ValidationMessageStore(editContext);
-
         RelationType = RelationTypes.First(x => x.Id == RelationContext.RelationToEdit.InterPersonalRelationType.Id);
     }
 
@@ -107,16 +98,16 @@
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
-        if (RelationContext.RelationToEdit.PersonListItemFrom is null) {
-            validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.PersonListItemFrom)), "Person to is required");
+        if (RelationContext.RelationToEdit.PersonItemFrom is null) {
+            validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.PersonItemFrom)), "Person to is required");
             hasErrors = true;
             editContext.NotifyValidationStateChanged();
         }
         if (hasErrors)
             return null;
         return RelationContext.RelationToEdit.Match<CompletedInterPersonalRelationTo>(
-            incompleteInterPersonalRelationTo: x => x.GetCompletedRelation(RelationContext.RelationToEdit.PersonListItemFrom!),
-            completedInterPersonalRelationTo: x => x with { PersonFrom = RelationContext.RelationToEdit.PersonListItemFrom! }
+            incompleteInterPersonalRelationTo: x => x.GetCompletedRelation(RelationContext.RelationToEdit.PersonItemFrom!),
+            completedInterPersonalRelationTo: x => x with { PersonFrom = RelationContext.RelationToEdit.PersonItemFrom! }
         );
     }
 }

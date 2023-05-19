@@ -66,13 +66,8 @@ internal sealed class DisruptedPlacementCasesDocumentReaderFactory : SingleItemD
         				    teaser,
         				    'HasBeenPublished',
         				    has_been_published,
-                            'DateTimeRange',
-                            jsonb_build_object(
-                                'From',
-                                lower(fuzzy_date),
-                                'To',
-                                upper(fuzzy_date)
-                            ),
+                            'Date',
+                            fuzzy_date,
                             'Tags',
                             terms
         			    )

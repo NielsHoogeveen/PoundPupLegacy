@@ -10,20 +10,20 @@ public sealed record Document : SimpleTextNode
     public required int NodeTypeId { get; init; }
     public required string Title { get; init; }
     public required string Text { get; init; }
-    public DateTime? PublicationDateFrom { get; set; }
-    public DateTime? PublicationDateTo { get; set; }
-    public FuzzyDate? Published {
-        get {
-            if (PublicationDateFrom is not null && PublicationDateTo is not null) {
-                var dateTimeRange = new DateTimeRange(PublicationDateFrom, PublicationDateTo);
-                if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
-                    return result;
-                }
-            }
-            return null;
-        }
-    }
-
+    //public DateTime? PublicationDateFrom { get; set; }
+    //public DateTime? PublicationDateTo { get; set; }
+    //public FuzzyDate? Published {
+    //    get {
+    //        if (PublicationDateFrom is not null && PublicationDateTo is not null) {
+    //            var dateTimeRange = new DateTimeRange(PublicationDateFrom, PublicationDateTo);
+    //            if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
+    //                return result;
+    //            }
+    //        }
+    //        return null;
+    //    }
+    //}
+    public required FuzzyDate? Published { get; init; }
     public BasicLink? DocumentType { get; init; }
     public string? SourceUrl { get; init; }
     public string? SourceUrlHost => SourceUrl is null ? null : new Uri(SourceUrl).Host;

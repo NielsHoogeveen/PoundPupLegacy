@@ -1,7 +1,12 @@
 ﻿@typeparam TRelation where TRelation: InterPersonalRelation
 @inherits EditorBase
 <div class="relations-editor">
-    <h4>Relations between this person and another one</h4>
+    @if (typeof(TRelation).Name.EndsWith("From")) {
+        <h4>Relations between this person and another one</h4>
+    }
+    @if (typeof(TRelation).Name.EndsWith("To")) {
+        <h4>Relations between another person and this one</h4>
+    }
     @if (Relations.Any())
     {
         <div class="relations">
