@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Readers;
 using System.Data;
@@ -8,21 +7,12 @@ using System.Security.Principal;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal sealed class AuthenticationService : IAuthenticationService
-{
-    private NpgsqlConnection _connection;
-    private readonly ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse> _passwordValidationReaderFactory;
-    public AuthenticationService(
+internal sealed class AuthenticationService(
         IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse> passwordValidationReaderFactory)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-        _passwordValidationReaderFactory = passwordValidationReaderFactory;
-
-    }
-
+        ILogger<AuthenticationService> logger,
+        ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse> passwordValidationReaderFactory
+    ) : DatabaseService(connection, logger), IAuthenticationService
+{
     public async Task<ClaimsIdentity?> Login(string userName, string password)
     {
         string CreateMD5(string input)
@@ -33,10 +23,9 @@ internal sealed class AuthenticationService : IAuthenticationService
 
             return Convert.ToHexString(hashBytes).ToLower();
         }
-        try {
-            await _connection.OpenAsync();
+        return await WithConnection(async (connection) => {
 
-            await using var reader = await _passwordValidationReaderFactory.CreateAsync(_connection);
+            await using var reader = await passwordValidationReaderFactory.CreateAsync(connection);
             var response = await reader.ReadAsync(new PasswordValidationReaderRequest {
                 Password = CreateMD5(password),
                 UserName = userName.ToLower()
@@ -50,11 +39,6 @@ internal sealed class AuthenticationService : IAuthenticationService
                 return claimsIdentity;
             }
             return null;
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 }

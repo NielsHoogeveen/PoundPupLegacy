@@ -2,16 +2,10 @@
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class TenantRefreshService : ITenantRefreshService
+public class TenantRefreshService(ISiteDataService siteDataService) : ITenantRefreshService
 {
-    private readonly ISiteDataService _siteDataService;
-    public TenantRefreshService(ISiteDataService siteDataService)
-    {
-        _siteDataService = siteDataService;
-    }
-
     public async Task Refresh()
     {
-        await _siteDataService.RefreshTenants();
+        await siteDataService.RefreshTenants();
     }
 }

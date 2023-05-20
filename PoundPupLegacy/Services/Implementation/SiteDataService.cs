@@ -9,7 +9,17 @@ using System.Diagnostics;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal sealed class SiteDataService : ISiteDataService
+internal sealed class SiteDataService(
+    IDbConnection connection,
+    ILogger<SiteDataService> logger,
+    IConfiguration configuration,
+    IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant> tenantsReaderFactory,
+    IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode> tenantNodesReaderFactory,
+    IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems> menuItemsReaderFactory,
+    IEnumerableDatabaseReaderFactory<UserTenantEditActionReaderRequest, UserTenantEditAction> userTenantEditActionReaderFactory,
+    IEnumerableDatabaseReaderFactory<UserTenantEditOwnActionReaderRequest, UserTenantEditOwnAction> userTenantEditOwnActionReaderFactory,
+    IEnumerableDatabaseReaderFactory<UserTenantActionReaderRequest, UserTenantAction> userTenantActionReaderFactory
+) : DatabaseService(connection, logger), ISiteDataService
 {
     private record Data
     {
@@ -31,43 +41,6 @@ internal sealed class SiteDataService : ISiteDataService
         UserTenantEditOwnActions = new HashSet<UserTenantEditOwnAction>()
     };
 
-    private readonly NpgsqlConnection _connection;
-    private readonly ILogger<SiteDataService> _logger;
-    private readonly IConfiguration _configuration;
-    private readonly IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant> _tenantsReaderFactory;
-    private readonly IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode> _tenantNodesReaderFactory;
-    private readonly IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems> _menuItemsReaderFactory;
-    private readonly IEnumerableDatabaseReaderFactory<UserTenantEditActionReaderRequest, UserTenantEditAction> _userTenantEditActionReaderFactory;
-    private readonly IEnumerableDatabaseReaderFactory<UserTenantEditOwnActionReaderRequest, UserTenantEditOwnAction> _userTenantEditOwnActionReaderFactory;
-    private readonly IEnumerableDatabaseReaderFactory<UserTenantActionReaderRequest, UserTenantAction> _userTenantActionReaderFactory;
-
-
-
-    public SiteDataService(
-        IDbConnection connection,
-        ILogger<SiteDataService> logger,
-        IConfiguration configuration,
-        IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant> tenantsReaderFactory,
-        IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode> tenantNodesReaderFactory,
-        IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems> menuItemsReaderFactory,
-        IEnumerableDatabaseReaderFactory<UserTenantEditActionReaderRequest, UserTenantEditAction> userTenantEditActionReaderFactory,
-        IEnumerableDatabaseReaderFactory<UserTenantEditOwnActionReaderRequest, UserTenantEditOwnAction> userTenantEditOwnActionReaderFactory,
-        IEnumerableDatabaseReaderFactory<UserTenantActionReaderRequest, UserTenantAction> userTenantActionReaderFactory)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-
-        _logger = logger;
-        _configuration = configuration;
-        _tenantsReaderFactory = tenantsReaderFactory;
-        _tenantNodesReaderFactory = tenantNodesReaderFactory;
-        _menuItemsReaderFactory = menuItemsReaderFactory;
-        _userTenantEditActionReaderFactory = userTenantEditActionReaderFactory;
-        _userTenantEditOwnActionReaderFactory = userTenantEditOwnActionReaderFactory;
-        _userTenantActionReaderFactory = userTenantActionReaderFactory;
-    }
-
     /*
      * Assignment is atomic, therefore if we prepare all data in a single object,
      * we can reinitialize using a single assignment. As a result, from the 
@@ -75,7 +48,7 @@ internal sealed class SiteDataService : ISiteDataService
      */
     public async Task InitializeAsync()
     {
-        _logger.LogInformation("Loading site data");
+        logger.LogInformation("Loading site data");
         var data = new Data {
             Tenants = await LoadTenantsAsync(),
             UserMenus = await LoadUserMenusAsync(),
@@ -135,9 +108,9 @@ internal sealed class SiteDataService : ISiteDataService
     {
         var domainName = uri.Host;
         if (domainName == "localhost") {
-            var localHostTenantString = _configuration["LocalHostTenant"];
+            var localHostTenantString = configuration["LocalHostTenant"];
             if (localHostTenantString is null) {
-                _logger.LogError("Local host tenant is not defined in appsettings.json");
+                logger.LogError("Local host tenant is not defined in appsettings.json");
                 return 1;
             }
             if (int.TryParse(localHostTenantString, out int localHostTenant)) {
@@ -186,13 +159,12 @@ internal sealed class SiteDataService : ISiteDataService
         var tenants = new List<Tenant>();
         var sw = Stopwatch.StartNew();
 
-        try {
-            await _connection.OpenAsync();
-            await using var tenantsReader = await _tenantsReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var tenantsReader = await tenantsReaderFactory.CreateAsync(connection);
             await foreach (var tenant in tenantsReader.ReadAsync(new TenantsReaderRequest())) {
                 tenants.Add(tenant);
             }
-            await using var tenantNodesReader = await _tenantNodesReaderFactory.CreateAsync(_connection);
+            await using var tenantNodesReader = await tenantNodesReaderFactory.CreateAsync(connection);
             await foreach (var tenantNode in tenantNodesReader.ReadAsync(new TenantNodesReaderRequest())) {
                 var tenant = tenants.Find(x => x.Id == tenantNode.TenantId);
                 if (tenant is null) {
@@ -201,86 +173,62 @@ internal sealed class SiteDataService : ISiteDataService
                 tenant.UrlToId.Add(tenantNode.UrlPath, tenantNode.UrlId);
                 tenant.IdToUrl.Add(tenantNode.UrlId, tenantNode.UrlPath);
             }
-            _logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
+            logger.LogInformation($"Loaded tenant urls in {sw.ElapsedMilliseconds}ms");
             return tenants;
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
+        });
     }
 
     private async Task<Dictionary<(int, int), List<Models.MenuItem>>> LoadUserMenusAsync()
     {
         var sw = Stopwatch.StartNew();
         var userMenus = new Dictionary<(int, int), List<Models.MenuItem>>();
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _menuItemsReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await menuItemsReaderFactory.CreateAsync(connection);
             await foreach (var item in reader.ReadAsync(new MenuItemsReaderRequest())) {
                 userMenus.Add((item.UserId, item.TenantId), item.MenuItems);
             }
-
-
-
-            _logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
+            logger.LogInformation($"Loaded user menus in {sw.ElapsedMilliseconds}ms");
             return userMenus;
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
+        });
     }
     private async Task<HashSet<UserTenantEditAction>> LoadUserTenantEditActionsAsync()
     {
         var sw = Stopwatch.StartNew();
         var userTenantActions = new HashSet<UserTenantEditAction>();
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _userTenantEditActionReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await userTenantEditActionReaderFactory.CreateAsync(connection);
             await foreach (var item in reader.ReadAsync(new UserTenantEditActionReaderRequest())) {
                 userTenantActions.Add(item);
             }
-            _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
+            logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
             return userTenantActions;
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
+        });
     }
     private async Task<HashSet<UserTenantEditOwnAction>> LoadUserTenantEditOwnActionsAsync()
     {
         var sw = Stopwatch.StartNew();
         var userTenantActions = new HashSet<UserTenantEditOwnAction>();
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _userTenantEditOwnActionReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await userTenantEditOwnActionReaderFactory.CreateAsync(connection);
             await foreach (var item in reader.ReadAsync(new UserTenantEditOwnActionReaderRequest())) {
                 userTenantActions.Add(item);
             }
-            _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
+            logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
             return userTenantActions;
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
+        });
     }
     private async Task<HashSet<UserTenantAction>> LoadUserTenantActionsAsync()
     {
         var sw = Stopwatch.StartNew();
         var userTenantActions = new HashSet<UserTenantAction>();
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _userTenantActionReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await userTenantActionReaderFactory.CreateAsync(connection);
             await foreach (var item in reader.ReadAsync(new UserTenantActionReaderRequest())) {
                 userTenantActions.Add(item);
             }
-            _logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
+            logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
             return userTenantActions;
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     public IEnumerable<MenuItem> GetMenuItemsForUser(int userId, int tenantId)

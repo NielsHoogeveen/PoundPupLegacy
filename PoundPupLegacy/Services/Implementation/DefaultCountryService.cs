@@ -2,16 +2,11 @@
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class DefaultCountryService : IDefaultCountryService
+public class DefaultCountryService(ISiteDataService siteDataService) : IDefaultCountryService
 {
 
-    private readonly ISiteDataService _siteDataService;
-    public DefaultCountryService(ISiteDataService siteDataService)
-    {
-        _siteDataService = siteDataService;
-    }
     public (int, string) GetDefaultCountry(int tenantId)
     {
-        return _siteDataService.GetDefaultCountry(tenantId);
+        return siteDataService.GetDefaultCountry(tenantId);
     }
 }
