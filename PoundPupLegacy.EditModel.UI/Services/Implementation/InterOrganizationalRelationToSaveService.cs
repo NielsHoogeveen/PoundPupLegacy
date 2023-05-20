@@ -1,26 +1,15 @@
-﻿
+﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
-
-internal class InterOrganizationalRelationToSaveService : ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>>
+internal class InterOrganizationalRelationToSaveService(
+    IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
+    IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> interOrganizationalRelationUpdaterFactory,
+    IEntityCreator<CreateModel.InterOrganizationalRelation> interOrganizationalRelationCreator
+) : ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>>
 {
-    private readonly IDatabaseUpdaterFactory<NodeUnpublishRequest> _nodeUnpublishFactory;
-    private readonly IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> _interOrganizationalRelationUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.InterOrganizationalRelation> _interOrganizationalRelationCreator;
-    public InterOrganizationalRelationToSaveService(
-        IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
-        IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> interOrganizationalRelationUpdaterFactory,
-        IEntityCreator<CreateModel.InterOrganizationalRelation> interOrganizationalRelationCreator
-    )
-    {
-        _nodeUnpublishFactory = nodeUnpublishFactory;
-        _interOrganizationalRelationUpdaterFactory = interOrganizationalRelationUpdaterFactory;
-        _interOrganizationalRelationCreator = interOrganizationalRelationCreator;
-    }
     public async Task SaveAsync(IEnumerable<ResolvedInterOrganizationalRelationTo> item, IDbConnection connection)
     {
-        await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
-        await using var updater = await _interOrganizationalRelationUpdaterFactory.CreateAsync(connection);
+        await using var unpublisher = await nodeUnpublishFactory.CreateAsync(connection);
+        await using var updater = await interOrganizationalRelationUpdaterFactory.CreateAsync(connection);
 
         foreach (var relation in item.OfType<ExistingInterOrganizationalRelationTo>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
@@ -77,6 +66,6 @@ internal class InterOrganizationalRelationToSaveService : ISaveService<IEnumerab
                 };
             }
         }
-        await _interOrganizationalRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
+        await interOrganizationalRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
     }
 }

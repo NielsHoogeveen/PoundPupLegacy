@@ -1,20 +1,13 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class TagsSaveService : ISaveService<IEnumerable<Tag>>
-{
-    private readonly IDatabaseDeleterFactory<NodeTermDeleterRequest> _nodeTermDeleterFactory;
-    private readonly IDatabaseInserterFactory<CreateModel.NodeTerm> _nodeTermInserterFactory;
-    public TagsSaveService(
+internal sealed class TagsSaveService(
         IDatabaseDeleterFactory<NodeTermDeleterRequest> nodeTermDeleterFactory,
         IDatabaseInserterFactory<CreateModel.NodeTerm> nodeTermInserterFactory
-        )
-    {
-        _nodeTermDeleterFactory = nodeTermDeleterFactory;
-        _nodeTermInserterFactory = nodeTermInserterFactory;
-    }
+        ) : ISaveService<IEnumerable<Tag>>
+{
     public async Task SaveAsync(IEnumerable<Tag> tags, IDbConnection connection)
     {
-        await using var deleter = await _nodeTermDeleterFactory.CreateAsync(connection);
+        await using var deleter = await nodeTermDeleterFactory.CreateAsync(connection);
         foreach (var tag in tags.Where(x => x.HasBeenDeleted)) {
             await deleter.DeleteAsync(new NodeTermDeleterRequest {
                 NodeId = tag.NodeId!.Value,
@@ -22,7 +15,7 @@ internal sealed class TagsSaveService : ISaveService<IEnumerable<Tag>>
             });
         }
 
-        await using var inserter = await _nodeTermInserterFactory.CreateAsync(connection);
+        await using var inserter = await nodeTermInserterFactory.CreateAsync(connection);
         foreach (var tag in tags.Where(x => !x.IsStored)) {
             await inserter.InsertAsync(new CreateModel.NodeTerm {
                 NodeId = tag.NodeId!.Value,

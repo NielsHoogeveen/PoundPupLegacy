@@ -2,25 +2,16 @@
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal class InterPersonalRelationToSaveService : ISaveService<IEnumerable<ResolvedInterPersonalRelationTo>>
+internal class InterPersonalRelationToSaveService(
+    IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
+    IDatabaseUpdaterFactory<InterPersonalRelationUpdaterRequest> interPersonalRelationUpdaterFactory,
+    IEntityCreator<CreateModel.InterPersonalRelation> interPersonalRelationCreator
+) : ISaveService<IEnumerable<ResolvedInterPersonalRelationTo>>
 {
-    private readonly IDatabaseUpdaterFactory<NodeUnpublishRequest> _nodeUnpublishFactory;
-    private readonly IDatabaseUpdaterFactory<InterPersonalRelationUpdaterRequest> _interPersonalRelationUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.InterPersonalRelation> _interPersonalRelationCreator;
-    public InterPersonalRelationToSaveService(
-        IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
-        IDatabaseUpdaterFactory<InterPersonalRelationUpdaterRequest> interPersonalRelationUpdaterFactory,
-        IEntityCreator<CreateModel.InterPersonalRelation> interPersonalRelationCreator
-    )
-    {
-        _nodeUnpublishFactory = nodeUnpublishFactory;
-        _interPersonalRelationUpdaterFactory = interPersonalRelationUpdaterFactory;
-        _interPersonalRelationCreator = interPersonalRelationCreator;
-    }
     public async Task SaveAsync(IEnumerable<ResolvedInterPersonalRelationTo> item, IDbConnection connection)
     {
-        await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
-        await using var updater = await _interPersonalRelationUpdaterFactory.CreateAsync(connection);
+        await using var unpublisher = await nodeUnpublishFactory.CreateAsync(connection);
+        await using var updater = await interPersonalRelationUpdaterFactory.CreateAsync(connection);
 
         foreach (var relation in item.OfType<ExistingInterPersonalRelationTo>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
@@ -71,6 +62,6 @@ internal class InterPersonalRelationToSaveService : ISaveService<IEnumerable<Res
                 };
             }
         }
-        await _interPersonalRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
+        await interPersonalRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
     }
 }

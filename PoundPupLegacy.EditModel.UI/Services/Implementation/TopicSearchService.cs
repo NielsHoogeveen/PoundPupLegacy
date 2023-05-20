@@ -1,31 +1,23 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class TopicSearchService : ITopicSearchService
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal sealed class TopicSearchService(
+    IDbConnection connection,
+    ILogger<TopicSearchService> logger,
+    IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest> doesTopcExistReaderFactory,
+    IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag> tagDocumentsReaderFactory
+) : DatabaseService(connection, logger), ITopicSearchService
 {
-    private readonly NpgsqlConnection _connection;
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-    private readonly IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag> _tagDocumentsReaderFactory;
-    private readonly IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest> _doesTopcExistReaderFactory;
-
-    public TopicSearchService(
-        IDbConnection connection,
-        IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest> doesTopcExistReaderFactory,
-        IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, Tag> tagDocumentsReaderFactory)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-        _tagDocumentsReaderFactory = tagDocumentsReaderFactory;
-        _doesTopcExistReaderFactory = doesTopcExistReaderFactory;
-    }
     public async Task<List<Tag>> GetTerms(int? nodeId, int tenantId, string searchString, int[] nodeTypeIds)
     {
         await semaphore.WaitAsync();
         List<Tag> tags = new();
         try {
-            await _connection.OpenAsync();
-            await using var reader = await _tagDocumentsReaderFactory.CreateAsync(_connection);
+            await connection.OpenAsync();
+            await using var reader = await tagDocumentsReaderFactory.CreateAsync(connection);
             await foreach (var elem in reader.ReadAsync(new TagDocumentsReaderRequest {
                 NodeId = nodeId,
                 TenantId = tenantId,
@@ -38,15 +30,15 @@ internal sealed class TopicSearchService : ITopicSearchService
             return tags;
         }
         finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
+            if (connection.State == ConnectionState.Open) {
+                await connection.CloseAsync();
             }
             semaphore.Release();
         }
     }
     public async Task<bool> DoesTopicExist(string name)
     {
-        var reader = await _doesTopcExistReaderFactory.CreateAsync(_connection);
+        var reader = await doesTopcExistReaderFactory.CreateAsync(connection);
         return await reader.ReadAsync(new TopicExistsRequest { Name = name });
     }
 }

@@ -1,24 +1,15 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal class LocationsSaveService : ISaveService<IEnumerable<Location>>
+internal class LocationsSaveService(
+    IDatabaseDeleterFactory<LocationDeleterRequest> locationDeleterFactory,
+    IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
+    IEntityCreator<CreateModel.Location> locationCreator
+) : ISaveService<IEnumerable<Location>>
 {
-    private readonly IDatabaseDeleterFactory<LocationDeleterRequest> _locationDeleterFactory;
-    private readonly IDatabaseUpdaterFactory<LocationUpdaterRequest> _locationUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.Location> _locationCreator;
-    public LocationsSaveService(
-        IDatabaseDeleterFactory<LocationDeleterRequest> locationDeleterFactory,
-        IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
-        IEntityCreator<CreateModel.Location> locationCreator
-    )
-    {
-        _locationDeleterFactory = locationDeleterFactory;
-        _locationUpdaterFactory = locationUpdaterFactory;
-        _locationCreator = locationCreator;
-    }
     public async Task SaveAsync(IEnumerable<Location> item, IDbConnection connection)
     {
-        await using var deleter = await _locationDeleterFactory.CreateAsync(connection);
-        await using var updater = await _locationUpdaterFactory.CreateAsync(connection);
+        await using var deleter = await locationDeleterFactory.CreateAsync(connection);
+        await using var updater = await locationUpdaterFactory.CreateAsync(connection);
 
         foreach (var location in item.Where(x => x.HasBeenDeleted)) {
             if (!location.LocatableId.HasValue)
@@ -68,6 +59,6 @@ internal class LocationsSaveService : ISaveService<IEnumerable<Location>>
             }
 
         }
-        await _locationCreator.CreateAsync(GetLocationsToInsert().ToAsyncEnumerable(), connection);
+        await locationCreator.CreateAsync(GetLocationsToInsert().ToAsyncEnumerable(), connection);
     }
 }

@@ -1,74 +1,51 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<ChildTraffickingCase, ExistingChildTraffickingCase, NewChildTraffickingCase, CreateModel.ChildTraffickingCase>, IEditService<ChildTraffickingCase>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal sealed class ChildTraffickingCaseEditService(
+    IDbConnection connection,
+    ILogger<ChildTraffickingCaseEditService> logger,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewChildTraffickingCase> createChildTraffickingCaseReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingChildTraffickingCase> childTraffickingCaseUpdateDocumentReaderFactory,
+    IDatabaseUpdaterFactory<ChildTraffickingCaseUpdaterRequest> childTraffickingCaseUpdaterFactory,
+    ISaveService<IEnumerable<Tag>> tagSaveService,
+    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
+    ISaveService<IEnumerable<File>> filesSaveService,
+    ITenantRefreshService tenantRefreshService,
+    IEntityCreator<CreateModel.ChildTraffickingCase> childTraffickingCaseCreator,
+    ITextService textService
+) : NodeEditServiceBase<ChildTraffickingCase, ExistingChildTraffickingCase, NewChildTraffickingCase, CreateModel.ChildTraffickingCase>
+(
+    connection,
+    logger,
+    tagSaveService,
+    tenantNodesSaveService,
+    filesSaveService,
+    tenantRefreshService
+), IEditService<ChildTraffickingCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewChildTraffickingCase> _createChildTraffickingCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingChildTraffickingCase> _childTraffickingCaseUpdateDocumentReaderFactory;
-    private readonly IDatabaseUpdaterFactory<ChildTraffickingCaseUpdaterRequest> _childTraffickingCaseUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.ChildTraffickingCase> _childTraffickingCaseCreator;
-    private readonly ITextService _textService;
-
-
-    public ChildTraffickingCaseEditService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewChildTraffickingCase> createChildTraffickingCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingChildTraffickingCase> childTraffickingCaseUpdateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<ChildTraffickingCaseUpdaterRequest> childTraffickingCaseUpdaterFactory,
-        ISaveService<IEnumerable<Tag>> tagSaveService,
-        ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-        ISaveService<IEnumerable<File>> filesSaveService,
-        ITenantRefreshService tenantRefreshService,
-        IEntityCreator<CreateModel.ChildTraffickingCase> childTraffickingCaseCreator,
-        ITextService textService
-    ) : base(
-        connection,
-        tagSaveService,
-        tenantNodesSaveService,
-        filesSaveService,
-        tenantRefreshService)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _childTraffickingCaseUpdateDocumentReaderFactory = childTraffickingCaseUpdateDocumentReaderFactory;
-        _createChildTraffickingCaseReaderFactory = createChildTraffickingCaseReaderFactory;
-        _childTraffickingCaseCreator = childTraffickingCaseCreator;
-        _textService = textService;
-        _childTraffickingCaseUpdaterFactory = childTraffickingCaseUpdaterFactory;
-    }
     public async Task<ChildTraffickingCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _childTraffickingCaseUpdateDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await childTraffickingCaseUpdateDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     public async Task<ChildTraffickingCase?> GetViewModelAsync(int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _createChildTraffickingCaseReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await createChildTraffickingCaseReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.DOCUMENT,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     protected sealed override async Task<int> StoreNew(NewChildTraffickingCase childTraffickingCase, NpgsqlConnection connection)
@@ -77,7 +54,7 @@ internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<Chil
         var createDocument = new CreateModel.ChildTraffickingCase {
             Id = null,
             Title = childTraffickingCase.Title,
-            Description = childTraffickingCase.Description is null ? "" : _textService.FormatText(childTraffickingCase.Description),
+            Description = childTraffickingCase.Description is null ? "" : textService.FormatText(childTraffickingCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -106,16 +83,16 @@ internal sealed class ChildTraffickingCaseEditService : NodeEditServiceBase<Chil
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,
             CountryIdFrom = childTraffickingCase.CountryIdFrom
         };
-        await _childTraffickingCaseCreator.CreateAsync(createDocument, connection);
+        await childTraffickingCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;
     }
 
     protected sealed override async Task StoreExisting(ExistingChildTraffickingCase childTraffickingCase, NpgsqlConnection connection)
     {
-        await using var updater = await _childTraffickingCaseUpdaterFactory.CreateAsync(connection);
+        await using var updater = await childTraffickingCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new ChildTraffickingCaseUpdaterRequest {
             Title = childTraffickingCase.Title,
-            Description = childTraffickingCase.Description is null ? "" : _textService.FormatText(childTraffickingCase.Description),
+            Description = childTraffickingCase.Description is null ? "" : textService.FormatText(childTraffickingCase.Description),
             NodeId = childTraffickingCase.NodeId,
             Date = childTraffickingCase.Date,
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,

@@ -1,18 +1,10 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class OrganizationEditService : PartyEditServiceBase<Organization, ExistingOrganization, NewOrganization, CreateModel.Organization>, IEditService<Organization>
-{
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewOrganization> _organizationCreateDocumentReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingOrganization> _organizationUpdateDocumentReaderFactory;
-    private readonly ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>> _interOrganizationalRelationSaveServiceFrom;
-    private readonly ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>> _interOrganizationalRelationSaveServiceTo;
-    private readonly ISaveService<IEnumerable<Location>> _locationsSaveService;
-    private readonly IDatabaseUpdaterFactory<OrganizationUpdaterRequest> _organizationUpdateFactory;
-    private readonly IEntityCreator<CreateModel.Organization> _organizationEntityCreator;
-    public OrganizationEditService(
+internal sealed class OrganizationEditService(
         IDbConnection connection,
+        ILogger<OrganizationEditService> logger,
         ITenantRefreshService tenantRefreshService,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewOrganization> organizationCreateDocumentReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingOrganization> organizationUpdateDocumentReaderFactory,
@@ -26,43 +18,32 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
         IEntityCreator<CreateModel.Organization> organizationEntityCreator,
         ITextService textService
 
-    ) : base(
+    ) : PartyEditServiceBase<Organization, ExistingOrganization, NewOrganization, CreateModel.Organization>(
         connection,
+        logger,
         tagSaveService,
         tenantNodesSaveService,
         filesSaveService,
         textService,
-        tenantRefreshService)
-    {
-        _organizationUpdateDocumentReaderFactory = organizationUpdateDocumentReaderFactory;
-        _organizationCreateDocumentReaderFactory = organizationCreateDocumentReaderFactory;
-        _interOrganizationalRelationSaveServiceFrom = interOrganizationalRelationSaveServiceFrom;
-        _interOrganizationalRelationSaveServiceTo = interOrganizationalRelationSaveServiceTo;
-        _locationsSaveService = locationsSaveService;
-        _organizationUpdateFactory = organizationUpdateFactory;
-        _organizationEntityCreator = organizationEntityCreator;
-    }
+        tenantRefreshService
+   ), IEditService<Organization>
+{
+
+
     public async Task<Organization?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _organizationUpdateDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await organizationUpdateDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
-    protected override async Task StoreAdditional(Organization organization, int nodeId)
+    private async Task StoreInterOrganizationalRelationsFrom(Organization organization, int nodeId, NpgsqlConnection connection)
     {
-        await base.StoreAdditional(organization, nodeId);
         List<ResolvedInterOrganizationalRelationFrom> interOrganizationalRelation = organization
             .InterOrganizationalRelationsFrom
             .OfType<ExistingInterOrganizationalRelationFrom>()
@@ -129,25 +110,97 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
             .AddRange(newToRelations);
         interOrganizationalRelation
             .AddRange(newFromRelations);
-        await _interOrganizationalRelationSaveServiceFrom.SaveAsync(interOrganizationalRelation, _connection);
-        await _locationsSaveService.SaveAsync(organization.Locations, _connection);
+        await interOrganizationalRelationSaveServiceFrom.SaveAsync(interOrganizationalRelation, connection);
+        await locationsSaveService.SaveAsync(organization.Locations, connection);
+    }
+    private async Task StoreInterOrganizationalRelationsTo(Organization organization, int nodeId, NpgsqlConnection connection)
+    {
+        List<ResolvedInterOrganizationalRelationTo> interOrganizationalRelation = organization
+            .InterOrganizationalRelationsTo
+            .OfType<ExistingInterOrganizationalRelationTo>()
+            .OfType<ResolvedInterOrganizationalRelationTo>()
+            .ToList();
+        IEnumerable<ResolvedInterOrganizationalRelationTo> newToRelations = organization
+                .InterOrganizationalRelationsTo
+                .OfType<CompletedNewInterOrganizationalNewToRelation>()
+                .Select(x => new NewInterOrganizationalExistingRelationTo {
+                    OrganizationFrom = x.OrganizationFrom,
+                    OrganizationTo = new OrganizationListItem {
+                        Id = nodeId,
+                        Name = x.OrganizationToName
+                    },
+                    DateFrom = x.DateFrom,
+                    DateTo = x.DateTo,
+                    Description = x.Description,
+                    Files = x.Files,
+                    GeographicalEntity = x.GeographicalEntity,
+                    HasBeenDeleted = x.HasBeenDeleted,
+                    InterOrganizationalRelationType = x.InterOrganizationalRelationType,
+                    MoneyInvolved = x.MoneyInvolved,
+                    NodeTypeName = x.NodeTypeName,
+                    NumberOfChildrenInvolved = x.NumberOfChildrenInvolved,
+                    OwnerId = x.OwnerId,
+                    PublisherId = x.PublisherId,
+                    ProofDocument = x.ProofDocument,
+                    Tags = x.Tags,
+                    TenantNodes = x.TenantNodes,
+                    Tenants = x.Tenants,
+                    Title = x.Title,
+                })
+                .OfType<ResolvedInterOrganizationalRelationTo>();
+        IEnumerable<ResolvedInterOrganizationalRelationTo> newFromRelations = organization
+                .InterOrganizationalRelationsTo
+                .OfType<CompletedNewInterOrganizationalNewToRelation>()
+                .Select(x => new NewInterOrganizationalExistingRelationTo {
+                    OrganizationFrom = x.OrganizationFrom,
+                    OrganizationTo = new OrganizationListItem {
+                        Id = nodeId,
+                        Name = x.OrganizationToName
+                    },
+                    DateFrom = x.DateFrom,
+                    DateTo = x.DateTo,
+                    Description = x.Description,
+                    Files = x.Files,
+                    GeographicalEntity = x.GeographicalEntity,
+                    HasBeenDeleted = x.HasBeenDeleted,
+                    InterOrganizationalRelationType = x.InterOrganizationalRelationType,
+                    MoneyInvolved = x.MoneyInvolved,
+                    NodeTypeName = x.NodeTypeName,
+                    NumberOfChildrenInvolved = x.NumberOfChildrenInvolved,
+                    OwnerId = x.OwnerId,
+                    PublisherId = x.PublisherId,
+                    ProofDocument = x.ProofDocument,
+                    Tags = x.Tags,
+                    TenantNodes = x.TenantNodes,
+                    Tenants = x.Tenants,
+                    Title = x.Title,
+
+                })
+                .OfType<ResolvedInterOrganizationalRelationTo>();
+        interOrganizationalRelation
+            .AddRange(newToRelations);
+        interOrganizationalRelation
+            .AddRange(newFromRelations);
+        await interOrganizationalRelationSaveServiceTo.SaveAsync(interOrganizationalRelation, connection);
+        await locationsSaveService.SaveAsync(organization.Locations, connection);
+    }
+
+    protected override async Task StoreAdditional(Organization organization, int nodeId, NpgsqlConnection connection)
+    {
+        await base.StoreAdditional(organization, nodeId, connection);
+        await StoreInterOrganizationalRelationsFrom(organization, nodeId, connection);
+        await StoreInterOrganizationalRelationsTo(organization, nodeId, connection);
     }
     public async Task<Organization?> GetViewModelAsync(int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _organizationCreateDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await organizationCreateDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.PERSON,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
     protected sealed override async Task<int> StoreNew(NewOrganization organization, NpgsqlConnection connection)
     {
@@ -182,13 +235,13 @@ internal sealed class OrganizationEditService : PartyEditServiceBase<Organizatio
             }).ToList(),
             VocabularyNames = new List<CreateModel.VocabularyName>()
         };
-        await _organizationEntityCreator.CreateAsync(creationOrganization, connection);
+        await organizationEntityCreator.CreateAsync(creationOrganization, connection);
         return creationOrganization.Id!.Value;
     }
 
     protected sealed override async Task StoreExisting(ExistingOrganization organization, NpgsqlConnection connection)
     {
-        var updater = await _organizationUpdateFactory.CreateAsync(connection);
+        var updater = await organizationUpdateFactory.CreateAsync(connection);
 
         await updater.UpdateAsync(new OrganizationUpdaterRequest {
             Title = organization.Title,

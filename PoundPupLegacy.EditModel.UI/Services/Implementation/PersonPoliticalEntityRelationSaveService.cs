@@ -1,24 +1,15 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal class PersonPoliticalEntityRelationSaveService : ISaveService<IEnumerable<PersonPoliticalEntityRelation>>
+internal class PersonPoliticalEntityRelationSaveService(
+    IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
+    IDatabaseUpdaterFactory<PartyPoliticalEntityRelationUpdaterRequest> partyPoliticalEntityRelationUpdaterFactory,
+    IEntityCreator<CreateModel.PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
+) : ISaveService<IEnumerable<PersonPoliticalEntityRelation>>
 {
-    private readonly IDatabaseUpdaterFactory<NodeUnpublishRequest> _nodeUnpublishFactory;
-    private readonly IDatabaseUpdaterFactory<PartyPoliticalEntityRelationUpdaterRequest> _partyPoliticalEntityRelationUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.PartyPoliticalEntityRelation> _partyPoliticalEntityRelationCreator;
-    public PersonPoliticalEntityRelationSaveService(
-        IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
-        IDatabaseUpdaterFactory<PartyPoliticalEntityRelationUpdaterRequest> partyPoliticalEntityRelationUpdaterFactory,
-        IEntityCreator<CreateModel.PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
-    )
-    {
-        _nodeUnpublishFactory = nodeUnpublishFactory;
-        _partyPoliticalEntityRelationUpdaterFactory = partyPoliticalEntityRelationUpdaterFactory;
-        _partyPoliticalEntityRelationCreator = partyPoliticalEntityRelationCreator;
-    }
     public async Task SaveAsync(IEnumerable<PersonPoliticalEntityRelation> item, IDbConnection connection)
     {
-        await using var unpublisher = await _nodeUnpublishFactory.CreateAsync(connection);
-        await using var updater = await _partyPoliticalEntityRelationUpdaterFactory.CreateAsync(connection);
+        await using var unpublisher = await nodeUnpublishFactory.CreateAsync(connection);
+        await using var updater = await partyPoliticalEntityRelationUpdaterFactory.CreateAsync(connection);
 
         foreach (var relation in item.OfType<ExistingPersonPoliticalEntityRelation>().Where(x => x.HasBeenDeleted)) {
             await unpublisher.UpdateAsync(new NodeUnpublishRequest {
@@ -67,6 +58,6 @@ internal class PersonPoliticalEntityRelationSaveService : ISaveService<IEnumerab
                 };
             }
         }
-        await _partyPoliticalEntityRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
+        await partyPoliticalEntityRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
     }
 }

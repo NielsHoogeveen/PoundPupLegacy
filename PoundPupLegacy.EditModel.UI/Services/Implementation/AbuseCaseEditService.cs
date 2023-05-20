@@ -1,16 +1,10 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, ExistingAbuseCase, NewAbuseCase, CreateModel.AbuseCase>, IEditService<AbuseCase>
-{
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewAbuseCase> _abuseCaseCreateReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingAbuseCase> _abuseCaseUpdateDocumentReaderFactory;
-    private readonly IDatabaseUpdaterFactory<AbuseCaseUpdaterRequest> _abuseCaseUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.AbuseCase> _abuseCaseCreator;
-    private readonly ITextService _textService;
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-
-    public AbuseCaseEditService(
+internal sealed class AbuseCaseEditService(
         IDbConnection connection,
+        ILogger<AbuseCaseEditService> logger,
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewAbuseCase> abuseCaseCreateReaderFactory,
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingAbuseCase> abuseCaseUpdateDocumentReaderFactory,
         IDatabaseUpdaterFactory<AbuseCaseUpdaterRequest> abuseCaseUpdaterFactory,
@@ -20,55 +14,36 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Exis
         ITenantRefreshService tenantRefreshService,
         IEntityCreator<CreateModel.AbuseCase> abuseCaseCreator,
         ITextService textService
-    ) : base(
+    ) : NodeEditServiceBase<AbuseCase, ExistingAbuseCase, NewAbuseCase, CreateModel.AbuseCase>(
         connection,
+        logger,
         tagSaveService,
         tenantNodesSaveService,
         filesSaveService,
-        tenantRefreshService)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _abuseCaseUpdateDocumentReaderFactory = abuseCaseUpdateDocumentReaderFactory;
-        _abuseCaseCreateReaderFactory = abuseCaseCreateReaderFactory;
-        _abuseCaseCreator = abuseCaseCreator;
-        _textService = textService;
-        _abuseCaseUpdaterFactory = abuseCaseUpdaterFactory;
-    }
+        tenantRefreshService), IEditService<AbuseCase>
+{
     public async Task<AbuseCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _abuseCaseUpdateDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await abuseCaseUpdateDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     public async Task<AbuseCase?> GetViewModelAsync(int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _abuseCaseCreateReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await abuseCaseCreateReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.DOCUMENT,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     protected sealed override async Task<int> StoreNew(NewAbuseCase abuseCase, NpgsqlConnection connection)
@@ -77,7 +52,7 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Exis
         var createDocument = new CreateModel.AbuseCase {
             Id = null,
             Title = abuseCase.Title,
-            Description = abuseCase.Description is null ? "" : _textService.FormatText(abuseCase.Description),
+            Description = abuseCase.Description is null ? "" : textService.FormatText(abuseCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -109,16 +84,16 @@ internal sealed class AbuseCaseEditService : NodeEditServiceBase<AbuseCase, Exis
                 }
             }
         };
-        await _abuseCaseCreator.CreateAsync(createDocument, connection);
+        await abuseCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;
     }
 
     protected sealed override async Task StoreExisting(ExistingAbuseCase abuseCase, NpgsqlConnection connection)
     {
-        await using var updater = await _abuseCaseUpdaterFactory.CreateAsync(connection);
+        await using var updater = await abuseCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new AbuseCaseUpdaterRequest {
             Title = abuseCase.Title,
-            Description = abuseCase.Description is null ? "" : _textService.FormatText(abuseCase.Description),
+            Description = abuseCase.Description is null ? "" : textService.FormatText(abuseCase.Description),
             NodeId = abuseCase.NodeId,
             Date = abuseCase.Date,
             ChildPlacementTypeId = abuseCase.ChildPlacementTypeId,

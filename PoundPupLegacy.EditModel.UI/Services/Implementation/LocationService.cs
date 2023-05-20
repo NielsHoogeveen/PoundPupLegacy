@@ -1,38 +1,28 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.Extensions.Logging;
+using System.Net.Http.Json;
 using System.Text;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class LocationService : ILocationService
-{
-    private readonly NpgsqlConnection _connection;
-    private readonly IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem> _subdivisionListItemReaderFactory;
-    private readonly IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem> _countryListItemReaderFactory;
-    public LocationService(
+internal sealed class LocationService(
         IDbConnection connection,
+        ILogger<LocationService> logger,
         IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem> subdivisionListItemReaderFactory,
         IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem> countryListItemReaderFactory
-        )
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-
-        _subdivisionListItemReaderFactory = subdivisionListItemReaderFactory;
-        _countryListItemReaderFactory = countryListItemReaderFactory;
-    }
+        ) : DatabaseService(connection, logger), ILocationService
+{
     public async IAsyncEnumerable<SubdivisionListItem> SubdivisionsOfCountry(int countryId)
     {
         try {
-            await _connection.OpenAsync();
-            await using var reader = await _subdivisionListItemReaderFactory.CreateAsync(_connection);
+            await connection.OpenAsync();
+            await using var reader = await subdivisionListItemReaderFactory.CreateAsync(connection);
             await foreach (var subdivision in reader.ReadAsync(new SubdivisionListItemsReaderRequest { CountryId = countryId })) {
                 yield return subdivision;
             }
         }
         finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
+            if (connection.State == ConnectionState.Open) {
+                await connection.CloseAsync();
             }
 
         }
@@ -41,14 +31,14 @@ internal sealed class LocationService : ILocationService
     public async IAsyncEnumerable<CountryListItem> Countries()
     {
         try {
-            await _connection.OpenAsync();
-            await using var reader = await _countryListItemReaderFactory.CreateAsync(_connection);
+            await connection.OpenAsync();
+            await using var reader = await countryListItemReaderFactory.CreateAsync(connection);
             await foreach (var country in reader.ReadAsync(new CountryListItemsReaderRequest())) {
                 yield return country;
             }
         }
         finally {
-            await _connection.CloseAsync();
+            await connection.CloseAsync();
         }
     }
 

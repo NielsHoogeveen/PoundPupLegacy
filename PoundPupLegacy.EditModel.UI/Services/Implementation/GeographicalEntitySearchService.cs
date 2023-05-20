@@ -1,12 +1,17 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class GeographicalEntitySearchService : SearchService<GeographicalEntityListItem, GeographicalEntitiesReaderRequest>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal sealed class GeographicalEntitySearchService(
+    IDbConnection connection,
+    ILogger<GeographicalEntitySearchService> logger,
+    IEnumerableDatabaseReaderFactory<GeographicalEntitiesReaderRequest, GeographicalEntityListItem> readerFactory
+) : SearchService<GeographicalEntityListItem, GeographicalEntitiesReaderRequest>(
+    connection, 
+    logger, 
+    readerFactory
+)
 {
-    public GeographicalEntitySearchService(
-        IDbConnection connection,
-        IEnumerableDatabaseReaderFactory<GeographicalEntitiesReaderRequest, GeographicalEntityListItem> readerFactory) : base(connection, readerFactory)
-    {
-    }
     protected override GeographicalEntitiesReaderRequest GetRequest(int tenantId, string searchString)
     {
         return new GeographicalEntitiesReaderRequest {

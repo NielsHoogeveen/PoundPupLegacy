@@ -1,74 +1,50 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<WrongfulMedicationCase, ExistingWrongfulMedicationCase, NewWrongfulMedicationCase, CreateModel.WrongfulMedicationCase>, IEditService<WrongfulMedicationCase>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal sealed class WrongfulMedicationCaseEditService(
+    IDbConnection connection,
+    ILogger<WrongfulMedicationCaseEditService> logger,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulMedicationCase> createWrongfulMedicationCaseReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulMedicationCase> wrongfulMedicationCaseUpdateDocumentReaderFactory,
+    IDatabaseUpdaterFactory<WrongfulMedicationCaseUpdaterRequest> wrongfulMedicationCaseUpdaterFactory,
+    ISaveService<IEnumerable<Tag>> tagSaveService,
+    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
+    ISaveService<IEnumerable<File>> filesSaveService,
+    ITenantRefreshService tenantRefreshService,
+    IEntityCreator<CreateModel.WrongfulMedicationCase> wrongfulMedicationCaseCreator,
+    ITextService textService
+) : NodeEditServiceBase<WrongfulMedicationCase, ExistingWrongfulMedicationCase, NewWrongfulMedicationCase, CreateModel.WrongfulMedicationCase>(
+    connection,
+    logger,
+    tagSaveService,
+    tenantNodesSaveService,
+    filesSaveService,
+    tenantRefreshService
+), IEditService<WrongfulMedicationCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulMedicationCase> _createWrongfulMedicationCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulMedicationCase> _wrongfulMedicationCaseUpdateDocumentReaderFactory;
-    private readonly IDatabaseUpdaterFactory<WrongfulMedicationCaseUpdaterRequest> _wrongfulMedicationCaseUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.WrongfulMedicationCase> _wrongfulMedicationCaseCreator;
-    private readonly ITextService _textService;
-
-
-    public WrongfulMedicationCaseEditService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulMedicationCase> createWrongfulMedicationCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulMedicationCase> wrongfulMedicationCaseUpdateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<WrongfulMedicationCaseUpdaterRequest> wrongfulMedicationCaseUpdaterFactory,
-        ISaveService<IEnumerable<Tag>> tagSaveService,
-        ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-        ISaveService<IEnumerable<File>> filesSaveService,
-        ITenantRefreshService tenantRefreshService,
-        IEntityCreator<CreateModel.WrongfulMedicationCase> wrongfulMedicationCaseCreator,
-        ITextService textService
-    ) : base(
-        connection,
-        tagSaveService,
-        tenantNodesSaveService,
-        filesSaveService,
-        tenantRefreshService)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _wrongfulMedicationCaseUpdateDocumentReaderFactory = wrongfulMedicationCaseUpdateDocumentReaderFactory;
-        _createWrongfulMedicationCaseReaderFactory = createWrongfulMedicationCaseReaderFactory;
-        _wrongfulMedicationCaseCreator = wrongfulMedicationCaseCreator;
-        _textService = textService;
-        _wrongfulMedicationCaseUpdaterFactory = wrongfulMedicationCaseUpdaterFactory;
-    }
     public async Task<WrongfulMedicationCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _wrongfulMedicationCaseUpdateDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await wrongfulMedicationCaseUpdateDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     public async Task<WrongfulMedicationCase?> GetViewModelAsync(int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _createWrongfulMedicationCaseReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await createWrongfulMedicationCaseReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.DOCUMENT,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     protected sealed override async Task<int> StoreNew(NewWrongfulMedicationCase wrongfulMedicationCase, NpgsqlConnection connection)
@@ -77,7 +53,7 @@ internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<Wr
         var createDocument = new CreateModel.WrongfulMedicationCase {
             Id = null,
             Title = wrongfulMedicationCase.Title,
-            Description = wrongfulMedicationCase.Description is null ? "" : _textService.FormatText(wrongfulMedicationCase.Description),
+            Description = wrongfulMedicationCase.Description is null ? "" : textService.FormatText(wrongfulMedicationCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -104,16 +80,16 @@ internal sealed class WrongfulMedicationCaseEditService : NodeEditServiceBase<Wr
                 }
             },
         };
-        await _wrongfulMedicationCaseCreator.CreateAsync(createDocument, connection);
+        await wrongfulMedicationCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;
     }
 
     protected sealed override async Task StoreExisting(ExistingWrongfulMedicationCase wrongfulMedicationCase, NpgsqlConnection connection)
     {
-        await using var updater = await _wrongfulMedicationCaseUpdaterFactory.CreateAsync(connection);
+        await using var updater = await wrongfulMedicationCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new WrongfulMedicationCaseUpdaterRequest {
             Title = wrongfulMedicationCase.Title,
-            Description = wrongfulMedicationCase.Description is null ? "" : _textService.FormatText(wrongfulMedicationCase.Description),
+            Description = wrongfulMedicationCase.Description is null ? "" : textService.FormatText(wrongfulMedicationCase.Description),
             NodeId = wrongfulMedicationCase.NodeId,
             Date = wrongfulMedicationCase.Date,
         });

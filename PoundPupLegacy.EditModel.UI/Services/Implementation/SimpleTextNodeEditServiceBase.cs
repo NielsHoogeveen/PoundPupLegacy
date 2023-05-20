@@ -1,34 +1,29 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal abstract class SimpleTextNodeEditServiceBase<TEntity, TExisting, TNew, TCreate> : NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal abstract class SimpleTextNodeEditServiceBase<TEntity, TExisting, TNew, TCreate>(
+    IDbConnection connection,
+    ILogger logger,
+    ITenantRefreshService tenantRefreshService,
+    IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
+    ISaveService<IEnumerable<Tag>> tagSaveService,
+    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
+    ISaveService<IEnumerable<File>> filesSaveService,
+    ITextService textService
+    ) : NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>(
+    connection,
+    logger,
+    tagSaveService,
+    tenantNodesSaveService,
+    filesSaveService,
+    tenantRefreshService
+)
     where TEntity : class, SimpleTextNode
     where TExisting : TEntity, ExistingNode
     where TNew : TEntity, NewNode
     where TCreate : CreateModel.SimpleTextNode
 {
-    private readonly IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> _simpleTextNodeUpdaterFactory;
-    protected readonly ITextService _textService;
-
-
-    protected SimpleTextNodeEditServiceBase(
-        IDbConnection connection,
-        ITenantRefreshService tenantRefreshService,
-        IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
-        ISaveService<IEnumerable<Tag>> tagSaveService,
-        ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-        ISaveService<IEnumerable<File>> filesSaveService,
-        ITextService textService
-        ) : base(
-            connection,
-            tagSaveService,
-            tenantNodesSaveService,
-            filesSaveService,
-            tenantRefreshService
-    )
-    {
-        _simpleTextNodeUpdaterFactory = simpleTextNodeUpdaterFactory;
-        _textService = textService;
-    }
 
     protected abstract IEntityCreator<TCreate> EntityCreator { get; }
 
@@ -49,13 +44,12 @@ internal abstract class SimpleTextNodeEditServiceBase<TEntity, TExisting, TNew, 
 
     protected sealed override async Task StoreExisting(TExisting article, NpgsqlConnection connection)
     {
-        await using var updater = await _simpleTextNodeUpdaterFactory.CreateAsync(connection);
+        await using var updater = await simpleTextNodeUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new SimpleTextNodeUpdaterRequest {
             Title = article.Title,
-            Text = _textService.FormatText(article.Text),
-            Teaser = _textService.FormatTeaser(article.Text),
+            Text = textService.FormatText(article.Text),
+            Teaser = textService.FormatTeaser(article.Text),
             NodeId = article.NodeId
         });
     }
-
 }

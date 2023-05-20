@@ -5,7 +5,6 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class TextService : ITextService
 {
-
     public string FormatTeaser(string text)
     {
         var doc = Convert(text);

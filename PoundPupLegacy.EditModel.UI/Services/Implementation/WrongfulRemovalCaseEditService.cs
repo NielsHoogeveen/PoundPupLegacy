@@ -1,74 +1,50 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<WrongfulRemovalCase, ExistingWrongfulRemovalCase, NewWrongfulRemovalCase, CreateModel.WrongfulRemovalCase>, IEditService<WrongfulRemovalCase>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal sealed class WrongfulRemovalCaseEditService(
+    IDbConnection connection,
+    ILogger<WrongfulRemovalCaseEditService> logger,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulRemovalCase> createWrongfulRemovalCaseReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulRemovalCase> wrongfulRemovalCaseUpdateDocumentReaderFactory,
+    IDatabaseUpdaterFactory<WrongfulRemovalCaseUpdaterRequest> wrongfulRemovalCaseUpdaterFactory,
+    ISaveService<IEnumerable<Tag>> tagSaveService,
+    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
+    ISaveService<IEnumerable<File>> filesSaveService,
+    ITenantRefreshService tenantRefreshService,
+    IEntityCreator<CreateModel.WrongfulRemovalCase> wrongfulRemovalCaseCreator,
+    ITextService textService
+) : NodeEditServiceBase<WrongfulRemovalCase, ExistingWrongfulRemovalCase, NewWrongfulRemovalCase, CreateModel.WrongfulRemovalCase>(
+    connection,
+    logger,
+    tagSaveService,
+    tenantNodesSaveService,
+    filesSaveService,
+    tenantRefreshService
+), IEditService<WrongfulRemovalCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulRemovalCase> _createWrongfulRemovalCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulRemovalCase> _wrongfulRemovalCaseUpdateDocumentReaderFactory;
-    private readonly IDatabaseUpdaterFactory<WrongfulRemovalCaseUpdaterRequest> _wrongfulRemovalCaseUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.WrongfulRemovalCase> _wrongfulRemovalCaseCreator;
-    private readonly ITextService _textService;
-
-
-    public WrongfulRemovalCaseEditService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulRemovalCase> createWrongfulRemovalCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulRemovalCase> wrongfulRemovalCaseUpdateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<WrongfulRemovalCaseUpdaterRequest> wrongfulRemovalCaseUpdaterFactory,
-        ISaveService<IEnumerable<Tag>> tagSaveService,
-        ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-        ISaveService<IEnumerable<File>> filesSaveService,
-        ITenantRefreshService tenantRefreshService,
-        IEntityCreator<CreateModel.WrongfulRemovalCase> wrongfulRemovalCaseCreator,
-        ITextService textService
-    ) : base(
-        connection,
-        tagSaveService,
-        tenantNodesSaveService,
-        filesSaveService,
-        tenantRefreshService)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _wrongfulRemovalCaseUpdateDocumentReaderFactory = wrongfulRemovalCaseUpdateDocumentReaderFactory;
-        _createWrongfulRemovalCaseReaderFactory = createWrongfulRemovalCaseReaderFactory;
-        _wrongfulRemovalCaseCreator = wrongfulRemovalCaseCreator;
-        _textService = textService;
-        _wrongfulRemovalCaseUpdaterFactory = wrongfulRemovalCaseUpdaterFactory;
-    }
     public async Task<WrongfulRemovalCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _wrongfulRemovalCaseUpdateDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await wrongfulRemovalCaseUpdateDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     public async Task<WrongfulRemovalCase?> GetViewModelAsync(int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _createWrongfulRemovalCaseReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await createWrongfulRemovalCaseReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.DOCUMENT,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     protected sealed override async Task<int> StoreNew(NewWrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
@@ -77,7 +53,7 @@ internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<Wrong
         var createDocument = new CreateModel.WrongfulRemovalCase {
             Id = null,
             Title = wrongfulRemovalCase.Title,
-            Description = wrongfulRemovalCase.Description is null ? "" : _textService.FormatText(wrongfulRemovalCase.Description),
+            Description = wrongfulRemovalCase.Description is null ? "" : textService.FormatText(wrongfulRemovalCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -104,16 +80,16 @@ internal sealed class WrongfulRemovalCaseEditService : NodeEditServiceBase<Wrong
                 }
             },
         };
-        await _wrongfulRemovalCaseCreator.CreateAsync(createDocument, connection);
+        await wrongfulRemovalCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;
     }
 
     protected sealed override async Task StoreExisting(ExistingWrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
     {
-        await using var updater = await _wrongfulRemovalCaseUpdaterFactory.CreateAsync(connection);
+        await using var updater = await wrongfulRemovalCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new WrongfulRemovalCaseUpdaterRequest {
             Title = wrongfulRemovalCase.Title,
-            Description = wrongfulRemovalCase.Description is null ? "" : _textService.FormatText(wrongfulRemovalCase.Description),
+            Description = wrongfulRemovalCase.Description is null ? "" : textService.FormatText(wrongfulRemovalCase.Description),
             NodeId = wrongfulRemovalCase.NodeId,
             Date = wrongfulRemovalCase.Date,
         });

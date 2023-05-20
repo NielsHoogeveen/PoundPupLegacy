@@ -1,18 +1,22 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class DocumentSearchService : SearchService<DocumentListItem, DocumentsReaderRequest>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal sealed class DocumentSearchService(
+    IDbConnection connection,
+    ILogger<DocumentSearchService> logger,
+    IEnumerableDatabaseReaderFactory<DocumentsReaderRequest, DocumentListItem> documentsReaderFactory
+) : SearchService<DocumentListItem, DocumentsReaderRequest>(
+    connection, 
+    logger, 
+    documentsReaderFactory
+)
 {
-    public DocumentSearchService(
-        IDbConnection connection,
-        IEnumerableDatabaseReaderFactory<DocumentsReaderRequest, DocumentListItem> documentsReaderFactory) : base(connection, documentsReaderFactory)
-    {
-    }
     protected override DocumentsReaderRequest GetRequest(int tenantId, string searchString)
     {
         return new DocumentsReaderRequest {
             TenantId = tenantId,
             SearchString = searchString
-
         };
     }
 }

@@ -1,74 +1,50 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class DisruptedPlacementCaseEditService : NodeEditServiceBase<DisruptedPlacementCase, ExistingDisruptedPlacementCase, NewDisruptedPlacementCase, CreateModel.DisruptedPlacementCase>, IEditService<DisruptedPlacementCase>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal sealed class DisruptedPlacementCaseEditService(
+    IDbConnection connection,
+    ILogger<DisruptedPlacementCaseEditService> logger,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDisruptedPlacementCase> createDisruptedPlacementCaseReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDisruptedPlacementCase> disruptedPlacementCaseUpdateDocumentReaderFactory,
+    IDatabaseUpdaterFactory<DisruptedPlacementCaseUpdaterRequest> disruptedPlacementCaseUpdaterFactory,
+    ISaveService<IEnumerable<Tag>> tagSaveService,
+    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
+    ISaveService<IEnumerable<File>> filesSaveService,
+    ITenantRefreshService tenantRefreshService,
+    IEntityCreator<CreateModel.DisruptedPlacementCase> disruptedPlacementCaseCreator,
+    ITextService textService
+) : NodeEditServiceBase<DisruptedPlacementCase, ExistingDisruptedPlacementCase, NewDisruptedPlacementCase, CreateModel.DisruptedPlacementCase>(
+    connection,
+    logger,
+    tagSaveService,
+    tenantNodesSaveService,
+    filesSaveService,
+    tenantRefreshService
+), IEditService<DisruptedPlacementCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDisruptedPlacementCase> _createDisruptedPlacementCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDisruptedPlacementCase> _disruptedPlacementCaseUpdateDocumentReaderFactory;
-    private readonly IDatabaseUpdaterFactory<DisruptedPlacementCaseUpdaterRequest> _disruptedPlacementCaseUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.DisruptedPlacementCase> _disruptedPlacementCaseCreator;
-    private readonly ITextService _textService;
-
-
-    public DisruptedPlacementCaseEditService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDisruptedPlacementCase> createDisruptedPlacementCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDisruptedPlacementCase> disruptedPlacementCaseUpdateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<DisruptedPlacementCaseUpdaterRequest> disruptedPlacementCaseUpdaterFactory,
-        ISaveService<IEnumerable<Tag>> tagSaveService,
-        ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-        ISaveService<IEnumerable<File>> filesSaveService,
-        ITenantRefreshService tenantRefreshService,
-        IEntityCreator<CreateModel.DisruptedPlacementCase> disruptedPlacementCaseCreator,
-        ITextService textService
-    ) : base(
-        connection,
-        tagSaveService,
-        tenantNodesSaveService,
-        filesSaveService,
-        tenantRefreshService)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _disruptedPlacementCaseUpdateDocumentReaderFactory = disruptedPlacementCaseUpdateDocumentReaderFactory;
-        _createDisruptedPlacementCaseReaderFactory = createDisruptedPlacementCaseReaderFactory;
-        _disruptedPlacementCaseCreator = disruptedPlacementCaseCreator;
-        _textService = textService;
-        _disruptedPlacementCaseUpdaterFactory = disruptedPlacementCaseUpdaterFactory;
-    }
     public async Task<DisruptedPlacementCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _disruptedPlacementCaseUpdateDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await disruptedPlacementCaseUpdateDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     public async Task<DisruptedPlacementCase?> GetViewModelAsync(int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _createDisruptedPlacementCaseReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await createDisruptedPlacementCaseReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.DOCUMENT,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     protected sealed override async Task<int> StoreNew(NewDisruptedPlacementCase disruptedPlacementCase, NpgsqlConnection connection)
@@ -77,7 +53,7 @@ internal sealed class DisruptedPlacementCaseEditService : NodeEditServiceBase<Di
         var createDocument = new CreateModel.DisruptedPlacementCase {
             Id = null,
             Title = disruptedPlacementCase.Title,
-            Description = disruptedPlacementCase.Description is null ? "" : _textService.FormatText(disruptedPlacementCase.Description),
+            Description = disruptedPlacementCase.Description is null ? "" : textService.FormatText(disruptedPlacementCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -104,16 +80,16 @@ internal sealed class DisruptedPlacementCaseEditService : NodeEditServiceBase<Di
                 }
             },
         };
-        await _disruptedPlacementCaseCreator.CreateAsync(createDocument, connection);
+        await disruptedPlacementCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;
     }
 
     protected sealed override async Task StoreExisting(ExistingDisruptedPlacementCase disruptedPlacementCase, NpgsqlConnection connection)
     {
-        await using var updater = await _disruptedPlacementCaseUpdaterFactory.CreateAsync(connection);
+        await using var updater = await disruptedPlacementCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new DisruptedPlacementCaseUpdaterRequest {
             Title = disruptedPlacementCase.Title,
-            Description = disruptedPlacementCase.Description is null ? "" : _textService.FormatText(disruptedPlacementCase.Description),
+            Description = disruptedPlacementCase.Description is null ? "" : textService.FormatText(disruptedPlacementCase.Description),
             NodeId = disruptedPlacementCase.NodeId,
             Date = disruptedPlacementCase.Date,
         });

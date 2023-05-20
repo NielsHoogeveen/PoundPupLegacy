@@ -1,74 +1,50 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using Microsoft.Extensions.Logging;
 
-internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBase<FathersRightsViolationCase, ExistingFathersRightsViolationCase, NewFathersRightsViolationCase, CreateModel.FathersRightsViolationCase>, IEditService<FathersRightsViolationCase>
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+
+internal sealed class FathersRightsViolationCaseEditService(
+    IDbConnection connection,
+    ILogger<FathersRightsViolationCaseEditService> logger,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewFathersRightsViolationCase> createFathersRightsViolationCaseReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingFathersRightsViolationCase> fathersRightsViolationCaseUpdateDocumentReaderFactory,
+    IDatabaseUpdaterFactory<FathersRightsViolationCaseUpdaterRequest> fathersRightsViolationCaseUpdaterFactory,
+    ISaveService<IEnumerable<Tag>> tagSaveService,
+    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
+    ISaveService<IEnumerable<File>> filesSaveService,
+    ITenantRefreshService tenantRefreshService,
+    IEntityCreator<CreateModel.FathersRightsViolationCase> fathersRightsViolationCaseCreator,
+    ITextService textService
+) : NodeEditServiceBase<FathersRightsViolationCase, ExistingFathersRightsViolationCase, NewFathersRightsViolationCase, CreateModel.FathersRightsViolationCase>(
+    connection,
+    logger,
+    tagSaveService,
+    tenantNodesSaveService,
+    filesSaveService,
+    tenantRefreshService
+), IEditService<FathersRightsViolationCase>
 {
-    private readonly ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewFathersRightsViolationCase> _createFathersRightsViolationCaseReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingFathersRightsViolationCase> _fathersRightsViolationCaseUpdateDocumentReaderFactory;
-    private readonly IDatabaseUpdaterFactory<FathersRightsViolationCaseUpdaterRequest> _fathersRightsViolationCaseUpdaterFactory;
-    private readonly IEntityCreator<CreateModel.FathersRightsViolationCase> _fathersRightsViolationCaseCreator;
-    private readonly ITextService _textService;
-
-
-    public FathersRightsViolationCaseEditService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewFathersRightsViolationCase> createFathersRightsViolationCaseReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingFathersRightsViolationCase> fathersRightsViolationCaseUpdateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<FathersRightsViolationCaseUpdaterRequest> fathersRightsViolationCaseUpdaterFactory,
-        ISaveService<IEnumerable<Tag>> tagSaveService,
-        ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-        ISaveService<IEnumerable<File>> filesSaveService,
-        ITenantRefreshService tenantRefreshService,
-        IEntityCreator<CreateModel.FathersRightsViolationCase> fathersRightsViolationCaseCreator,
-        ITextService textService
-    ) : base(
-        connection,
-        tagSaveService,
-        tenantNodesSaveService,
-        filesSaveService,
-        tenantRefreshService)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _fathersRightsViolationCaseUpdateDocumentReaderFactory = fathersRightsViolationCaseUpdateDocumentReaderFactory;
-        _createFathersRightsViolationCaseReaderFactory = createFathersRightsViolationCaseReaderFactory;
-        _fathersRightsViolationCaseCreator = fathersRightsViolationCaseCreator;
-        _textService = textService;
-        _fathersRightsViolationCaseUpdaterFactory = fathersRightsViolationCaseUpdaterFactory;
-    }
     public async Task<FathersRightsViolationCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _fathersRightsViolationCaseUpdateDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await fathersRightsViolationCaseUpdateDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     public async Task<FathersRightsViolationCase?> GetViewModelAsync(int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _createFathersRightsViolationCaseReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await createFathersRightsViolationCaseReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeCreateDocumentRequest {
                 NodeTypeId = Constants.DOCUMENT,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 
     protected sealed override async Task<int> StoreNew(NewFathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
@@ -77,7 +53,7 @@ internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBas
         var createDocument = new CreateModel.FathersRightsViolationCase {
             Id = null,
             Title = fathersRightsViolationCase.Title,
-            Description = fathersRightsViolationCase.Description is null ? "" : _textService.FormatText(fathersRightsViolationCase.Description),
+            Description = fathersRightsViolationCase.Description is null ? "" : textService.FormatText(fathersRightsViolationCase.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
@@ -104,16 +80,16 @@ internal sealed class FathersRightsViolationCaseEditService : NodeEditServiceBas
                 }
             },
         };
-        await _fathersRightsViolationCaseCreator.CreateAsync(createDocument, connection);
+        await fathersRightsViolationCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;
     }
 
     protected sealed override async Task StoreExisting(ExistingFathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
     {
-        await using var updater = await _fathersRightsViolationCaseUpdaterFactory.CreateAsync(connection);
+        await using var updater = await fathersRightsViolationCaseUpdaterFactory.CreateAsync(connection);
         await updater.UpdateAsync(new FathersRightsViolationCaseUpdaterRequest {
             Title = fathersRightsViolationCase.Title,
-            Description = fathersRightsViolationCase.Description is null ? "" : _textService.FormatText(fathersRightsViolationCase.Description),
+            Description = fathersRightsViolationCase.Description is null ? "" : textService.FormatText(fathersRightsViolationCase.Description),
             NodeId = fathersRightsViolationCase.NodeId,
             Date = fathersRightsViolationCase.Date,
         });

@@ -1,22 +1,14 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal sealed class FilesSaveService : ISaveService<IEnumerable<File>>
+internal sealed class FilesSaveService(
+    IDatabaseDeleterFactory<FileDeleterRequest> fileDeleterFactory,
+    IDatabaseInserterFactory<FileInserterRequest> fileInserterFactory
+) : ISaveService<IEnumerable<File>>
 {
-    private readonly IDatabaseDeleterFactory<FileDeleterRequest> _fileDeleterFactory;
-    private readonly IDatabaseInserterFactory<FileInserterRequest> _fileInserterFactory;
-
-    public FilesSaveService(
-        IDatabaseDeleterFactory<FileDeleterRequest> fileDeleterFactory,
-        IDatabaseInserterFactory<FileInserterRequest> fileInserterFactory
-        )
-    {
-        _fileDeleterFactory = fileDeleterFactory;
-        _fileInserterFactory = fileInserterFactory;
-    }
     public async Task SaveAsync(IEnumerable<File> attachments, IDbConnection connection)
     {
         if (attachments.Any(x => x.HasBeenDeleted)) {
-            await using var deleter = await _fileDeleterFactory.CreateAsync(connection);
+            await using var deleter = await fileDeleterFactory.CreateAsync(connection);
             foreach (var attachment in attachments.Where(x => x.HasBeenDeleted)) {
                 await deleter.DeleteAsync(new FileDeleterRequest {
                     FileId = attachment.Id!.Value,
@@ -25,7 +17,7 @@ internal sealed class FilesSaveService : ISaveService<IEnumerable<File>>
             }
         }
         if (attachments.Any(x => x.Id is null)) {
-            await using var inserter = await _fileInserterFactory.CreateAsync(connection);
+            await using var inserter = await fileInserterFactory.CreateAsync(connection);
             foreach (var attachment in attachments.Where(x => x.Id is null)) {
                 await inserter.InsertAsync(new FileInserterRequest {
                     MimeType = attachment.MimeType,
