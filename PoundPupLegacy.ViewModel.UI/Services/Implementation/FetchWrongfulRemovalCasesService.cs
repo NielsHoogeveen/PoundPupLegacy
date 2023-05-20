@@ -1,32 +1,21 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
-internal sealed class FetchWrongfulRemovalCasesService : IFetchWrongfulRemovalCasesService
+internal sealed class FetchWrongfulRemovalCasesService(
+    IDbConnection connection,
+    ILogger<FetchWrongfulRemovalCasesService> logger,
+    ISingleItemDatabaseReaderFactory<WrongfulRemovalCasesDocumentReaderRequest, WrongfulRemovalCases> abuseCasesDocumentReaderFactory
+) : DatabaseService(connection, logger), IFetchWrongfulRemovalCasesService
 {
-    private NpgsqlConnection _connection;
-    private readonly ISingleItemDatabaseReaderFactory<WrongfulRemovalCasesDocumentReaderRequest, WrongfulRemovalCases> _abuseCasesDocumentReaderFactory;
-
-    public FetchWrongfulRemovalCasesService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<WrongfulRemovalCasesDocumentReaderRequest, WrongfulRemovalCases> abuseCasesDocumentReaderFactory
-        )
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-
-        _abuseCasesDocumentReaderFactory = abuseCasesDocumentReaderFactory;
-    }
 
     public async Task<WrongfulRemovalCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms)
     {
         var startIndex = (pageNumber - 1) * pageSize;
 
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _abuseCasesDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await abuseCasesDocumentReaderFactory.CreateAsync(connection);
             var cases = await reader.ReadAsync(new WrongfulRemovalCasesDocumentReaderRequest {
                 Length = pageSize,
                 StartIndex = startIndex,
@@ -45,11 +34,6 @@ internal sealed class FetchWrongfulRemovalCasesService : IFetchWrongfulRemovalCa
                 };
 
             return result;
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 }

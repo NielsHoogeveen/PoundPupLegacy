@@ -1,11 +1,16 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using System.Text.RegularExpressions;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
-internal sealed partial class CongressionalDataService : ICongressionalDataService
+internal sealed partial class CongressionalDataService(
+    IDbConnection connection,
+    ILogger<CongressionalDataService> logger,
+    ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> unitedStatesMeetingChamberDocumentReaderFactory,
+    ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> unitedStatesCongresssDocumentReaderFactory
+) : DatabaseService(connection, logger), ICongressionalDataService
 {
 
 
@@ -15,22 +20,6 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
         public required int Number { get; init; }
     }
 
-    private readonly NpgsqlConnection _connection;
-    private readonly ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> _unitedStatesMeetingChamberDocumentReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> _unitedStatesCongresssDocumentReaderFactory;
-
-    public CongressionalDataService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> unitedStatesMeetingChamberDocumentReaderFactory,
-        ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> unitedStatesCongresssDocumentReaderFactory)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-
-        _unitedStatesMeetingChamberDocumentReaderFactory = unitedStatesMeetingChamberDocumentReaderFactory;
-        _unitedStatesCongresssDocumentReaderFactory = unitedStatesCongresssDocumentReaderFactory;
-    }
     private ChamberTypeAndMeetingNumber? GetChamberTypeAndMeetingNumber(string path)
     {
         var match = MatchIfCongressionalMeetingChamber().Match(path);
@@ -55,17 +44,15 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
     }
     public async Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(ChamberType chamberType, int number)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(_connection);
+
+        return await WithConnection(async (connection) => 
+        {
+            await using var reader = await unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReaderRequest {
                 Type = (int)chamberType,
                 Number = number
             });
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
+        });
     }
 
     public async Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(string path)
@@ -79,14 +66,11 @@ internal sealed partial class CongressionalDataService : ICongressionalDataServi
 
     public async Task<UnitedStatesCongress?> GetUnitedStatesCongress()
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _unitedStatesCongresssDocumentReaderFactory.CreateAsync(_connection);
+
+        return await WithConnection(async (connection) => {
+            await using var reader = await unitedStatesCongresssDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new UnitedStatesCongresssDocumentReaderRequest());
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
+        });
     }
 
 

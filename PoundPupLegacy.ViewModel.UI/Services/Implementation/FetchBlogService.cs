@@ -1,33 +1,21 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
-internal sealed class FetchBlogService : IFetchBlogService
+internal sealed class FetchBlogService(
+    IDbConnection connection,
+    ILogger<FetchBlogService> logger,
+    ISingleItemDatabaseReaderFactory<BlogDocumentReaderRequest, Blog> blogDocumentReaderFactory
+) : DatabaseService(connection, logger), IFetchBlogService
 {
-    private readonly NpgsqlConnection _connection;
-    private readonly ISingleItemDatabaseReaderFactory<BlogDocumentReaderRequest, Blog> _blogDocumentReaderFactory;
-
-    public FetchBlogService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<BlogDocumentReaderRequest, Blog> blogDocumentReaderFactory
-        )
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-
-        _blogDocumentReaderFactory = blogDocumentReaderFactory;
-    }
-
     public async Task<Blog> FetchBlog(int publisherId, int tenantId, int pageNumber, int pageSize)
     {
 
         var startIndex = (pageNumber - 1) * pageSize;
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _blogDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await blogDocumentReaderFactory.CreateAsync(connection);
             var blog = await reader.ReadAsync(new BlogDocumentReaderRequest {
                 PublisherId = publisherId,
                 TenantId = tenantId,
@@ -42,9 +30,6 @@ internal sealed class FetchBlogService : IFetchBlogService
                     Id = 0,
                 };
             return blog;
-        }
-        finally {
-            await _connection.CloseAsync();
-        }
+        });
     }
 }

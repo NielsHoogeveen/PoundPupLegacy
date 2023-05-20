@@ -1,41 +1,24 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
-internal sealed class FetchNodeService : IFetchNodeService
+internal sealed class FetchNodeService(
+    IDbConnection connection,
+    ILogger<FetchNodeService> logger,
+    ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Node> nodeDocumentReaderFactory
+) : DatabaseService(connection, logger), IFetchNodeService
 {
-    private readonly NpgsqlConnection _connection;
-
-    private readonly ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Node> _nodeDocumentReaderFactory;
-    public FetchNodeService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Node> nodeDocumentReaderFactory
-        )
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-
-        _nodeDocumentReaderFactory = nodeDocumentReaderFactory;
-    }
-
     public async Task<Node?> FetchNode(int urlId, int userId, int tenantId)
     {
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _nodeDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await nodeDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeDocumentReaderRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 }

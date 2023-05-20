@@ -1,32 +1,21 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
-internal sealed class FetchFathersRightsViolationCasesService : IFetchFathersRightsViolationCasesService
+internal sealed class FetchFathersRightsViolationCasesService(
+    IDbConnection connection,
+    ILogger<FetchFathersRightsViolationCasesService> logger,
+    ISingleItemDatabaseReaderFactory<FathersRightsViolationCasesDocumentReaderRequest, FathersRightsViolationCases> abuseCasesDocumentReaderFactory
+) : DatabaseService(connection, logger), IFetchFathersRightsViolationCasesService
 {
-    private NpgsqlConnection _connection;
-    private readonly ISingleItemDatabaseReaderFactory<FathersRightsViolationCasesDocumentReaderRequest, FathersRightsViolationCases> _abuseCasesDocumentReaderFactory;
-
-    public FetchFathersRightsViolationCasesService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<FathersRightsViolationCasesDocumentReaderRequest, FathersRightsViolationCases> abuseCasesDocumentReaderFactory
-        )
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-
-        _abuseCasesDocumentReaderFactory = abuseCasesDocumentReaderFactory;
-    }
 
     public async Task<FathersRightsViolationCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms)
     {
         var startIndex = (pageNumber - 1) * pageSize;
 
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _abuseCasesDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await abuseCasesDocumentReaderFactory.CreateAsync(connection);
             var cases = await reader.ReadAsync(new FathersRightsViolationCasesDocumentReaderRequest {
                 Length = pageSize,
                 StartIndex = startIndex,
@@ -45,11 +34,6 @@ internal sealed class FetchFathersRightsViolationCasesService : IFetchFathersRig
                 };
 
             return result;
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 }

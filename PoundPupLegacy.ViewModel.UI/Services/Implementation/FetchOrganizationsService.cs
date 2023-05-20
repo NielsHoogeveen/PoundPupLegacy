@@ -1,32 +1,22 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using SearchOption = PoundPupLegacy.Common.SearchOption;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
-internal sealed class FetchOrganizationsService : IFetchOrganizationsService
+internal sealed class FetchOrganizationsService(
+    IDbConnection connection,
+    ILogger<FetchOrganizationsService> logger,
+    ISingleItemDatabaseReaderFactory<OrganizationsDocumentReaderRequest, OrganizationSearch> organizationsDocumentReaderFactory
+) : DatabaseService(connection, logger), IFetchOrganizationsService
 {
-    private readonly NpgsqlConnection _connection;
-    private readonly ISingleItemDatabaseReaderFactory<OrganizationsDocumentReaderRequest, OrganizationSearch> _organizationsDocumentReaderFactory;
-    public FetchOrganizationsService(
-        IDbConnection connection,
-        ISingleItemDatabaseReaderFactory<OrganizationsDocumentReaderRequest, OrganizationSearch> organizationsDocumentReaderFactory)
-    {
-        if (connection is not NpgsqlConnection)
-            throw new Exception("Application only works with a Postgres database");
-        _connection = (NpgsqlConnection)connection;
-
-        _organizationsDocumentReaderFactory = organizationsDocumentReaderFactory;
-    }
-
     public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int pageSize, int pageNumber, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
     {
 
         var offset = (pageNumber - 1) * pageSize;
-        try {
-            await _connection.OpenAsync();
-            await using var reader = await _organizationsDocumentReaderFactory.CreateAsync(_connection);
+        return await WithConnection(async (connection) => {
+            await using var reader = await organizationsDocumentReaderFactory.CreateAsync(connection);
             var organizations = await reader.ReadAsync(new OrganizationsDocumentReaderRequest {
                 UserId = userId,
                 TenantId = tenantId,
@@ -50,11 +40,6 @@ internal sealed class FetchOrganizationsService : IFetchOrganizationsService
             else {
                 return organizations;
             }
-        }
-        finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
-            }
-        }
+        });
     }
 }
