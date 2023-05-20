@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <WarningsAsErrors>true</WarningsAsErrors>
     <IsPackable>false</IsPackable>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
