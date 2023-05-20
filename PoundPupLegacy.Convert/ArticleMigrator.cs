@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ArticleMigrator : MigratorPPL
+internal sealed class ArticleMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<Document> articleCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<Document> _articleCreator;
-    public ArticleMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<Document> articleCreator
-    ) : base(databaseConnections)
-    {
-        _articleCreator = articleCreator;
-    }
-
     protected override string Name => "documents (articles)";
 
     protected override async Task MigrateImpl()
     {
-        await _articleCreator.CreateAsync(ReadArticles(), _postgresConnection);
+        await articleCreator.CreateAsync(ReadArticles(), _postgresConnection);
     }
     private async IAsyncEnumerable<Document> ReadArticles()
     {

@@ -1,17 +1,11 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PollStatusMigrator : MigratorPPL
+internal sealed class PollStatusMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<PollStatus> pollStatusCreator
+) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "poll statuses";
-
-    private readonly IEntityCreator<PollStatus> _pollStatusCreator;
-    public PollStatusMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<PollStatus> pollStatusCreator
-    ) : base(databaseConnections)
-    {
-        _pollStatusCreator = pollStatusCreator;
-    }
 
     private static async IAsyncEnumerable<PollStatus> GetNodeStatuses()
     {
@@ -28,6 +22,6 @@ internal sealed class PollStatusMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await _pollStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
+        await pollStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
     }
 }

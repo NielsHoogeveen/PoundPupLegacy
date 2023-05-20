@@ -1,26 +1,18 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class InterOrganizationalRelationMigratorPPL : MigratorPPL
+internal sealed class InterOrganizationalRelationMigratorPPL(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IEntityCreator<InterOrganizationalRelation> interOrganizationalRelationCreator
+) : MigratorPPL(databaseConnections)
 {
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<InterOrganizationalRelation> _interOrganizationalRelationCreator;
-    public InterOrganizationalRelationMigratorPPL(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<InterOrganizationalRelation> interOrganizationalRelationCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _interOrganizationalRelationCreator = interOrganizationalRelationCreator;
-    }
 
     protected override string Name => "person organization relation (ppl)";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader), _postgresConnection);
     }
 
     private async IAsyncEnumerable<InterOrganizationalRelation> ReadInterOrganizationalRelations(

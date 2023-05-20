@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class FirstLevelGlobalRegionMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<FirstLevelGlobalRegion> _firstLevelGlobalRegionCreator;
-    public FirstLevelGlobalRegionMigrator(
+internal sealed class FirstLevelGlobalRegionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<FirstLevelGlobalRegion> firstLevelGlobalRegionCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _firstLevelGlobalRegionCreator = firstLevelGlobalRegionCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "first level global regions";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _firstLevelGlobalRegionCreator.CreateAsync(ReadFirstLevelGlobalRegions(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await firstLevelGlobalRegionCreator.CreateAsync(ReadFirstLevelGlobalRegions(fileIdReaderByTenantFileId), _postgresConnection);
     }
 
     private async IAsyncEnumerable<FirstLevelGlobalRegion> ReadFirstLevelGlobalRegions(

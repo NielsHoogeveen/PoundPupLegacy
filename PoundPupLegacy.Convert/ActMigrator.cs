@@ -1,21 +1,16 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ActMigrator : MigratorPPL
+internal sealed class ActMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<Act> actCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<Act> _actCreator;
-    public ActMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<Act> actCreator
-    ) : base(databaseConnections)
-    {
-        _actCreator = actCreator;
-    }
 
     protected override string Name => "acts";
 
     protected override async Task MigrateImpl()
     {
-        await _actCreator.CreateAsync(ReadArticles(), _postgresConnection);
+        await actCreator.CreateAsync(ReadArticles(), _postgresConnection);
 
     }
 

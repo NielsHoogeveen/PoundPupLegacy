@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class FathersRightsViolationsCaseMigrator : MigratorPPL
+internal sealed class FathersRightsViolationsCaseMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<FathersRightsViolationCase> fathersRightsViolationCaseCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<FathersRightsViolationCase> _fathersRightsViolationCaseCreator;
-    public FathersRightsViolationsCaseMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<FathersRightsViolationCase> fathersRightsViolationCaseCreator
-    ) : base(databaseConnections)
-    {
-        _fathersRightsViolationCaseCreator = fathersRightsViolationCaseCreator;
-    }
-
     protected override string Name => "father's rights violation cases";
 
     protected override async Task MigrateImpl()
     {
-        await _fathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases(), _postgresConnection);
+        await fathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<FathersRightsViolationCase> ReadFathersRightsViolationCases()
     {

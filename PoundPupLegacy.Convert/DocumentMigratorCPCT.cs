@@ -1,25 +1,23 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentMigratorCPCT : MigratorCPCT
+internal sealed class DocumentMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreator<Document> documentCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-    private readonly IEntityCreator<Document> _documentCreator;
-    public DocumentMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        IEntityCreator<Document> documentCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _documentCreator = documentCreator;
-    }
-
     protected override string Name => "documents cpct";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var tenantNodeReader = await _tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await _documentCreator.CreateAsync(ReadDocuments(nodeIdReader, tenantNodeReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeReader = await tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await documentCreator.CreateAsync(ReadDocuments(nodeIdReader, tenantNodeReader), _postgresConnection);
     }
 
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(

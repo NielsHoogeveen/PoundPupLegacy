@@ -1,27 +1,19 @@
 ﻿
 namespace PoundPupLegacy.Convert;
 
-internal sealed class InterCountryRelationTypeMigrator : MigratorPPL
+internal sealed class InterCountryRelationTypeMigrator(
+IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<InterCountryRelationType> interCountryRelationTypeCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<InterCountryRelationType> _interCountryRelationTypeCreator;
-    public InterCountryRelationTypeMigrator(
-    IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<InterCountryRelationType> interCountryRelationTypeCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _interCountryRelationTypeCreator = interCountryRelationTypeCreator;
-    }
-
     protected override string Name => "inter-country relation types";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
 
-        await _interCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await interCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<InterCountryRelationType> ReadInterCountryRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)

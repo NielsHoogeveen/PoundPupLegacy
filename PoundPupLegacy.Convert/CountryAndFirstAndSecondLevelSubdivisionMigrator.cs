@@ -1,26 +1,14 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : CountryMigrator
+internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
+    IEntityCreator<CountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreator
+) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "countries that are both first and second level subdivisions";
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
-    private readonly IEntityCreator<CountryAndFirstAndSecondLevelSubdivision> _countryAndFirstAndSecondLevelSubdivisionCreator;
-    public CountryAndFirstAndSecondLevelSubdivisionMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<CountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
-        _termReaderByNameFactory = termReaderByNameFactory;
-        _countryAndFirstAndSecondLevelSubdivisionCreator = countryAndFirstAndSecondLevelSubdivisionCreator;
-    }
 
     private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
@@ -245,17 +233,17 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator : Country
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var vocabularyIdReader = await _vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByName = await _termReaderByNameFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
 
-        await _countryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(GetRegionSubdivisionCountries(
+        await countryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(GetRegionSubdivisionCountries(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName
         ), _postgresConnection);
-        await _countryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(
+        await countryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName

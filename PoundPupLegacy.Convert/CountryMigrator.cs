@@ -1,11 +1,8 @@
 ﻿namespace PoundPupLegacy.Convert;
-internal abstract class CountryMigrator : MigratorPPL
-{
-    public CountryMigrator(
+internal abstract class CountryMigrator(
         IDatabaseConnections databaseConnections
-    ) : base(databaseConnections)
-    {
-    }
+    ) : MigratorPPL(databaseConnections)
+{
     protected static string GetISO3166Code2ForCountry(int id)
     {
         return id switch {

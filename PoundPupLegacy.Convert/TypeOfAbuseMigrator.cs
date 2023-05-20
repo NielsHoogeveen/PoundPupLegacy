@@ -1,27 +1,18 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class TypeOfAbuseMigrator : MigratorPPL
-{
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<TypeOfAbuse> _typeOfAbuseCreator;
-
-    public TypeOfAbuseMigrator(
+internal sealed class TypeOfAbuseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<TypeOfAbuse> typeOfAbuseCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _typeOfAbuseCreator = typeOfAbuseCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
 
     protected override string Name => "types of abuse";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _typeOfAbuseCreator.CreateAsync(ReadTypesOfAbuse(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await typeOfAbuseCreator.CreateAsync(ReadTypesOfAbuse(fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<TypeOfAbuse> ReadTypesOfAbuse(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId

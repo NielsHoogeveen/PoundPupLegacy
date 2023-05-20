@@ -1,26 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ChildPlacementTypeMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<ChildPlacementType> _childPlacementTypeCreator;
-
-    public ChildPlacementTypeMigrator(
+internal sealed class ChildPlacementTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<ChildPlacementType> childPlacementTypeCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _childPlacementTypeCreator = childPlacementTypeCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "child placement types";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
 
     private async IAsyncEnumerable<ChildPlacementType> ReadChildPlacementTypes(

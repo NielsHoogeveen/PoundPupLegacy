@@ -1,26 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DenominationMigrator : MigratorPPL
+internal sealed class DenominationMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<Denomination> denominationCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<Denomination> _denominationCreator;
-
-    public DenominationMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<Denomination> denominationCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _denominationCreator = denominationCreator;
-    }
-
     protected override string Name => "denominations";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _denominationCreator.CreateAsync(ReadDenominations(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await denominationCreator.CreateAsync(ReadDenominations(fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<Denomination> ReadDenominations(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)

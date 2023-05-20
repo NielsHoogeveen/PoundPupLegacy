@@ -1,20 +1,14 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class CasePartyTypeMigrator : MigratorPPL
-{
-    protected override string Name => "case relation types";
-    private readonly IEntityCreator<CasePartyType> _casePartyTypeCreator;
-
-    public CasePartyTypeMigrator(
+internal sealed class CasePartyTypeMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<CasePartyType> casePartyTypeCreator
-    ) : base(databaseConnections)
-    {
-        _casePartyTypeCreator = casePartyTypeCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
+    protected override string Name => "case relation types";
     protected override async Task MigrateImpl()
     {
-        await _casePartyTypeCreator.CreateAsync(GetCaseRelationTypes(), _postgresConnection);
+        await casePartyTypeCreator.CreateAsync(GetCaseRelationTypes(), _postgresConnection);
     }
 
     internal static async IAsyncEnumerable<CasePartyType> GetCaseRelationTypes()

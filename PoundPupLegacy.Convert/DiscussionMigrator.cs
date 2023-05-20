@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DiscussionMigrator : MigratorPPL
+internal sealed class DiscussionMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<Discussion> discussionCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<Discussion> _discussionCreator;
-    public DiscussionMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<Discussion> discussionCreator
-    ) : base(databaseConnections)
-    {
-        _discussionCreator = discussionCreator;
-    }
-
     protected override string Name => "discussions";
 
     protected override async Task MigrateImpl()
     {
-        await _discussionCreator.CreateAsync(ReadDiscussions(), _postgresConnection);
+        await discussionCreator.CreateAsync(ReadDiscussions(), _postgresConnection);
 
     }
     private async IAsyncEnumerable<Discussion> ReadDiscussions()

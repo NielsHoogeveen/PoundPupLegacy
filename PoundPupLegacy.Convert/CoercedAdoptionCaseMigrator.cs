@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class CoercedAdoptionCaseMigrator : MigratorPPL
+internal sealed class CoercedAdoptionCaseMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<CoercedAdoptionCase> coercedAdoptionCaseCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<CoercedAdoptionCase> _coercedAdoptionCaseCreator;
-    public CoercedAdoptionCaseMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<CoercedAdoptionCase> coercedAdoptionCaseCreator
-    ) : base(databaseConnections)
-    {
-        _coercedAdoptionCaseCreator = coercedAdoptionCaseCreator;
-    }
-
     protected override string Name => "coerced adoption cases";
 
     protected override async Task MigrateImpl()
     {
-        await _coercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(), _postgresConnection);
+        await coercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<CoercedAdoptionCase> ReadCoercedAdoptionCases()
     {

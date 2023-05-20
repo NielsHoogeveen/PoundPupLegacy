@@ -1,32 +1,16 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
+internal sealed class AccessRolePrivilegeMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
+    IMandatorySingleItemDatabaseReaderFactory<EditNodeActionIdReaderByNodeTypeIdRequest, int> editNodeActionIdReaderByNodeTypeIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeIdRequest, int> editOwnNodeActionIdReaderByNodeTypeIdFactory,
+    IEntityCreator<AccessRolePrivilege> accessRolePrivilegeCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> _createNodeActionIdReaderByNodeTypeIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> _actionIdReaderByPathFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<EditNodeActionIdReaderByNodeTypeIdRequest, int> _editNodeActionIdReaderByNodeTypeIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeIdRequest, int> _editOwnNodeActionIdReaderByNodeTypeIdFactory;
-    private readonly IEntityCreator<AccessRolePrivilege> _accessRolePrivilegeCreator;
 
     protected override string Name => "users";
-    public AccessRolePrivilegeMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
-        IMandatorySingleItemDatabaseReaderFactory<EditNodeActionIdReaderByNodeTypeIdRequest, int> editNodeActionIdReaderByNodeTypeIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeIdRequest, int> editOwnNodeActionIdReaderByNodeTypeIdFactory,
-        IEntityCreator<AccessRolePrivilege> accessRolePrivilegeCreator
-
-    )
-    : base(databaseConnections)
-    {
-        _createNodeActionIdReaderByNodeTypeIdFactory = createNodeActionIdReaderByNodeTypeIdFactory;
-        _actionIdReaderByPathFactory = actionIdReaderByPathFactory;
-        _editNodeActionIdReaderByNodeTypeIdFactory = editNodeActionIdReaderByNodeTypeIdFactory;
-        _editOwnNodeActionIdReaderByNodeTypeIdFactory = editOwnNodeActionIdReaderByNodeTypeIdFactory;
-        _accessRolePrivilegeCreator = accessRolePrivilegeCreator;
-    }
-
     private async IAsyncEnumerable<AccessRolePrivilege> GetAccessRolePrivileges(
         IMandatorySingleItemDatabaseReader<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeId,
         IMandatorySingleItemDatabaseReader<ActionIdReaderByPathRequest, int> actionIdReaderByPath,
@@ -382,12 +366,12 @@ internal sealed class AccessRolePrivilegeMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await using var createNodeActionIdReaderByNodeTypeId = await _createNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
-        await using var actionIdReaderByPath = await _actionIdReaderByPathFactory.CreateAsync(_postgresConnection);
-        await using var editNodeActionIdReaderByNodeTypeId = await _editNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
-        await using var editOwnNodeActionIdReaderByNodeTypeId = await _editOwnNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
+        await using var createNodeActionIdReaderByNodeTypeId = await createNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
+        await using var actionIdReaderByPath = await actionIdReaderByPathFactory.CreateAsync(_postgresConnection);
+        await using var editNodeActionIdReaderByNodeTypeId = await editNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
+        await using var editOwnNodeActionIdReaderByNodeTypeId = await editOwnNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
 
-        await _accessRolePrivilegeCreator.CreateAsync(GetAccessRolePrivileges(
+        await accessRolePrivilegeCreator.CreateAsync(GetAccessRolePrivileges(
             createNodeActionIdReaderByNodeTypeId,
             actionIdReaderByPath,
             editNodeActionIdReaderByNodeTypeId,

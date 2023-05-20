@@ -1,21 +1,12 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class AdoptionImportMigrator : MigratorPPL
+internal sealed class AdoptionImportMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, Node> nodeReaderFactory,
+    IEntityCreator<InterCountryRelation> interCountryRelationCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, Node> _nodeReaderFactory;
-    private readonly IEntityCreator<InterCountryRelation> _interCountryRelationCreator;
-    public AdoptionImportMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, Node> nodeReaderFactory,
-        IEntityCreator<InterCountryRelation> interCountryRelationCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _interCountryRelationCreator = interCountryRelationCreator;
-        _nodeReaderFactory = nodeReaderFactory;
-    }
 
     private interface AdoptionImports
     {
@@ -89,8 +80,8 @@ internal sealed class AdoptionImportMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeReader = await _nodeReaderFactory.CreateAsync(_postgresConnection);
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var nodeReader = await nodeReaderFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
 
         var x = AdoptionImportCsvFiles()
             .OfType<SpecificAdoptionImports>()
@@ -100,8 +91,8 @@ internal sealed class AdoptionImportMigrator : MigratorPPL
 
         var r = ReadAdoptionExportYears(nodeReader, nodeIdReader);
 
-        await _interCountryRelationCreator.CreateAsync(r, _postgresConnection);
-        await _interCountryRelationCreator.CreateAsync(x, _postgresConnection);
+        await interCountryRelationCreator.CreateAsync(r, _postgresConnection);
+        await interCountryRelationCreator.CreateAsync(x, _postgresConnection);
 
         var cmd = _postgresConnection.CreateCommand();
         cmd.CommandText = $"""

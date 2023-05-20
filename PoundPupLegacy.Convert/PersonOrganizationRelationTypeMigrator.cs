@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonOrganizationRelationTypeMigrator : MigratorPPL
+internal sealed class PersonOrganizationRelationTypeMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<PersonOrganizationRelationType> personOrganizationRelationTypeCreator
+) : MigratorPPL(databaseConnections)
 {
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<PersonOrganizationRelationType> _personOrganizationRelationTypeCreator;
     protected override string Name => "person organization relation types";
-    public PersonOrganizationRelationTypeMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<PersonOrganizationRelationType> personOrganizationRelationTypeCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _personOrganizationRelationTypeCreator = personOrganizationRelationTypeCreator;
-    }
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _personOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await personOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<PersonOrganizationRelationType> ReadPersonOrganizationRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId

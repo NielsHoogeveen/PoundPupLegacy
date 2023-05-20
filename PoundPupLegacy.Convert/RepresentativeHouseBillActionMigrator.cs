@@ -1,32 +1,20 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class RepresentativeHouseBillActionMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> _professionIdReaderFactory;
-
-    private readonly IEntityCreator<RepresentativeHouseBillAction> _representativeHouseBillActionCreator;
-
-    public RepresentativeHouseBillActionMigrator(
+internal sealed class RepresentativeHouseBillActionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> professionIdReaderFactory,
-    IEntityCreator<RepresentativeHouseBillAction> representativeHouseBillActionCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
-        _representativeHouseBillActionCreator = representativeHouseBillActionCreator;
-        _professionIdReaderFactory = professionIdReaderFactory;
-    }
-
+        IEntityCreator<RepresentativeHouseBillAction> representativeHouseBillActionCreator
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "representative house bill action";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await using var professionIdReader = await _professionIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var professionIdReader = await professionIdReaderFactory.CreateAsync(_postgresConnection);
 
-        await _representativeHouseBillActionCreator.CreateAsync(ReadRepresentativeHouseBillActionsPPL(nodeIdReader, professionIdReader), _postgresConnection);
+        await representativeHouseBillActionCreator.CreateAsync(ReadRepresentativeHouseBillActionsPPL(nodeIdReader, professionIdReader), _postgresConnection);
 
     }
 
@@ -35,8 +23,6 @@ internal sealed class RepresentativeHouseBillActionMigrator : MigratorPPL
         IMandatorySingleItemDatabaseReader<ProfessionIdReaderRequest, int> professionIdReader
     )
     {
-
-
         var sql = $"""
             SELECT
                 n.nid id,

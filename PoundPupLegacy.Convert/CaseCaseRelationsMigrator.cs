@@ -1,39 +1,31 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal class CaseCaseRelationsMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<CaseCaseParties> _caseCasePartiesCreator;
-    public CaseCaseRelationsMigrator(
+internal class CaseCaseRelationsMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<CaseCaseParties> caseCasePartiesCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _caseCasePartiesCreator = caseCasePartiesCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "case case relation";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCaseHomestudyParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCasePlacementParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCasePostPlacementParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCaseFacilitatorParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCaseInstitutionParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadAbuseCaseTherapyParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCasePlacementParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCaseFacilitatorParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCaseOrphanageParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadDisruptedPlacementCasePlacementParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadDisruptedPlacementCaseFacilitatorParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadCoercedAdoptionCasePlacementParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadFathersRightsViolationCasePlacementParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadWrongfulRemovalCaseAuthorityParties(nodeIdReader), _postgresConnection);
-        await _caseCasePartiesCreator.CreateAsync(ReadWrongfulMedicationCaseAuthorityParties(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadAbuseCaseHomestudyParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadAbuseCasePlacementParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadAbuseCasePostPlacementParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadAbuseCaseFacilitatorParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadAbuseCaseInstitutionParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadAbuseCaseTherapyParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCasePlacementParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCaseFacilitatorParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadChildTraffickingCaseOrphanageParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadDisruptedPlacementCasePlacementParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadDisruptedPlacementCaseFacilitatorParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadCoercedAdoptionCasePlacementParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadFathersRightsViolationCasePlacementParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadWrongfulRemovalCaseAuthorityParties(nodeIdReader), _postgresConnection);
+        await caseCasePartiesCreator.CreateAsync(ReadWrongfulMedicationCaseAuthorityParties(nodeIdReader), _postgresConnection);
     }
     private async IAsyncEnumerable<CaseCaseParties> ReadCaseCaseRelations(
         string sql,

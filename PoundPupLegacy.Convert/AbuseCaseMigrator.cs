@@ -1,26 +1,18 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class AbuseCaseMigrator : MigratorPPL
+internal sealed class AbuseCaseMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<AbuseCase> abuseCaseCreator,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<AbuseCase> _abuseCaseCreator;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-
-    public AbuseCaseMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<AbuseCase> abuseCaseCreator,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
-    ) : base(databaseConnections)
-    {
-        _abuseCaseCreator = abuseCaseCreator;
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-    }
 
     protected override string Name => "abuse cases";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader), _postgresConnection);
     }
     private async IAsyncEnumerable<AbuseCase> ReadAbuseCases(IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {

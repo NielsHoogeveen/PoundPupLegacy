@@ -1,20 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
-internal sealed class AdultAftermathMigrator : MigratorPPL
+internal sealed class AdultAftermathMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    public AdultAftermathMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-    }
 
     protected override string Name => "adult aftermath";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         var adultAfterMathEntries = await ReadAdultAftermaths(nodeIdReader).ToListAsync();
         await UpdateAdultAftermathEntries(adultAfterMathEntries);
     }

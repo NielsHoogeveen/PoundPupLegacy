@@ -1,31 +1,25 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class NodeFileMigratorCPCT : MigratorCPCT
+internal sealed class NodeFileMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<NodeFile> nodeFileCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-
-    private IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-
-    private readonly IEntityCreator<NodeFile> _nodeFileCreator;
-    public NodeFileMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<NodeFile> nodeFileCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _nodeFileCreator = nodeFileCreator;
-    }
-
     protected override string Name => "files nodes (cpct)";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
 
-        await _nodeFileCreator.CreateAsync(ReadNodeFiles(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
+        await nodeFileCreator.CreateAsync(ReadNodeFiles(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<NodeFile> ReadNodeFiles(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,

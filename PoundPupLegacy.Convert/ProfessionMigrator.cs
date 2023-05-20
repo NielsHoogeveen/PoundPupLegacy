@@ -1,27 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ProfessionMigrator : MigratorPPL
+internal sealed class ProfessionMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<Profession> professionCreator
+) : MigratorPPL(databaseConnections)
 {
-
-    private readonly IEntityCreator<Profession> _professionCreator;
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    public ProfessionMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<Profession> professionCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _professionCreator = professionCreator;
-    }
-
     protected override string Name => "professions";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _professionCreator.CreateAsync(ReadProfessions(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await professionCreator.CreateAsync(ReadProfessions(fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<Profession> ReadProfessions(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId

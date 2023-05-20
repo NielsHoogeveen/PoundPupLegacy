@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DisruptedPlacementCaseMigrator : MigratorPPL
+internal sealed class DisruptedPlacementCaseMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<DisruptedPlacementCase> disruptedPlacementCaseCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<DisruptedPlacementCase> _disruptedPlacementCaseCreator;
-    public DisruptedPlacementCaseMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<DisruptedPlacementCase> disruptedPlacementCaseCreator
-    ) : base(databaseConnections)
-    {
-        _disruptedPlacementCaseCreator = disruptedPlacementCaseCreator;
-    }
-
     protected override string Name => "disrupted placement cases";
 
     protected override async Task MigrateImpl()
     {
-        await _disruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases(), _postgresConnection);
+        await disruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<DisruptedPlacementCase> ReadDisruptedPlacementCases()
     {

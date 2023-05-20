@@ -1,17 +1,11 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PublicationStatusMigrator : MigratorPPL
+internal sealed class PublicationStatusMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<PublicationStatus> publicationStatusCreator
+) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "publication statuses";
-    private readonly IEntityCreator<PublicationStatus> _publicationStatusCreator;
-    public PublicationStatusMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<PublicationStatus> publicationStatusCreator
-    ) : base(databaseConnections)
-    {
-        _publicationStatusCreator = publicationStatusCreator;
-    }
-
     private static async IAsyncEnumerable<PublicationStatus> GetNodeStatuses()
     {
         await Task.CompletedTask;
@@ -31,6 +25,6 @@ internal sealed class PublicationStatusMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await _publicationStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
+        await publicationStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
     }
 }

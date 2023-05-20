@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PartyPoliticalEntityRelationTypeMigrator : MigratorPPL
+internal sealed class PartyPoliticalEntityRelationTypeMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<PartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<PartyPoliticalEntityRelationType> _partyPoliticalEntityRelationTypeCreator;
-    public PartyPoliticalEntityRelationTypeMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<PartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _partyPoliticalEntityRelationTypeCreator = partyPoliticalEntityRelationTypeCreator;
-    }
-
     protected override string Name => "political entity relation types";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _partyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await partyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<PartyPoliticalEntityRelationType> ReadPoliticalEntityRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId

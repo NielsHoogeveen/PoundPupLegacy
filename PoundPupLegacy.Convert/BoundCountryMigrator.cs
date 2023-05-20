@@ -1,34 +1,22 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BoundCountryMigrator : CountryMigrator
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
-    private readonly IEntityCreator<BoundCountry> _boundCountryCreator;
-    public BoundCountryMigrator(
+internal sealed class BoundCountryMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IEntityCreator<BoundCountry> boundCountryCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
-        _termReaderByNameFactory = termReaderByNameFactory;
-        _boundCountryCreator = boundCountryCreator;
-    }
-
+    ) : CountryMigrator(databaseConnections)
+{
     protected override string Name => "bound countries";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var vocabularyReader = await _vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByName = await _termReaderByNameFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var vocabularyReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
-        await _boundCountryCreator.CreateAsync(ReadBoundCountries(
+        await boundCountryCreator.CreateAsync(ReadBoundCountries(
             nodeIdReader,
             vocabularyReader,
             termReaderByName

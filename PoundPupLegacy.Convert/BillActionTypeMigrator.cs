@@ -1,23 +1,16 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BillActionTypeMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileId;
-    private readonly IEntityCreator<BillActionType> _billActionTypeCreator;
-    protected override string Name => "person organization relation types";
-    public BillActionTypeMigrator(
+internal sealed class BillActionTypeMigrator(
         IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId,
+        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
         IEntityCreator<BillActionType> billActionTypeCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileId = fileIdReaderByTenantFileId;
-        _billActionTypeCreator = billActionTypeCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
+    protected override string Name => "person organization relation types";
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileId.CreateAsync(_postgresConnection);
-        await _billActionTypeCreator.CreateAsync(ReadBillActionTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await billActionTypeCreator.CreateAsync(ReadBillActionTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<BillActionType> ReadBillActionTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)

@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DeportationCaseMigrator : MigratorPPL
+internal sealed class DeportationCaseMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IEntityCreator<DeportationCase> deportationCaseCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<DeportationCase> _deportationCaseCreator;
-    public DeportationCaseMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<DeportationCase> deportationCaseCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _deportationCaseCreator = deportationCaseCreator;
-    }
-
     protected override string Name => "deportation cases";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader), _postgresConnection);
     }
     private async IAsyncEnumerable<DeportationCase> ReadDeportationCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)

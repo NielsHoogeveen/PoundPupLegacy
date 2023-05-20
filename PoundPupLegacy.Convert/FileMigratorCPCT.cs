@@ -2,24 +2,22 @@
 
 namespace PoundPupLegacy.Convert;
 
-internal sealed class FileMigratorCPCT : MigratorCPCT
+internal sealed class FileMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreator<File> fileCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-    private readonly IEntityCreator<File> _fileCreator;
-    public FileMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        IEntityCreator<File> fileCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _fileCreator = fileCreator;
-    }
-
     protected override string Name => "files (cpct)";
 
     protected override async Task MigrateImpl()
     {
-        await _fileCreator.CreateAsync(ReadFiles(), _postgresConnection);
+        await fileCreator.CreateAsync(ReadFiles(), _postgresConnection);
     }
     private async IAsyncEnumerable<File> ReadFiles()
     {

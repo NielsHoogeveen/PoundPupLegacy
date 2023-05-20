@@ -1,16 +1,6 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class MenuMigrator : MigratorPPL
-{
-    protected override string Name => "menu items";
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> _actionIdReaderByPathFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> _createNodeActionIdReaderByNodeTypeIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TenantNodeIdReaderByUrlIdRequest, int> _tenantNodeIdReaderByUrlIdFactory;
-    private readonly IEntityCreator<TenantNodeMenuItem> _tenantNodeMenuItemCreator;
-    private readonly IEntityCreator<ActionMenuItem> _actionMenuItemCreator;
-
-    public MenuMigrator(
+internal sealed class MenuMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
         IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeIdFactory,
@@ -18,21 +8,17 @@ internal sealed class MenuMigrator : MigratorPPL
         IEntityCreator<TenantNodeMenuItem> tenantNodeMenuItemCreator,
         IEntityCreator<ActionMenuItem> actionMenuItemCreator
 
-    ) : base(databaseConnections)
-    {
-        _actionIdReaderByPathFactory = actionIdReaderByPathFactory;
-        _createNodeActionIdReaderByNodeTypeIdFactory = createNodeActionIdReaderByNodeTypeIdFactory;
-        _tenantNodeIdReaderByUrlIdFactory = tenantNodeIdReaderByUrlIdFactory;
-        _tenantNodeMenuItemCreator = tenantNodeMenuItemCreator;
-        _actionMenuItemCreator = actionMenuItemCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
+    protected override string Name => "menu items";
+
     protected override async Task MigrateImpl()
     {
-        await using var actionIdReaderByPath = await _actionIdReaderByPathFactory.CreateAsync(_postgresConnection);
-        await using var createNodeActionIdReaderByNodeTypeId = await _createNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
+        await using var actionIdReaderByPath = await actionIdReaderByPathFactory.CreateAsync(_postgresConnection);
+        await using var createNodeActionIdReaderByNodeTypeId = await createNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
 
-        await _tenantNodeMenuItemCreator.CreateAsync(GetTenantNodeMenuItems(), _postgresConnection);
-        await _actionMenuItemCreator.CreateAsync(GetActionMenuItems(actionIdReaderByPath, createNodeActionIdReaderByNodeTypeId), _postgresConnection);
+        await tenantNodeMenuItemCreator.CreateAsync(GetTenantNodeMenuItems(), _postgresConnection);
+        await actionMenuItemCreator.CreateAsync(GetActionMenuItems(actionIdReaderByPath, createNodeActionIdReaderByNodeTypeId), _postgresConnection);
     }
 
     private async IAsyncEnumerable<ActionMenuItem> GetActionMenuItems(
@@ -202,7 +188,7 @@ internal sealed class MenuMigrator : MigratorPPL
     }
     private async IAsyncEnumerable<TenantNodeMenuItem> GetTenantNodeMenuItems()
     {
-        await using var tenantNodeIdByUrlIdReader = await _tenantNodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeIdByUrlIdReader = await tenantNodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         yield return new TenantNodeMenuItem {
             Id = null,
             TenantNodeId = await tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlIdRequest {

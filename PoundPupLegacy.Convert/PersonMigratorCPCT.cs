@@ -1,23 +1,21 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonMigratorCPCT : MigratorCPCT
+internal sealed class PersonMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreator<Person> personCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-    private readonly IEntityCreator<Person> _personCreator;
-    public PersonMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        IEntityCreator<Person> personCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _personCreator = personCreator;
-    }
-
     protected override string Name => "persons (cpct)";
 
     protected override async Task MigrateImpl()
     {
-        await _personCreator.CreateAsync(ReadPersons(), _postgresConnection);
+        await personCreator.CreateAsync(ReadPersons(), _postgresConnection);
     }
     private async IAsyncEnumerable<Person> ReadPersons()
     {

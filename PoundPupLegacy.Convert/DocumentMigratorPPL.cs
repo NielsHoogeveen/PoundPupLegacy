@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentMigratorPPL : MigratorPPL
+internal sealed class DocumentMigratorPPL(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IEntityCreator<Document> documentCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<Document> _documentCreator;
-    public DocumentMigratorPPL(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<Document> documentCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _documentCreator = documentCreator;
-    }
-
     protected override string Name => "documents ppl";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _documentCreator.CreateAsync(ReadDocuments(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await documentCreator.CreateAsync(ReadDocuments(nodeIdReader), _postgresConnection);
     }
 
     private async IAsyncEnumerable<Document> ReadDocuments(

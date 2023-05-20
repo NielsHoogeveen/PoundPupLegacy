@@ -1,30 +1,16 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class FormalIntermediateLevelSubdivisionMigrator : MigratorPPL
-{
-    protected override string Name => "formal intermediate level subdivisions";
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
-    private readonly IEntityCreator<FormalIntermediateLevelSubdivision> _formalIntermediateLevelSubdivisionCreator;
-
-    public FormalIntermediateLevelSubdivisionMigrator(
+internal sealed class FormalIntermediateLevelSubdivisionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IEntityCreator<FormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
-        _termReaderByNameFactory = termReaderByNameFactory;
-        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
-        _formalIntermediateLevelSubdivisionCreator = formalIntermediateLevelSubdivisionCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
+    protected override string Name => "formal intermediate level subdivisions";
+
     private async IAsyncEnumerable<FormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
@@ -110,12 +96,12 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var vocabularyIdReader = await _vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByName = await _termReaderByNameFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
 
-        await _formalIntermediateLevelSubdivisionCreator.CreateAsync(ReadFormalIntermediateLevelSubdivisionCsv(
+        await formalIntermediateLevelSubdivisionCreator.CreateAsync(ReadFormalIntermediateLevelSubdivisionCsv(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByNameableId,

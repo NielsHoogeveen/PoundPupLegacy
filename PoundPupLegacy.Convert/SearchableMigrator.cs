@@ -1,13 +1,9 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal class SearchableMigrator : MigratorPPL
-{
-    public SearchableMigrator(
+internal class SearchableMigrator(
         IDatabaseConnections databaseConnections
-    ) : base(databaseConnections)
-    {
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "searchables";
 
     protected override async Task MigrateImpl()

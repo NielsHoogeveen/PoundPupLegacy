@@ -1,18 +1,6 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class CaseTypeMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> _actionIdReaderFactory;
-    private readonly IEntityCreator<ViewNodeTypeListAction> _viewNodeTypeListActionCreator;
-    private readonly IEntityCreator<CaseType> _caseTypeCreator;
-    private readonly IEntityCreator<CreateNodeAction> _createNodeActionCreator;
-    private readonly IEntityCreator<DeleteNodeAction> _deleteNodeActionCreator;
-    private readonly IEntityCreator<EditNodeAction> _editNodeActionCreator;
-
-    protected override string Name => "node types";
-
-    public CaseTypeMigrator(
+internal sealed class CaseTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderFactory,
@@ -21,25 +9,19 @@ internal sealed class CaseTypeMigrator : MigratorPPL
         IEntityCreator<CreateNodeAction> createNodeActionCreator,
         IEntityCreator<DeleteNodeAction> deleteNodeActionCreator,
         IEntityCreator<EditNodeAction> editNodeActionCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _viewNodeTypeListActionCreator = viewNodeTypeListActionCreator;
-        _actionIdReaderFactory = actionIdReaderFactory;
-        _caseTypeCreator = caseTypeCreator;
-        _createNodeActionCreator = createNodeActionCreator;
-        _deleteNodeActionCreator = deleteNodeActionCreator;
-        _editNodeActionCreator = editNodeActionCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
+    protected override string Name => "node types";
+
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var actionIdReader = await _actionIdReaderFactory.CreateAsync(_postgresConnection);
-        await _caseTypeCreator.CreateAsync(GetCaseTypes(nodeIdReader), _postgresConnection);
-        await _viewNodeTypeListActionCreator.CreateAsync(GetViewNodeTypeListActions(actionIdReader), _postgresConnection);
-        await _createNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await _deleteNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await _editNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var actionIdReader = await actionIdReaderFactory.CreateAsync(_postgresConnection);
+        await caseTypeCreator.CreateAsync(GetCaseTypes(nodeIdReader), _postgresConnection);
+        await viewNodeTypeListActionCreator.CreateAsync(GetViewNodeTypeListActions(actionIdReader), _postgresConnection);
+        await createNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await deleteNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await editNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
     }
     internal async IAsyncEnumerable<CaseType> GetCaseTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)

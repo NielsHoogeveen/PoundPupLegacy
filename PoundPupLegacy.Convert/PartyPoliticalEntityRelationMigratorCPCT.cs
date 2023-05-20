@@ -1,26 +1,23 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PartyPoliticalEntityRelationMigratorCPCT : MigratorCPCT
+internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreator<PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-    private readonly IEntityCreator<PartyPoliticalEntityRelation> _partyPoliticalEntityRelationCreator;
-    public PartyPoliticalEntityRelationMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        IEntityCreator<PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _partyPoliticalEntityRelationCreator = partyPoliticalEntityRelationCreator;
-    }
-
     protected override string Name => "party political enitity relation";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var tenantNodeReader = await _tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await _partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader, tenantNodeReader), _postgresConnection);
-
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeReader = await tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader, tenantNodeReader), _postgresConnection);
     }
 
     private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(

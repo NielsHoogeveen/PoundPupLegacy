@@ -1,26 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class AbuseCaseTypeOfAbuseMigrator : MigratorPPL
+internal sealed class AbuseCaseTypeOfAbuseMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<AbuseCaseTypeOfAbuse> _abuseCaseTypeOfAbuseCreator;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-
-    public AbuseCaseTypeOfAbuseMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
-    ) : base(databaseConnections)
-    {
-        _abuseCaseTypeOfAbuseCreator = abuseCaseTypeOfAbuseCreator;
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-    }
-
     protected override string Name => "abuse case types of abuse";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _abuseCaseTypeOfAbuseCreator.CreateAsync(ReadAbuseCaseTypeOfAbuses(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await abuseCaseTypeOfAbuseCreator.CreateAsync(ReadAbuseCaseTypeOfAbuses(nodeIdReader), _postgresConnection);
     }
     private async IAsyncEnumerable<AbuseCaseTypeOfAbuse> ReadAbuseCaseTypeOfAbuses(IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {

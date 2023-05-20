@@ -1,18 +1,6 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int> _subdivisionIdByNameReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> _subdivisionIdReaderByIso3166CodeFactory;
-    private readonly IEntityCreator<BasicSecondLevelSubdivision> _basicSecondLevelSubdivisionCreator;
-
-    protected override string Name => "basic second level subdivisions";
-
-    public BasicSecondLevelSubdivisionMigrator(
+internal sealed class BasicSecondLevelSubdivisionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReaderFactory,
@@ -21,17 +9,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
         IEntityCreator<BasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _subdivisionIdByNameReaderFactory = subdivisionIdByNameReaderFactory;
-        _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
-        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
-        _termReaderByNameFactory = termReaderByNameFactory;
-        _subdivisionIdReaderByIso3166CodeFactory = subdivisionIdReaderByIso3166CodeFactory;
-        _basicSecondLevelSubdivisionCreator = basicSecondLevelSubdivisionCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
+    protected override string Name => "basic second level subdivisions";
     private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReader,
@@ -204,28 +184,28 @@ internal sealed class BasicSecondLevelSubdivisionMigrator : MigratorPPL
     }
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var subdivisionIdByNameReader = await _subdivisionIdByNameReaderFactory.CreateAsync(_postgresConnection);
-        await using var subdivisionIdReaderByIso3166Code = await _subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
-        await using var vocabularyIdReader = await _vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByName = await _termReaderByNameFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var subdivisionIdByNameReader = await subdivisionIdByNameReaderFactory.CreateAsync(_postgresConnection);
+        await using var subdivisionIdReaderByIso3166Code = await subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
+        await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
-        await _basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
+        await basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
             nodeIdReader,
             subdivisionIdByNameReader,
             vocabularyIdReader,
             termReaderByNameableId,
             termReaderByName
         ), _postgresConnection);
-        await _basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionCsv(
+        await basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionCsv(
             nodeIdReader,
             subdivisionIdReaderByIso3166Code,
             vocabularyIdReader,
             termReaderByNameableId,
             termReaderByName
         ), _postgresConnection);
-        await _basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(
+        await basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName

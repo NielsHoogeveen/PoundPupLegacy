@@ -1,30 +1,19 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class SecondLevelGlobalRegionMigrator : MigratorPPL
+internal sealed class SecondLevelGlobalRegionMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<SecondLevelGlobalRegion> secondLevelGlobalRegionCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<SecondLevelGlobalRegion> _secondLevelGlobalRegionCreator;
-
-    public SecondLevelGlobalRegionMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<SecondLevelGlobalRegion> secondLevelGlobalRegionCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _secondLevelGlobalRegionCreator = secondLevelGlobalRegionCreator;
-    }
-
     protected override string Name => "second level global regions";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _secondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await secondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
     }
 
     private async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(

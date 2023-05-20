@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BindingCountryMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<BindingCountry> _bindingCountryCreator;
-    public BindingCountryMigrator(
+internal sealed class BindingCountryMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<BindingCountry> bindingCountryCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _bindingCountryCreator = bindingCountryCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "binding countries";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader), _postgresConnection);
     }
     private async IAsyncEnumerable<BindingCountry> ReadBindingCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)

@@ -1,30 +1,19 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BillMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<HouseBill> _houseBillCreator;
-    private readonly IEntityCreator<SenateBill> _senateBillCreator;
-    public BillMigrator(
+internal sealed class BillMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<HouseBill> houseBillCreator,
         IEntityCreator<SenateBill> senateBillCreator
-    ) : base(databaseConnections)
-    {
-        _houseBillCreator = houseBillCreator;
-        _senateBillCreator = senateBillCreator;
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "bills";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _houseBillCreator.CreateAsync(ReadHouseBills(nodeIdReader), _postgresConnection);
-        await _senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader), _postgresConnection);
-
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await houseBillCreator.CreateAsync(ReadHouseBills(nodeIdReader), _postgresConnection);
+        await senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader), _postgresConnection);
     }
 
     private async IAsyncEnumerable<HouseBill> ReadHouseBills(

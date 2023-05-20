@@ -1,20 +1,12 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BasicCountryMigrator : MigratorPPL
+internal sealed class BasicCountryMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IEntityCreator<BasicCountry> basicCountryCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<BasicCountry> _basicCountryCreator;
     protected override string Name => "basic countries";
-
-    public BasicCountryMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<BasicCountry> basicCountryCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _basicCountryCreator = basicCountryCreator;
-    }
 
     public static int GetHagueStatus(string name)
     {
@@ -349,9 +341,9 @@ internal sealed class BasicCountryMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _basicCountryCreator.CreateAsync(GetBasicCountries(nodeIdReader), _postgresConnection);
-        await _basicCountryCreator.CreateAsync(ReadBasicCountries(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await basicCountryCreator.CreateAsync(GetBasicCountries(nodeIdReader), _postgresConnection);
+        await basicCountryCreator.CreateAsync(ReadBasicCountries(nodeIdReader), _postgresConnection);
     }
 
     private async IAsyncEnumerable<BasicCountry> ReadBasicCountries(

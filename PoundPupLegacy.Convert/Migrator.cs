@@ -51,16 +51,16 @@ internal abstract class MigratorPPL : Migrator
 }
 internal abstract class MigratorCPCT : Migrator
 {
-    protected readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    protected readonly ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> _tenantNodeReaderByUrlIdFactory;
+    protected readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory;
+    protected readonly ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory;
     public MigratorCPCT(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory
     ) : base(databaseConnections.PostgressConnection, databaseConnections.MysqlConnectionCPCT)
     {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _tenantNodeReaderByUrlIdFactory = tenantNodeReaderByUrlIdFactory;
+        this.nodeIdReaderFactory = nodeIdReaderFactory;
+        this.tenantNodeReaderByUrlIdFactory = tenantNodeReaderByUrlIdFactory;
     }
     protected async Task<(int, int)> GetNodeId(
         int urlId,

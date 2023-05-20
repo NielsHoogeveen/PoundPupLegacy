@@ -1,30 +1,35 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class CountrySubdivisionTypeMigratorPartOne : CountrySubdivisionTypeMigrator
+internal sealed class CountrySubdivisionTypeMigratorPartOne(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
+    IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
+) : CountrySubdivisionTypeMigrator(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    vocabularyIdReaderByOwnerAndNameFactory, 
+    termReaderByNameFactory, 
+    countrySubdivisionTypeCreator
+)
 {
-    public CountrySubdivisionTypeMigratorPartOne(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator)
-    {
-    }
-
     protected override string FileName => "country_subdivision_types_part1.csv";
 }
-internal sealed class CountrySubdivisionTypeMigratorPartTwo : CountrySubdivisionTypeMigrator
+internal sealed class CountrySubdivisionTypeMigratorPartTwo(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
+    IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
+) : CountrySubdivisionTypeMigrator(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    vocabularyIdReaderByOwnerAndNameFactory, 
+    termReaderByNameFactory, 
+    countrySubdivisionTypeCreator
+)
 {
-    public CountrySubdivisionTypeMigratorPartTwo(IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator)
-    {
-    }
-
     protected override string FileName => "country_subdivision_types_part2.csv";
 }
 internal sealed class CountrySubdivisionTypeMigratorPartThree : CountrySubdivisionTypeMigrator
@@ -41,30 +46,17 @@ internal sealed class CountrySubdivisionTypeMigratorPartThree : CountrySubdivisi
     protected override string FileName => "country_subdivision_types_part3.csv";
 }
 
-internal abstract class CountrySubdivisionTypeMigrator : MigratorPPL
-{
-
-    protected abstract string FileName { get; }
-    protected override string Name => "basic second level subdivisions";
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
-    private readonly IEntityCreator<CountrySubdivisionType> _countrySubdivisionTypeCreator;
-
-    public CountrySubdivisionTypeMigrator(
+internal abstract class CountrySubdivisionTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
-        _termReaderByNameFactory = termReaderByNameFactory;
-        _countrySubdivisionTypeCreator = countrySubdivisionTypeCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
+
+    protected abstract string FileName { get; }
+    protected override string Name => "basic second level subdivisions";
 
     private async IAsyncEnumerable<CountrySubdivisionType> ReadCountrySubdivisionTypesCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
@@ -102,15 +94,14 @@ internal abstract class CountrySubdivisionTypeMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var vocabularyIdReader = await _vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByName = await _termReaderByNameFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
-        await _countrySubdivisionTypeCreator.CreateAsync(ReadCountrySubdivisionTypesCsv(
+        await countrySubdivisionTypeCreator.CreateAsync(ReadCountrySubdivisionTypesCsv(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName
             ), _postgresConnection);
-
     }
 }

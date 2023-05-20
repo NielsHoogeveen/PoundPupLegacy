@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PersonMigratorPPL : MigratorPPL
+internal sealed class PersonMigratorPPL(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<Person> personCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<Person> _personCreator;
-    public PersonMigratorPPL(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<Person> personCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _personCreator = personCreator;
-    }
-
     protected override string Name => "persons (ppl)";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReader = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _personCreator.CreateAsync(ReadPersons(fileIdReader), _postgresConnection);
+        await using var fileIdReader = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await personCreator.CreateAsync(ReadPersons(fileIdReader), _postgresConnection);
     }
     private static DateTime? GetDateOfDeath(int id, DateTime? dateTime)
     {

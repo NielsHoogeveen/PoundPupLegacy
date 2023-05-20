@@ -1,21 +1,12 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class VocabularyMigrator : MigratorPPL
+internal sealed class VocabularyMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
+    IEntityCreator<Vocabulary> vocabularyCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
-    private readonly IEntityCreator<Vocabulary> _vocabularyCreator;
-
     protected override string Name => "vocabularies";
-    public VocabularyMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        IEntityCreator<Vocabulary> vocabularyCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
-        _vocabularyCreator = vocabularyCreator;
-    }
-
     private static async IAsyncEnumerable<Vocabulary> GetVocabularies()
     {
         await Task.CompletedTask;
@@ -282,9 +273,9 @@ internal sealed class VocabularyMigrator : MigratorPPL
     }
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await _vocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
-        await _vocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await vocabularyCreator.CreateAsync(GetVocabularies(), _postgresConnection);
+        await vocabularyCreator.CreateAsync(ReadVocabularies(), _postgresConnection);
     }
     private async IAsyncEnumerable<Vocabulary> ReadVocabularies()
     {

@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class HagueStatusMigrator : MigratorPPL
+internal sealed class HagueStatusMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<HagueStatus> hagueStatusCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<HagueStatus> _hagueStatusCreator;
-    public HagueStatusMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<HagueStatus> hagueStatusCreator
-    ) : base(databaseConnections)
-    {
-        _hagueStatusCreator = hagueStatusCreator;
-    }
-
     protected override string Name => "Hague statuses";
 
     protected override async Task MigrateImpl()
     {
-        await _hagueStatusCreator.CreateAsync(ReadHagueStatuses(), _postgresConnection);
+        await hagueStatusCreator.CreateAsync(ReadHagueStatuses(), _postgresConnection);
     }
 
     private async IAsyncEnumerable<HagueStatus> ReadHagueStatuses()

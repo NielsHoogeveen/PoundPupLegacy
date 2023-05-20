@@ -1,26 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class InterPersonalRelationTypeMigrator : MigratorPPL
+internal sealed class InterPersonalRelationTypeMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreator<InterPersonalRelationType> interPersonalRelationTypeCreator
+) : MigratorPPL(databaseConnections)
 {
-
-    private readonly IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> _fileIdReaderByTenantFileIdFactory;
-    private readonly IEntityCreator<InterPersonalRelationType> _interPersonalRelationTypeCreator;
-    public InterPersonalRelationTypeMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<InterPersonalRelationType> interPersonalRelationTypeCreator
-    ) : base(databaseConnections)
-    {
-        _fileIdReaderByTenantFileIdFactory = fileIdReaderByTenantFileIdFactory;
-        _interPersonalRelationTypeCreator = interPersonalRelationTypeCreator;
-    }
-
     protected override string Name => "inter-personal relation types";
 
     protected override async Task MigrateImpl()
     {
-        await using var fileIdReaderByTenantFileId = await _fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await _interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
+        await interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
     private async IAsyncEnumerable<InterPersonalRelationType> ReadInterPersonalRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)

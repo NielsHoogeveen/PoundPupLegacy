@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class DocumentTypeMigrator : MigratorPPL
+internal sealed class DocumentTypeMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<DocumentType> documentTypeCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<DocumentType> _documentTypeCreator;
-    public DocumentTypeMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<DocumentType> documentTypeCreator
-    ) : base(databaseConnections)
-    {
-        _documentTypeCreator = documentTypeCreator;
-    }
-
     protected override string Name => "document types";
 
     protected override async Task MigrateImpl()
     {
-        await _documentTypeCreator.CreateAsync(ReadSelectionOptions(), _postgresConnection);
+        await documentTypeCreator.CreateAsync(ReadSelectionOptions(), _postgresConnection);
     }
     private async IAsyncEnumerable<DocumentType> ReadSelectionOptions()
     {

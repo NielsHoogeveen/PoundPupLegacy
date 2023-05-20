@@ -1,32 +1,25 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class OrganizationMigratorCPCT : MigratorCPCT
+internal sealed class OrganizationMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+    IEntityCreator<Organization> organizationCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-    private readonly IEntityCreator<Organization> _organizationCreator;
-    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
-
-    public OrganizationMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-        IEntityCreator<Organization> organizationCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _organizationCreator = organizationCreator;
-        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
-    }
-
     protected override string Name => "organizations (cpct)";
-
 
     protected override async Task MigrateImpl()
     {
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
 
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
-
-        await _organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId), _postgresConnection);
+        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId), _postgresConnection);
     }
 
     private async IAsyncEnumerable<BasicOrganization> ReadOrganizations(

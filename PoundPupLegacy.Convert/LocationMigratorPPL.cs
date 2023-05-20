@@ -1,30 +1,19 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class LocationMigratorPPL : MigratorPPL
+internal sealed class LocationMigratorPPL(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
+    IEntityCreator<Location> locationCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> _subdivisionIdReaderByIso3166CodeFactory;
-    private readonly IEntityCreator<Location> _locationCreator;
-    public LocationMigratorPPL(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-        IEntityCreator<Location> locationCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _subdivisionIdReaderByIso3166CodeFactory = subdivisionIdReaderByIso3166CodeFactory;
-        _locationCreator = locationCreator;
-    }
-
     protected override string Name => "locations (ppl)";
     protected override async Task MigrateImpl()
     {
-
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var subdivisionIdReaderByIso3166Code = await _subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
-        await _locationCreator.CreateAsync(GetLocations(nodeIdReader), _postgresConnection);
-        await _locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var subdivisionIdReaderByIso3166Code = await subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
+        await locationCreator.CreateAsync(GetLocations(nodeIdReader), _postgresConnection);
+        await locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code), _postgresConnection);
     }
 
     private async IAsyncEnumerable<Location> GetLocations(

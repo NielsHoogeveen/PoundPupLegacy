@@ -1,24 +1,16 @@
 ﻿namespace PoundPupLegacy.Convert;
-internal sealed class PollMigrator : MigratorPPL
+internal sealed class PollMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<SingleQuestionPoll> singleQuestionPollCreator,
+    IEntityCreator<MultiQuestionPoll> multiQuestionPollCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<SingleQuestionPoll> _singleQuestionPollCreator;
-    private readonly IEntityCreator<MultiQuestionPoll> _multiQuestionPollCreator;
-    public PollMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<SingleQuestionPoll> singleQuestionPollCreator,
-        IEntityCreator<MultiQuestionPoll> multiQuestionPollCreator
-    ) : base(databaseConnections)
-    {
-        _singleQuestionPollCreator = singleQuestionPollCreator;
-        _multiQuestionPollCreator = multiQuestionPollCreator;
-    }
-
     protected override string Name => "polls";
 
     protected override async Task MigrateImpl()
     {
-        await _singleQuestionPollCreator.CreateAsync(ReadSingleQuestionPolls(), _postgresConnection);
-        await _multiQuestionPollCreator.CreateAsync(ReadMultiQuestionPolls(), _postgresConnection);
+        await singleQuestionPollCreator.CreateAsync(ReadSingleQuestionPolls(), _postgresConnection);
+        await multiQuestionPollCreator.CreateAsync(ReadMultiQuestionPolls(), _postgresConnection);
     }
     private async IAsyncEnumerable<SingleQuestionPoll> ReadSingleQuestionPolls()
     {

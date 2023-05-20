@@ -1,28 +1,24 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class LocationMigratorCPCT : MigratorCPCT
+internal sealed class LocationMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
+    IEntityCreator<Location> locationCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> _subdivisionIdReaderByIso3166CodeFactory;
-    private readonly IEntityCreator<Location> _locationCreator;
-    public LocationMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-        IEntityCreator<Location> locationCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _subdivisionIdReaderByIso3166CodeFactory = subdivisionIdReaderByIso3166CodeFactory;
-        _locationCreator = locationCreator;
-    }
-
     protected override string Name => "locations (cpct)";
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var subdivisionIdReaderByIso3166Code = await _subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var subdivisionIdReaderByIso3166Code = await subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
 
-        await _locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code), _postgresConnection);
+        await locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code), _postgresConnection);
     }
 
     private static string? GetStreet(int id, string? street)
@@ -290,7 +286,7 @@ internal sealed class LocationMigratorCPCT : MigratorCPCT
     }
     private async Task<int?> GetCountryId(int id, int? countryId)
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         var ret = id switch {
             2945 => 4017,
             _ => countryId

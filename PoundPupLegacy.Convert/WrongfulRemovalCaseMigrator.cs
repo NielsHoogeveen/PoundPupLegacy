@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class WrongfulRemovalCaseMigrator : MigratorPPL
+internal sealed class WrongfulRemovalCaseMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<WrongfulRemovalCase> wrongfulRemovalCaseCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<WrongfulRemovalCase> _wrongfulRemovalCaseCreator;
-    public WrongfulRemovalCaseMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<WrongfulRemovalCase> wrongfulRemovalCaseCreator
-    ) : base(databaseConnections)
-    {
-        _wrongfulRemovalCaseCreator = wrongfulRemovalCaseCreator;
-    }
-
     protected override string Name => "wrongful removal case";
 
     protected override async Task MigrateImpl()
     {
-        await _wrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases(), _postgresConnection);
+        await wrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases(), _postgresConnection);
     }
     private async IAsyncEnumerable<WrongfulRemovalCase> ReadWrongfulRemovalCases()
     {

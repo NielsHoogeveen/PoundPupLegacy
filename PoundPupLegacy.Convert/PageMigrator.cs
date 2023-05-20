@@ -1,22 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class PageMigrator : MigratorPPL
+internal sealed class PageMigrator(
+    IDatabaseConnections databaseConnections,
+    IEntityCreator<Page> pageCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<Page> _pageCreator;
-    public PageMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreator<Page> pageCreator
-    ) : base(databaseConnections)
-    {
-        _pageCreator = pageCreator;
-    }
-
     protected override string Name => "pages";
 
     protected override async Task MigrateImpl()
     {
-        await _pageCreator.CreateAsync(ReadPages(), _postgresConnection);
-
+        await pageCreator.CreateAsync(ReadPages(), _postgresConnection);
     }
     private async IAsyncEnumerable<Page> ReadPages()
     {

@@ -1,27 +1,24 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class InterOrganizationalRelationMigratorCPCT : MigratorCPCT
+internal sealed class InterOrganizationalRelationMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreator<InterOrganizationalRelation> interOrganizationalRelationCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-    private readonly IEntityCreator<InterOrganizationalRelation> _interOrganizationalRelationCreator;
-    public InterOrganizationalRelationMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        IEntityCreator<InterOrganizationalRelation> interOrganizationalRelationCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _interOrganizationalRelationCreator = interOrganizationalRelationCreator;
-    }
-
     protected override string Name => "person organization relation (cpct)";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var tenantNodeReaderByUrlId = await _tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeReaderByUrlId = await tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
 
-        await _interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
-
+        await interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
     }
 
     private async IAsyncEnumerable<InterOrganizationalRelation> ReadInterOrganizationalRelations(

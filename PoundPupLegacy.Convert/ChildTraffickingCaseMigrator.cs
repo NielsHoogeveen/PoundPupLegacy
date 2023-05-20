@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ChildTraffickingCaseMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<ChildTraffickingCase> _childTraffickingCaseCreator;
-    public ChildTraffickingCaseMigrator(
+internal sealed class ChildTraffickingCaseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<ChildTraffickingCase> childTraffickingCaseCreator
-    ) : base(databaseConnections)
-    {
-        _childTraffickingCaseCreator = childTraffickingCaseCreator;
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "child trafficking cases";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await _childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader), _postgresConnection);
     }
     private async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)

@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class BasicNameableMigrator : MigratorPPL
-{
-    private readonly IEntityCreator<BasicNameable> _basicNameableCreator;
-    public BasicNameableMigrator(
+internal sealed class BasicNameableMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<BasicNameable> basicNameableCreator
-    ) : base(databaseConnections)
-    {
-        _basicNameableCreator = basicNameableCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "basic nameables";
 
     protected override async Task MigrateImpl()
     {
-        await _basicNameableCreator.CreateAsync(ReadBasicNameables(), _postgresConnection);
+        await basicNameableCreator.CreateAsync(ReadBasicNameables(), _postgresConnection);
     }
     private async IAsyncEnumerable<BasicNameable> ReadBasicNameables()
     {

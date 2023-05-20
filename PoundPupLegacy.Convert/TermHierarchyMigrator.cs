@@ -1,32 +1,20 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class TermHierarchyMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
-    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
-    private readonly IEntityCreator<TermHierarchy> _termHierarchyCreator;
-
-    public TermHierarchyMigrator(
+internal sealed class TermHierarchyMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IEntityCreator<TermHierarchy> termHierarchyCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
-        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
-        _termHierarchyCreator = termHierarchyCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "node term hierarchy";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
 
-        await _termHierarchyCreator.CreateAsync(ReadTermHierarchys(nodeIdReader, termReaderByNameableId), _postgresConnection);
-
+        await termHierarchyCreator.CreateAsync(ReadTermHierarchys(nodeIdReader, termReaderByNameableId), _postgresConnection);
     }
     private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,

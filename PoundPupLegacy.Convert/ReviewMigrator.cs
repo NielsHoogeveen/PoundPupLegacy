@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class ReviewMigrator : MigratorPPL
-{
-    private readonly IEntityCreator<BlogPost> _blogPostCreator;
-    public ReviewMigrator(
+internal sealed class ReviewMigrator(
         IDatabaseConnections databaseConnections,
         IEntityCreator<BlogPost> blogPostCreator
-    ) : base(databaseConnections)
-    {
-        _blogPostCreator = blogPostCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "reviews";
 
     protected override async Task MigrateImpl()
     {
-        await _blogPostCreator.CreateAsync(ReadReviews(), _postgresConnection);
+        await blogPostCreator.CreateAsync(ReadReviews(), _postgresConnection);
     }
     private async IAsyncEnumerable<BlogPost> ReadReviews()
     {

@@ -1,30 +1,15 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
-{
-    protected override string Name => "first and bottom level subdivisions";
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderByOwnerAndNameFactory;
-    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> _termReaderByNameFactory;
-
-    private readonly IEntityCreator<FirstAndBottomLevelSubdivision> _firstAndBottomLevelSubdivisionCreator;
-
-    public FirstAndBottomLevelSubdivisionMigrator(
+internal sealed class FirstAndBottomLevelSubdivisionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IEntityCreator<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _vocabularyIdReaderByOwnerAndNameFactory = vocabularyIdReaderByOwnerAndNameFactory;
-        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
-        _termReaderByNameFactory = termReaderByNameFactory;
-        _firstAndBottomLevelSubdivisionCreator = firstAndBottomLevelSubdivisionCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
+    protected override string Name => "first and bottom level subdivisions";
     private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
@@ -359,18 +344,18 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator : MigratorPPL
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var vocabularyIdReader = await _vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByName = await _termReaderByNameFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
-        await _firstAndBottomLevelSubdivisionCreator.CreateAsync(ReadDirectSubDivisionCsv(
+        await firstAndBottomLevelSubdivisionCreator.CreateAsync(ReadDirectSubDivisionCsv(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByNameableId,
             termReaderByName
         ), _postgresConnection);
-        await _firstAndBottomLevelSubdivisionCreator.CreateAsync(ReadFormalFirstLevelSubdivisions(
+        await firstAndBottomLevelSubdivisionCreator.CreateAsync(ReadFormalFirstLevelSubdivisions(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName

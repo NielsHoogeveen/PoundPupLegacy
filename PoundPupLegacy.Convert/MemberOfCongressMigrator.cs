@@ -115,18 +115,7 @@ public sealed record StoredTerm
     public required int? DocumentId { get; init; }
 }
 
-internal class MemberOfCongressMigrator : MigratorPPL
-{
-
-    private List<MemberOfCongress> _membersOfCongress = new List<MemberOfCongress>();
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly IEntityCreator<Person> _personCreator;
-    private readonly IEntityCreator<File> _fileCreator;
-    private readonly IEntityCreator<NodeFile> _nodeFileCreator;
-    private readonly IEntityCreator<PersonOrganizationRelation> _personOrganizationRelationCreator;
-    private readonly IEntityCreator<ProfessionalRole> _professionalRoleCreator;
-
-    public MemberOfCongressMigrator(
+internal class MemberOfCongressMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreator<Person> personCreator,
@@ -135,35 +124,30 @@ internal class MemberOfCongressMigrator : MigratorPPL
         IEntityCreator<PersonOrganizationRelation> personOrganizationRelationCreator,
         IEntityCreator<ProfessionalRole> professionalRoleCreator
 
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _personCreator = personCreator;
-        _fileCreator = fileCreator;
-        _nodeFileCreator = nodeFileCreator;
-        _personOrganizationRelationCreator = personOrganizationRelationCreator;
-        _professionalRoleCreator = professionalRoleCreator;
-    }
+    ) : MigratorPPL(databaseConnections)
+{
+
+    private List<MemberOfCongress> _membersOfCongress = new List<MemberOfCongress>();
 
     protected override string Name => "members of congress";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         _membersOfCongress = (await GetMembersOfCongress().ToListAsync()).OrderBy(x => x.id.govtrack).ToList();
 
         var parties = _membersOfCongress.SelectMany(x => x.terms.Select(y => y.party)).Distinct().ToList();
         var persons = await GetMembersOfCongressAsync(nodeIdReader).ToListAsync();
-        await _personCreator.CreateAsync(persons.ToAsyncEnumerable(), _postgresConnection);
+        await personCreator.CreateAsync(persons.ToAsyncEnumerable(), _postgresConnection);
 
         var files = await GetImageFiles().ToListAsync();
-        await _fileCreator.CreateAsync(files.ToAsyncEnumerable(), _postgresConnection);
+        await fileCreator.CreateAsync(files.ToAsyncEnumerable(), _postgresConnection);
         var nodeImages = await GetNodeFilesImage().ToListAsync();
-        await _nodeFileCreator.CreateAsync(nodeImages.ToAsyncEnumerable(), _postgresConnection);
+        await nodeFileCreator.CreateAsync(nodeImages.ToAsyncEnumerable(), _postgresConnection);
         await UpdatePerson(nodeImages.ToAsyncEnumerable());
 
         var membership = await GetPartyMembership().ToListAsync();
-        await _personOrganizationRelationCreator.CreateAsync(membership.ToAsyncEnumerable(), _postgresConnection);
+        await personOrganizationRelationCreator.CreateAsync(membership.ToAsyncEnumerable(), _postgresConnection);
     }
 
 
@@ -612,7 +596,7 @@ internal class MemberOfCongressMigrator : MigratorPPL
                     updateCommand.Parameters["bioguide"].Value = memberOfCongress.id.bioguide;
                     updateCommand.Parameters["id"].Value = memberOfCongress.node_id;
                     await updateCommand.ExecuteNonQueryAsync();
-                    await _professionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable(), _postgresConnection);
+                    await professionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable(), _postgresConnection);
                 }
                 else {
 

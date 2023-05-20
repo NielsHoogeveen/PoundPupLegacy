@@ -1,32 +1,20 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class NodeTermMigrator : MigratorPPL
+internal sealed class NodeTermMigrator(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+    IEntityCreator<NodeTerm> nodeTermCreator
+) : MigratorPPL(databaseConnections)
 {
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderFactory;
-    private readonly ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> _termReaderByNameableIdFactory;
-    private readonly IEntityCreator<NodeTerm> _nodeTermCreator;
-
-    public NodeTermMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-        IEntityCreator<NodeTerm> nodeTermCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderFactory = nodeIdReaderFactory;
-        _termReaderByNameableIdFactory = termReaderByNameableIdFactory;
-        _nodeTermCreator = nodeTermCreator;
-    }
-
     protected override string Name => "node terms";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await _termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
 
-        await _nodeTermCreator.CreateAsync(ReadNodeTerms(nodeIdReader, termReaderByNameableId), _postgresConnection);
-
+        await nodeTermCreator.CreateAsync(ReadNodeTerms(nodeIdReader, termReaderByNameableId), _postgresConnection);
     }
     private async IAsyncEnumerable<NodeTerm> ReadNodeTerms(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,

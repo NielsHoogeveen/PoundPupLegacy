@@ -1,16 +1,10 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class FamilySizeMigrator : MigratorPPL
+internal sealed class FamilySizeMigrator(
+        IDatabaseConnections databaseConnections,
+        IEntityCreator<FamilySize> familySizeCreator
+    ) : MigratorPPL(databaseConnections)
 {
-    private readonly IEntityCreator<FamilySize> _familySizeCreator;
-    public FamilySizeMigrator(
-         IDatabaseConnections databaseConnections,
-         IEntityCreator<FamilySize> familySizeCreator
-     ) : base(databaseConnections)
-    {
-        _familySizeCreator = familySizeCreator;
-    }
-
     protected override string Name => "family sizes";
 
     private static async IAsyncEnumerable<FamilySize> GetFamilySizes()
@@ -206,6 +200,6 @@ internal sealed class FamilySizeMigrator : MigratorPPL
     }
     protected override async Task MigrateImpl()
     {
-        await _familySizeCreator.CreateAsync(GetFamilySizes(), _postgresConnection);
+        await familySizeCreator.CreateAsync(GetFamilySizes(), _postgresConnection);
     }
 }

@@ -1,25 +1,23 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class InterPersonalRelationMigratorCPCT : MigratorCPCT
+internal sealed class InterPersonalRelationMigratorCPCT(
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreator<InterPersonalRelation> interPersonalRelationCreator
+) : MigratorCPCT(
+    databaseConnections, 
+    nodeIdReaderFactory, 
+    tenantNodeReaderByUrlIdFactory
+)
 {
-    private readonly IEntityCreator<InterPersonalRelation> _interPersonalRelationCreator;
-    public InterPersonalRelationMigratorCPCT(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-        IEntityCreator<InterPersonalRelation> interPersonalRelationCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, tenantNodeReaderByUrlIdFactory)
-    {
-        _interPersonalRelationCreator = interPersonalRelationCreator;
-    }
-
     protected override string Name => "inter personal relation";
 
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var tenantNodeReaderByUrlId = await _tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await _interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var tenantNodeReaderByUrlId = await tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
 
     }
 

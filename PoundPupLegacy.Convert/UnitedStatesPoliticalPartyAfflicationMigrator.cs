@@ -1,19 +1,11 @@
 ﻿namespace PoundPupLegacy.Convert;
 
-internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
-{
-    private readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> _nodeIdReaderByUrlIdFactory;
-    private readonly IEntityCreator<UnitedStatesPoliticalPartyAffliation> _unitedStatesPoliticalPartyAffliationCreator;
-    public UnitedStatesPoliticalPartyAffliationMigrator(
+internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IEntityCreator<UnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreator
-    ) : base(databaseConnections)
-    {
-        _nodeIdReaderByUrlIdFactory = nodeIdReaderByUrlIdFactory;
-        _unitedStatesPoliticalPartyAffliationCreator = unitedStatesPoliticalPartyAffliationCreator;
-    }
-
+    ) : MigratorPPL(databaseConnections)
+{
     protected override string Name => "united states political party affilition";
 
     private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations(
@@ -267,7 +259,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator : MigratorPPL
     }
     protected override async Task MigrateImpl()
     {
-        await using var nodeIdReader = await _nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await _unitedStatesPoliticalPartyAffliationCreator.CreateAsync(GetUnitedStatesPoliticalPartyAffliations(nodeIdReader), _postgresConnection);
+        await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await unitedStatesPoliticalPartyAffliationCreator.CreateAsync(GetUnitedStatesPoliticalPartyAffliations(nodeIdReader), _postgresConnection);
     }
 }
