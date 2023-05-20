@@ -1,30 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CaseCasePartiesCreator : EntityCreator<CaseCaseParties>
+internal sealed class CaseCasePartiesCreator(
+    IDatabaseInserterFactory<CaseParties> casePartiesInserterFactory,
+    IDatabaseInserterFactory<CaseCaseParties> caseCasePartiesInserterFactory,
+    IDatabaseInserterFactory<CasePartiesOrganization> casePartiesOrganizationInserterFactory,
+    IDatabaseInserterFactory<CasePartiesPerson> casePartiesPersonInserterFactory
+) : EntityCreator<CaseCaseParties>
 {
-    private readonly IDatabaseInserterFactory<CaseParties> _casePartiesInserterFactory;
-    private readonly IDatabaseInserterFactory<CaseCaseParties> _caseCasePartiesInserterFactory;
-    private readonly IDatabaseInserterFactory<CasePartiesOrganization> _casePartiesOrganizationInserterFactory;
-    private readonly IDatabaseInserterFactory<CasePartiesPerson> _casePartiesPersonInserterFactory;
-    public CaseCasePartiesCreator(
-        IDatabaseInserterFactory<CaseParties> casePartiesInserterFactory,
-        IDatabaseInserterFactory<CaseCaseParties> caseCasePartiesInserterFactory,
-        IDatabaseInserterFactory<CasePartiesOrganization> casePartiesOrganizationInserterFactory,
-        IDatabaseInserterFactory<CasePartiesPerson> casePartiesPersonInserterFactory
-        )
-    {
-        _casePartiesInserterFactory = casePartiesInserterFactory;
-        _casePartiesPersonInserterFactory = casePartiesPersonInserterFactory;
-        _caseCasePartiesInserterFactory = caseCasePartiesInserterFactory;
-        _casePartiesOrganizationInserterFactory = casePartiesOrganizationInserterFactory;
-    }
     public override async Task CreateAsync(IAsyncEnumerable<CaseCaseParties> caseCaseRelationss, IDbConnection connection)
     {
-
-        await using var caseRelationsWriter = await _casePartiesInserterFactory.CreateAsync(connection);
-        await using var caseCaseRelationsWriter = await _caseCasePartiesInserterFactory.CreateAsync(connection);
-        await using var caseRelationsOrganizationWriter = await _casePartiesOrganizationInserterFactory.CreateAsync(connection);
-        await using var caseRelationsPersonWriter = await _casePartiesPersonInserterFactory.CreateAsync(connection);
+        await using var caseRelationsWriter = await casePartiesInserterFactory.CreateAsync(connection);
+        await using var caseCaseRelationsWriter = await caseCasePartiesInserterFactory.CreateAsync(connection);
+        await using var caseRelationsOrganizationWriter = await casePartiesOrganizationInserterFactory.CreateAsync(connection);
+        await using var caseRelationsPersonWriter = await casePartiesPersonInserterFactory.CreateAsync(connection);
 
         await foreach (var caseCaseRelations in caseCaseRelationss) {
             await caseRelationsWriter.InsertAsync(caseCaseRelations.CaseParties);
@@ -41,7 +29,6 @@ internal sealed class CaseCasePartiesCreator : EntityCreator<CaseCaseParties>
                     PersonId = personId
                 });
             }
-
         }
     }
 }

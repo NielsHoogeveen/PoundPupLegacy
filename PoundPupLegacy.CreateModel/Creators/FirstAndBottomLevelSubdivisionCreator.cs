@@ -1,84 +1,44 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class FirstAndBottomLevelSubdivisionCreator : EntityCreator<FirstAndBottomLevelSubdivision>
+internal sealed class FirstAndBottomLevelSubdivisionCreator(
+    IDatabaseInserterFactory<Node> nodeInserterFactory,
+    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+    IDatabaseInserterFactory<Documentable> documentableInserterFactory,
+    IDatabaseInserterFactory<Nameable> nameableInserterFactory,
+    IDatabaseInserterFactory<GeographicalEntity> geographicalEntityInserterFactory,
+    IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory,
+    IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory,
+    IDatabaseInserterFactory<ISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
+    IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<Term> termInserterFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
+    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
+    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
+    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+) : EntityCreator<FirstAndBottomLevelSubdivision>
 {
-    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
-    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
-    private readonly IDatabaseInserterFactory<Documentable> _documentableInserterFactory;
-    private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
-    private readonly IDatabaseInserterFactory<GeographicalEntity> _geographicalEntityInserterFactory;
-    private readonly IDatabaseInserterFactory<PoliticalEntity> _politicalEntityInserterFactory;
-    private readonly IDatabaseInserterFactory<Subdivision> _subdivisionInserterFactory;
-    private readonly IDatabaseInserterFactory<ISOCodedSubdivision> _isoCodedSubdivisionInserterFactory;
-    private readonly IDatabaseInserterFactory<FirstLevelSubdivision> _firstLevelSubdivisionInserterFactory;
-    private readonly IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> _isoCodedFirstLevelSubdivisionInserterFactory;
-    private readonly IDatabaseInserterFactory<BottomLevelSubdivision> _bottomLevelSubdivisionInserterFactory;
-    private readonly IDatabaseInserterFactory<FirstAndBottomLevelSubdivision> _firstAndBottomLevelSubdivisionInserterFactory;
-    private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
-    private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
-    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
-    //Add constructor
-    public FirstAndBottomLevelSubdivisionCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory,
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-        IDatabaseInserterFactory<Documentable> documentableInserterFactory,
-        IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-        IDatabaseInserterFactory<GeographicalEntity> geographicalEntityInserterFactory,
-        IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory,
-        IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory,
-        IDatabaseInserterFactory<ISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
-        IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
-        IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
-        IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
-        IDatabaseInserterFactory<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionInserterFactory,
-        IDatabaseInserterFactory<Term> termInserterFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-        IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory)
-    {
-        _nodeInserterFactory = nodeInserterFactory;
-        _searchableInserterFactory = searchableInserterFactory;
-        _documentableInserterFactory = documentableInserterFactory;
-        _nameableInserterFactory = nameableInserterFactory;
-        _geographicalEntityInserterFactory = geographicalEntityInserterFactory;
-        _politicalEntityInserterFactory = politicalEntityInserterFactory;
-        _subdivisionInserterFactory = subdivisionInserterFactory;
-        _isoCodedSubdivisionInserterFactory = isoCodedSubdivisionInserterFactory;
-        _firstLevelSubdivisionInserterFactory = firstLevelSubdivisionInserterFactory;
-        _isoCodedFirstLevelSubdivisionInserterFactory = isoCodedFirstLevelSubdivisionInserterFactory;
-        _bottomLevelSubdivisionInserterFactory = bottomLevelSubdivisionInserterFactory;
-        _firstAndBottomLevelSubdivisionInserterFactory = firstAndBottomLevelSubdivisionInserterFactory;
-        _termInserterFactory = termInserterFactory;
-        _termReaderFactory = termReaderFactory;
-        _termHierarchyInserterFactory = termHierarchyInserterFactory;
-        _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
-        _tenantNodeInserterFactory = tenantNodeInserterFactory;
-    }
-
-
     public override async Task CreateAsync(IAsyncEnumerable<FirstAndBottomLevelSubdivision> subdivisions, IDbConnection connection)
     {
-
-        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await _nameableInserterFactory.CreateAsync(connection);
-        await using var geographicalEntityWriter = await _geographicalEntityInserterFactory.CreateAsync(connection);
-        await using var politicalEntityWriter = await _politicalEntityInserterFactory.CreateAsync(connection);
-        await using var subdivisionWriter = await _subdivisionInserterFactory.CreateAsync(connection);
-        await using var isoCodedSubdivisionWriter = await _isoCodedSubdivisionInserterFactory.CreateAsync(connection);
-        await using var firstLevelSubdivisionWriter = await _firstLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var isoCodedFirstLevelSubdivisionWriter = await _isoCodedFirstLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var bottomLevelSubdivisionWriter = await _bottomLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var firstAndBottomLevelSubdivisionWriter = await _firstAndBottomLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var termWriter = await _termInserterFactory.CreateAsync(connection);
-        await using var termReader = await _termReaderFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await _termHierarchyInserterFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await _vocabularyIdReaderFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
+        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
+        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
+        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
+        await using var geographicalEntityWriter = await geographicalEntityInserterFactory.CreateAsync(connection);
+        await using var politicalEntityWriter = await politicalEntityInserterFactory.CreateAsync(connection);
+        await using var subdivisionWriter = await subdivisionInserterFactory.CreateAsync(connection);
+        await using var isoCodedSubdivisionWriter = await isoCodedSubdivisionInserterFactory.CreateAsync(connection);
+        await using var firstLevelSubdivisionWriter = await firstLevelSubdivisionInserterFactory.CreateAsync(connection);
+        await using var isoCodedFirstLevelSubdivisionWriter = await isoCodedFirstLevelSubdivisionInserterFactory.CreateAsync(connection);
+        await using var bottomLevelSubdivisionWriter = await bottomLevelSubdivisionInserterFactory.CreateAsync(connection);
+        await using var firstAndBottomLevelSubdivisionWriter = await firstAndBottomLevelSubdivisionInserterFactory.CreateAsync(connection);
+        await using var termWriter = await termInserterFactory.CreateAsync(connection);
+        await using var termReader = await termReaderFactory.CreateAsync(connection);
+        await using var termHierarchyWriter = await termHierarchyInserterFactory.CreateAsync(connection);
+        await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var subdivision in subdivisions) {
             await nodeWriter.InsertAsync(subdivision);
@@ -98,7 +58,6 @@ internal sealed class FirstAndBottomLevelSubdivisionCreator : EntityCreator<Firs
                 tenantNode.NodeId = subdivision.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);
             }
-
         }
     }
 }

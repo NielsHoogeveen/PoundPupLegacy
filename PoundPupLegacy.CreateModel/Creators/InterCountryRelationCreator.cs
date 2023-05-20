@@ -1,26 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class InterCountryRelationCreator : EntityCreator<InterCountryRelation>
+internal sealed class InterCountryRelationCreator(
+    IDatabaseInserterFactory<Node> nodeInserterFactory,
+    IDatabaseInserterFactory<InterCountryRelation> interCountryRelationInserterFactory,
+    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
+) : EntityCreator<InterCountryRelation>
 {
-    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
-    private readonly IDatabaseInserterFactory<InterCountryRelation> _interCountryRelationInserterFactory;
-    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
-    public InterCountryRelationCreator(
-        IDatabaseInserterFactory<Node> nodeInserterFactory,
-        IDatabaseInserterFactory<InterCountryRelation> interCountryRelationInserterFactory,
-        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-    )
-    {
-        _interCountryRelationInserterFactory = interCountryRelationInserterFactory;
-        _tenantNodeInserterFactory = tenantNodeInserterFactory;
-        _nodeInserterFactory = nodeInserterFactory;
-    }
     public override async Task CreateAsync(IAsyncEnumerable<InterCountryRelation> interCountryRelations, IDbConnection connection)
     {
-
-        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
-        await using var interCountryRelationWriter = await _interCountryRelationInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
+        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
+        await using var interCountryRelationWriter = await interCountryRelationInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var interCountryRelation in interCountryRelations) {
             await nodeWriter.InsertAsync(interCountryRelation);
@@ -30,7 +20,6 @@ internal sealed class InterCountryRelationCreator : EntityCreator<InterCountryRe
                 tenantNode.NodeId = interCountryRelation.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);
             }
-
         }
     }
 }

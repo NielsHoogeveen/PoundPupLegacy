@@ -1,56 +1,30 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class ActCreator : EntityCreator<Act>
+internal sealed class ActCreator(
+    IDatabaseInserterFactory<Act> actInserterFactory,
+    IDatabaseInserterFactory<Term> termInserterFactory,
+    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
+    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
+    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
+    IDatabaseInserterFactory<Node> nodeInserterFactory,
+    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
+    IDatabaseInserterFactory<Documentable> documentableInserterFactory,
+    IDatabaseInserterFactory<Nameable> nameableInserterFactory
+) : EntityCreator<Act>
 {
-    private readonly IDatabaseInserterFactory<Act> _actInserterFactory;
-    private readonly IDatabaseInserterFactory<Term> _termInserterFactory;
-    private readonly IDatabaseInserterFactory<TermHierarchy> _termHierarchyInserterFactory;
-    private readonly IDatabaseInserterFactory<TenantNode> _tenantNodeInserterFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> _vocabularyIdReaderFactory;
-    private readonly IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> _termReaderFactory;
-    private readonly IDatabaseInserterFactory<Node> _nodeInserterFactory;
-    private readonly IDatabaseInserterFactory<Searchable> _searchableInserterFactory;
-    private readonly IDatabaseInserterFactory<Documentable> _documentableInserterFactory;
-    private readonly IDatabaseInserterFactory<Nameable> _nameableInserterFactory;
-
-    public ActCreator(
-        IDatabaseInserterFactory<Act> actInserterFactory,
-        IDatabaseInserterFactory<Term> termInserterFactory,
-        IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-        IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-        IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-        IDatabaseInserterFactory<Node> nodeInserterFactory,
-        IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-        IDatabaseInserterFactory<Documentable> documentableInserterFactory,
-        IDatabaseInserterFactory<Nameable> nameableInserterFactory
-        )
-    {
-        _actInserterFactory = actInserterFactory;
-        _nodeInserterFactory = nodeInserterFactory;
-        _documentableInserterFactory = documentableInserterFactory;
-        _nameableInserterFactory = nameableInserterFactory;
-        _searchableInserterFactory = searchableInserterFactory;
-        _tenantNodeInserterFactory = tenantNodeInserterFactory;
-        _termHierarchyInserterFactory = termHierarchyInserterFactory;
-        _termInserterFactory = termInserterFactory;
-        _vocabularyIdReaderFactory = vocabularyIdReaderFactory;
-        _termReaderFactory = termReaderFactory;
-
-    }
     public override async Task CreateAsync(IAsyncEnumerable<Act> acts, IDbConnection connection)
     {
-
-        await using var nodeWriter = await _nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await _searchableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await _nameableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await _documentableInserterFactory.CreateAsync(connection);
-        await using var actWriter = await _actInserterFactory.CreateAsync(connection);
-        await using var termWriter = await _termInserterFactory.CreateAsync(connection);
-        await using var termReader = await _termReaderFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await _termHierarchyInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await _tenantNodeInserterFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await _vocabularyIdReaderFactory.CreateAsync(connection);
+        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
+        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
+        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
+        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
+        await using var actWriter = await actInserterFactory.CreateAsync(connection);
+        await using var termWriter = await termInserterFactory.CreateAsync(connection);
+        await using var termReader = await termReaderFactory.CreateAsync(connection);
+        await using var termHierarchyWriter = await termHierarchyInserterFactory.CreateAsync(connection);
+        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
+        await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
 
         await foreach (var act in acts) {
             await nodeWriter.InsertAsync(act);
@@ -64,7 +38,6 @@ internal sealed class ActCreator : EntityCreator<Act>
                 tenantNode.NodeId = act.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);
             }
-
         }
     }
 }

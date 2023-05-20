@@ -37,5 +37,4 @@ internal abstract class EntityCreator<T> : IEntityCreator<T>
             }
         }
     }
-
 }
