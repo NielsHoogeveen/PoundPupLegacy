@@ -26,7 +26,7 @@ internal sealed class AttachmentStoreService(
             return null;
         }
         if (int.TryParse(maxFileSizeString, out int maxFileSize)) {
-            return await WithConnection(async (connection) => {
+            return await WithTransactedConnection(async (connection) => {
                 var fileName = Guid.NewGuid().ToString();
                 var fullName = attachmentsLocation + "\\" + fileName;
                 await using FileStream fs = new(fullName, FileMode.Create);

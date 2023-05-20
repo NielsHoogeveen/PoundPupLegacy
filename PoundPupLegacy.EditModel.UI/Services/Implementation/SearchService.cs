@@ -11,26 +11,18 @@ internal abstract class SearchService<TListItem, TRequest>(
     where TRequest : IRequest
 {
 
-    private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-
     protected abstract TRequest GetRequest(int tenantId, string searchString);
     public async Task<List<TListItem>> GetItems(int tenantId, string searchString)
     {
-        await semaphore.WaitAsync();
+        
         List<TListItem> items = new();
-        try {
-            await connection.OpenAsync();
+        return await WithSequencedConnection(async (connection) => {
             await using var reader = await readerFactory.CreateAsync(connection);
             await foreach (var elem in reader.ReadAsync(GetRequest(tenantId, searchString))) {
                 items.Add(elem);
             }
             return items;
-        }
-        finally {
-            if (connection.State == ConnectionState.Open) {
-                await connection.CloseAsync();
-            }
-            semaphore.Release();
-        }
+
+        });
     }
 }

@@ -36,7 +36,7 @@ internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>(
 
     protected virtual async Task<int> SaveAsync(TNew node)
     {
-        return await WithConnection(async (connection) => { 
+        return await WithTransactedConnection(async (connection) => { 
             var id = await StoreNew(node, connection);
             foreach (var tagNodeType in node.Tags) {
                 foreach (var tag in tagNodeType.Entries) {
@@ -58,7 +58,7 @@ internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>(
     }
     protected virtual async Task<int> SaveAsync(TExisting node)
     {
-        return await WithConnection(async (connection) => {
+        return await WithTransactedConnection(async (connection) => {
             await StoreExisting(node, connection);
             await StoreAdditional(node, node.NodeId, connection);
             if (node.TenantNodes.Any(x => x.UrlPath is not null)) {
