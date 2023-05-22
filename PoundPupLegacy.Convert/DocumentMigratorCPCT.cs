@@ -4,7 +4,7 @@ internal sealed class DocumentMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreator<Document> documentCreator
+    IEntityCreator<NewDocument> documentCreator
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -30,7 +30,7 @@ internal sealed class DocumentMigratorCPCT(
         }
     }
 
-    private async IAsyncEnumerable<Document> ReadDocuments(
+    private async IAsyncEnumerable<NewDocument> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
@@ -138,7 +138,7 @@ internal sealed class DocumentMigratorCPCT(
                 });
             }
 
-            yield return new Document {
+            yield return new NewDocument {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

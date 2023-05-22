@@ -4,15 +4,15 @@ internal sealed class CasePartyTypeCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<CasePartyType> casePartyTypeInserterFactory,
+    IDatabaseInserterFactory<NewCasePartyType> casePartyTypeInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<CasePartyType>
+) : EntityCreator<NewCasePartyType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<CasePartyType> casePartyTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewCasePartyType> casePartyTypes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

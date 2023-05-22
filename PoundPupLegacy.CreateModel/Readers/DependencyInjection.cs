@@ -13,7 +13,7 @@ internal static class DependencyInjection
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeIdRequest, int>, EditOwnNodeActionIdReaderByNodeTypeIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int>, FileIdReaderByTenantFileIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int>, NodeIdReaderByUrlIdFactory>();
-        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, Node>, NodeReaderByUrlIdFactory>();
+        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode>, NodeReaderByUrlIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int>, ProfessionIdReaderFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int>, SubdivisionIdReaderByIso3166CodeFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int>, SubdivisionIdReaderByNameFactory>();

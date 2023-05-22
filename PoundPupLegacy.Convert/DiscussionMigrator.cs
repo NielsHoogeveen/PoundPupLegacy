@@ -2,7 +2,7 @@
 
 internal sealed class DiscussionMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<Discussion> discussionCreator
+    IEntityCreator<NewDiscussion> discussionCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "discussions";
@@ -12,7 +12,7 @@ internal sealed class DiscussionMigrator(
         await discussionCreator.CreateAsync(ReadDiscussions(), _postgresConnection);
 
     }
-    private async IAsyncEnumerable<Discussion> ReadDiscussions()
+    private async IAsyncEnumerable<NewDiscussion> ReadDiscussions()
     {
 
         var sql = $"""
@@ -38,7 +38,7 @@ internal sealed class DiscussionMigrator(
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            var discussion = new Discussion {
+            var discussion = new NewDiscussion {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

@@ -3,7 +3,7 @@
 internal sealed class DenominationMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<Denomination> denominationCreator
+    IEntityCreator<NewDenomination> denominationCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "denominations";
@@ -13,7 +13,7 @@ internal sealed class DenominationMigrator(
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await denominationCreator.CreateAsync(ReadDenominations(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<Denomination> ReadDenominations(
+    private async IAsyncEnumerable<NewDenomination> ReadDenominations(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
         var sql = $"""
@@ -86,7 +86,7 @@ internal sealed class DenominationMigrator(
                 });
             }
 
-            yield return new Denomination {
+            yield return new NewDenomination {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

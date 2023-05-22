@@ -10,16 +10,16 @@ internal sealed class BoundCountryCreator(
     IDatabaseInserterFactory<Country> countryInserterFactory,
     IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory,
     IDatabaseInserterFactory<ISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
-    IDatabaseInserterFactory<BoundCountry> boundCountryInserterFactory,
+    IDatabaseInserterFactory<NewBoundCountry> boundCountryInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<Vocabulary> vocabularyCreator
-) : EntityCreator<BoundCountry>
+    IEntityCreator<NewVocabulary> vocabularyCreator
+) : EntityCreator<NewBoundCountry>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<BoundCountry> countries, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewBoundCountry> countries, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
@@ -38,7 +38,7 @@ internal sealed class BoundCountryCreator(
         await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var country in countries) {
-            var vocabulary = new Vocabulary {
+            var vocabulary = new NewVocabulary {
                 Id = null,
                 Name = $"Subdivision names of {country.Name}",
                 PublisherId = 1,

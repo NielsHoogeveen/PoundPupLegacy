@@ -3,7 +3,7 @@
 internal sealed class InterPersonalRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<InterPersonalRelation> interPersonalRelationCreator
+    IEntityCreator<NewInterPersonalRelation> interPersonalRelationCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter personal relation";
@@ -14,7 +14,7 @@ internal sealed class InterPersonalRelationMigratorPPL(
         await interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<InterPersonalRelation> ReadInterPersonalRelations(
+    private async IAsyncEnumerable<NewInterPersonalRelation> ReadInterPersonalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -100,7 +100,7 @@ internal sealed class InterPersonalRelationMigratorPPL(
                 UrlId = reader.GetInt32("nameable_id")
 
             });
-            yield return new InterPersonalRelation {
+            yield return new NewInterPersonalRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

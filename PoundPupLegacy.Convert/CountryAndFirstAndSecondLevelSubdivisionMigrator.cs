@@ -5,12 +5,12 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-    IEntityCreator<CountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreator
+    IEntityCreator<NewCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreator
 ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "countries that are both first and second level subdivisions";
 
-    private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries(
+    private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
@@ -25,7 +25,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             Name = "Overseas collectivity"
         }))!.NameableId;
 
-        yield return new CountryAndFirstAndSecondLevelSubdivision {
+        yield return new NewCountryAndFirstAndSecondLevelSubdivision {
             Id = null,
             Title = "Saint Barthélemy",
             Name = "Saint Barthélemy",
@@ -93,7 +93,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
         };
-        yield return new CountryAndFirstAndSecondLevelSubdivision {
+        yield return new NewCountryAndFirstAndSecondLevelSubdivision {
             Id = null,
             Title = "Saint Martin",
             Name = "Saint Martin",
@@ -161,7 +161,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
         };
-        yield return new CountryAndFirstAndSecondLevelSubdivision {
+        yield return new NewCountryAndFirstAndSecondLevelSubdivision {
             Id = null,
             Title = "French Southern Territories",
             Name = "French Southern Territories",
@@ -249,7 +249,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             termReaderByName
         ), _postgresConnection);
     }
-    private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(
+    private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
@@ -321,7 +321,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             };
 
 
-            yield return new CountryAndFirstAndSecondLevelSubdivision {
+            yield return new NewCountryAndFirstAndSecondLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

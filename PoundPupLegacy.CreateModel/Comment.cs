@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record Comment : Identifiable
+public sealed record Comment : EventuallyIdentifiable
 {
     public required int? Id { get; set; }
 

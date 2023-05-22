@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class PageInserterFactory : SingleIdInserterFactory<Page>
+internal sealed class PageInserterFactory : SingleIdInserterFactory<NewPage>
 {
     protected override string TableName => "page";
 

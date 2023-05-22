@@ -8,7 +8,7 @@ public sealed record NodeReaderByUrlIdRequest : IRequest
     public required int UrlId { get; init; }
 }
 
-internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, Node>
+internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, EventuallyIdentifiableNode>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -44,9 +44,9 @@ internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseRead
         };
     }
 
-    protected override Node Read(NpgsqlDataReader reader)
+    protected override EventuallyIdentifiableNode Read(NpgsqlDataReader reader)
     {
-        var node = new BasicNode {
+        var node = new NewBasicNode {
             Id = IdReader.GetValue(reader),
             PublisherId = PublisherIdReader.GetValue(reader),
             Title = TitleReader.GetValue(reader),

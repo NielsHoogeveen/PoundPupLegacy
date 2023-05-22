@@ -15,17 +15,17 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator(
     IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isofirstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<CountryAndFirstLevelSubdivision> countryAndFirstLevelSubdivisionFactory,
-    IDatabaseInserterFactory<CountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionFactory,
+    IDatabaseInserterFactory<NewCountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderByNameInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<Vocabulary> vocabularyCreator
-) : EntityCreator<CountryAndFirstAndBottomLevelSubdivision>
+    IEntityCreator<NewVocabulary> vocabularyCreator
+) : EntityCreator<NewCountryAndFirstAndBottomLevelSubdivision>
 {
 
-    public override async Task CreateAsync(IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision> countries, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewCountryAndFirstAndBottomLevelSubdivision> countries, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
@@ -50,7 +50,7 @@ internal sealed class CountryAndFirstAndBottomLevelSubdivisionCreator(
 
 
         await foreach (var country in countries) {
-            var vocabulary = new Vocabulary {
+            var vocabulary = new NewVocabulary {
                 Id = null,
                 Name = $"Subdivision names of {country.Name}",
                 PublisherId = 1,

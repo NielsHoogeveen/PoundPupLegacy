@@ -4,7 +4,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<SecondLevelGlobalRegion> secondLevelGlobalRegionCreator
+    IEntityCreator<NewSecondLevelGlobalRegion> secondLevelGlobalRegionCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "second level global regions";
@@ -16,7 +16,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
         await secondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<SecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(
+    private async IAsyncEnumerable<NewSecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
@@ -67,7 +67,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
                 }
             };
 
-            yield return new SecondLevelGlobalRegion {
+            yield return new NewSecondLevelGlobalRegion {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

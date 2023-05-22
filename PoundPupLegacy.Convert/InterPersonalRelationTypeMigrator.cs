@@ -3,7 +3,7 @@
 internal sealed class InterPersonalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<InterPersonalRelationType> interPersonalRelationTypeCreator
+    IEntityCreator<NewInterPersonalRelationType> interPersonalRelationTypeCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-personal relation types";
@@ -13,7 +13,7 @@ internal sealed class InterPersonalRelationTypeMigrator(
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<InterPersonalRelationType> ReadInterPersonalRelationTypes(
+    private async IAsyncEnumerable<NewInterPersonalRelationType> ReadInterPersonalRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
 
@@ -59,7 +59,7 @@ internal sealed class InterPersonalRelationTypeMigrator(
                     ParentNames = new List<string>(),
                 }
             };
-            yield return new InterPersonalRelationType {
+            yield return new NewInterPersonalRelationType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

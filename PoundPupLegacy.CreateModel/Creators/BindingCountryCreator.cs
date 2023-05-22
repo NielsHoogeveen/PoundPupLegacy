@@ -9,16 +9,16 @@ internal sealed class BindingCountryCreator(
     IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory,
     IDatabaseInserterFactory<Country> countryInserterFactory,
     IDatabaseInserterFactory<TopLevelCountry> topLevelCountryInserterFactory,
-    IDatabaseInserterFactory<BindingCountry> bindingCountryInserterFactory,
+    IDatabaseInserterFactory<NewBindingCountry> bindingCountryInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<Vocabulary> vocabularyCreator
-) : EntityCreator<BindingCountry>
+    IEntityCreator<NewVocabulary> vocabularyCreator
+) : EntityCreator<NewBindingCountry>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<BindingCountry> countries, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewBindingCountry> countries, IDbConnection connection)
     {
 
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
@@ -37,7 +37,7 @@ internal sealed class BindingCountryCreator(
         await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var country in countries) {
-            var vocabulary = new Vocabulary {
+            var vocabulary = new NewVocabulary {
                 Id = null,
                 Name = $"Subdivision names of {country.Name}",
                 PublisherId = 1,

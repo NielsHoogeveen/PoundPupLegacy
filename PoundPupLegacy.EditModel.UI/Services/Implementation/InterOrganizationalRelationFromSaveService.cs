@@ -5,7 +5,7 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal class InterOrganizationalRelationFromSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
     IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> interOrganizationalRelationUpdaterFactory,
-    IEntityCreator<CreateModel.InterOrganizationalRelation> interOrganizationalRelationCreator
+    IEntityCreator<CreateModel.NewInterOrganizationalRelation> interOrganizationalRelationCreator
 ) : ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>>
 {
     public async Task SaveAsync(IEnumerable<ResolvedInterOrganizationalRelationFrom> item, IDbConnection connection)
@@ -33,12 +33,12 @@ internal class InterOrganizationalRelationFromSaveService(
                 NumberOfChildrenInvolved = relation.NumberOfChildrenInvolved,
             });
         }
-        IEnumerable<CreateModel.InterOrganizationalRelation> GetRelationsToInsert()
+        IEnumerable<CreateModel.NewInterOrganizationalRelation> GetRelationsToInsert()
         {
 
             foreach (var relation in item.OfType<NewInterOrganizationalExistingRelationFrom>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
-                yield return new CreateModel.InterOrganizationalRelation {
+                yield return new CreateModel.NewInterOrganizationalRelation {
                     Id = null,
                     PublisherId = relation.PublisherId,
                     CreatedDateTime = now,

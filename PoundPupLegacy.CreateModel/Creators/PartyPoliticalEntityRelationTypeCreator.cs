@@ -4,15 +4,15 @@ internal sealed class PartyPoliticalEntityRelationTypeCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<PartyPoliticalEntityRelationType> politicalEntityRelationTypeInserterFactory,
+    IDatabaseInserterFactory<NewPartyPoliticalEntityRelationType> politicalEntityRelationTypeInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<PartyPoliticalEntityRelationType>
+) : EntityCreator<NewPartyPoliticalEntityRelationType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<PartyPoliticalEntityRelationType> politicalEntityRelationTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewPartyPoliticalEntityRelationType> politicalEntityRelationTypes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

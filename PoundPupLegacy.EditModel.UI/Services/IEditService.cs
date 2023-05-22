@@ -1,11 +1,12 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Services;
 
-public interface IEditService<T>
+public interface IEditService<TRead, TSave>
+    where TSave: TRead
 {
     [RequireNamedArgs]
-    Task<T?> GetViewModelAsync(int urlId, int userId, int tenantId);
+    Task<TRead?> GetViewModelAsync(int urlId, int userId, int tenantId);
 
     [RequireNamedArgs]
-    Task<T?> GetViewModelAsync(int userId, int tenantId);
-    Task<int> SaveAsync(T item);
+    Task<TRead?> GetViewModelAsync(int userId, int tenantId);
+    Task<int> SaveAsync(TSave item);
 }

@@ -3,7 +3,7 @@
 internal sealed class InterOrganizationalRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<InterOrganizationalRelation> interOrganizationalRelationCreator
+    IEntityCreator<NewInterOrganizationalRelation> interOrganizationalRelationCreator
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -15,7 +15,7 @@ internal sealed class InterOrganizationalRelationMigratorPPL(
         await interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<InterOrganizationalRelation> ReadInterOrganizationalRelations(
+    private async IAsyncEnumerable<NewInterOrganizationalRelation> ReadInterOrganizationalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -133,7 +133,7 @@ internal sealed class InterOrganizationalRelationMigratorPPL(
                 TenantId = Constants.PPL
             });
 
-            yield return new InterOrganizationalRelation {
+            yield return new NewInterOrganizationalRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

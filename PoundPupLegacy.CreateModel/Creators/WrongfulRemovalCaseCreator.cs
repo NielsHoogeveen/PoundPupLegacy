@@ -13,9 +13,9 @@ internal sealed class WrongfulRemovalCaseCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<WrongfulRemovalCase>
+) : EntityCreator<NewWrongfulRemovalCase>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<WrongfulRemovalCase> wrongfulRemovalCases, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewWrongfulRemovalCase> wrongfulRemovalCases, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

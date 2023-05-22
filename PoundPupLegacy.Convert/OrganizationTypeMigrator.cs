@@ -3,7 +3,7 @@
 internal sealed class OrganizationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<OrganizationType> organizationTypeCreator
+    IEntityCreator<NewOrganizationType> organizationTypeCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "organization types";
@@ -13,7 +13,7 @@ internal sealed class OrganizationTypeMigrator(
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await organizationTypeCreator.CreateAsync(ReadOrganizationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<OrganizationType> ReadOrganizationTypes(
+    private async IAsyncEnumerable<NewOrganizationType> ReadOrganizationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
     {
@@ -132,7 +132,7 @@ internal sealed class OrganizationTypeMigrator(
                 }
             };
 
-            yield return new OrganizationType {
+            yield return new NewOrganizationType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -178,7 +178,7 @@ internal sealed class OrganizationTypeMigrator(
         reader.Close();
 
         var now = DateTime.Now;
-        yield return new OrganizationType {
+        yield return new NewOrganizationType {
             Id = null,
             PublisherId = 2,
             CreatedDateTime = now,

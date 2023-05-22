@@ -7,15 +7,15 @@ internal sealed class WrongfulMedicationCaseCreator(
     IDatabaseInserterFactory<Locatable> locatableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Case> caseInserterFactory,
-    IDatabaseInserterFactory<WrongfulMedicationCase> wrongfulMedicationCaseInserterFactory,
+    IDatabaseInserterFactory<NewWrongfulMedicationCase> wrongfulMedicationCaseInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<WrongfulMedicationCase>
+) : EntityCreator<NewWrongfulMedicationCase>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<WrongfulMedicationCase> wrongfulMedicationCases, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewWrongfulMedicationCase> wrongfulMedicationCases, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

@@ -1,0 +1,31 @@
+﻿button {
+    margin-top: 1em;
+    margin-left: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+
+button:hover{
+    background-color: var(--button-hover-color);
+}
+
+.editor-form {
+    padding: 1em;
+    border-bottom: solid thin #ccc;
+}
+
+::deep .title-editor {
+    margin-bottom: 1em;
+    width: 100%;
+    box-shadow: var(--input-shadow);
+}
+label {
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 0.25em;
+}

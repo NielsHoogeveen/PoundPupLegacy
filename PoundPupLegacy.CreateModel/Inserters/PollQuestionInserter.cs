@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = PollQuestion;
+using Request = EventuallyIdentifiablePollQuestion;
 
 internal sealed class PollQuestionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

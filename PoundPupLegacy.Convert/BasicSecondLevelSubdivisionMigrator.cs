@@ -8,11 +8,11 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-        IEntityCreator<BasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreator
+        IEntityCreator<NewBasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic second level subdivisions";
-    private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
+    private async IAsyncEnumerable<NewBasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
@@ -41,7 +41,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 NameableId = subdivisionId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
-            yield return new BasicSecondLevelSubdivision {
+            yield return new NewBasicSecondLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
@@ -98,7 +98,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         }
     }
 
-    private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionCsv(
+    private async IAsyncEnumerable<NewBasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
@@ -123,7 +123,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 NameableId = subdivisionId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
-            yield return new BasicSecondLevelSubdivision {
+            yield return new NewBasicSecondLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
@@ -212,7 +212,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
             ), _postgresConnection);
 
     }
-    private async IAsyncEnumerable<BasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(
+    private async IAsyncEnumerable<NewBasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
@@ -269,7 +269,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     ParentNames = new List<string>{ subdivisioName },
                 }
             };
-            yield return new BasicSecondLevelSubdivision {
+            yield return new NewBasicSecondLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

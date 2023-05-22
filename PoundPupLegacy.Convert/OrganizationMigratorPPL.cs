@@ -15,7 +15,7 @@ internal sealed class OrganizationMigratorPPL(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
-        yield return new BasicOrganization {
+        yield return new NewBasicOrganization {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -74,7 +74,7 @@ internal sealed class OrganizationMigratorPPL(
                 }
             }
         };
-        yield return new UnitedStatesPoliticalParty {
+        yield return new NewUnitedStatesPoliticalParty {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -133,7 +133,7 @@ internal sealed class OrganizationMigratorPPL(
                 }
             }
         };
-        yield return new UnitedStatesPoliticalParty {
+        yield return new NewUnitedStatesPoliticalParty {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -192,7 +192,7 @@ internal sealed class OrganizationMigratorPPL(
                 }
             }
         };
-        yield return new BasicOrganization {
+        yield return new NewBasicOrganization {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -460,7 +460,7 @@ internal sealed class OrganizationMigratorPPL(
             });
 
             if (id == Constants.DEMOCRATIC_PARTY || id == Constants.REPUBLICAN_PARTY) {
-                yield return new UnitedStatesPoliticalParty {
+                yield return new NewUnitedStatesPoliticalParty {
                     Id = null,
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -512,7 +512,7 @@ internal sealed class OrganizationMigratorPPL(
                 };
             }
             else {
-                yield return new BasicOrganization {
+                yield return new NewBasicOrganization {
                     Id = null,
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),

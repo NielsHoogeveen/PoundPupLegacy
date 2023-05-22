@@ -2,7 +2,7 @@
 
 internal sealed class BlogPostMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<BlogPost> blogPostCreator
+        IEntityCreator<NewBlogPost> blogPostCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "blog posts";
@@ -11,7 +11,7 @@ internal sealed class BlogPostMigrator(
     {
         await blogPostCreator.CreateAsync(ReadBlogPosts(), _postgresConnection);
     }
-    private async IAsyncEnumerable<BlogPost> ReadBlogPosts()
+    private async IAsyncEnumerable<NewBlogPost> ReadBlogPosts()
     {
 
         var sql = $"""
@@ -37,7 +37,7 @@ internal sealed class BlogPostMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var text = ReplacePHPCode(id, reader.GetString("text"));
-            var discussion = new BlogPost {
+            var discussion = new NewBlogPost {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

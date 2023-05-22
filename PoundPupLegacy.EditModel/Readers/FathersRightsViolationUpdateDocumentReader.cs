@@ -7,7 +7,8 @@ internal sealed class FathersRightsViolationCaseUpdateDocumentReaderFactory : No
     protected override int NodeTypeId => Constants.FATHERS_RIGHTS_VIOLATION_CASE;
 
     const string SQL = $"""
-            {CTE_EDIT}
+            {CTE_EDIT},    
+            {SharedSql.CASE_CASE_PARTY_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeId', 
@@ -33,14 +34,16 @@ internal sealed class FathersRightsViolationCaseUpdateDocumentReaderFactory : No
                     'Files',
                     (select document from attachments_document),
                     'Locations',
-                    (select document from locations_document)
+                    (select document from locations_document),
+                    'CasePartyTypesCaseParties',
+                    (select document from case_case_party_document)
                 ) document
             from node n
-            join organization o on o.id = n.id
             join nameable nm on nm.id = n.id
             join "case" c on c.id = n.id
+            join fathers_rights_violation_case frc on frc.id = c.id
             join tenant_node tn on tn.node_id = n.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
+            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         """;
 
 }

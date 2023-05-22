@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class ActCreator(
-    IDatabaseInserterFactory<Act> actInserterFactory,
+    IDatabaseInserterFactory<NewAct> actInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
@@ -11,9 +11,9 @@ internal sealed class ActCreator(
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Documentable> documentableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory
-) : EntityCreator<Act>
+) : EntityCreator<NewAct>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Act> acts, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewAct> acts, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

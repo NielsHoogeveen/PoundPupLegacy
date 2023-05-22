@@ -34,43 +34,82 @@
         <div class="tab content2">
             <ArticleViewer>
                 @if (Model is ViewModel.Models.BlogPost){
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.BlogPost"/>
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.BlogPost"
+                        TSave="EditModel.BlogPost"/>
                 }
                 @if (Model is ViewModel.Models.Discussion) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Discussion" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.Discussion"
+                        TSave="EditModel.Discussion" />
                 }
                 @if (Model is ViewModel.Models.Document) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Document" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.Document"
+                        TSave="EditModel.Document" />
                 }
                 @if (Model is ViewModel.Models.Organization) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Organization" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.Organization"
+                        TSave="EditModel.Organization" />
                 }
                 @if (Model is ViewModel.Models.Person) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.Person" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.Person"
+                        TSave="EditModel.Person" />
                 }
                 @if (Model is ViewModel.Models.AbuseCase) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.AbuseCase" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.AbuseCase"
+                        TSave="EditModel.AbuseCase" />
                 }
                 @if (Model is ViewModel.Models.ChildTraffickingCase) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.ChildTraffickingCase" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.ChildTraffickingCase"
+                        TSave="EditModel.ResolvedChildTraffickingCase" />
                 }
                 @if (Model is ViewModel.Models.CoercedAdoptionCase) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.CoercedAdoptionCase" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.CoercedAdoptionCase"
+                        TSave="EditModel.CoercedAdoptionCase" />
                 }
                 @if (Model is ViewModel.Models.DeportationCase) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.DeportationCase" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.DeportationCase"
+                        TSave="EditModel.DeportationCase" />
                 }
                 @if (Model is ViewModel.Models.DisruptedPlacementCase) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.DisruptedPlacementCase" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.DisruptedPlacementCase"
+                        TSave="EditModel.DisruptedPlacementCase" />
                 }
                 @if (Model is ViewModel.Models.FathersRightsViolationCase) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.FathersRightsViolationCase" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.FathersRightsViolationCase"
+                        TSave="EditModel.FathersRightsViolationCase" />
                 }
                 @if (Model is ViewModel.Models.WrongfulMedicationCase) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.WrongfulMedicationCase" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.WrongfulMedicationCase" 
+                        TSave="EditModel.WrongfulMedicationCase"/>
                 }
                 @if (Model is ViewModel.Models.WrongfulRemovalCase) {
-                    <NodeUpdater UrlId="Model.UrlId" T="EditModel.WrongfulRemovalCase" />
+                    <NodeUpdater 
+                        UrlId="Model.UrlId" 
+                        TRead="EditModel.WrongfulRemovalCase" 
+                        TSave="EditModel.WrongfulRemovalCase" />
                 }
             </ArticleViewer>
         </div>

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = UnitedStatesPoliticalPartyAffliation;
+using Request = NewUnitedStatesPoliticalPartyAffliation;
 
 internal sealed class UnitedStatesPoliticalPartyAffliationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

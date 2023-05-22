@@ -2,11 +2,11 @@
 
 internal sealed class SenatorSenateBillActionCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<SenatorSenateBillAction> senatorSenateBillActionInserterFactory,
+    IDatabaseInserterFactory<NewSenatorSenateBillAction> senatorSenateBillActionInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<SenatorSenateBillAction>
+) : EntityCreator<NewSenatorSenateBillAction>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<SenatorSenateBillAction> senatorSenateBillActions, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewSenatorSenateBillAction> senatorSenateBillActions, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var senatorSenateBillActionWriter = await senatorSenateBillActionInserterFactory.CreateAsync(connection);

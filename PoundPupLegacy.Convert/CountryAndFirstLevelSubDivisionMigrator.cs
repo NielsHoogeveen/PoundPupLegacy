@@ -5,7 +5,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-    IEntityCreator<CountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionCreator
+    IEntityCreator<NewCountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionCreator
 ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "countries that are first level subdivisions";
@@ -27,7 +27,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
         ), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision> GetCountryAndFirstAndBottomLevelSubdivisions(
+    private async IAsyncEnumerable<NewCountryAndFirstAndBottomLevelSubdivision> GetCountryAndFirstAndBottomLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReader
@@ -39,7 +39,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Name = "Subdivision type"
         });
 
-        yield return new CountryAndFirstAndBottomLevelSubdivision {
+        yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
             Title = "Åland",
             Name = "Åland",
@@ -110,7 +110,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Name = "Autonomous region"
             }))!.NameableId,
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision {
+        yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
             Title = "Curaçao",
             Name = "Curaçao",
@@ -181,7 +181,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Name = "Country"
             }))!.NameableId,
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision {
+        yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
             Title = "Sint Maarten",
             Name = "Sint Maarten",
@@ -252,7 +252,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Name = "Country"
             }))!.NameableId,
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision {
+        yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
             Title = "United States Minor Outlying Islands",
             Name = "United States Minor Outlying Islands",
@@ -325,7 +325,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
         };
     }
 
-    private async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision> ReadCountryAndFirstAndIntermediateLevelSubdivisions(
+    private async IAsyncEnumerable<NewCountryAndFirstAndBottomLevelSubdivision> ReadCountryAndFirstAndIntermediateLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReader
@@ -405,7 +405,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             };
 
 
-            yield return new CountryAndFirstAndBottomLevelSubdivision {
+            yield return new NewCountryAndFirstAndBottomLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

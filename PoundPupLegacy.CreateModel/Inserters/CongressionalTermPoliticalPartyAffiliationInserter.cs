@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = CongressionalTermPoliticalPartyAffiliation;
+using Request = NewCongressionalTermPoliticalPartyAffiliation;
 internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     private static readonly NullCheckingIntegerDatabaseParameter CongressionalTermId = new() { Name = "congressional_term_id" };

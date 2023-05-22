@@ -3,7 +3,7 @@
 internal class OrganizationPoliticalEntityRelationSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
     IDatabaseUpdaterFactory<PartyPoliticalEntityRelationUpdaterRequest> partyPoliticalEntityRelationUpdaterFactory,
-    IEntityCreator<CreateModel.PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
+    IEntityCreator<CreateModel.NewPartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
 ) : ISaveService<IEnumerable<OrganizationPoliticalEntityRelation>>
 {
     public async Task SaveAsync(IEnumerable<OrganizationPoliticalEntityRelation> item, IDbConnection connection)
@@ -27,12 +27,12 @@ internal class OrganizationPoliticalEntityRelationSaveService(
                 DocumentIdProof = relation.ProofDocument?.Id
             });
         }
-        IEnumerable<CreateModel.PartyPoliticalEntityRelation> GetRelationsToInsert()
+        IEnumerable<CreateModel.NewPartyPoliticalEntityRelation> GetRelationsToInsert()
         {
 
             foreach (var relation in item.OfType<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
-                yield return new CreateModel.PartyPoliticalEntityRelation {
+                yield return new CreateModel.NewPartyPoliticalEntityRelation {
                     Id = null,
                     PublisherId = relation.PublisherId,
                     CreatedDateTime = now,

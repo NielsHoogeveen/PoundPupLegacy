@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class CoercedAdoptionCaseInserterFactory : SingleIdInserterFactory<CoercedAdoptionCase>
+internal sealed class CoercedAdoptionCaseInserterFactory : SingleIdInserterFactory<NewCoercedAdoptionCase>
 {
     protected override string TableName => "coerced_adoption_case";
 

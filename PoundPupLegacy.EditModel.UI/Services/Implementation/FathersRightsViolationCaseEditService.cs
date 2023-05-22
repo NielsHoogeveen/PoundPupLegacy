@@ -12,16 +12,16 @@ internal sealed class FathersRightsViolationCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.FathersRightsViolationCase> fathersRightsViolationCaseCreator,
+    IEntityCreator<CreateModel.NewFathersRightsViolationCase> fathersRightsViolationCaseCreator,
     ITextService textService
-) : NodeEditServiceBase<FathersRightsViolationCase, ExistingFathersRightsViolationCase, NewFathersRightsViolationCase, CreateModel.FathersRightsViolationCase>(
+) : NodeEditServiceBase<FathersRightsViolationCase, ExistingFathersRightsViolationCase, NewFathersRightsViolationCase, CreateModel.NewFathersRightsViolationCase>(
     connection,
     logger,
     tagSaveService,
     tenantNodesSaveService,
     filesSaveService,
     tenantRefreshService
-), IEditService<FathersRightsViolationCase>
+), IEditService<FathersRightsViolationCase, FathersRightsViolationCase>
 {
     public async Task<FathersRightsViolationCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -50,7 +50,7 @@ internal sealed class FathersRightsViolationCaseEditService(
     protected sealed override async Task<int> StoreNew(NewFathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.FathersRightsViolationCase {
+        var createDocument = new CreateModel.NewFathersRightsViolationCase {
             Id = null,
             Title = fathersRightsViolationCase.Title,
             Description = fathersRightsViolationCase.Description is null ? "" : textService.FormatText(fathersRightsViolationCase.Description),

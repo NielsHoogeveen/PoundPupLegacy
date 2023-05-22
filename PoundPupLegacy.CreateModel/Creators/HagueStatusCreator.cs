@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class HagueStatusCreator(
-    IDatabaseInserterFactory<HagueStatus> hagueStatusInserterFactory,
+    IDatabaseInserterFactory<NewHagueStatus> hagueStatusInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
@@ -10,9 +10,9 @@ internal sealed class HagueStatusCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory
-) : EntityCreator<HagueStatus>
+) : EntityCreator<NewHagueStatus>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<HagueStatus> hagueStatuss, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewHagueStatus> hagueStatuss, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

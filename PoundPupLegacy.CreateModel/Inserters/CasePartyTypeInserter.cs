@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class CasePartyTypeInserterFactory : SingleIdInserterFactory<CasePartyType>
+internal sealed class CasePartyTypeInserterFactory : SingleIdInserterFactory<NewCasePartyType>
 {
     protected override string TableName => "case_party_type";
 

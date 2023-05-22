@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface Action : Identifiable
+public interface Action : EventuallyIdentifiable
 {
 }

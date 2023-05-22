@@ -4,12 +4,12 @@ internal sealed class DocumentCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<Document> documentInserterFactory,
+    IDatabaseInserterFactory<NewDocument> documentInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
     IEntityCreator<DocumentableDocument> documentableDocumentCreator
-) : EntityCreator<Document>
+) : EntityCreator<NewDocument>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Document> documents, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewDocument> documents, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

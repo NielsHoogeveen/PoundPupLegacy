@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FathersRightsViolationCaseInserterFactory : SingleIdInserterFactory<FathersRightsViolationCase>
+internal sealed class FathersRightsViolationCaseInserterFactory : SingleIdInserterFactory<NewFathersRightsViolationCase>
 {
     protected override string TableName => "fathers_rights_violation_case";
 

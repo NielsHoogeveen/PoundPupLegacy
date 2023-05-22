@@ -7,7 +7,7 @@ internal sealed class SystemGroupCreator(
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory,
-    IEntityCreator<Vocabulary> vocabularyCreator
+    IEntityCreator<NewVocabulary> vocabularyCreator
 ) : EntityCreator<SystemGroup>
 {
     public override async Task CreateAsync(IAsyncEnumerable<SystemGroup> elements, IDbConnection connection)

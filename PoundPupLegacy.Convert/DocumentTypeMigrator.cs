@@ -2,7 +2,7 @@
 
 internal sealed class DocumentTypeMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<DocumentType> documentTypeCreator
+    IEntityCreator<NewDocumentType> documentTypeCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "document types";
@@ -11,7 +11,7 @@ internal sealed class DocumentTypeMigrator(
     {
         await documentTypeCreator.CreateAsync(ReadSelectionOptions(), _postgresConnection);
     }
-    private async IAsyncEnumerable<DocumentType> ReadSelectionOptions()
+    private async IAsyncEnumerable<NewDocumentType> ReadSelectionOptions()
     {
 
         var sql = $"""
@@ -40,7 +40,7 @@ internal sealed class DocumentTypeMigrator(
         while (await reader.ReadAsync()) {
             var name = reader.GetString("title");
             var id = reader.GetInt32("id");
-            yield return new DocumentType {
+            yield return new NewDocumentType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

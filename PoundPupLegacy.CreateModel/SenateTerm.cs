@@ -1,18 +1,27 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record SenateTerm : CongressionalTerm
+public sealed record NewSenateTerm : NewCongressionalTermBase, EventuallyIdentifiableSenateTerm
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
     public required int? SenatorId { get; set; }
     public required int SubdivisionId { get; init; }
     public required DateTimeRange DateTimeRange { get; init; }
-    public required List<CongressionalTermPoliticalPartyAffiliation> PartyAffiliations { get; init; }
+}
+public sealed record ExistingSenateTerm : ExistingCongressionalTermBase, ImmediatelyIdentifiableSenateTerm
+{
+    public required int? SenatorId { get; set; }
+    public required int SubdivisionId { get; init; }
+    public required DateTimeRange DateTimeRange { get; init; }
+}
+public interface ImmediatelyIdentifiableSenateTerm : SenateTerm, ImmediatelyIdentifiableCongressionalTerm
+{
+}
+public interface EventuallyIdentifiableSenateTerm : SenateTerm, EventuallyIdentifiableCongressionalTerm
+{
+}
+public interface SenateTerm : CongressionalTerm
+{
+    int? SenatorId { get; }
+    int SubdivisionId { get; }
+    DateTimeRange DateTimeRange { get; }
+
 }

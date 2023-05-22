@@ -5,7 +5,7 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal class InterPersonalRelationFromSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
     IDatabaseUpdaterFactory<InterPersonalRelationUpdaterRequest> interPersonalRelationUpdaterFactory,
-    IEntityCreator<CreateModel.InterPersonalRelation> interPersonalRelationCreator
+    IEntityCreator<CreateModel.NewInterPersonalRelation> interPersonalRelationCreator
 ) : ISaveService<IEnumerable<ResolvedInterPersonalRelationFrom>>
 {
     public async Task SaveAsync(IEnumerable<ResolvedInterPersonalRelationFrom> item, IDbConnection connection)
@@ -30,12 +30,12 @@ internal class InterPersonalRelationFromSaveService(
                 DocumentIdProof = relation.ProofDocument?.Id,
             });
         }
-        IEnumerable<CreateModel.InterPersonalRelation> GetRelationsToInsert()
+        IEnumerable<CreateModel.NewInterPersonalRelation> GetRelationsToInsert()
         {
 
             foreach (var relation in item.OfType<NewInterPersonalExistingRelationFrom>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
-                yield return new CreateModel.InterPersonalRelation {
+                yield return new CreateModel.NewInterPersonalRelation {
                     Id = null,
                     PublisherId = relation.PublisherId,
                     CreatedDateTime = now,

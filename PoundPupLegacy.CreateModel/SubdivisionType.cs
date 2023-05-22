@@ -1,18 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record SubdivisionType : Nameable
+public sealed record NewSubdivisionType : NewNameableBase, EventuallyIdentifiableSubdivisionType
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Description { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
-
+}
+public sealed record ExistingSubdivisionType : ExistingNameableBase, ImmediatelyIdentifiableSubdivisionType
+{
+}
+public interface ImmediatelyIdentifiableSubdivisionType : SubdivisionType, ImmediatelyIdentifiableNameable
+{
+}
+public interface EventuallyIdentifiableSubdivisionType : SubdivisionType, EventuallyIdentifiableNameable
+{
+}
+public interface SubdivisionType : Nameable
+{
 }

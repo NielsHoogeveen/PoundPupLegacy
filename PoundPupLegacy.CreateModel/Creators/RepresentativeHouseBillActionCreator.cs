@@ -2,11 +2,11 @@
 
 internal sealed class RepresentativeHouseBillActionCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<RepresentativeHouseBillAction> representativeHouseBillActionInserterFactory,
+    IDatabaseInserterFactory<NewRepresentativeHouseBillAction> representativeHouseBillActionInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<RepresentativeHouseBillAction>
+) : EntityCreator<NewRepresentativeHouseBillAction>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<RepresentativeHouseBillAction> representativeHouseBillActions, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewRepresentativeHouseBillAction> representativeHouseBillActions, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var representativeHouseBillActionWriter = await representativeHouseBillActionInserterFactory.CreateAsync(connection);

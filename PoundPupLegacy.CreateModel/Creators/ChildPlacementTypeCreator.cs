@@ -4,15 +4,15 @@ internal sealed class ChildPlacementTypeCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<ChildPlacementType> childPlacementTypeInserterFactory,
+    IDatabaseInserterFactory<NewChildPlacementType> childPlacementTypeInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<ChildPlacementType>
+) : EntityCreator<NewChildPlacementType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<ChildPlacementType> childPlacementTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewChildPlacementType> childPlacementTypes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

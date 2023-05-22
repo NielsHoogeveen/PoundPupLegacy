@@ -50,7 +50,7 @@ internal sealed class WrongfulRemovalCaseMigrator(
                 }
             };
 
-            var country = new WrongfulRemovalCase {
+            var country = new NewWrongfulRemovalCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

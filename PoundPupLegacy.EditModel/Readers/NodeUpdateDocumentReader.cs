@@ -28,6 +28,7 @@ where TResponse : class, ExistingNode
 
     protected override TResponse Read(NpgsqlDataReader reader)
     {
-        return Document.GetValue(reader);
+        var result =  Document.GetValue(reader);
+        return result;
     }
 }

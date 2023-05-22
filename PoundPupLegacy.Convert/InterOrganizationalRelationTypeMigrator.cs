@@ -3,7 +3,7 @@
 internal sealed class InterOrganizationalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<InterOrganizationalRelationType> interOrganizationalRelationTypeCreator
+    IEntityCreator<NewInterOrganizationalRelationType> interOrganizationalRelationTypeCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-organization relation types";
@@ -13,7 +13,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await interOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<InterOrganizationalRelationType> ReadInterOrganizationalRelationTypes(
+    private async IAsyncEnumerable<NewInterOrganizationalRelationType> ReadInterOrganizationalRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
 
@@ -60,7 +60,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                     ParentNames = new List<string>(),
                 }
             };
-            yield return new InterOrganizationalRelationType {
+            yield return new NewInterOrganizationalRelationType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

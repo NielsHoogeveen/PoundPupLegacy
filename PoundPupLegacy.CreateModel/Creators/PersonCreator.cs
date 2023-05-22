@@ -7,17 +7,17 @@ internal sealed class PersonCreator(
     IDatabaseInserterFactory<Locatable> locatableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Party> partyInserterFactory,
-    IDatabaseInserterFactory<Person> personInserterFactory,
+    IDatabaseInserterFactory<NewPerson> personInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
     IEntityCreator<ProfessionalRole> professionalRoleCreator,
-    IEntityCreator<PersonOrganizationRelation> personOrganizationRelationCreator
-) : EntityCreator<Person>
+    IEntityCreator<NewPersonOrganizationRelation> personOrganizationRelationCreator
+) : EntityCreator<NewPerson>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Person> persons, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewPerson> persons, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

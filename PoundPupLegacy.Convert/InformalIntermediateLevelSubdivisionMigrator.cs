@@ -6,12 +6,12 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-    IEntityCreator<InformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionCreator
+    IEntityCreator<NewInformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "informal intermediate level subdivisions";
 
-    private async IAsyncEnumerable<InformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisionCsv(
+    private async IAsyncEnumerable<NewInformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
@@ -37,7 +37,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                 OwnerId = Constants.OWNER_SYSTEM,
                 VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
-            yield return new InformalIntermediateLevelSubdivision {
+            yield return new NewInformalIntermediateLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
@@ -110,7 +110,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
             termReaderByName
         ), _postgresConnection);
     }
-    private async IAsyncEnumerable<InformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisions(
+    private async IAsyncEnumerable<NewInformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
@@ -160,7 +160,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                 }
             };
 
-            yield return new InformalIntermediateLevelSubdivision {
+            yield return new NewInformalIntermediateLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

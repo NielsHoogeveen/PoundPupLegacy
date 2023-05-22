@@ -6,9 +6,9 @@ internal sealed class PageCreator(
     IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
     IDatabaseInserterFactory<Page> pageInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<Page>
+) : EntityCreator<NewPage>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Page> pages, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewPage> pages, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

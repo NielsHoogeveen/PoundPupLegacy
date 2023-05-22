@@ -118,10 +118,10 @@ public sealed record StoredTerm
 internal class MemberOfCongressMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<Person> personCreator,
+        IEntityCreator<NewPerson> personCreator,
         IEntityCreator<File> fileCreator,
         IEntityCreator<NodeFile> nodeFileCreator,
-        IEntityCreator<PersonOrganizationRelation> personOrganizationRelationCreator,
+        IEntityCreator<NewPersonOrganizationRelation> personOrganizationRelationCreator,
         IEntityCreator<ProfessionalRole> professionalRoleCreator
 
     ) : MigratorPPL(databaseConnections)
@@ -277,7 +277,7 @@ internal class MemberOfCongressMigrator(
         });
     }
 
-    private async IAsyncEnumerable<Person> GetMembersOfCongressAsync(
+    private async IAsyncEnumerable<NewPerson> GetMembersOfCongressAsync(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -401,11 +401,11 @@ internal class MemberOfCongressMigrator(
                     return politicalPartyAffiliations!.First(x => x.Item1 == party.ToLower()).Item2;
                 }
 
-                List<CongressionalTermPoliticalPartyAffiliation> GetPartyAffiliations(Term term)
+                List<NewCongressionalTermPoliticalPartyAffiliation> GetPartyAffiliations(Term term)
                 {
                     if (term.party_affiliations == null) {
-                        return new List<CongressionalTermPoliticalPartyAffiliation> {
-                            new CongressionalTermPoliticalPartyAffiliation {
+                        return new List<NewCongressionalTermPoliticalPartyAffiliation> {
+                            new NewCongressionalTermPoliticalPartyAffiliation {
                                 Id = null,
                                 PublisherId = 2,
                                 CreatedDateTime = DateTime.Now,
@@ -431,7 +431,7 @@ internal class MemberOfCongressMigrator(
                             }
                         };
                     }
-                    return term.party_affiliations.Select(party_affiliations => new CongressionalTermPoliticalPartyAffiliation {
+                    return term.party_affiliations.Select(party_affiliations => new NewCongressionalTermPoliticalPartyAffiliation {
                         Id = null,
                         PublisherId = 2,
                         CreatedDateTime = DateTime.Now,
@@ -463,12 +463,12 @@ internal class MemberOfCongressMigrator(
                     return states!.First(x => x.Item1 == $"US-{term.state}").Item2;
                 }
 
-                List<SenateTerm> GetSenateTerms()
+                List<NewSenateTerm> GetSenateTerms()
                 {
                     return memberOfCongress.terms.Where(x => x.type == "sen").Select(term => {
                         var subdivisionId = GetStateId(term);
                         var partyAffiliations = GetPartyAffiliations(term);
-                        var senateTerm = new SenateTerm {
+                        var senateTerm = new NewSenateTerm {
                             Id = null,
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
@@ -496,13 +496,13 @@ internal class MemberOfCongressMigrator(
                         return senateTerm;
                     }).ToList();
                 }
-                List<HouseTerm> GetHouseTerms()
+                List<NewHouseTerm> GetHouseTerms()
                 {
                     return memberOfCongress.terms.Where(x => x.type == "rep").Select(term => {
                         var subdivisionId = GetStateId(term);
                         var partyAffiliations = GetPartyAffiliations(term);
 
-                        var houseTerm = new HouseTerm {
+                        var houseTerm = new NewHouseTerm {
                             Id = null,
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
@@ -535,51 +535,17 @@ internal class MemberOfCongressMigrator(
 
                 if (memberOfCongress.node_id.HasValue) {
                     if (isSenator) {
-                        professionalRoles.Add(new Senator {
+                        professionalRoles.Add(new NewSenator {
                             Id = null,
-                            PublisherId = 2,
-                            CreatedDateTime = DateTime.Now,
-                            ChangedDateTime = DateTime.Now,
-                            Title = $"{name} is senator",
-                            OwnerId = Constants.OWNER_PARTIES,
-                            TenantNodes = new List<TenantNode> {
-                                new TenantNode {
-                                    Id = null,
-                                    TenantId = 1,
-                                    PublicationStatusId = 1,
-                                    UrlPath = null,
-                                    NodeId = null,
-                                    SubgroupId = null,
-                                    UrlId = null
-                                }
-                            },
-                            NodeTypeId = 59,
                             PersonId = memberOfCongress.node_id,
                             DateTimeRange = null,
                             ProfessionId = senatorRoleId,
-                            SenateTerms = GetSenateTerms(),
+                            SenateTerms = GetSenateTerms()
                         });
                     }
                     if (isRepresentative) {
                         professionalRoles.Add(new Representative {
                             Id = null,
-                            PublisherId = 2,
-                            CreatedDateTime = DateTime.Now,
-                            ChangedDateTime = DateTime.Now,
-                            Title = $"{name} is representative",
-                            OwnerId = Constants.OWNER_PARTIES,
-                            TenantNodes = new List<TenantNode> {
-                                new TenantNode {
-                                    Id = null,
-                                    TenantId = 1,
-                                    PublicationStatusId = 1,
-                                    UrlPath = null,
-                                    NodeId = null,
-                                    SubgroupId = null,
-                                    UrlId = null
-                                }
-                            },
-                            NodeTypeId = 60,
                             PersonId = memberOfCongress.node_id,
                             DateTimeRange = null,
                             ProfessionId = repRoleId,
@@ -601,25 +567,8 @@ internal class MemberOfCongressMigrator(
                 else {
 
                     if (isSenator) {
-                        professionalRoles.Add(new Senator {
+                        professionalRoles.Add(new NewSenator {
                             Id = null,
-                            PublisherId = 2,
-                            CreatedDateTime = DateTime.Now,
-                            ChangedDateTime = DateTime.Now,
-                            Title = $"{name} is senator",
-                            OwnerId = Constants.OWNER_PARTIES,
-                            TenantNodes = new List<TenantNode> {
-                                new TenantNode {
-                                    Id = null,
-                                    TenantId = 1,
-                                    PublicationStatusId = 1,
-                                    UrlPath = null,
-                                    NodeId = null,
-                                    SubgroupId = null,
-                                    UrlId = null
-                                }
-                            },
-                            NodeTypeId = 59,
                             PersonId = null,
                             DateTimeRange = null,
                             ProfessionId = senatorRoleId,
@@ -629,23 +578,6 @@ internal class MemberOfCongressMigrator(
                     if (isRepresentative) {
                         professionalRoles.Add(new Representative {
                             Id = null,
-                            PublisherId = 2,
-                            CreatedDateTime = DateTime.Now,
-                            ChangedDateTime = DateTime.Now,
-                            Title = $"{name} is representative",
-                            OwnerId = Constants.OWNER_PARTIES,
-                            TenantNodes = new List<TenantNode> {
-                                new TenantNode {
-                                    Id = null,
-                                    TenantId = 1,
-                                    PublicationStatusId = 1,
-                                    UrlPath = null,
-                                    NodeId = null,
-                                    SubgroupId = null,
-                                    UrlId = null
-                                }
-                            },
-                            NodeTypeId = 60,
                             PersonId = null,
                             DateTimeRange = null,
                             ProfessionId = repRoleId,
@@ -655,7 +587,7 @@ internal class MemberOfCongressMigrator(
 
                     var terms = memberOfCongress.terms.Select(x => (x.start, x.end, x.party)).GroupBy(x => x.party).ToList();
 
-                    var relations = new List<PersonOrganizationRelation>();
+                    var relations = new List<NewPersonOrganizationRelation>();
                     if (terms.Count == 1) {
 
                     }
@@ -669,7 +601,7 @@ internal class MemberOfCongressMigrator(
                         }
                     };
 
-                    yield return new Person {
+                    yield return new NewPerson {
                         Id = null,
                         PublisherId = 2,
                         CreatedDateTime = DateTime.Now,
@@ -703,7 +635,7 @@ internal class MemberOfCongressMigrator(
                         Suffix = memberOfCongress.name.suffix,
                         ProfessionalRoles = professionalRoles,
                         Bioguide = memberOfCongress.id.bioguide,
-                        PersonOrganizationRelations = new List<PersonOrganizationRelation>()
+                        PersonOrganizationRelations = new List<NewPersonOrganizationRelation>()
                     };
                 }
             }
@@ -854,7 +786,7 @@ internal class MemberOfCongressMigrator(
         }
     }
 
-    private async IAsyncEnumerable<PersonOrganizationRelation> GetPartyMembership()
+    private async IAsyncEnumerable<NewPersonOrganizationRelation> GetPartyMembership()
     {
 
         var sql = $"""
@@ -978,7 +910,7 @@ internal class MemberOfCongressMigrator(
 
 
             var now = DateTime.Now;
-            yield return new PersonOrganizationRelation {
+            yield return new NewPersonOrganizationRelation {
                 Id = null,
                 PublisherId = 2,
                 CreatedDateTime = now,

@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class InterCountryRelationTypeMigrator(
 IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<InterCountryRelationType> interCountryRelationTypeCreator
+    IEntityCreator<NewInterCountryRelationType> interCountryRelationTypeCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-country relation types";
@@ -15,7 +15,7 @@ IDatabaseConnections databaseConnections,
 
         await interCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<InterCountryRelationType> ReadInterCountryRelationTypes(
+    private async IAsyncEnumerable<NewInterCountryRelationType> ReadInterCountryRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
 
@@ -59,7 +59,7 @@ IDatabaseConnections databaseConnections,
                     ParentNames = new List<string>(),
                 }
             };
-            yield return new InterCountryRelationType {
+            yield return new NewInterCountryRelationType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

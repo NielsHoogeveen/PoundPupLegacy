@@ -4,7 +4,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreator<PartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
+    IEntityCreator<NewPartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -20,7 +20,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
         await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader, tenantNodeReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<PartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(
+    private async IAsyncEnumerable<NewPartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
     {
@@ -125,7 +125,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new PartyPoliticalEntityRelation {
+            yield return new NewPartyPoliticalEntityRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

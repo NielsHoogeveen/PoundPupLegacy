@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class ReviewInserterFactory : SingleIdInserterFactory<Review>
+internal sealed class ReviewInserterFactory : SingleIdInserterFactory<NewReview>
 {
     protected override string TableName => "review";
 

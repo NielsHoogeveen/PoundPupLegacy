@@ -3,7 +3,7 @@
 internal sealed class ChildPlacementTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<ChildPlacementType> childPlacementTypeCreator
+        IEntityCreator<NewChildPlacementType> childPlacementTypeCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child placement types";
@@ -14,7 +14,7 @@ internal sealed class ChildPlacementTypeMigrator(
         await childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<ChildPlacementType> ReadChildPlacementTypes(
+    private async IAsyncEnumerable<NewChildPlacementType> ReadChildPlacementTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
         var sql = $"""
@@ -91,7 +91,7 @@ internal sealed class ChildPlacementTypeMigrator(
                 });
             }
 
-            yield return new ChildPlacementType {
+            yield return new NewChildPlacementType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

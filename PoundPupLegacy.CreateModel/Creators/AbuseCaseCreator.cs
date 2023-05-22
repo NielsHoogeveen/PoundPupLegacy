@@ -7,16 +7,18 @@ internal sealed class AbuseCaseCreator(
     IDatabaseInserterFactory<Locatable> locatableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Case> caseInserterFactory,
-    IDatabaseInserterFactory<AbuseCase> abuseCaseInserterFactory,
+    IDatabaseInserterFactory<NewAbuseCase> abuseCaseInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<AbuseCase>
+    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
+    IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
+    IEntityCreator<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreator
+) : EntityCreator<NewAbuseCase>
 {
 
-    public override async Task CreateAsync(IAsyncEnumerable<AbuseCase> abuseCases, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewAbuseCase> abuseCases, IDbConnection connection)
     {
 
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
@@ -45,7 +47,25 @@ internal sealed class AbuseCaseCreator(
                 tenantNode.NodeId = abuseCase.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);
             }
-
+            foreach(var typeOfAbuseId in abuseCase.TypeOfAbuseIds) {
+                await abuseCaseTypeOfAbuseCreator.CreateAsync(
+                    new AbuseCaseTypeOfAbuse 
+                    { 
+                        AbuseCaseId = abuseCase.Id!.Value, 
+                        TypeOfAbuseId = typeOfAbuseId
+                    },
+                    connection
+                );
+            }
+            foreach (var typeOfAbuserId in abuseCase.TypeOfAbuserIds) {
+                await abuseCaseTypeOfAbuserCreator.CreateAsync(
+                    new AbuseCaseTypeOfAbuser {
+                        AbuseCaseId = abuseCase.Id!.Value,
+                        TypeOfAbuserId = typeOfAbuserId
+                    },
+                    connection
+                );
+            }
         }
     }
 }

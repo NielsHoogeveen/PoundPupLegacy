@@ -4,7 +4,7 @@ internal sealed class SenatorSenateBillActionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> professionIdReaderFactory,
-    IEntityCreator<SenatorSenateBillAction> senatorSenateBillActionCreator
+    IEntityCreator<NewSenatorSenateBillAction> senatorSenateBillActionCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "senator senate bill action";
@@ -16,7 +16,7 @@ internal sealed class SenatorSenateBillActionMigrator(
         await senatorSenateBillActionCreator.CreateAsync(ReadSenatorSenateBillActionsPPL(nodeIdReader, professionIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<SenatorSenateBillAction> ReadSenatorSenateBillActionsPPL(
+    private async IAsyncEnumerable<NewSenatorSenateBillAction> ReadSenatorSenateBillActionsPPL(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<ProfessionIdReaderRequest, int> professionIdReader
     )
@@ -71,7 +71,7 @@ internal sealed class SenatorSenateBillActionMigrator(
                 UrlId = reader.GetInt32("nameable_id")
             });
 
-            yield return new SenatorSenateBillAction {
+            yield return new NewSenatorSenateBillAction {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

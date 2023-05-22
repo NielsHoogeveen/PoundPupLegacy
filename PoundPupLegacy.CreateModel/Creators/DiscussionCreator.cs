@@ -1,14 +1,14 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class DiscussionCreator(
-    IDatabaseInserterFactory<Discussion> discussionInserterFactory,
+    IDatabaseInserterFactory<NewDiscussion> discussionInserterFactory,
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<Discussion>
+) : EntityCreator<NewDiscussion>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Discussion> discussions, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewDiscussion> discussions, IDbConnection connection)
     {
 
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);

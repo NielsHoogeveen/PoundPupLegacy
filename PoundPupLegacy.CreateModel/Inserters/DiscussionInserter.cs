@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class DiscussionInserterFactory : SingleIdInserterFactory<Discussion>
+internal sealed class DiscussionInserterFactory : SingleIdInserterFactory<NewDiscussion>
 {
     protected override string TableName => "discussion";
 

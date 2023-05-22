@@ -2,7 +2,7 @@
 
 internal sealed class CasePartyTypeMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<CasePartyType> casePartyTypeCreator
+        IEntityCreator<NewCasePartyType> casePartyTypeCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "case relation types";
@@ -11,11 +11,11 @@ internal sealed class CasePartyTypeMigrator(
         await casePartyTypeCreator.CreateAsync(GetCaseRelationTypes(), _postgresConnection);
     }
 
-    internal static async IAsyncEnumerable<CasePartyType> GetCaseRelationTypes()
+    internal static async IAsyncEnumerable<NewCasePartyType> GetCaseRelationTypes()
     {
         await Task.CompletedTask;
         var now = DateTime.Now;
-        yield return new CasePartyType {
+        yield return new NewCasePartyType {
             Id = null,
             PublisherId = 2,
             CreatedDateTime = now,
@@ -60,7 +60,7 @@ internal sealed class CasePartyTypeMigrator(
                 }
             }
         };
-        yield return new CasePartyType {
+        yield return new NewCasePartyType {
             Id = null,
             PublisherId = 2,
             CreatedDateTime = now,
@@ -105,7 +105,7 @@ internal sealed class CasePartyTypeMigrator(
                 }
             }
         };
-        yield return new CasePartyType {
+        yield return new NewCasePartyType {
             Id = null,
             PublisherId = 2,
             CreatedDateTime = now,
@@ -150,7 +150,7 @@ internal sealed class CasePartyTypeMigrator(
                 }
             }
         };
-        yield return new CasePartyType {
+        yield return new NewCasePartyType {
             Id = null,
             PublisherId = 2,
             CreatedDateTime = now,
@@ -195,7 +195,7 @@ internal sealed class CasePartyTypeMigrator(
                 }
             }
         };
-        yield return new CasePartyType {
+        yield return new NewCasePartyType {
             Id = null,
             PublisherId = 2,
             CreatedDateTime = now,
@@ -240,7 +240,7 @@ internal sealed class CasePartyTypeMigrator(
                 }
             }
         };
-        yield return new CasePartyType {
+        yield return new NewCasePartyType {
             Id = null,
             PublisherId = 2,
             CreatedDateTime = now,
@@ -285,7 +285,7 @@ internal sealed class CasePartyTypeMigrator(
                 }
             }
         };
-        yield return new CasePartyType {
+        yield return new NewCasePartyType {
             Id = null,
             PublisherId = 2,
             CreatedDateTime = now,

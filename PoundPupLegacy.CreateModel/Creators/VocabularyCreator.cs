@@ -2,11 +2,11 @@
 
 internal sealed class VocabularyCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Vocabulary> vocabularyInserterFactory,
+    IDatabaseInserterFactory<NewVocabulary> vocabularyInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<Vocabulary>
+) : EntityCreator<NewVocabulary>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Vocabulary> vocabularies, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewVocabulary> vocabularies, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var vocabularyWriter = await vocabularyInserterFactory.CreateAsync(connection);

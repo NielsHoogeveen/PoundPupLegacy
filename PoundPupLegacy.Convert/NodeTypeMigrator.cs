@@ -24,7 +24,7 @@ internal sealed class NodeTypeMigrator(
         await editNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
     }
 
-    internal async static IAsyncEnumerable<NodeType> GetNodeTypes()
+    internal async static IAsyncEnumerable<EventuallyIdentifiableNodeType> GetNodeTypes()
     {
         await Task.CompletedTask;
         foreach (var nodeType in GetBasicNodeTypes()) {

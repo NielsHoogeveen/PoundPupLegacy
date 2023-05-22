@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = ISOCodedSubdivision;
+using Request = EventuallyIdentifiableISOCodedSubdivision;
 
 internal sealed class ISOCodedSubdivisionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

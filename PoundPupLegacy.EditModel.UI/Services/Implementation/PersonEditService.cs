@@ -13,10 +13,10 @@ internal sealed class PersonEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ISaveService<IEnumerable<Location>> locationsSaveService,
-    IEntityCreator<CreateModel.Person> personEntityCreator,
+    IEntityCreator<CreateModel.NewPerson> personEntityCreator,
     ITextService textService
 
-) : PartyEditServiceBase<Person, ExistingPerson, NewPerson, CreateModel.Person>(
+) : PartyEditServiceBase<Person, ExistingPerson, NewPerson, CreateModel.NewPerson>(
     connection,
     logger,
     tagSaveService,
@@ -24,7 +24,7 @@ internal sealed class PersonEditService(
     filesSaveService,
     textService,
     tenantRefreshService
-), IEditService<Person>
+), IEditService<Person, Person>
 {
 
     public async Task<Person?> GetViewModelAsync(int urlId, int userId, int tenantId)
@@ -58,7 +58,7 @@ internal sealed class PersonEditService(
     protected sealed override async Task<int> StoreNew(NewPerson person, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var creationPerson = new CreateModel.Person {
+        var creationPerson = new CreateModel.NewPerson {
             Id = null,
             Title = person.Title,
             Description = person.Description,
@@ -90,7 +90,7 @@ internal sealed class PersonEditService(
             MiddleName = null,
             Suffix = null,
             ProfessionalRoles = new List<CreateModel.ProfessionalRole>(),
-            PersonOrganizationRelations = new List<CreateModel.PersonOrganizationRelation>()
+            PersonOrganizationRelations = new List<CreateModel.NewPersonOrganizationRelation>()
         };
         await personEntityCreator.CreateAsync(creationPerson, connection);
         return creationPerson.Id!.Value;

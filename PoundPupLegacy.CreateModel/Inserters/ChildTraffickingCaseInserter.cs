@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = ChildTraffickingCase;
+using Request = NewChildTraffickingCase;
 
 internal sealed class ChildTraffickingCaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

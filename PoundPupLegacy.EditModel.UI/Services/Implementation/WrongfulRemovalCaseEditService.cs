@@ -21,7 +21,7 @@ internal sealed class WrongfulRemovalCaseEditService(
     tenantNodesSaveService,
     filesSaveService,
     tenantRefreshService
-), IEditService<WrongfulRemovalCase>
+), IEditService<WrongfulRemovalCase, WrongfulRemovalCase>
 {
     public async Task<WrongfulRemovalCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -50,7 +50,7 @@ internal sealed class WrongfulRemovalCaseEditService(
     protected sealed override async Task<int> StoreNew(NewWrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.WrongfulRemovalCase {
+        var createDocument = new CreateModel.NewWrongfulRemovalCase {
             Id = null,
             Title = wrongfulRemovalCase.Title,
             Description = wrongfulRemovalCase.Description is null ? "" : textService.FormatText(wrongfulRemovalCase.Description),

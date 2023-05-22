@@ -98,18 +98,15 @@
     public CompletedInterPersonalRelationFrom? GetValidRelation()
     {
         validationMessageStore?.Clear();
-        bool hasErrors = false;
-        if (RelationContext.RelationToEdit.PersonItemTo is null) {
+        if (RelationContext.RelationToEdit.PersonItemTo is null)
+        {
             validationMessageStore!.Add(editContext!.Field(nameof(RelationContext.RelationToEdit.PersonItemTo)), "Person to is required");
-            hasErrors = true;
             editContext.NotifyValidationStateChanged();
-        }
-        if (hasErrors)
             return null;
-
+        }
         return RelationContext.RelationToEdit.Match<CompletedInterPersonalRelationFrom>(
-            incompleteInterPersonalRelationFrom: x => x.GetCompletedRelation(RelationContext.RelationToEdit.PersonItemTo!),
-            completedInterPersonalRelationFrom: x => x with { PersonTo = RelationContext.RelationToEdit.PersonItemTo! }
+            incompleteInterPersonalRelationFrom: x => x.GetCompletedRelation(RelationContext.RelationToEdit.PersonItemTo),
+            completedInterPersonalRelationFrom: x => x with { PersonTo = RelationContext.RelationToEdit.PersonItemTo }
         );
     }
 }

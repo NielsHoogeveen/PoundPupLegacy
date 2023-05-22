@@ -7,7 +7,8 @@ internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpda
     protected override int NodeTypeId => Constants.CHILD_TRAFFICKING_CASE;
 
     const string SQL = $"""
-            {CTE_EDIT}
+            {CTE_EDIT},    
+            {SharedSql.CASE_CASE_PARTY_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeId', 
@@ -24,6 +25,15 @@ internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpda
                     nm.description,
                     'Date',
                     c.fuzzy_date,
+                    'CountryFrom',
+                    jsonb_build_object(
+                        'Id',
+                        n.id,
+                        'Name',
+                        n.title
+                    ),
+                    'NumberOfChildrenInvolved',
+                    ctc.number_of_children_involved,
                     'Tags', 
                     (select document from tags_document),
                     'TenantNodes',
@@ -33,14 +43,17 @@ internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpda
                     'Files',
                     (select document from attachments_document),
                     'Locations',
-                    (select document from locations_document)
+                    (select document from locations_document),
+                    'CasePartyTypesCaseParties',
+                    (select document from case_case_party_document)
                 ) document
             from node n
-            join organization o on o.id = n.id
             join nameable nm on nm.id = n.id
             join "case" c on c.id = n.id
+            join child_trafficking_case ctc on ctc.id = c.id
             join tenant_node tn on tn.node_id = n.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
+            join node n2 on n2.id = ctc.country_id_from
+            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         """;
 
 }

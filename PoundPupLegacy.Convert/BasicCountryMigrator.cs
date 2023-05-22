@@ -127,7 +127,7 @@ internal sealed class BasicCountryMigrator(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
-        yield return new BasicCountry {
+        yield return new NewBasicCountry {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -179,7 +179,7 @@ internal sealed class BasicCountryMigrator(
             MarriageRequirements = null,
             OtherRequirements = null,
         };
-        yield return new BasicCountry {
+        yield return new NewBasicCountry {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -231,7 +231,7 @@ internal sealed class BasicCountryMigrator(
             MarriageRequirements = null,
             OtherRequirements = null,
         };
-        yield return new BasicCountry {
+        yield return new NewBasicCountry {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -284,7 +284,7 @@ internal sealed class BasicCountryMigrator(
             OtherRequirements = null,
 
         };
-        yield return new BasicCountry {
+        yield return new NewBasicCountry {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -466,7 +466,7 @@ internal sealed class BasicCountryMigrator(
                     ParentNames = new List<string>{ regionName },
                 },
             };
-            var country = new BasicCountry {
+            var country = new NewBasicCountry {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

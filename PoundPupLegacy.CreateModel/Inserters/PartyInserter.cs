@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class PartyInserterFactory : SingleIdInserterFactory<Party>
+internal sealed class PartyInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableParty>
 {
     protected override string TableName => "party";
 

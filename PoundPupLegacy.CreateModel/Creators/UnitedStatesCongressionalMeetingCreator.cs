@@ -5,15 +5,15 @@ internal sealed class UnitedStatesCongressionalMeetingCreator(
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Documentable> documentableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<UnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingInserterFactory,
+    IDatabaseInserterFactory<NewUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<UnitedStatesCongressionalMeeting>
+) : EntityCreator<NewUnitedStatesCongressionalMeeting>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<UnitedStatesCongressionalMeeting> countries, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewUnitedStatesCongressionalMeeting> meetings, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
@@ -26,15 +26,15 @@ internal sealed class UnitedStatesCongressionalMeetingCreator(
         await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
         await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
 
-        await foreach (var country in countries) {
-            await nodeWriter.InsertAsync(country);
-            await searchableWriter.InsertAsync(country);
-            await documentableWriter.InsertAsync(country);
-            await nameableWriter.InsertAsync(country);
-            await unitedStatesCongressionalMeetingWriter.InsertAsync(country);
-            await WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in country.TenantNodes) {
-                tenantNode.NodeId = country.Id;
+        await foreach (var meeting in meetings) {
+            await nodeWriter.InsertAsync(meeting);
+            await searchableWriter.InsertAsync(meeting);
+            await documentableWriter.InsertAsync(meeting);
+            await nameableWriter.InsertAsync(meeting);
+            await unitedStatesCongressionalMeetingWriter.InsertAsync(meeting);
+            await WriteTerms(meeting, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
+            foreach (var tenantNode in meeting.TenantNodes) {
+                tenantNode.NodeId = meeting.Id;
                 await tenantNodeWriter.InsertAsync(tenantNode);
             }
         }

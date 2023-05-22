@@ -3,7 +3,7 @@
 internal class InterOrganizationalRelationToSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
     IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> interOrganizationalRelationUpdaterFactory,
-    IEntityCreator<CreateModel.InterOrganizationalRelation> interOrganizationalRelationCreator
+    IEntityCreator<CreateModel.NewInterOrganizationalRelation> interOrganizationalRelationCreator
 ) : ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>>
 {
     public async Task SaveAsync(IEnumerable<ResolvedInterOrganizationalRelationTo> item, IDbConnection connection)
@@ -31,12 +31,12 @@ internal class InterOrganizationalRelationToSaveService(
                 NumberOfChildrenInvolved = relation.NumberOfChildrenInvolved,
             });
         }
-        IEnumerable<CreateModel.InterOrganizationalRelation> GetRelationsToInsert()
+        IEnumerable<CreateModel.NewInterOrganizationalRelation> GetRelationsToInsert()
         {
 
             foreach (var relation in item.OfType<NewInterOrganizationalExistingRelationTo>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
-                yield return new CreateModel.InterOrganizationalRelation {
+                yield return new CreateModel.NewInterOrganizationalRelation {
                     Id = null,
                     PublisherId = relation.PublisherId,
                     CreatedDateTime = now,

@@ -12,16 +12,16 @@ internal sealed class CoercedAdoptionCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.CoercedAdoptionCase> coercedAdoptionCaseCreator,
+    IEntityCreator<CreateModel.NewCoercedAdoptionCase> coercedAdoptionCaseCreator,
     ITextService textService
-) : NodeEditServiceBase<CoercedAdoptionCase, ExistingCoercedAdoptionCase, NewCoercedAdoptionCase, CreateModel.CoercedAdoptionCase>(
+) : NodeEditServiceBase<CoercedAdoptionCase, ExistingCoercedAdoptionCase, NewCoercedAdoptionCase, CreateModel.NewCoercedAdoptionCase>(
     connection,
     logger,
     tagSaveService,
     tenantNodesSaveService,
     filesSaveService,
     tenantRefreshService
-), IEditService<CoercedAdoptionCase>
+), IEditService<CoercedAdoptionCase, CoercedAdoptionCase>
 {
     public async Task<CoercedAdoptionCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -50,7 +50,7 @@ internal sealed class CoercedAdoptionCaseEditService(
     protected sealed override async Task<int> StoreNew(NewCoercedAdoptionCase coercedAdoptionCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.CoercedAdoptionCase {
+        var createDocument = new CreateModel.NewCoercedAdoptionCase {
             Id = null,
             Title = coercedAdoptionCase.Title,
             Description = coercedAdoptionCase.Description is null ? "" : textService.FormatText(coercedAdoptionCase.Description),

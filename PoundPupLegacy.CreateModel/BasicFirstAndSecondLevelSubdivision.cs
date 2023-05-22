@@ -1,22 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record BasicFirstAndSecondLevelSubdivision : FirstAndSecondLevelSubdivision
+public sealed record ExistingBasicFirstAndSecondLevelSubdivision : ExistingISOCodedSubdivisionBase, ImmediatelyIdentifiableBasicFirstAndSecondLevelSubdivision
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string ISO3166_2_Code { get; set; }
-    public required string Name { get; init; }
-    public required string Description { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
-    public required int CountryId { get; init; }
-    public required int? FileIdFlag { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
-    public required int SubdivisionTypeId { get; init; }
+    public required int IntermediateLevelSubdivisionId { get; init; }
+}
+
+public sealed record NewBasicFirstAndSecondLevelSubdivision : NewISOCodedSubdivisionBase, EventuallyIdentifiableBasicFirstAndSecondLevelSubdivision
+{
+    public required int IntermediateLevelSubdivisionId { get; init; }
+}
+public interface ImmediatelyIdentifiableBasicFirstAndSecondLevelSubdivision : BasicFirstAndSecondLevelSubdivision, ImmediatelyIdentifiableFirstAndSecondLevelSubdivision
+{
+}
+
+public interface EventuallyIdentifiableBasicFirstAndSecondLevelSubdivision : BasicFirstAndSecondLevelSubdivision, EventuallyIdentifiableFirstAndSecondLevelSubdivision
+{
+}
+
+public interface BasicFirstAndSecondLevelSubdivision: FirstAndSecondLevelSubdivision
+{
 }

@@ -1,23 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record BasicOrganization : Organization
+public sealed record NewBasicOrganization : NewOrganizationBase, EventuallyIdentifiableOrganization
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string? WebsiteUrl { get; init; }
-    public required string? EmailAddress { get; init; }
-    public required string Description { get; init; }
-    public required FuzzyDate? Established { get; init; }
-    public required FuzzyDate? Terminated { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
-    public required List<OrganizationOrganizationType> OrganizationTypes { get; set; }
-
+}
+public sealed record ExistingOrganization : ExistingOrganizationBase, ImmediatelyIdentifiableOrganization
+{
 }

@@ -3,7 +3,7 @@
 internal sealed class PersonMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<Person> personCreator
+    IEntityCreator<NewPerson> personCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "persons (ppl)";
@@ -124,7 +124,7 @@ internal sealed class PersonMigratorPPL(
         };
     }
 
-    private async IAsyncEnumerable<Person> ReadPersons(
+    private async IAsyncEnumerable<NewPerson> ReadPersons(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
     {
@@ -207,7 +207,7 @@ internal sealed class PersonMigratorPPL(
                 }
             };
 
-            yield return new Person {
+            yield return new NewPerson {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -258,7 +258,7 @@ internal sealed class PersonMigratorPPL(
                 Bioguide = null,
                 Suffix = null,
                 ProfessionalRoles = new List<ProfessionalRole>(),
-                PersonOrganizationRelations = new List<PersonOrganizationRelation>()
+                PersonOrganizationRelations = new List<NewPersonOrganizationRelation>()
             };
 
         }

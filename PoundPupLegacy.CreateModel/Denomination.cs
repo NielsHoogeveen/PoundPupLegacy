@@ -1,18 +1,19 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record Denomination : Nameable
+public sealed record NewDenomination : NewNameableBase, EventuallyIdentifiableDenomination
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Description { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
+}
+public sealed record ExistingDenomination : ExistingNameableBase, ImmediatelyIdentifiableDenomination
+{
+}
+public interface ImmediatelyIdentifiableDenomination : Denomination, ImmediatelyIdentifiableNameable
+{
+}
 
+public interface EventuallyIdentifiableDenomination : Denomination, EventuallyIdentifiableNameable
+{
+}
+
+public interface Denomination: Nameable
+{
 }

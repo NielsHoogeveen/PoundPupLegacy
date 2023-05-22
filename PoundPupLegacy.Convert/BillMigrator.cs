@@ -3,8 +3,8 @@
 internal sealed class BillMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<HouseBill> houseBillCreator,
-        IEntityCreator<SenateBill> senateBillCreator
+        IEntityCreator<NewHouseBill> houseBillCreator,
+        IEntityCreator<NewSenateBill> senateBillCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "bills";
@@ -16,7 +16,7 @@ internal sealed class BillMigrator(
         await senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<HouseBill> ReadHouseBills(
+    private async IAsyncEnumerable<NewHouseBill> ReadHouseBills(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
         )
     {
@@ -159,7 +159,7 @@ internal sealed class BillMigrator(
                 });
             }
 
-            yield return new HouseBill {
+            yield return new NewHouseBill {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
@@ -193,7 +193,7 @@ internal sealed class BillMigrator(
         }
         await reader.CloseAsync();
     }
-    private async IAsyncEnumerable<SenateBill> ReadSenateBills(
+    private async IAsyncEnumerable<NewSenateBill> ReadSenateBills(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
         )
     {
@@ -338,7 +338,7 @@ internal sealed class BillMigrator(
             }
 
 
-            yield return new SenateBill {
+            yield return new NewSenateBill {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

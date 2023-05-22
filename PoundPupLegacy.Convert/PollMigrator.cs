@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.Convert;
 internal sealed class PollMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<SingleQuestionPoll> singleQuestionPollCreator,
-    IEntityCreator<MultiQuestionPoll> multiQuestionPollCreator
+    IEntityCreator<NewSingleQuestionPoll> singleQuestionPollCreator,
+    IEntityCreator<NewMultiQuestionPoll> multiQuestionPollCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "polls";
@@ -12,7 +12,7 @@ internal sealed class PollMigrator(
         await singleQuestionPollCreator.CreateAsync(ReadSingleQuestionPolls(), _postgresConnection);
         await multiQuestionPollCreator.CreateAsync(ReadMultiQuestionPolls(), _postgresConnection);
     }
-    private async IAsyncEnumerable<SingleQuestionPoll> ReadSingleQuestionPolls()
+    private async IAsyncEnumerable<NewSingleQuestionPoll> ReadSingleQuestionPolls()
     {
 
         var sql = $"""
@@ -57,7 +57,7 @@ internal sealed class PollMigrator(
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        SingleQuestionPoll? currentPoll = null;
+        NewSingleQuestionPoll? currentPoll = null;
         int? currentDelta = null;
 
         while (await reader.ReadAsync()) {
@@ -69,7 +69,7 @@ internal sealed class PollMigrator(
                 currentPoll = null;
                 currentDelta = null;
             }
-            currentPoll ??= new SingleQuestionPoll {
+            currentPoll ??= new NewSingleQuestionPoll {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -122,9 +122,9 @@ internal sealed class PollMigrator(
         }
         await reader.CloseAsync();
     }
-    private async IAsyncEnumerable<MultiQuestionPoll> ReadMultiQuestionPolls()
+    private async IAsyncEnumerable<NewMultiQuestionPoll> ReadMultiQuestionPolls()
     {
-        MultiQuestionPoll? multiQuestionPoll = null;
+        NewMultiQuestionPoll? multiQuestionPoll = null;
 
         using (var readCommand = _mySqlConnection.CreateCommand()) {
             var sql = $"""
@@ -155,7 +155,7 @@ internal sealed class PollMigrator(
             var name = reader.GetString("title");
 
 
-            multiQuestionPoll = new MultiQuestionPoll {
+            multiQuestionPoll = new NewMultiQuestionPoll {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -181,7 +181,7 @@ internal sealed class PollMigrator(
                 Teaser = TextToHtml(reader.GetString("text")),
                 DateTimeClosure = DateTime.Now.AddYears(-5),
                 PollStatusId = 0,
-                PollQuestions = new List<BasicPollQuestion>()
+                PollQuestions = new List<NewBasicPollQuestion>()
             };
             await reader.CloseAsync();
         }
@@ -230,7 +230,7 @@ internal sealed class PollMigrator(
 
                 var reader = await readCommand.ExecuteReaderAsync();
 
-                BasicPollQuestion? currentQuestion = null;
+                NewBasicPollQuestion? currentQuestion = null;
                 int? currentDelta = null;
 
                 while (await reader.ReadAsync()) {
@@ -242,7 +242,7 @@ internal sealed class PollMigrator(
                         currentQuestion = null;
                         currentDelta = null;
                     }
-                    currentQuestion ??= new BasicPollQuestion {
+                    currentQuestion ??= new NewBasicPollQuestion {
                         Id = null,
                         PublisherId = reader.GetInt32("user_id"),
                         CreatedDateTime = reader.GetDateTime("created_date_time"),

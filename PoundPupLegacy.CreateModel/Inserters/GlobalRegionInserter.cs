@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class GlobalRegionInserterFactory : SingleIdInserterFactory<GlobalRegion>
+internal sealed class GlobalRegionInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableGlobalRegion>
 {
     protected override string TableName => "global_region";
 

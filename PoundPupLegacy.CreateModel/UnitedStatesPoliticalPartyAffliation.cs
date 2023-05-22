@@ -1,19 +1,20 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record UnitedStatesPoliticalPartyAffliation : Nameable
+public sealed record NewUnitedStatesPoliticalPartyAffliation : NewNameableBase, EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Description { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
     public required int? UnitedStatesPoliticalPartyId { get; init; }
-
+}
+public sealed record ExistingUnitedStatesPoliticalPartyAffliation : ExistingNameableBase, ImmediatelyIdentifiableUnitedStatesPoliticalPartyAffliation
+{
+    public required int? UnitedStatesPoliticalPartyId { get; init; }
+}
+public interface ImmediatelyIdentifiableUnitedStatesPoliticalPartyAffliation : UnitedStatesPoliticalPartyAffliation, ImmediatelyIdentifiableNameable
+{
+}
+public interface EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation : UnitedStatesPoliticalPartyAffliation, EventuallyIdentifiableNameable
+{
+}
+public interface UnitedStatesPoliticalPartyAffliation : Nameable
+{
+    int? UnitedStatesPoliticalPartyId { get; }
 }

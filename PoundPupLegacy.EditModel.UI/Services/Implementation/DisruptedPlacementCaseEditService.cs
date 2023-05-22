@@ -12,16 +12,16 @@ internal sealed class DisruptedPlacementCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.DisruptedPlacementCase> disruptedPlacementCaseCreator,
+    IEntityCreator<CreateModel.NewDisruptedPlacementCase> disruptedPlacementCaseCreator,
     ITextService textService
-) : NodeEditServiceBase<DisruptedPlacementCase, ExistingDisruptedPlacementCase, NewDisruptedPlacementCase, CreateModel.DisruptedPlacementCase>(
+) : NodeEditServiceBase<DisruptedPlacementCase, ExistingDisruptedPlacementCase, NewDisruptedPlacementCase, CreateModel.NewDisruptedPlacementCase>(
     connection,
     logger,
     tagSaveService,
     tenantNodesSaveService,
     filesSaveService,
     tenantRefreshService
-), IEditService<DisruptedPlacementCase>
+), IEditService<DisruptedPlacementCase, DisruptedPlacementCase>
 {
     public async Task<DisruptedPlacementCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -50,7 +50,7 @@ internal sealed class DisruptedPlacementCaseEditService(
     protected sealed override async Task<int> StoreNew(NewDisruptedPlacementCase disruptedPlacementCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.DisruptedPlacementCase {
+        var createDocument = new CreateModel.NewDisruptedPlacementCase {
             Id = null,
             Title = disruptedPlacementCase.Title,
             Description = disruptedPlacementCase.Description is null ? "" : textService.FormatText(disruptedPlacementCase.Description),

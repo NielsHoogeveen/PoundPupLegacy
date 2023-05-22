@@ -2,7 +2,7 @@
 
 internal sealed class CoercedAdoptionCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<CoercedAdoptionCase> coercedAdoptionCaseCreator
+    IEntityCreator<NewCoercedAdoptionCase> coercedAdoptionCaseCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "coerced adoption cases";
@@ -11,7 +11,7 @@ internal sealed class CoercedAdoptionCaseMigrator(
     {
         await coercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(), _postgresConnection);
     }
-    private async IAsyncEnumerable<CoercedAdoptionCase> ReadCoercedAdoptionCases()
+    private async IAsyncEnumerable<NewCoercedAdoptionCase> ReadCoercedAdoptionCases()
     {
 
         var sql = $"""
@@ -106,7 +106,7 @@ internal sealed class CoercedAdoptionCaseMigrator(
             };
 
 
-            var country = new CoercedAdoptionCase {
+            var country = new NewCoercedAdoptionCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

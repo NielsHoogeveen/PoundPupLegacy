@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NameableType;
+using Request = IdentifiableNameableType;
 
 internal sealed class NameableTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

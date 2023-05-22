@@ -12,16 +12,16 @@ internal sealed class WrongfulMedicationCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.WrongfulMedicationCase> wrongfulMedicationCaseCreator,
+    IEntityCreator<CreateModel.NewWrongfulMedicationCase> wrongfulMedicationCaseCreator,
     ITextService textService
-) : NodeEditServiceBase<WrongfulMedicationCase, ExistingWrongfulMedicationCase, NewWrongfulMedicationCase, CreateModel.WrongfulMedicationCase>(
+) : NodeEditServiceBase<WrongfulMedicationCase, ExistingWrongfulMedicationCase, NewWrongfulMedicationCase, CreateModel.NewWrongfulMedicationCase>(
     connection,
     logger,
     tagSaveService,
     tenantNodesSaveService,
     filesSaveService,
     tenantRefreshService
-), IEditService<WrongfulMedicationCase>
+), IEditService<WrongfulMedicationCase, WrongfulMedicationCase>
 {
     public async Task<WrongfulMedicationCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -50,7 +50,7 @@ internal sealed class WrongfulMedicationCaseEditService(
     protected sealed override async Task<int> StoreNew(NewWrongfulMedicationCase wrongfulMedicationCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.WrongfulMedicationCase {
+        var createDocument = new CreateModel.NewWrongfulMedicationCase {
             Id = null,
             Title = wrongfulMedicationCase.Title,
             Description = wrongfulMedicationCase.Description is null ? "" : textService.FormatText(wrongfulMedicationCase.Description),

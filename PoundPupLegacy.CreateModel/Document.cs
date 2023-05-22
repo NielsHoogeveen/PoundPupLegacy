@@ -1,20 +1,31 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record Document : SimpleTextNode
+public sealed record NewDocument : NewSimpleTextNodeBase, EventuallyIdentifiableDocument
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
     public required FuzzyDate? PublicationDate { get; init; }
     public required string? SourceUrl { get; init; }
-    public required string Text { get; init; }
-    public required string Teaser { get; init; }
     public required int? DocumentTypeId { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
     public required List<int> Documentables { get; init; }
+}
+public sealed record ExistingDocument : ExistingSimpleTextNodeBase, ImmediatelyIdentifiableDocument
+{
+    public required FuzzyDate? PublicationDate { get; init; }
+    public required string? SourceUrl { get; init; }
+    public required int? DocumentTypeId { get; init; }
+    public required List<int> Documentables { get; init; }
+}
+public interface ImmediatelyIdentifiableDocument : Document, ImmediatelyIdentifiableSimpleTextNode
+{
+
+}
+public interface EventuallyIdentifiableDocument : Document, EventuallyIdentifiableSimpleTextNode
+{
+
+}
+public interface Document : SimpleTextNode
+{
+    FuzzyDate? PublicationDate { get;  }
+    string? SourceUrl { get; }
+    int? DocumentTypeId { get; }
+    List<int> Documentables { get; }
 }

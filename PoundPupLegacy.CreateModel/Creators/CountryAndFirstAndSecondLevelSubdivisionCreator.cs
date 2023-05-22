@@ -15,7 +15,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator(
     IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<CountryAndFirstLevelSubdivision> countryAndFirstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<SecondLevelSubdivision> secondLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<CountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<NewCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<FirstAndSecondLevelSubdivision> firstAndSecondLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
@@ -23,10 +23,10 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<Vocabulary> vocabularyCreator
-) : EntityCreator<CountryAndFirstAndSecondLevelSubdivision>
+    IEntityCreator<NewVocabulary> vocabularyCreator
+) : EntityCreator<NewCountryAndFirstAndSecondLevelSubdivision>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision> countries, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> countries, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
@@ -53,7 +53,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator(
 
 
         await foreach (var country in countries) {
-            var vocabulary = new Vocabulary {
+            var vocabulary = new NewVocabulary {
                 Id = null,
                 Name = $"Subdivision names of {country.Name}",
                 PublisherId = 1,

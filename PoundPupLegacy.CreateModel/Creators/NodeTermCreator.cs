@@ -6,7 +6,7 @@ internal sealed class NodeTermCreator(
     IDatabaseInserterFactory<Locatable> locatableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Case> caseInserterFactory,
-    IDatabaseInserterFactory<AbuseCase> abuseCaseInserterFactory,
+    IDatabaseInserterFactory<NewAbuseCase> abuseCaseInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory

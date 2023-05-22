@@ -2,7 +2,7 @@
 
 internal sealed class DisruptedPlacementCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<DisruptedPlacementCase> disruptedPlacementCaseCreator
+    IEntityCreator<NewDisruptedPlacementCase> disruptedPlacementCaseCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "disrupted placement cases";
@@ -11,7 +11,7 @@ internal sealed class DisruptedPlacementCaseMigrator(
     {
         await disruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases(), _postgresConnection);
     }
-    private async IAsyncEnumerable<DisruptedPlacementCase> ReadDisruptedPlacementCases()
+    private async IAsyncEnumerable<NewDisruptedPlacementCase> ReadDisruptedPlacementCases()
     {
 
         var sql = $"""
@@ -52,7 +52,7 @@ internal sealed class DisruptedPlacementCaseMigrator(
                     ParentNames = new List<string>{ "disrupted adoption"},
                 }
             };
-            var country = new DisruptedPlacementCase {
+            var country = new NewDisruptedPlacementCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

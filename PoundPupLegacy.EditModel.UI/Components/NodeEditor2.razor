@@ -1,0 +1,181 @@
+﻿@inherits EditorBase
+@typeparam TRead where TRead: class, Node
+@typeparam TSave where TSave: class, TRead
+@inject IJSRuntime JSRuntime
+@inject IEditService<TRead, TSave> editService
+
+<div class="editor-form">
+    <h1>@Title</h1>
+    <EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <label for="title">Title</label>
+            <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" />
+            <ValidationMessage For="@(() => Model.Title)" />
+        </div>
+        @ChildContent
+        @if (Model is Nameable nameable) {
+            <NameableEditor Model="nameable" @ref="nameableEditor"/>
+        }
+        @if(Model is SimpleTextNode simpleTextNode){
+            <SimpleTextNodePropertiesEditor Model="simpleTextNode" @ref="simpleTextNodePropertiesEditor"/>
+        }
+        @if(Model is Document document) {
+            <DocumentEditor Model="document" @ref="documentEditor"/>
+        }
+        @if (Model is Organization organization) {
+            <OrganizationEditor Model="organization" @ref=organizationEditor/>
+        }
+        @if (Model is Person person) {
+            <PersonEditor Model="person" @ref=personEditor/>
+        }
+        @if (Model is AbuseCase abuseCase) {
+            <AbuseCaseEditor Model="abuseCase" @ref=abuseCaseEditor/>
+        }
+        @if (Model is ChildTraffickingCase childTraffickingCase) {
+            <ChildTraffickingCaseEditor Model="childTraffickingCase" @ref=childTraffickingCaseEditor/>
+        }
+        @if (Model is CoercedAdoptionCase coercedAdoptionCase) {
+            <CoercedAdoptionCaseEditor Model="coercedAdoptionCase" @ref=coercedAdoptionCaseEditor/>
+        }
+        @if (Model is DeportationCase deportationCase) {
+            <DeportationCaseEditor Model="deportationCase" @ref=deportationCaseEditor/>
+        }
+        @if (Model is DisruptedPlacementCase disruptedPlacementCase) {
+            <DisruptedPlacementCaseEditor Model="disruptedPlacementCase" @ref=disruptedPlacementCaseEditor/>
+        }
+        @if (Model is FathersRightsViolationCase fathersRightsViolationCase) {
+            <FathersRightsViolationCaseEditor Model="fathersRightsViolationCase" @ref=fathersRightsViolationCaseEditor/>
+        }
+        @if (Model is WrongfulMedicationCase wrongfulMedicationCase) {
+            <WrongfulMedicationCaseEditor Model="wrongfulMedicationCase" @ref=wrongfulMedicationCaseEditor/>
+        }
+        @if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
+            <WrongfulRemovalCaseEditor Model="wrongfulRemovalCase" @ref=wrongfulRemovalCaseEditor/>
+        }
+        <TagsEditor NodeTypesTags="Model.Tags" NodeId="NodeId" />
+        <TenantNodesEditor Node="@Model" />
+        <AttachmentEditor Files="Model.Files" NodeId="NodeId" />
+        @if (Model is Locatable locatable) {
+            <LocationsEditor Locatable="locatable" />
+        }
+        <button type="submit">Submit</button>
+    </EditForm>
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public TRead Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public Func<TRead, TSave> Map { get; set; } = default!;
+
+    private int? NodeId => Model switch
+    {
+        ExistingNode n => n.NodeId,
+        _ => null
+    };
+
+    private EditContext? editContext;
+    private ValidationMessageStore? validationMessageStore;
+
+    private NameableEditor? nameableEditor;
+
+    private SimpleTextNodePropertiesEditor? simpleTextNodePropertiesEditor;
+
+    private DocumentEditor? documentEditor;
+
+    private OrganizationEditor? organizationEditor;
+
+    private PersonEditor? personEditor;
+
+    private AbuseCaseEditor? abuseCaseEditor;
+
+    private ChildTraffickingCaseEditor? childTraffickingCaseEditor;
+
+    private CoercedAdoptionCaseEditor? coercedAdoptionCaseEditor;
+
+    private DeportationCaseEditor? deportationCaseEditor;
+
+    private DisruptedPlacementCaseEditor? disruptedPlacementCaseEditor;
+
+    private FathersRightsViolationCaseEditor? fathersRightsViolationCaseEditor;
+
+    private WrongfulMedicationCaseEditor? wrongfulMedicationCaseEditor;
+
+    private WrongfulRemovalCaseEditor? wrongfulRemovalCaseEditor;
+
+    private EditorBase?[] editors => new EditorBase?[]{
+        nameableEditor, 
+        simpleTextNodePropertiesEditor, 
+        documentEditor, 
+        organizationEditor, 
+        personEditor, 
+        abuseCaseEditor, 
+        childTraffickingCaseEditor, 
+        coercedAdoptionCaseEditor, 
+        deportationCaseEditor, 
+        disruptedPlacementCaseEditor, 
+        fathersRightsViolationCaseEditor, 
+        wrongfulMedicationCaseEditor, 
+        wrongfulRemovalCaseEditor 
+    };
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(Model);
+        validationMessageStore = new ValidationMessageStore(editContext);
+    }
+
+    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    {
+        await Task.CompletedTask;
+        if (Model.Title is null || Model.Title == string.Empty) {
+            validationMessageStore!.Add(editContext!.Field(nameof(Model.Title)), "Title is required.");
+            invalidIds.Add("title");
+        }
+
+    }
+    public void OnTitleChange(ChangeEventArgs args)
+    {
+        OnTitleChange(args.Value!.ToString()!);
+    }
+    public override void OnTitleChange(string title)
+    {
+        foreach(var editor in editors) {
+            editor?.OnTitleChange(title);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (Model is not null && validationMessageStore is not null && editContext is not null)
+        {
+            validationMessageStore.Clear();
+            var invalidIds = new List<string>();
+            await Validate(validationMessageStore, invalidIds);
+            foreach(var editor in editors) {
+                if(editor is not null) {
+                    await editor.Validate(validationMessageStore, invalidIds);
+                }
+            }
+            if (invalidIds.Any()) {
+                editContext.NotifyValidationStateChanged();
+                await JSRuntime.InvokeVoidAsync("scrollToFirstError", new object[] { "title" });
+                return;
+            }
+            var urlId = await editService.SaveAsync(Map(Model));
+            await JSRuntime.InvokeVoidAsync("reloadNode", urlId);
+        }
+    }
+}
+

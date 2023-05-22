@@ -6,15 +6,15 @@ internal sealed class SenateBillCreator(
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Documentable> documentableInserterFactory,
     IDatabaseInserterFactory<Bill> billInserterFactory,
-    IDatabaseInserterFactory<SenateBill> senateBillInserterFactory,
+    IDatabaseInserterFactory<NewSenateBill> senateBillInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory
-) : EntityCreator<SenateBill>
+) : EntityCreator<NewSenateBill>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<SenateBill> senateBills, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewSenateBill> senateBills, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

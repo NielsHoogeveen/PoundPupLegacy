@@ -21,10 +21,10 @@ internal sealed class CountryAndIntermediateLevelSubdivisionCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<Vocabulary> vocabularyCreator
-) : EntityCreator<CountryAndIntermediateLevelSubdivision>
+    IEntityCreator<NewVocabulary> vocabularyCreator
+) : EntityCreator<NewCountryAndIntermediateLevelSubdivision>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<CountryAndIntermediateLevelSubdivision> countries, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewCountryAndIntermediateLevelSubdivision> countries, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
@@ -49,7 +49,7 @@ internal sealed class CountryAndIntermediateLevelSubdivisionCreator(
 
 
         await foreach (var country in countries) {
-            var vocabulary = new Vocabulary {
+            var vocabulary = new NewVocabulary {
                 Id = null,
                 Name = $"Subdivision names of {country.Name}",
                 PublisherId = 1,

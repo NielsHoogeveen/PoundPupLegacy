@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Profession;
+using Request = NewProfession;
 
 internal sealed class ProfessionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

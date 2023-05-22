@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class WrongfulRemovalCaseInserterFactory : SingleIdInserterFactory<WrongfulRemovalCase>
+internal sealed class WrongfulRemovalCaseInserterFactory : SingleIdInserterFactory<NewWrongfulRemovalCase>
 {
     protected override string TableName => "wrongful_removal_case";
 

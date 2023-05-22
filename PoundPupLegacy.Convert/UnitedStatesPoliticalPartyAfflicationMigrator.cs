@@ -3,17 +3,17 @@
 internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        IEntityCreator<UnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreator
+        IEntityCreator<NewUnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states political party affilition";
 
-    private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations(
+    private async IAsyncEnumerable<NewUnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
 
-        yield return new UnitedStatesPoliticalPartyAffliation {
+        yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -63,7 +63,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             })
         };
 
-        yield return new UnitedStatesPoliticalPartyAffliation {
+        yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -112,7 +112,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 UrlId = Constants.REPUBLICAN_PARTY
             })
         };
-        yield return new UnitedStatesPoliticalPartyAffliation {
+        yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -158,7 +158,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 },
             UnitedStatesPoliticalPartyId = null
         };
-        yield return new UnitedStatesPoliticalPartyAffliation {
+        yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -207,7 +207,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 UrlId = Constants.POPULAR_DEMOCRAT_PARTY
             })
         };
-        yield return new UnitedStatesPoliticalPartyAffliation {
+        yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,

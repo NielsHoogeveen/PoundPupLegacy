@@ -15,10 +15,10 @@ internal sealed class BasicCountryCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<Vocabulary> vocabularyCreator
-) : EntityCreator<BasicCountry>
+    IEntityCreator<NewVocabulary> vocabularyCreator
+) : EntityCreator<NewBasicCountry>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<BasicCountry> countries, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewBasicCountry> countries, IDbConnection connection)
     {
 
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
@@ -37,7 +37,7 @@ internal sealed class BasicCountryCreator(
         await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
 
         await foreach (var country in countries) {
-            var vocabulary = new Vocabulary {
+            var vocabulary = new NewVocabulary {
                 Id = null,
                 Name = $"Subdivision names of {country.Name}",
                 PublisherId = 1,

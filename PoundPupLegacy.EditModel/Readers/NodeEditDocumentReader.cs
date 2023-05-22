@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
-public sealed record NodeUpdateDocumentRequest : IRequest
+public record NodeUpdateDocumentRequest : IRequest
 {
     public int UrlId { get; init; }
     public int UserId { get; init; }
     public int TenantId { get; init; }
 
 }
-public sealed record NodeCreateDocumentRequest : IRequest
+public record NodeCreateDocumentRequest : IRequest
 {
     public int NodeTypeId { get; init; }
     public int UserId { get; init; }

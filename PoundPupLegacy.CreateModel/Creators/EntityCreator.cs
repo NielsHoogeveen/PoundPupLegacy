@@ -14,7 +14,7 @@ internal abstract class EntityCreator<T> : IEntityCreator<T>
         await CreateAsync(new List<T> { element }.ToAsyncEnumerable(), connection);
     }
 
-    internal static async Task WriteTerms(Nameable nameable, IDatabaseInserter<Term> termWriter, IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, Term> termReader, IDatabaseInserter<TermHierarchy> termHierarchyWriter, IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader)
+    internal static async Task WriteTerms(EventuallyIdentifiableNameable nameable, IDatabaseInserter<Term> termWriter, IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, Term> termReader, IDatabaseInserter<TermHierarchy> termHierarchyWriter, IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader)
     {
         foreach (var vocabularyName in nameable.VocabularyNames) {
             var vocubularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {

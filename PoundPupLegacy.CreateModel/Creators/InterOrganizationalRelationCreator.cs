@@ -2,11 +2,11 @@
 
 internal sealed class InterOrganizationalRelationCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<InterOrganizationalRelation> interOrganizationalRelationInserterFactory,
+    IDatabaseInserterFactory<NewInterOrganizationalRelation> interOrganizationalRelationInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<InterOrganizationalRelation>
+) : EntityCreator<NewInterOrganizationalRelation>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<InterOrganizationalRelation> interOrganizationalRelations, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewInterOrganizationalRelation> interOrganizationalRelations, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var interOrganizationalRelationWriter = await interOrganizationalRelationInserterFactory.CreateAsync(connection);

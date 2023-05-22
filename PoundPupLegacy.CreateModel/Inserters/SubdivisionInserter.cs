@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Subdivision;
+using Request = EventuallyIdentifiableSubdivision;
 
 internal sealed class SubdivisionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class GeographicalEntityInserterFactory : SingleIdInserterFactory<GeographicalEntity>
+internal sealed class GeographicalEntityInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableGeographicalEntity>
 {
     protected override string TableName => "geographical_entity";
 

@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class UnitedStatesPoliticalPartyInserterFactory : SingleIdInserterFactory<UnitedStatesPoliticalParty>
+internal sealed class UnitedStatesPoliticalPartyInserterFactory : SingleIdInserterFactory<NewUnitedStatesPoliticalParty>
 {
     protected override string TableName => "united_states_political_party";
 

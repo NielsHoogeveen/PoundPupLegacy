@@ -4,7 +4,7 @@ internal sealed class PersonMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreator<Person> personCreator
+    IEntityCreator<NewPerson> personCreator
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -17,7 +17,7 @@ internal sealed class PersonMigratorCPCT(
     {
         await personCreator.CreateAsync(ReadPersons(), _postgresConnection);
     }
-    private async IAsyncEnumerable<Person> ReadPersons()
+    private async IAsyncEnumerable<NewPerson> ReadPersons()
     {
 
         var sql = $"""
@@ -91,7 +91,7 @@ internal sealed class PersonMigratorCPCT(
                 }
             };
 
-            yield return new Person {
+            yield return new NewPerson {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -137,7 +137,7 @@ internal sealed class PersonMigratorCPCT(
                 Bioguide = null,
                 Suffix = null,
                 ProfessionalRoles = new List<ProfessionalRole>(),
-                PersonOrganizationRelations = new List<PersonOrganizationRelation>()
+                PersonOrganizationRelations = new List<NewPersonOrganizationRelation>()
             };
 
         }

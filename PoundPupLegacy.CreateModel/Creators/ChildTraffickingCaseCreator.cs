@@ -7,15 +7,15 @@ internal sealed class ChildTraffickingCaseCreator(
     IDatabaseInserterFactory<Locatable> locatableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Case> caseInserterFactory,
-    IDatabaseInserterFactory<ChildTraffickingCase> childTraffickingCaseInserterFactory,
+    IDatabaseInserterFactory<NewChildTraffickingCase> childTraffickingCaseInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<ChildTraffickingCase>
+) : EntityCreator<NewChildTraffickingCase>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<ChildTraffickingCase> childTraffickingCases, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewChildTraffickingCase> childTraffickingCases, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

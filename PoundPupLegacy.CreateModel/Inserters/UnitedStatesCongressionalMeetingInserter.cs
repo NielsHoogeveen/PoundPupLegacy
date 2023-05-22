@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = UnitedStatesCongressionalMeeting;
+using Request = NewUnitedStatesCongressionalMeeting;
 
 internal sealed class UnitedStatesCongressionalMeetingInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

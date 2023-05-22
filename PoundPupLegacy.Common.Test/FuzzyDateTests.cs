@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace PoundPupLegacy.Common.Test;
+﻿namespace PoundPupLegacy.Common.Test;
 
 public class FuzzyDateTests
 {

@@ -3,8 +3,8 @@
 internal sealed class AdoptionImportMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, Node> nodeReaderFactory,
-    IEntityCreator<InterCountryRelation> interCountryRelationCreator
+    IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode> nodeReaderFactory,
+    IEntityCreator<NewInterCountryRelation> interCountryRelationCreator
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -109,11 +109,11 @@ internal sealed class AdoptionImportMigrator(
         await cmd.ExecuteNonQueryAsync();
     }
 
-    private async Task<InterCountryRelation> GetInterCountryRelation(
+    private async Task<NewInterCountryRelation> GetInterCountryRelation(
         int countryIdFrom,
         int countryIdTo,
         int year, int numberOfChildren,
-        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, Node> nodeReader,
+        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode> nodeReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -128,7 +128,7 @@ internal sealed class AdoptionImportMigrator(
 
         var title = $"Adoption exports from {nodeFrom.Title} to {nodeTo.Title} in {year}";
 
-        return new InterCountryRelation {
+        return new NewInterCountryRelation {
             //The relation is about imports so the relation from is the receiving party
             //and relation to is the sending party
             //even though the children go from the sending party to the receiving party
@@ -165,8 +165,8 @@ internal sealed class AdoptionImportMigrator(
                 },
         };
     }
-    private async IAsyncEnumerable<InterCountryRelation> ReadAdoptionExportYears(
-        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, Node> nodeReader,
+    private async IAsyncEnumerable<NewInterCountryRelation> ReadAdoptionExportYears(
+        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode> nodeReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 

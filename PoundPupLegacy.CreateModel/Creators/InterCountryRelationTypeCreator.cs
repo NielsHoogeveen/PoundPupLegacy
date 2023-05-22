@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class InterCountryRelationTypeCreator(
-    IDatabaseInserterFactory<InterCountryRelationType> interCountryRelationTypeInserterFactory,
+    IDatabaseInserterFactory<NewInterCountryRelationType> interCountryRelationTypeInserterFactory,
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
@@ -10,9 +10,9 @@ internal sealed class InterCountryRelationTypeCreator(
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<InterCountryRelationType>
+) : EntityCreator<NewInterCountryRelationType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<InterCountryRelationType> interCountryRelationTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewInterCountryRelationType> interCountryRelationTypes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

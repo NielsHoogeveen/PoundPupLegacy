@@ -12,16 +12,16 @@ internal sealed class DocumentEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.Document> documentCreator,
+    IEntityCreator<CreateModel.NewDocument> documentCreator,
     ITextService textService
-) : NodeEditServiceBase<Document, ExistingDocument, NewDocument, CreateModel.Document>(
+) : NodeEditServiceBase<Document, ExistingDocument, NewDocument, CreateModel.NewDocument>(
     connection,
     logger,
     tagSaveService,
     tenantNodesSaveService,
     filesSaveService,
     tenantRefreshService
-), IEditService<Document>
+), IEditService<Document, Document>
 {
     public async Task<Document?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -50,7 +50,7 @@ internal sealed class DocumentEditService(
     protected sealed override async Task<int> StoreNew(NewDocument document, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.Document {
+        var createDocument = new CreateModel.NewDocument {
             Id = null,
             Title = document.Title,
             Text = textService.FormatText(document.Text),

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Case;
+using Request = EventuallyIdentifiableCase;
 
 internal sealed class CaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

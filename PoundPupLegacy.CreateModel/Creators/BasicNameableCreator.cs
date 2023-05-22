@@ -4,15 +4,15 @@ internal sealed class BasicNameableCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<BasicNameable> basicNameableInserterFactory,
+    IDatabaseInserterFactory<NewBasicNameable> basicNameableInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<BasicNameable>
+) : EntityCreator<NewBasicNameable>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<BasicNameable> basicNameables, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewBasicNameable> basicNameables, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

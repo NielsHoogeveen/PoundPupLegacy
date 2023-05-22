@@ -26,7 +26,7 @@ internal sealed class OrganizationEditService(
         filesSaveService,
         textService,
         tenantRefreshService
-   ), IEditService<Organization>
+   ), IEditService<Organization, Organization>
 {
 
 
@@ -205,7 +205,7 @@ internal sealed class OrganizationEditService(
     protected sealed override async Task<int> StoreNew(NewOrganization organization, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var creationOrganization = new CreateModel.BasicOrganization {
+        var creationOrganization = new CreateModel.NewBasicOrganization {
             Id = null,
             Title = organization.Title,
             Description = organization.Description,

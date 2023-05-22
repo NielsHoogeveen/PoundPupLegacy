@@ -1,22 +1,23 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record DeportationCase : Case
+public sealed record NewDeportationCase : NewCaseBase, EventuallyIdentifiableDeportationCase
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Description { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
-    public required DateTimeRange? Date { get; init; }
     public required int? SubdivisionIdFrom { get; init; }
     public required int? CountryIdTo { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
-
-
+}
+public sealed record ExistingDeportationCase : ExistingCaseBase, ImmediatelyIdentifiableDeportationCase
+{
+    public required int? SubdivisionIdFrom { get; init; }
+    public required int? CountryIdTo { get; init; }
+}
+public interface ImmediatelyIdentifiableDeportationCase : ImmediatelyIdentifiableCase
+{
+}
+public interface EventuallyIdentifiableDeportationCase : EventuallyIdentifiableCase
+{
+}
+public interface DeportationCase: Case
+{
+    int? SubdivisionIdFrom { get; }
+    int? CountryIdTo { get; }
 }

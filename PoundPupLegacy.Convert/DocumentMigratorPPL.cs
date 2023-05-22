@@ -3,7 +3,7 @@
 internal sealed class DocumentMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<Document> documentCreator
+    IEntityCreator<NewDocument> documentCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents ppl";
@@ -14,7 +14,7 @@ internal sealed class DocumentMigratorPPL(
         await documentCreator.CreateAsync(ReadDocuments(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<Document> ReadDocuments(
+    private async IAsyncEnumerable<NewDocument> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -234,7 +234,7 @@ internal sealed class DocumentMigratorPPL(
         while (await reader.ReadAsync()) {
             var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") ? null : reader.GetString("publication_date"))?.ToFuzzyDate();
             var id = reader.GetInt32("id");
-            yield return new Document {
+            yield return new NewDocument {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

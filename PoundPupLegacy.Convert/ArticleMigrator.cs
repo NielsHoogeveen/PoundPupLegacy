@@ -2,7 +2,7 @@
 
 internal sealed class ArticleMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<Document> articleCreator
+    IEntityCreator<NewDocument> articleCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents (articles)";
@@ -11,7 +11,7 @@ internal sealed class ArticleMigrator(
     {
         await articleCreator.CreateAsync(ReadArticles(), _postgresConnection);
     }
-    private async IAsyncEnumerable<Document> ReadArticles()
+    private async IAsyncEnumerable<NewDocument> ReadArticles()
     {
 
         var sql = $"""
@@ -36,7 +36,7 @@ internal sealed class ArticleMigrator(
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            yield return new Document {
+            yield return new NewDocument {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record CaseParties : Identifiable
+public sealed record CaseParties : EventuallyIdentifiable
 {
     public required int? Id { get; set; }
 

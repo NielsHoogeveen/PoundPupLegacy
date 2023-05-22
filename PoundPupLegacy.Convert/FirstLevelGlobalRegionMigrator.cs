@@ -60,7 +60,7 @@ internal sealed class FirstLevelGlobalRegionMigrator(
                 }
             };
 
-            yield return new FirstLevelGlobalRegion {
+            yield return new NewFirstLevelGlobalRegion {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

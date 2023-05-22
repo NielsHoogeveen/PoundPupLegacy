@@ -2,7 +2,7 @@
 
 internal sealed class ReviewMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<BlogPost> blogPostCreator
+        IEntityCreator<NewBlogPost> blogPostCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "reviews";
@@ -11,7 +11,7 @@ internal sealed class ReviewMigrator(
     {
         await blogPostCreator.CreateAsync(ReadReviews(), _postgresConnection);
     }
-    private async IAsyncEnumerable<BlogPost> ReadReviews()
+    private async IAsyncEnumerable<NewBlogPost> ReadReviews()
     {
 
         var sql = $"""
@@ -38,7 +38,7 @@ internal sealed class ReviewMigrator(
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            yield return new BlogPost {
+            yield return new NewBlogPost {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

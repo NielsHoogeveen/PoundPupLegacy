@@ -1,22 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record MultiQuestionPoll : SimpleTextNode, Poll
+public sealed record NewMultiQuestionPoll : NewSimpleTextNodeBase, EventuallyIdentifiableMultiQuestionPoll
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Text { get; set; }
-    public required string Teaser { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
-
     public required int PollStatusId { get; init; }
     public required DateTime DateTimeClosure { get; init; }
+    public required List<NewBasicPollQuestion> PollQuestions { get; init; }
 
-    public required List<BasicPollQuestion> PollQuestions { get; init; }
+}
+public sealed record ExistingMultiQuestionPoll : ExistingSimpleTextNodeBase, ImmediatelyIdentifiableMultiQuestionPoll
+{
+    public required int PollStatusId { get; init; }
+    public required DateTime DateTimeClosure { get; init; }
+    public required List<NewBasicPollQuestion> PollQuestions { get; init; }
 
+}
+public interface ImmediatelyIdentifiableMultiQuestionPoll : MultiQuestionPoll, ImmediatelyIdentifiablePoll
+{
+}
+public interface EventuallyIdentifiableMultiQuestionPoll : MultiQuestionPoll, EventuallyIdentifiablePoll
+{
+}
+public interface MultiQuestionPoll : Poll
+{
+    List<NewBasicPollQuestion> PollQuestions { get;  }
 }

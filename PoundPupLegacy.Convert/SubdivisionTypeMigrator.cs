@@ -2,12 +2,12 @@
 
 internal sealed class SubdivisionTypeMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<SubdivisionType> subdivisionTypeCreator
+    IEntityCreator<NewSubdivisionType> subdivisionTypeCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "subdivision types";
 
-    private static async IAsyncEnumerable<SubdivisionType> GetSubdivisionTypes()
+    private static async IAsyncEnumerable<NewSubdivisionType> GetSubdivisionTypes()
     {
         await Task.CompletedTask;
 
@@ -95,7 +95,7 @@ internal sealed class SubdivisionTypeMigrator(
         };
 
         foreach (var name in names) {
-            yield return new SubdivisionType {
+            yield return new NewSubdivisionType {
                 Id = null,
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class FamilySizeCreator(IDatabaseInserterFactory<FamilySize> familySizeInserterFactory,
+internal sealed class FamilySizeCreator(IDatabaseInserterFactory<NewFamilySize> familySizeInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Node> nodeInserterFactory,
@@ -9,9 +9,9 @@ internal sealed class FamilySizeCreator(IDatabaseInserterFactory<FamilySize> fam
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<FamilySize>
+) : EntityCreator<NewFamilySize>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<FamilySize> familySizes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewFamilySize> familySizes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

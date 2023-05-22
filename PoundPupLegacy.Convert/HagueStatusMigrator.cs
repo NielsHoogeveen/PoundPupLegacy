@@ -2,7 +2,7 @@
 
 internal sealed class HagueStatusMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<HagueStatus> hagueStatusCreator
+    IEntityCreator<NewHagueStatus> hagueStatusCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "Hague statuses";
@@ -12,7 +12,7 @@ internal sealed class HagueStatusMigrator(
         await hagueStatusCreator.CreateAsync(ReadHagueStatuses(), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<HagueStatus> ReadHagueStatuses()
+    private async IAsyncEnumerable<NewHagueStatus> ReadHagueStatuses()
     {
 
         var sql = $"""
@@ -51,7 +51,7 @@ internal sealed class HagueStatusMigrator(
                     }
                 };
 
-            yield return new HagueStatus {
+            yield return new NewHagueStatus {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

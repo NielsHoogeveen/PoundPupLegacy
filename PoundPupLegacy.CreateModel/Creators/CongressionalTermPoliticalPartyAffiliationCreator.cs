@@ -4,12 +4,12 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory, 
     IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
     IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
-    IDatabaseInserterFactory<CongressionalTermPoliticalPartyAffiliation> 
+    IDatabaseInserterFactory<NewCongressionalTermPoliticalPartyAffiliation> 
     congressionalTermPoliticalPartyAffiliationInserterFactory, 
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<CongressionalTermPoliticalPartyAffiliation>
+) : EntityCreator<NewCongressionalTermPoliticalPartyAffiliation>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<CongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliations, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliations, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

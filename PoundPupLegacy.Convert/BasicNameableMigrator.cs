@@ -2,7 +2,7 @@
 
 internal sealed class BasicNameableMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<BasicNameable> basicNameableCreator
+        IEntityCreator<NewBasicNameable> basicNameableCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic nameables";
@@ -11,7 +11,7 @@ internal sealed class BasicNameableMigrator(
     {
         await basicNameableCreator.CreateAsync(ReadBasicNameables(), _postgresConnection);
     }
-    private async IAsyncEnumerable<BasicNameable> ReadBasicNameables()
+    private async IAsyncEnumerable<NewBasicNameable> ReadBasicNameables()
     {
 
         var sql = $"""
@@ -87,7 +87,7 @@ internal sealed class BasicNameableMigrator(
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        yield return new BasicNameable {
+        yield return new NewBasicNameable {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -140,7 +140,7 @@ internal sealed class BasicNameableMigrator(
                     }
                 };
 
-            yield return new BasicNameable {
+            yield return new NewBasicNameable {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),
@@ -170,7 +170,7 @@ internal sealed class BasicNameableMigrator(
         }
         await reader.CloseAsync();
 
-        yield return new BasicNameable {
+        yield return new NewBasicNameable {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -205,7 +205,7 @@ internal sealed class BasicNameableMigrator(
                 }
             },
         };
-        yield return new BasicNameable {
+        yield return new NewBasicNameable {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -240,7 +240,7 @@ internal sealed class BasicNameableMigrator(
                 }
             },
         };
-        yield return new BasicNameable {
+        yield return new NewBasicNameable {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,

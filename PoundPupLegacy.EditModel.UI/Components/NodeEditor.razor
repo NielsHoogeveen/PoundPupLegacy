@@ -1,7 +1,8 @@
 ﻿@inherits EditorBase
-@typeparam T where T: class, Node
+@typeparam TRead where TRead: class, Node
+@typeparam TSave where TSave: class, TRead
 @inject IJSRuntime JSRuntime
-@inject IEditService<T> editService
+@inject IEditService<TRead, TSave> editService
 
 <div class="editor-form">
     <h1>@Title</h1>
@@ -16,7 +17,7 @@
             <NameableEditor Model="nameable" @ref="nameableEditor"/>
         }
         @if(Model is SimpleTextNode simpleTextNode){
-            <SimpleTextNodeEditor Model="simpleTextNode" @ref="simpleTextNodeEditor"/>
+            <SimpleTextNodePropertiesEditor Model="simpleTextNode" @ref="simpleTextNodePropertiesEditor"/>
         }
         @if(Model is Document document) {
             <DocumentEditor Model="document" @ref="documentEditor"/>
@@ -63,11 +64,12 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public T Model { get; set; } = default!;
+    public TRead Model { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public string Title { get; set; } = default!;
+
 
     private int? NodeId => Model switch
     {
@@ -80,7 +82,7 @@
 
     private NameableEditor? nameableEditor;
 
-    private SimpleTextNodeEditor? simpleTextNodeEditor;
+    private SimpleTextNodePropertiesEditor? simpleTextNodePropertiesEditor;
 
     private DocumentEditor? documentEditor;
 
@@ -106,7 +108,7 @@
 
     private EditorBase?[] editors => new EditorBase?[]{
         nameableEditor, 
-        simpleTextNodeEditor, 
+        simpleTextNodePropertiesEditor, 
         documentEditor, 
         organizationEditor, 
         personEditor, 
@@ -163,8 +165,8 @@
                 await JSRuntime.InvokeVoidAsync("scrollToFirstError", new object[] { "title" });
                 return;
             }
-            var urlId = await editService.SaveAsync(Model);
-            await JSRuntime.InvokeVoidAsync("reloadNode", urlId);
+            //var urlId = await editService.SaveAsync(Resolve(Model));
+            //await JSRuntime.InvokeVoidAsync("reloadNode", urlId);
         }
     }
 }

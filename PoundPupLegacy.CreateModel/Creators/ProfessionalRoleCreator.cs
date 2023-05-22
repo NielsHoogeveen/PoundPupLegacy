@@ -4,9 +4,9 @@ internal sealed class ProfessionalRoleCreator(
     IDatabaseInserterFactory<ProfessionalRole> professionalRoleInserterFactory,
     IDatabaseInserterFactory<MemberOfCongress> memberOfCongressInserterFactory,
     IDatabaseInserterFactory<Representative> representativeInserterFactory,
-    IDatabaseInserterFactory<Senator> senatorInserterFactory,
-    IEntityCreator<SenateTerm> senateTermCreator,
-    IEntityCreator<HouseTerm> houseTermCreator
+    IDatabaseInserterFactory<NewSenator> senatorInserterFactory,
+    IEntityCreator<NewSenateTerm> senateTermCreator,
+    IEntityCreator<NewHouseTerm> houseTermCreator
 ) : EntityCreator<ProfessionalRole>
 {
     public override async Task CreateAsync(IAsyncEnumerable<ProfessionalRole> professionalRoles, IDbConnection connection)
@@ -26,7 +26,7 @@ internal sealed class ProfessionalRoleCreator(
                 }
                 await houseTermCreator.CreateAsync(representative.HouseTerms.ToAsyncEnumerable(), connection);
             }
-            if (professionalRole is Senator senator) {
+            if (professionalRole is NewSenator senator) {
                 await memberOfCongressWriter.InsertAsync(senator);
                 await senatorWriter.InsertAsync(senator);
                 foreach (var term in senator.SenateTerms) {

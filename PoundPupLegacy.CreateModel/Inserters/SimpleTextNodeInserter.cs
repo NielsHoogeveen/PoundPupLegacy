@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = SimpleTextNode;
+using Request = EventuallyIdentifiableSimpleTextNode;
 
 internal sealed class SimpleTextNodeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

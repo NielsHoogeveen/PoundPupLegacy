@@ -2,7 +2,7 @@
 
 internal sealed class WrongfulMedicationCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<WrongfulMedicationCase> wrongfulMedicationCaseCreator
+    IEntityCreator<NewWrongfulMedicationCase> wrongfulMedicationCaseCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "wrongful medication cases";
@@ -11,7 +11,7 @@ internal sealed class WrongfulMedicationCaseMigrator(
     {
         await wrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases(), _postgresConnection);
     }
-    private async IAsyncEnumerable<WrongfulMedicationCase> ReadWrongfulMedicationCases()
+    private async IAsyncEnumerable<NewWrongfulMedicationCase> ReadWrongfulMedicationCases()
     {
 
         var sql = $"""
@@ -50,7 +50,7 @@ internal sealed class WrongfulMedicationCaseMigrator(
                 }
             };
 
-            var country = new WrongfulMedicationCase {
+            var country = new NewWrongfulMedicationCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

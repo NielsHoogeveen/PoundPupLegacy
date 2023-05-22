@@ -3,7 +3,7 @@
 internal sealed class DeportationCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<DeportationCase> deportationCaseCreator
+    IEntityCreator<NewDeportationCase> deportationCaseCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "deportation cases";
@@ -13,7 +13,7 @@ internal sealed class DeportationCaseMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<DeportationCase> ReadDeportationCases(
+    private async IAsyncEnumerable<NewDeportationCase> ReadDeportationCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -71,7 +71,7 @@ internal sealed class DeportationCaseMigrator(
                     ParentNames = new List<string>{ "adoptee deportation"},
                 }
             };
-            var country = new DeportationCase {
+            var country = new NewDeportationCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

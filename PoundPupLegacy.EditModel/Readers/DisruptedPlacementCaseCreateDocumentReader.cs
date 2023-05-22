@@ -7,7 +7,8 @@ internal sealed class DisruptedPlacementCaseCreateDocumentReaderFactory : NodeCr
     protected override int NodeTypeId => Constants.DISRUPTED_PLACEMENT_CASE;
 
     private const string SQL = $"""
-            {CTE_CREATE}
+            {CTE_CREATE},
+            {SharedSql.CASE_TYPE_CASE_PARTY_TYPE_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeId', 
@@ -32,7 +33,9 @@ internal sealed class DisruptedPlacementCaseCreateDocumentReaderFactory : NodeCr
                     'Files',
                     null,
                     'Tags',
-                    (select document from tags_document)
+                    (select document from tags_document),
+                    'CasePartyTypesCaseParties',
+                    (select document from case_type_case_party_type_document)
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id

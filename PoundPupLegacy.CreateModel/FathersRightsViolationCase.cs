@@ -1,20 +1,19 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record FathersRightsViolationCase : Case
+public sealed record NewFathersRightsViolationCase : NewCaseBase, EventuallyIdentifiableFathersRightsViolationCase
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Description { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
-    public required DateTimeRange? Date { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
+}
+public sealed record ExistingFathersRightsViolationCase : ExistingCaseBase, ImmediatelyIdentifiableFathersRightsViolationCase
+{
+}
+public interface ImmediatelyIdentifiableFathersRightsViolationCase : FathersRightsViolationCase, ImmediatelyIdentifiableCase
+{
+}
 
+public interface EventuallyIdentifiableFathersRightsViolationCase : FathersRightsViolationCase, EventuallyIdentifiableCase
+{
+}
 
+public interface FathersRightsViolationCase : Case
+{
 }

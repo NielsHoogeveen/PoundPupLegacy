@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class DisruptedPlacementCaseCreator(
-    IDatabaseInserterFactory<DisruptedPlacementCase> disruptedPlacementCaseInserterFactory,
+    IDatabaseInserterFactory<NewDisruptedPlacementCase> disruptedPlacementCaseInserterFactory,
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Documentable> documentableInserterFactory,
@@ -13,10 +13,10 @@ internal sealed class DisruptedPlacementCaseCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<DisruptedPlacementCase>
+) : EntityCreator<NewDisruptedPlacementCase>
 {
 
-    public override async Task CreateAsync(IAsyncEnumerable<DisruptedPlacementCase> disruptedPlacementCases, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewDisruptedPlacementCase> disruptedPlacementCases, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

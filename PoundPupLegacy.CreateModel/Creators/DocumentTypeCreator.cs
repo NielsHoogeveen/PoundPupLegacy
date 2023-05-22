@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class DocumentTypeCreator(
-    IDatabaseInserterFactory<DocumentType> documentTypeInserterFactory,
+    IDatabaseInserterFactory<NewDocumentType> documentTypeInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
@@ -10,10 +10,10 @@ internal sealed class DocumentTypeCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory
-) : EntityCreator<DocumentType>
+) : EntityCreator<NewDocumentType>
 {
 
-    public override async Task CreateAsync(IAsyncEnumerable<DocumentType> documentTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewDocumentType> documentTypes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

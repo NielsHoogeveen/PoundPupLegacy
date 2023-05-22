@@ -40,7 +40,7 @@ internal sealed class PageMigrator(
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            yield return new Page {
+            yield return new NewPage {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

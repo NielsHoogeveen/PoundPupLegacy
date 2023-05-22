@@ -2,7 +2,7 @@
 
 internal sealed class FathersRightsViolationsCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<FathersRightsViolationCase> fathersRightsViolationCaseCreator
+    IEntityCreator<NewFathersRightsViolationCase> fathersRightsViolationCaseCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "father's rights violation cases";
@@ -11,7 +11,7 @@ internal sealed class FathersRightsViolationsCaseMigrator(
     {
         await fathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases(), _postgresConnection);
     }
-    private async IAsyncEnumerable<FathersRightsViolationCase> ReadFathersRightsViolationCases()
+    private async IAsyncEnumerable<NewFathersRightsViolationCase> ReadFathersRightsViolationCases()
     {
 
         var sql = $"""
@@ -50,7 +50,7 @@ internal sealed class FathersRightsViolationsCaseMigrator(
                 }
             };
 
-            var country = new FathersRightsViolationCase {
+            var country = new NewFathersRightsViolationCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

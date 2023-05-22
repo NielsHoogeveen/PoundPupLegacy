@@ -13,9 +13,9 @@ internal sealed class FirstLevelGlobalRegionCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<FirstLevelGlobalRegion>
+) : EntityCreator<NewFirstLevelGlobalRegion>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<FirstLevelGlobalRegion> nodes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewFirstLevelGlobalRegion> nodes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

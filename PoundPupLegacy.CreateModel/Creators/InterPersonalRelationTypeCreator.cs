@@ -4,15 +4,15 @@ internal sealed class InterPersonalRelationTypeCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<InterPersonalRelationType> interPersonalRelationTypeInserterFactory,
+    IDatabaseInserterFactory<NewInterPersonalRelationType> interPersonalRelationTypeInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<InterPersonalRelationType>
+) : EntityCreator<NewInterPersonalRelationType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<InterPersonalRelationType> interPersonalRelationTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewInterPersonalRelationType> interPersonalRelationTypes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

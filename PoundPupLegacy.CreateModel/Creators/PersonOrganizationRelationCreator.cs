@@ -2,11 +2,11 @@
 
 internal sealed class PersonOrganizationRelationCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<PersonOrganizationRelation> personOrganizationRelationInserterFactory,
+    IDatabaseInserterFactory<NewPersonOrganizationRelation> personOrganizationRelationInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<PersonOrganizationRelation>
+) : EntityCreator<NewPersonOrganizationRelation>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<PersonOrganizationRelation> personOrganizationRelations, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewPersonOrganizationRelation> personOrganizationRelations, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var personOrganizationRelationWriter = await personOrganizationRelationInserterFactory.CreateAsync(connection);

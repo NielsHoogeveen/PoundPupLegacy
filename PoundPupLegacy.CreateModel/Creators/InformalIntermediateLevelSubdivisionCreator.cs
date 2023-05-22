@@ -9,15 +9,15 @@ internal sealed class InformalIntermediateLevelSubdivisionCreator(
     IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory,
     IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<IntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<InformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<NewInformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<InformalIntermediateLevelSubdivision>
+) : EntityCreator<NewInformalIntermediateLevelSubdivision>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<InformalIntermediateLevelSubdivision> subdivisions, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewInformalIntermediateLevelSubdivision> subdivisions, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

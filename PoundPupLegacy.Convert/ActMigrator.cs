@@ -2,7 +2,7 @@
 
 internal sealed class ActMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<Act> actCreator
+    IEntityCreator<NewAct> actCreator
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -21,7 +21,7 @@ internal sealed class ActMigrator(
             _ => null
         };
     }
-    private async IAsyncEnumerable<Act> ReadArticles()
+    private async IAsyncEnumerable<NewAct> ReadArticles()
     {
 
         var sql = $"""
@@ -133,7 +133,7 @@ internal sealed class ActMigrator(
             }
 
 
-            yield return new Act {
+            yield return new NewAct {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

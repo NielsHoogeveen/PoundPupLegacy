@@ -12,16 +12,16 @@ internal sealed class DeportationCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.DeportationCase> deportationCaseCreator,
+    IEntityCreator<CreateModel.NewDeportationCase> deportationCaseCreator,
     ITextService textService
-) : NodeEditServiceBase<DeportationCase, ExistingDeportationCase, NewDeportationCase, CreateModel.DeportationCase>(
+) : NodeEditServiceBase<DeportationCase, ExistingDeportationCase, NewDeportationCase, CreateModel.NewDeportationCase>(
     connection,
     logger,
     tagSaveService,
     tenantNodesSaveService,
     filesSaveService,
     tenantRefreshService
-), IEditService<DeportationCase>
+), IEditService<DeportationCase, DeportationCase>
 {
     public async Task<DeportationCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -50,7 +50,7 @@ internal sealed class DeportationCaseEditService(
     protected sealed override async Task<int> StoreNew(NewDeportationCase deportationCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.DeportationCase {
+        var createDocument = new CreateModel.NewDeportationCase {
             Id = null,
             Title = deportationCase.Title,
             Description = deportationCase.Description is null ? "" : textService.FormatText(deportationCase.Description),
@@ -79,8 +79,8 @@ internal sealed class DeportationCaseEditService(
                     ParentNames = new List<string>(),
                 }
             },
-            SubdivisionIdFrom = deportationCase.SubdivisionIdFrom,
-            CountryIdTo = deportationCase.CountryIdTo
+            SubdivisionIdFrom = deportationCase.SubdivisionFrom?.Id,
+            CountryIdTo = deportationCase.CountryTo?.Id
         };
         await deportationCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;
@@ -94,8 +94,8 @@ internal sealed class DeportationCaseEditService(
             Description = deportationCase.Description is null ? "" : textService.FormatText(deportationCase.Description),
             NodeId = deportationCase.NodeId,
             Date = deportationCase.Date,
-            SubdivisionIdFrom = deportationCase.SubdivisionIdFrom,
-            CountryIdTo = deportationCase.CountryIdTo
+            SubdivisionIdFrom = deportationCase.SubdivisionFrom?.Id,
+            CountryIdTo = deportationCase.CountryTo?.Id
         });
     }
 }

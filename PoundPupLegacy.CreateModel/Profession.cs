@@ -1,19 +1,20 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record Profession : Nameable
+public sealed record NewProfession : NewNameableBase, EventuallyIdentifiableProfession
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Description { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
     public required bool HasConcreteSubtype { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
-
+}
+public sealed record ExistingProfession : ExistingNameableBase, ImmediatelyIdentifiableProfession
+{
+    public required bool HasConcreteSubtype { get; init; }
+}
+public interface ImmediatelyIdentifiableProfession : Profession, ImmediatelyIdentifiableNameable
+{
+}
+public interface EventuallyIdentifiableProfession : Profession, EventuallyIdentifiableNameable
+{
+}
+public interface Profession : Nameable
+{
+    bool HasConcreteSubtype { get; }
 }

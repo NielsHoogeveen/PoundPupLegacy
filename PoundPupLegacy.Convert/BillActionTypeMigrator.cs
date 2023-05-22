@@ -3,7 +3,7 @@
 internal sealed class BillActionTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<BillActionType> billActionTypeCreator
+        IEntityCreator<NewBillActionType> billActionTypeCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation types";
@@ -12,7 +12,7 @@ internal sealed class BillActionTypeMigrator(
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await billActionTypeCreator.CreateAsync(ReadBillActionTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<BillActionType> ReadBillActionTypes(
+    private async IAsyncEnumerable<NewBillActionType> ReadBillActionTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
 
@@ -56,7 +56,7 @@ internal sealed class BillActionTypeMigrator(
                 }
             };
 
-            yield return new BillActionType {
+            yield return new NewBillActionType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

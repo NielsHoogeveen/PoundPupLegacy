@@ -22,7 +22,7 @@ internal sealed class OrganizationMigratorCPCT(
         await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<BasicOrganization> ReadOrganizations(
+    private async IAsyncEnumerable<NewBasicOrganization> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
     )
@@ -255,7 +255,7 @@ internal sealed class OrganizationMigratorCPCT(
                 });
             }
 
-            yield return new BasicOrganization {
+            yield return new NewBasicOrganization {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

@@ -3,7 +3,7 @@
 internal sealed class PersonOrganizationRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    IEntityCreator<PersonOrganizationRelation> personOrganizationRelationCreator
+    IEntityCreator<NewPersonOrganizationRelation> personOrganizationRelationCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation (ppl)";
@@ -14,7 +14,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL(
         await personOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelationsPPL(nodeIdReader), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<PersonOrganizationRelation> ReadPersonOrganizationRelationsPPL(
+    private async IAsyncEnumerable<NewPersonOrganizationRelation> ReadPersonOrganizationRelationsPPL(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -123,7 +123,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL(
                 TenantId = Constants.PPL,
             });
 
-            yield return new PersonOrganizationRelation {
+            yield return new NewPersonOrganizationRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

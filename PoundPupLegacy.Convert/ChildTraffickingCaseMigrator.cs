@@ -3,7 +3,7 @@
 internal sealed class ChildTraffickingCaseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<ChildTraffickingCase> childTraffickingCaseCreator
+        IEntityCreator<NewChildTraffickingCase> childTraffickingCaseCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child trafficking cases";
@@ -13,7 +13,7 @@ internal sealed class ChildTraffickingCaseMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<ChildTraffickingCase> ReadChildTraffickingCases(
+    private async IAsyncEnumerable<NewChildTraffickingCase> ReadChildTraffickingCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -58,7 +58,7 @@ internal sealed class ChildTraffickingCaseMigrator(
                 }
             };
 
-            var country = new ChildTraffickingCase {
+            var country = new NewChildTraffickingCase {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created"),

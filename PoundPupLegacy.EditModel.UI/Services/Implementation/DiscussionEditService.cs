@@ -13,8 +13,8 @@ internal sealed class DiscussionEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITextService textService,
-    IEntityCreator<CreateModel.Discussion> discussionCreator
-) : SimpleTextNodeEditServiceBase<Discussion, ExistingDiscussion, NewDiscussion, CreateModel.Discussion>(
+    IEntityCreator<CreateModel.NewDiscussion> discussionCreator
+) : SimpleTextNodeEditServiceBase<Discussion, ExistingDiscussion, NewDiscussion, CreateModel.NewDiscussion>(
     connection, 
     logger, 
     tenantRefreshService, 
@@ -23,10 +23,10 @@ internal sealed class DiscussionEditService(
     tenantNodesSaveService, 
     filesSaveService, 
     textService
-), IEditService<Discussion>
+), IEditService<Discussion, Discussion>
 {
 
-    protected sealed override IEntityCreator<CreateModel.Discussion> EntityCreator => discussionCreator;
+    protected sealed override IEntityCreator<CreateModel.NewDiscussion> EntityCreator => discussionCreator;
 
     public async Task<Discussion?> GetViewModelAsync(int userId, int tenantId)
     {
@@ -51,10 +51,10 @@ internal sealed class DiscussionEditService(
         });
     }
 
-    protected sealed override CreateModel.Discussion Map(NewDiscussion item)
+    protected sealed override CreateModel.NewDiscussion Map(NewDiscussion item)
     {
         var now = DateTime.Now;
-        return new CreateModel.Discussion {
+        return new CreateModel.NewDiscussion {
             Id = null,
             Title = item.Title,
             Text = textService.FormatText(item.Text),

@@ -3,7 +3,7 @@
 internal sealed class PartyPoliticalEntityRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<PartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreator
+    IEntityCreator<NewPartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "political entity relation types";
@@ -13,7 +13,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await partyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<PartyPoliticalEntityRelationType> ReadPoliticalEntityRelationTypes(
+    private async IAsyncEnumerable<NewPartyPoliticalEntityRelationType> ReadPoliticalEntityRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
     {
@@ -61,7 +61,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
                 }
             };
 
-            yield return new PartyPoliticalEntityRelationType {
+            yield return new NewPartyPoliticalEntityRelationType {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

@@ -4,7 +4,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> professionIdReaderFactory,
-        IEntityCreator<RepresentativeHouseBillAction> representativeHouseBillActionCreator
+        IEntityCreator<NewRepresentativeHouseBillAction> representativeHouseBillActionCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "representative house bill action";
@@ -18,7 +18,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
 
     }
 
-    private async IAsyncEnumerable<RepresentativeHouseBillAction> ReadRepresentativeHouseBillActionsPPL(
+    private async IAsyncEnumerable<NewRepresentativeHouseBillAction> ReadRepresentativeHouseBillActionsPPL(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<ProfessionIdReaderRequest, int> professionIdReader
     )
@@ -73,7 +73,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
                 UrlId = reader.GetInt32("nameable_id")
             });
 
-            yield return new RepresentativeHouseBillAction {
+            yield return new NewRepresentativeHouseBillAction {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

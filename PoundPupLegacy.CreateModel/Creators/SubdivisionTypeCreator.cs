@@ -4,15 +4,15 @@ internal sealed class SubdivisionTypeCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<SubdivisionType> subdivisionTypeInserterFactory,
+    IDatabaseInserterFactory<NewSubdivisionType> subdivisionTypeInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<SubdivisionType>
+) : EntityCreator<NewSubdivisionType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<SubdivisionType> subdivisionTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewSubdivisionType> subdivisionTypes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

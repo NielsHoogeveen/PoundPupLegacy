@@ -7,15 +7,15 @@ internal sealed class CoercedAdoptionCaseCreator(
     IDatabaseInserterFactory<Locatable> locatableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Case> caseInserterFactory,
-    IDatabaseInserterFactory<CoercedAdoptionCase> coercedAdoptionCaseInserterFactory,
+    IDatabaseInserterFactory<NewCoercedAdoptionCase> coercedAdoptionCaseInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<CoercedAdoptionCase>
+) : EntityCreator<NewCoercedAdoptionCase>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<CoercedAdoptionCase> coercedAdoptionCases, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewCoercedAdoptionCase> coercedAdoptionCases, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

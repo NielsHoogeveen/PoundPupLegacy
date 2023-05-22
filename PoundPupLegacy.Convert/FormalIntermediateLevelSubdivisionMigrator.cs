@@ -6,12 +6,12 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<FormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionCreator
+        IEntityCreator<NewFormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "formal intermediate level subdivisions";
 
-    private async IAsyncEnumerable<FormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(
+    private async IAsyncEnumerable<NewFormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
@@ -38,7 +38,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                 VocabularyName = Constants.VOCABULARY_TOPICS,
                 NameableId = countryId
             }))!.Name;
-            yield return new FormalIntermediateLevelSubdivision {
+            yield return new NewFormalIntermediateLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),

@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class HouseBillCreator(
-    IDatabaseInserterFactory<HouseBill> houseBillInserterFactory,
+    IDatabaseInserterFactory<NewHouseBill> houseBillInserterFactory,
     IDatabaseInserterFactory<Bill> billInserterFactory,
     IDatabaseInserterFactory<Documentable> documentableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
@@ -12,9 +12,9 @@ internal sealed class HouseBillCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<HouseBill>
+) : EntityCreator<NewHouseBill>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<HouseBill> houseBills, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewHouseBill> houseBills, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

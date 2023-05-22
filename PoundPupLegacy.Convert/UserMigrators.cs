@@ -258,7 +258,7 @@ internal sealed class UserMigrator(
         await tenantCreator.CreateAsync(GetTenants(), _postgresConnection);
         await userCreator.CreateAsync(ReadUsers(), _postgresConnection);
         await systemGroupCreator.CreateAsync(new SystemGroup {
-            VocabularyTagging = new Vocabulary {
+            VocabularyTagging = new NewVocabulary {
                 Id = null,
                 Name = Constants.VOCABULARY_TOPICS,
                 PublisherId = 1,

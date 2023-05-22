@@ -8,8 +8,8 @@ public partial class NewDeportationCaseJsonContext : JsonSerializerContext { }
 
 public interface DeportationCase : Case
 {
-    int? SubdivisionIdFrom { get; set; }
-    int? CountryIdTo { get; set; }
+    SubdivisionListItem? SubdivisionFrom { get; set; }
+    CountryListItem? CountryTo { get; set; }
 
 }
 public sealed record ExistingDeportationCase : DeportationCaseBase, ExistingNode
@@ -23,8 +23,8 @@ public sealed record NewDeportationCase : DeportationCaseBase, NewNode
 }
 public abstract record DeportationCaseBase : CaseBase, DeportationCase
 {
-    public int? SubdivisionIdFrom { get; set; }
-    public int? CountryIdTo { get; set; }
+    public SubdivisionListItem? SubdivisionFrom { get; set; }
+    public CountryListItem? CountryTo { get; set; }
 
 }
 

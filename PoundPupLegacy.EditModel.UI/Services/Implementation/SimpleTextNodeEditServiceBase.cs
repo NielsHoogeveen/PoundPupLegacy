@@ -22,7 +22,7 @@ internal abstract class SimpleTextNodeEditServiceBase<TEntity, TExisting, TNew, 
     where TEntity : class, SimpleTextNode
     where TExisting : TEntity, ExistingNode
     where TNew : TEntity, NewNode
-    where TCreate : CreateModel.SimpleTextNode
+    where TCreate : CreateModel.EventuallyIdentifiableSimpleTextNode
 {
 
     protected abstract IEntityCreator<TCreate> EntityCreator { get; }

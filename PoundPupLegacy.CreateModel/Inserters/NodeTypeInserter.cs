@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NodeType;
+using Request = EventuallyIdentifiableNodeType;
 
 internal sealed class NodeTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

@@ -2,7 +2,7 @@
 
 internal sealed class AbuseCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<AbuseCase> abuseCaseCreator,
+    IEntityCreator<NewAbuseCase> abuseCaseCreator,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -14,7 +14,7 @@ internal sealed class AbuseCaseMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<AbuseCase> ReadAbuseCases(IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
+    private async IAsyncEnumerable<NewAbuseCase> ReadAbuseCases(IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
                 SELECT
@@ -138,12 +138,14 @@ internal sealed class AbuseCaseMigrator(
                 ParentNames = topicParentNames,
             });
 
-            var country = new AbuseCase {
+            var country = new NewAbuseCase {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
                 ChangedDateTime = reader.GetDateTime("changed_date_time"),
                 Title = name,
+                TypeOfAbuseIds = new List<int>(),
+                TypeOfAbuserIds = new List<int>(),
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
                 TenantNodes = new List<TenantNode>

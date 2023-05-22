@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class TypeOfAbuseInserterFactory : SingleIdInserterFactory<TypeOfAbuse>
+internal sealed class TypeOfAbuseInserterFactory : SingleIdInserterFactory<NewTypeOfAbuse>
 {
     protected override string TableName => "type_of_abuse";
 

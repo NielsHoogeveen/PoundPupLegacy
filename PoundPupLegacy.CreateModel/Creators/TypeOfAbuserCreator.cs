@@ -10,9 +10,9 @@ internal class TypeOfAbuserCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<TypeOfAbuser>
+) : EntityCreator<NewTypeOfAbuser>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<TypeOfAbuser> typesOfAbuser, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewTypeOfAbuser> typesOfAbuser, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

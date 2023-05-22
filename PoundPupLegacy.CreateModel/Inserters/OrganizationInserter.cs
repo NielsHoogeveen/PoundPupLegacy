@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Organization;
+using Request = EventuallyIdentifiableOrganization;
 
 internal sealed class OrganizationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

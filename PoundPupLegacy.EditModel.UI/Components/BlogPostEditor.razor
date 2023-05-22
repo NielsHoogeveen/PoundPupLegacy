@@ -1,0 +1,16 @@
+﻿<NodeEditor2 TRead="BlogPost" TSave="BlogPost" Model="Model" Title="Edit blogpost" Map="Map">
+    <SimpleTextNodePropertiesEditor Model="Model" />
+</NodeEditor2>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int UrlId { get; set; }
+
+    private BlogPost? Model { get; set; }
+
+    private BlogPost Map(BlogPost source)
+    {
+        return source;
+    }
+}

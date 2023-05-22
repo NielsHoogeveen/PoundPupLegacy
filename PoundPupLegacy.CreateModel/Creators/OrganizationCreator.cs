@@ -8,16 +8,16 @@ internal sealed class OrganizationCreator(
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Party> partyInserterFactory,
     IDatabaseInserterFactory<Organization> organizationInserterFactory,
-    IDatabaseInserterFactory<UnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserterFactory,
+    IDatabaseInserterFactory<NewUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
     IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory
-) : EntityCreator<Organization>
+) : EntityCreator<EventuallyIdentifiableOrganization>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Organization> organizations, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<EventuallyIdentifiableOrganization> organizations, IDbConnection connection)
     {
         await using var nodeWriter = await nodeIntererFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
@@ -42,7 +42,7 @@ internal sealed class OrganizationCreator(
             await nameableWriter.InsertAsync(organization);
             await partyWriter.InsertAsync(organization);
             await organizationWriter.InsertAsync(organization);
-            if (organization is UnitedStatesPoliticalParty pp) {
+            if (organization is NewUnitedStatesPoliticalParty pp) {
                 await unitedStatesPoliticalPartyWriter.InsertAsync(pp);
             }
             await WriteTerms(organization, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);

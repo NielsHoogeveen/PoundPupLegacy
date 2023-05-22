@@ -5,7 +5,7 @@ internal sealed class BoundCountryMigrator(
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<BoundCountry> boundCountryCreator
+        IEntityCreator<NewBoundCountry> boundCountryCreator
     ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "bound countries";
@@ -23,7 +23,7 @@ internal sealed class BoundCountryMigrator(
         ), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<BoundCountry> ReadBoundCountries(
+    private async IAsyncEnumerable<NewBoundCountry> ReadBoundCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
@@ -81,7 +81,7 @@ internal sealed class BoundCountryMigrator(
                 },
             };
 
-            yield return new BoundCountry {
+            yield return new NewBoundCountry {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

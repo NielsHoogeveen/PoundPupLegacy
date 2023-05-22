@@ -2,15 +2,15 @@
 
 internal sealed class FamilySizeMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<FamilySize> familySizeCreator
+        IEntityCreator<NewFamilySize> familySizeCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "family sizes";
 
-    private static async IAsyncEnumerable<FamilySize> GetFamilySizes()
+    private static async IAsyncEnumerable<NewFamilySize> GetFamilySizes()
     {
         await Task.CompletedTask;
-        yield return new FamilySize {
+        yield return new NewFamilySize {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -55,7 +55,7 @@ internal sealed class FamilySizeMigrator(
                     },
                 },
         };
-        yield return new FamilySize {
+        yield return new NewFamilySize {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -100,7 +100,7 @@ internal sealed class FamilySizeMigrator(
                     },
                 },
         };
-        yield return new FamilySize {
+        yield return new NewFamilySize {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -145,7 +145,7 @@ internal sealed class FamilySizeMigrator(
                     },
                 },
         };
-        yield return new FamilySize {
+        yield return new NewFamilySize {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,

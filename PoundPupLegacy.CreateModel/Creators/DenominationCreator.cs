@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class DenominationCreator(
-    IDatabaseInserterFactory<Denomination> denominationInserterFactory,
+    IDatabaseInserterFactory<NewDenomination> denominationInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Node> nodeInserterFactory,
@@ -10,9 +10,9 @@ internal sealed class DenominationCreator(
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<Denomination>
+) : EntityCreator<NewDenomination>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Denomination> denominations, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewDenomination> denominations, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

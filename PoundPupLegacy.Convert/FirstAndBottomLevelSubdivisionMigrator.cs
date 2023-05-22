@@ -6,11 +6,11 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreator
+        IEntityCreator<NewFirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "first and bottom level subdivisions";
-    private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv(
+    private async IAsyncEnumerable<NewFirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
@@ -38,7 +38,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 NameableId = countryId,
                 VocabularyName = Constants.VOCABULARY_TOPICS
             }))!.Name;
-            yield return new FirstAndBottomLevelSubdivision {
+            yield return new NewFirstAndBottomLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
@@ -361,7 +361,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
             termReaderByName
         ), _postgresConnection);
     }
-    private async IAsyncEnumerable<FirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(
+    private async IAsyncEnumerable<NewFirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
@@ -448,7 +448,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 }
             };
 
-            yield return new FirstAndBottomLevelSubdivision {
+            yield return new NewFirstAndBottomLevelSubdivision {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

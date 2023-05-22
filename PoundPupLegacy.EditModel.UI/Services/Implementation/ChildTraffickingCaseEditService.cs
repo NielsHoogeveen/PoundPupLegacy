@@ -5,16 +5,16 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal sealed class ChildTraffickingCaseEditService(
     IDbConnection connection,
     ILogger<ChildTraffickingCaseEditService> logger,
-    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewChildTraffickingCase> createChildTraffickingCaseReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, ResolvedNewChildTraffickingCase> createChildTraffickingCaseReaderFactory,
     ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingChildTraffickingCase> childTraffickingCaseUpdateDocumentReaderFactory,
     IDatabaseUpdaterFactory<ChildTraffickingCaseUpdaterRequest> childTraffickingCaseUpdaterFactory,
     ISaveService<IEnumerable<Tag>> tagSaveService,
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.ChildTraffickingCase> childTraffickingCaseCreator,
+    IEntityCreator<CreateModel.NewChildTraffickingCase> childTraffickingCaseCreator,
     ITextService textService
-) : NodeEditServiceBase<ChildTraffickingCase, ExistingChildTraffickingCase, NewChildTraffickingCase, CreateModel.ChildTraffickingCase>
+) : NodeEditServiceBase<ResolvedChildTraffickingCase, ExistingChildTraffickingCase, ResolvedNewChildTraffickingCase, CreateModel.NewChildTraffickingCase>
 (
     connection,
     logger,
@@ -22,7 +22,7 @@ internal sealed class ChildTraffickingCaseEditService(
     tenantNodesSaveService,
     filesSaveService,
     tenantRefreshService
-), IEditService<ChildTraffickingCase>
+), IEditService<ChildTraffickingCase, ResolvedChildTraffickingCase>
 {
     public async Task<ChildTraffickingCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
@@ -48,10 +48,10 @@ internal sealed class ChildTraffickingCaseEditService(
         });
     }
 
-    protected sealed override async Task<int> StoreNew(NewChildTraffickingCase childTraffickingCase, NpgsqlConnection connection)
+    protected sealed override async Task<int> StoreNew(ResolvedNewChildTraffickingCase childTraffickingCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.ChildTraffickingCase {
+        var createDocument = new CreateModel.NewChildTraffickingCase {
             Id = null,
             Title = childTraffickingCase.Title,
             Description = childTraffickingCase.Description is null ? "" : textService.FormatText(childTraffickingCase.Description),
@@ -81,7 +81,7 @@ internal sealed class ChildTraffickingCaseEditService(
                 }
             },
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,
-            CountryIdFrom = childTraffickingCase.CountryIdFrom
+            CountryIdFrom = childTraffickingCase.CountryFrom.Id
         };
         await childTraffickingCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;
@@ -96,7 +96,7 @@ internal sealed class ChildTraffickingCaseEditService(
             NodeId = childTraffickingCase.NodeId,
             Date = childTraffickingCase.Date,
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,
-            CountryIdFrom = childTraffickingCase.CountryIdFrom
+            CountryIdFrom = childTraffickingCase.CountryFrom.Id
         });
     }
 }

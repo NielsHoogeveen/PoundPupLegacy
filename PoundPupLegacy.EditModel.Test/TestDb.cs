@@ -49,6 +49,7 @@ public class TestDb
         serviceCollection.AddTransient<IDbConnection>((sp) => {
             return connection;
         });
+        serviceCollection.AddLogging();
         serviceCollection.AddEditModels();
         var serviceProvider = serviceCollection.BuildServiceProvider();
         var personListSearch = serviceProvider.GetRequiredService<ISearchService<PersonItem.PersonListItem>>();

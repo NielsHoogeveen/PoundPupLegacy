@@ -4,15 +4,15 @@ internal sealed class TypeOfAbuseCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<TypeOfAbuse> typeOfAbuseInserterFactory,
+    IDatabaseInserterFactory<NewTypeOfAbuse> typeOfAbuseInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<TypeOfAbuse>
+) : EntityCreator<NewTypeOfAbuse>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<TypeOfAbuse> typesOfAbuse, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewTypeOfAbuse> typesOfAbuse, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

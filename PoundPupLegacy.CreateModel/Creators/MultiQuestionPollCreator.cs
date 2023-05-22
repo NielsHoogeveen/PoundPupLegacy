@@ -5,15 +5,15 @@ internal sealed class MultiQuestionPollCreator(
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
     IDatabaseInserterFactory<Poll> pollInserterFactory,
-    IDatabaseInserterFactory<MultiQuestionPoll> multiQuestionPollInserterFactory,
+    IDatabaseInserterFactory<NewMultiQuestionPoll> multiQuestionPollInserterFactory,
     IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
     IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
     IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
     IDatabaseInserterFactory<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserterFactory
-) : EntityCreator<MultiQuestionPoll>
+) : EntityCreator<NewMultiQuestionPoll>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<MultiQuestionPoll> polls, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewMultiQuestionPoll> polls, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

@@ -88,7 +88,7 @@ internal static class IdentifiableDatabaseInserterFactory
 }
 
 public abstract class IdentifiableDatabaseInserterFactory<T> : DatabaseInserterFactoryBase<T>
-    where T : Identifiable
+    where T : EventuallyIdentifiable
 {
 
     protected abstract IEnumerable<ParameterValue> GetNonIdParameterValues(T request);
@@ -118,7 +118,7 @@ internal static class ConditionalAutoGenerateIdDatabaseInserterFactory
     internal static readonly AutoGenerateIntegerDatabaseParameter Id = new() { Name = "id" };
 }
 public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T> : DatabaseAccessorFactory, IDatabaseInserterFactory<T>
-    where T : Identifiable
+    where T : EventuallyIdentifiable
 {
     protected abstract IEnumerable<ParameterValue> GetNonIdParameterValues(T request);
 
@@ -178,7 +178,7 @@ public abstract class ConditionalAutoGenerateIdDatabaseInserterFactory<T> : Data
 }
 
 public abstract class AutoGenerateIdDatabaseInserterFactory<T> : DatabaseInserterFactoryBase<T>
-    where T : Identifiable
+    where T : EventuallyIdentifiable
 {
     public abstract string TableName { get; }
 
@@ -222,7 +222,7 @@ public abstract class DatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInsert
 
 
 public class IdentifiableDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
-    where T : Identifiable
+    where T : EventuallyIdentifiable
 {
     private Func<T, IEnumerable<ParameterValue>> _parameterMapper;
     public IdentifiableDatabaseInserter(NpgsqlCommand command, Func<T, IEnumerable<ParameterValue>> parameterMapper) : base(command)
@@ -274,7 +274,7 @@ public class BasicDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T
 }
 
 public class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
-    where T : Identifiable
+    where T : EventuallyIdentifiable
 {
     private readonly Func<T, IEnumerable<ParameterValue>> _parameterMapper;
     public AutoGenerateIdDatabaseInserter(NpgsqlCommand command, Func<T, IEnumerable<ParameterValue>> parameterMapper) : base(command)
@@ -303,7 +303,7 @@ public class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseI
     }
 }
 public class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
-    where T : Identifiable
+    where T : EventuallyIdentifiable
 {
 
     private readonly NpgsqlCommand _commandAutoGenerate;

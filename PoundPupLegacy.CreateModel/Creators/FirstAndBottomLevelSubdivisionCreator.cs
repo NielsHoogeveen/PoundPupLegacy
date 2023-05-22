@@ -12,15 +12,15 @@ internal sealed class FirstAndBottomLevelSubdivisionCreator(
     IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<FirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<NewFirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<FirstAndBottomLevelSubdivision>
+) : EntityCreator<NewFirstAndBottomLevelSubdivision>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<FirstAndBottomLevelSubdivision> subdivisions, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewFirstAndBottomLevelSubdivision> subdivisions, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

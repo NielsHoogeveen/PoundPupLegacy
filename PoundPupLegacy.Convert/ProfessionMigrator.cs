@@ -3,7 +3,7 @@
 internal sealed class ProfessionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<Profession> professionCreator
+    IEntityCreator<NewProfession> professionCreator
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "professions";
@@ -13,7 +13,7 @@ internal sealed class ProfessionMigrator(
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await professionCreator.CreateAsync(ReadProfessions(fileIdReaderByTenantFileId), _postgresConnection);
     }
-    private async IAsyncEnumerable<Profession> ReadProfessions(
+    private async IAsyncEnumerable<NewProfession> ReadProfessions(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
     {
@@ -94,7 +94,7 @@ internal sealed class ProfessionMigrator(
                 });
             }
 
-            yield return new Profession {
+            yield return new NewProfession {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),
@@ -138,7 +138,7 @@ internal sealed class ProfessionMigrator(
             };
         }
         reader.Close();
-        yield return new Profession {
+        yield return new NewProfession {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -185,7 +185,7 @@ internal sealed class ProfessionMigrator(
             HasConcreteSubtype = true,
 
         };
-        yield return new Profession {
+        yield return new NewProfession {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,

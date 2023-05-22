@@ -4,15 +4,15 @@ internal sealed class InterOrganizationalRelationTypeCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<InterOrganizationalRelationType> interOrganizationalRelationTypeInserterFactory,
+    IDatabaseInserterFactory<NewInterOrganizationalRelationType> interOrganizationalRelationTypeInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<InterOrganizationalRelationType>
+) : EntityCreator<NewInterOrganizationalRelationType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<InterOrganizationalRelationType> interOrganizationalRelationTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewInterOrganizationalRelationType> interOrganizationalRelationTypes, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

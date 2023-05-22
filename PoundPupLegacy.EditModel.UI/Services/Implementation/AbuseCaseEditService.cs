@@ -12,25 +12,26 @@ internal sealed class AbuseCaseEditService(
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
         ITenantRefreshService tenantRefreshService,
-        IEntityCreator<CreateModel.AbuseCase> abuseCaseCreator,
+        IEntityCreator<CreateModel.NewAbuseCase> abuseCaseCreator,
         ITextService textService
-    ) : NodeEditServiceBase<AbuseCase, ExistingAbuseCase, NewAbuseCase, CreateModel.AbuseCase>(
+    ) : NodeEditServiceBase<AbuseCase, ExistingAbuseCase, NewAbuseCase, CreateModel.NewAbuseCase>(
         connection,
         logger,
         tagSaveService,
         tenantNodesSaveService,
         filesSaveService,
-        tenantRefreshService), IEditService<AbuseCase>
+        tenantRefreshService), IEditService<AbuseCase, AbuseCase>
 {
     public async Task<AbuseCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
         return await WithConnection(async (connection) => {
             await using var reader = await abuseCaseUpdateDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
+            var result = await reader.ReadAsync(new NodeUpdateDocumentRequest {
                 UrlId = urlId,
                 UserId = userId,
                 TenantId = tenantId
             });
+            return result;
         });
     }
 
@@ -49,7 +50,7 @@ internal sealed class AbuseCaseEditService(
     protected sealed override async Task<int> StoreNew(NewAbuseCase abuseCase, NpgsqlConnection connection)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.AbuseCase {
+        var createDocument = new CreateModel.NewAbuseCase {
             Id = null,
             Title = abuseCase.Title,
             Description = abuseCase.Description is null ? "" : textService.FormatText(abuseCase.Description),
@@ -82,7 +83,10 @@ internal sealed class AbuseCaseEditService(
                     TermName = abuseCase.Title,
                     ParentNames = new List<string>(),
                 }
-            }
+            },
+            TypeOfAbuseIds = new List<int>(),
+            TypeOfAbuserIds = new List<int>()
+
         };
         await abuseCaseCreator.CreateAsync(createDocument, connection);
         return createDocument.Id!.Value;

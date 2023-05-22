@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class FathersRightsViolationCaseCreator(
-    IDatabaseInserterFactory<FathersRightsViolationCase> fathersRightsViolationCaseInserterFactory,
+    IDatabaseInserterFactory<NewFathersRightsViolationCase> fathersRightsViolationCaseInserterFactory,
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Documentable> documentableInserterFactory,
@@ -13,9 +13,9 @@ internal sealed class FathersRightsViolationCaseCreator(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<FathersRightsViolationCase>
+) : EntityCreator<NewFathersRightsViolationCase>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<FathersRightsViolationCase> fathersRightsViolationCases, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewFathersRightsViolationCase> fathersRightsViolationCases, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

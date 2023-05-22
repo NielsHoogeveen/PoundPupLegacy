@@ -2,11 +2,11 @@
 
 internal sealed class PartyPoliticalEntityRelationCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<PartyPoliticalEntityRelation> partyPoliticalEntityRelationInserterFactory,
+    IDatabaseInserterFactory<NewPartyPoliticalEntityRelation> partyPoliticalEntityRelationInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<PartyPoliticalEntityRelation>
+) : EntityCreator<NewPartyPoliticalEntityRelation>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<PartyPoliticalEntityRelation> partyPoliticalEntityRelations, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewPartyPoliticalEntityRelation> partyPoliticalEntityRelations, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var partyPoliticalEntityRelationWriter = await partyPoliticalEntityRelationInserterFactory.CreateAsync(connection);

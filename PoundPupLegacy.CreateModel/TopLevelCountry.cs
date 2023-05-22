@@ -1,8 +1,29 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
+public interface ImmediatelyIdentifiableTopLevelCountry : TopLevelCountry, ImmediatelyIdentifiableCountry
+{
+}
+public interface EventuallyIdentifiableTopLevelCountry: TopLevelCountry, EventuallyIdentifiableCountry 
+{ 
+}
 public interface TopLevelCountry : Country
 {
-    public string ISO3166_1_Code { get; }
+    string ISO3166_1_Code { get; }
 
-    public int SecondLevelRegionId { get; }
+    int SecondLevelRegionId { get; }
+}
+
+public record NewTopLevelCountryBase: NewCountryBase, EventuallyIdentifiableTopLevelCountry
+{
+    public required string ISO3166_1_Code { get; init; }
+
+    public required int SecondLevelRegionId { get; init; }
+
+}
+public record ExistingTopLevelCountryBase : ExistingCountryBase, ImmediatelyIdentifiableTopLevelCountry
+{
+    public required string ISO3166_1_Code { get; init; }
+
+    public required int SecondLevelRegionId { get; init; }
+
 }

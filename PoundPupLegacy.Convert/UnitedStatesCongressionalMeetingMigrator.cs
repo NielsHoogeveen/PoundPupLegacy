@@ -2,12 +2,12 @@
 
 internal sealed class UnitedStatesCongressionalMeetingMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<UnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreator
+        IEntityCreator<NewUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states congressional meetings";
 
-    private async IAsyncEnumerable<UnitedStatesCongressionalMeeting> ReadUnitedStatesCongressionalMeetingCsv()
+    private async IAsyncEnumerable<NewUnitedStatesCongressionalMeeting> ReadUnitedStatesCongressionalMeetingCsv()
     {
 
         await foreach (string line in System.IO.File.ReadLinesAsync(@"..\..\..\files\united_states_congress.csv").Skip(1)) {
@@ -17,7 +17,7 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
             var startDate = DateTime.Parse(parts[1]).AddHours(12);
             var endDate = DateTime.Parse(parts[2]).AddHours(12).AddMicroseconds(-1);
             var number = int.Parse(parts[3]);
-            yield return new UnitedStatesCongressionalMeeting {
+            yield return new NewUnitedStatesCongressionalMeeting {
                 Id = null,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,

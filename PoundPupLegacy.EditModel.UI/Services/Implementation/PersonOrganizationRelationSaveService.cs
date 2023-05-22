@@ -3,7 +3,7 @@
 internal class PersonOrganizationRelationSaveService(
         IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
         IDatabaseUpdaterFactory<PersonOrganizationRelationUpdaterRequest> personOrganizationRelationUpdaterFactory,
-        IEntityCreator<CreateModel.PersonOrganizationRelation> personOrganizationRelationCreator
+        IEntityCreator<CreateModel.NewPersonOrganizationRelation> personOrganizationRelationCreator
     ) : ISaveService<IEnumerable<PersonOrganizationRelation>>
 {
     public async Task SaveAsync(IEnumerable<PersonOrganizationRelation> item, IDbConnection connection)
@@ -29,12 +29,12 @@ internal class PersonOrganizationRelationSaveService(
                 GeographicalEntityId = relation.GeographicalEntity?.Id
             });
         }
-        IEnumerable<CreateModel.PersonOrganizationRelation> GetRelationsToInsert()
+        IEnumerable<CreateModel.NewPersonOrganizationRelation> GetRelationsToInsert()
         {
 
             foreach (var relation in item.OfType<CompletedNewPersonOrganizationRelation>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
-                yield return new CreateModel.PersonOrganizationRelation {
+                yield return new CreateModel.NewPersonOrganizationRelation {
                     Id = null,
                     PublisherId = relation.PublisherId,
                     CreatedDateTime = now,

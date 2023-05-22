@@ -1,16 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class SenateTermCreator(
-    IDatabaseInserterFactory<SenateTerm> senateTermInserterFactory,
+    IDatabaseInserterFactory<NewSenateTerm> senateTermInserterFactory,
     IDatabaseInserterFactory<CongressionalTerm> congressionalTermInserterFactory,
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Documentable> documentableInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<CongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
-) : EntityCreator<SenateTerm>
+    IEntityCreator<NewCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
+) : EntityCreator<NewSenateTerm>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<SenateTerm> senateTerms, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewSenateTerm> senateTerms, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

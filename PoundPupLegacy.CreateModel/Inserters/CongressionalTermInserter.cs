@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class CongressionalTermInserterFactory : SingleIdInserterFactory<CongressionalTerm>
+internal sealed class CongressionalTermInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableCongressionalTerm>
 {
     protected override string TableName => "congressional_term";
 

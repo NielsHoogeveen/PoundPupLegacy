@@ -4,15 +4,15 @@ internal sealed class BillActionTypeCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<BillActionType> billActionTypeInserterFactory,
+    IDatabaseInserterFactory<NewBillActionType> billActionTypeInserterFactory,
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<BillActionType>
+) : EntityCreator<NewBillActionType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<BillActionType> billActionTypes, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewBillActionType> billActionTypes, IDbConnection connection)
     {
 
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);

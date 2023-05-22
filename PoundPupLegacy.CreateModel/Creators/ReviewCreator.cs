@@ -4,11 +4,11 @@ internal sealed class ReviewCreator(
     IDatabaseInserterFactory<Node> nodeInserterFactory,
     IDatabaseInserterFactory<Searchable> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<Review> reviewInserterFactory,
+    IDatabaseInserterFactory<NewReview> reviewInserterFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<Review>
+) : EntityCreator<NewReview>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Review> reviews, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewReview> reviews, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

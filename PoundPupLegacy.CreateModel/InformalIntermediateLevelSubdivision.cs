@@ -1,20 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record InformalIntermediateLevelSubdivision : IntermediateLevelSubdivision
+public sealed record NewInformalIntermediateLevelSubdivision : NewSubdivisionBase, EventuallyIdentifiableInformalIntermediateLevelSubdivision
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required string Name { get; init; }
-    public required string Description { get; init; }
-    public required int? FileIdTileImage { get; init; }
-    public required List<VocabularyName> VocabularyNames { get; init; }
-    public required int CountryId { get; init; }
-    public required List<TenantNode> TenantNodes { get; init; }
-    public required int SubdivisionTypeId { get; init; }
+}
+public sealed record ExistingInformalIntermediateLevelSubdivision : ExistingSubdivisionBase, ImmediatelyIdentifiableInformalIntermediateLevelSubdivision
+{
+}
+public interface ImmediatelyIdentifiableInformalIntermediateLevelSubdivision : InformalIntermediateLevelSubdivision, ImmediatelyIdentifiableIntermediateLevelSubdivision
+{
+}
+public interface EventuallyIdentifiableInformalIntermediateLevelSubdivision : InformalIntermediateLevelSubdivision, EventuallyIdentifiableIntermediateLevelSubdivision
+{
+}
+public interface InformalIntermediateLevelSubdivision: IntermediateLevelSubdivision
+{
 }

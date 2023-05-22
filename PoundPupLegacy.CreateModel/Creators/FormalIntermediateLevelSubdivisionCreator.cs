@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class FormalIntermediateLevelSubdivisionCreator(
-    IDatabaseInserterFactory<FormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<NewFormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<IntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
@@ -18,9 +18,9 @@ internal sealed class FormalIntermediateLevelSubdivisionCreator(
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
     IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<FormalIntermediateLevelSubdivision>
+) : EntityCreator<NewFormalIntermediateLevelSubdivision>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<FormalIntermediateLevelSubdivision> subdivisions, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewFormalIntermediateLevelSubdivision> subdivisions, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

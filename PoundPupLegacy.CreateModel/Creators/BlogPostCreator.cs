@@ -4,11 +4,11 @@ internal sealed class BlogPostCreator(
         IDatabaseInserterFactory<Node> nodeInserterFactory,
         IDatabaseInserterFactory<Searchable> searchableInserterFactory,
         IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
-        IDatabaseInserterFactory<BlogPost> blogPostInserterFactory,
+        IDatabaseInserterFactory<NewBlogPost> blogPostInserterFactory,
         IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-    ) : EntityCreator<BlogPost>
+    ) : EntityCreator<NewBlogPost>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<BlogPost> blogPosts, IDbConnection connection)
+    public override async Task CreateAsync(IAsyncEnumerable<NewBlogPost> blogPosts, IDbConnection connection)
     {
         await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
         await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);

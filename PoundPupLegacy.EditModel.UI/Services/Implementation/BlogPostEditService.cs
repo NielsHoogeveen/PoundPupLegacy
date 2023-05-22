@@ -13,8 +13,8 @@ internal sealed class BlogPostEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITextService textService,
-    IEntityCreator<CreateModel.BlogPost> blogPostCreator
-) : SimpleTextNodeEditServiceBase<BlogPost, ExistingBlogPost, NewBlogPost, CreateModel.BlogPost>(
+    IEntityCreator<CreateModel.NewBlogPost> blogPostCreator
+) : SimpleTextNodeEditServiceBase<BlogPost, ExistingBlogPost, NewBlogPost, CreateModel.NewBlogPost>(
     connection, 
     logger, 
     tenantRefreshService, 
@@ -22,10 +22,10 @@ internal sealed class BlogPostEditService(
     tagSaveService, 
     tenantNodesSaveService, 
     filesSaveService, 
-    textService), IEditService<BlogPost>
+    textService), IEditService<BlogPost, BlogPost>
 {
 
-    protected sealed override IEntityCreator<CreateModel.BlogPost> EntityCreator => blogPostCreator;
+    protected sealed override IEntityCreator<CreateModel.NewBlogPost> EntityCreator => blogPostCreator;
 
     public async Task<BlogPost?> GetViewModelAsync(int userId, int tenantId)
     {
@@ -50,10 +50,10 @@ internal sealed class BlogPostEditService(
         });
     }
 
-    protected sealed override CreateModel.BlogPost Map(NewBlogPost item)
+    protected sealed override CreateModel.NewBlogPost Map(NewBlogPost item)
     {
         var now = DateTime.Now;
-        return new CreateModel.BlogPost {
+        return new CreateModel.NewBlogPost {
             Id = null,
             Title = item.Title,
             Text = textService.FormatText(item.Text),

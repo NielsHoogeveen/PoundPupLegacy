@@ -4,7 +4,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreator<PersonOrganizationRelation> personOrganizationRelationCreator
+    IEntityCreator<NewPersonOrganizationRelation> personOrganizationRelationCreator
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -20,7 +20,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
         await personOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
     }
 
-    private async IAsyncEnumerable<PersonOrganizationRelation> ReadPersonOrganizationRelations(
+    private async IAsyncEnumerable<NewPersonOrganizationRelation> ReadPersonOrganizationRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlId
     )
@@ -126,7 +126,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new PersonOrganizationRelation {
+            yield return new NewPersonOrganizationRelation {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

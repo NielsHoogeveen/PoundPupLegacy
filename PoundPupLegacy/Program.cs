@@ -126,7 +126,6 @@ public sealed class Program
             EditModel.ExistingAbuseCaseJsonContext.Default,
             EditModel.NewAbuseCaseJsonContext.Default,
             EditModel.ExistingBlogPostJsonContext.Default,
-            EditModel.NewBlogPostJsonContext.Default,
             EditModel.ExistingChildTraffickingCaseJsonContext.Default,
             EditModel.NewChildTraffickingCaseJsonContext.Default,
             EditModel.ExistingCoercedAdoptionCaseJsonContext.Default,
@@ -177,7 +176,13 @@ public sealed class Program
             EditModel.ExistingWrongfulMedicationCaseJsonContext.Default,
             EditModel.NewWrongfulMedicationCaseJsonContext.Default,
             EditModel.ExistingWrongfulRemovalCaseJsonContext.Default,
-            EditModel.NewWrongfulRemovalCaseJsonContext.Default
+            EditModel.NewWrongfulRemovalCaseJsonContext.Default,
+            EditModel.ChildPlacementTypeJsonContext.Default,
+            EditModel.FamilySizeJsonContext.Default,
+            EditModel.TypeOfAbuseJsonContext.Default,
+            EditModel.TypeOfAbuserJsonContext.Default,
+            EditModel.OrganizationListItemJsonContext.Default,
+            EditModel.PersonListItemJsonContext.Default
         };
 
         var builder = WebApplication.CreateBuilder(args);

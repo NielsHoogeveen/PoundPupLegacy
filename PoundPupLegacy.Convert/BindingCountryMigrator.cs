@@ -3,7 +3,7 @@
 internal sealed class BindingCountryMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<BindingCountry> bindingCountryCreator
+        IEntityCreator<NewBindingCountry> bindingCountryCreator
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "binding countries";
@@ -13,7 +13,7 @@ internal sealed class BindingCountryMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader), _postgresConnection);
     }
-    private async IAsyncEnumerable<BindingCountry> ReadBindingCountries(
+    private async IAsyncEnumerable<NewBindingCountry> ReadBindingCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -63,7 +63,7 @@ internal sealed class BindingCountryMigrator(
                     },
                 };
 
-            var country = new BindingCountry {
+            var country = new NewBindingCountry {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

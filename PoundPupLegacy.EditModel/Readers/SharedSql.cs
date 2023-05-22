@@ -71,6 +71,73 @@ internal static class SharedSql
         )
         """;
 
+    internal const string FAMILY_SIZES_DOCUMENT = """
+        family_sizes_document as(
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Id', 
+                        n.id,
+                        'Name', 
+                        n.title
+                    )
+                    order by n.title
+                ) "document"
+            from family_size t
+            join node n on n.id = t.id
+        )
+        """;
+
+    internal const string CHILD_PLACEMENT_TYPES_DOCUMENT = """
+        child_placement_types_document as(
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Id', 
+                        n.id,
+                        'Name', 
+                        n.title
+                    )
+                    order by n.title
+                ) "document"
+            from child_placement_type t
+            join node n on n.id = t.id
+        )
+        """;
+    internal const string TYPES_OF_ABUSE_DOCUMENT = """
+        types_of_abuse_document as(
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Id', 
+                        n.id,
+                        'Name', 
+                        n.title
+                    )
+                    order by n.title
+                ) "document"
+            from type_of_abuse t
+            join node n on n.id = t.id
+        )
+        """;
+
+    internal const string TYPES_OF_ABUSER_DOCUMENT = """
+        types_of_abuser_document as(
+            select
+                jsonb_agg(
+                    jsonb_build_object(
+                        'Id', 
+                        n.id,
+                        'Name', 
+                        n.title
+                    )
+                    order by n.title
+                ) "document"
+            from type_of_abuser t
+            join node n on n.id = t.id
+        )
+        """;
+
     internal const string PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT = """
         party_political_entity_relations_document as(
             select
@@ -514,6 +581,119 @@ internal static class SharedSql
             join term t on t.nameable_id = ot.id
             join tenant_node tn on tn.node_id = t.vocabulary_id
             where tn.tenant_id = 1 and tn.url_id = 12622
+        )
+        """;
+
+    internal const string CASE_TYPE_CASE_PARTY_TYPE_DOCUMENT = """
+        case_type_case_party_type_document as(
+            select
+            jsonb_agg(
+                jsonb_build_object(
+                    'CasePartyTypeId',
+                    n.id,
+                    'CasePartyTypeName',
+                    n.title,
+                    'OrganizationsText',
+                    null,
+                    'PersonsText',
+                    null,
+                    'Organizations',
+                    null,
+                    'Persons',
+                    null
+                )
+            ) document
+            from case_type_case_party_type ctpt 
+            join case_party_type cpt on cpt.id = ctpt.case_party_type_id
+            join node n on n.id = cpt.id
+            where ctpt.case_type_id = @node_type_id
+        )
+        """;
+
+    internal const string CASE_CASE_PARTY_DOCUMENT = """
+        case_case_party_document as(
+            select
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'CasePartyTypeId',
+        		    n.id,
+        		    'CasePartyTypeName',
+        		    n.title,
+        		    'PersonsText',
+        		    persons_text,
+        		    'OrganizationsText',
+        		    organizations_text,
+        		    'Organizations',
+        		    organizations,
+        		    'Persons',
+        		    persons
+        	    )
+            ) document
+            from case_type_case_party_type ctpt 
+            join case_party_type cpt on cpt.id = ctpt.case_party_type_id
+            join node n on n.id = cpt.id
+            join tenant_node tn on tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            join "case" c on c.id = tn.node_id
+            join node n2 on n2.id = c.id
+            left join (
+        	    select
+        	    ccp.case_id,
+        	    ccp.case_party_type_id,
+        	    cp.organizations organizations_text,
+        	    cp.persons persons_text,
+        		CASE 
+        			WHEN COUNT(DISTINCT cpo.organization_id) = 0 THEN NULL
+        			else jsonb_agg(
+        				distinct
+        				jsonb_build_object(
+        					'Id',
+        					cpo.organization_id,
+        					'Name',
+        					cpo.organization_name
+        				)
+        			) 
+        		end organizations,
+                CASE 
+        			WHEN COUNT(DISTINCT cpp.person_id) = 0 THEN NULL
+        			else jsonb_agg(
+        				distinct
+        				jsonb_build_object(
+        					'Id',
+        					cpp.person_id,
+        					'Name',
+        					cpp.person_name
+        				)
+        			) 
+        		END persons
+                from case_case_parties ccp
+        	    join case_parties cp on cp.id = ccp.case_parties_id
+        	    left join (
+        		    select
+        		    cpo.case_parties_id,
+        		    n.id organization_id,
+        		    n.title organization_name
+        		    from
+        		    case_parties_organization cpo 
+        		    join organization o on o.id = cpo.organization_id
+        		    join node n on n.id = o.id
+        	    ) cpo on cpo.case_parties_id = cp.id
+        	    left join (
+        		    select
+        		    cpp.case_parties_id,
+        		    n.id person_id,
+        		    n.title person_name
+        		    from
+        		    case_parties_person cpp
+        		    join person p on p.id = cpp.person_id
+        		    join node n on n.id = p.id
+        	    ) cpp on cpp.case_parties_id = cp.id
+        	    group by 
+        	    ccp.case_id,
+        	    ccp.case_party_type_id,
+        	    cp.organizations,
+        	    cp.persons
+            ) ccp on ccp.case_id = c.id and ccp.case_party_type_id = cpt.id
+            where ctpt.case_type_id = n2.node_type_id
         )
         """;
 
