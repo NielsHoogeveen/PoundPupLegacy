@@ -3,7 +3,7 @@
 internal sealed class BasicCountryMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<BasicCountry> basicCountryCreator
+    INameableCreatorFactory<EventuallyIdentifiableBasicCountry> basicCountryCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic countries";
@@ -123,7 +123,7 @@ internal sealed class BasicCountryMigrator(
         };
     }
 
-    private async IAsyncEnumerable<BasicCountry> GetBasicCountries(
+    private async IAsyncEnumerable<EventuallyIdentifiableBasicCountry> GetBasicCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -135,9 +135,9 @@ internal sealed class BasicCountryMigrator(
             Title = "Antigua and Barbuda",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -178,6 +178,7 @@ internal sealed class BasicCountryMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
+            NodeTermIds = new List<int>(),
         };
         yield return new NewBasicCountry {
             Id = null,
@@ -187,9 +188,9 @@ internal sealed class BasicCountryMigrator(
             Title = "Palestine",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = 1,
@@ -230,6 +231,7 @@ internal sealed class BasicCountryMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
+            NodeTermIds = new List<int>(),
         };
         yield return new NewBasicCountry {
             Id = null,
@@ -239,9 +241,9 @@ internal sealed class BasicCountryMigrator(
             Title = "Saint Helena, Ascension and Tristan da Cunha",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = 1,
@@ -282,7 +284,7 @@ internal sealed class BasicCountryMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-
+            NodeTermIds = new List<int>(),
         };
         yield return new NewBasicCountry {
             Id = null,
@@ -292,9 +294,9 @@ internal sealed class BasicCountryMigrator(
             Title = "South Sudan",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = 1,
@@ -335,18 +337,19 @@ internal sealed class BasicCountryMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-
+            NodeTermIds = new List<int>(),
         };
     }
 
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await basicCountryCreator.CreateAsync(GetBasicCountries(nodeIdReader), _postgresConnection);
-        await basicCountryCreator.CreateAsync(ReadBasicCountries(nodeIdReader), _postgresConnection);
+        await using var basicCountryCreator = await basicCountryCreatorFactory.CreateAsync(_postgresConnection);
+        await basicCountryCreator.CreateAsync(GetBasicCountries(nodeIdReader));
+        await basicCountryCreator.CreateAsync(ReadBasicCountries(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<BasicCountry> ReadBasicCountries(
+    private async IAsyncEnumerable<EventuallyIdentifiableBasicCountry> ReadBasicCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -474,9 +477,9 @@ internal sealed class BasicCountryMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -486,7 +489,7 @@ internal sealed class BasicCountryMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -521,6 +524,7 @@ internal sealed class BasicCountryMigrator(
                 HealthRequirements = reader.IsDBNull("health_requirements") ? null : reader.GetString("health_requirements"),
                 IncomeRequirements = reader.IsDBNull("income_requirements") ? null : reader.GetString("income_requirements"),
                 OtherRequirements = reader.IsDBNull("other_requirements") ? null : reader.GetString("other_requirements"),
+                NodeTermIds = new List<int>(),
             };
             yield return country;
 

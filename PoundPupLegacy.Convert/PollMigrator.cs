@@ -1,16 +1,18 @@
 ﻿namespace PoundPupLegacy.Convert;
 internal sealed class PollMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewSingleQuestionPoll> singleQuestionPollCreator,
-    IEntityCreator<NewMultiQuestionPoll> multiQuestionPollCreator
+    IEntityCreatorFactory<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollCreatorFactory,
+    INodeCreatorFactory<EventuallyIdentifiableMultiQuestionPoll> multiQuestionPollCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "polls";
 
     protected override async Task MigrateImpl()
     {
-        await singleQuestionPollCreator.CreateAsync(ReadSingleQuestionPolls(), _postgresConnection);
-        await multiQuestionPollCreator.CreateAsync(ReadMultiQuestionPolls(), _postgresConnection);
+        await using var singleQuestionPollCreator = await singleQuestionPollCreatorFactory.CreateAsync(_postgresConnection);
+        await using var multiQuestionPollCreator = await multiQuestionPollCreatorFactory.CreateAsync(_postgresConnection);
+        await singleQuestionPollCreator.CreateAsync(ReadSingleQuestionPolls());
+        await multiQuestionPollCreator.CreateAsync(ReadMultiQuestionPolls());
     }
     private async IAsyncEnumerable<NewSingleQuestionPoll> ReadSingleQuestionPolls()
     {
@@ -77,9 +79,9 @@ internal sealed class PollMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                     {
-                        new TenantNode
+                        new NewTenantNodeForNewNode
                         {
                             Id = null,
                             TenantId = Constants.PPL,
@@ -97,7 +99,8 @@ internal sealed class PollMigrator(
                 Question = reader.GetString("question"),
                 NodeTypeId = 53,
                 PollVotes = new List<PollVote>(),
-                PollOptions = new List<PollOption>()
+                PollOptions = new List<PollOption>(),
+                NodeTermIds = new List<int>(),
             };
             var delta = reader.GetInt32("delta");
             if (currentDelta is null || currentDelta != delta) {
@@ -163,9 +166,9 @@ internal sealed class PollMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -181,7 +184,8 @@ internal sealed class PollMigrator(
                 Teaser = TextToHtml(reader.GetString("text")),
                 DateTimeClosure = DateTime.Now.AddYears(-5),
                 PollStatusId = 0,
-                PollQuestions = new List<NewBasicPollQuestion>()
+                PollQuestions = new List<NewBasicPollQuestion>(),
+                NodeTermIds = new List<int>(),
             };
             await reader.CloseAsync();
         }
@@ -250,9 +254,9 @@ internal sealed class PollMigrator(
                         Title = name,
                         OwnerId = Constants.OWNER_CASES,
                         AuthoringStatusId = 1,
-                        TenantNodes = new List<TenantNode>
+                        TenantNodes = new List<NewTenantNodeForNewNode>
                         {
-                            new TenantNode
+                            new NewTenantNodeForNewNode
                             {
                                 Id = null,
                                 TenantId = Constants.PPL,
@@ -268,7 +272,8 @@ internal sealed class PollMigrator(
                         Question = reader.GetString("question"),
                         NodeTypeId = 55,
                         PollVotes = new List<PollVote>(),
-                        PollOptions = new List<PollOption>()
+                        PollOptions = new List<PollOption>(),
+                        NodeTermIds = new List<int>(),
                     };
                     var delta = reader.GetInt32("delta");
                     if (currentDelta is null || currentDelta != delta) {

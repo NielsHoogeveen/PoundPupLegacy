@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -12,7 +13,7 @@ internal sealed class CoercedAdoptionCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.NewCoercedAdoptionCase> coercedAdoptionCaseCreator,
+    INameableCreatorFactory<EventuallyIdentifiableCoercedAdoptionCase> coercedAdoptionCaseCreatorFactory,
     ITextService textService
 ) : NodeEditServiceBase<CoercedAdoptionCase, ExistingCoercedAdoptionCase, NewCoercedAdoptionCase, CreateModel.NewCoercedAdoptionCase>(
     connection,
@@ -60,7 +61,7 @@ internal sealed class CoercedAdoptionCaseEditService(
             OwnerId = coercedAdoptionCase.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = coercedAdoptionCase.PublisherId,
-            TenantNodes = coercedAdoptionCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = coercedAdoptionCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -69,7 +70,7 @@ internal sealed class CoercedAdoptionCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = coercedAdoptionCase.Date?.ToDateTimeRange(),
+            Date = coercedAdoptionCase.Date,
             FileIdTileImage = null,
             VocabularyNames = new List<CreateModel.VocabularyName> {
                 new  CreateModel.VocabularyName {
@@ -79,8 +80,10 @@ internal sealed class CoercedAdoptionCaseEditService(
                     ParentNames = new List<string>(),
                 }
             },
+            NodeTermIds = new List<int>(),
         };
-        await coercedAdoptionCaseCreator.CreateAsync(createDocument, connection);
+        await using var coercedAdoptionCaseCreator = await coercedAdoptionCaseCreatorFactory.CreateAsync(connection);
+        await coercedAdoptionCaseCreator.CreateAsync(createDocument);
         return createDocument.Id!.Value;
     }
 

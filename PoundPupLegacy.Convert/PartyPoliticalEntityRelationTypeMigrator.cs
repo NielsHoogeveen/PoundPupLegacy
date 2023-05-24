@@ -3,7 +3,7 @@
 internal sealed class PartyPoliticalEntityRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewPartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreator
+    INameableCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "political entity relation types";
@@ -11,7 +11,8 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await partyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var partyPoliticalEntityRelationTypeCreator = await partyPoliticalEntityRelationTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await partyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewPartyPoliticalEntityRelationType> ReadPoliticalEntityRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
@@ -69,9 +70,9 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -81,7 +82,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -102,6 +103,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
                     }),
                 HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
 
         }

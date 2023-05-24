@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -12,7 +13,7 @@ internal sealed class DisruptedPlacementCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.NewDisruptedPlacementCase> disruptedPlacementCaseCreator,
+    INameableCreatorFactory<EventuallyIdentifiableDisruptedPlacementCase> disruptedPlacementCaseCreatorFactory,
     ITextService textService
 ) : NodeEditServiceBase<DisruptedPlacementCase, ExistingDisruptedPlacementCase, NewDisruptedPlacementCase, CreateModel.NewDisruptedPlacementCase>(
     connection,
@@ -60,7 +61,7 @@ internal sealed class DisruptedPlacementCaseEditService(
             OwnerId = disruptedPlacementCase.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = disruptedPlacementCase.PublisherId,
-            TenantNodes = disruptedPlacementCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = disruptedPlacementCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -69,7 +70,7 @@ internal sealed class DisruptedPlacementCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = disruptedPlacementCase.Date?.ToDateTimeRange(),
+            Date = disruptedPlacementCase.Date,
             FileIdTileImage = null,
             VocabularyNames = new List<CreateModel.VocabularyName> {
                 new  CreateModel.VocabularyName {
@@ -79,8 +80,10 @@ internal sealed class DisruptedPlacementCaseEditService(
                     ParentNames = new List<string>(),
                 }
             },
+            NodeTermIds = new List<int>(),
         };
-        await disruptedPlacementCaseCreator.CreateAsync(createDocument, connection);
+        await using var disruptedPlacementCaseCreator = await disruptedPlacementCaseCreatorFactory.CreateAsync(connection);
+        await disruptedPlacementCaseCreator.CreateAsync(createDocument);
         return createDocument.Id!.Value;
     }
 

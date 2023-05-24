@@ -1,25 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class InterPersonalRelationCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<NewInterPersonalRelation> interPersonalRelationInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewInterPersonalRelation>
+internal sealed class InterPersonalRelationCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableInterPersonalRelation> interPersonalRelationInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory
+) : INodeCreatorFactory<EventuallyIdentifiableInterPersonalRelation>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewInterPersonalRelation> interPersonalRelations, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var interPersonalRelationWriter = await interPersonalRelationInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-        await foreach (var interPersonalRelation in interPersonalRelations) {
-            await nodeWriter.InsertAsync(interPersonalRelation);
-            await interPersonalRelationWriter.InsertAsync(interPersonalRelation);
-
-            foreach (var tenantNode in interPersonalRelation.TenantNodes) {
-                tenantNode.NodeId = interPersonalRelation.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-        }
-    }
+    public async Task<NodeCreator<EventuallyIdentifiableInterPersonalRelation>> CreateAsync(IDbConnection connection) =>
+        new(
+            new() 
+            {
+                await nodeInserterFactory.CreateAsync(connection),
+                await interPersonalRelationInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

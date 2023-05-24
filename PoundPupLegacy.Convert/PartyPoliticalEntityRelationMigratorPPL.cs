@@ -3,7 +3,7 @@
 internal sealed class PartyPoliticalEntityRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    IEntityCreator<NewPartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
+    INodeCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "party political enitity relation";
@@ -11,7 +11,8 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader), _postgresConnection);
+        await using var partyPoliticalEntityRelationCreator = await partyPoliticalEntityRelationCreatorFactory.CreateAsync(_postgresConnection);
+        await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader));
     }
 
     private async IAsyncEnumerable<NewPartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(
@@ -115,9 +116,9 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -127,7 +128,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -148,7 +149,8 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
                     : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
-                    })
+                    }),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

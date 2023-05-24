@@ -1,9 +1,11 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using PoundPupLegacy.CreateModel;
+
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class InterOrganizationalRelationToSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
     IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> interOrganizationalRelationUpdaterFactory,
-    IEntityCreator<CreateModel.NewInterOrganizationalRelation> interOrganizationalRelationCreator
+    INodeCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation> interOrganizationalRelationCreatorFactory
 ) : ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>>
 {
     public async Task SaveAsync(IEnumerable<ResolvedInterOrganizationalRelationTo> item, IDbConnection connection)
@@ -44,7 +46,7 @@ internal class InterOrganizationalRelationToSaveService(
                     Title = relation.Title,
                     OwnerId = relation.OwnerId,
                     AuthoringStatusId = 1,
-                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode {
+                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.NewTenantNodeForNewNode {
                         Id = null,
                         TenantId = Constants.PPL,
                         PublicationStatusId = tenantNode.PublicationStatusId,
@@ -63,9 +65,11 @@ internal class InterOrganizationalRelationToSaveService(
                     Description = relation.Description,
                     MoneyInvolved = relation.MoneyInvolved,
                     NumberOfChildrenInvolved = relation.NumberOfChildrenInvolved,
+                    NodeTermIds = new List<int>(),
                 };
             }
         }
-        await interOrganizationalRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
+        await using var interOrganizationalRelationCreator = await interOrganizationalRelationCreatorFactory.CreateAsync(connection);
+        await interOrganizationalRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable());
     }
 }

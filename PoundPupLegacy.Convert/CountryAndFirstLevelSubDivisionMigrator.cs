@@ -5,7 +5,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-    IEntityCreator<NewCountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionCreator
+    INameableCreatorFactory<EventuallyIdentifiableCountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionCreatorFactory
 ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "countries that are first level subdivisions";
@@ -15,16 +15,17 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
         await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
         await using var termReader = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
+        await using var countryAndFirstAndBottomLevelSubdivisionCreator = await countryAndFirstAndBottomLevelSubdivisionCreatorFactory.CreateAsync(_postgresConnection);
         await countryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(GetCountryAndFirstAndBottomLevelSubdivisions(
             nodeIdReader,
             vocabularyIdReader,
             termReader
-        ), _postgresConnection);
+        ));
         await countryAndFirstAndBottomLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndIntermediateLevelSubdivisions(
             nodeIdReader,
             vocabularyIdReader,
             termReader
-        ), _postgresConnection);
+        ));
     }
 
     private async IAsyncEnumerable<NewCountryAndFirstAndBottomLevelSubdivision> GetCountryAndFirstAndBottomLevelSubdivisions(
@@ -45,44 +46,44 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Name = "Åland",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.ALAND
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.ALAND
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.ALAND
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.ALAND
+                }
+            },
             NodeTypeId = 15,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
-                        TermName = "Åland",
-                        ParentNames = new List<string>{ "Northern Europe" },
-                    },
+                    OwnerId = Constants.OWNER_SYSTEM,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Åland",
+                    ParentNames = new List<string>{ "Northern Europe" },
                 },
+            },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3813
@@ -109,6 +110,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 VocabularyId = vocabularyId,
                 Name = "Autonomous region"
             }))!.NameableId,
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
@@ -116,44 +118,44 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Name = "Curaçao",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = "curacao",
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.CURACAO
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.CURACAO
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = "curacao",
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.CURACAO
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.CURACAO
+                }
+            },
             NodeTypeId = 15,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
-                        TermName = "Curaçao",
-                        ParentNames = new List<string>{ "Caribbean" },
-                    },
+                    OwnerId = Constants.OWNER_SYSTEM,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Curaçao",
+                    ParentNames = new List<string>{ "Caribbean" },
                 },
+            },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3809
@@ -180,6 +182,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 VocabularyId = vocabularyId,
                 Name = "Country"
             }))!.NameableId,
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
@@ -187,44 +190,44 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Name = "Sint Maarten",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = "sint_maarten",
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.SINT_MAARTEN
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.SINT_MAARTEN
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = "sint_maarten",
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.SINT_MAARTEN
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.SINT_MAARTEN
+                }
+            },
             NodeTypeId = 15,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
-                        TermName = "Sint Maarten",
-                        ParentNames = new List<string>{ "Caribbean" },
-                    },
+                    OwnerId = Constants.OWNER_SYSTEM,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "Sint Maarten",
+                    ParentNames = new List<string>{ "Caribbean" },
                 },
+            },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3809
@@ -251,6 +254,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 VocabularyId = vocabularyId,
                 Name = "Country"
             }))!.NameableId,
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
@@ -258,44 +262,44 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Name = "United States Minor Outlying Islands",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
+                }
+            },
             NodeTypeId = 15,
             CreatedDateTime = DateTime.Now,
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
-                        TermName = "United States Minor Outlying Islands",
-                        ParentNames = new List<string>{ "Oceania" },
-                    },
+                    OwnerId = Constants.OWNER_SYSTEM,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "United States Minor Outlying Islands",
+                    ParentNames = new List<string>{ "Oceania" },
                 },
+            },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = 3822
@@ -322,6 +326,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 VocabularyId = vocabularyId,
                 Name = "Outlying area"
             }))!.NameableId,
+            NodeTermIds = new List<int>(),
         };
     }
 
@@ -414,9 +419,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Name = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -426,7 +431,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -469,6 +474,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     VocabularyId = vocabularyId,
                     Name = reader.GetString("subdivision_type_name")
                 }))!.NameableId,
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

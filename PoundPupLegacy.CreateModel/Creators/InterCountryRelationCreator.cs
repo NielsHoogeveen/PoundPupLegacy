@@ -1,25 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class InterCountryRelationCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<NewInterCountryRelation> interCountryRelationInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewInterCountryRelation>
+internal sealed class InterCountryRelationCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableInterCountryRelation> interCountryRelationInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory
+) : INodeCreatorFactory<EventuallyIdentifiableInterCountryRelation>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewInterCountryRelation> interCountryRelations, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var interCountryRelationWriter = await interCountryRelationInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-        await foreach (var interCountryRelation in interCountryRelations) {
-            await nodeWriter.InsertAsync(interCountryRelation);
-            await interCountryRelationWriter.InsertAsync(interCountryRelation);
-
-            foreach (var tenantNode in interCountryRelation.TenantNodes) {
-                tenantNode.NodeId = interCountryRelation.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-        }
-    }
+    public async Task<NodeCreator<EventuallyIdentifiableInterCountryRelation>> CreateAsync(IDbConnection connection) =>
+        new(
+            new () 
+            {
+                await nodeInserterFactory.CreateAsync(connection),
+                await interCountryRelationInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

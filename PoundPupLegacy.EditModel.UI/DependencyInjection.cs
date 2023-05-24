@@ -1,4 +1,5 @@
 ﻿global using PoundPupLegacy.Common;
+using PoundPupLegacy.CreateModel.Updaters;
 using Microsoft.Extensions.DependencyInjection;
 using PoundPupLegacy.EditModel.UI.Services;
 using PoundPupLegacy.EditModel.UI.Services.Implementation;
@@ -12,7 +13,7 @@ public static class DependencyInjection
         services.AddEditModelReaders();
         services.AddEditModelDeleters();
         services.AddEditModelInserters();
-        services.AddEditModelUpdaters();
+        services.AddCreateModelUpdaters();
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
         services.AddTransient<IEditService<AbuseCase, AbuseCase>, AbuseCaseEditService>();
         services.AddTransient<IEditService<BlogPost, BlogPost>, BlogPostEditService>();

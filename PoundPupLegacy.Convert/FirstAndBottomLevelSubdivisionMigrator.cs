@@ -6,7 +6,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<NewFirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreator
+        INameableCreatorFactory<EventuallyIdentifiableFirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "first and bottom level subdivisions";
@@ -56,9 +56,9 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 NodeTypeId = int.Parse(parts[4]),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -68,7 +68,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -90,6 +90,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                     VocabularyId = vocabularyId,
                     Name = parts[11].Trim()
                 })).NameableId,
+                NodeTermIds = new List<int>(),
             };
         }
     }
@@ -349,17 +350,18 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
         await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
         await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
+        await using var firstAndBottomLevelSubdivisionCreator = await firstAndBottomLevelSubdivisionCreatorFactory.CreateAsync(_postgresConnection);
         await firstAndBottomLevelSubdivisionCreator.CreateAsync(ReadDirectSubDivisionCsv(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByNameableId,
             termReaderByName
-        ), _postgresConnection);
+        ));
         await firstAndBottomLevelSubdivisionCreator.CreateAsync(ReadFormalFirstLevelSubdivisions(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName
-        ), _postgresConnection);
+        ));
     }
     private async IAsyncEnumerable<NewFirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
@@ -457,9 +459,9 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 Name = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -485,7 +487,8 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
                     VocabularyId = vocabularyId,
                     Name = reader.GetString("subdivision_type_name")
-                })).NameableId
+                })).NameableId,
+                NodeTermIds = new List<int>(),
             };
 
         }

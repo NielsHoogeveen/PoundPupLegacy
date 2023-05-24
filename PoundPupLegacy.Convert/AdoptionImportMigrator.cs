@@ -4,7 +4,7 @@ internal sealed class AdoptionImportMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode> nodeReaderFactory,
-    IEntityCreator<NewInterCountryRelation> interCountryRelationCreator
+    INodeCreatorFactory<EventuallyIdentifiableInterCountryRelation> interCountryRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -90,9 +90,9 @@ internal sealed class AdoptionImportMigrator(
 
 
         var r = ReadAdoptionExportYears(nodeReader, nodeIdReader);
-
-        await interCountryRelationCreator.CreateAsync(r, _postgresConnection);
-        await interCountryRelationCreator.CreateAsync(x, _postgresConnection);
+        await using var interCountryRelationCreator = await interCountryRelationCreatorFactory.CreateAsync(_postgresConnection);
+        await interCountryRelationCreator.CreateAsync(r);
+        await interCountryRelationCreator.CreateAsync(x);
 
         var cmd = _postgresConnection.CreateCommand();
         cmd.CommandText = $"""
@@ -150,19 +150,20 @@ internal sealed class AdoptionImportMigrator(
             NodeTypeId = 50,
             MoneyInvolved = 0,
             NumberOfChildrenInvolved = numberOfChildren,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = null
-                    }
-                },
+                    Id = null,
+                    TenantId = 1,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = null
+                }
+            },
+            NodeTermIds = new List<int>(),
         };
     }
     private async IAsyncEnumerable<NewInterCountryRelation> ReadAdoptionExportYears(

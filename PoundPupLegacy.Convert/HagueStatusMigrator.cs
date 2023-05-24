@@ -2,14 +2,15 @@
 
 internal sealed class HagueStatusMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewHagueStatus> hagueStatusCreator
+    INameableCreatorFactory<EventuallyIdentifiableHagueStatus> hagueStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "Hague statuses";
 
     protected override async Task MigrateImpl()
     {
-        await hagueStatusCreator.CreateAsync(ReadHagueStatuses(), _postgresConnection);
+        await using var hagueStatusCreator = await hagueStatusCreatorFactory.CreateAsync(_postgresConnection);
+        await hagueStatusCreator.CreateAsync(ReadHagueStatuses());
     }
 
     private async IAsyncEnumerable<NewHagueStatus> ReadHagueStatuses()
@@ -59,9 +60,9 @@ internal sealed class HagueStatusMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -71,7 +72,7 @@ internal sealed class HagueStatusMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -86,6 +87,7 @@ internal sealed class HagueStatusMigrator(
                 Description = "",
                 FileIdTileImage = null,
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
 
         }

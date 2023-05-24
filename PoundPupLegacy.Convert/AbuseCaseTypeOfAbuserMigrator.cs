@@ -2,7 +2,7 @@
 
 internal sealed class AbuseCaseTypeOfAbuserMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreator,
+    IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -11,7 +11,8 @@ internal sealed class AbuseCaseTypeOfAbuserMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await abuseCaseTypeOfAbuserCreator.CreateAsync(ReadAbuseCaseTypeOfAbusers(nodeIdReader), _postgresConnection);
+        await using var abuseCaseTypeOfAbuserCreator = await abuseCaseTypeOfAbuserCreatorFactory.CreateAsync(_postgresConnection);
+        await abuseCaseTypeOfAbuserCreator.CreateAsync(ReadAbuseCaseTypeOfAbusers(nodeIdReader));
     }
     private async IAsyncEnumerable<AbuseCaseTypeOfAbuser> ReadAbuseCaseTypeOfAbusers(IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {

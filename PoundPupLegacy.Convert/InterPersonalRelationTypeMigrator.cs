@@ -3,7 +3,7 @@
 internal sealed class InterPersonalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewInterPersonalRelationType> interPersonalRelationTypeCreator
+    INameableCreatorFactory<EventuallyIdentifiableInterPersonalRelationType> interPersonalRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-personal relation types";
@@ -11,7 +11,8 @@ internal sealed class InterPersonalRelationTypeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var interPersonalRelationTypeCreator = await interPersonalRelationTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewInterPersonalRelationType> ReadInterPersonalRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
@@ -67,9 +68,9 @@ internal sealed class InterPersonalRelationTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -79,7 +80,7 @@ internal sealed class InterPersonalRelationTypeMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -100,6 +101,7 @@ internal sealed class InterPersonalRelationTypeMigrator(
                         }),
                 VocabularyNames = vocabularyNames,
                 IsSymmetric = reader.GetBoolean("is_symmetric"),
+                NodeTermIds = new List<int>(),
             };
 
         }

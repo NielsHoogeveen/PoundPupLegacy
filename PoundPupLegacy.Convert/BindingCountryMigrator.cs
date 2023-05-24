@@ -3,7 +3,7 @@
 internal sealed class BindingCountryMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<NewBindingCountry> bindingCountryCreator
+        INameableCreatorFactory<EventuallyIdentifiableBindingCountry> bindingCountryCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "binding countries";
@@ -11,7 +11,8 @@ internal sealed class BindingCountryMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader), _postgresConnection);
+        await using var bindingCountryCreator = await bindingCountryCreatorFactory.CreateAsync(_postgresConnection);
+        await bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader));
     }
     private async IAsyncEnumerable<NewBindingCountry> ReadBindingCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
@@ -71,9 +72,9 @@ internal sealed class BindingCountryMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -83,7 +84,7 @@ internal sealed class BindingCountryMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -115,6 +116,7 @@ internal sealed class BindingCountryMigrator(
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
+                NodeTermIds = new List<int>(),
             };
             yield return country;
 

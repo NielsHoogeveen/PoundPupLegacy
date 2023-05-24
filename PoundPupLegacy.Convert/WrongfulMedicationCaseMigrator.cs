@@ -2,14 +2,15 @@
 
 internal sealed class WrongfulMedicationCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewWrongfulMedicationCase> wrongfulMedicationCaseCreator
+    INameableCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase> wrongfulMedicationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "wrongful medication cases";
 
     protected override async Task MigrateImpl()
     {
-        await wrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases(), _postgresConnection);
+        await using var wrongfulMedicationCaseCreator = await wrongfulMedicationCaseCreatorFactory.CreateAsync(_postgresConnection);
+        await wrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases());
     }
     private async IAsyncEnumerable<NewWrongfulMedicationCase> ReadWrongfulMedicationCases()
     {
@@ -58,9 +59,9 @@ internal sealed class WrongfulMedicationCaseMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -70,7 +71,7 @@ internal sealed class WrongfulMedicationCaseMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -83,9 +84,10 @@ internal sealed class WrongfulMedicationCaseMigrator(
                 },
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 VocabularyNames = vocabularyNames,
-                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
+                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
+                NodeTermIds = new List<int>(),
             };
             yield return country;
 

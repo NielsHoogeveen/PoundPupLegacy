@@ -1,13 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class PollStatusCreator(IDatabaseInserterFactory<PollStatus> pollStatusInserterFactory) : EntityCreator<PollStatus>
+internal sealed class PollStatusCreatorFactory(
+    IDatabaseInserterFactory<PollStatus> pollStatusInserterFactory
+) : IInsertingEntityCreatorFactory<PollStatus>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<PollStatus> pollStatuss, IDbConnection connection)
-    {
-        await using var pollStatusWriter = await pollStatusInserterFactory.CreateAsync(connection);
-
-        await foreach (var pollStatus in pollStatuss) {
-            await pollStatusWriter.InsertAsync(pollStatus);
-        }
-    }
+    public async Task<InsertingEntityCreator<PollStatus>> CreateAsync(IDbConnection connection) => 
+        new(new() {
+            await pollStatusInserterFactory.CreateAsync(connection)
+        });
 }

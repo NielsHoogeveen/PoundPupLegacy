@@ -5,7 +5,7 @@ internal sealed class BoundCountryMigrator(
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<NewBoundCountry> boundCountryCreator
+        INameableCreatorFactory<EventuallyIdentifiableBoundCountry> boundCountryCreatorFactory
     ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "bound countries";
@@ -16,11 +16,12 @@ internal sealed class BoundCountryMigrator(
         await using var vocabularyReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
         await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
+        await using var boundCountryCreator = await boundCountryCreatorFactory.CreateAsync(_postgresConnection);
         await boundCountryCreator.CreateAsync(ReadBoundCountries(
             nodeIdReader,
             vocabularyReader,
             termReaderByName
-        ), _postgresConnection);
+        ));
     }
 
     private async IAsyncEnumerable<NewBoundCountry> ReadBoundCountries(
@@ -89,9 +90,9 @@ internal sealed class BoundCountryMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -101,7 +102,7 @@ internal sealed class BoundCountryMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -138,6 +139,7 @@ internal sealed class BoundCountryMigrator(
                 MarriageRequirements = null,
                 OtherRequirements = null,
                 SubdivisionTypeId = subdivisionType!.NameableId,
+                NodeTermIds = new List<int>(),
             };
 
         }

@@ -1,13 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CommentCreator(IDatabaseInserterFactory<Comment> commentInserterFactory) : EntityCreator<Comment>
+internal sealed class CommentCreatorFactory(
+    IDatabaseInserterFactory<Comment> commentInserterFactory
+) : IInsertingEntityCreatorFactory<Comment>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Comment> comments, IDbConnection connection)
-    {
-        await using var commentWriter = await commentInserterFactory.CreateAsync(connection);
-
-        await foreach (var comment in comments) {
-            await commentWriter.InsertAsync(comment);
-        }
-    }
+    public async Task<InsertingEntityCreator<Comment>> CreateAsync(IDbConnection connection) => 
+        new (new () {
+            await commentInserterFactory.CreateAsync(connection)
+        });
 }

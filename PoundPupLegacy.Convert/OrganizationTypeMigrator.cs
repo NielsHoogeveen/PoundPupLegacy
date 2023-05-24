@@ -3,7 +3,7 @@
 internal sealed class OrganizationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewOrganizationType> organizationTypeCreator
+    INameableCreatorFactory<EventuallyIdentifiableOrganizationType> organizationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "organization types";
@@ -11,7 +11,8 @@ internal sealed class OrganizationTypeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await organizationTypeCreator.CreateAsync(ReadOrganizationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var organizationTypeCreator = await organizationTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await organizationTypeCreator.CreateAsync(ReadOrganizationTypes(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewOrganizationType> ReadOrganizationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
@@ -140,9 +141,9 @@ internal sealed class OrganizationTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -152,7 +153,7 @@ internal sealed class OrganizationTypeMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -173,6 +174,7 @@ internal sealed class OrganizationTypeMigrator(
                     }),
                 VocabularyNames = vocabularyNames,
                 HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
+                NodeTermIds = new List<int>(),
             };
         }
         reader.Close();
@@ -186,9 +188,9 @@ internal sealed class OrganizationTypeMigrator(
             Title = Constants.POLITICAL_PARTY_NAME,
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -198,7 +200,7 @@ internal sealed class OrganizationTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.POLITICAL_PARTY
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -229,6 +231,7 @@ internal sealed class OrganizationTypeMigrator(
                 }
             },
             HasConcreteSubtype = true,
+            NodeTermIds = new List<int>(),
         };
     }
 }

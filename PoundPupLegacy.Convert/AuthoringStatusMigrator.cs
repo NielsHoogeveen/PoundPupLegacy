@@ -2,7 +2,7 @@
 
 internal sealed class AuthoringStatusMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<AuthoringStatus> authoringStatusCreator
+    IInsertingEntityCreatorFactory<AuthoringStatus> authoringStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "authoring statuses";
@@ -22,6 +22,7 @@ internal sealed class AuthoringStatusMigrator(
 
     protected override async Task MigrateImpl()
     {
-        await authoringStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
+        await using var authoringStatusCreator = await authoringStatusCreatorFactory.CreateAsync(_postgresConnection);
+        await authoringStatusCreator.CreateAsync(GetNodeStatuses());
     }
 }

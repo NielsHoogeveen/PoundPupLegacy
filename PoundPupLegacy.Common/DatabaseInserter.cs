@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Common;
 public interface IDatabaseInserter : IDatabaseAccessor
 {
 }
-public interface IDatabaseInserter<T> : IDatabaseInserter
+public interface IDatabaseInserter< in T> : IDatabaseInserter
     where T : IRequest
 {
     Task InsertAsync(T item);

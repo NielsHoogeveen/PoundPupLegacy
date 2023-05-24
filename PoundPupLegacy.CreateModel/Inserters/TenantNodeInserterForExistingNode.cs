@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = TenantNode;
+using Request = NewTenantNodeForExistingNode;
 
-public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
+public sealed class TenantNodeInserterForExistingNodeFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    private static readonly NullCheckingAlternativeIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
     private static readonly TrimmingNullableStringDatabaseParameter UrlPath = new() { Name = "url_path" };
-    private static readonly NullCheckingIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     private static readonly NullableIntegerDatabaseParameter SubgroupId = new() { Name = "subgroup_id" };
     private static readonly NonNullableIntegerDatabaseParameter PublicationStatusId = new() { Name = "publication_status_id" };
 
@@ -16,7 +16,7 @@ public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFa
     {
         return new ParameterValue[] {
             ParameterValue.Create(TenantId, request.TenantId),
-            ParameterValue.Create(UrlId, (request.UrlId, request.NodeId)),
+            ParameterValue.Create(UrlId, request.NodeId),
             ParameterValue.Create(UrlPath, request.UrlPath),
             ParameterValue.Create(NodeId, request.NodeId),
             ParameterValue.Create(SubgroupId, request.SubgroupId),

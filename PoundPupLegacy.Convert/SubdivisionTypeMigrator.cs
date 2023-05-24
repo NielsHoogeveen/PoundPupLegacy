@@ -2,7 +2,7 @@
 
 internal sealed class SubdivisionTypeMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewSubdivisionType> subdivisionTypeCreator
+    INameableCreatorFactory<EventuallyIdentifiableSubdivisionType> subdivisionTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "subdivision types";
@@ -103,9 +103,9 @@ internal sealed class SubdivisionTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -115,7 +115,7 @@ internal sealed class SubdivisionTypeMigrator(
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -139,12 +139,14 @@ internal sealed class SubdivisionTypeMigrator(
                         ParentNames = new List<string>(),
                     },
                 },
+                NodeTermIds = new List<int>(),
             };
 
         }
     }
     protected override async Task MigrateImpl()
     {
-        await subdivisionTypeCreator.CreateAsync(GetSubdivisionTypes(), _postgresConnection);
+        await using var subdivisionTypeCreator = await subdivisionTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await subdivisionTypeCreator.CreateAsync(GetSubdivisionTypes());
     }
 }

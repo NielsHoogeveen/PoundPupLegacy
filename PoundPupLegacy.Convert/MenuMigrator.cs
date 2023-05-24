@@ -5,8 +5,8 @@ internal sealed class MenuMigrator(
         IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
         IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TenantNodeIdReaderByUrlIdRequest, int> tenantNodeIdReaderByUrlIdFactory,
-        IEntityCreator<TenantNodeMenuItem> tenantNodeMenuItemCreator,
-        IEntityCreator<ActionMenuItem> actionMenuItemCreator
+        IInsertingEntityCreatorFactory<TenantNodeMenuItem> tenantNodeMenuItemCreatorFactory,
+        IInsertingEntityCreatorFactory<ActionMenuItem> actionMenuItemCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
 {
@@ -16,9 +16,10 @@ internal sealed class MenuMigrator(
     {
         await using var actionIdReaderByPath = await actionIdReaderByPathFactory.CreateAsync(_postgresConnection);
         await using var createNodeActionIdReaderByNodeTypeId = await createNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
-
-        await tenantNodeMenuItemCreator.CreateAsync(GetTenantNodeMenuItems(), _postgresConnection);
-        await actionMenuItemCreator.CreateAsync(GetActionMenuItems(actionIdReaderByPath, createNodeActionIdReaderByNodeTypeId), _postgresConnection);
+        await using var tenantNodeMenuItemCreator = await tenantNodeMenuItemCreatorFactory.CreateAsync(_postgresConnection);
+        await using var actionMenuItemCreator = await actionMenuItemCreatorFactory.CreateAsync(_postgresConnection);
+        await tenantNodeMenuItemCreator.CreateAsync(GetTenantNodeMenuItems());
+        await actionMenuItemCreator.CreateAsync(GetActionMenuItems(actionIdReaderByPath, createNodeActionIdReaderByNodeTypeId));
     }
 
     private async IAsyncEnumerable<ActionMenuItem> GetActionMenuItems(

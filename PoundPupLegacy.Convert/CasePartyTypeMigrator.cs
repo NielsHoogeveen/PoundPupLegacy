@@ -2,13 +2,14 @@
 
 internal sealed class CasePartyTypeMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<NewCasePartyType> casePartyTypeCreator
+        INameableCreatorFactory<EventuallyIdentifiableCasePartyType> casePartyTypeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "case relation types";
     protected override async Task MigrateImpl()
     {
-        await casePartyTypeCreator.CreateAsync(GetCaseRelationTypes(), _postgresConnection);
+        await using var casePartyTypeCreator = await casePartyTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await casePartyTypeCreator.CreateAsync(GetCaseRelationTypes());
     }
 
     internal static async IAsyncEnumerable<NewCasePartyType> GetCaseRelationTypes()
@@ -23,29 +24,29 @@ internal sealed class CasePartyTypeMigrator(
             Title = Constants.HOMESTUDY_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
-              {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.HOMESTUDY_CASE_TYPE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.HOMESTUDY_CASE_TYPE
-                    }
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.HOMESTUDY_CASE_TYPE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.HOMESTUDY_CASE_TYPE
+                }
+            },
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
@@ -58,7 +59,8 @@ internal sealed class CasePartyTypeMigrator(
                     TermName = Constants.HOMESTUDY_CASE_TYPE_NAME,
                     ParentNames = new List<string>(),
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -68,29 +70,29 @@ internal sealed class CasePartyTypeMigrator(
             Title = Constants.PLACEMENT_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
-              {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.PLACEMENT_CASE_TYPE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.PLACEMENT_CASE_TYPE
-                    }
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.PLACEMENT_CASE_TYPE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.PLACEMENT_CASE_TYPE
+                }
+            },
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
@@ -103,7 +105,8 @@ internal sealed class CasePartyTypeMigrator(
                     TermName = Constants.PLACEMENT_CASE_TYPE_NAME,
                     ParentNames = new List<string>(),
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -113,29 +116,29 @@ internal sealed class CasePartyTypeMigrator(
             Title = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
-              {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.POSTPLACEMENT_CASE_TYPE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.POSTPLACEMENT_CASE_TYPE
-                    }
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.POSTPLACEMENT_CASE_TYPE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.POSTPLACEMENT_CASE_TYPE
+                }
+            },
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
@@ -148,7 +151,8 @@ internal sealed class CasePartyTypeMigrator(
                     TermName = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
                     ParentNames = new List<string>(),
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -158,29 +162,29 @@ internal sealed class CasePartyTypeMigrator(
             Title = Constants.FACILITATION_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
-              {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.FACILITATION_CASE_TYPE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.FACILITATION_CASE_TYPE
-                    }
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.FACILITATION_CASE_TYPE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.FACILITATION_CASE_TYPE
+                }
+            },
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
@@ -193,7 +197,8 @@ internal sealed class CasePartyTypeMigrator(
                     TermName = Constants.FACILITATION_CASE_TYPE_NAME,
                     ParentNames = new List<string>(),
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -203,29 +208,29 @@ internal sealed class CasePartyTypeMigrator(
             Title = Constants.INSTITUTION_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
-              {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.INSTITUTION_CASE_TYPE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.INSTITUTION_CASE_TYPE
-                    }
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.INSTITUTION_CASE_TYPE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.INSTITUTION_CASE_TYPE
+                }
+            },
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
@@ -238,7 +243,8 @@ internal sealed class CasePartyTypeMigrator(
                     TermName = Constants.INSTITUTION_CASE_TYPE_NAME,
                     ParentNames = new List<string>(),
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -248,29 +254,29 @@ internal sealed class CasePartyTypeMigrator(
             Title = Constants.THERAPY_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
-              {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.THERAPY_CASE_TYPE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.THERAPY_CASE_TYPE
-                    }
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.THERAPY_CASE_TYPE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.THERAPY_CASE_TYPE
+                }
+            },
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
@@ -283,7 +289,8 @@ internal sealed class CasePartyTypeMigrator(
                     TermName = Constants.THERAPY_CASE_TYPE_NAME,
                     ParentNames = new List<string>(),
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -293,29 +300,29 @@ internal sealed class CasePartyTypeMigrator(
             Title = Constants.AUTHORITIES_CASE_TYPE_NAME,
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
-              {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.AUTHORITIES_CASE_TYPE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.AUTHORITIES_CASE_TYPE
-                    }
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.AUTHORITIES_CASE_TYPE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.AUTHORITIES_CASE_TYPE
+                }
+            },
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
@@ -328,7 +335,8 @@ internal sealed class CasePartyTypeMigrator(
                     TermName = Constants.AUTHORITIES_CASE_TYPE_NAME,
                     ParentNames = new List<string>(),
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
     }
 }

@@ -1,11 +1,13 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel.Creators;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class OrganizationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-    IEntityCreator<Organization> organizationCreator
+    INameableCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -18,8 +20,8 @@ internal sealed class OrganizationMigratorCPCT(
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
-
-        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId), _postgresConnection);
+        await using var organizationCreator = await organizationCreatorFactory.CreateAsync(_postgresConnection);
+        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId));
     }
 
     private async IAsyncEnumerable<NewBasicOrganization> ReadOrganizations(
@@ -227,9 +229,9 @@ internal sealed class OrganizationMigratorCPCT(
             var id = reader.GetInt32("id");
 
 
-            var tenantNodes = new List<TenantNode>
+            var tenantNodes = new List<NewTenantNodeForNewNode>
             {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -244,7 +246,7 @@ internal sealed class OrganizationMigratorCPCT(
             var toSkipForPPL = new List<int> { 34447, 42413, 46479, 48178, 39305, 45402, 46671, 33634, 48051 };
 
             if (!organizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(miscellaneous) && !toSkipForPPL.Contains(id)) {
-                tenantNodes.Add(new TenantNode {
+                tenantNodes.Add(new NewTenantNodeForNewNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -273,6 +275,7 @@ internal sealed class OrganizationMigratorCPCT(
                 FileIdTileImage = null,
                 VocabularyNames = vocabularyNames,
                 OrganizationTypes = organizationOrganizationTypes,
+                NodeTermIds = new List<int>(),
             };
 
         }

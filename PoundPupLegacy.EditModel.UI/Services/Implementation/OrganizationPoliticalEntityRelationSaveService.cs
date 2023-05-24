@@ -1,9 +1,11 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using PoundPupLegacy.CreateModel;
+
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class OrganizationPoliticalEntityRelationSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
     IDatabaseUpdaterFactory<PartyPoliticalEntityRelationUpdaterRequest> partyPoliticalEntityRelationUpdaterFactory,
-    IEntityCreator<CreateModel.NewPartyPoliticalEntityRelation> partyPoliticalEntityRelationCreator
+    INodeCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationCreatorFactory
 ) : ISaveService<IEnumerable<OrganizationPoliticalEntityRelation>>
 {
     public async Task SaveAsync(IEnumerable<OrganizationPoliticalEntityRelation> item, IDbConnection connection)
@@ -40,7 +42,7 @@ internal class OrganizationPoliticalEntityRelationSaveService(
                     Title = relation.Title,
                     OwnerId = relation.OwnerId,
                     AuthoringStatusId = 1,
-                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode {
+                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.NewTenantNodeForNewNode {
                         Id = null,
                         TenantId = Constants.PPL,
                         PublicationStatusId = tenantNode.PublicationStatusId,
@@ -55,9 +57,11 @@ internal class OrganizationPoliticalEntityRelationSaveService(
                     PartyPoliticalEntityRelationTypeId = relation.OrganizationPoliticalEntityRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
+                    NodeTermIds = new List<int>(),
                 };
             }
         }
-        await partyPoliticalEntityRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
+        await using var partyPoliticalEntityRelationCreator = await partyPoliticalEntityRelationCreatorFactory.CreateAsync(connection);
+        await partyPoliticalEntityRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable());
     }
 }

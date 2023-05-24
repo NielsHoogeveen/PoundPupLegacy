@@ -2,14 +2,15 @@
 
 internal sealed class BlogPostMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<NewBlogPost> blogPostCreator
+        INodeCreatorFactory<EventuallyIdentifiableBlogPost> blogPostCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "blog posts";
 
     protected override async Task MigrateImpl()
     {
-        await blogPostCreator.CreateAsync(ReadBlogPosts(), _postgresConnection);
+        await using var blogPostCreator = await blogPostCreatorFactory.CreateAsync(_postgresConnection);
+        await blogPostCreator.CreateAsync(ReadBlogPosts());
     }
     private async IAsyncEnumerable<NewBlogPost> ReadBlogPosts()
     {
@@ -45,9 +46,9 @@ internal sealed class BlogPostMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -61,8 +62,7 @@ internal sealed class BlogPostMigrator(
                 NodeTypeId = 35,
                 Text = TextToHtml(text),
                 Teaser = TextToTeaser(text),
-
-
+                NodeTermIds = new List<int>(),
             };
             yield return discussion;
 

@@ -1,17 +1,19 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel.Creators;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class UserMigrator(
     IDatabaseConnections databaseConnections,
     IAnonimousUserCreator anonimousUserCreator,
-    IEntityCreator<SystemGroup> systemGroupCreator,
-    IEntityCreator<AccessRole> accessRoleCreator,
-    IEntityCreator<Tenant> tenantCreator,
-    IEntityCreator<ContentSharingGroup> contentSharingGroupCreator,
-    IEntityCreator<Subgroup> subgroupCreator,
-    IEntityCreator<User> userCreator,
-    IEntityCreator<Collective> collectiveCreator,
-    IEntityCreator<CollectiveUser> collectiveUserCreator,
-    IEntityCreator<UserGroupUserRoleUser> userGroupUserRoleUserCreator
+    IEntityCreatorFactory<SystemGroup> systemGroupCreatorFactory,
+    IInsertingEntityCreatorFactory<AccessRole> accessRoleCreatorFactory,
+    IInsertingEntityCreatorFactory<Tenant> tenantCreatorFactory,
+    IInsertingEntityCreatorFactory<ContentSharingGroup> contentSharingGroupCreatorFactory,
+    IInsertingEntityCreatorFactory<Subgroup> subgroupCreatorFactory,
+    IInsertingEntityCreatorFactory<User> userCreatorFactory,
+    IInsertingEntityCreatorFactory<Collective> collectiveCreatorFactory,
+    IInsertingEntityCreatorFactory<CollectiveUser> collectiveUserCreatorFactory,
+    IInsertingEntityCreatorFactory<UserGroupUserRoleUser> userGroupUserRoleUserCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "users";
@@ -255,8 +257,11 @@ internal sealed class UserMigrator(
     protected override async Task MigrateImpl()
     {
         await anonimousUserCreator.CreateAsync(_postgresConnection);
-        await tenantCreator.CreateAsync(GetTenants(), _postgresConnection);
-        await userCreator.CreateAsync(ReadUsers(), _postgresConnection);
+        await using var tenantCreator = await tenantCreatorFactory.CreateAsync(_postgresConnection);
+        await using var userCreator = await userCreatorFactory.CreateAsync(_postgresConnection);
+        await using var systemGroupCreator = await systemGroupCreatorFactory.CreateAsync(_postgresConnection);
+        await tenantCreator.CreateAsync(GetTenants());
+        await userCreator.CreateAsync(ReadUsers());
         await systemGroupCreator.CreateAsync(new SystemGroup {
             VocabularyTagging = new NewVocabulary {
                 Id = null,
@@ -267,46 +272,54 @@ internal sealed class UserMigrator(
                 Title = Constants.VOCABULARY_TOPICS,
                 OwnerId = Constants.OWNER_SYSTEM,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>()
-            {
-                new TenantNode
+                TenantNodes = new List<NewTenantNodeForNewNode>()
                 {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    NodeId = null,
-                    SubgroupId = null,
-                    UrlId = Constants.TOPICS
+                    new NewTenantNodeForNewNode
+                    {
+                        Id = null,
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.TOPICS
+                    },
+                    new NewTenantNodeForNewNode
+                    {
+                        Id = null,
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        NodeId = null,
+                        SubgroupId = null,
+                        UrlId = Constants.TOPICS
+                    }
+
                 },
-                new TenantNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    NodeId = null,
-                    SubgroupId = null,
-                    UrlId = Constants.TOPICS
-                }
-
-            },
                 NodeTypeId = Constants.VOCABULARY,
-                Description = ""
+                Description = "",
+                NodeTermIds = new List<int>(),
             }
-        }, _postgresConnection);
+        });
 
-        await contentSharingGroupCreator.CreateAsync(GetContentSharingGroups(), _postgresConnection);
-        await subgroupCreator.CreateAsync(GetSubgroups(), _postgresConnection);
-        await accessRoleCreator.CreateAsync(GetAccessRoles(), _postgresConnection);
+        await using var contentSharingGroupCreator = await contentSharingGroupCreatorFactory.CreateAsync(_postgresConnection);
+        await using var subgroupCreator = await subgroupCreatorFactory.CreateAsync(_postgresConnection);
+        await using var accessRoleCreator = await accessRoleCreatorFactory.CreateAsync(_postgresConnection);
+        await using var collectiveCreator = await collectiveCreatorFactory.CreateAsync(_postgresConnection);
+        await using var collectiveUserCreator = await collectiveUserCreatorFactory.CreateAsync(_postgresConnection);
+        await using var userGroupUserRoleUserCreator = await userGroupUserRoleUserCreatorFactory.CreateAsync(_postgresConnection);
 
-        await collectiveCreator.CreateAsync(GetCollectives(), _postgresConnection);
-        await collectiveUserCreator.CreateAsync(GetCollectiveUsers(), _postgresConnection);
-        await userGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers(), _postgresConnection);
-        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_MEMBER, UserId = (int)x.Id! }), _postgresConnection);
-        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_EVERYONE, UserId = (int)x.Id! }), _postgresConnection);
-        await userGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.CPCT, UserRoleId = Constants.CPCT_MEMBER, UserId = x }).ToAsyncEnumerable(), _postgresConnection);
-        await userGroupUserRoleUserCreator.CreateAsync(ReadAdultAftermathMembers(), _postgresConnection);
+        await contentSharingGroupCreator.CreateAsync(GetContentSharingGroups());
+        await subgroupCreator.CreateAsync(GetSubgroups());
+        await accessRoleCreator.CreateAsync(GetAccessRoles());
+
+        await collectiveCreator.CreateAsync(GetCollectives());
+        await collectiveUserCreator.CreateAsync(GetCollectiveUsers());
+        await userGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers());
+        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_MEMBER, UserId = (int)x.Id! }));
+        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_EVERYONE, UserId = (int)x.Id! }));
+        await userGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.CPCT, UserRoleId = Constants.CPCT_MEMBER, UserId = x }).ToAsyncEnumerable());
+        await userGroupUserRoleUserCreator.CreateAsync(ReadAdultAftermathMembers());
 
     }
     private async IAsyncEnumerable<User

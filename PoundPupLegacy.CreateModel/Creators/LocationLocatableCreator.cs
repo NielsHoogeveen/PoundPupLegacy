@@ -1,13 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class LocationLocatableCreator(IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory) : EntityCreator<LocationLocatable>
+internal sealed class LocationLocatableCreatorFactory(
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
+    ) : IInsertingEntityCreatorFactory<LocationLocatable>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<LocationLocatable> locationLocatables, IDbConnection connection)
-    {
-        await using var locationLocatableWriter = await locationLocatableInserterFactory.CreateAsync(connection);
-
-        await foreach (var locationLocatable in locationLocatables) {
-            await locationLocatableWriter.InsertAsync(locationLocatable);
-        }
-    }
+    public async Task<InsertingEntityCreator<LocationLocatable>> CreateAsync(IDbConnection connection) => 
+        new( new() 
+        { 
+            await locationLocatableInserterFactory.CreateAsync(connection) 
+        });
 }

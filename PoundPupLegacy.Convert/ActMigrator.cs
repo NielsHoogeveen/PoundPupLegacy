@@ -2,7 +2,7 @@
 
 internal sealed class ActMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewAct> actCreator
+    INameableCreatorFactory<EventuallyIdentifiableAct> actCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -10,7 +10,8 @@ internal sealed class ActMigrator(
 
     protected override async Task MigrateImpl()
     {
-        await actCreator.CreateAsync(ReadArticles(), _postgresConnection);
+        await using var actCreator = await actCreatorFactory.CreateAsync(_postgresConnection);
+        await actCreator.CreateAsync(ReadArticles());
 
     }
 
@@ -141,9 +142,9 @@ internal sealed class ActMigrator(
                 Title = title,
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -159,6 +160,7 @@ internal sealed class ActMigrator(
                 VocabularyNames = vocabularyNames,
                 FileIdTileImage = null,
                 EnactmentDate = GetEnactmentDate(id),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

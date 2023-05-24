@@ -9,15 +9,15 @@ public interface EventuallyIdentifiableCase : Case, EventuallyIdentifiableLocata
 
 public interface Case : Locatable, Documentable, Nameable
 {
-    DateTimeRange? Date { get; }
+    FuzzyDate? Date { get; }
 
 }
 
 public abstract record NewCaseBase: NewNameableBase, EventuallyIdentifiableCase
 {
-    public required DateTimeRange? Date { get; init; }
+    public required FuzzyDate? Date { get; init; }
 }
 public abstract record ExistingCaseBase : ExistingNameableBase, ImmediatelyIdentifiableCase
 {
-    public required DateTimeRange? Date { get; init; }
+    public required FuzzyDate? Date { get; init; }
 }

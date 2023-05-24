@@ -22,10 +22,10 @@ internal abstract class SimpleTextNodeEditServiceBase<TEntity, TExisting, TNew, 
     where TEntity : class, SimpleTextNode
     where TExisting : TEntity, ExistingNode
     where TNew : TEntity, NewNode
-    where TCreate : CreateModel.EventuallyIdentifiableSimpleTextNode
+    where TCreate : class, CreateModel.EventuallyIdentifiableSimpleTextNode
 {
 
-    protected abstract IEntityCreator<TCreate> EntityCreator { get; }
+    protected abstract INodeCreatorFactory<TCreate> EntityCreatorFactory { get; }
 
     protected abstract TCreate Map(TNew item);
 
@@ -33,7 +33,8 @@ internal abstract class SimpleTextNodeEditServiceBase<TEntity, TExisting, TNew, 
     {
         var item = Map(simpleTextNode);
         var items = new List<TCreate> { item };
-        await EntityCreator.CreateAsync(items.ToAsyncEnumerable(), connection);
+        await using var entityCreator = await EntityCreatorFactory.CreateAsync(connection);
+        await entityCreator.CreateAsync(items.ToAsyncEnumerable());
         foreach (var nodeTypeTopics in simpleTextNode.Tags) {
             foreach (var topic in nodeTypeTopics.Entries) {
                 topic.NodeId = item.Id;

@@ -1,18 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class ActionMenuItemCreator(
+internal sealed class ActionMenuItemCreatorFactory(
     IDatabaseInserterFactory<MenuItem> menuItemInserterFactory,
     IDatabaseInserterFactory<ActionMenuItem> actionMenuItemInserterFactory
-) : EntityCreator<ActionMenuItem>
+) : IInsertingEntityCreatorFactory<ActionMenuItem>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<ActionMenuItem> actionMenuItems, IDbConnection connection)
-    {
-        await using var menuItemWriter = await menuItemInserterFactory.CreateAsync(connection);
-        await using var actionMenuItemWriter = await actionMenuItemInserterFactory.CreateAsync(connection);
-
-        await foreach (var actionMenuItem in actionMenuItems) {
-            await menuItemWriter.InsertAsync(actionMenuItem);
-            await actionMenuItemWriter.InsertAsync(actionMenuItem);
-        }
-    }
+    public async Task<InsertingEntityCreator<ActionMenuItem>> CreateAsync(IDbConnection connection) =>
+        new (new () {
+            await menuItemInserterFactory.CreateAsync(connection),
+            await actionMenuItemInserterFactory.CreateAsync(connection)
+        });
 }

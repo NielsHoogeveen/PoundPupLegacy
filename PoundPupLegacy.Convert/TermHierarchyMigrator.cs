@@ -4,7 +4,7 @@ internal sealed class TermHierarchyMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-        IEntityCreator<TermHierarchy> termHierarchyCreator
+        IInsertingEntityCreatorFactory<TermHierarchy> termHierarchyCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "node term hierarchy";
@@ -13,8 +13,8 @@ internal sealed class TermHierarchyMigrator(
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
-
-        await termHierarchyCreator.CreateAsync(ReadTermHierarchys(nodeIdReader, termReaderByNameableId), _postgresConnection);
+        await using var termHierarchyCreator = await termHierarchyCreatorFactory.CreateAsync(_postgresConnection);
+        await termHierarchyCreator.CreateAsync(ReadTermHierarchys(nodeIdReader, termReaderByNameableId));
     }
     private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,

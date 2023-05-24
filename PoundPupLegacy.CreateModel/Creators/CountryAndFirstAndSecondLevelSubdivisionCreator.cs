@@ -1,108 +1,49 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<Documentable> documentableInserterFactory,
-    IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<GeographicalEntity> geographicalEntityInserterFactory,
-    IDatabaseInserterFactory<PoliticalEntity> politicalEntityInserterFactory,
-    IDatabaseInserterFactory<Country> countryInserterFactory,
-    IDatabaseInserterFactory<TopLevelCountry> topLevelCountryInserterFactory,
-    IDatabaseInserterFactory<Subdivision> subdivisionInserterFactory,
-    IDatabaseInserterFactory<ISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
-    IDatabaseInserterFactory<FirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<ISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<CountryAndFirstLevelSubdivision> countryAndFirstLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<SecondLevelSubdivision> secondLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<NewCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<BottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<FirstAndSecondLevelSubdivision> firstAndSecondLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<Term> termInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderByNameInserterFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<NewVocabulary> vocabularyCreator
-) : EntityCreator<NewCountryAndFirstAndSecondLevelSubdivision>
+internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableGeographicalEntity> geographicalEntityInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiablePoliticalEntity> politicalEntityInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableCountry> countryInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableTopLevelCountry> topLevelCountryInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSubdivision> subdivisionInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableFirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableCountryAndFirstLevelSubdivision> countryAndFirstLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSecondLevelSubdivision> secondLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableBottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableFirstAndSecondLevelSubdivision> firstAndSecondLevelSubdivisionInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+) : INameableCreatorFactory<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> countries, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
-        await using var geographicalEntityWriter = await geographicalEntityInserterFactory.CreateAsync(connection);
-        await using var politicalEntityWriter = await politicalEntityInserterFactory.CreateAsync(connection);
-        await using var countryWriter = await countryInserterFactory.CreateAsync(connection);
-        await using var topLevelCountryWriter = await topLevelCountryInserterFactory.CreateAsync(connection);
-        await using var subdivisionWriter = await subdivisionInserterFactory.CreateAsync(connection);
-        await using var isoCodedSubdivisionWriter = await isoCodedSubdivisionInserterFactory.CreateAsync(connection);
-        await using var firstLevelSubdivisionWriter = await firstLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var isoCodedFirstLevelSubdivisionWriter = await isoCodedFirstLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var countryAndFirstLevelSubdivisionWriter = await countryAndFirstLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var bottomLevelSubdivisionWriter = await bottomLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var secondLevelSubdivisionWriter = await secondLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var firstAndSecondLevelSubdivisionWriter = await firstAndSecondLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var countryAndFirstAndSecondLevelSubdivisionWriter = await countryAndFirstAndSecondLevelSubdivisionInserterFactory.CreateAsync(connection);
-        await using var termWriter = await termInserterFactory.CreateAsync(connection);
-        await using var termReader = await termReaderByNameInserterFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await termHierarchyFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-
-        await foreach (var country in countries) {
-            var vocabulary = new NewVocabulary {
-                Id = null,
-                Name = $"Subdivision names of {country.Name}",
-                PublisherId = 1,
-                CreatedDateTime = DateTime.Now,
-                ChangedDateTime = DateTime.Now,
-                Title = $"Subdivision names of {country.Name}",
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
-                {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = null
-                    }
-                },
-                NodeTypeId = 38,
-                Description = $"Contains unique names for all subdivisions of {country.Name}"
-            };
-            await vocabularyCreator.CreateAsync(vocabulary, connection);
-            country.VocabularyIdSubdivisions = vocabulary.Id;
-            await nodeWriter.InsertAsync(country);
-            await searchableWriter.InsertAsync(country);
-            await documentableWriter.InsertAsync(country);
-            await nameableWriter.InsertAsync(country);
-            await geographicalEntityWriter.InsertAsync(country);
-            await politicalEntityWriter.InsertAsync(country);
-            await countryWriter.InsertAsync(country);
-            await topLevelCountryWriter.InsertAsync(country);
-            await subdivisionWriter.InsertAsync(country);
-            await isoCodedSubdivisionWriter.InsertAsync(country);
-            await firstLevelSubdivisionWriter.InsertAsync(country);
-            await isoCodedFirstLevelSubdivisionWriter.InsertAsync(country);
-            await countryAndFirstLevelSubdivisionWriter.InsertAsync(country);
-            await bottomLevelSubdivisionWriter.InsertAsync(country);
-            await secondLevelSubdivisionWriter.InsertAsync(country);
-            await firstAndSecondLevelSubdivisionWriter.InsertAsync(country);
-            await countryAndFirstAndSecondLevelSubdivisionWriter.InsertAsync(country);
-            await WriteTerms(country, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in country.TenantNodes) {
-                tenantNode.NodeId = country.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-
-        }
-    }
+    public async Task<NameableCreator<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision>> CreateAsync(IDbConnection connection) =>
+        new (
+            new () {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await documentableInserterFactory.CreateAsync(connection),
+                await nameableInserterFactory.CreateAsync(connection),
+                await geographicalEntityInserterFactory.CreateAsync(connection),
+                await politicalEntityInserterFactory.CreateAsync(connection),
+                await countryInserterFactory.CreateAsync(connection),
+                await topLevelCountryInserterFactory.CreateAsync(connection),
+                await subdivisionInserterFactory.CreateAsync(connection),
+                await isoCodedSubdivisionInserterFactory.CreateAsync(connection),
+                await firstLevelSubdivisionInserterFactory.CreateAsync(connection),
+                await isoCodedFirstLevelSubdivisionInserterFactory.CreateAsync(connection),
+                await countryAndFirstLevelSubdivisionInserterFactory.CreateAsync(connection),
+                await bottomLevelSubdivisionInserterFactory.CreateAsync(connection),
+                await secondLevelSubdivisionInserterFactory.CreateAsync(connection),
+                await firstAndSecondLevelSubdivisionInserterFactory.CreateAsync(connection),
+                await countryAndFirstAndSecondLevelSubdivisionInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await nameableDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

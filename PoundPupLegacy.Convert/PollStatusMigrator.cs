@@ -2,7 +2,7 @@
 
 internal sealed class PollStatusMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<PollStatus> pollStatusCreator
+    IInsertingEntityCreatorFactory<PollStatus> pollStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "poll statuses";
@@ -22,6 +22,7 @@ internal sealed class PollStatusMigrator(
 
     protected override async Task MigrateImpl()
     {
-        await pollStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
+        await using var pollStatusCreator = await pollStatusCreatorFactory.CreateAsync(_postgresConnection);
+        await pollStatusCreator.CreateAsync(GetNodeStatuses());
     }
 }

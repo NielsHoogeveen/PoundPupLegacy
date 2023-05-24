@@ -3,7 +3,7 @@
 internal sealed class ProfessionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewProfession> professionCreator
+    INameableCreatorFactory<EventuallyIdentifiableProfession> professionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "professions";
@@ -11,7 +11,8 @@ internal sealed class ProfessionMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await professionCreator.CreateAsync(ReadProfessions(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var professionCreator = await professionCreatorFactory.CreateAsync(_postgresConnection);
+        await professionCreator.CreateAsync(ReadProfessions(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewProfession> ReadProfessions(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
@@ -102,9 +103,9 @@ internal sealed class ProfessionMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -114,7 +115,7 @@ internal sealed class ProfessionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -135,6 +136,7 @@ internal sealed class ProfessionMigrator(
                     }),
                 VocabularyNames = vocabularyNames,
                 HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
+                NodeTermIds = new List<int>(),
             };
         }
         reader.Close();
@@ -146,9 +148,9 @@ internal sealed class ProfessionMigrator(
             Title = "Senator",
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -158,7 +160,7 @@ internal sealed class ProfessionMigrator(
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -183,7 +185,7 @@ internal sealed class ProfessionMigrator(
                 }
             },
             HasConcreteSubtype = true,
-
+            NodeTermIds = new List<int>(),
         };
         yield return new NewProfession {
             Id = null,
@@ -193,9 +195,9 @@ internal sealed class ProfessionMigrator(
             Title = "Representative",
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -205,7 +207,7 @@ internal sealed class ProfessionMigrator(
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -230,7 +232,7 @@ internal sealed class ProfessionMigrator(
                 }
             },
             HasConcreteSubtype = true,
-
+            NodeTermIds = new List<int>(),
         };
 
     }

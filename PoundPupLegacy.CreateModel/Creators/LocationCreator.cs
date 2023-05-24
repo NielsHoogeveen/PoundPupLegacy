@@ -1,21 +1,37 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class LocationCreator(
+internal sealed class LocationCreatorFactory(
     IDatabaseInserterFactory<Location> locationInserterFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
-) : EntityCreator<Location>
+) : IInsertingEntityCreatorFactory<Location>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Location> locations, IDbConnection connection)
-    {
-        await using var locationWriter = await locationInserterFactory.CreateAsync(connection);
-        await using var locationLocatableWriter = await locationLocatableInserterFactory.CreateAsync(connection);
+    public async Task<InsertingEntityCreator<Location>> CreateAsync(IDbConnection connection) =>
+        new LocationCreator(
+            new() 
+            {
+                await locationInserterFactory.CreateAsync(connection)
+            },
+            await locationLocatableInserterFactory.CreateAsync(connection)
+        );
+}
 
-        await foreach (var location in locations) {
-            await locationWriter.InsertAsync(location);
-            foreach (var locationLocatable in location.Locatables) {
-                locationLocatable.LocationId = location.Id;
-                await locationLocatableWriter.InsertAsync(locationLocatable);
-            }
+public class LocationCreator(
+    List<IDatabaseInserter<Location>> inserters,
+    IDatabaseInserter<LocationLocatable> locationLocatableInserter
+) : InsertingEntityCreator<Location>(inserters)
+{
+    public override async Task ProcessAsync(Location element)
+    {
+        await base.ProcessAsync(element);
+        foreach (var locationLocatable in element.Locatables) {
+            locationLocatable.LocationId = element.Id;
+            await locationLocatableInserter.InsertAsync(locationLocatable);
         }
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await locationLocatableInserter.DisposeAsync();
     }
 }

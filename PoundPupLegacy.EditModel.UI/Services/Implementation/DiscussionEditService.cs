@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -13,8 +14,8 @@ internal sealed class DiscussionEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITextService textService,
-    IEntityCreator<CreateModel.NewDiscussion> discussionCreator
-) : SimpleTextNodeEditServiceBase<Discussion, ExistingDiscussion, NewDiscussion, CreateModel.NewDiscussion>(
+    INodeCreatorFactory<EventuallyIdentifiableDiscussion> discussionCreatorFactory
+) : SimpleTextNodeEditServiceBase<Discussion, ExistingDiscussion, NewDiscussion, EventuallyIdentifiableDiscussion>(
     connection, 
     logger, 
     tenantRefreshService, 
@@ -26,7 +27,7 @@ internal sealed class DiscussionEditService(
 ), IEditService<Discussion, Discussion>
 {
 
-    protected sealed override IEntityCreator<CreateModel.NewDiscussion> EntityCreator => discussionCreator;
+    protected sealed override INodeCreatorFactory<EventuallyIdentifiableDiscussion> EntityCreatorFactory => discussionCreatorFactory;
 
     public async Task<Discussion?> GetViewModelAsync(int userId, int tenantId)
     {
@@ -65,7 +66,7 @@ internal sealed class DiscussionEditService(
             OwnerId = item.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = item.PublisherId,
-            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -74,6 +75,7 @@ internal sealed class DiscussionEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
+            NodeTermIds = new List<int>(),
         };
     }
 }

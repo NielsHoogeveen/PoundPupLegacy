@@ -4,7 +4,7 @@ internal sealed class LocationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-    IEntityCreator<Location> locationCreator
+    IInsertingEntityCreatorFactory<Location> locationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "locations (ppl)";
@@ -12,8 +12,9 @@ internal sealed class LocationMigratorPPL(
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var subdivisionIdReaderByIso3166Code = await subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
-        await locationCreator.CreateAsync(GetLocations(nodeIdReader), _postgresConnection);
-        await locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code), _postgresConnection);
+        await using var locationCreator = await locationCreatorFactory.CreateAsync(_postgresConnection);
+        await locationCreator.CreateAsync(GetLocations(nodeIdReader));
+        await locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code));
     }
 
     private async IAsyncEnumerable<Location> GetLocations(

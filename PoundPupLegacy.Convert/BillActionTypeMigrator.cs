@@ -3,14 +3,15 @@
 internal sealed class BillActionTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<NewBillActionType> billActionTypeCreator
+        INameableCreatorFactory<EventuallyIdentifiableBillActionType> billActionTypeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation types";
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await billActionTypeCreator.CreateAsync(ReadBillActionTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var billActionTypeCreator = await billActionTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await billActionTypeCreator.CreateAsync(ReadBillActionTypes(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewBillActionType> ReadBillActionTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
@@ -64,9 +65,9 @@ internal sealed class BillActionTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -76,7 +77,7 @@ internal sealed class BillActionTypeMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -96,6 +97,7 @@ internal sealed class BillActionTypeMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
 
         }

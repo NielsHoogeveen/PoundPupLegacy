@@ -1,16 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
-
-internal sealed class AbuseCaseTypeOfAbuseCreator(
+internal sealed class AbuseCaseTypeOfAbuseCreatorFactory(
     IDatabaseInserterFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseInserterFactory
-) : EntityCreator<AbuseCaseTypeOfAbuse>
+) : IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuse>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuses, IDbConnection connection)
-    {
-
-        await using var abuseCaseTypeOfAbuseWriter = await abuseCaseTypeOfAbuseInserterFactory.CreateAsync(connection);
-
-        await foreach (var abuseCaseTypeOfAbuse in abuseCaseTypeOfAbuses) {
-            await abuseCaseTypeOfAbuseWriter.InsertAsync(abuseCaseTypeOfAbuse);
-        }
-    }
+    public async Task<InsertingEntityCreator<AbuseCaseTypeOfAbuse>> CreateAsync(IDbConnection connection) => 
+        new (new () {
+            await abuseCaseTypeOfAbuseInserterFactory.CreateAsync(connection)
+        });
 }

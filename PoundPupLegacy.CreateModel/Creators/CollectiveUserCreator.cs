@@ -1,13 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CollectiveUserCreator(IDatabaseInserterFactory<CollectiveUser> collectiveUserInserterFactory) : EntityCreator<CollectiveUser>
+internal sealed class CollectiveUserCreatorFactory(
+    IDatabaseInserterFactory<CollectiveUser> collectiveUserInserterFactory
+) : IInsertingEntityCreatorFactory<CollectiveUser>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<CollectiveUser> collectiveUsers, IDbConnection connection)
-    {
-        await using var collectiveUserWriter = await collectiveUserInserterFactory.CreateAsync(connection);
-
-        await foreach (var collectiveUser in collectiveUsers) {
-            await collectiveUserWriter.InsertAsync(collectiveUser);
-        }
-    }
+    public async Task<InsertingEntityCreator<CollectiveUser>> CreateAsync(IDbConnection connection) => 
+        new InsertingEntityCreator<CollectiveUser>(new () {
+            await collectiveUserInserterFactory.CreateAsync(connection)
+        });
 }

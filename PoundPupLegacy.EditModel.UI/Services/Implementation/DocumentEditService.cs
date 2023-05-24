@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Creators;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -12,7 +14,7 @@ internal sealed class DocumentEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.NewDocument> documentCreator,
+    INodeCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory,
     ITextService textService
 ) : NodeEditServiceBase<Document, ExistingDocument, NewDocument, CreateModel.NewDocument>(
     connection,
@@ -61,7 +63,7 @@ internal sealed class DocumentEditService(
             OwnerId = document.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = document.PublisherId,
-            TenantNodes = document.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = document.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -70,12 +72,14 @@ internal sealed class DocumentEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            PublicationDate = document.Published,
+            Published = document.Published,
             Documentables = new List<int>(),
             DocumentTypeId = document.DocumentTypeId,
             SourceUrl = document.SourceUrl,
+            NodeTermIds = new List<int>(),
         };
-        await documentCreator.CreateAsync(createDocument, connection);
+        await using var documentCreator = await documentCreatorFactory.CreateAsync(connection);
+        await documentCreator.CreateAsync(createDocument);
         return createDocument.Id!.Value;
     }
 

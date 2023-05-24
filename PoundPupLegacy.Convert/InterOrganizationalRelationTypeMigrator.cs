@@ -3,7 +3,7 @@
 internal sealed class InterOrganizationalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewInterOrganizationalRelationType> interOrganizationalRelationTypeCreator
+    INameableCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType> interOrganizationalRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-organization relation types";
@@ -11,7 +11,8 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await interOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var interOrganizationalRelationTypeCreator = await interOrganizationalRelationTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await interOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewInterOrganizationalRelationType> ReadInterOrganizationalRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
@@ -68,9 +69,9 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -80,7 +81,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -101,6 +102,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                     }),
                 VocabularyNames = vocabularyNames,
                 IsSymmetric = reader.GetBoolean("is_symmetric"),
+                NodeTermIds = new List<int>(),
             };
 
         }

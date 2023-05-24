@@ -3,7 +3,7 @@
 internal sealed class ChildTraffickingCaseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<NewChildTraffickingCase> childTraffickingCaseCreator
+        INameableCreatorFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child trafficking cases";
@@ -11,7 +11,8 @@ internal sealed class ChildTraffickingCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader), _postgresConnection);
+        await using var childTraffickingCaseCreator = await childTraffickingCaseCreatorFactory.CreateAsync(_postgresConnection);
+        await childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader));
     }
     private async IAsyncEnumerable<NewChildTraffickingCase> ReadChildTraffickingCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
@@ -66,9 +67,9 @@ internal sealed class ChildTraffickingCaseMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -78,7 +79,7 @@ internal sealed class ChildTraffickingCaseMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -91,7 +92,7 @@ internal sealed class ChildTraffickingCaseMigrator(
                 },
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 VocabularyNames = vocabularyNames,
-                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
+                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
                 Description = reader.GetString("description"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
                 CountryIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -99,6 +100,7 @@ internal sealed class ChildTraffickingCaseMigrator(
                     UrlId = reader.GetInt32("country_id_from")
                 }),
                 FileIdTileImage = null,
+                NodeTermIds = new List<int>(),
             };
             yield return country;
 

@@ -3,7 +3,7 @@
 internal sealed class DocumentableDocumentMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<DocumentableDocument> documentableDocumentCreator
+    IEntityCreatorFactory<DocumentableDocument> documentableDocumentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documentable documents";
@@ -11,7 +11,8 @@ internal sealed class DocumentableDocumentMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await documentableDocumentCreator.CreateAsync(ReadArticles(nodeIdReader), _postgresConnection);
+        await using var documentableDocumentCreator = await documentableDocumentCreatorFactory.CreateAsync(_postgresConnection);
+        await documentableDocumentCreator.CreateAsync(ReadArticles(nodeIdReader));
 
     }
 

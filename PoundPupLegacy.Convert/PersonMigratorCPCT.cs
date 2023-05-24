@@ -3,8 +3,8 @@
 internal sealed class PersonMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreator<NewPerson> personCreator
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    INameableCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -15,7 +15,8 @@ internal sealed class PersonMigratorCPCT(
 
     protected override async Task MigrateImpl()
     {
-        await personCreator.CreateAsync(ReadPersons(), _postgresConnection);
+        await using var personCreator = await personCreatorFactory.CreateAsync(_postgresConnection);
+        await personCreator.CreateAsync(ReadPersons());
     }
     private async IAsyncEnumerable<NewPerson> ReadPersons()
     {
@@ -99,9 +100,9 @@ internal sealed class PersonMigratorCPCT(
                 Title = title,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -111,7 +112,7 @@ internal sealed class PersonMigratorCPCT(
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -137,7 +138,8 @@ internal sealed class PersonMigratorCPCT(
                 Bioguide = null,
                 Suffix = null,
                 ProfessionalRoles = new List<ProfessionalRole>(),
-                PersonOrganizationRelations = new List<NewPersonOrganizationRelation>()
+                PersonOrganizationRelations = new List<NewPersonOrganizationRelation>(),
+                NodeTermIds = new List<int>(),
             };
 
         }

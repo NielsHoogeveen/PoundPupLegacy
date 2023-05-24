@@ -2,14 +2,15 @@
 
 internal sealed class ReviewMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<NewBlogPost> blogPostCreator
+        INodeCreatorFactory<EventuallyIdentifiableBlogPost> blogPostCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "reviews";
 
     protected override async Task MigrateImpl()
     {
-        await blogPostCreator.CreateAsync(ReadReviews(), _postgresConnection);
+        await using var blogPostCreator = await blogPostCreatorFactory.CreateAsync(_postgresConnection);
+        await blogPostCreator.CreateAsync(ReadReviews());
     }
     private async IAsyncEnumerable<NewBlogPost> ReadReviews()
     {
@@ -46,9 +47,9 @@ internal sealed class ReviewMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -63,6 +64,7 @@ internal sealed class ReviewMigrator(
                 NodeTypeId = 35,
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
+                NodeTermIds = new List<int>(),
             };
 
         }

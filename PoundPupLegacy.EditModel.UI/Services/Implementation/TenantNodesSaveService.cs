@@ -3,7 +3,7 @@
 internal sealed class TenantNodesSaveService(
     IDatabaseDeleterFactory<TenantNodeDeleterRequest> tenantNodeDeleterFactory,
     IDatabaseUpdaterFactory<TenantNodeUpdaterRequest> tenantNodeUpdaterFactory,
-    IDatabaseInserterFactory<CreateModel.TenantNode> tenantNodeInserterFactory
+    IDatabaseInserterFactory<CreateModel.NewTenantNodeForNewNode> tenantNodeInserterFactory
 ) : ISaveService<IEnumerable<TenantNode>>
 {
     public async Task SaveAsync(
@@ -22,7 +22,7 @@ internal sealed class TenantNodesSaveService(
         if (tenantNodes.Any(x => x.Id is null)) {
             await using var inserter = await tenantNodeInserterFactory.CreateAsync(connection);
             foreach (var tenantNode in tenantNodes.Where(x => !x.Id.HasValue)) {
-                var tenantNodeToCreate = new CreateModel.TenantNode {
+                var tenantNodeToCreate = new CreateModel.NewTenantNodeForNewNode {
                     Id = tenantNode.Id,
                     TenantId = tenantNode.TenantId,
                     NodeId = tenantNode.NodeId,

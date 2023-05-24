@@ -3,8 +3,8 @@
 internal sealed class BillMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<NewHouseBill> houseBillCreator,
-        IEntityCreator<NewSenateBill> senateBillCreator
+        INameableCreatorFactory<EventuallyIdentifiableHouseBill> houseBillCreatorFactory,
+        INameableCreatorFactory<EventuallyIdentifiableSenateBill> senateBillCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "bills";
@@ -12,8 +12,10 @@ internal sealed class BillMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await houseBillCreator.CreateAsync(ReadHouseBills(nodeIdReader), _postgresConnection);
-        await senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader), _postgresConnection);
+        await using var houseBillCreator = await houseBillCreatorFactory.CreateAsync(_postgresConnection);
+        await using var senateBillCreator = await senateBillCreatorFactory.CreateAsync(_postgresConnection);
+        await houseBillCreator.CreateAsync(ReadHouseBills(nodeIdReader));
+        await senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader));
     }
 
     private async IAsyncEnumerable<NewHouseBill> ReadHouseBills(
@@ -167,9 +169,9 @@ internal sealed class BillMigrator(
                 Title = title,
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -188,7 +190,8 @@ internal sealed class BillMigrator(
                 ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("act_id")
-                })
+                }),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();
@@ -346,9 +349,9 @@ internal sealed class BillMigrator(
                 Title = title,
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -367,7 +370,8 @@ internal sealed class BillMigrator(
                 ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("act_id")
-                })
+                }),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

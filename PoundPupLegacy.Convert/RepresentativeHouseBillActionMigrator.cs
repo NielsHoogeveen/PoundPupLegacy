@@ -4,7 +4,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> professionIdReaderFactory,
-        IEntityCreator<NewRepresentativeHouseBillAction> representativeHouseBillActionCreator
+        INodeCreatorFactory<EventuallyIdentifiableRepresentativeHouseBillAction> representativeHouseBillActionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "representative house bill action";
@@ -13,8 +13,8 @@ internal sealed class RepresentativeHouseBillActionMigrator(
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         await using var professionIdReader = await professionIdReaderFactory.CreateAsync(_postgresConnection);
-
-        await representativeHouseBillActionCreator.CreateAsync(ReadRepresentativeHouseBillActionsPPL(nodeIdReader, professionIdReader), _postgresConnection);
+        await using var representativeHouseBillActionCreator = await representativeHouseBillActionCreatorFactory.CreateAsync(_postgresConnection);
+        await representativeHouseBillActionCreator.CreateAsync(ReadRepresentativeHouseBillActionsPPL(nodeIdReader, professionIdReader));
 
     }
 
@@ -81,9 +81,9 @@ internal sealed class RepresentativeHouseBillActionMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -93,7 +93,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -109,6 +109,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
                 HouseBillId = billId,
                 BillActionTypeId = billActionTypeId,
                 Date = reader.GetDateTime("date"),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

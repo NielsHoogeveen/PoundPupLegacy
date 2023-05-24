@@ -2,7 +2,7 @@
 
 internal sealed class AbuseCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewAbuseCase> abuseCaseCreator,
+    INameableCreatorFactory<EventuallyIdentifiableAbuseCase> abuseCaseCreatorFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -12,7 +12,8 @@ internal sealed class AbuseCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader), _postgresConnection);
+        await using var abuseCaseCreator = await abuseCaseCreatorFactory.CreateAsync(_postgresConnection);
+        await abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader));
     }
     private async IAsyncEnumerable<NewAbuseCase> ReadAbuseCases(IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
@@ -148,9 +149,9 @@ internal sealed class AbuseCaseMigrator(
                 TypeOfAbuserIds = new List<int>(),
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -160,7 +161,7 @@ internal sealed class AbuseCaseMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -172,7 +173,7 @@ internal sealed class AbuseCaseMigrator(
                     }
                 },
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
+                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
                 ChildPlacementTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -187,6 +188,7 @@ internal sealed class AbuseCaseMigrator(
                 FundamentalFaithInvolved = reader.IsDBNull("fundamental_faith_involved") ? null : reader.GetBoolean("fundamental_faith_involved"),
                 DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
             yield return country;
 

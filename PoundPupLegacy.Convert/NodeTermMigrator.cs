@@ -4,7 +4,7 @@ internal sealed class NodeTermMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-    IEntityCreator<NodeTerm> nodeTermCreator
+    IInsertingEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "node terms";
@@ -14,7 +14,8 @@ internal sealed class NodeTermMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
 
-        await nodeTermCreator.CreateAsync(ReadNodeTerms(nodeIdReader, termReaderByNameableId), _postgresConnection);
+        await using var nodeTermCreator = await nodeTermCreatorFactory.CreateAsync(_postgresConnection);
+        await nodeTermCreator.CreateAsync(ReadNodeTerms(nodeIdReader, termReaderByNameableId));
     }
     private async IAsyncEnumerable<NodeTerm> ReadNodeTerms(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,

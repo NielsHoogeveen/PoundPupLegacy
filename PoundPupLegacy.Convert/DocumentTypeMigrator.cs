@@ -2,14 +2,15 @@
 
 internal sealed class DocumentTypeMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewDocumentType> documentTypeCreator
+    INameableCreatorFactory<EventuallyIdentifiableDocumentType> documentTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "document types";
 
     protected override async Task MigrateImpl()
     {
-        await documentTypeCreator.CreateAsync(ReadSelectionOptions(), _postgresConnection);
+        await using var documentTypeCreator = await documentTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await documentTypeCreator.CreateAsync(ReadSelectionOptions());
     }
     private async IAsyncEnumerable<NewDocumentType> ReadSelectionOptions()
     {
@@ -48,9 +49,9 @@ internal sealed class DocumentTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_DOCUMENTATION,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -60,7 +61,7 @@ internal sealed class DocumentTypeMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -84,6 +85,7 @@ internal sealed class DocumentTypeMigrator(
                         ParentNames = new List<string>(),
                     },
                 },
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

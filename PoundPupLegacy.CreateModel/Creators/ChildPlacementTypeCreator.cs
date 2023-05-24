@@ -1,39 +1,23 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class ChildPlacementTypeCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<NewChildPlacementType> childPlacementTypeInserterFactory,
-    IDatabaseInserterFactory<Term> termInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewChildPlacementType>
+internal sealed class ChildPlacementTypeCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+) : INameableCreatorFactory<EventuallyIdentifiableChildPlacementType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewChildPlacementType> childPlacementTypes, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
-        await using var childPlacementTypeWriter = await childPlacementTypeInserterFactory.CreateAsync(connection);
-        await using var termWriter = await termInserterFactory.CreateAsync(connection);
-        await using var termReader = await termReaderFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await termHierarchyInserterFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-        await foreach (var childPlacementType in childPlacementTypes) {
-            await nodeWriter.InsertAsync(childPlacementType);
-            await searchableWriter.InsertAsync(childPlacementType);
-            await nameableWriter.InsertAsync(childPlacementType);
-            await childPlacementTypeWriter.InsertAsync(childPlacementType);
-            await WriteTerms(childPlacementType, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in childPlacementType.TenantNodes) {
-                tenantNode.NodeId = childPlacementType.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-        }
-    }
+    public async Task<NameableCreator<EventuallyIdentifiableChildPlacementType>> CreateAsync(IDbConnection connection) =>
+        new (
+            new () {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await nameableInserterFactory.CreateAsync(connection),
+                await childPlacementTypeInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await nameableDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

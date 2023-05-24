@@ -2,14 +2,15 @@
 
 internal sealed class ArticleMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewDocument> articleCreator
+    IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents (articles)";
 
     protected override async Task MigrateImpl()
     {
-        await articleCreator.CreateAsync(ReadArticles(), _postgresConnection);
+        await using var documentCreator = await documentCreatorFactory.CreateAsync(_postgresConnection);
+        await documentCreator.CreateAsync(ReadArticles());
     }
     private async IAsyncEnumerable<NewDocument> ReadArticles()
     {
@@ -44,9 +45,9 @@ internal sealed class ArticleMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -59,11 +60,12 @@ internal sealed class ArticleMigrator(
                 },
                 NodeTypeId = 10,
                 Documentables = new List<int>(),
-                PublicationDate = null,
+                Published = null,
                 SourceUrl = null,
                 DocumentTypeId = null,
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

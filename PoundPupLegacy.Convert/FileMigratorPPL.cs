@@ -1,17 +1,19 @@
-﻿using File = PoundPupLegacy.CreateModel.File;
+﻿using PoundPupLegacy.CreateModel.Creators;
+using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Convert;
 
 internal sealed class FileMigratorPPL(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<File> fileCreator
+    IInsertingEntityCreatorFactory<File> fileCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "files (ppl)";
 
     protected override async Task MigrateImpl()
     {
-        await fileCreator.CreateAsync(ReadFiles(), _postgresConnection);
+        await using var fileCreator = await fileCreatorFactory.CreateAsync(_postgresConnection);
+        await fileCreator.CreateAsync(ReadFiles());
     }
     private async IAsyncEnumerable<File> ReadFiles()
     {

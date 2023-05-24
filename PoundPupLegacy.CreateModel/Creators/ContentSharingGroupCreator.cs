@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class ContentSharingGroupCreator(
+internal sealed class ContentSharingGroupCreatorFactory(
     IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
     IDatabaseInserterFactory<Owner> ownerInserterFactory,
     IDatabaseInserterFactory<ContentSharingGroup> contentSharingGroupInserterFactory,
@@ -8,29 +8,46 @@ internal sealed class ContentSharingGroupCreator(
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
-) : EntityCreator<ContentSharingGroup>
+) : IInsertingEntityCreatorFactory<ContentSharingGroup>
 {
+    public async Task<InsertingEntityCreator<ContentSharingGroup>> CreateAsync(IDbConnection connection) =>
+        new ContentSharingGroupCreator(
+            new () {
+                await userGroupInserterFactory.CreateAsync(connection),
+                await ownerInserterFactory.CreateAsync(connection),
+                await contentSharingGroupInserterFactory.CreateAsync(connection)
+            },
+            await principalInserterFactory.CreateAsync(connection),
+            await userRoleInserterFactory.CreateAsync(connection),
+            await accessRoleInserterFactory.CreateAsync(connection),
+            await administratorRoleInserterFactory.CreateAsync(connection)
+        );
+}
 
-    public override async Task CreateAsync(IAsyncEnumerable<ContentSharingGroup> contentSharingGroups, IDbConnection connection)
+public class ContentSharingGroupCreator(
+    List<IDatabaseInserter<ContentSharingGroup>> inserters,
+    IDatabaseInserter<Principal> principalInserter,
+    IDatabaseInserter<UserRole> userRoleInserter,
+    IDatabaseInserter<AccessRole> accessRoleInserter,
+    IDatabaseInserter<AdministratorRole> administratorRoleInserter    
+) : InsertingEntityCreator<ContentSharingGroup>(inserters)
+{
+    public override async Task ProcessAsync(ContentSharingGroup element)
     {
-        await using var userGroupWriter = await userGroupInserterFactory.CreateAsync(connection);
-        await using var ownerWriter = await ownerInserterFactory.CreateAsync(connection);
-        await using var contentSharingGroupWriter = await contentSharingGroupInserterFactory.CreateAsync(connection);
-        await using var principalWriter = await principalInserterFactory.CreateAsync(connection);
-        await using var userRoleWriter = await userRoleInserterFactory.CreateAsync(connection);
-        await using var accessRoleWriter = await accessRoleInserterFactory.CreateAsync(connection);
-        await using var administratorRoleWriter = await administratorRoleInserterFactory.CreateAsync(connection);
+        await base.ProcessAsync(element);
+        var administratorRole = element.AdministratorRole;
+        administratorRole.UserGroupId = element.Id;
+        await principalInserter.InsertAsync(administratorRole);
+        await userRoleInserter.InsertAsync(administratorRole);
+        await administratorRoleInserter.InsertAsync(administratorRole);
 
-        await foreach (var contentSharingGroup in contentSharingGroups) {
-            await userGroupWriter.InsertAsync(contentSharingGroup);
-            await ownerWriter.InsertAsync(contentSharingGroup);
-            await contentSharingGroupWriter.InsertAsync(contentSharingGroup);
-
-            var administratorRole = contentSharingGroup.AdministratorRole;
-            administratorRole.UserGroupId = contentSharingGroup.Id;
-            await principalWriter.InsertAsync(administratorRole);
-            await userRoleWriter.InsertAsync(administratorRole);
-            await administratorRoleWriter.InsertAsync(administratorRole);
-        }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await principalInserter.DisposeAsync();
+        await userRoleInserter.DisposeAsync();
+        await accessRoleInserter.DisposeAsync();
+        await administratorRoleInserter.DisposeAsync();
     }
 }

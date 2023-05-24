@@ -3,8 +3,8 @@
 internal sealed class InterOrganizationalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreator<NewInterOrganizationalRelation> interOrganizationalRelationCreator
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    INodeCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation> interOrganizationalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -18,12 +18,13 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var tenantNodeReaderByUrlId = await tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
 
-        await interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
+        await using var interOrganizationalRelationCreator = await interOrganizationalRelationCreatorFactory.CreateAsync(_postgresConnection);
+        await interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader, tenantNodeReaderByUrlId));
     }
 
     private async IAsyncEnumerable<NewInterOrganizationalRelation> ReadInterOrganizationalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlId
     )
     {
         var sql = $"""
@@ -98,9 +99,9 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.CPCT
             });
-            var tenantNodes = new List<TenantNode>
+            var tenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = Constants.CPCT,
@@ -112,7 +113,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                 }
             };
             if (organizationFromPublicationStatusId == 1 && organizationToPublicationStatusId == 1) {
-                tenantNodes.Add(new TenantNode {
+                tenantNodes.Add(new NewTenantNodeForNewNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -142,6 +143,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                 Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
                 MoneyInvolved = reader.IsDBNull("money_involved") ? null : reader.GetDecimal("money_involved"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

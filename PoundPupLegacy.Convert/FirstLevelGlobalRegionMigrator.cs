@@ -3,7 +3,7 @@
 internal sealed class FirstLevelGlobalRegionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<FirstLevelGlobalRegion> firstLevelGlobalRegionCreator
+        INameableCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion> firstLevelGlobalRegionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "first level global regions";
@@ -11,10 +11,11 @@ internal sealed class FirstLevelGlobalRegionMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await firstLevelGlobalRegionCreator.CreateAsync(ReadFirstLevelGlobalRegions(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var firstLevelGlobalRegionCreator = await firstLevelGlobalRegionCreatorFactory.CreateAsync(_postgresConnection);
+        await firstLevelGlobalRegionCreator.CreateAsync(ReadFirstLevelGlobalRegions(fileIdReaderByTenantFileId));
     }
 
-    private async IAsyncEnumerable<FirstLevelGlobalRegion> ReadFirstLevelGlobalRegions(
+    private async IAsyncEnumerable<EventuallyIdentifiableFirstLevelGlobalRegion> ReadFirstLevelGlobalRegions(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
         var sql = $"""
@@ -68,9 +69,9 @@ internal sealed class FirstLevelGlobalRegionMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -80,7 +81,7 @@ internal sealed class FirstLevelGlobalRegionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -101,6 +102,7 @@ internal sealed class FirstLevelGlobalRegionMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 Name = name,
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

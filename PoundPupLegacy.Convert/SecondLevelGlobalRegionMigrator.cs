@@ -4,7 +4,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewSecondLevelGlobalRegion> secondLevelGlobalRegionCreator
+    INameableCreatorFactory<EventuallyIdentifiableSecondLevelGlobalRegion> secondLevelGlobalRegionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "second level global regions";
@@ -13,7 +13,8 @@ internal sealed class SecondLevelGlobalRegionMigrator(
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await secondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
+        await using var secondLevelGlobalRegionCreator = await secondLevelGlobalRegionCreatorFactory.CreateAsync(_postgresConnection);
+        await secondLevelGlobalRegionCreator.CreateAsync(ReadSecondLevelGlobalRegion(nodeIdReader, fileIdReaderByTenantFileId));
     }
 
     private async IAsyncEnumerable<NewSecondLevelGlobalRegion> ReadSecondLevelGlobalRegion(
@@ -75,9 +76,9 @@ internal sealed class SecondLevelGlobalRegionMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -87,7 +88,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -111,7 +112,8 @@ internal sealed class SecondLevelGlobalRegionMigrator(
                 FirstLevelGlobalRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("first_level_global_region_id")
-                })
+                }),
+                NodeTermIds = new List<int>(),
             };
 
         }

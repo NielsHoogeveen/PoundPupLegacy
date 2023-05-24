@@ -2,14 +2,15 @@
 
 internal sealed class BasicNameableMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<NewBasicNameable> basicNameableCreator
+        INameableCreatorFactory<EventuallyIdentifiableBasicNameable> basicNameableCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic nameables";
 
     protected override async Task MigrateImpl()
     {
-        await basicNameableCreator.CreateAsync(ReadBasicNameables(), _postgresConnection);
+        await using var basicNameableCreator = await basicNameableCreatorFactory.CreateAsync(_postgresConnection);
+        await basicNameableCreator.CreateAsync(ReadBasicNameables());
     }
     private async IAsyncEnumerable<NewBasicNameable> ReadBasicNameables()
     {
@@ -95,9 +96,9 @@ internal sealed class BasicNameableMigrator(
             Title = "organizations",
             OwnerId = 1,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = 1,
@@ -121,6 +122,7 @@ internal sealed class BasicNameableMigrator(
                     ParentNames = new List<string>(),
                 }
             },
+            NodeTermIds = new List<int>(),
         };
 
         while (await reader.ReadAsync()) {
@@ -148,9 +150,9 @@ internal sealed class BasicNameableMigrator(
                 Title = name,
                 OwnerId = 1,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -165,6 +167,7 @@ internal sealed class BasicNameableMigrator(
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
 
         }
@@ -178,9 +181,9 @@ internal sealed class BasicNameableMigrator(
             Title = "US senate bill",
             OwnerId = 1,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = 1,
@@ -204,6 +207,7 @@ internal sealed class BasicNameableMigrator(
                     ParentNames = new List<string>{"United States Congress"},
                 }
             },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewBasicNameable {
             Id = null,
@@ -213,9 +217,9 @@ internal sealed class BasicNameableMigrator(
             Title = "US house bill",
             OwnerId = 1,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = 1,
@@ -239,6 +243,7 @@ internal sealed class BasicNameableMigrator(
                     ParentNames = new List<string>{"United States Congress"},
                 }
             },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewBasicNameable {
             Id = null,
@@ -248,9 +253,9 @@ internal sealed class BasicNameableMigrator(
             Title = "US act",
             OwnerId = 1,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = 1,
@@ -274,6 +279,7 @@ internal sealed class BasicNameableMigrator(
                     ParentNames = new List<string>{"United States Congress"},
                 }
             },
+            NodeTermIds = new List<int>(),
         };
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using PoundPupLegacy.CreateModel.Creators;
+using System.Text.Json;
 using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Convert;
@@ -118,11 +119,11 @@ public sealed record StoredTerm
 internal class MemberOfCongressMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreator<NewPerson> personCreator,
-        IEntityCreator<File> fileCreator,
-        IEntityCreator<NodeFile> nodeFileCreator,
-        IEntityCreator<NewPersonOrganizationRelation> personOrganizationRelationCreator,
-        IEntityCreator<ProfessionalRole> professionalRoleCreator
+        INameableCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory,
+        IInsertingEntityCreatorFactory<File> fileCreatorFactory,
+        IInsertingEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
+        INodeCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory,
+        IInsertingEntityCreatorFactory<ProfessionalRole> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
 {
@@ -138,16 +139,21 @@ internal class MemberOfCongressMigrator(
 
         var parties = _membersOfCongress.SelectMany(x => x.terms.Select(y => y.party)).Distinct().ToList();
         var persons = await GetMembersOfCongressAsync(nodeIdReader).ToListAsync();
-        await personCreator.CreateAsync(persons.ToAsyncEnumerable(), _postgresConnection);
+        await using var personCreator = await personCreatorFactory.CreateAsync(_postgresConnection);
+        await personCreator.CreateAsync(persons.ToAsyncEnumerable());
 
         var files = await GetImageFiles().ToListAsync();
-        await fileCreator.CreateAsync(files.ToAsyncEnumerable(), _postgresConnection);
+        await using var fileCreator = await fileCreatorFactory.CreateAsync(_postgresConnection);
+        await fileCreator.CreateAsync(files.ToAsyncEnumerable());
         var nodeImages = await GetNodeFilesImage().ToListAsync();
-        await nodeFileCreator.CreateAsync(nodeImages.ToAsyncEnumerable(), _postgresConnection);
+        await using var nodeFileCreator = await nodeFileCreatorFactory.CreateAsync(_postgresConnection);
+        await nodeFileCreator.CreateAsync(nodeImages.ToAsyncEnumerable());
         await UpdatePerson(nodeImages.ToAsyncEnumerable());
 
         var membership = await GetPartyMembership().ToListAsync();
-        await personOrganizationRelationCreator.CreateAsync(membership.ToAsyncEnumerable(), _postgresConnection);
+        await using var personOrganizationRelationCreator = await personOrganizationRelationCreatorFactory.CreateAsync(_postgresConnection);
+        await personOrganizationRelationCreator.CreateAsync(membership.ToAsyncEnumerable());
+
     }
 
 
@@ -413,8 +419,8 @@ internal class MemberOfCongressMigrator(
                                 Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
                                 OwnerId = Constants.OWNER_PARTIES,
                                 AuthoringStatusId = 1,
-                                TenantNodes = new List<TenantNode> {
-                                    new TenantNode {
+                                TenantNodes = new List<NewTenantNodeForNewNode> {
+                                    new NewTenantNodeForNewNode {
                                         Id = null,
                                         TenantId = 1,
                                         PublicationStatusId = 1,
@@ -427,7 +433,8 @@ internal class MemberOfCongressMigrator(
                                 NodeTypeId = 64,
                                 PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term.party),
                                 CongressionalTermId = null,
-                                DateTimeRange = new DateTimeRange(term.start, term.end)
+                                DateTimeRange = new DateTimeRange(term.start, term.end),
+                                NodeTermIds = new List<int>(),
                             }
                         };
                     }
@@ -439,8 +446,8 @@ internal class MemberOfCongressMigrator(
                         Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
                         OwnerId = Constants.OWNER_PARTIES,
                         AuthoringStatusId = 1,
-                        TenantNodes = new List<TenantNode> {
-                                        new TenantNode {
+                        TenantNodes = new List<NewTenantNodeForNewNode> {
+                                        new NewTenantNodeForNewNode {
                                             Id = null,
                                             TenantId = 1,
                                             PublicationStatusId = 1,
@@ -453,7 +460,8 @@ internal class MemberOfCongressMigrator(
                         NodeTypeId = 64,
                         PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(party_affiliations.party),
                         CongressionalTermId = null,
-                        DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end)
+                        DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end),
+                        NodeTermIds = new List<int>(),
                     }
                     ).ToList();
                 }
@@ -476,8 +484,8 @@ internal class MemberOfCongressMigrator(
                             Title = $"{name} is senator",
                             OwnerId = Constants.OWNER_PARTIES,
                             AuthoringStatusId = 1,
-                            TenantNodes = new List<TenantNode> {
-                                new TenantNode {
+                            TenantNodes = new List<NewTenantNodeForNewNode> {
+                                new NewTenantNodeForNewNode {
                                     Id = null,
                                     TenantId = 1,
                                     PublicationStatusId = 1,
@@ -491,7 +499,8 @@ internal class MemberOfCongressMigrator(
                             SenatorId = null,
                             DateTimeRange = new DateTimeRange(term.start, term.end),
                             SubdivisionId = subdivisionId,
-                            PartyAffiliations = partyAffiliations
+                            PartyAffiliations = partyAffiliations,
+                            NodeTermIds = new List<int>(),
                         };
                         return senateTerm;
                     }).ToList();
@@ -510,8 +519,8 @@ internal class MemberOfCongressMigrator(
                             Title = $"{name} is representative",
                             OwnerId = Constants.OWNER_PARTIES,
                             AuthoringStatusId = 1,
-                            TenantNodes = new List<TenantNode> {
-                                    new TenantNode {
+                            TenantNodes = new List<NewTenantNodeForNewNode> {
+                                    new NewTenantNodeForNewNode {
                                         Id = null,
                                         TenantId = 1,
                                         PublicationStatusId = 1,
@@ -526,7 +535,8 @@ internal class MemberOfCongressMigrator(
                             District = term.district,
                             DateTimeRange = new DateTimeRange(term.start, term.end),
                             SubdivisionId = subdivisionId,
-                            PartyAffiliations = partyAffiliations
+                            PartyAffiliations = partyAffiliations,
+                            NodeTermIds = new List<int>(),
                         };
                         return houseTerm;
                     }).ToList();
@@ -535,7 +545,7 @@ internal class MemberOfCongressMigrator(
 
                 if (memberOfCongress.node_id.HasValue) {
                     if (isSenator) {
-                        professionalRoles.Add(new NewSenator {
+                        professionalRoles.Add(new Senator {
                             Id = null,
                             PersonId = memberOfCongress.node_id,
                             DateTimeRange = null,
@@ -562,12 +572,13 @@ internal class MemberOfCongressMigrator(
                     updateCommand.Parameters["bioguide"].Value = memberOfCongress.id.bioguide;
                     updateCommand.Parameters["id"].Value = memberOfCongress.node_id;
                     await updateCommand.ExecuteNonQueryAsync();
-                    await professionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable(), _postgresConnection);
+                    await using var professionalRoleCreator = await professionalRoleCreatorFactory.CreateAsync(_postgresConnection);
+                    await professionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable());
                 }
                 else {
 
                     if (isSenator) {
-                        professionalRoles.Add(new NewSenator {
+                        professionalRoles.Add(new Senator {
                             Id = null,
                             PersonId = null,
                             DateTimeRange = null,
@@ -609,8 +620,8 @@ internal class MemberOfCongressMigrator(
                         Title = title,
                         OwnerId = Constants.OWNER_PARTIES,
                         AuthoringStatusId = 1,
-                        TenantNodes = new List<TenantNode> {
-                            new TenantNode {
+                        TenantNodes = new List<NewTenantNodeForNewNode> {
+                            new NewTenantNodeForNewNode {
                                 Id = null,
                                 TenantId = 1,
                                 PublicationStatusId = 1,
@@ -635,7 +646,8 @@ internal class MemberOfCongressMigrator(
                         Suffix = memberOfCongress.name.suffix,
                         ProfessionalRoles = professionalRoles,
                         Bioguide = memberOfCongress.id.bioguide,
-                        PersonOrganizationRelations = new List<NewPersonOrganizationRelation>()
+                        PersonOrganizationRelations = new List<NewPersonOrganizationRelation>(),
+                        NodeTermIds = new List<int>(),
                     };
                 }
             }
@@ -918,9 +930,9 @@ internal class MemberOfCongressMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -930,7 +942,7 @@ internal class MemberOfCongressMigrator(
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -947,9 +959,9 @@ internal class MemberOfCongressMigrator(
                 GeographicalEntityId = null,
                 PersonOrganizationRelationTypeId = reader.GetInt32("person_organization_relation_type_id"),
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
-
                 DocumentIdProof = null,
                 Description = null,
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

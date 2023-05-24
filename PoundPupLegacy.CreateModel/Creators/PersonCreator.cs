@@ -1,60 +1,66 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class PersonCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<Documentable> documentableInserterFactory,
-    IDatabaseInserterFactory<Locatable> locatableInserterFactory,
-    IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<Party> partyInserterFactory,
-    IDatabaseInserterFactory<NewPerson> personInserterFactory,
-    IDatabaseInserterFactory<Term> termInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<ProfessionalRole> professionalRoleCreator,
-    IEntityCreator<NewPersonOrganizationRelation> personOrganizationRelationCreator
-) : EntityCreator<NewPerson>
+internal sealed class PersonCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableParty> partyInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiablePerson> personInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+
+    IEntityCreatorFactory<ProfessionalRole> professionalRoleCreatorFactory,
+    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory
+) : INameableCreatorFactory<EventuallyIdentifiablePerson>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewPerson> persons, IDbConnection connection)
+    public async Task<NameableCreator<EventuallyIdentifiablePerson>> CreateAsync(IDbConnection connection) =>
+        new PersonCreator(
+            new() 
+            {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await documentableInserterFactory.CreateAsync(connection),
+                await locatableInserterFactory.CreateAsync(connection),
+                await nameableInserterFactory.CreateAsync(connection),
+                await partyInserterFactory.CreateAsync(connection),
+                await personInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await professionalRoleCreatorFactory.CreateAsync(connection),
+            await personOrganizationRelationCreatorFactory.CreateAsync(connection)
+        );
+}
+
+internal sealed class PersonCreator(
+    List<IDatabaseInserter<EventuallyIdentifiablePerson>> inserters,
+    NodeDetailsCreator nodeDetailsCreator,
+    NameableDetailsCreator nameableDetailsCreator,
+    IEntityCreator<ProfessionalRole> professionalRoleCreator,
+    IEntityCreator<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreator
+) : 
+    NameableCreator<EventuallyIdentifiablePerson>(inserters, nodeDetailsCreator, nameableDetailsCreator)
+{
+    public override async Task ProcessAsync(EventuallyIdentifiablePerson element)
     {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
-        await using var locatableWriter = await locatableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
-        await using var partyWriter = await partyInserterFactory.CreateAsync(connection);
-        await using var personWriter = await personInserterFactory.CreateAsync(connection);
-        await using var termWriter = await termInserterFactory.CreateAsync(connection);
-        await using var termReader = await termReaderFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await termHierarchyInserterFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-        await foreach (var person in persons) {
-            await nodeWriter.InsertAsync(person);
-            await searchableWriter.InsertAsync(person);
-            await documentableWriter.InsertAsync(person);
-            await locatableWriter.InsertAsync(person);
-            await nameableWriter.InsertAsync(person);
-            await partyWriter.InsertAsync(person);
-            await personWriter.InsertAsync(person);
-            await WriteTerms(person, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in person.TenantNodes) {
-                tenantNode.NodeId = person.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-
-            foreach (var role in person.ProfessionalRoles) {
-                role.PersonId = person.Id;
-            }
-            await professionalRoleCreator.CreateAsync(person.ProfessionalRoles.ToAsyncEnumerable(), connection);
-
-            foreach (var relation in person.PersonOrganizationRelations) {
-                relation.PersonId = person.Id;
-            }
-            await personOrganizationRelationCreator.CreateAsync(person.PersonOrganizationRelations.ToAsyncEnumerable(), connection);
+        await base.ProcessAsync(element);
+        foreach (var role in element.ProfessionalRoles) {
+            role.PersonId = element.Id;
         }
+        await professionalRoleCreator.CreateAsync(element.ProfessionalRoles.ToAsyncEnumerable());
+
+        foreach (var relation in element.PersonOrganizationRelations) {
+            relation.PersonId = element.Id;
+        }
+        await personOrganizationRelationCreator.CreateAsync(element.PersonOrganizationRelations.ToAsyncEnumerable());
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await professionalRoleCreator.DisposeAsync();
+        await personOrganizationRelationCreator.DisposeAsync();
     }
 }

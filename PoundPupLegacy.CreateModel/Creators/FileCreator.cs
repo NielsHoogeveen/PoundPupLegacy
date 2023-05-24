@@ -1,24 +1,36 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class FileCreator(
+internal sealed class FileCreatorFactory(
     IDatabaseInserterFactory<File> fileInserterFactory,
     IDatabaseInserterFactory<TenantFile> tenantFileInserterFactory
-) : EntityCreator<File>
+) : IInsertingEntityCreatorFactory<File>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<File> files, IDbConnection connection)
+    public async Task<InsertingEntityCreator<File>> CreateAsync(IDbConnection connection) =>
+    new FileCreator(
+        new() {
+            await fileInserterFactory.CreateAsync(connection)
+        },
+        await tenantFileInserterFactory.CreateAsync(connection)
+    );
+}
+
+public class FileCreator(
+    List<IDatabaseInserter<File>> inserters,
+    IDatabaseInserter<TenantFile> tenantFileInserter
+) : InsertingEntityCreator<File>(inserters)
+{
+    public override async Task ProcessAsync(File element)
     {
-
-        await using var fileWriter = await fileInserterFactory.CreateAsync(connection);
-        await using var tenantFileWriter = await tenantFileInserterFactory.CreateAsync(connection);
-
-        await foreach (var file in files) {
-            await fileWriter.InsertAsync(file);
-            foreach (var tenantFile in file.TenantFiles) {
-                tenantFile.FileId = file.Id;
-                tenantFile.TenantFileId ??= file.Id;
-                await tenantFileWriter.InsertAsync(tenantFile);
-            }
-
+        await base.ProcessAsync(element);
+        foreach (var tenantFile in element.TenantFiles) {
+            tenantFile.FileId = element.Id;
+            tenantFile.TenantFileId ??= element.Id;
+            await tenantFileInserter.InsertAsync(tenantFile);
         }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await tenantFileInserter.DisposeAsync();
     }
 }

@@ -3,8 +3,8 @@
 internal sealed class InterPersonalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreator<NewInterPersonalRelation> interPersonalRelationCreator
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    INodeCreatorFactory<EventuallyIdentifiableInterPersonalRelation> interPersonalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -17,13 +17,14 @@ internal sealed class InterPersonalRelationMigratorCPCT(
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var tenantNodeReaderByUrlId = await tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader, tenantNodeReaderByUrlId), _postgresConnection);
+        await using var interPersonalRelationCreator = await interPersonalRelationCreatorFactory.CreateAsync(_postgresConnection);
+        await interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader, tenantNodeReaderByUrlId));
 
     }
 
     private async IAsyncEnumerable<NewInterPersonalRelation> ReadInterPersonalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlId
     )
     {
 
@@ -91,9 +92,9 @@ internal sealed class InterPersonalRelationMigratorCPCT(
                 UrlId = reader.GetInt32("nameable_id")
             });
 
-            var tenantNodes = new List<TenantNode>
+            var tenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = Constants.CPCT,
@@ -105,7 +106,7 @@ internal sealed class InterPersonalRelationMigratorCPCT(
                 }
             };
             if (personFromPublicationStatusId == 1 && personToPublicationStatusId == 1) {
-                tenantNodes.Add(new TenantNode {
+                tenantNodes.Add(new NewTenantNodeForNewNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -131,6 +132,7 @@ internal sealed class InterPersonalRelationMigratorCPCT(
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = null,
                 Description = null,
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

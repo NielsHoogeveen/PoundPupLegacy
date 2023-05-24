@@ -6,7 +6,7 @@ internal sealed class AccessRolePrivilegeMigrator(
     IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
     IMandatorySingleItemDatabaseReaderFactory<EditNodeActionIdReaderByNodeTypeIdRequest, int> editNodeActionIdReaderByNodeTypeIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeIdRequest, int> editOwnNodeActionIdReaderByNodeTypeIdFactory,
-    IEntityCreator<AccessRolePrivilege> accessRolePrivilegeCreator
+    IInsertingEntityCreatorFactory<AccessRolePrivilege> accessRolePrivilegeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -370,12 +370,12 @@ internal sealed class AccessRolePrivilegeMigrator(
         await using var actionIdReaderByPath = await actionIdReaderByPathFactory.CreateAsync(_postgresConnection);
         await using var editNodeActionIdReaderByNodeTypeId = await editNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
         await using var editOwnNodeActionIdReaderByNodeTypeId = await editOwnNodeActionIdReaderByNodeTypeIdFactory.CreateAsync(_postgresConnection);
-
+        await using var accessRolePrivilegeCreator = await accessRolePrivilegeCreatorFactory.CreateAsync(_postgresConnection);
         await accessRolePrivilegeCreator.CreateAsync(GetAccessRolePrivileges(
             createNodeActionIdReaderByNodeTypeId,
             actionIdReaderByPath,
             editNodeActionIdReaderByNodeTypeId,
             editOwnNodeActionIdReaderByNodeTypeId
-        ), _postgresConnection);
+        ));
     }
 }

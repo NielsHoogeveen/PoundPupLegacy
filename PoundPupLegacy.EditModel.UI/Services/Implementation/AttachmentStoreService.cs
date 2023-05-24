@@ -10,7 +10,7 @@ internal sealed class AttachmentStoreService(
     IDbConnection connection,
     ILogger<AttachmentStoreService> logger,
     IConfiguration configuration,
-    IEntityCreator<CreateModel.File> fileCreator
+    IInsertingEntityCreatorFactory<CreateModel.File> fileCreatorFactory
 ) : DatabaseService(connection, logger), IAttachmentStoreService
 {
     public async Task<int?> StoreFile(IFormFile file)
@@ -39,7 +39,8 @@ internal sealed class AttachmentStoreService(
                     Size = (int)file.Length,
                     TenantFiles = new List<TenantFile>()
                 };
-                await fileCreator.CreateAsync(new List<CreateModel.File> { fm }.ToAsyncEnumerable(), connection);
+                await using var fileCreator = await fileCreatorFactory.CreateAsync(connection);
+                await fileCreator.CreateAsync(new List<CreateModel.File> { fm }.ToAsyncEnumerable());
                 return fm.Id;
             });
         }

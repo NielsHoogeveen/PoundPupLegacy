@@ -127,7 +127,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSecondLevelSubdivision>, SecondLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NewSenateBill>, SenateBillInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NewSenateTerm>, SenateTermInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<NewSenator>, SenatorInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<Senator>, SenatorInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NewSenatorSenateBillAction>, SenatorSenateBillActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode>, SimpleTextNodeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NewSingleQuestionPoll>, SingleQuestionPollInserterFactory>();
@@ -137,7 +137,8 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<SystemGroup>, SystemGroupInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TenantFile>, TenantFileInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Tenant>, TenantInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<TenantNode>, TenantNodeInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<NewTenantNodeForNewNode>, TenantNodeInserterForNewNodeFactory>();
+        services.AddTransient<IDatabaseInserterFactory<NewTenantNodeForExistingNode>, TenantNodeInserterForExistingNodeFactory>();
         services.AddTransient<IDatabaseInserterFactory<TenantNodeMenuItem>, TenantNodeMenuItemInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Term>, TermInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TermHierarchy>, TermHierarchyInserterFactory>();

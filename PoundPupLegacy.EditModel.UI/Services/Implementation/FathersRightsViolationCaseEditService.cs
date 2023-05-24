@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -12,7 +13,7 @@ internal sealed class FathersRightsViolationCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.NewFathersRightsViolationCase> fathersRightsViolationCaseCreator,
+    INameableCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseCreatorFactory,
     ITextService textService
 ) : NodeEditServiceBase<FathersRightsViolationCase, ExistingFathersRightsViolationCase, NewFathersRightsViolationCase, CreateModel.NewFathersRightsViolationCase>(
     connection,
@@ -60,7 +61,7 @@ internal sealed class FathersRightsViolationCaseEditService(
             OwnerId = fathersRightsViolationCase.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = fathersRightsViolationCase.PublisherId,
-            TenantNodes = fathersRightsViolationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = fathersRightsViolationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -69,7 +70,7 @@ internal sealed class FathersRightsViolationCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = fathersRightsViolationCase.Date?.ToDateTimeRange(),
+            Date = fathersRightsViolationCase.Date,
             FileIdTileImage = null,
             VocabularyNames = new List<CreateModel.VocabularyName> {
                 new  CreateModel.VocabularyName {
@@ -79,8 +80,10 @@ internal sealed class FathersRightsViolationCaseEditService(
                     ParentNames = new List<string>(),
                 }
             },
+            NodeTermIds = new List<int>(),
         };
-        await fathersRightsViolationCaseCreator.CreateAsync(createDocument, connection);
+        await using var fathersRightsViolationCaseCreator = await fathersRightsViolationCaseCreatorFactory.CreateAsync(connection);
+        await fathersRightsViolationCaseCreator.CreateAsync(createDocument);
         return createDocument.Id!.Value;
     }
 

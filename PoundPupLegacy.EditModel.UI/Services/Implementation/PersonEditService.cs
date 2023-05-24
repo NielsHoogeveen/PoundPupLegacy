@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -13,7 +14,7 @@ internal sealed class PersonEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ISaveService<IEnumerable<Location>> locationsSaveService,
-    IEntityCreator<CreateModel.NewPerson> personEntityCreator,
+    INameableCreatorFactory<EventuallyIdentifiablePerson> personEntityCreatorFactory,
     ITextService textService
 
 ) : PartyEditServiceBase<Person, ExistingPerson, NewPerson, CreateModel.NewPerson>(
@@ -69,7 +70,7 @@ internal sealed class PersonEditService(
             NodeTypeId = Constants.ORGANIZATION,
             OwnerId = person.OwnerId,
             AuthoringStatusId = 1,
-            TenantNodes = person.TenantNodes.Select(x => new CreateModel.TenantNode {
+            TenantNodes = person.TenantNodes.Select(x => new CreateModel.NewTenantNodeForNewNode {
                 NodeId = null,
                 TenantId = x.TenantId,
                 UrlPath = x.UrlPath,
@@ -90,9 +91,11 @@ internal sealed class PersonEditService(
             MiddleName = null,
             Suffix = null,
             ProfessionalRoles = new List<CreateModel.ProfessionalRole>(),
-            PersonOrganizationRelations = new List<CreateModel.NewPersonOrganizationRelation>()
+            PersonOrganizationRelations = new List<CreateModel.NewPersonOrganizationRelation>(),
+            NodeTermIds = new List<int>(),
         };
-        await personEntityCreator.CreateAsync(creationPerson, connection);
+        await using var personEntityCreator = await personEntityCreatorFactory.CreateAsync(connection);
+        await personEntityCreator.CreateAsync(creationPerson);
         return creationPerson.Id!.Value;
     }
 

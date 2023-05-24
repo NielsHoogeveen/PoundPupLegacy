@@ -2,15 +2,15 @@
 
 internal sealed class DiscussionMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<NewDiscussion> discussionCreator
+    INodeCreatorFactory<EventuallyIdentifiableDiscussion> discussionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "discussions";
 
     protected override async Task MigrateImpl()
     {
-        await discussionCreator.CreateAsync(ReadDiscussions(), _postgresConnection);
-
+        await using var discussionCreator = await discussionCreatorFactory.CreateAsync(_postgresConnection);
+        await discussionCreator.CreateAsync(ReadDiscussions());
     }
     private async IAsyncEnumerable<NewDiscussion> ReadDiscussions()
     {
@@ -46,9 +46,9 @@ internal sealed class DiscussionMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -62,6 +62,7 @@ internal sealed class DiscussionMigrator(
                 NodeTypeId = 37,
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
+                NodeTermIds = new List<int>(),
             };
             yield return discussion;
 

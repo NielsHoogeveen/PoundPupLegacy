@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -12,7 +13,7 @@ internal sealed class WrongfulMedicationCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.NewWrongfulMedicationCase> wrongfulMedicationCaseCreator,
+    INameableCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase> wrongfulMedicationCaseCreatorFactory,
     ITextService textService
 ) : NodeEditServiceBase<WrongfulMedicationCase, ExistingWrongfulMedicationCase, NewWrongfulMedicationCase, CreateModel.NewWrongfulMedicationCase>(
     connection,
@@ -60,7 +61,7 @@ internal sealed class WrongfulMedicationCaseEditService(
             OwnerId = wrongfulMedicationCase.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = wrongfulMedicationCase.PublisherId,
-            TenantNodes = wrongfulMedicationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = wrongfulMedicationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -69,7 +70,7 @@ internal sealed class WrongfulMedicationCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = wrongfulMedicationCase.Date?.ToDateTimeRange(),
+            Date = wrongfulMedicationCase.Date,
             FileIdTileImage = null,
             VocabularyNames = new List<CreateModel.VocabularyName> {
                 new  CreateModel.VocabularyName {
@@ -79,8 +80,10 @@ internal sealed class WrongfulMedicationCaseEditService(
                     ParentNames = new List<string>(),
                 }
             },
+            NodeTermIds = new List<int>(),
         };
-        await wrongfulMedicationCaseCreator.CreateAsync(createDocument, connection);
+        await using var wrongfulMedicationCaseCreator = await wrongfulMedicationCaseCreatorFactory.CreateAsync(connection);
+        await wrongfulMedicationCaseCreator.CreateAsync(createDocument);
         return createDocument.Id!.Value;
     }
 

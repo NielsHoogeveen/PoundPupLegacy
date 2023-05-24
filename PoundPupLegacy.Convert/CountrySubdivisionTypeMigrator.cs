@@ -5,13 +5,13 @@ internal sealed class CountrySubdivisionTypeMigratorPartOne(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-    IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
+    IInsertingEntityCreatorFactory<CountrySubdivisionType> countrySubdivisionTypeCreatorFactory
 ) : CountrySubdivisionTypeMigrator(
     databaseConnections, 
     nodeIdReaderFactory, 
     vocabularyIdReaderByOwnerAndNameFactory, 
     termReaderByNameFactory, 
-    countrySubdivisionTypeCreator
+    countrySubdivisionTypeCreatorFactory
 )
 {
     protected override string FileName => "country_subdivision_types_part1.csv";
@@ -21,13 +21,13 @@ internal sealed class CountrySubdivisionTypeMigratorPartTwo(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-    IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
+    IInsertingEntityCreatorFactory<CountrySubdivisionType> countrySubdivisionTypeCreatorFactory
 ) : CountrySubdivisionTypeMigrator(
     databaseConnections, 
     nodeIdReaderFactory, 
     vocabularyIdReaderByOwnerAndNameFactory, 
     termReaderByNameFactory, 
-    countrySubdivisionTypeCreator
+    countrySubdivisionTypeCreatorFactory
 )
 {
     protected override string FileName => "country_subdivision_types_part2.csv";
@@ -38,8 +38,8 @@ internal sealed class CountrySubdivisionTypeMigratorPartThree : CountrySubdivisi
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
-    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreator)
+        IInsertingEntityCreatorFactory<CountrySubdivisionType> countrySubdivisionTypeCreatorFactory
+    ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreatorFactory)
     {
     }
 
@@ -51,7 +51,7 @@ internal abstract class CountrySubdivisionTypeMigrator(
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        IEntityCreator<CountrySubdivisionType> countrySubdivisionTypeCreator
+        IInsertingEntityCreatorFactory<CountrySubdivisionType> countrySubdivisionTypeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
 
@@ -98,10 +98,11 @@ internal abstract class CountrySubdivisionTypeMigrator(
         await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
         await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
+        await using var countrySubdivisionTypeCreator = await countrySubdivisionTypeCreatorFactory.CreateAsync(_postgresConnection);
         await countrySubdivisionTypeCreator.CreateAsync(ReadCountrySubdivisionTypesCsv(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName
-            ), _postgresConnection);
+        ));
     }
 }

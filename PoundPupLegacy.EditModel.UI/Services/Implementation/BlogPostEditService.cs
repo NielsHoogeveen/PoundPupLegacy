@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -13,8 +14,8 @@ internal sealed class BlogPostEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITextService textService,
-    IEntityCreator<CreateModel.NewBlogPost> blogPostCreator
-) : SimpleTextNodeEditServiceBase<BlogPost, ExistingBlogPost, NewBlogPost, CreateModel.NewBlogPost>(
+    INodeCreatorFactory<EventuallyIdentifiableBlogPost> blogPostCreatorFactory
+) : SimpleTextNodeEditServiceBase<BlogPost, ExistingBlogPost, NewBlogPost, EventuallyIdentifiableBlogPost>(
     connection, 
     logger, 
     tenantRefreshService, 
@@ -25,7 +26,7 @@ internal sealed class BlogPostEditService(
     textService), IEditService<BlogPost, BlogPost>
 {
 
-    protected sealed override IEntityCreator<CreateModel.NewBlogPost> EntityCreator => blogPostCreator;
+    protected sealed override INodeCreatorFactory<EventuallyIdentifiableBlogPost> EntityCreatorFactory => blogPostCreatorFactory;
 
     public async Task<BlogPost?> GetViewModelAsync(int userId, int tenantId)
     {
@@ -64,7 +65,7 @@ internal sealed class BlogPostEditService(
             OwnerId = item.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = item.PublisherId,
-            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -73,6 +74,7 @@ internal sealed class BlogPostEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
+            NodeTermIds = new List<int>(),
         };
     }
 }

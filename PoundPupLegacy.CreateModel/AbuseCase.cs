@@ -35,6 +35,8 @@ public interface AbuseCase
     bool? HomeschoolingInvolved { get; }
     bool? FundamentalFaithInvolved { get; }
     bool? DisabilitiesInvolved { get; }
+    List<int> TypeOfAbuseIds { get;  }
+    List<int> TypeOfAbuserIds { get; }
 
 }
 

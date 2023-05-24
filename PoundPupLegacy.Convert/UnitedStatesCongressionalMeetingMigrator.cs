@@ -2,7 +2,7 @@
 
 internal sealed class UnitedStatesCongressionalMeetingMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<NewUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreator
+        INameableCreatorFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states congressional meetings";
@@ -36,9 +36,9 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                 NodeTypeId = 52,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -52,13 +52,15 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                 PublisherId = 2,
                 Title = title,
                 DateRange = new DateTimeRange(startDate, endDate),
-                Number = number
+                Number = number,
+                NodeTermIds = new List<int>(),
             };
         }
     }
 
     protected override async Task MigrateImpl()
     {
-        await unitedStatesCongressionalMeetingCreator.CreateAsync(ReadUnitedStatesCongressionalMeetingCsv(), _postgresConnection);
+        await using var unitedStatesCongressionalMeetingCreator = await unitedStatesCongressionalMeetingCreatorFactory.CreateAsync(_postgresConnection);
+        await unitedStatesCongressionalMeetingCreator.CreateAsync(ReadUnitedStatesCongressionalMeetingCsv());
     }
 }

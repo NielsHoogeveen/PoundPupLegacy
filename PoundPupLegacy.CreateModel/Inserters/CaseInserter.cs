@@ -4,7 +4,7 @@ using Request = EventuallyIdentifiableCase;
 
 internal sealed class CaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
-    private static readonly NullableTimeStampRangeDatabaseParameter FuzzyDate = new() { Name = "fuzzy_date" };
+    private static readonly NullableFuzzyDateDatabaseParameter FuzzyDate = new() { Name = "fuzzy_date" };
 
     public override string TableName => "case";
 

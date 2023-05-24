@@ -17,8 +17,6 @@ public interface Country : PoliticalEntity
     string? IncomeRequirements { get; }
     string? HealthRequirements { get; }
     string? OtherRequirements { get; }
-    int? VocabularyIdSubdivisions { get; }
-
 }
 
 public abstract record NewCountryBase: NewPoliticalEntityBase, EventuallyIdentifiableCountry
@@ -31,7 +29,6 @@ public abstract record NewCountryBase: NewPoliticalEntityBase, EventuallyIdentif
     public required string? IncomeRequirements { get; init; }
     public required string? HealthRequirements { get; init; }
     public required string? OtherRequirements { get; init; }
-    public int? VocabularyIdSubdivisions { get; set; } = null;
 
 }
 public abstract record ExistingCountryBase : ExistingPoliticalEntityBase, ImmediatelyIdentifiableCountry
@@ -44,6 +41,4 @@ public abstract record ExistingCountryBase : ExistingPoliticalEntityBase, Immedi
     public required string? IncomeRequirements { get; init; }
     public required string? HealthRequirements { get; init; }
     public required string? OtherRequirements { get; init; }
-    public int? VocabularyIdSubdivisions { get; set; } = null;
-
 }

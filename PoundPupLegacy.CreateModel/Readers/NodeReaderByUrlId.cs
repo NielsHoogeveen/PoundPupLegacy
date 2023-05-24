@@ -55,7 +55,8 @@ internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseRead
             NodeTypeId = NodeTypeIdReader.GetValue(reader),
             OwnerId = OwnerIdReader.GetValue(reader),
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>(),
+            TenantNodes = new List<NewTenantNodeForNewNode>(),
+            NodeTermIds = new List<int>(),
         };
         return node;
     }

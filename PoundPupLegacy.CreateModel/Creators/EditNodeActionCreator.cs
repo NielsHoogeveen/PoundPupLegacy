@@ -1,18 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class EditNodeActionCreator(
+internal sealed class EditNodeActionCreatorFactory(
     IDatabaseInserterFactory<Action> actionInserterFactory,
     IDatabaseInserterFactory<EditNodeAction> editNodeActionInserterFactory
-) : EntityCreator<EditNodeAction>
+) : IInsertingEntityCreatorFactory<EditNodeAction>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<EditNodeAction> actions, IDbConnection connection)
-    {
-        await using var actionWriter = await actionInserterFactory.CreateAsync(connection);
-        await using var editNodeActionWriter = await editNodeActionInserterFactory.CreateAsync(connection);
-
-        await foreach (var action in actions) {
-            await actionWriter.InsertAsync(action);
-            await editNodeActionWriter.InsertAsync(action);
-        }
-    }
+    public async Task<InsertingEntityCreator<EditNodeAction>> CreateAsync(IDbConnection connection) =>
+        new ( new (){
+            await actionInserterFactory.CreateAsync(connection),
+            await editNodeActionInserterFactory.CreateAsync(connection)
+        });
 }

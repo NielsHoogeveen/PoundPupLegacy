@@ -7,126 +7,107 @@ internal static class DependencyInjection
     internal static void AddCreateModelCreators(this IServiceCollection services)
     {
         services.AddCreateModelInserters();
-        services.AddTransient<IEntityCreator<NewAbuseCase>, AbuseCaseCreator>();
-        services.AddTransient<IEntityCreator<AbuseCaseTypeOfAbuse>, AbuseCaseTypeOfAbuseCreator>();
-        services.AddTransient<IEntityCreator<AbuseCaseTypeOfAbuser>, AbuseCaseTypeOfAbuserCreator>();
-        services.AddTransient<IEntityCreator<AccessRole>, AccessRoleCreator>();
-        services.AddTransient<IEntityCreator<AccessRolePrivilege>, AccessRolePrivilegeCreator>();
-        services.AddTransient<IEntityCreator<NewAct>, ActCreator>();
-        services.AddTransient<IEntityCreator<ActionMenuItem>, ActionMenuItemCreator>();
-        services.AddTransient<IEntityCreator<ActionMenuItem>, ActionMenuItemCreator>();
+        services.AddTransient<NameableDetailsCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableAbuseCase>, AbuseCaseCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuse>, AbuseCaseTypeOfAbuseCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuser>, AbuseCaseTypeOfAbuserCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<AccessRole>, AccessRoleCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<AccessRolePrivilege>, AccessRolePrivilegeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableAct>, ActCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<ActionMenuItem>, ActionMenuItemCreatorFactory>();
         services.AddTransient<IAnonimousUserCreator, AnonimousUserCreator>();
-        services.AddTransient<IEntityCreator<AuthoringStatus>, AuthoringStatusCreator>();
-        services.AddTransient<IEntityCreator<BasicAction>, BasicActionCreator>();
-        services.AddTransient<IEntityCreator<NewBasicCountry>, BasicCountryCreator>();
-        services.AddTransient<IEntityCreator<NewBasicNameable>, BasicNameableCreator>();
-        services.AddTransient<IEntityCreator<BasicNameableType>, BasicNameableTypeCreator>();
-        services.AddTransient<IEntityCreator<NewBasicSecondLevelSubdivision>, BasicSecondLevelSubdivisionCreator>();
-        services.AddTransient<IEntityCreator<NewBillActionType>, BillActionTypeCreator>();
-        services.AddTransient<IEntityCreator<NewBindingCountry>, BindingCountryCreator>();
-        services.AddTransient<IEntityCreator<NewBlogPost>, BlogPostCreator>();
-        services.AddTransient<IEntityCreator<NewBoundCountry>, BoundCountryCreator>();
-        services.AddTransient<IEntityCreator<CaseCaseParties>, CaseCasePartiesCreator>();
-        services.AddTransient<IEntityCreator<NewCasePartyType>, CasePartyTypeCreator>();
-        services.AddTransient<IEntityCreator<CaseType>, CaseTypeCreator>();
-        services.AddTransient<IEntityCreator<NewCasePartyType>, CasePartyTypeCreator>();
-        services.AddTransient<IEntityCreator<NewChildPlacementType>, ChildPlacementTypeCreator>();
-        services.AddTransient<IEntityCreator<NewChildTraffickingCase>, ChildTraffickingCaseCreator>();
-        services.AddTransient<IEntityCreator<NewCoercedAdoptionCase>, CoercedAdoptionCaseCreator>();
-        services.AddTransient<IEntityCreator<Collective>, CollectiveCreator>();
-        services.AddTransient<IEntityCreator<CollectiveUser>, CollectiveUserCreator>();
-        services.AddTransient<IEntityCreator<Comment>, CommentCreator>();
-        services.AddTransient<IEntityCreator<NewCongressionalTermPoliticalPartyAffiliation>, CongressionalTermPoliticalPartyAffiliationCreator>();
-        services.AddTransient<IEntityCreator<ContentSharingGroup>, ContentSharingGroupCreator>();
-        services.AddTransient<IEntityCreator<NewCountryAndFirstAndBottomLevelSubdivision>, CountryAndFirstAndBottomLevelSubdivisionCreator>();
-        services.AddTransient<IEntityCreator<NewCountryAndFirstAndSecondLevelSubdivision>, CountryAndFirstAndSecondLevelSubdivisionCreator>();
-        services.AddTransient<IEntityCreator<NewCountryAndIntermediateLevelSubdivision>, CountryAndIntermediateLevelSubdivisionCreator>();
-        services.AddTransient<IEntityCreator<CountrySubdivisionType>, CountrySubdivisionTypeCreator>();
-        services.AddTransient<IEntityCreator<CreateNodeAction>, CreateNodeActionCreator>();
-        services.AddTransient<IEntityCreator<DeleteNodeAction>, DeleteNodeActionCreator>();
-        services.AddTransient<IEntityCreator<NewDenomination>, DenominationCreator>();
-        services.AddTransient<IEntityCreator<NewDeportationCase>, DeportationCaseCreator>();
-        services.AddTransient<IEntityCreator<NewDiscussion>, DiscussionCreator>();
-        services.AddTransient<IEntityCreator<NewDisruptedPlacementCase>, DisruptedPlacementCaseCreator>();
-        services.AddTransient<IEntityCreator<DocumentableDocument>, DocumentableDocumentCreator>();
-        services.AddTransient<IEntityCreator<NewDocument>, DocumentCreator>();
-        services.AddTransient<IEntityCreator<NewDocumentType>, DocumentTypeCreator>();
-        services.AddTransient<IEntityCreator<EditNodeAction>, EditNodeActionCreator>();
-        services.AddTransient<IEntityCreator<EditOwnNodeAction>, EditOwnNodeActionCreator>();
-        services.AddTransient<IEntityCreator<NewFamilySize>, FamilySizeCreator>();
-        services.AddTransient<IEntityCreator<NewFathersRightsViolationCase>, FathersRightsViolationCaseCreator>();
-        services.AddTransient<IEntityCreator<File>, FileCreator>();
-        services.AddTransient<IEntityCreator<NewFirstAndBottomLevelSubdivision>, FirstAndBottomLevelSubdivisionCreator>();
-        services.AddTransient<IEntityCreator<NewFirstLevelGlobalRegion>, FirstLevelGlobalRegionCreator>();
-        services.AddTransient<IEntityCreator<NewFormalIntermediateLevelSubdivision>, FormalIntermediateLevelSubdivisionCreator>();
-        services.AddTransient<IEntityCreator<NewHagueStatus>, HagueStatusCreator>();
-        services.AddTransient<IEntityCreator<NewHouseBill>, HouseBillCreator>();
-        services.AddTransient<IEntityCreator<NewHouseTerm>, HouseTermCreator>();
-        services.AddTransient<IEntityCreator<NewInformalIntermediateLevelSubdivision>, InformalIntermediateLevelSubdivisionCreator>();
-        services.AddTransient<IEntityCreator<NewInterCountryRelation>, InterCountryRelationCreator>();
-        services.AddTransient<IEntityCreator<NewInterCountryRelationType>, InterCountryRelationTypeCreator>();
-        services.AddTransient<IEntityCreator<NewInterOrganizationalRelation>, InterOrganizationalRelationCreator>();
-        services.AddTransient<IEntityCreator<NewInterOrganizationalRelationType>, InterOrganizationalRelationTypeCreator>();
-        services.AddTransient<IEntityCreator<NewInterPersonalRelation>, InterPersonalRelationCreator>();
-        services.AddTransient<IEntityCreator<NewInterPersonalRelationType>, InterPersonalRelationTypeCreator>();
-        services.AddTransient<IEntityCreator<Location>, LocationCreator>();
-        services.AddTransient<IEntityCreator<LocationLocatable>, LocationLocatableCreator>();
-        services.AddTransient<IEntityCreator<NewMultiQuestionPoll>, MultiQuestionPollCreator>();
-        services.AddTransient<IEntityCreator<NodeFile>, NodeFileCreator>();
-        services.AddTransient<IEntityCreator<NodeTerm>, NodeTermCreator>();
-        services.AddTransient<IEntityCreator<BasicNodeType>, NodeTypeCreator>();
-        services.AddTransient<IEntityCreator<EventuallyIdentifiableOrganization>, OrganizationCreator>();
-        services.AddTransient<IEntityCreator<NewOrganizationType>, OrganizationTypeCreator>();
-        services.AddTransient<IEntityCreator<NewPage>, PageCreator>();
-        services.AddTransient<IEntityCreator<NewPartyPoliticalEntityRelation>, PartyPoliticalEntityRelationCreator>();
-        services.AddTransient<IEntityCreator<NewPartyPoliticalEntityRelationType>, PartyPoliticalEntityRelationTypeCreator>();
-        services.AddTransient<IEntityCreator<NewPerson>, PersonCreator>();
-        services.AddTransient<IEntityCreator<NewPersonOrganizationRelation>, PersonOrganizationRelationCreator>();
-        services.AddTransient<IEntityCreator<NewPersonOrganizationRelationType>, PersonOrganizationRelationTypeCreator>();
-        services.AddTransient<IEntityCreator<PollStatus>, PollStatusCreator>();
-        services.AddTransient<IEntityCreator<ProfessionalRole>, ProfessionalRoleCreator>();
-        services.AddTransient<IEntityCreator<NewProfession>, ProfessionCreator>();
-        services.AddTransient<IEntityCreator<PublicationStatus>, PublicationStatusCreator>();
-        services.AddTransient<IEntityCreator<NewRepresentativeHouseBillAction>, RepresentativeHouseBillActionCreator>();
-        services.AddTransient<IEntityCreator<NewReview>, ReviewCreator>();
-        services.AddTransient<IEntityCreator<NewSecondLevelGlobalRegion>, SecondLevelGlobalRegionCreator>();
-        services.AddTransient<IEntityCreator<NewSenateBill>, SenateBillCreator>();
-        services.AddTransient<IEntityCreator<NewSenateTerm>, SenateTermCreator>();
-        services.AddTransient<IEntityCreator<NewSenatorSenateBillAction>, SenatorSenateBillActionCreator>();
-        services.AddTransient<IEntityCreator<NewSingleQuestionPoll>, SingleQuestionPollCreator>();
-        services.AddTransient<IEntityCreator<NewSubdivisionType>, SubdivisionTypeCreator>();
-        services.AddTransient<IEntityCreator<Subgroup>, SubgroupCreator>();
-        services.AddTransient<IEntityCreator<SystemGroup>, SystemGroupCreator>();
-        services.AddTransient<IEntityCreator<Tenant>, TenantCreator>();
-        services.AddTransient<IEntityCreator<TenantNodeMenuItem>, TenantNodeMenuItemCreator>();
-        services.AddTransient<IEntityCreator<TermHierarchy>, TermHierarchyCreator>();
-        services.AddTransient<IEntityCreator<NewTypeOfAbuse>, TypeOfAbuseCreator>();
-        services.AddTransient<IEntityCreator<NewTypeOfAbuser>, TypeOfAbuserCreator>();
-        services.AddTransient<IEntityCreator<NewUnitedStatesCongressionalMeeting>, UnitedStatesCongressionalMeetingCreator>();
-        services.AddTransient<IEntityCreator<NewUnitedStatesPoliticalPartyAffliation>, UnitedStatesPoliticalPartyAffliationCreator>();
-        services.AddTransient<IEntityCreator<User>, UserCreator>();
-        services.AddTransient<IEntityCreator<UserGroupUserRoleUser>, UserGroupUserRoleUserCreator>();
-        services.AddTransient<IEntityCreator<NewVocabulary>, VocabularyCreator>();
-        services.AddTransient<IEntityCreator<ViewNodeTypeListAction>, ViewNodeTypeListActionCreator>();
-        services.AddTransient<IEntityCreator<NewWrongfulMedicationCase>, WrongfulMedicationCaseCreator>();
-        services.AddTransient<IEntityCreator<NewWrongfulRemovalCase>, WrongfulRemovalCaseCreator>();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        services.AddTransient<IInsertingEntityCreatorFactory<AuthoringStatus>, AuthoringStatusCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<BasicAction>, BasicActionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableBasicCountry>, BasicCountryCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableBasicNameable>, BasicNameableCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<BasicNameableType>, BasicNameableTypeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision>, BasicSecondLevelSubdivisionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableBillActionType>, BillActionTypeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableBindingCountry>, BindingCountryCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableBlogPost>, BlogPostCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableBoundCountry>, BoundCountryCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<CaseCaseParties>, CaseCasePartiesCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableCasePartyType>, CasePartyTypeCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<CaseType>, CaseTypeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableCasePartyType>, CasePartyTypeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableChildPlacementType>, ChildPlacementTypeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableChildTraffickingCase>, ChildTraffickingCaseCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableCoercedAdoptionCase>, CoercedAdoptionCaseCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<Collective>, CollectiveCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<CollectiveUser>, CollectiveUserCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<Comment>, CommentCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation>, CongressionalTermPoliticalPartyAffiliationCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<ContentSharingGroup>, ContentSharingGroupCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableCountryAndFirstAndBottomLevelSubdivision>, CountryAndFirstAndBottomLevelSubdivisionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision>, CountryAndFirstAndSecondLevelSubdivisionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableCountryAndIntermediateLevelSubdivision>, CountryAndIntermediateLevelSubdivisionCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<CountrySubdivisionType>, CountrySubdivisionTypeCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<CreateNodeAction>, CreateNodeActionCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<DeleteNodeAction>, DeleteNodeActionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableDenomination>, DenominationCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableDeportationCase>, DeportationCaseCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableDiscussion>, DiscussionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableDisruptedPlacementCase>, DisruptedPlacementCaseCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<DocumentableDocument>, DocumentableDocumentCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableDocument>, DocumentCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableDocumentType>, DocumentTypeCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<EditNodeAction>, EditNodeActionCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<EditOwnNodeAction>, EditOwnNodeActionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableFamilySize>, FamilySizeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase>, FathersRightsViolationCaseCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<File>, FileCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableFirstAndBottomLevelSubdivision>, FirstAndBottomLevelSubdivisionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion>, FirstLevelGlobalRegionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision>, FormalIntermediateLevelSubdivisionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableHagueStatus>, HagueStatusCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableHouseBill>, HouseBillCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableHouseTerm, HouseTermCreator>, HouseTermCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableInformalIntermediateLevelSubdivision>, InformalIntermediateLevelSubdivisionCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableInterCountryRelation>, InterCountryRelationCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableInterCountryRelationType>, InterCountryRelationTypeCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation>, InterOrganizationalRelationCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType>, InterOrganizationalRelationTypeCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableInterPersonalRelation>, InterPersonalRelationCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableInterPersonalRelationType>, InterPersonalRelationTypeCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<Location>, LocationCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<LocationLocatable>, LocationLocatableCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableMultiQuestionPoll>, MultiQuestionPollCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<NodeFile>, NodeFileCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<NodeTerm>, NodeTermCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<BasicNodeType>, NodeTypeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableOrganization>, OrganizationCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableOrganizationType>, OrganizationTypeCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiablePage>, PageCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation>, PartyPoliticalEntityRelationCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationType>, PartyPoliticalEntityRelationTypeCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiablePerson>, PersonCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation>, PersonOrganizationRelationCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationType>, PersonOrganizationRelationTypeCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<PollStatus>, PollStatusCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<ProfessionalRole>, ProfessionalRoleCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableProfession>, ProfessionCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<PublicationStatus>, PublicationStatusCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableRepresentativeHouseBillAction>, RepresentativeHouseBillActionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableSecondLevelGlobalRegion>, SecondLevelGlobalRegionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableSenateBill>, SenateBillCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableSenateTerm>, SenateTermCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableSenatorSenateBillAction>, SenatorSenateBillActionCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableSingleQuestionPoll>, SingleQuestionPollCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableSubdivisionType>, SubdivisionTypeCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<Subgroup>, SubgroupCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<SystemGroup>, SystemGroupCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<Tenant>, TenantCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<TenantNodeMenuItem>, TenantNodeMenuItemCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<TermHierarchy>, TermHierarchyCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableTypeOfAbuse>, TypeOfAbuseCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableTypeOfAbuser>, TypeOfAbuserCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting>, UnitedStatesCongressionalMeetingCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation>, UnitedStatesPoliticalPartyAffliationCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<User>, UserCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<UserGroupUserRoleUser>, UserGroupUserRoleUserCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableVocabulary>, VocabularyCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<ViewNodeTypeListAction>, ViewNodeTypeListActionCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase>, WrongfulMedicationCaseCreatorFactory>();
+        services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase>, WrongfulRemovalCaseCreatorFactory>();
     }
 }

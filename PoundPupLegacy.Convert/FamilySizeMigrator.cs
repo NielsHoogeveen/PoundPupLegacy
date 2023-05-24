@@ -2,7 +2,7 @@
 
 internal sealed class FamilySizeMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreator<NewFamilySize> familySizeCreator
+        INameableCreatorFactory<EventuallyIdentifiableFamilySize> familySizeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "family sizes";
@@ -18,42 +18,43 @@ internal sealed class FamilySizeMigrator(
             Title = "1 to 4",
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.ONE_TO_FOUR
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.ONE_TO_FOUR
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.ONE_TO_FOUR
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.ONE_TO_FOUR
+                }
+            },
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.OWNER_CASES,
-                        Name = Constants.VOCABULARY_FAMILY_SIZE,
-                        TermName = "1 to 4",
-                        ParentNames = new List<string>(),
-                    },
+                    OwnerId = Constants.OWNER_CASES,
+                    Name = Constants.VOCABULARY_FAMILY_SIZE,
+                    TermName = "1 to 4",
+                    ParentNames = new List<string>(),
                 },
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewFamilySize {
             Id = null,
@@ -63,42 +64,43 @@ internal sealed class FamilySizeMigrator(
             Title = "4 to 8",
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.FOUR_TO_EIGHT
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.FOUR_TO_EIGHT
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.FOUR_TO_EIGHT
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.FOUR_TO_EIGHT
+                }
+            },
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.OWNER_CASES,
-                        Name = Constants.VOCABULARY_FAMILY_SIZE,
-                        TermName = "4 to 8",
-                        ParentNames = new List<string>(),
-                    },
+                    OwnerId = Constants.OWNER_CASES,
+                    Name = Constants.VOCABULARY_FAMILY_SIZE,
+                    TermName = "4 to 8",
+                    ParentNames = new List<string>(),
                 },
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewFamilySize {
             Id = null,
@@ -108,29 +110,29 @@ internal sealed class FamilySizeMigrator(
             Title = "8 to 12",
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.EIGHT_TO_TWELVE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.EIGHT_TO_TWELVE
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.EIGHT_TO_TWELVE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.EIGHT_TO_TWELVE
+                }
+            },
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
@@ -144,6 +146,7 @@ internal sealed class FamilySizeMigrator(
                         ParentNames = new List<string>(),
                     },
                 },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewFamilySize {
             Id = null,
@@ -153,53 +156,55 @@ internal sealed class FamilySizeMigrator(
             Title = "more than 12",
             OwnerId = Constants.OWNER_CASES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.MORE_THAN_TWELVE
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.MORE_THAN_TWELVE
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.MORE_THAN_TWELVE
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.MORE_THAN_TWELVE
+                }
+            },
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName>
+            {
+                new VocabularyName
                 {
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.OWNER_CASES,
-                        Name = Constants.VOCABULARY_FAMILY_SIZE,
-                        TermName = "more than 12",
-                        ParentNames = new List<string>(),
-                    },
-                    new VocabularyName
-                    {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
-                        TermName = "mega families",
-                        ParentNames = new List<string>(),
-                    },
+                    OwnerId = Constants.OWNER_CASES,
+                    Name = Constants.VOCABULARY_FAMILY_SIZE,
+                    TermName = "more than 12",
+                    ParentNames = new List<string>(),
                 },
+                new VocabularyName
+                {
+                    OwnerId = Constants.OWNER_SYSTEM,
+                    Name = Constants.VOCABULARY_TOPICS,
+                    TermName = "mega families",
+                    ParentNames = new List<string>(),
+                },
+            },
+            NodeTermIds = new List<int>(),
         };
     }
     protected override async Task MigrateImpl()
     {
-        await familySizeCreator.CreateAsync(GetFamilySizes(), _postgresConnection);
+        await using var familySizeCreator = await familySizeCreatorFactory.CreateAsync(_postgresConnection);
+        await familySizeCreator.CreateAsync(GetFamilySizes());
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -12,7 +13,7 @@ internal sealed class DeportationCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.NewDeportationCase> deportationCaseCreator,
+    INameableCreatorFactory<EventuallyIdentifiableDeportationCase> deportationCaseCreatorFactory,
     ITextService textService
 ) : NodeEditServiceBase<DeportationCase, ExistingDeportationCase, NewDeportationCase, CreateModel.NewDeportationCase>(
     connection,
@@ -60,7 +61,7 @@ internal sealed class DeportationCaseEditService(
             OwnerId = deportationCase.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = deportationCase.PublisherId,
-            TenantNodes = deportationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = deportationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -69,7 +70,7 @@ internal sealed class DeportationCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = deportationCase.Date?.ToDateTimeRange(),
+            Date = deportationCase.Date,
             FileIdTileImage = null,
             VocabularyNames = new List<CreateModel.VocabularyName> {
                 new  CreateModel.VocabularyName {
@@ -80,9 +81,11 @@ internal sealed class DeportationCaseEditService(
                 }
             },
             SubdivisionIdFrom = deportationCase.SubdivisionFrom?.Id,
-            CountryIdTo = deportationCase.CountryTo?.Id
+            CountryIdTo = deportationCase.CountryTo?.Id,
+            NodeTermIds = new List<int>(),
         };
-        await deportationCaseCreator.CreateAsync(createDocument, connection);
+        await using var deportationCaseCreator = await deportationCaseCreatorFactory.CreateAsync(connection);
+        await deportationCaseCreator.CreateAsync(createDocument);
         return createDocument.Id!.Value;
     }
 

@@ -2,21 +2,26 @@
 
 internal sealed class ActionMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<BasicAction> basicActionCreator,
-    IEntityCreator<CreateNodeAction> createNodeActionCreator,
-    IEntityCreator<DeleteNodeAction> deleteNodeActionCreator,
-    IEntityCreator<EditNodeAction> editNodeActionCreator,
-    IEntityCreator<EditOwnNodeAction> editOwnNodeActionCreator
+    IInsertingEntityCreatorFactory<BasicAction> basicActionCreatorFactory,
+    IInsertingEntityCreatorFactory<CreateNodeAction> createNodeActionCreatorFactory,
+    IInsertingEntityCreatorFactory<DeleteNodeAction> deleteNodeActionCreatorFactory,
+    IInsertingEntityCreatorFactory<EditNodeAction> editNodeActionCreatorFactory,
+    IInsertingEntityCreatorFactory<EditOwnNodeAction> editOwnNodeActionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "actions";
     protected override async Task MigrateImpl()
     {
-        await basicActionCreator.CreateAsync(GetBasicActions(), _postgresConnection);
-        await createNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await deleteNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await editNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
-        await editOwnNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Where(x => x.AuthorSpecific).Select(x => new EditOwnNodeAction { Id = null, NodeTypeId = x.Id!.Value }), _postgresConnection);
+        await using var basicActionCreator = await basicActionCreatorFactory.CreateAsync(_postgresConnection);
+        await using var createNodeActionCreator = await createNodeActionCreatorFactory.CreateAsync(_postgresConnection);
+        await using var deleteNodeActionCreator = await deleteNodeActionCreatorFactory.CreateAsync(_postgresConnection);
+        await using var editNodeActionCreator = await editNodeActionCreatorFactory.CreateAsync(_postgresConnection);
+        await using var editOwnNodeActionCreator = await editOwnNodeActionCreatorFactory.CreateAsync(_postgresConnection);
+        await basicActionCreator.CreateAsync(GetBasicActions());
+        await createNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }));
+        await deleteNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }));
+        await editNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }));
+        await editOwnNodeActionCreator.CreateAsync(NodeTypeMigrator.GetNodeTypes().Where(x => x.AuthorSpecific).Select(x => new EditOwnNodeAction { Id = null, NodeTypeId = x.Id!.Value }));
     }
 
     private async IAsyncEnumerable<BasicAction> GetBasicActions()

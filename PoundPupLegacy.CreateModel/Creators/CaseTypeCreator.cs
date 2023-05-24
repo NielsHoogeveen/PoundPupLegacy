@@ -1,29 +1,41 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CaseTypeCreator(
+internal sealed class CaseTypeCreatorFactory(
     IDatabaseInserterFactory<NodeType> nodeTypeInserterFactory,
     IDatabaseInserterFactory<CaseType> caseTypeInserterFactory,
     IDatabaseInserterFactory<NameableType> nameableTypeInserterFactory,
     IDatabaseInserterFactory<CaseTypeCasePartyType> caseTypeCasePartyTypeInserterFactory
-) : EntityCreator<CaseType>
+) : IInsertingEntityCreatorFactory<CaseType>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<CaseType> caseTypes, IDbConnection connection)
-    {
-        await using var nodeTypeWriter = await nodeTypeInserterFactory.CreateAsync(connection);
-        await using var nameableTypeWriter = await nameableTypeInserterFactory.CreateAsync(connection);
-        await using var caseTypeWriter = await caseTypeInserterFactory.CreateAsync(connection);
-        await using var caseTypeCaseRelationTypeWriter = await caseTypeCasePartyTypeInserterFactory.CreateAsync(connection);
+    public async Task<InsertingEntityCreator<CaseType>> CreateAsync(IDbConnection connection) =>
+        new CaseTypeCreator(
+            new() {
+                await nodeTypeInserterFactory.CreateAsync(connection),
+                await caseTypeInserterFactory.CreateAsync(connection),
+                await nameableTypeInserterFactory.CreateAsync(connection)
+            },
+            await caseTypeCasePartyTypeInserterFactory.CreateAsync(connection)
+        );
+}
 
-        await foreach (var caseType in caseTypes) {
-            await nodeTypeWriter.InsertAsync(caseType);
-            await nameableTypeWriter.InsertAsync(caseType);
-            await caseTypeWriter.InsertAsync(caseType);
-            foreach (var caseRelationTypeId in caseType.CaseRelationTypeIds) {
-                await caseTypeCaseRelationTypeWriter.InsertAsync(new CaseTypeCasePartyType {
-                    CasePartyTypeId = caseRelationTypeId,
-                    CaseTypeId = caseType.Id!.Value
-                });
-            }
+internal sealed class CaseTypeCreator(
+    List<IDatabaseInserter<CaseType>> inserters,
+    IDatabaseInserter<CaseTypeCasePartyType> caseTypeCasePartyTypeInserter
+) : InsertingEntityCreator<CaseType>(inserters)
+{
+    public override async Task ProcessAsync(CaseType element)
+    {
+        await base.ProcessAsync(element);
+        foreach (var caseRelationTypeId in element.CaseRelationTypeIds) {
+            await caseTypeCasePartyTypeInserter.InsertAsync(new CaseTypeCasePartyType {
+                CasePartyTypeId = caseRelationTypeId,
+                CaseTypeId = element.Id!.Value
+            });
         }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await caseTypeCasePartyTypeInserter.DisposeAsync();
     }
 }

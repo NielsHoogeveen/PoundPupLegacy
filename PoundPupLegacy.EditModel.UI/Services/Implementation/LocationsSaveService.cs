@@ -1,9 +1,11 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using PoundPupLegacy.CreateModel.Creators;
+
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class LocationsSaveService(
     IDatabaseDeleterFactory<LocationDeleterRequest> locationDeleterFactory,
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
-    IEntityCreator<CreateModel.Location> locationCreator
+    IInsertingEntityCreatorFactory<CreateModel.Location> locationCreatorFactory
 ) : ISaveService<IEnumerable<Location>>
 {
     public async Task SaveAsync(IEnumerable<Location> item, IDbConnection connection)
@@ -59,6 +61,7 @@ internal class LocationsSaveService(
             }
 
         }
-        await locationCreator.CreateAsync(GetLocationsToInsert().ToAsyncEnumerable(), connection);
+        await using var locationCreator = await locationCreatorFactory.CreateAsync(connection);
+        await locationCreator.CreateAsync(GetLocationsToInsert().ToAsyncEnumerable());
     }
 }

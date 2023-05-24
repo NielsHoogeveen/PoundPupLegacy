@@ -1,9 +1,11 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel.Creators;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class DocumentMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<NewDocument> documentCreator
+    INodeCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents ppl";
@@ -11,7 +13,8 @@ internal sealed class DocumentMigratorPPL(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await documentCreator.CreateAsync(ReadDocuments(nodeIdReader), _postgresConnection);
+        await using var documentCreator = await documentCreatorFactory.CreateAsync(_postgresConnection);
+        await documentCreator.CreateAsync(ReadDocuments(nodeIdReader));
     }
 
     private async IAsyncEnumerable<NewDocument> ReadDocuments(
@@ -242,9 +245,9 @@ internal sealed class DocumentMigratorPPL(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_DOCUMENTATION,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -254,7 +257,7 @@ internal sealed class DocumentMigratorPPL(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -266,7 +269,7 @@ internal sealed class DocumentMigratorPPL(
                     }
                 },
                 NodeTypeId = reader.GetInt16("node_type_id"),
-                PublicationDate = publicationDate,
+                Published = publicationDate,
                 SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
@@ -277,6 +280,7 @@ internal sealed class DocumentMigratorPPL(
                         TenantId = Constants.PPL,
                     }),
                 Documentables = new List<int>(),
+                NodeTermIds = new List<int>(),
             };
 
         }

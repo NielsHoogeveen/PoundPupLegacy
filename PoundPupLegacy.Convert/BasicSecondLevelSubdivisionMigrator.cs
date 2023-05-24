@@ -8,7 +8,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-        IEntityCreator<NewBasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreator
+        INameableCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic second level subdivisions";
@@ -48,9 +48,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 NodeTypeId = int.Parse(parts[4]),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -60,7 +60,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -93,7 +93,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
                     VocabularyId = vocabularyId,
                     Name = parts[12].Trim()
-                })).NameableId
+                })).NameableId,
+                NodeTermIds = new List<int>(),
             };
         }
     }
@@ -130,9 +131,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 NodeTypeId = int.Parse(parts[4]),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -142,7 +143,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -178,7 +179,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
                     VocabularyId = vocabularyId,
                     Name = parts[12].Trim()
-                })).NameableId
+                })).NameableId,
+                NodeTermIds = new List<int>(),
             };
         }
     }
@@ -191,25 +193,26 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
         await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
+        await using var basicSecondLevelSubdivisionCreator = await basicSecondLevelSubdivisionCreatorFactory.CreateAsync(_postgresConnection);
         await basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
             nodeIdReader,
             subdivisionIdByNameReader,
             vocabularyIdReader,
             termReaderByNameableId,
             termReaderByName
-        ), _postgresConnection);
+        ));
         await basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisionCsv(
             nodeIdReader,
             subdivisionIdReaderByIso3166Code,
             vocabularyIdReader,
             termReaderByNameableId,
             termReaderByName
-        ), _postgresConnection);
+        ));
         await basicSecondLevelSubdivisionCreator.CreateAsync(ReadBasicSecondLevelSubdivisions(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName
-            ), _postgresConnection);
+            ));
 
     }
     private async IAsyncEnumerable<NewBasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(
@@ -278,9 +281,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 Name = reader.GetString("title"),
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -290,7 +293,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -318,7 +321,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
                     VocabularyId = vocabularyId,
                     Name = "State"
-                })).NameableId
+                })).NameableId,
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

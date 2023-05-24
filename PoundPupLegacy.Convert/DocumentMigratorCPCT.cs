@@ -1,10 +1,12 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel.Creators;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class DocumentMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreator<NewDocument> documentCreator
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    INodeCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -17,13 +19,14 @@ internal sealed class DocumentMigratorCPCT(
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var tenantNodeReader = await tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await documentCreator.CreateAsync(ReadDocuments(nodeIdReader, tenantNodeReader), _postgresConnection);
+        await using var documentCreator = await documentCreatorFactory.CreateAsync(_postgresConnection);
+        await documentCreator.CreateAsync(ReadDocuments(nodeIdReader, tenantNodeReader));
     }
 
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(
         IEnumerable<int> documentableIds,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReader)
     {
         foreach (var urlId in documentableIds) {
             yield return await GetNodeId(urlId, nodeIdReader, tenantNodeReader);
@@ -32,7 +35,7 @@ internal sealed class DocumentMigratorCPCT(
 
     private async IAsyncEnumerable<NewDocument> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReader)
     {
 
 
@@ -112,9 +115,9 @@ internal sealed class DocumentMigratorCPCT(
 
             var documentable = await GetDocumentablesWithStatus(documentableIds, nodeIdReader, tenantNodeReader).ToListAsync();
 
-            var tenantNodes = new List<TenantNode>
+            var tenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -127,7 +130,7 @@ internal sealed class DocumentMigratorCPCT(
                 };
 
             if (documentable.All(x => x.Item2 == 1) && !text.ToLower().Contains("arun dohle") && !text.ToLower().Contains("roelie post") && !text.ToLower().Contains("againstchildtrafficking.org")) {
-                tenantNodes.Add(new TenantNode {
+                tenantNodes.Add(new NewTenantNodeForNewNode {
                     Id = null,
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
@@ -148,7 +151,7 @@ internal sealed class DocumentMigratorCPCT(
                 AuthoringStatusId = 1,
                 TenantNodes = tenantNodes,
                 NodeTypeId = reader.GetInt16("node_type_id"),
-                PublicationDate = publicationDate,
+                Published = publicationDate,
                 SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
                 Text = TextToHtml(text),
                 Teaser = TextToTeaser(text),
@@ -158,7 +161,8 @@ internal sealed class DocumentMigratorCPCT(
                         TenantId = Constants.CPCT,
                         UrlId = reader.GetInt32("document_type_id")
                     }),
-                Documentables = documentable.Select(x => x.Item1).ToList()
+                Documentables = documentable.Select(x => x.Item1).ToList(),
+                NodeTermIds = new List<int>(),
             };
 
         }

@@ -1,25 +1,19 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class InterOrganizationalRelationCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<NewInterOrganizationalRelation> interOrganizationalRelationInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewInterOrganizationalRelation>
+internal sealed class InterOrganizationalRelationCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableInterOrganizationalRelation> interOrganizationalRelationInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory
+) : INodeCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewInterOrganizationalRelation> interOrganizationalRelations, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var interOrganizationalRelationWriter = await interOrganizationalRelationInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
+    public async Task<NodeCreator<EventuallyIdentifiableInterOrganizationalRelation>> CreateAsync(IDbConnection connection) =>
+        new(
+            new() 
+            {
+                await nodeInserterFactory.CreateAsync(connection),
+                await interOrganizationalRelationInserterFactory.CreateAsync(connection)
 
-        await foreach (var interOrganizationalRelation in interOrganizationalRelations) {
-            await nodeWriter.InsertAsync(interOrganizationalRelation);
-            await interOrganizationalRelationWriter.InsertAsync(interOrganizationalRelation);
-
-            foreach (var tenantNode in interOrganizationalRelation.TenantNodes) {
-                tenantNode.NodeId = interOrganizationalRelation.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-        }
-    }
+            },
+             await nodeDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

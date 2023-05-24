@@ -4,7 +4,7 @@ internal sealed class NodeFileMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NodeFile> nodeFileCreator
+    IInsertingEntityCreatorFactory<NodeFile> nodeFileCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "files nodes (ppl)";
@@ -13,7 +13,8 @@ internal sealed class NodeFileMigratorPPL(
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await nodeFileCreator.CreateAsync(ReadNodeFiles(nodeIdReader, fileIdReaderByTenantFileId), _postgresConnection);
+        await using var nodeFileCreator = await nodeFileCreatorFactory.CreateAsync(_postgresConnection);
+        await nodeFileCreator.CreateAsync(ReadNodeFiles(nodeIdReader, fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NodeFile> ReadNodeFiles(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,

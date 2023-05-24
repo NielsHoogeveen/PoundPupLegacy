@@ -2,7 +2,7 @@
 
 internal sealed class PublicationStatusMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<PublicationStatus> publicationStatusCreator
+    IInsertingEntityCreatorFactory<PublicationStatus> publicationStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "publication statuses";
@@ -25,6 +25,7 @@ internal sealed class PublicationStatusMigrator(
 
     protected override async Task MigrateImpl()
     {
-        await publicationStatusCreator.CreateAsync(GetNodeStatuses(), _postgresConnection);
+        await using var publicationStatusCreator = await publicationStatusCreatorFactory.CreateAsync(_postgresConnection);
+        await publicationStatusCreator.CreateAsync(GetNodeStatuses());
     }
 }

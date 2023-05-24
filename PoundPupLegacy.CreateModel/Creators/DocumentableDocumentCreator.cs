@@ -1,24 +1,40 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class DocumentableDocumentCreator(
+internal sealed class DocumentableDocumentCreatorFactory(
     IDatabaseInserterFactory<NodeTerm> nodeTermInserterFactory,
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, Term> termReaderByNameableIdFactory
+) : IEntityCreatorFactory<DocumentableDocument>
+{
+    public async Task<EntityCreator<DocumentableDocument>> CreateAsync(IDbConnection connection) =>
+        new DocumentableDocumentCreator(
+            await nodeTermInserterFactory.CreateAsync(connection),
+            await termReaderByNameableIdFactory.CreateAsync(connection)
+        );
+}
+
+public class DocumentableDocumentCreator(
+    IDatabaseInserter<NodeTerm> nodeTermInserter,
+    ISingleItemDatabaseReader<TermReaderByNameableIdRequest, Term> termReader
 ) : EntityCreator<DocumentableDocument>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<DocumentableDocument> documentableDocuments, IDbConnection connection)
+    public override async Task ProcessAsync(DocumentableDocument element)
     {
-        await using var nodeTermWriter = await nodeTermInserterFactory.CreateAsync(connection);
-        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(connection);
-        await foreach (var documentableDocument in documentableDocuments) {
-            var term = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_SYSTEM,
-                NameableId = documentableDocument.DocumentableId,
-                VocabularyName = Constants.VOCABULARY_TOPICS,
-            });
-            await nodeTermWriter.InsertAsync(new NodeTerm {
-                NodeId = documentableDocument.DocumentId,
-                TermId = (int)term!.Id!,
-            });
-        }
+        await base.ProcessAsync(element);
+        var term = await termReader.ReadAsync(new TermReaderByNameableIdRequest {
+            OwnerId = Constants.OWNER_SYSTEM,
+            NameableId = element.DocumentableId,
+            VocabularyName = Constants.VOCABULARY_TOPICS,
+        });
+        await nodeTermInserter.InsertAsync(new NodeTerm {
+            NodeId = element.DocumentId,
+            TermId = (int)term!.Id!,
+        });
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await nodeTermInserter.DisposeAsync();
+        await termReader.DisposeAsync();
     }
 }

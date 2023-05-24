@@ -13,7 +13,7 @@ internal sealed class DocumentInserterFactory : IdentifiableDatabaseInserterFact
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Published, request.PublicationDate),
+            ParameterValue.Create(Published, request.Published),
             ParameterValue.Create(SourceUrl, request.SourceUrl),
             ParameterValue.Create(DocumentTypeId, request.DocumentTypeId),
         };

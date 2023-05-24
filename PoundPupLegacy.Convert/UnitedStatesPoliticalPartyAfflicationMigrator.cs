@@ -3,7 +3,7 @@
 internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        IEntityCreator<NewUnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreator
+        INameableCreatorFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states political party affilition";
@@ -21,9 +21,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             Title = Constants.DEMOCRAT_NAME,
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -33,7 +33,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.DEMOCRAT
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -60,7 +60,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.DEMOCRATIC_PARTY
-            })
+            }),
+            NodeTermIds = new List<int>(),
         };
 
         yield return new NewUnitedStatesPoliticalPartyAffliation {
@@ -71,9 +72,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             Title = Constants.REPUBLICAN_NAME,
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -83,7 +84,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.REPUBLICAN
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -110,7 +111,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.REPUBLICAN_PARTY
-            })
+            }),
+            NodeTermIds = new List<int>(),
         };
         yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
@@ -120,9 +122,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             Title = Constants.INDEPENDENT_NAME,
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -132,7 +134,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.INDEPENDENT
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -156,7 +158,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         ParentNames = new List<string>(),
                     },
                 },
-            UnitedStatesPoliticalPartyId = null
+            UnitedStatesPoliticalPartyId = null,
+            NodeTermIds = new List<int>(),
         };
         yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
@@ -166,9 +169,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             Title = Constants.POPULAR_DEMOCRAT_NAME,
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -178,7 +181,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.POPULAR_DEMOCRAT
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -205,7 +208,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.POPULAR_DEMOCRAT_PARTY
-            })
+            }),
+            NodeTermIds = new List<int>(),
         };
         yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
@@ -215,9 +219,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             Title = Constants.LIBERTARIAN_NAME,
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -227,7 +231,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.LIBERTARIAN
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -254,12 +258,14 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                 TenantId = Constants.PPL,
                 UrlId = Constants.LIBERTARIAN_PARTY
-            })
+            }),
+            NodeTermIds = new List<int>(),
         };
     }
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await unitedStatesPoliticalPartyAffliationCreator.CreateAsync(GetUnitedStatesPoliticalPartyAffliations(nodeIdReader), _postgresConnection);
+        await using var unitedStatesPoliticalPartyAffliationCreator = await unitedStatesPoliticalPartyAffliationCreatorFactory.CreateAsync(_postgresConnection);
+        await unitedStatesPoliticalPartyAffliationCreator.CreateAsync(GetUnitedStatesPoliticalPartyAffliations(nodeIdReader));
     }
 }

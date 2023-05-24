@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -12,7 +13,7 @@ internal sealed class WrongfulRemovalCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.WrongfulRemovalCase> wrongfulRemovalCaseCreator,
+    INameableCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseCreatorFactory,
     ITextService textService
 ) : NodeEditServiceBase<WrongfulRemovalCase, ExistingWrongfulRemovalCase, NewWrongfulRemovalCase, CreateModel.WrongfulRemovalCase>(
     connection,
@@ -60,7 +61,7 @@ internal sealed class WrongfulRemovalCaseEditService(
             OwnerId = wrongfulRemovalCase.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = wrongfulRemovalCase.PublisherId,
-            TenantNodes = wrongfulRemovalCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = wrongfulRemovalCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -69,7 +70,7 @@ internal sealed class WrongfulRemovalCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = wrongfulRemovalCase.Date?.ToDateTimeRange(),
+            Date = wrongfulRemovalCase.Date,
             FileIdTileImage = null,
             VocabularyNames = new List<CreateModel.VocabularyName> {
                 new  CreateModel.VocabularyName {
@@ -79,8 +80,10 @@ internal sealed class WrongfulRemovalCaseEditService(
                     ParentNames = new List<string>(),
                 }
             },
+            NodeTermIds = new List<int>(),
         };
-        await wrongfulRemovalCaseCreator.CreateAsync(createDocument, connection);
+        await using var wrongfulRemovalCaseCreator = await wrongfulRemovalCaseCreatorFactory.CreateAsync(connection);
+        await wrongfulRemovalCaseCreator.CreateAsync(createDocument);
         return createDocument.Id!.Value;
     }
 

@@ -1,40 +1,23 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class BasicNameableCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<NewBasicNameable> basicNameableInserterFactory,
-    IDatabaseInserterFactory<Term> termInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewBasicNameable>
+internal sealed class BasicNameableCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableBasicNameable> basicNameableInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+) : INameableCreatorFactory<EventuallyIdentifiableBasicNameable>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewBasicNameable> basicNameables, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
-        await using var basicNameableWriter = await basicNameableInserterFactory.CreateAsync(connection);
-        await using var termWriter = await termInserterFactory.CreateAsync(connection);
-        await using var termReader = await termReaderFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await termHierarchyInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
-
-        await foreach (var basicNameable in basicNameables) {
-            await nodeWriter.InsertAsync(basicNameable);
-            await searchableWriter.InsertAsync(basicNameable);
-            await nameableWriter.InsertAsync(basicNameable);
-            await basicNameableWriter.InsertAsync(basicNameable);
-            await WriteTerms(basicNameable, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-
-            foreach (var tenantNode in basicNameable.TenantNodes) {
-                tenantNode.NodeId = basicNameable.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-        }
-    }
+    public async Task<NameableCreator<EventuallyIdentifiableBasicNameable>> CreateAsync(IDbConnection connection) =>
+        new (
+            new () {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await nameableInserterFactory.CreateAsync(connection),
+                await basicNameableInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await nameableDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

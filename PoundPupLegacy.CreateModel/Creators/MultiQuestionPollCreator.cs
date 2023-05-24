@@ -1,68 +1,55 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class MultiQuestionPollCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<Poll> pollInserterFactory,
-    IDatabaseInserterFactory<NewMultiQuestionPoll> multiQuestionPollInserterFactory,
-    IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
-    IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
+internal sealed class MultiQuestionPollCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiablePoll> pollInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableMultiQuestionPoll> multiQuestionPollInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    IEntityCreatorFactory<PollQuestion> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserterFactory
-) : EntityCreator<NewMultiQuestionPoll>
+) : INodeCreatorFactory<EventuallyIdentifiableMultiQuestionPoll>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewMultiQuestionPoll> polls, IDbConnection connection)
+    public async Task<NodeCreator<EventuallyIdentifiableMultiQuestionPoll>> CreateAsync(IDbConnection connection) =>
+        new MultiQuestionPollCreator(
+            new (){
+                await nodeInserterFactory.CreateAsync(connection),
+                await pollInserterFactory.CreateAsync(connection),
+                await multiQuestionPollInserterFactory.CreateAsync(connection)
+
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await pollQuestionCreatorFactory.CreateAsync(connection),
+            await multiQuestionPollPollQuestionInserterFactory.CreateAsync(connection)
+        );
+}
+
+public class MultiQuestionPollCreator(
+    List<IDatabaseInserter<EventuallyIdentifiableMultiQuestionPoll>> inserters,
+    NodeDetailsCreator nodeDetailsCreator,
+    IEntityCreator<PollQuestion> pollQuestionCreatorFactory,
+    IDatabaseInserter<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserter
+
+    ) : NodeCreator<EventuallyIdentifiableMultiQuestionPoll>(inserters, nodeDetailsCreator)
+{
+
+    public override async Task ProcessAsync(EventuallyIdentifiableMultiQuestionPoll element)
     {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var simpleTextNodeWriter = await simpleTextNodeInserterFactory.CreateAsync(connection);
-        await using var pollWriter = await pollInserterFactory.CreateAsync(connection);
-        await using var multiQuesionPollWriter = await multiQuestionPollInserterFactory.CreateAsync(connection);
-        await using var pollQuestionWriter = await pollQuestionInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-        await using var pollOptionWriter = await pollOptionInserterFactory.CreateAsync(connection);
-        await using var pollVoteWriter = await pollVoteInserterFactory.CreateAsync(connection);
-        await using var multiQuestionPollPollQuestionWriter = await multiQuestionPollPollQuestionInserterFactory.CreateAsync(connection);
+        await base.ProcessAsync(element);
+        foreach (var (question, index) in element.PollQuestions.Select((q, i) => (q, i))) {
+            await pollQuestionCreatorFactory.CreateAsync(question);
+            var pollQuestions = new MultiQuestionPollPollQuestion {
+                MultiQuestionPollId = element.Id!.Value,
+                PollQuestionId = question.Id!.Value,
+                Delta = index
+            };
+            await multiQuestionPollPollQuestionInserter.InsertAsync(pollQuestions);
 
-        await foreach (var poll in polls) {
-            await nodeWriter.InsertAsync(poll);
-            await searchableWriter.InsertAsync(poll);
-            await simpleTextNodeWriter.InsertAsync(poll);
-            await pollWriter.InsertAsync(poll);
-            await multiQuesionPollWriter.InsertAsync(poll);
-            foreach (var (question, index) in poll.PollQuestions.Select((q, i) => (q, i))) {
-                await nodeWriter.InsertAsync(question);
-                await searchableWriter.InsertAsync(question);
-                await simpleTextNodeWriter.InsertAsync(question);
-                await pollQuestionWriter.InsertAsync(question);
-
-                var pollQuestions = new MultiQuestionPollPollQuestion {
-                    MultiQuestionPollId = poll.Id!.Value,
-                    PollQuestionId = question.Id!.Value,
-                    Delta = index
-                };
-                await multiQuestionPollPollQuestionWriter.InsertAsync(pollQuestions);
-                foreach (var pollOption in question.PollOptions) {
-                    pollOption.PollQuestionId = question.Id;
-                    await pollOptionWriter.InsertAsync(pollOption);
-                }
-                foreach (var pollVote in question.PollVotes) {
-                    pollVote.PollId = question.Id;
-                    await pollVoteWriter.InsertAsync(pollVote);
-                }
-
-                foreach (var tenantNode in question.TenantNodes) {
-                    tenantNode.NodeId = question.Id;
-                    await tenantNodeWriter.InsertAsync(tenantNode);
-                }
-            }
-
-            foreach (var tenantNode in poll.TenantNodes) {
-                tenantNode.NodeId = poll.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
         }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await pollQuestionCreatorFactory.DisposeAsync();
+        await multiQuestionPollPollQuestionInserter.DisposeAsync();
     }
 }

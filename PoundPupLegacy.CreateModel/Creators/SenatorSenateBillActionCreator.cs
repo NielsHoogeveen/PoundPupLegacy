@@ -1,25 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class SenatorSenateBillActionCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<NewSenatorSenateBillAction> senatorSenateBillActionInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewSenatorSenateBillAction>
+internal sealed class SenatorSenateBillActionCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSenatorSenateBillAction> senatorSenateBillActionInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory
+) : INodeCreatorFactory<EventuallyIdentifiableSenatorSenateBillAction>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewSenatorSenateBillAction> senatorSenateBillActions, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var senatorSenateBillActionWriter = await senatorSenateBillActionInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-        await foreach (var senatorSenateBillAction in senatorSenateBillActions) {
-            await nodeWriter.InsertAsync(senatorSenateBillAction);
-            await senatorSenateBillActionWriter.InsertAsync(senatorSenateBillAction);
-
-            foreach (var tenantNode in senatorSenateBillAction.TenantNodes) {
-                tenantNode.NodeId = senatorSenateBillAction.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-        }
-    }
+    public async Task<NodeCreator<EventuallyIdentifiableSenatorSenateBillAction>> CreateAsync(IDbConnection connection) => 
+        new(
+            new() {
+                await nodeInserterFactory.CreateAsync(connection),
+                await senatorSenateBillActionInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection)
+       );
 }

@@ -11,7 +11,7 @@ internal sealed class CountryInserterFactory : IdentifiableDatabaseInserterFacto
     private static readonly NullableStringDatabaseParameter IncomeRequirements = new() { Name = "income_requirements" };
     private static readonly NullableStringDatabaseParameter HealthRequirements = new() { Name = "health_requirements" };
     private static readonly NullableStringDatabaseParameter OtherRequirements = new() { Name = "other_requirements" };
-    private static readonly NullCheckingIntegerDatabaseParameter VocabularyIdSubdivisions = new() { Name = "vocabulary_id_subdivisions" };
+   
 
     public override string TableName => "country";
 
@@ -25,7 +25,6 @@ internal sealed class CountryInserterFactory : IdentifiableDatabaseInserterFacto
             ParameterValue.Create(IncomeRequirements, request.IncomeRequirements),
             ParameterValue.Create(HealthRequirements, request.HealthRequirements),
             ParameterValue.Create(OtherRequirements, request.OtherRequirements),
-            ParameterValue.Create(VocabularyIdSubdivisions, request.VocabularyIdSubdivisions),
         };
     }
 }

@@ -5,7 +5,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-    IEntityCreator<NewCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreator
+    INameableCreatorFactory<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreatorFactory
 ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "countries that are both first and second level subdivisions";
@@ -31,9 +31,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             Name = "Saint Barthélemy",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = Constants.PPL,
@@ -43,7 +43,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                     SubgroupId = null,
                     UrlId = Constants.SAINT_BARTH
                 },
-                new TenantNode
+                new NewTenantNodeForNewNode
                 {
                     Id = null,
                     TenantId = Constants.CPCT,
@@ -92,6 +92,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             MarriageRequirements = null,
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndSecondLevelSubdivision {
             Id = null,
@@ -99,9 +100,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             Name = "Saint Martin",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -111,7 +112,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.SAINT_MARTIN
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -160,6 +161,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             MarriageRequirements = null,
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
+            NodeTermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndSecondLevelSubdivision {
             Id = null,
@@ -167,9 +169,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             Name = "French Southern Territories",
             OwnerId = Constants.OWNER_GEOGRAPHY,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -179,7 +181,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.FRENCH_SOUTHERN_TERRITORIES
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -228,6 +230,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             MarriageRequirements = null,
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
+            NodeTermIds = new List<int>(),
         };
     }
 
@@ -237,17 +240,17 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
         await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
         await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
 
-
+        await using var countryAndFirstAndSecondLevelSubdivisionCreator = await countryAndFirstAndSecondLevelSubdivisionCreatorFactory.CreateAsync(_postgresConnection);
         await countryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(GetRegionSubdivisionCountries(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName
-        ), _postgresConnection);
+        ));
         await countryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(
             nodeIdReader,
             vocabularyIdReader,
             termReaderByName
-        ), _postgresConnection);
+        ));
     }
     private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
@@ -330,9 +333,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 Name = name,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -342,7 +345,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -382,6 +385,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 MarriageRequirements = null,
                 OtherRequirements = null,
                 SubdivisionTypeId = subdivisionTypeId,
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

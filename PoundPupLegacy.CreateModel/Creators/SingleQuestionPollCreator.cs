@@ -1,49 +1,38 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class SingleQuestionPollCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<Poll> pollInserterFactory,
-    IDatabaseInserterFactory<NewSingleQuestionPoll> singleQuestionPollInserterFactory,
-    IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory,
-    IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
-    IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewSingleQuestionPoll>
+internal sealed class SingleQuestionPollCreatorFactory(
+    IEntityCreatorFactory<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiablePoll> pollInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollInserterFactory
+) : IEntityCreatorFactory<EventuallyIdentifiableSingleQuestionPoll>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewSingleQuestionPoll> polls, IDbConnection connection)
+    public async Task<EntityCreator<EventuallyIdentifiableSingleQuestionPoll>> CreateAsync(IDbConnection connection) =>
+        new SingleQuestionPollCreator(
+            await pollQuestionCreatorFactory.CreateAsync(connection),
+            await pollInserterFactory.CreateAsync(connection),
+            await singleQuestionPollInserterFactory.CreateAsync(connection)
+        );
+}
+
+public class SingleQuestionPollCreator(
+    IEntityCreator<EventuallyIdentifiablePollQuestion> pollQuestionCreator,
+    IDatabaseInserter<EventuallyIdentifiablePoll> pollInserter,
+    IDatabaseInserter<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollInserter
+) : EntityCreator<EventuallyIdentifiableSingleQuestionPoll>
+{
+    public override async Task ProcessAsync(EventuallyIdentifiableSingleQuestionPoll element)
     {
+        await base.ProcessAsync(element);
+        await pollQuestionCreator.CreateAsync(element);
+        await pollInserter.InsertAsync(element);
+        await singleQuestionPollInserter.InsertAsync(element);
 
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var simpleTextNodeWriter = await simpleTextNodeInserterFactory.CreateAsync(connection);
-        await using var pollWriter = await pollInserterFactory.CreateAsync(connection);
-        await using var pollQuestionWriter = await pollQuestionInserterFactory.CreateAsync(connection);
-        await using var singleQuestionPollWriter = await singleQuestionPollInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-        await using var pollOptionWriter = await pollOptionInserterFactory.CreateAsync(connection);
-        await using var pollVoteWriter = await pollVoteInserterFactory.CreateAsync(connection);
-
-        await foreach (var poll in polls) {
-            await nodeWriter.InsertAsync(poll);
-            await searchableWriter.InsertAsync(poll);
-            await simpleTextNodeWriter.InsertAsync(poll);
-            await pollWriter.InsertAsync(poll);
-            await pollQuestionWriter.InsertAsync(poll);
-            await singleQuestionPollWriter.InsertAsync(poll);
-            foreach (var tenantNode in poll.TenantNodes) {
-                tenantNode.NodeId = poll.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-            foreach (var pollOption in poll.PollOptions) {
-                pollOption.PollQuestionId = poll.Id;
-                await pollOptionWriter.InsertAsync(pollOption);
-            }
-            foreach (var pollVote in poll.PollVotes) {
-                pollVote.PollId = poll.Id;
-                await pollVoteWriter.InsertAsync(pollVote);
-            }
-        }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await pollInserter.DisposeAsync();
+        await singleQuestionPollInserter.DisposeAsync();
+        await pollQuestionCreator.DisposeAsync();
     }
 }

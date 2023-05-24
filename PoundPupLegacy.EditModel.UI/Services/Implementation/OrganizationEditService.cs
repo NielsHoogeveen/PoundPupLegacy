@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -15,7 +16,7 @@ internal sealed class OrganizationEditService(
         ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
         ISaveService<IEnumerable<File>> filesSaveService,
         ISaveService<IEnumerable<Location>> locationsSaveService,
-        IEntityCreator<CreateModel.Organization> organizationEntityCreator,
+        INameableCreatorFactory<EventuallyIdentifiableOrganization> organizationEntityCreatorFactory,
         ITextService textService
 
     ) : PartyEditServiceBase<Organization, ExistingOrganization, NewOrganization, CreateModel.Organization>(
@@ -224,7 +225,7 @@ internal sealed class OrganizationEditService(
             }).ToList(),
             OwnerId = organization.OwnerId,
             AuthoringStatusId = 1,
-            TenantNodes = organization.TenantNodes.Select(x => new CreateModel.TenantNode {
+            TenantNodes = organization.TenantNodes.Select(x => new CreateModel.NewTenantNodeForNewNode {
                 NodeId = null,
                 TenantId = x.TenantId,
                 UrlPath = x.UrlPath,
@@ -233,9 +234,11 @@ internal sealed class OrganizationEditService(
                 Id = null,
                 UrlId = null
             }).ToList(),
-            VocabularyNames = new List<CreateModel.VocabularyName>()
+            VocabularyNames = new List<CreateModel.VocabularyName>(),
+            NodeTermIds = new List<int>(),
         };
-        await organizationEntityCreator.CreateAsync(creationOrganization, connection);
+        await using var organizationEntityCreator = await organizationEntityCreatorFactory.CreateAsync(connection);
+        await organizationEntityCreator.CreateAsync(creationOrganization);
         return creationOrganization.Id!.Value;
     }
 

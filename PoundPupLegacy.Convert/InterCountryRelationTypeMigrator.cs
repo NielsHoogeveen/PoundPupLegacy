@@ -1,10 +1,9 @@
-﻿
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class InterCountryRelationTypeMigrator(
 IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewInterCountryRelationType> interCountryRelationTypeCreator
+    INameableCreatorFactory<EventuallyIdentifiableInterCountryRelationType> interCountryRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-country relation types";
@@ -13,7 +12,9 @@ IDatabaseConnections databaseConnections,
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
 
-        await interCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var interCountryRelationTypeCreator = await interCountryRelationTypeCreatorFactory.CreateAsync(_postgresConnection);
+
+        await interCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewInterCountryRelationType> ReadInterCountryRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
@@ -67,9 +68,9 @@ IDatabaseConnections databaseConnections,
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -79,7 +80,7 @@ IDatabaseConnections databaseConnections,
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -100,6 +101,7 @@ IDatabaseConnections databaseConnections,
                     }),
                 VocabularyNames = vocabularyNames,
                 IsSymmetric = reader.GetBoolean("is_symmetric"),
+                NodeTermIds = new List<int>(),
             };
 
         }

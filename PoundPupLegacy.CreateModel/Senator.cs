@@ -1,13 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewSenator : ProfessionalRoleBase, Senator
+public sealed record Senator : ProfessionalRoleBase, IdentifiableMemberOfCongress
 {
     public required int? Id { get; set; }
     public required List<NewSenateTerm> SenateTerms { get; init; }
-
-}
-public interface Senator : IdentifiableMemberOfCongress
-{
-    List<NewSenateTerm> SenateTerms { get; }
 
 }

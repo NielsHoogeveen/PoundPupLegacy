@@ -3,7 +3,7 @@
 internal sealed class TypeOfAbuseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<NewTypeOfAbuse> typeOfAbuseCreator
+        INameableCreatorFactory<EventuallyIdentifiableTypeOfAbuse> typeOfAbuseCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
 
@@ -12,7 +12,8 @@ internal sealed class TypeOfAbuseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await typeOfAbuseCreator.CreateAsync(ReadTypesOfAbuse(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var typeOfAbuseCreator = await typeOfAbuseCreatorFactory.CreateAsync(_postgresConnection);
+        await typeOfAbuseCreator.CreateAsync(ReadTypesOfAbuse(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewTypeOfAbuse> ReadTypesOfAbuse(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
@@ -123,9 +124,9 @@ internal sealed class TypeOfAbuseMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -135,7 +136,7 @@ internal sealed class TypeOfAbuseMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -155,6 +156,7 @@ internal sealed class TypeOfAbuseMigrator(
                     TenantFileId = reader.GetInt32("file_id_tile_image"),
                 }),
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
 
         }

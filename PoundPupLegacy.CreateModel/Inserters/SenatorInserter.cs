@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class SenatorInserterFactory : SingleIdInserterFactory<NewSenator>
+internal sealed class SenatorInserterFactory : SingleIdInserterFactory<Senator>
 {
     protected override string TableName => "senator";
 

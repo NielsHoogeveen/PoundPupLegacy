@@ -3,7 +3,7 @@
 internal sealed class DeportationCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<NewDeportationCase> deportationCaseCreator
+    INameableCreatorFactory<EventuallyIdentifiableDeportationCase> deportationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "deportation cases";
@@ -11,7 +11,8 @@ internal sealed class DeportationCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader), _postgresConnection);
+        await using var deportationCaseCreator = await deportationCaseCreatorFactory.CreateAsync(_postgresConnection);
+        await deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader));
     }
     private async IAsyncEnumerable<NewDeportationCase> ReadDeportationCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
@@ -79,9 +80,9 @@ internal sealed class DeportationCaseMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -91,7 +92,7 @@ internal sealed class DeportationCaseMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -104,7 +105,7 @@ internal sealed class DeportationCaseMigrator(
                 },
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 VocabularyNames = vocabularyNames,
-                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date")),
+                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
                 Description = reader.GetString("description"),
                 SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from")
                     ? null
@@ -119,6 +120,7 @@ internal sealed class DeportationCaseMigrator(
                         UrlId = reader.GetInt32("country_id_to")
                     }),
                 FileIdTileImage = null,
+                NodeTermIds = new List<int>(),
             };
             yield return country;
 

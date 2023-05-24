@@ -1,49 +1,30 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class DeportationCaseCreator(
-    IDatabaseInserterFactory<NewDeportationCase> deportationCaseInserterFactory,
-    IDatabaseInserterFactory<Case> caseInserterFactory,
-    IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<Locatable> locatableInserterFactory,
-    IDatabaseInserterFactory<Documentable> documentableInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Term> termInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewDeportationCase>
+internal sealed class DeportationCaseCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableDeportationCase> deportationCaseInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+) : INameableCreatorFactory<EventuallyIdentifiableDeportationCase>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewDeportationCase> deportationCases, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
-        await using var locatableWriter = await locatableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
-        await using var caseWriter = await caseInserterFactory.CreateAsync(connection);
-        await using var deportationCaseWriter = await deportationCaseInserterFactory.CreateAsync(connection);
-        await using var termWriter = await termInserterFactory.CreateAsync(connection);
-        await using var termReader = await termReaderFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await termHierarchyInserterFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
+    public async Task<NameableCreator<EventuallyIdentifiableDeportationCase>> CreateAsync(IDbConnection connection) =>
+    new(
+            new() {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await documentableInserterFactory.CreateAsync(connection),
+                await locatableInserterFactory.CreateAsync(connection),
+                await nameableInserterFactory.CreateAsync(connection),
+                await caseInserterFactory.CreateAsync(connection),
+                await deportationCaseInserterFactory.CreateAsync(connection)
 
-        await foreach (var deportationCase in deportationCases) {
-            await nodeWriter.InsertAsync(deportationCase);
-            await searchableWriter.InsertAsync(deportationCase);
-            await documentableWriter.InsertAsync(deportationCase);
-            await locatableWriter.InsertAsync(deportationCase);
-            await nameableWriter.InsertAsync(deportationCase);
-            await caseWriter.InsertAsync(deportationCase);
-            await deportationCaseWriter.InsertAsync(deportationCase);
-            await WriteTerms(deportationCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in deportationCase.TenantNodes) {
-                tenantNode.NodeId = deportationCase.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-
-        }
-    }
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await nameableDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

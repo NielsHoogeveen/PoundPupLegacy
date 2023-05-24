@@ -1,38 +1,49 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class HouseTermCreator(
-    IDatabaseInserterFactory<NewHouseTerm> houseTermInserterFactory,
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<Documentable> documentableInserterFactory,
-    IDatabaseInserterFactory<CongressionalTerm> congressionalTermInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<NewCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
-) : EntityCreator<NewHouseTerm>
-{
-    public override async Task CreateAsync(IAsyncEnumerable<NewHouseTerm> houseTerms, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
-        await using var congressionalTermWriter = await congressionalTermInserterFactory.CreateAsync(connection);
-        await using var houseTermWriter = await houseTermInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
+internal sealed class HouseTermCreatorFactory(
 
-        await foreach (var houseTerm in houseTerms) {
-            await nodeWriter.InsertAsync(houseTerm);
-            await searchableWriter.InsertAsync(houseTerm);
-            await documentableWriter.InsertAsync(houseTerm);
-            await congressionalTermWriter.InsertAsync(houseTerm);
-            await houseTermWriter.InsertAsync(houseTerm);
-            foreach (var partyAffiliation in houseTerm.PartyAffiliations) {
-                partyAffiliation.CongressionalTermId = houseTerm.Id;
-            }
-            await congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(houseTerm.PartyAffiliations.ToAsyncEnumerable(), connection);
-            foreach (var tenantNode in houseTerm.TenantNodes) {
-                tenantNode.NodeId = houseTerm.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableCongressionalTerm> congressionalTermInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableHouseTerm> houseTermInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    INodeCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory
+) : IEntityCreatorFactory<EventuallyIdentifiableHouseTerm, HouseTermCreator>
+{
+    public async Task<HouseTermCreator> CreateAsync(IDbConnection connection) =>
+        new(
+            new() {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await documentableInserterFactory.CreateAsync(connection),
+                await congressionalTermInserterFactory.CreateAsync(connection),
+                await houseTermInserterFactory.CreateAsync(connection)
+
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await congressionalTermPoliticalPartyAffiliationCreatorFactory.CreateAsync(connection)
+        );
+}
+
+public class HouseTermCreator(
+    List<IDatabaseInserter<EventuallyIdentifiableHouseTerm>> inserters,
+    NodeDetailsCreator nodeDetailsCreator,
+    IEntityCreator<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
+) : NodeCreator<EventuallyIdentifiableHouseTerm>(inserters, nodeDetailsCreator)
+{
+    public override async Task ProcessAsync(EventuallyIdentifiableHouseTerm element)
+    {
+        await base.ProcessAsync(element);
+        foreach (var partyAffiliation in element.PartyAffiliations) {
+            partyAffiliation.CongressionalTermId = element.Id;
         }
+        await congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(element.PartyAffiliations.ToAsyncEnumerable());
+
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await congressionalTermPoliticalPartyAffiliationCreator.DisposeAsync();
     }
 }

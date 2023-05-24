@@ -3,7 +3,7 @@
 internal sealed class ChildPlacementTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreator<NewChildPlacementType> childPlacementTypeCreator
+        INameableCreatorFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child placement types";
@@ -11,7 +11,8 @@ internal sealed class ChildPlacementTypeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var childPlacementTypeCreator = await childPlacementTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(fileIdReaderByTenantFileId));
     }
 
     private async IAsyncEnumerable<NewChildPlacementType> ReadChildPlacementTypes(
@@ -99,9 +100,9 @@ internal sealed class ChildPlacementTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -111,7 +112,7 @@ internal sealed class ChildPlacementTypeMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -131,6 +132,7 @@ internal sealed class ChildPlacementTypeMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
 
         }

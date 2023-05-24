@@ -1,31 +1,21 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class CongressionalTermPoliticalPartyAffiliationCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory, 
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory, 
-    IDatabaseInserterFactory<Documentable> documentableInserterFactory, 
-    IDatabaseInserterFactory<NewCongressionalTermPoliticalPartyAffiliation> 
-    congressionalTermPoliticalPartyAffiliationInserterFactory, 
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewCongressionalTermPoliticalPartyAffiliation>
+internal sealed class CongressionalTermPoliticalPartyAffiliationCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory, 
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory, 
+    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory, 
+    IDatabaseInserterFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory
+) : INodeCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliations, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
-        await using var congressionalTermPoliticalPartyAffiliationWriter = await congressionalTermPoliticalPartyAffiliationInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-        await foreach (var congressionalTermPoliticalPartyAffiliation in congressionalTermPoliticalPartyAffiliations) {
-            await nodeWriter.InsertAsync(congressionalTermPoliticalPartyAffiliation);
-            await searchableWriter.InsertAsync(congressionalTermPoliticalPartyAffiliation);
-            await documentableWriter.InsertAsync(congressionalTermPoliticalPartyAffiliation);
-            await congressionalTermPoliticalPartyAffiliationWriter.InsertAsync(congressionalTermPoliticalPartyAffiliation);
-            foreach (var tenantNode in congressionalTermPoliticalPartyAffiliation.TenantNodes) {
-                tenantNode.NodeId = congressionalTermPoliticalPartyAffiliation.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-        }
-    }
+    public async Task<NodeCreator<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation>> CreateAsync(IDbConnection connection) =>
+        new (
+            new () {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await documentableInserterFactory.CreateAsync(connection),
+                await congressionalTermPoliticalPartyAffiliationInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

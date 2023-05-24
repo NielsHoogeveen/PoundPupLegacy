@@ -3,7 +3,7 @@
 internal sealed class CommentMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<Comment> commentCreator
+    IInsertingEntityCreatorFactory<Comment> commentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "comments";
@@ -11,7 +11,8 @@ internal sealed class CommentMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await commentCreator.CreateAsync(ReadComments(nodeIdReader), _postgresConnection);
+        await using var commentCreator = await commentCreatorFactory.CreateAsync(_postgresConnection);
+        await commentCreator.CreateAsync(ReadComments(nodeIdReader));
     }
     private static int GetUid(int uid)
     {

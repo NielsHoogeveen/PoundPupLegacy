@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using PoundPupLegacy.CreateModel.Creators;
+using System.Collections.Immutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -6,12 +7,12 @@ internal sealed class OrganizationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-    IEntityCreator<Organization> organizationCreator
+    INameableCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "organizations (ppl)";
 
-    private async IAsyncEnumerable<Organization> GetOrganizations(
+    private async IAsyncEnumerable<EventuallyIdentifiableOrganization> GetOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -23,29 +24,29 @@ internal sealed class OrganizationMigratorPPL(
             Title = "Colorado Adoption Center",
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.COLORADO_ADOPTION_CENTER
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.COLORADO_ADOPTION_CENTER
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.COLORADO_ADOPTION_CENTER
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.COLORADO_ADOPTION_CENTER
+                }
+            },
             NodeTypeId = 23,
             WebsiteUrl = null,
             EmailAddress = null,
@@ -72,7 +73,8 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = 12625
                     })
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewUnitedStatesPoliticalParty {
             Id = null,
@@ -82,29 +84,29 @@ internal sealed class OrganizationMigratorPPL(
             Title = "Popular Democratic Party",
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.POPULAR_DEMOCRAT_PARTY
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.POPULAR_DEMOCRAT_PARTY
-                    }
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.POPULAR_DEMOCRAT_PARTY
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.POPULAR_DEMOCRAT_PARTY
+                }
+            },
             NodeTypeId = 63,
             WebsiteUrl = null,
             EmailAddress = null,
@@ -131,7 +133,8 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = Constants.POLITICAL_PARTY
                     })
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewUnitedStatesPoliticalParty {
             Id = null,
@@ -141,29 +144,29 @@ internal sealed class OrganizationMigratorPPL(
             Title = "Libertarian Party",
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
             {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.LIBERTARIAN_PARTY
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = Constants.LIBERTARIAN_PARTY
-                    }
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.LIBERTARIAN_PARTY
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = Constants.LIBERTARIAN_PARTY
+                }
+            },
             NodeTypeId = 63,
             WebsiteUrl = null,
             EmailAddress = null,
@@ -190,7 +193,8 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = Constants.POLITICAL_PARTY
                     })
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
         yield return new NewBasicOrganization {
             Id = null,
@@ -200,29 +204,29 @@ internal sealed class OrganizationMigratorPPL(
             Title = "Government of Italy",
             OwnerId = Constants.OWNER_PARTIES,
             AuthoringStatusId = 1,
-            TenantNodes = new List<TenantNode>
+            TenantNodes = new List<NewTenantNodeForNewNode>
+            {
+                new NewTenantNodeForNewNode
                 {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = 17036
-                    },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = 17036
-                    }
+                    Id = null,
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = 17036
                 },
+                new NewTenantNodeForNewNode
+                {
+                    Id = null,
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    NodeId = null,
+                    SubgroupId = null,
+                    UrlId = 17036
+                }
+            },
             NodeTypeId = 23,
             WebsiteUrl = null,
             EmailAddress = null,
@@ -249,7 +253,8 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = 12630
                     })
                 }
-            }
+            },
+            NodeTermIds = new List<int>(),
         };
     }
 
@@ -257,10 +262,11 @@ internal sealed class OrganizationMigratorPPL(
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
-        await organizationCreator.CreateAsync(GetOrganizations(nodeIdReader), _postgresConnection);
-        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId), _postgresConnection);
+        await using var organizationCreator = await organizationCreatorFactory.CreateAsync(_postgresConnection);
+        await organizationCreator.CreateAsync(GetOrganizations(nodeIdReader));
+        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId));
     }
-    private async IAsyncEnumerable<Organization> ReadOrganizations(
+    private async IAsyncEnumerable<EventuallyIdentifiableOrganization> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
     )
@@ -468,8 +474,8 @@ internal sealed class OrganizationMigratorPPL(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode> {
-                        new TenantNode {
+                    TenantNodes = new List<NewTenantNodeForNewNode> {
+                        new NewTenantNodeForNewNode {
                             Id = null,
                             TenantId = Constants.PPL,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
@@ -478,7 +484,7 @@ internal sealed class OrganizationMigratorPPL(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode {
+                        new NewTenantNodeForNewNode {
                             Id = null,
                             TenantId = Constants.CPCT,
                             PublicationStatusId = 2,
@@ -507,8 +513,8 @@ internal sealed class OrganizationMigratorPPL(
                                 UrlId = Constants.POLITICAL_PARTY
                             })
                         }
-                    }
-
+                    },
+                    NodeTermIds = new List<int>(),
                 };
             }
             else {
@@ -520,29 +526,29 @@ internal sealed class OrganizationMigratorPPL(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode>
+                    TenantNodes = new List<NewTenantNodeForNewNode>
                     {
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = id
+                        new NewTenantNodeForNewNode
+                        {
+                            Id = null,
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new NewTenantNodeForNewNode
+                        {
+                            Id = null,
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            NodeId = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
                     },
-                    new TenantNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        NodeId = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
-                },
                     NodeTypeId = reader.GetInt16("node_type_id"),
                     WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                     EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
@@ -552,6 +558,7 @@ internal sealed class OrganizationMigratorPPL(
                     FileIdTileImage = null,
                     VocabularyNames = vocabularyNames,
                     OrganizationTypes = organizationOrganizationTypes,
+                    NodeTermIds = new List<int>(),
                 };
             }
 

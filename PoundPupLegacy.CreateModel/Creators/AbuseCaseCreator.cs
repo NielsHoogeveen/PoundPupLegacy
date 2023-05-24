@@ -1,71 +1,76 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class AbuseCaseCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<Documentable> documentableInserterFactory,
-    IDatabaseInserterFactory<Locatable> locatableInserterFactory,
-    IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<Case> caseInserterFactory,
-    IDatabaseInserterFactory<NewAbuseCase> abuseCaseInserterFactory,
-    IDatabaseInserterFactory<Term> termInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
+public class AbuseCaseCreatorFactory(
+
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableAbuseCase> abuseCaseInserterFactory,
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
+    IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
+) : INameableCreatorFactory<EventuallyIdentifiableAbuseCase>
+{
+    public async Task<NameableCreator<EventuallyIdentifiableAbuseCase>> CreateAsync(IDbConnection connection) => 
+        new AbuseCaseCreator(
+            new () {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await documentableInserterFactory.CreateAsync(connection),
+                await locatableInserterFactory.CreateAsync(connection),
+                await nameableInserterFactory.CreateAsync(connection),
+                await caseInserterFactory.CreateAsync(connection),
+                await abuseCaseInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await abuseCaseTypeOfAbuseCreatorFactory.CreateAsync(connection),
+            await abuseCaseTypeOfAbuserCreatorFactory.CreateAsync(connection)
+        );
+}
+
+public class AbuseCaseCreator(
+    List<IDatabaseInserter<EventuallyIdentifiableAbuseCase>> inserters,
+    NodeDetailsCreator nodeDetailsCreator,
+    NameableDetailsCreator nameableDetailsCreator,
     IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
     IEntityCreator<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreator
-) : EntityCreator<NewAbuseCase>
+
+) : NameableCreator<EventuallyIdentifiableAbuseCase>
+(
+    inserters,
+    nodeDetailsCreator,
+    nameableDetailsCreator
+)
 {
-
-    public override async Task CreateAsync(IAsyncEnumerable<NewAbuseCase> abuseCases, IDbConnection connection)
+    public override async Task ProcessAsync(EventuallyIdentifiableAbuseCase element)
     {
-
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
-        await using var locatableWriter = await locatableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
-        await using var caseWriter = await caseInserterFactory.CreateAsync(connection);
-        await using var abuseCaseWriter = await abuseCaseInserterFactory.CreateAsync(connection);
-        await using var termWriter = await termInserterFactory.CreateAsync(connection);
-        await using var termReader = await termReaderFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await termHierarchyInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-        await foreach (var abuseCase in abuseCases) {
-            await nodeWriter.InsertAsync(abuseCase);
-            await searchableWriter.InsertAsync(abuseCase);
-            await documentableWriter.InsertAsync(abuseCase);
-            await locatableWriter.InsertAsync(abuseCase);
-            await nameableWriter.InsertAsync(abuseCase);
-            await caseWriter.InsertAsync(abuseCase);
-            await abuseCaseWriter.InsertAsync(abuseCase);
-            await WriteTerms(abuseCase, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-            foreach (var tenantNode in abuseCase.TenantNodes) {
-                tenantNode.NodeId = abuseCase.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-            foreach(var typeOfAbuseId in abuseCase.TypeOfAbuseIds) {
-                await abuseCaseTypeOfAbuseCreator.CreateAsync(
-                    new AbuseCaseTypeOfAbuse 
-                    { 
-                        AbuseCaseId = abuseCase.Id!.Value, 
-                        TypeOfAbuseId = typeOfAbuseId
-                    },
-                    connection
-                );
-            }
-            foreach (var typeOfAbuserId in abuseCase.TypeOfAbuserIds) {
-                await abuseCaseTypeOfAbuserCreator.CreateAsync(
-                    new AbuseCaseTypeOfAbuser {
-                        AbuseCaseId = abuseCase.Id!.Value,
-                        TypeOfAbuserId = typeOfAbuserId
-                    },
-                    connection
-                );
-            }
+        await base.ProcessAsync(element);
+        foreach (var typeOfAbuseId in element.TypeOfAbuseIds) {
+            await abuseCaseTypeOfAbuseCreator.CreateAsync(
+                new AbuseCaseTypeOfAbuse {
+                    AbuseCaseId = element.Id!.Value,
+                    TypeOfAbuseId = typeOfAbuseId
+                }
+            );
         }
+        foreach (var typeOfAbuserId in element.TypeOfAbuserIds) {
+            await abuseCaseTypeOfAbuserCreator.CreateAsync(
+                new AbuseCaseTypeOfAbuser {
+                    AbuseCaseId = element.Id!.Value,
+                    TypeOfAbuserId = typeOfAbuserId
+                }
+            );
+        }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await abuseCaseTypeOfAbuseCreator.DisposeAsync();
+        await abuseCaseTypeOfAbuserCreator.DisposeAsync();
     }
 }

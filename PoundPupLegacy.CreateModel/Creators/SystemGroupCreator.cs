@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
-internal sealed class SystemGroupCreator(
+internal sealed class SystemGroupCreatorFactory(
     IDatabaseInserterFactory<SystemGroup> systemGroupInserterFactory,
     IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
     IDatabaseInserterFactory<Owner> ownerInserterFactory,
@@ -7,31 +7,59 @@ internal sealed class SystemGroupCreator(
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory,
-    IEntityCreator<NewVocabulary> vocabularyCreator
-) : EntityCreator<SystemGroup>
+    IEntityCreatorFactory<EventuallyIdentifiableVocabulary> vocabularyCreatorFactory
+) : IEntityCreatorFactory<SystemGroup>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<SystemGroup> elements, IDbConnection connection)
+    public async Task<EntityCreator<SystemGroup>> CreateAsync(IDbConnection connection) =>
+        new SystemGroupCreator(
+            await userGroupInserterFactory.CreateAsync(connection),
+            await ownerInserterFactory.CreateAsync(connection),
+            await systemGroupInserterFactory.CreateAsync(connection),
+            await principalInserterFactory.CreateAsync(connection),
+            await userRoleInserterFactory.CreateAsync(connection),
+            await accessRoleInserterFactory.CreateAsync(connection),
+            await administratorRoleInserterFactory.CreateAsync(connection),
+            await vocabularyCreatorFactory.CreateAsync(connection)
+        );
+}
+
+internal class SystemGroupCreator(
+    IDatabaseInserter<UserGroup> userGroupInserter,
+    IDatabaseInserter<Owner> ownerInserter,
+    IDatabaseInserter<SystemGroup> systemGroupInserter,
+    IDatabaseInserter<Principal> principalInserter,
+    IDatabaseInserter<UserRole> userRoleInserter,
+    IDatabaseInserter<AccessRole> accessRoleInserter,
+    IDatabaseInserter<AdministratorRole> administratorRoleInserter,
+    IEntityCreator<EventuallyIdentifiableVocabulary> vocabularyCreator
+) : EntityCreator<SystemGroup>()
+{
+    public override async Task ProcessAsync(SystemGroup element)
     {
-        await using var userGroupWriter = await userGroupInserterFactory.CreateAsync(connection);
-        await using var ownerWriter = await ownerInserterFactory.CreateAsync(connection);
-        await using var systemGroupWriter = await systemGroupInserterFactory.CreateAsync(connection);
-        await using var principalWriter = await principalInserterFactory.CreateAsync(connection);
-        await using var userRoleWriter = await userRoleInserterFactory.CreateAsync(connection);
-        await using var accessRoleWriter = await accessRoleInserterFactory.CreateAsync(connection);
-        await using var administratorRoleWriter = await administratorRoleInserterFactory.CreateAsync(connection);
+        await base.ProcessAsync(element);
+        await vocabularyCreator.CreateAsync(element.VocabularyTagging);
 
-        await foreach (var systemGroup in elements) {
-            await vocabularyCreator.CreateAsync(systemGroup.VocabularyTagging, connection);
+        await userGroupInserter.InsertAsync(element);
+        await ownerInserter.InsertAsync(element);
+        await systemGroupInserter.InsertAsync(element);
 
-            await userGroupWriter.InsertAsync(systemGroup);
-            await ownerWriter.InsertAsync(systemGroup);
-            await systemGroupWriter.InsertAsync(systemGroup);
+        var administratorRole = element.AdministratorRole;
+        administratorRole.UserGroupId = element.Id!.Value;
+        await principalInserter.InsertAsync(administratorRole);
+        await userRoleInserter.InsertAsync(administratorRole);
+        await administratorRoleInserter.InsertAsync(administratorRole);
 
-            var administratorRole = systemGroup.AdministratorRole;
-            administratorRole.UserGroupId = systemGroup.Id!.Value;
-            await principalWriter.InsertAsync(administratorRole);
-            await userRoleWriter.InsertAsync(administratorRole);
-            await administratorRoleWriter.InsertAsync(administratorRole);
-        }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await systemGroupInserter.DisposeAsync();
+        await userGroupInserter.DisposeAsync();
+        await ownerInserter.DisposeAsync();
+        await principalInserter.DisposeAsync();
+        await userRoleInserter.DisposeAsync();
+        await accessRoleInserter.DisposeAsync();
+        await administratorRoleInserter.DisposeAsync();
+        await vocabularyCreator.DisposeAsync();
     }
 }

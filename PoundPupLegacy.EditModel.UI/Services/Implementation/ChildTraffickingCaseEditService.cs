@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PoundPupLegacy.CreateModel;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -12,7 +13,7 @@ internal sealed class ChildTraffickingCaseEditService(
     ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
     ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    IEntityCreator<CreateModel.NewChildTraffickingCase> childTraffickingCaseCreator,
+    INameableCreatorFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseCreatorFactory,
     ITextService textService
 ) : NodeEditServiceBase<ResolvedChildTraffickingCase, ExistingChildTraffickingCase, ResolvedNewChildTraffickingCase, CreateModel.NewChildTraffickingCase>
 (
@@ -61,7 +62,7 @@ internal sealed class ChildTraffickingCaseEditService(
             OwnerId = childTraffickingCase.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = childTraffickingCase.PublisherId,
-            TenantNodes = childTraffickingCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.TenantNode {
+            TenantNodes = childTraffickingCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -70,7 +71,7 @@ internal sealed class ChildTraffickingCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = childTraffickingCase.Date?.ToDateTimeRange(),
+            Date = childTraffickingCase.Date,
             FileIdTileImage = null,
             VocabularyNames = new List<CreateModel.VocabularyName> {
                 new  CreateModel.VocabularyName {
@@ -81,9 +82,11 @@ internal sealed class ChildTraffickingCaseEditService(
                 }
             },
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,
-            CountryIdFrom = childTraffickingCase.CountryFrom.Id
+            CountryIdFrom = childTraffickingCase.CountryFrom.Id,
+            NodeTermIds = new List<int>(),
         };
-        await childTraffickingCaseCreator.CreateAsync(createDocument, connection);
+        await using var childTraffickingCaseCreator = await childTraffickingCaseCreatorFactory.CreateAsync(connection);
+        await childTraffickingCaseCreator.CreateAsync(createDocument);
         return createDocument.Id!.Value;
     }
 

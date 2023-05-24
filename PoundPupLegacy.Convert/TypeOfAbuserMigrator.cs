@@ -3,7 +3,7 @@
 internal sealed class TypeOfAbuserMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<TypeOfAbuser> typeOfAbuserCreator
+    INameableCreatorFactory<EventuallyIdentifiableTypeOfAbuser> typeOfAbuserCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "types of abuser";
@@ -11,9 +11,10 @@ internal sealed class TypeOfAbuserMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await typeOfAbuserCreator.CreateAsync(ReadTypesOfAbusers(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var typeOfAbuserCreator = await typeOfAbuserCreatorFactory.CreateAsync(_postgresConnection);
+        await typeOfAbuserCreator.CreateAsync(ReadTypesOfAbusers(fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<TypeOfAbuser> ReadTypesOfAbusers(
+    private async IAsyncEnumerable<EventuallyIdentifiableTypeOfAbuser> ReadTypesOfAbusers(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
     {
@@ -115,9 +116,9 @@ internal sealed class TypeOfAbuserMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -127,7 +128,7 @@ internal sealed class TypeOfAbuserMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -147,6 +148,7 @@ internal sealed class TypeOfAbuserMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image"),
                     }),
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
 
         }

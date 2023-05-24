@@ -2,16 +2,17 @@
 
 internal sealed class PageMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreator<Page> pageCreator
+    INodeCreatorFactory<EventuallyIdentifiablePage> pageCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "pages";
 
     protected override async Task MigrateImpl()
     {
-        await pageCreator.CreateAsync(ReadPages(), _postgresConnection);
+        await using var pageCreator = await pageCreatorFactory.CreateAsync(_postgresConnection);
+        await pageCreator.CreateAsync(ReadPages());
     }
-    private async IAsyncEnumerable<Page> ReadPages()
+    private async IAsyncEnumerable<EventuallyIdentifiablePage> ReadPages()
     {
 
         var sql = $"""
@@ -48,9 +49,9 @@ internal sealed class PageMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -65,6 +66,7 @@ internal sealed class PageMigrator(
                 NodeTypeId = 42,
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

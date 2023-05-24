@@ -1,34 +1,48 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class DocumentCreator(
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<NewDocument> documentInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
-    IEntityCreator<DocumentableDocument> documentableDocumentCreator
-) : EntityCreator<NewDocument>
+internal sealed class DocumentCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableDocument> documentInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    IEntityCreatorFactory<DocumentableDocument, DocumentableDocumentCreator> documentableDocumentCreatorFactory
+) : INodeCreatorFactory<EventuallyIdentifiableDocument>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewDocument> documents, IDbConnection connection)
-    {
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var simpleTextNodeWriter = await simpleTextNodeInserterFactory.CreateAsync(connection);
-        await using var documentWriter = await documentInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
+    public async Task<NodeCreator<EventuallyIdentifiableDocument>> CreateAsync(IDbConnection connection) =>
+        new DocumentCreator(
+            new() {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await simpleTextNodeInserterFactory.CreateAsync(connection),
+                await documentInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await documentableDocumentCreatorFactory.CreateAsync(connection)
+        );
 
-        await foreach (var document in documents) {
-            await nodeWriter.InsertAsync(document);
-            await searchableWriter.InsertAsync(document);
-            await simpleTextNodeWriter.InsertAsync(document);
-            await documentWriter.InsertAsync(document);
-            foreach (var tenantNode in document.TenantNodes) {
-                tenantNode.NodeId = document.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-            foreach (var documentable in document.Documentables) {
-                await documentableDocumentCreator.CreateAsync(new DocumentableDocument { DocumentableId = documentable, DocumentId = document.Id!.Value }, connection);
-            }
+}
+
+public class DocumentCreator(
+    List<IDatabaseInserter<EventuallyIdentifiableDocument>> inserters,
+    NodeDetailsCreator nodeDetailsCreator,
+    IEntityCreator<DocumentableDocument> documentableDocumentCreator
+    ) : NodeCreator<EventuallyIdentifiableDocument>(inserters, nodeDetailsCreator)
+{
+    public override async Task ProcessAsync(EventuallyIdentifiableDocument element)
+    {
+        await base.ProcessAsync(element);
+        foreach (var documentable in element.Documentables) {
+            await documentableDocumentCreator.CreateAsync(new DocumentableDocument 
+            { 
+                DocumentableId = documentable, 
+                DocumentId = element.Id!.Value 
+            });
         }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await documentableDocumentCreator.DisposeAsync();
     }
 }

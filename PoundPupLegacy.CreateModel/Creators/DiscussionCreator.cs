@@ -1,31 +1,21 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class DiscussionCreator(
-    IDatabaseInserterFactory<NewDiscussion> discussionInserterFactory,
-    IDatabaseInserterFactory<Node> nodeInserterFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<SimpleTextNode> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory
-) : EntityCreator<NewDiscussion>
+internal sealed class DiscussionCreatorFactory(
+        IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+        IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+        IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
+        IDatabaseInserterFactory<EventuallyIdentifiableDiscussion> discussionInserterFactory,
+        NodeDetailsCreatorFactory nodeDetailsCreatorFactory
+    ) : INodeCreatorFactory<EventuallyIdentifiableDiscussion>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<NewDiscussion> discussions, IDbConnection connection)
-    {
-
-        await using var nodeWriter = await nodeInserterFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var simpleTextNodeWriter = await simpleTextNodeInserterFactory.CreateAsync(connection);
-        await using var discussionWriter = await discussionInserterFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-
-        await foreach (var discussion in discussions) {
-            await nodeWriter.InsertAsync(discussion);
-            await searchableWriter.InsertAsync(discussion);
-            await simpleTextNodeWriter.InsertAsync(discussion);
-            await discussionWriter.InsertAsync(discussion);
-            foreach (var tenantNode in discussion.TenantNodes) {
-                tenantNode.NodeId = discussion.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-        }
-    }
+    public async Task<NodeCreator<EventuallyIdentifiableDiscussion>> CreateAsync(IDbConnection connection) =>
+        new(
+            new() {
+                await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await simpleTextNodeInserterFactory.CreateAsync(connection),
+                await discussionInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection)
+        );
 }

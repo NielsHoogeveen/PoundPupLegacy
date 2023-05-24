@@ -3,7 +3,7 @@
 internal sealed class PersonOrganizationRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewPersonOrganizationRelationType> personOrganizationRelationTypeCreator
+    INameableCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationType> personOrganizationRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation types";
@@ -11,7 +11,8 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await personOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var personOrganizationRelationTypeCreator = await personOrganizationRelationTypeCreatorFactory.CreateAsync(_postgresConnection);
+        await personOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewPersonOrganizationRelationType> ReadPersonOrganizationRelationTypes(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
@@ -66,9 +67,9 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -78,7 +79,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -99,6 +100,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
                     }),
                 VocabularyNames = vocabularyNames,
                 HasConcreteSubtype = false,
+                NodeTermIds = new List<int>(),
             };
 
         }

@@ -1,11 +1,13 @@
 ﻿
 
+using PoundPupLegacy.CreateModel;
+
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class InterPersonalRelationFromSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
     IDatabaseUpdaterFactory<InterPersonalRelationUpdaterRequest> interPersonalRelationUpdaterFactory,
-    IEntityCreator<CreateModel.NewInterPersonalRelation> interPersonalRelationCreator
+    INodeCreatorFactory<EventuallyIdentifiableInterPersonalRelation> interPersonalRelationCreatorFactory
 ) : ISaveService<IEnumerable<ResolvedInterPersonalRelationFrom>>
 {
     public async Task SaveAsync(IEnumerable<ResolvedInterPersonalRelationFrom> item, IDbConnection connection)
@@ -43,7 +45,7 @@ internal class InterPersonalRelationFromSaveService(
                     Title = relation.Title,
                     OwnerId = relation.OwnerId,
                     AuthoringStatusId = 1,
-                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode {
+                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.NewTenantNodeForNewNode {
                         Id = null,
                         TenantId = Constants.PPL,
                         PublicationStatusId = tenantNode.PublicationStatusId,
@@ -59,9 +61,11 @@ internal class InterPersonalRelationFromSaveService(
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
                     Description = relation.Description,
+                    NodeTermIds = new List<int>(),
                 };
             }
         }
-        await interPersonalRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
+        await using var interPersonalRelationCreator = await interPersonalRelationCreatorFactory.CreateAsync(connection);
+        await interPersonalRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable());
     }
 }

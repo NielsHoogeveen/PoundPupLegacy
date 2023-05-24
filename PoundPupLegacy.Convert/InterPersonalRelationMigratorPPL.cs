@@ -3,7 +3,7 @@
 internal sealed class InterPersonalRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreator<NewInterPersonalRelation> interPersonalRelationCreator
+    INodeCreatorFactory<EventuallyIdentifiableInterPersonalRelation> interPersonalRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter personal relation";
@@ -11,7 +11,8 @@ internal sealed class InterPersonalRelationMigratorPPL(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader), _postgresConnection);
+        await using var interPersonalRelationCreator = await interPersonalRelationCreatorFactory.CreateAsync(_postgresConnection);
+        await interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader));
     }
 
     private async IAsyncEnumerable<NewInterPersonalRelation> ReadInterPersonalRelations(
@@ -108,9 +109,9 @@ internal sealed class InterPersonalRelationMigratorPPL(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.PPL,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -120,7 +121,7 @@ internal sealed class InterPersonalRelationMigratorPPL(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -143,6 +144,7 @@ internal sealed class InterPersonalRelationMigratorPPL(
                         UrlId = reader.GetInt32("document_id_proof")
                     }),
                 Description = null,
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

@@ -3,7 +3,7 @@
 internal sealed class DenominationMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreator<NewDenomination> denominationCreator
+    INameableCreatorFactory<EventuallyIdentifiableDenomination> denominationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "denominations";
@@ -11,7 +11,8 @@ internal sealed class DenominationMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
-        await denominationCreator.CreateAsync(ReadDenominations(fileIdReaderByTenantFileId), _postgresConnection);
+        await using var denominationCreator = await denominationCreatorFactory.CreateAsync(_postgresConnection);
+        await denominationCreator.CreateAsync(ReadDenominations(fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewDenomination> ReadDenominations(
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
@@ -94,9 +95,9 @@ internal sealed class DenominationMigrator(
                 Title = name,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.PPL,
@@ -106,7 +107,7 @@ internal sealed class DenominationMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -126,6 +127,7 @@ internal sealed class DenominationMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 VocabularyNames = vocabularyNames,
+                NodeTermIds = new List<int>(),
             };
         }
         reader.Close();

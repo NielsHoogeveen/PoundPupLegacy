@@ -10,10 +10,10 @@ public sealed record ExistingDeportationCase : ExistingCaseBase, ImmediatelyIden
     public required int? SubdivisionIdFrom { get; init; }
     public required int? CountryIdTo { get; init; }
 }
-public interface ImmediatelyIdentifiableDeportationCase : ImmediatelyIdentifiableCase
+public interface ImmediatelyIdentifiableDeportationCase : DeportationCase, ImmediatelyIdentifiableCase
 {
 }
-public interface EventuallyIdentifiableDeportationCase : EventuallyIdentifiableCase
+public interface EventuallyIdentifiableDeportationCase : DeportationCase, EventuallyIdentifiableCase
 {
 }
 public interface DeportationCase: Case

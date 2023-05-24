@@ -1,9 +1,11 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using PoundPupLegacy.CreateModel;
+
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class PersonOrganizationRelationSaveService(
         IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
         IDatabaseUpdaterFactory<PersonOrganizationRelationUpdaterRequest> personOrganizationRelationUpdaterFactory,
-        IEntityCreator<CreateModel.NewPersonOrganizationRelation> personOrganizationRelationCreator
+        INodeCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory
     ) : ISaveService<IEnumerable<PersonOrganizationRelation>>
 {
     public async Task SaveAsync(IEnumerable<PersonOrganizationRelation> item, IDbConnection connection)
@@ -42,7 +44,7 @@ internal class PersonOrganizationRelationSaveService(
                     Title = relation.Title,
                     OwnerId = relation.OwnerId,
                     AuthoringStatusId = 1,
-                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.TenantNode {
+                    TenantNodes = relation.TenantNodes.Select(tenantNode => new CreateModel.NewTenantNodeForNewNode {
                         Id = null,
                         TenantId = Constants.PPL,
                         PublicationStatusId = tenantNode.PublicationStatusId,
@@ -59,9 +61,11 @@ internal class PersonOrganizationRelationSaveService(
                     DocumentIdProof = relation.ProofDocument?.Id,
                     GeographicalEntityId = relation.GeographicalEntity?.Id,
                     Description = relation.Description,
+                    NodeTermIds = new List<int>(),
                 };
             }
         }
-        await personOrganizationRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable(), connection);
+        await using var personOrganizationRelationCreator = await personOrganizationRelationCreatorFactory.CreateAsync(connection);
+        await personOrganizationRelationCreator.CreateAsync(GetRelationsToInsert().ToAsyncEnumerable());
     }
 }

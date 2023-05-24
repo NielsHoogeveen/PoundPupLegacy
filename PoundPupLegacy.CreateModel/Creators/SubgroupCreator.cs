@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class SubgroupCreator(
+internal sealed class SubgroupCreatorFactory(
     IDatabaseInserterFactory<Subgroup> subgroupInserterFactory,
     IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
     IDatabaseInserterFactory<PublishingUserGroup> publishingUserGroupInserterFactory,
@@ -8,28 +8,48 @@ internal sealed class SubgroupCreator(
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
-) : EntityCreator<Subgroup>
+) : IInsertingEntityCreatorFactory<Subgroup>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<Subgroup> subgroups, IDbConnection connection)
+    public async Task<InsertingEntityCreator<Subgroup>> CreateAsync(IDbConnection connection) =>
+        new SubgroupCreator(
+            new() {
+                await userGroupInserterFactory.CreateAsync(connection),
+                await publishingUserGroupInserterFactory.CreateAsync(connection),
+                await subgroupInserterFactory.CreateAsync(connection)
+            },
+            await principalInserterFactory.CreateAsync(connection),
+            await userRoleInserterFactory.CreateAsync(connection),
+            await accessRoleInserterFactory.CreateAsync(connection),
+            await administratorRoleInserterFactory.CreateAsync(connection)
+        );
+}
+
+
+internal class SubgroupCreator(
+    List<IDatabaseInserter<Subgroup>> inserters,
+    IDatabaseInserter<Principal> principalInserter,
+    IDatabaseInserter<UserRole> userRoleInserter,
+    IDatabaseInserter<AccessRole> accessRoleInserter,
+    IDatabaseInserter<AdministratorRole> administratorRoleInserter
+
+) : InsertingEntityCreator<Subgroup>(inserters) 
+{
+    public override async Task ProcessAsync(Subgroup element)
     {
-        await using var userGroupWriter = await userGroupInserterFactory.CreateAsync(connection);
-        await using var publishingUserGroupWriter = await publishingUserGroupInserterFactory.CreateAsync(connection);
-        await using var subgroupWriter = await subgroupInserterFactory.CreateAsync(connection);
-        await using var principalWriter = await principalInserterFactory.CreateAsync(connection);
-        await using var userRoleWriter = await userRoleInserterFactory.CreateAsync(connection);
-        await using var accessRoleWriter = await accessRoleInserterFactory.CreateAsync(connection);
-        await using var administratorRoleWriter = await administratorRoleInserterFactory.CreateAsync(connection);
+        await base.ProcessAsync(element);
+        var administratorRole = element.AdministratorRole;
+        administratorRole.UserGroupId = element.Id;
+        await principalInserter.InsertAsync(administratorRole);
+        await userRoleInserter.InsertAsync(administratorRole);
+        await administratorRoleInserter.InsertAsync(administratorRole);
 
-        await foreach (var subgroup in subgroups) {
-            await userGroupWriter.InsertAsync(subgroup);
-            await publishingUserGroupWriter.InsertAsync(subgroup);
-            await subgroupWriter.InsertAsync(subgroup);
-
-            var administratorRole = subgroup.AdministratorRole;
-            administratorRole.UserGroupId = subgroup.Id;
-            await principalWriter.InsertAsync(administratorRole);
-            await userRoleWriter.InsertAsync(administratorRole);
-            await administratorRoleWriter.InsertAsync(administratorRole);
-        }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await principalInserter.DisposeAsync();
+        await userRoleInserter.DisposeAsync();
+        await accessRoleInserter.DisposeAsync();
+        await administratorRoleInserter.DisposeAsync();
     }
 }

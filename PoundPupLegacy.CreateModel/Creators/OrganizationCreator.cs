@@ -1,60 +1,62 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
-internal sealed class OrganizationCreator(
-    IDatabaseInserterFactory<Node> nodeIntererFactory,
-    IDatabaseInserterFactory<Searchable> searchableInserterFactory,
-    IDatabaseInserterFactory<Documentable> documentableInserterFactory,
-    IDatabaseInserterFactory<Locatable> locatableInserterFactory,
-    IDatabaseInserterFactory<Nameable> nameableInserterFactory,
-    IDatabaseInserterFactory<Party> partyInserterFactory,
-    IDatabaseInserterFactory<Organization> organizationInserterFactory,
-    IDatabaseInserterFactory<NewUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserterFactory,
-    IDatabaseInserterFactory<Term> termInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory,
-    IDatabaseInserterFactory<TenantNode> tenantNodeInserterFactory,
+internal sealed class OrganizationCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeIntererFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableParty> partyInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableOrganization> organizationInserterFactory,
+    NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserterFactory,
     IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory
-) : EntityCreator<EventuallyIdentifiableOrganization>
+) : INameableCreatorFactory<EventuallyIdentifiableOrganization>
 {
-    public override async Task CreateAsync(IAsyncEnumerable<EventuallyIdentifiableOrganization> organizations, IDbConnection connection)
+    public async Task<NameableCreator<EventuallyIdentifiableOrganization>> CreateAsync(IDbConnection connection) =>
+        new OrganizationCreator(
+            new ()
+            {
+                await nodeIntererFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await documentableInserterFactory.CreateAsync(connection),
+                await locatableInserterFactory.CreateAsync(connection),
+                await nameableInserterFactory.CreateAsync(connection),
+                await partyInserterFactory.CreateAsync(connection),
+                await organizationInserterFactory.CreateAsync(connection)
+            },
+            await nodeDetailsCreatorFactory.CreateAsync(connection),
+            await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await unitedStatesPoliticalPartyInserterFactory.CreateAsync(connection),
+            await organizationOrganizationTypeInserterFactory.CreateAsync(connection)
+        );
+}
+public class OrganizationCreator(
+    List<IDatabaseInserter<EventuallyIdentifiableOrganization>> inserter,
+    NodeDetailsCreator nodeDetailsCreator,
+    NameableDetailsCreator nameableDetailsCreator,
+    IDatabaseInserter<EventuallyIdentifiableUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserter,
+    IDatabaseInserter<OrganizationOrganizationType> organizationOrganizationTypeInserter
+
+    ) : NameableCreator<EventuallyIdentifiableOrganization>(inserter, nodeDetailsCreator, nameableDetailsCreator) 
+{
+    public override async Task ProcessAsync(EventuallyIdentifiableOrganization element)
     {
-        await using var nodeWriter = await nodeIntererFactory.CreateAsync(connection);
-        await using var searchableWriter = await searchableInserterFactory.CreateAsync(connection);
-        await using var documentableWriter = await documentableInserterFactory.CreateAsync(connection);
-        await using var locatableWriter = await locatableInserterFactory.CreateAsync(connection);
-        await using var nameableWriter = await nameableInserterFactory.CreateAsync(connection);
-        await using var partyWriter = await partyInserterFactory.CreateAsync(connection);
-        await using var organizationWriter = await organizationInserterFactory.CreateAsync(connection);
-        await using var unitedStatesPoliticalPartyWriter = await unitedStatesPoliticalPartyInserterFactory.CreateAsync(connection);
-        await using var termWriter = await termInserterFactory.CreateAsync(connection);
-        await using var termReader = await termReaderFactory.CreateAsync(connection);
-        await using var termHierarchyWriter = await termHierarchyInserterFactory.CreateAsync(connection);
-        await using var vocabularyIdReader = await vocabularyIdReaderFactory.CreateAsync(connection);
-        await using var tenantNodeWriter = await tenantNodeInserterFactory.CreateAsync(connection);
-        await using var organizationOrganizationTypeWriter = await organizationOrganizationTypeInserterFactory.CreateAsync(connection);
-
-        await foreach (var organization in organizations) {
-            await nodeWriter.InsertAsync(organization);
-            await searchableWriter.InsertAsync(organization);
-            await documentableWriter.InsertAsync(organization);
-            await locatableWriter.InsertAsync(organization);
-            await nameableWriter.InsertAsync(organization);
-            await partyWriter.InsertAsync(organization);
-            await organizationWriter.InsertAsync(organization);
-            if (organization is NewUnitedStatesPoliticalParty pp) {
-                await unitedStatesPoliticalPartyWriter.InsertAsync(pp);
-            }
-            await WriteTerms(organization, termWriter, termReader, termHierarchyWriter, vocabularyIdReader);
-
-            foreach (var tenantNode in organization.TenantNodes) {
-                tenantNode.NodeId = organization.Id;
-                await tenantNodeWriter.InsertAsync(tenantNode);
-            }
-            foreach (var organizationOrganizationType in organization.OrganizationTypes) {
-                organizationOrganizationType.OrganizationId = organization.Id;
-                await organizationOrganizationTypeWriter.InsertAsync(organizationOrganizationType);
-            }
+        await base.ProcessAsync(element);
+        if (element is NewUnitedStatesPoliticalParty pp) {
+            await unitedStatesPoliticalPartyInserter.InsertAsync(pp);
         }
+        foreach (var organizationOrganizationType in element.OrganizationTypes) {
+            organizationOrganizationType.OrganizationId = element.Id;
+            await organizationOrganizationTypeInserter.InsertAsync(organizationOrganizationType);
+        }
+
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await unitedStatesPoliticalPartyInserter.DisposeAsync();
+        await organizationOrganizationTypeInserter.DisposeAsync();
     }
 }

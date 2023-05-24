@@ -4,7 +4,7 @@ internal sealed class SenatorSenateBillActionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> professionIdReaderFactory,
-    IEntityCreator<NewSenatorSenateBillAction> senatorSenateBillActionCreator
+    INodeCreatorFactory<EventuallyIdentifiableSenatorSenateBillAction> senatorSenateBillActionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "senator senate bill action";
@@ -13,7 +13,8 @@ internal sealed class SenatorSenateBillActionMigrator(
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         await using var professionIdReader = await professionIdReaderFactory.CreateAsync(_postgresConnection);
-        await senatorSenateBillActionCreator.CreateAsync(ReadSenatorSenateBillActionsPPL(nodeIdReader, professionIdReader), _postgresConnection);
+        await using var senatorSenateBillActionCreator = await senatorSenateBillActionCreatorFactory.CreateAsync(_postgresConnection);
+        await senatorSenateBillActionCreator.CreateAsync(ReadSenatorSenateBillActionsPPL(nodeIdReader, professionIdReader));
     }
 
     private async IAsyncEnumerable<NewSenatorSenateBillAction> ReadSenatorSenateBillActionsPPL(
@@ -79,9 +80,9 @@ internal sealed class SenatorSenateBillActionMigrator(
                 Title = reader.GetString("title"),
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode>
+                TenantNodes = new List<NewTenantNodeForNewNode>
                 {
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = 1,
@@ -91,7 +92,7 @@ internal sealed class SenatorSenateBillActionMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode
+                    new NewTenantNodeForNewNode
                     {
                         Id = null,
                         TenantId = Constants.CPCT,
@@ -107,6 +108,7 @@ internal sealed class SenatorSenateBillActionMigrator(
                 SenateBillId = billId,
                 BillActionTypeId = billActionTypeId,
                 Date = reader.GetDateTime("date"),
+                NodeTermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();
