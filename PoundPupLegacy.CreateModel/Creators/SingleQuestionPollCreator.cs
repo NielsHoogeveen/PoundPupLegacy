@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class SingleQuestionPollCreatorFactory(
-    IEntityCreatorFactory<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
+    INodeCreatorFactory<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<EventuallyIdentifiablePoll> pollInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollInserterFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableSingleQuestionPoll>

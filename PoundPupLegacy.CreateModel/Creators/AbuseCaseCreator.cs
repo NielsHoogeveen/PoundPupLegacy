@@ -11,8 +11,8 @@ public class AbuseCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableAbuseCase> abuseCaseInserterFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
-    IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
+    IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
+    IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
 ) : INameableCreatorFactory<EventuallyIdentifiableAbuseCase>
 {
     public async Task<NameableCreator<EventuallyIdentifiableAbuseCase>> CreateAsync(IDbConnection connection) => 

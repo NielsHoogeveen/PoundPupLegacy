@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface IdentifiableProfessionalRole : ProfessionalRole, EventuallyIdentifiable
+public interface EventuallyIdentifiableProfessionalRole : ProfessionalRole, EventuallyIdentifiable
 {
 }
 public interface ProfessionalRole : IRequest

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class HouseBillInserterFactory : SingleIdInserterFactory<NewHouseBill>
+internal sealed class HouseBillInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableHouseBill>
 {
     protected override string TableName => "house_bill";
 

@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class BasicNameableTypeCreatorFactory(
-    IDatabaseInserterFactory<NodeType> nodeTypeInserterFactory,
-    IDatabaseInserterFactory<NameableType> nameableTypeInserterFactory
+    IDatabaseInserterFactory<EventuallyIdentifiableNodeType> nodeTypeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameableType> nameableTypeInserterFactory
 ) : IInsertingEntityCreatorFactory<BasicNameableType>
 {
     public async Task<InsertingEntityCreator<BasicNameableType>> CreateAsync(IDbConnection connection) =>

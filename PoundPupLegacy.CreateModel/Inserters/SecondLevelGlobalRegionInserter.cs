@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NewSecondLevelGlobalRegion;
+using Request = EventuallyIdentifiableSecondLevelGlobalRegion;
 
 public class SecondLevelGlobalRegionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

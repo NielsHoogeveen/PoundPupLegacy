@@ -11,8 +11,8 @@ internal sealed class PersonCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
 
-    IEntityCreatorFactory<ProfessionalRole> professionalRoleCreatorFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory
+    IInsertingEntityCreatorFactory<EventuallyIdentifiableProfessionalRole> professionalRoleCreatorFactory,
+    INodeCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory
 ) : INameableCreatorFactory<EventuallyIdentifiablePerson>
 {
     public async Task<NameableCreator<EventuallyIdentifiablePerson>> CreateAsync(IDbConnection connection) =>
@@ -38,8 +38,8 @@ internal sealed class PersonCreator(
     List<IDatabaseInserter<EventuallyIdentifiablePerson>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     NameableDetailsCreator nameableDetailsCreator,
-    IEntityCreator<ProfessionalRole> professionalRoleCreator,
-    IEntityCreator<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreator
+    InsertingEntityCreator<EventuallyIdentifiableProfessionalRole> professionalRoleCreator,
+    NodeCreator<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreator
 ) : 
     NameableCreator<EventuallyIdentifiablePerson>(inserters, nodeDetailsCreator, nameableDetailsCreator)
 {

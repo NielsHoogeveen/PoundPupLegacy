@@ -113,7 +113,7 @@ public class NameableCreator<T>(
 }
 public class NodeDetailsCreatorFactory(
     IDatabaseInserterFactory<NodeTerm> nodeTermInserterFactory,
-    IDatabaseInserterFactory<NewTenantNodeForNewNode> tenantNodeInserterFactory
+    IDatabaseInserterFactory<EventuallyIdentifiableTenantNodeForNewNode> tenantNodeInserterFactory
 )
 { 
     public async Task<NodeDetailsCreator> CreateAsync(IDbConnection connection)

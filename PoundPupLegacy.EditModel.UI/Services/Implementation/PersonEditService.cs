@@ -90,7 +90,7 @@ internal sealed class PersonEditService(
             LastName = null,
             MiddleName = null,
             Suffix = null,
-            ProfessionalRoles = new List<CreateModel.ProfessionalRole>(),
+            ProfessionalRoles = new List<EventuallyIdentifiableProfessionalRole>(),
             PersonOrganizationRelations = new List<CreateModel.NewPersonOrganizationRelation>(),
             NodeTermIds = new List<int>(),
         };

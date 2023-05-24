@@ -14,13 +14,13 @@ public sealed record ExistingMultiQuestionPoll : ExistingSimpleTextNodeBase, Imm
     public required List<NewBasicPollQuestion> PollQuestions { get; init; }
 
 }
-public interface ImmediatelyIdentifiableMultiQuestionPoll : MultiQuestionPoll, ImmediatelyIdentifiablePoll
+public interface ImmediatelyIdentifiableMultiQuestionPoll : MultiQuestionPoll, ImmediatelyIdentifiablePoll, ImmediatelyIdentifiableSimpleTextNode
 {
 }
-public interface EventuallyIdentifiableMultiQuestionPoll : MultiQuestionPoll, EventuallyIdentifiablePoll
+public interface EventuallyIdentifiableMultiQuestionPoll : MultiQuestionPoll, EventuallyIdentifiablePoll, EventuallyIdentifiableSimpleTextNode
 {
 }
-public interface MultiQuestionPoll : Poll
+public interface MultiQuestionPoll : Poll, SimpleTextNode
 {
     List<NewBasicPollQuestion> PollQuestions { get;  }
 }

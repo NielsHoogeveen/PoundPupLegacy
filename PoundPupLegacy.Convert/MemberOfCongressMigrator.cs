@@ -123,7 +123,7 @@ internal class MemberOfCongressMigrator(
         IInsertingEntityCreatorFactory<File> fileCreatorFactory,
         IInsertingEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
         INodeCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory,
-        IInsertingEntityCreatorFactory<ProfessionalRole> professionalRoleCreatorFactory
+        IInsertingEntityCreatorFactory<EventuallyIdentifiableProfessionalRole> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
 {
@@ -400,7 +400,7 @@ internal class MemberOfCongressMigrator(
 
                 var name = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
 
-                var professionalRoles = new List<ProfessionalRole>();
+                var professionalRoles = new List<EventuallyIdentifiableProfessionalRole>();
 
                 int GetPoliticalPartyAffiliationId(string party)
                 {

@@ -2,10 +2,12 @@
 
 internal sealed class MultiQuestionPollCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiablePoll> pollInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableMultiQuestionPoll> multiQuestionPollInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<PollQuestion> pollQuestionCreatorFactory,
+    INodeCreatorFactory<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserterFactory
 ) : INodeCreatorFactory<EventuallyIdentifiableMultiQuestionPoll>
 {
@@ -13,6 +15,8 @@ internal sealed class MultiQuestionPollCreatorFactory(
         new MultiQuestionPollCreator(
             new (){
                 await nodeInserterFactory.CreateAsync(connection),
+                await searchableInserterFactory.CreateAsync(connection),
+                await simpleTextNodeInserterFactory.CreateAsync(connection),
                 await pollInserterFactory.CreateAsync(connection),
                 await multiQuestionPollInserterFactory.CreateAsync(connection)
 
@@ -26,9 +30,8 @@ internal sealed class MultiQuestionPollCreatorFactory(
 public class MultiQuestionPollCreator(
     List<IDatabaseInserter<EventuallyIdentifiableMultiQuestionPoll>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<PollQuestion> pollQuestionCreatorFactory,
+    NodeCreator<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
     IDatabaseInserter<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserter
-
     ) : NodeCreator<EventuallyIdentifiableMultiQuestionPoll>(inserters, nodeDetailsCreator)
 {
 

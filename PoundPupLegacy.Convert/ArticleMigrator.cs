@@ -2,7 +2,7 @@
 
 internal sealed class ArticleMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
+    INodeCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents (articles)";

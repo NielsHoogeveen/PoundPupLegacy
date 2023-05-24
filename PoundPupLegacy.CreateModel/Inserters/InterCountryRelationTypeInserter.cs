@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NewInterCountryRelationType;
+using Request = EventuallyIdentifiableInterCountryRelationType;
 
 internal sealed class InterCountryRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

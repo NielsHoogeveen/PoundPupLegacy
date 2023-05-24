@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NewTenantNodeForNewNode;
+using Request = EventuallyIdentifiableTenantNodeForNewNode;
 
 public sealed class TenantNodeInserterForNewNodeFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {

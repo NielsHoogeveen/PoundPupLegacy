@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NewSenatorSenateBillAction;
+using Request = EventuallyIdentifiableSenatorSenateBillAction;
 
 internal sealed class SenatorSenateBillActionInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {

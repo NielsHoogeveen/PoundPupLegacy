@@ -292,7 +292,7 @@ public class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseI
     public async Task InsertAsync(T item)
     {
         if (item.Id is not null)
-            throw new ArgumentException("The Id property should be null");
+            throw new ArgumentException($"The Id property of {item} should be null");
         foreach (var parameter in GetParameterValues(item)) {
             parameter.Set(_command);
         }

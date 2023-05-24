@@ -7,6 +7,7 @@ internal sealed class TenantNodeMenuItemCreatorFactory(
 {
     public async Task<InsertingEntityCreator<TenantNodeMenuItem>> CreateAsync(IDbConnection connection) => 
         new(new() {
+            await menuItemInserterFactory.CreateAsync(connection),
             await tenantNodeMenuItemInserterFactory.CreateAsync(connection)
         });
 }

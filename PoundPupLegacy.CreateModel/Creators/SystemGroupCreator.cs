@@ -7,7 +7,7 @@ internal sealed class SystemGroupCreatorFactory(
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableVocabulary> vocabularyCreatorFactory
+    INodeCreatorFactory<EventuallyIdentifiableVocabulary> vocabularyCreatorFactory
 ) : IEntityCreatorFactory<SystemGroup>
 {
     public async Task<EntityCreator<SystemGroup>> CreateAsync(IDbConnection connection) =>

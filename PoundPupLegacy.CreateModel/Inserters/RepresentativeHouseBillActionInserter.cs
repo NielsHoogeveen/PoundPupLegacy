@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NewRepresentativeHouseBillAction;
+using Request = EventuallyIdentifiableRepresentativeHouseBillAction;
 
 internal sealed class RepresentativeHouseBillActionInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {

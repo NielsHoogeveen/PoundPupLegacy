@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NewInterPersonalRelationType;
+using Request = EventuallyIdentifiableInterPersonalRelationType;
 
 internal sealed class InterPersonalRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

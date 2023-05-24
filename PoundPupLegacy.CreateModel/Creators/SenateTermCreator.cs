@@ -7,7 +7,7 @@ internal sealed class SenateTermCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCongressionalTerm> congressionalTermInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableSenateTerm> senateTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory
+    INodeCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory
 ) : INodeCreatorFactory<EventuallyIdentifiableSenateTerm>
 {
     public async Task<NodeCreator<EventuallyIdentifiableSenateTerm>> CreateAsync(IDbConnection connection) =>
@@ -27,7 +27,7 @@ internal sealed class SenateTermCreatorFactory(
 internal class SenateTermCreator(
     List<IDatabaseInserter<EventuallyIdentifiableSenateTerm>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
+    NodeCreator<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
 ) : NodeCreator<EventuallyIdentifiableSenateTerm>(inserters, nodeDetailsCreator) 
 {
     public override async Task ProcessAsync(EventuallyIdentifiableSenateTerm element)

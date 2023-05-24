@@ -7,6 +7,7 @@ internal static class DependencyInjection
     internal static void AddCreateModelCreators(this IServiceCollection services)
     {
         services.AddCreateModelInserters();
+        services.AddTransient<NodeDetailsCreatorFactory>();
         services.AddTransient<NameableDetailsCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableAbuseCase>, AbuseCaseCreatorFactory>();
         services.AddTransient<IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuse>, AbuseCaseTypeOfAbuseCreatorFactory>();
@@ -61,7 +62,7 @@ internal static class DependencyInjection
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision>, FormalIntermediateLevelSubdivisionCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableHagueStatus>, HagueStatusCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableHouseBill>, HouseBillCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableHouseTerm, HouseTermCreator>, HouseTermCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableHouseTerm>, HouseTermCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableInformalIntermediateLevelSubdivision>, InformalIntermediateLevelSubdivisionCreatorFactory>();
         services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableInterCountryRelation>, InterCountryRelationCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableInterCountryRelationType>, InterCountryRelationTypeCreatorFactory>();
@@ -84,9 +85,10 @@ internal static class DependencyInjection
         services.AddTransient<INodeCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation>, PersonOrganizationRelationCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationType>, PersonOrganizationRelationTypeCreatorFactory>();
         services.AddTransient<IInsertingEntityCreatorFactory<PollStatus>, PollStatusCreatorFactory>();
-        services.AddTransient<IInsertingEntityCreatorFactory<ProfessionalRole>, ProfessionalRoleCreatorFactory>();
+        services.AddTransient<IInsertingEntityCreatorFactory<EventuallyIdentifiableProfessionalRole>, ProfessionalRoleCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableProfession>, ProfessionCreatorFactory>();
         services.AddTransient<IInsertingEntityCreatorFactory<PublicationStatus>, PublicationStatusCreatorFactory>();
+        services.AddTransient<INodeCreatorFactory<EventuallyIdentifiablePollQuestion>, PollQuestionCreatorFactory>();
         services.AddTransient<INodeCreatorFactory<EventuallyIdentifiableRepresentativeHouseBillAction>, RepresentativeHouseBillActionCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableSecondLevelGlobalRegion>, SecondLevelGlobalRegionCreatorFactory>();
         services.AddTransient<INameableCreatorFactory<EventuallyIdentifiableSenateBill>, SenateBillCreatorFactory>();

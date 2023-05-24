@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record BasicNameableType : NameableTypeBase, IdentifiableNameableType
+public sealed record BasicNameableType : NameableTypeBase, EventuallyIdentifiableNameableType
 {
     public static BasicNameableType Create(int id, string name, string description, bool authorSpecific, string tagLabelName)
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class DocumentTypeInserterFactory : SingleIdInserterFactory<NewDocumentType>
+internal sealed class DocumentTypeInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableDocumentType>
 {
     protected override string TableName => "document_type";
 

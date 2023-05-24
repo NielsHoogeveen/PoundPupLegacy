@@ -258,7 +258,7 @@ internal sealed class PersonMigratorPPL(
                 GovtrackId = null,
                 Bioguide = null,
                 Suffix = null,
-                ProfessionalRoles = new List<ProfessionalRole>(),
+                ProfessionalRoles = new List<EventuallyIdentifiableProfessionalRole>(),
                 PersonOrganizationRelations = new List<NewPersonOrganizationRelation>(),
                 NodeTermIds = new List<int>(),
             };

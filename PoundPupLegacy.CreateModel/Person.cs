@@ -12,7 +12,7 @@ public sealed record NewPerson : NewNameableBase, EventuallyIdentifiablePerson
     public required string? Suffix { get; init; }
     public required int? GovtrackId { get; init; }
     public required string? Bioguide { get; init; }
-    public required List<ProfessionalRole> ProfessionalRoles { get; init; }
+    public required List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; init; }
     public required List<NewPersonOrganizationRelation> PersonOrganizationRelations { get; init; }
 }
 public sealed record ExistingPerson : ExistingNameableBase, ImmediatelyIdentifiablePerson
@@ -27,7 +27,7 @@ public sealed record ExistingPerson : ExistingNameableBase, ImmediatelyIdentifia
     public required string? Suffix { get; init; }
     public required int? GovtrackId { get; init; }
     public required string? Bioguide { get; init; }
-    public required List<ProfessionalRole> ProfessionalRoles { get; init; }
+    public required List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; init; }
     public required List<NewPersonOrganizationRelation> PersonOrganizationRelations { get; init; }
 }
 public interface ImmediatelyIdentifiablePerson : Person, ImmediatelyIdentifiableParty
@@ -48,6 +48,6 @@ public interface Person : Party
     string? Suffix { get; }
     int? GovtrackId { get; }
     string? Bioguide { get; }
-    List<ProfessionalRole> ProfessionalRoles { get; }
+    List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; }
     List<NewPersonOrganizationRelation> PersonOrganizationRelations { get; }
 }

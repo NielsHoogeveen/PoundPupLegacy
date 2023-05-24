@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface IdentifiableNameableType : NameableType, EventuallyIdentifiableNodeType
+public interface EventuallyIdentifiableNameableType : NameableType, EventuallyIdentifiableNodeType
 {
 
 }

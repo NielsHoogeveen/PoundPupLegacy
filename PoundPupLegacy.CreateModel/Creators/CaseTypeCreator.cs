@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class CaseTypeCreatorFactory(
-    IDatabaseInserterFactory<NodeType> nodeTypeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNodeType> nodeTypeInserterFactory,
     IDatabaseInserterFactory<CaseType> caseTypeInserterFactory,
-    IDatabaseInserterFactory<NameableType> nameableTypeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableNameableType> nameableTypeInserterFactory,
     IDatabaseInserterFactory<CaseTypeCasePartyType> caseTypeCasePartyTypeInserterFactory
 ) : IInsertingEntityCreatorFactory<CaseType>
 {
@@ -11,8 +11,9 @@ internal sealed class CaseTypeCreatorFactory(
         new CaseTypeCreator(
             new() {
                 await nodeTypeInserterFactory.CreateAsync(connection),
-                await caseTypeInserterFactory.CreateAsync(connection),
-                await nameableTypeInserterFactory.CreateAsync(connection)
+                await nameableTypeInserterFactory.CreateAsync(connection),
+                await caseTypeInserterFactory.CreateAsync(connection)
+                
             },
             await caseTypeCasePartyTypeInserterFactory.CreateAsync(connection)
         );

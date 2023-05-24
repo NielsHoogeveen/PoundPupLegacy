@@ -50,12 +50,15 @@ public interface ImmediatelyIdentifiableTenantNode : TenantNode, ImmediatelyIden
 }
 public interface EventuallyIdentifiableTenantNodeForNewNode : TenantNode, EventuallyIdentifiable
 {
+    int TenantId { get; }
+
     int? UrlId { get; }
 
     int? NodeId { get; }
 }
 public interface EventuallyIdentifiableTenantNodeForExistingNode : TenantNode, EventuallyIdentifiable
 {
+    int TenantId { get; }
     int UrlId { get; }
 
     int NodeId { get; }

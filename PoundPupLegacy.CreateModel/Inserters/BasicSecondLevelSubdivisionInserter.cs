@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NewBasicSecondLevelSubdivision;
+using Request = EventuallyIdentifiableBasicSecondLevelSubdivision;
 
 internal sealed class BasicSecondLevelSubdivisionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

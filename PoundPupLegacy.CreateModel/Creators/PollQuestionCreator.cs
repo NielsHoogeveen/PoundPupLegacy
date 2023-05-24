@@ -8,10 +8,10 @@ internal sealed class PollQuestionCreatorFactory(
     IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
     IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiablePollQuestion, PollQuestionCreator>
+) : INodeCreatorFactory<EventuallyIdentifiablePollQuestion>
 {
-    public async Task<PollQuestionCreator> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<NodeCreator<EventuallyIdentifiablePollQuestion>> CreateAsync(IDbConnection connection) =>
+        new PollQuestionCreator(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

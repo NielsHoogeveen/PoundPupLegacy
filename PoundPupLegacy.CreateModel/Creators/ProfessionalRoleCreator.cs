@@ -1,15 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class ProfessionalRoleCreatorFactory(
-    IDatabaseInserterFactory<ProfessionalRole> professionalRoleInserterFactory,
-    IDatabaseInserterFactory<MemberOfCongress> memberOfCongressInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableProfessionalRole> professionalRoleInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableMemberOfCongress> memberOfCongressInserterFactory,
     IDatabaseInserterFactory<Representative> representativeInserterFactory,
     IDatabaseInserterFactory<Senator> senatorInserterFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableSenateTerm> senateTermCreatorFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableHouseTerm> houseTermCreatorFactory
-) : IInsertingEntityCreatorFactory<ProfessionalRole>
+    INodeCreatorFactory<EventuallyIdentifiableSenateTerm> senateTermCreatorFactory,
+    INodeCreatorFactory<EventuallyIdentifiableHouseTerm> houseTermCreatorFactory
+) : IInsertingEntityCreatorFactory<EventuallyIdentifiableProfessionalRole>
 {
-    public async Task<InsertingEntityCreator<ProfessionalRole>> CreateAsync(IDbConnection connection) =>
+    public async Task<InsertingEntityCreator<EventuallyIdentifiableProfessionalRole>> CreateAsync(IDbConnection connection) =>
         new ProfessionalRoleCreator( 
             new ()
             {
@@ -24,16 +24,16 @@ internal sealed class ProfessionalRoleCreatorFactory(
 }
 
 public class ProfessionalRoleCreator(
-    List<IDatabaseInserter<ProfessionalRole>> inserters,
-    IDatabaseInserter<MemberOfCongress> memberOfCongressInserter,
+    List<IDatabaseInserter<EventuallyIdentifiableProfessionalRole>> inserters,
+    IDatabaseInserter<EventuallyIdentifiableMemberOfCongress> memberOfCongressInserter,
     IDatabaseInserter<Representative> representativeInserter,
     IDatabaseInserter<Senator> senatorInserter,
-    IEntityCreator<EventuallyIdentifiableSenateTerm> senateTermCreator,
-    IEntityCreator<EventuallyIdentifiableHouseTerm> houseTermCreator
+    NodeCreator<EventuallyIdentifiableSenateTerm> senateTermCreator,
+    NodeCreator<EventuallyIdentifiableHouseTerm> houseTermCreator
 
-    ) : InsertingEntityCreator<ProfessionalRole>(inserters)
+    ) : InsertingEntityCreator<EventuallyIdentifiableProfessionalRole>(inserters)
 {
-    public override async Task ProcessAsync(ProfessionalRole element)
+    public override async Task ProcessAsync(EventuallyIdentifiableProfessionalRole element)
     {
         await base.ProcessAsync(element);
         if (element is Representative representative) {
