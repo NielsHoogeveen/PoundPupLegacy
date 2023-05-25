@@ -122,6 +122,7 @@ internal sealed class DeportationCaseMigrator(
                 FileIdTileImage = null,
                 NodeTermIds = new List<int>(),
                 NewLocations = new List<EventuallyIdentifiableLocation>(),
+                CaseParties = new List<NewCaseNewCaseParties>(),
             };
             yield return country;
 

@@ -26,9 +26,9 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableBlogPost>, BlogPostInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableBottomLevelSubdivision>, BottomLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableBoundCountry>, BoundCountryInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<CaseCaseParties>, CaseCasePartiesInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<ExistingCaseNewCaseParties>, CaseCasePartiesInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableCase>, CaseInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<CaseParties>, CasePartiesInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<NewCaseParties>, CasePartiesInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<CasePartiesOrganization>, CasePartiesOrganizationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<CasePartiesPerson>, CasePartiesPersonInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableCasePartyType>, CasePartyTypeInserterFactory>();
@@ -86,7 +86,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableLocatable>, LocatableInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableLocation>, LocationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<LocationLocatable>, LocationLocatableInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableMemberOfCongress>, MemberOfCongressInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableMemberOfCongressForExistingPerson>, MemberOfCongressInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<MenuItem>, MenuItemInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableMultiQuestionPoll>, MultiQuestionPollInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<MultiQuestionPollPollQuestion>, MultiQuestionPollPollQuestionInserterFactory>();
@@ -114,12 +114,12 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<PollStatus>, PollStatusInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PollVote>, PollVoteInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Principal>, PrincipalInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableProfessionalRole>, ProfessionalRoleInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableProfessionalRoleForExistingPerson>, ProfessionalRoleInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableProfession>, ProfessionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Publisher>, PublisherInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PublicationStatus>, PublicationStatusInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PublishingUserGroup>, PublishingUserGroupInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<Representative>, RepresentativeInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<NewRepresentativeAsNewPerson>, RepresentativeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableRepresentativeHouseBillAction>, RepresentativeHouseBillActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableReview>, ReviewInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSearchable>, SearchableInserterFactory>();
@@ -127,7 +127,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSecondLevelSubdivision>, SecondLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSenateBill>, SenateBillInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSenateTerm>, SenateTermInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<Senator>, SenatorInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<NewSenatorAsNewPerson>, SenatorInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSenatorSenateBillAction>, SenatorSenateBillActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode>, SimpleTextNodeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSingleQuestionPoll>, SingleQuestionPollInserterFactory>();

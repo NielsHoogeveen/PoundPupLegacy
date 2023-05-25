@@ -101,6 +101,37 @@ public class NameableDetailsCreator(
         await vocabularyIdReader.DisposeAsync();
     }
 }
+public class CaseCreator<T>(
+    List<IDatabaseInserter<T>> inserters,
+    NodeDetailsCreator nodeDetailsCreator,
+    NameableDetailsCreator nameableDetailsCreator,
+    LocatableDetailsCreator locatableDetailsCreator,
+    IEntityCreator<ExistingCaseNewCaseParties> casePartiesCreator
+) : LocatableCreator<T>(
+    inserters,
+    nodeDetailsCreator,
+    nameableDetailsCreator,
+    locatableDetailsCreator
+), IAsyncDisposable
+    where T : class, EventuallyIdentifiableCase
+{
+    public override async Task ProcessAsync(T element, int id)
+    {
+        await base.ProcessAsync(element);
+        await casePartiesCreator.CreateAsync(element.CaseParties.Select(x => new ExistingCaseNewCaseParties 
+        { 
+            CaseId  = id,
+            CaseParties = x.CaseParties,
+            CasePartyTypeId = x.CasePartyTypeId
+        }).ToAsyncEnumerable());
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await casePartiesCreator.DisposeAsync();
+    }
+}
 public class LocatableCreator<T>(
     List<IDatabaseInserter<T>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
@@ -113,9 +144,9 @@ public class LocatableCreator<T>(
 ), IAsyncDisposable
     where T : class, EventuallyIdentifiableLocatable
 {
-    public override async Task ProcessAsync(T element)
+    public override async Task ProcessAsync(T element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         await locatableDetailsCreator.Process(element);
     }
 
@@ -135,9 +166,9 @@ public class NameableCreator<T>(
 ), IAsyncDisposable
     where T : class, EventuallyIdentifiableNameable
 {
-    public override async Task ProcessAsync(T element)
+    public override async Task ProcessAsync(T element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         await nameableDetailsCreator.Process(element);
     }
 
@@ -192,12 +223,16 @@ public class NodeCreator<T>(
 ) : InsertingEntityCreator<T>(inserters)
     where T: class, EventuallyIdentifiableNode
 {
+    public virtual async Task ProcessAsync(T element, int id)
+    {
+        await Task.CompletedTask;
+    }
 
-    
-    public override async Task ProcessAsync(T element)
+    public sealed override async Task ProcessAsync(T element)
     {
         await base.ProcessAsync(element);
         await nodeDetailsCreator.ProcessAsync(element);
+        await ProcessAsync(element, element.Id!.Value);
     }
 
     public override async ValueTask DisposeAsync()
@@ -249,41 +284,3 @@ public class EntityCreator<T>() : IEntityCreator<T>, IAsyncDisposable
     }
 }
 
-//public interface IEntityCreatorDeprecated<T>
-//{
-//    Task CreateAsync(IAsyncEnumerable<T> elements, IDbConnection connection);
-//    Task CreateAsync(T element, IDbConnection connection);
-//}
-
-//internal abstract class EntityCreatorDeprecated<T> : IEntityCreatorDeprecated<T>
-//{
-//    public abstract Task CreateAsync(IAsyncEnumerable<T> elements, IDbConnection connection);
-//    public async Task CreateAsync(T element, IDbConnection connection)
-//    {
-//        await CreateAsync(new List<T> { element }.ToAsyncEnumerable(), connection);
-//    }
-
-//    internal static async Task WriteTerms(EventuallyIdentifiableNameable nameable, IDatabaseInserter<Term> termWriter, IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, Term> termReader, IDatabaseInserter<TermHierarchy> termHierarchyWriter, IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader)
-//    {
-//        foreach (var vocabularyName in nameable.VocabularyNames) {
-//            var vocubularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
-//                OwnerId = vocabularyName.OwnerId,
-//                Name = vocabularyName.Name
-//            });
-//            var term = new Term {
-//                Name = vocabularyName.TermName,
-//                Id = null,
-//                VocabularyId = vocubularyId,
-//                NameableId = (int)nameable.Id!
-//            };
-//            await termWriter.InsertAsync(term);
-//            foreach (var parent in vocabularyName.ParentNames) {
-//                var parentTerm = await termReader.ReadAsync(new TermReaderByNameRequest {
-//                    Name = parent,
-//                    VocabularyId = vocubularyId
-//                });
-//                await termHierarchyWriter.InsertAsync(new TermHierarchy { TermIdPartent = parentTerm.Id!.Value, TermIdChild = (int)term.Id! });
-//            }
-//        }
-//    }
-//}

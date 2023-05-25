@@ -66,6 +66,7 @@ internal sealed class WrongfulRemovalCaseEditService(
             },
             NodeTermIds = new List<int>(),
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CaseParties = new List<NewCaseNewCaseParties>(),
         };
     }
 
@@ -87,7 +88,10 @@ internal sealed class WrongfulRemovalCaseEditService(
             VocabularyNames = new List<VocabularyName>(),
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>()
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CasePartiesToAdd = new List<ExistingCaseNewCaseParties>(),
+            CasePartiesToRemove = new List<int>(),
+            CasePartiesToUpdate = new List<ExistingCaseExistingCaseParties>(),
         };
     }
 }

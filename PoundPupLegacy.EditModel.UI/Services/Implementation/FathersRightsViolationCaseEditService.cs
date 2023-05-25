@@ -66,6 +66,7 @@ internal sealed class FathersRightsViolationCaseEditService(
             },
             NodeTermIds = new List<int>(),
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CaseParties = new List<NewCaseNewCaseParties>(),
         };
     }
 
@@ -88,6 +89,9 @@ internal sealed class FathersRightsViolationCaseEditService(
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CasePartiesToAdd = new List<ExistingCaseNewCaseParties>(),
+            CasePartiesToRemove = new List<int>(),
+            CasePartiesToUpdate = new List<ExistingCaseExistingCaseParties>(),
         };
     }
 }

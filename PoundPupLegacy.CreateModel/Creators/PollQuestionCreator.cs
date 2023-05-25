@@ -33,15 +33,15 @@ internal sealed class PollQuestionCreator(
         nodeDetailsCreator
 )
 {
-    public override async Task ProcessAsync(EventuallyIdentifiablePollQuestion element)
+    public override async Task ProcessAsync(EventuallyIdentifiablePollQuestion element, int id)
     {
         await base.ProcessAsync(element);
         foreach (var pollOption in element.PollOptions) {
-            pollOption.PollQuestionId = element.Id;
+            pollOption.PollQuestionId = id;
             await pollOptionInserter.InsertAsync(pollOption);
         }
         foreach (var pollVote in element.PollVotes) {
-            pollVote.PollId = element.Id;
+            pollVote.PollId = id;
             await pollVoteInserter.InsertAsync(pollVote);
         }
     }

@@ -10,11 +10,12 @@ internal sealed class CoercedAdoptionCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCoercedAdoptionCase> coercedAdoptionCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
-    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
+    IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableCoercedAdoptionCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableCoercedAdoptionCase>> CreateAsync(IDbConnection connection) =>
-        new LocatableCreator<EventuallyIdentifiableCoercedAdoptionCase>(
+        new CaseCreator<EventuallyIdentifiableCoercedAdoptionCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -26,6 +27,7 @@ internal sealed class CoercedAdoptionCaseCreatorFactory(
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
             await nameableDetailsCreatorFactory.CreateAsync(connection),
-            await locatableDetailsCreatorFactory.CreateAsync(connection)
+            await locatableDetailsCreatorFactory.CreateAsync(connection),
+            await caseCaseTypeCreatorFactory.CreateAsync(connection)
         );
 }

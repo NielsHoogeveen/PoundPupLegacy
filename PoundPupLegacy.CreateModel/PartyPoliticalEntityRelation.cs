@@ -15,6 +15,27 @@ public sealed record NewPartyPoliticalEntityRelationForNewParty : NewNodeBase, E
     public required int PartyPoliticalEntityRelationTypeId { get; init; }
     public required DateTimeRange DateRange { get; init; }
     public required int? DocumentIdProof { get; init; }
+
+    public EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty ResolveParty(int partyId)
+    {
+        return new NewPartyPoliticalEntityRelationForExistingParty {
+            PartyId = partyId,
+            AuthoringStatusId = AuthoringStatusId,
+            ChangedDateTime = ChangedDateTime,
+            CreatedDateTime = CreatedDateTime,
+            DateRange = DateRange,
+            DocumentIdProof = DocumentIdProof,
+            NodeTermIds = NodeTermIds,
+            NodeTypeId = NodeTypeId,
+            OwnerId = OwnerId,
+            PoliticalEntityId = PoliticalEntityId,
+            PublisherId = PublisherId,
+            TenantNodes = TenantNodes,
+            Title = Title,
+            Id = Id,
+            PartyPoliticalEntityRelationTypeId = PartyPoliticalEntityRelationTypeId
+        };
+    }
 }
 public sealed record ExistingPartyPoliticalEntityRelation : ExistingNodeBase, ImmediatelyIdentifiablePartyPoliticalEntityRelation
 {
@@ -32,6 +53,7 @@ public interface EventuallyIdentifiablePartyPoliticalEntityRelationForExistingPa
 }
 public interface EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty : PartyPoliticalEntityRelationForNewParty, EventuallyIdentifiableNode
 {
+    public EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty ResolveParty(int partyId);
 }
 
 public interface PartyPoliticalEntityRelationForExitingParty : PartyPoliticalEntityRelation

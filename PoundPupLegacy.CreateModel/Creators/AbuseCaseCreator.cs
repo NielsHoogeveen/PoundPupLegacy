@@ -12,6 +12,7 @@ public class AbuseCaseCreatorFactory(
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
+    IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableAbuseCase>
@@ -30,6 +31,7 @@ public class AbuseCaseCreatorFactory(
             await nodeDetailsCreatorFactory.CreateAsync(connection),
             await nameableDetailsCreatorFactory.CreateAsync(connection),
             await locatableDetailsCreatorFactory.CreateAsync(connection),
+            await caseCaseTypeCreatorFactory.CreateAsync(connection),
             await abuseCaseTypeOfAbuseCreatorFactory.CreateAsync(connection),
             await abuseCaseTypeOfAbuserCreatorFactory.CreateAsync(connection)
         );
@@ -40,23 +42,25 @@ public class AbuseCaseCreator(
     NodeDetailsCreator nodeDetailsCreator,
     NameableDetailsCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
+    IEntityCreator<ExistingCaseNewCaseParties> caseCaseTypeCreator,
     IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
     IEntityCreator<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreator
-) : LocatableCreator<EventuallyIdentifiableAbuseCase>
+) : CaseCreator<EventuallyIdentifiableAbuseCase>
 (
     inserters,
     nodeDetailsCreator,
     nameableDetailsCreator,
-    locatableDetailsCreator
+    locatableDetailsCreator,
+    caseCaseTypeCreator
 )
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableAbuseCase element)
+    public override async Task ProcessAsync(EventuallyIdentifiableAbuseCase element, int id)
     {
         await base.ProcessAsync(element);
         foreach (var typeOfAbuseId in element.TypeOfAbuseIds) {
             await abuseCaseTypeOfAbuseCreator.CreateAsync(
                 new AbuseCaseTypeOfAbuse {
-                    AbuseCaseId = element.Id!.Value,
+                    AbuseCaseId = id,
                     TypeOfAbuseId = typeOfAbuseId
                 }
             );
@@ -64,7 +68,7 @@ public class AbuseCaseCreator(
         foreach (var typeOfAbuserId in element.TypeOfAbuserIds) {
             await abuseCaseTypeOfAbuserCreator.CreateAsync(
                 new AbuseCaseTypeOfAbuser {
-                    AbuseCaseId = element.Id!.Value,
+                    AbuseCaseId = id,
                     TypeOfAbuserId = typeOfAbuserId
                 }
             );

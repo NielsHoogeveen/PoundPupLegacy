@@ -12,7 +12,7 @@ public interface EventuallyIdentifiableOrganization : Organization, EventuallyId
 {
     List<int> OrganizationTypeIds { get; }
     List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization> PersonOrganizationRelations { get; }
-    List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo> InterOrganizationalRelationsToAddFrom { get; }
+    List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom> InterOrganizationalRelationsToAddFrom { get; }
     List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo> InterOrganizationalRelationsToAddTo { get; }
 }
 public interface Organization : Party
@@ -32,7 +32,7 @@ public abstract record NewOrganizationBase: NewPartyBase, EventuallyIdentifiable
     public required FuzzyDate? Terminated { get; init; }
     public required List<int> OrganizationTypeIds { get; init; }
     public required List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization> PersonOrganizationRelations { get; init; }
-    public required List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo> InterOrganizationalRelationsToAddFrom { get; init; }
+    public required List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom> InterOrganizationalRelationsToAddFrom { get; init; }
     public required List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo> InterOrganizationalRelationsToAddTo { get; init; }
 
 }

@@ -35,13 +35,13 @@ public class MultiQuestionPollCreator(
     ) : NodeCreator<EventuallyIdentifiableMultiQuestionPoll>(inserters, nodeDetailsCreator)
 {
 
-    public override async Task ProcessAsync(EventuallyIdentifiableMultiQuestionPoll element)
+    public override async Task ProcessAsync(EventuallyIdentifiableMultiQuestionPoll element, int id)
     {
         await base.ProcessAsync(element);
         foreach (var (question, index) in element.PollQuestions.Select((q, i) => (q, i))) {
             await pollQuestionCreatorFactory.CreateAsync(question);
             var pollQuestions = new MultiQuestionPollPollQuestion {
-                MultiQuestionPollId = element.Id!.Value,
+                MultiQuestionPollId = id,
                 PollQuestionId = question.Id!.Value,
                 Delta = index
             };

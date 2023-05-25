@@ -123,7 +123,7 @@ internal class MemberOfCongressMigrator(
         IEntityCreatorFactory<File> fileCreatorFactory,
         IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
         IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> personOrganizationRelationCreatorFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableProfessionalRole> professionalRoleCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableProfessionalRoleForExistingPerson> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
 {
@@ -400,7 +400,7 @@ internal class MemberOfCongressMigrator(
 
                 var name = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
 
-                var professionalRoles = new List<EventuallyIdentifiableProfessionalRole>();
+                
 
                 int GetPoliticalPartyAffiliationId(string party)
                 {
@@ -542,21 +542,23 @@ internal class MemberOfCongressMigrator(
                     }).ToList();
 
                 }
+                var professionalRolesExistingPerson = new List<EventuallyIdentifiableProfessionalRoleForExistingPerson>();
+                var professionalRolesNewPerson = new List<EventuallyIdentifiableProfessionalRoleForNewPerson>();
 
                 if (memberOfCongress.node_id.HasValue) {
                     if (isSenator) {
-                        professionalRoles.Add(new Senator {
+                        professionalRolesExistingPerson.Add(new NewSenatorAsExistingPerson {
                             Id = null,
-                            PersonId = memberOfCongress.node_id,
+                            PersonId = memberOfCongress.node_id.Value,
                             DateTimeRange = null,
                             ProfessionId = senatorRoleId,
                             SenateTerms = GetSenateTerms()
                         });
                     }
                     if (isRepresentative) {
-                        professionalRoles.Add(new Representative {
+                        professionalRolesExistingPerson.Add(new NewRepresentativeAsExistingPerson {
                             Id = null,
-                            PersonId = memberOfCongress.node_id,
+                            PersonId = memberOfCongress.node_id.Value,
                             DateTimeRange = null,
                             ProfessionId = repRoleId,
                             HouseTerms = GetHouseTerms(),
@@ -573,23 +575,21 @@ internal class MemberOfCongressMigrator(
                     updateCommand.Parameters["id"].Value = memberOfCongress.node_id;
                     await updateCommand.ExecuteNonQueryAsync();
                     await using var professionalRoleCreator = await professionalRoleCreatorFactory.CreateAsync(_postgresConnection);
-                    await professionalRoleCreator.CreateAsync(professionalRoles.ToAsyncEnumerable());
+                    await professionalRoleCreator.CreateAsync(professionalRolesExistingPerson.ToAsyncEnumerable());
                 }
                 else {
 
                     if (isSenator) {
-                        professionalRoles.Add(new Senator {
+                        professionalRolesNewPerson.Add(new NewSenatorAsNewPerson {
                             Id = null,
-                            PersonId = null,
                             DateTimeRange = null,
                             ProfessionId = senatorRoleId,
                             SenateTerms = GetSenateTerms(),
                         });
                     }
                     if (isRepresentative) {
-                        professionalRoles.Add(new Representative {
+                        professionalRolesNewPerson.Add(new NewRepresentativeAsNewPerson {
                             Id = null,
-                            PersonId = null,
                             DateTimeRange = null,
                             ProfessionId = repRoleId,
                             HouseTerms = GetHouseTerms(),
@@ -644,14 +644,14 @@ internal class MemberOfCongressMigrator(
                         FullName = memberOfCongress.name.official_full,
                         GovtrackId = memberOfCongress.id.govtrack,
                         Suffix = memberOfCongress.name.suffix,
-                        ProfessionalRoles = professionalRoles,
+                        ProfessionalRoles = professionalRolesNewPerson,
                         Bioguide = memberOfCongress.id.bioguide,
                         PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson>(),
                         NodeTermIds = new List<int>(),
                         NewLocations = new List<EventuallyIdentifiableLocation>(),
                         PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-                        InterPersonalRelationsToAddFrom = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo>(),
-                        InterPersonalRelationsToAddTo = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom>(),
+                        InterPersonalRelationsToAddFrom = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom>(),
+                        InterPersonalRelationsToAddTo = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo>(),
                     };
                 }
             }

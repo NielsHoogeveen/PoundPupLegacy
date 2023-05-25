@@ -11,7 +11,6 @@ public sealed record NewInterPersonalRelationForExistingParticipants : NewNodeBa
 }
 public sealed record NewInterPersonalRelationForNewPersonFrom : NewNodeBase, EventuallyIdentifiableInterPersonalRelationForNewPersonFrom
 {
-    public required int? PersonIdFrom { get; set; }
     public required int PersonIdTo { get; init; }
     public required int InterPersonalRelationTypeId { get; init; }
     public required DateTimeRange? DateRange { get; init; }
@@ -21,7 +20,6 @@ public sealed record NewInterPersonalRelationForNewPersonFrom : NewNodeBase, Eve
 public sealed record NewInterPersonalRelationForNewPersonTo : NewNodeBase, EventuallyIdentifiableInterPersonalRelationForNewPersonTo
 {
     public required int PersonIdFrom { get; init; }
-    public required int? PersonIdTo { get; set; }
     public required int InterPersonalRelationTypeId { get; init; }
     public required DateTimeRange? DateRange { get; init; }
     public required int? DocumentIdProof { get; init; }
@@ -48,13 +46,55 @@ public interface EventuallyIdentifiableInterPersonalRelationForExistingParticipa
 }
 public interface EventuallyIdentifiableInterPersonalRelationForNewPersonFrom : EventuallyIdentifiableInterPersonalRelation
 {
-    int? PersonIdFrom { get; set; }
     int PersonIdTo { get; }
+    public EventuallyIdentifiableInterPersonalRelationForExistingParticipants ResolvePersonFrom(int personIdFrom)
+    {
+        return new NewInterPersonalRelationForExistingParticipants {
+            PersonIdFrom = personIdFrom,
+            PersonIdTo = PersonIdTo,
+            AuthoringStatusId = AuthoringStatusId,
+            ChangedDateTime = ChangedDateTime,
+            CreatedDateTime = CreatedDateTime,
+            Description = Description,
+            DateRange = DateRange,
+            DocumentIdProof = DocumentIdProof,
+            Id = Id,
+            InterPersonalRelationTypeId = InterPersonalRelationTypeId,
+            NodeTermIds = NodeTermIds,
+            NodeTypeId = NodeTypeId,
+            OwnerId = OwnerId,
+            PublisherId = PublisherId,
+            TenantNodes = TenantNodes,
+            Title = Title,
+        };
+    }
+
 }
 public interface EventuallyIdentifiableInterPersonalRelationForNewPersonTo : EventuallyIdentifiableInterPersonalRelation
 {
     int PersonIdFrom { get; }
-    int? PersonIdTo { get; set; }
+
+    public EventuallyIdentifiableInterPersonalRelationForExistingParticipants ResolvePersonTo(int personIdTo)
+    {
+        return new NewInterPersonalRelationForExistingParticipants {
+            PersonIdFrom = PersonIdFrom,
+            PersonIdTo = personIdTo,
+            AuthoringStatusId = AuthoringStatusId,
+            ChangedDateTime = ChangedDateTime,
+            CreatedDateTime = CreatedDateTime,
+            Description = Description,
+            DateRange = DateRange,
+            DocumentIdProof = DocumentIdProof,
+            Id = Id,
+            InterPersonalRelationTypeId = InterPersonalRelationTypeId,
+            NodeTermIds = NodeTermIds,
+            NodeTypeId = NodeTypeId,
+            OwnerId = OwnerId,
+            PublisherId = PublisherId,
+            TenantNodes = TenantNodes,
+            Title = Title,
+        };
+    } 
 }
 public interface EventuallyIdentifiableInterPersonalRelation : InterPersonalRelation, EventuallyIdentifiableNode
 {

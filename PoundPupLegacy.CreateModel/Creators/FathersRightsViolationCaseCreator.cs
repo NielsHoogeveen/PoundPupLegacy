@@ -10,11 +10,12 @@ internal sealed class FathersRightsViolationCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
-    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
+    IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableFathersRightsViolationCase>> CreateAsync(IDbConnection connection) =>
-        new LocatableCreator<EventuallyIdentifiableFathersRightsViolationCase>(
+        new CaseCreator<EventuallyIdentifiableFathersRightsViolationCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -26,6 +27,7 @@ internal sealed class FathersRightsViolationCaseCreatorFactory(
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
             await nameableDetailsCreatorFactory.CreateAsync(connection),
-            await locatableDetailsCreatorFactory.CreateAsync(connection)
+            await locatableDetailsCreatorFactory.CreateAsync(connection),
+            await caseCaseTypeCreatorFactory.CreateAsync(connection)
         );
 }

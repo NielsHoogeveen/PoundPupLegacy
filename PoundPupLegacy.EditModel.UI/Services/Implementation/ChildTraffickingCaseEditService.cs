@@ -68,6 +68,7 @@ internal sealed class ChildTraffickingCaseEditService(
             CountryIdFrom = childTraffickingCase.CountryFrom.Id,
             NodeTermIds = new List<int>(),
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CaseParties = new List<NewCaseNewCaseParties>(),
         };
     }
 
@@ -92,6 +93,9 @@ internal sealed class ChildTraffickingCaseEditService(
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CasePartiesToAdd = new List<ExistingCaseNewCaseParties>(),
+            CasePartiesToRemove = new List<int>(),
+            CasePartiesToUpdate = new List<ExistingCaseExistingCaseParties>(),
         };
     }
 }

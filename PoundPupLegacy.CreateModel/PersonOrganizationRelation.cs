@@ -9,6 +9,29 @@ public sealed record NewPersonOrganizationRelationForNewPerson : NewNodeBase, Ev
     public required int? DocumentIdProof { get; init; }
     public required int? GeographicalEntityId { get; init; }
     public required string? Description { get; init; }
+
+    public EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants ResolvePerson(int personId)
+    {
+        return new NewPersonOrganizationRelationForExistingParticipants {
+            PersonId = personId,
+            OrganizationId = OrganizationId,
+            AuthoringStatusId = AuthoringStatusId,
+            ChangedDateTime = ChangedDateTime,
+            CreatedDateTime = CreatedDateTime,
+            Description = Description,
+            DocumentIdProof = DocumentIdProof,
+            Id = Id,
+            DateRange = DateRange,
+            GeographicalEntityId = GeographicalEntityId,
+            NodeTermIds = NodeTermIds,
+            NodeTypeId = NodeTypeId,
+            OwnerId = OwnerId,
+            PublisherId = PublisherId,
+            TenantNodes = TenantNodes,
+            Title = Title,
+            PersonOrganizationRelationTypeId = PersonOrganizationRelationTypeId
+        };
+    }
 }
 public sealed record NewPersonOrganizationRelationForNewOrganization : NewNodeBase, EventuallyIdentifiablePersonOrganizationRelationForNewOrganization
 {
@@ -19,6 +42,28 @@ public sealed record NewPersonOrganizationRelationForNewOrganization : NewNodeBa
     public required int? DocumentIdProof { get; init; }
     public required int? GeographicalEntityId { get; init; }
     public required string? Description { get; init; }
+    public EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants ResolveOrganization(int organizationId)
+    {
+        return new NewPersonOrganizationRelationForExistingParticipants {
+            PersonId = PersonId,
+            OrganizationId = organizationId,
+            AuthoringStatusId = AuthoringStatusId,
+            ChangedDateTime = ChangedDateTime,
+            CreatedDateTime = CreatedDateTime,
+            Description = Description,
+            DocumentIdProof = DocumentIdProof,
+            Id = Id,
+            DateRange = DateRange,
+            GeographicalEntityId = GeographicalEntityId,
+            NodeTermIds = NodeTermIds,
+            NodeTypeId = NodeTypeId,
+            OwnerId = OwnerId,
+            PublisherId = PublisherId,
+            TenantNodes = TenantNodes,
+            Title = Title,
+            PersonOrganizationRelationTypeId = PersonOrganizationRelationTypeId
+        };
+    }
 }
 
 public sealed record NewPersonOrganizationRelationForExistingParticipants : NewNodeBase, EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants
@@ -47,9 +92,11 @@ public interface ImmediatelyIdentifiablePersonOrganizationRelation : PersonOrgan
 }
 public interface EventuallyIdentifiablePersonOrganizationRelationForNewPerson : PersonOrganizationRelationForNewPerson, EventuallyIdentifiableNode
 {
+    public EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants ResolvePerson(int personId);
 }
 public interface EventuallyIdentifiablePersonOrganizationRelationForNewOrganization : PersonOrganizationRelationForNewOrganization, EventuallyIdentifiableNode
 {
+    public EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants ResolveOrganization(int organizationId);
 }
 public interface EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants : PersonOrganizationRelationForExistingParticipants, EventuallyIdentifiableNode
 {

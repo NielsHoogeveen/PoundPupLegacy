@@ -27,7 +27,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableBindingCountry>, BindingCountryCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableBlogPost>, BlogPostCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableBoundCountry>, BoundCountryCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<CaseCaseParties>, CaseCasePartiesCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<ExistingCaseNewCaseParties>, CaseCasePartiesCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableCasePartyType>, CasePartyTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<CaseType>, CaseTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableCasePartyType>, CasePartyTypeCreatorFactory>();
@@ -85,7 +85,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants>, PersonOrganizationRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationType>, PersonOrganizationRelationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PollStatus>, PollStatusCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableProfessionalRole>, ProfessionalRoleCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableProfessionalRoleForExistingPerson>, ProfessionalRoleCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableProfession>, ProfessionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PublicationStatus>, PublicationStatusCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePollQuestion>, PollQuestionCreatorFactory>();

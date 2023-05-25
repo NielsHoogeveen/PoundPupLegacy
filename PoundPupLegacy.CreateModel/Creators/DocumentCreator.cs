@@ -29,14 +29,14 @@ public class DocumentCreator(
     IEntityCreator<DocumentableDocument> documentableDocumentCreator
     ) : NodeCreator<EventuallyIdentifiableDocument>(inserters, nodeDetailsCreator)
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableDocument element)
+    public override async Task ProcessAsync(EventuallyIdentifiableDocument element, int id)
     {
         await base.ProcessAsync(element);
         foreach (var documentable in element.Documentables) {
             await documentableDocumentCreator.CreateAsync(new DocumentableDocument 
             { 
                 DocumentableId = documentable, 
-                DocumentId = element.Id!.Value 
+                DocumentId = id
             });
         }
     }

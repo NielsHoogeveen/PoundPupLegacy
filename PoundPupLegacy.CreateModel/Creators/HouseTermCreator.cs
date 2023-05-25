@@ -32,11 +32,11 @@ public class HouseTermCreator(
     IEntityCreator<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
 ) : NodeCreator<EventuallyIdentifiableHouseTerm>(inserters, nodeDetailsCreator)
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableHouseTerm element)
+    public override async Task ProcessAsync(EventuallyIdentifiableHouseTerm element, int id)
     {
         await base.ProcessAsync(element);
         foreach (var partyAffiliation in element.PartyAffiliations) {
-            partyAffiliation.CongressionalTermId = element.Id;
+            partyAffiliation.CongressionalTermId = id;
         }
         await congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(element.PartyAffiliations.ToAsyncEnumerable());
 

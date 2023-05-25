@@ -22,7 +22,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
         await interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader, tenantNodeReaderByUrlId));
     }
 
-    private async IAsyncEnumerable<NewInterOrganizationalRelation> ReadInterOrganizationalRelations(
+    private async IAsyncEnumerable<NewInterOrganizationalRelationForExistingParticipants> ReadInterOrganizationalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlId
     )
@@ -124,7 +124,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                 });
             }
 
-            yield return new NewInterOrganizationalRelation {
+            yield return new NewInterOrganizationalRelationForExistingParticipants {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

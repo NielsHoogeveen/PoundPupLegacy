@@ -12,10 +12,10 @@ public sealed record NewPerson : NewPartyBase, EventuallyIdentifiablePerson
     public required string? Suffix { get; init; }
     public required int? GovtrackId { get; init; }
     public required string? Bioguide { get; init; }
-    public required List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; init; }
+    public required List<EventuallyIdentifiableProfessionalRoleForNewPerson> ProfessionalRoles { get; init; }
     public required List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> PersonOrganizationRelations { get; init; }
-    public required List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo> InterPersonalRelationsToAddFrom { get; init; }
-    public required List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom> InterPersonalRelationsToAddTo { get; init; }
+    public required List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo> InterPersonalRelationsToAddTo { get; init; }
+    public required List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom> InterPersonalRelationsToAddFrom { get; init; }
 }
 public sealed record ExistingPerson : ExistingPartyBase, ImmediatelyIdentifiablePerson
 {
@@ -29,7 +29,7 @@ public sealed record ExistingPerson : ExistingPartyBase, ImmediatelyIdentifiable
     public required string? Suffix { get; init; }
     public required int? GovtrackId { get; init; }
     public required string? Bioguide { get; init; }
-    public required List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; init; }
+    public required List<EventuallyIdentifiableProfessionalRoleForExistingPerson> ProfessionalRolesToAdd { get; init; }
     public required List<ImmediatelyIdentifiablePersonOrganizationRelation> PersonOrganizationRelationsToUpdate { get; init; }
     public required List<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> PersonOrganizationRelationsToAdd { get; init; }
     public required List<ImmediatelyIdentifiableInterPersonalRelation> InterPersonalRelationsToUpdate { get; init; }
@@ -38,6 +38,7 @@ public sealed record ExistingPerson : ExistingPartyBase, ImmediatelyIdentifiable
 }
 public interface ImmediatelyIdentifiablePerson : Person, ImmediatelyIdentifiableParty
 {
+    List<EventuallyIdentifiableProfessionalRoleForExistingPerson> ProfessionalRolesToAdd { get; }
     List<ImmediatelyIdentifiablePersonOrganizationRelation> PersonOrganizationRelationsToUpdate { get; }
     List<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> PersonOrganizationRelationsToAdd { get; }
     List<ImmediatelyIdentifiableInterPersonalRelation> InterPersonalRelationsToUpdate { get; }
@@ -46,10 +47,11 @@ public interface ImmediatelyIdentifiablePerson : Person, ImmediatelyIdentifiable
 }
 public interface EventuallyIdentifiablePerson : Person, EventuallyIdentifiableParty
 {
+    List<EventuallyIdentifiableProfessionalRoleForNewPerson> ProfessionalRoles { get; }
     List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> PersonOrganizationRelations { get; }
-    List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo> InterPersonalRelationsToAddFrom { get; }
-    List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom> InterPersonalRelationsToAddTo { get; }
-
+    List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom> InterPersonalRelationsToAddFrom { get; }
+    List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo> InterPersonalRelationsToAddTo { get; }
+    
 }
 public interface Person : Party
 {
@@ -63,5 +65,5 @@ public interface Person : Party
     string? Suffix { get; }
     int? GovtrackId { get; }
     string? Bioguide { get; }
-    List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; }
+    
 }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableProfessionalRole;
+using Request = EventuallyIdentifiableProfessionalRoleForExistingPerson;
 
 internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {

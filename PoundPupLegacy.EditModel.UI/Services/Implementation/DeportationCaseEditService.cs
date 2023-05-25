@@ -68,6 +68,7 @@ internal sealed class DeportationCaseEditService(
             CountryIdTo = viewModel.CountryTo?.Id,
             SubdivisionIdFrom = viewModel.SubdivisionFrom?.Id,
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CaseParties = new List<NewCaseNewCaseParties>(),
         };
     }
 
@@ -92,6 +93,9 @@ internal sealed class DeportationCaseEditService(
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CasePartiesToAdd = new List<ExistingCaseNewCaseParties>(),
+            CasePartiesToRemove = new List<int>(),
+            CasePartiesToUpdate = new List<ExistingCaseExistingCaseParties>(),
         };
     }
 }

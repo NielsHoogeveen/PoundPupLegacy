@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class CaseCasePartiesCreatorFactory(
-    IDatabaseInserterFactory<CaseParties> casePartiesInserterFactory,
-    IDatabaseInserterFactory<CaseCaseParties> caseCasePartiesInserterFactory,
+    IDatabaseInserterFactory<NewCaseParties> casePartiesInserterFactory,
+    IDatabaseInserterFactory<ExistingCaseNewCaseParties> caseCasePartiesInserterFactory,
     IDatabaseInserterFactory<CasePartiesOrganization> casePartiesOrganizationInserterFactory,
     IDatabaseInserterFactory<CasePartiesPerson> casePartiesPersonInserterFactory
-) : IEntityCreatorFactory<CaseCaseParties>
+) : IEntityCreatorFactory<ExistingCaseNewCaseParties>
 {
-    public async Task<IEntityCreator<CaseCaseParties>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<ExistingCaseNewCaseParties>> CreateAsync(IDbConnection connection) =>
         new CaseCasePartiesCreator(
             await casePartiesInserterFactory.CreateAsync(connection),
             await caseCasePartiesInserterFactory.CreateAsync(connection),
@@ -17,13 +17,13 @@ internal sealed class CaseCasePartiesCreatorFactory(
 }
 
 public class CaseCasePartiesCreator(
-    IDatabaseInserter<CaseParties> casePartiesInserter,
-    IDatabaseInserter<CaseCaseParties> caseCasePartiesInserter,
+    IDatabaseInserter<NewCaseParties> casePartiesInserter,
+    IDatabaseInserter<ExistingCaseNewCaseParties> caseCasePartiesInserter,
     IDatabaseInserter<CasePartiesOrganization> casePartiesOrganizationInserter,
     IDatabaseInserter<CasePartiesPerson> casePartiesPersonInserter
-) : EntityCreator<CaseCaseParties>()
+) : EntityCreator<ExistingCaseNewCaseParties>()
 {
-    public override async Task ProcessAsync(CaseCaseParties element)
+    public override async Task ProcessAsync(ExistingCaseNewCaseParties element)
     {
         await base.ProcessAsync(element);
         await casePartiesInserter.InsertAsync(element.CaseParties);

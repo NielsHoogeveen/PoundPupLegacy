@@ -10,11 +10,12 @@ internal sealed class DisruptedPlacementCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableDisruptedPlacementCase> disruptedPlacementCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
-    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
+    IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableDisruptedPlacementCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableDisruptedPlacementCase>> CreateAsync(IDbConnection connection) =>
-        new LocatableCreator<EventuallyIdentifiableDisruptedPlacementCase>(
+        new CaseCreator<EventuallyIdentifiableDisruptedPlacementCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -27,6 +28,7 @@ internal sealed class DisruptedPlacementCaseCreatorFactory(
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
             await nameableDetailsCreatorFactory.CreateAsync(connection),
-            await locatableDetailsCreatorFactory.CreateAsync(connection)
+            await locatableDetailsCreatorFactory.CreateAsync(connection),
+            await caseCaseTypeCreatorFactory.CreateAsync(connection)
         );
 }

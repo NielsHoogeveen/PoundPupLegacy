@@ -41,12 +41,12 @@ internal class InterOrganizationalRelationFromSaveService(
                 TenantNodesToUpdate = new List<ExistingTenantNode>()
             });
         }
-        IEnumerable<CreateModel.NewInterOrganizationalRelation> GetRelationsToInsert()
+        IEnumerable<CreateModel.NewInterOrganizationalRelationForExistingParticipants> GetRelationsToInsert()
         {
 
             foreach (var relation in item.OfType<NewInterOrganizationalExistingRelationFrom>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
-                yield return new CreateModel.NewInterOrganizationalRelation {
+                yield return new CreateModel.NewInterOrganizationalRelationForExistingParticipants {
                     Id = null,
                     PublisherId = relation.PublisherId,
                     CreatedDateTime = now,

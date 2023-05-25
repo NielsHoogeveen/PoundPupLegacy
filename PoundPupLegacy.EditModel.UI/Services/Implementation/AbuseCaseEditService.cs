@@ -73,6 +73,7 @@ internal sealed class AbuseCaseEditService(
             FundamentalFaithInvolved  = viewModel.FundamentalFaithInvolved,
             HomeschoolingInvolved = viewModel.HomeschoolingInvolved,
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CaseParties = new List<NewCaseNewCaseParties>(),
         };
     }
 
@@ -102,6 +103,9 @@ internal sealed class AbuseCaseEditService(
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
             NewLocations = new List<EventuallyIdentifiableLocation>(),
+            CasePartiesToAdd = new List<ExistingCaseNewCaseParties>(),
+            CasePartiesToRemove = new List<int>(),
+            CasePartiesToUpdate = new List<ExistingCaseExistingCaseParties>(),
         };
     }
 }

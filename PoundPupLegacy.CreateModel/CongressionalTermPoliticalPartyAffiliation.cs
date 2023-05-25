@@ -10,7 +10,7 @@ public sealed record NewCongressionalTermPoliticalPartyAffiliation : NewNodeBase
 }
 public sealed record ExistingCongressionalTermPoliticalPartyAffiliation : ExistingNodeBase, ImmediatelyIdentifiableCongressionalTermPoliticalPartyAffiliation
 {
-    public required int? CongressionalTermId { get; set; }
+    public required int CongressionalTermId { get; set; }
 
     public required int PoliticalPartyAffiliationId { get; init; }
 
@@ -19,15 +19,15 @@ public sealed record ExistingCongressionalTermPoliticalPartyAffiliation : Existi
 
 public interface ImmediatelyIdentifiableCongressionalTermPoliticalPartyAffiliation : CongressionalTermPoliticalPartyAffiliation, ImmediatelyIdentifiableDocumentable, ImmediatelyIdentifiableSearchable
 {
+    int CongressionalTermId { get; }
 
 }
 public interface EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation: CongressionalTermPoliticalPartyAffiliation, EventuallyIdentifiableDocumentable, EventuallyIdentifiableSearchable
 {
-
+    int? CongressionalTermId { get; }
 }
 public interface CongressionalTermPoliticalPartyAffiliation: Documentable, Searchable
 {
-    int? CongressionalTermId { get; }
 
     int PoliticalPartyAffiliationId { get; }
 

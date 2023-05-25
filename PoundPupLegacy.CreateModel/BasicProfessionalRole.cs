@@ -1,6 +1,20 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record BasicProfessionalRole : ProfessionalRoleBase, EventuallyIdentifiableProfessionalRole
+public sealed record NewBasicProfessionalRoleForNewPerson : NewProfessionalRoleBaseForNewPerson
 {
-    public required int? Id { get; set; }
+    public override EventuallyIdentifiableProfessionalRoleForExistingPerson ResolvePerson(int personId)
+    {
+        return new NewBasicProfessionalRoleForExistingPerson {
+            DateTimeRange = DateTimeRange,
+            ProfessionId = ProfessionId,
+            PersonId = personId,
+            Id = null
+        };
+    }
+}
+public sealed record NewBasicProfessionalRoleForExistingPerson : NewProfessionalRoleBaseForExistingPerson
+{
+}
+public sealed record ExistingBasicProfessionalRole : ExistingProfessionalRoleBase
+{
 }

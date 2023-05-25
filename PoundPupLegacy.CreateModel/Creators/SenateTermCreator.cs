@@ -30,11 +30,11 @@ internal class SenateTermCreator(
     IEntityCreator<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
 ) : NodeCreator<EventuallyIdentifiableSenateTerm>(inserters, nodeDetailsCreator) 
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableSenateTerm element)
+    public override async Task ProcessAsync(EventuallyIdentifiableSenateTerm element, int id)
     {
         await base.ProcessAsync(element);
         foreach (var partyAffiliation in element.PartyAffiliations) {
-            partyAffiliation.CongressionalTermId = element.Id;
+            partyAffiliation.CongressionalTermId = id;
         }
         await congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(element.PartyAffiliations.ToAsyncEnumerable());
     }
