@@ -1,5 +1,4 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 namespace PoundPupLegacy.Convert;
 
@@ -62,19 +61,20 @@ internal sealed class OrganizationMigratorPPL(
                     ParentNames = new List<string>{ "adoption agencies" },
                 }
             },
-            OrganizationTypes = new List<OrganizationOrganizationType>
+            OrganizationTypeIds = new List<int>
             {
-                new OrganizationOrganizationType
+                await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                 {
-                    OrganizationId = null,
-                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
-                    {
-                        TenantId = Constants.PPL,
-                        UrlId = 12625
-                    })
-                }
+                    TenantId = Constants.PPL,
+                    UrlId = 12625
+                })
             },
             NodeTermIds = new List<int>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
+            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
         };
         yield return new NewUnitedStatesPoliticalParty {
             Id = null,
@@ -122,19 +122,21 @@ internal sealed class OrganizationMigratorPPL(
                     ParentNames = new List<string>{ "political party" },
                 }
             },
-            OrganizationTypes = new List<OrganizationOrganizationType>
+            OrganizationTypeIds = new List<int>
             {
-                new OrganizationOrganizationType
+                await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                 {
-                    OrganizationId = null,
-                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
-                    {
-                        TenantId = Constants.PPL,
-                        UrlId = Constants.POLITICAL_PARTY
-                    })
-                }
+                    TenantId = Constants.PPL,
+                    UrlId = Constants.POLITICAL_PARTY
+                })
             },
             NodeTermIds = new List<int>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
+            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+
         };
         yield return new NewUnitedStatesPoliticalParty {
             Id = null,
@@ -182,19 +184,20 @@ internal sealed class OrganizationMigratorPPL(
                     ParentNames = new List<string>{ "political party" },
                 }
             },
-            OrganizationTypes = new List<OrganizationOrganizationType>
+            OrganizationTypeIds = new List<int>
             {
-                new OrganizationOrganizationType
+                await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                 {
-                    OrganizationId = null,
-                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
-                    {
-                        TenantId = Constants.PPL,
-                        UrlId = Constants.POLITICAL_PARTY
-                    })
-                }
+                    TenantId = Constants.PPL,
+                    UrlId = Constants.POLITICAL_PARTY
+                })
             },
             NodeTermIds = new List<int>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
+            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
         };
         yield return new NewBasicOrganization {
             Id = null,
@@ -242,19 +245,20 @@ internal sealed class OrganizationMigratorPPL(
                     ParentNames = new List<string>{ "governmental organization" },
                 }
             },
-            OrganizationTypes = new List<OrganizationOrganizationType>
+            OrganizationTypeIds = new List<int>
             {
-                new OrganizationOrganizationType
+                await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                 {
-                    OrganizationId = null,
-                    OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
-                    {
-                        TenantId = Constants.PPL,
-                        UrlId = 12630
-                    })
-                }
+                    TenantId = Constants.PPL,
+                    UrlId = 12630
+                })
             },
             NodeTermIds = new List<int>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
+            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
         };
     }
 
@@ -394,13 +398,13 @@ internal sealed class OrganizationMigratorPPL(
                 .Split(',')
                 .Where(x => !string.IsNullOrEmpty(x))
                 .Select(x => int.Parse(x));
-            var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
+            var organizationOrganizationTypeIds = new List<int>();
             foreach (var typeId in typeIds) {
                 var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = typeId,
                     TenantId = Constants.PPL
                 });
-                organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
+                organizationOrganizationTypeIds.Add(organizationTypeId);
             }
 
             async IAsyncEnumerable<string> GetTermNamesForOrganizationsTypes(IEnumerable<int> organizationTypeIds)
@@ -422,7 +426,7 @@ internal sealed class OrganizationMigratorPPL(
                 : reader.GetString("topic_name");
 
             var topicName = reader.GetString("topic_name");
-            var organizationTypeTermNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypes.Select(x => x.OrganizationTypeId)).ToListAsync();
+            var organizationTypeTermNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypeIds).ToListAsync();
             var topicParentNames = reader.IsDBNull("topic_parent_names")
                 ? organizationTypeTermNames
                 : reader.GetString("topic_parent_names")
@@ -502,19 +506,20 @@ internal sealed class OrganizationMigratorPPL(
                     Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated"), reader.GetDateTime("terminated"))).ToFuzzyDate(),
                     FileIdTileImage = null,
                     VocabularyNames = vocabularyNames,
-                    OrganizationTypes = new List<OrganizationOrganizationType>
+                    OrganizationTypeIds = new List<int>
                     {
-                        new OrganizationOrganizationType
+                        await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
                         {
-                            OrganizationId = null,
-                            OrganizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
-                            {
-                                TenantId = Constants.PPL,
-                                UrlId = Constants.POLITICAL_PARTY
-                            })
-                        }
+                            TenantId = Constants.PPL,
+                            UrlId = Constants.POLITICAL_PARTY
+                        })
                     },
                     NodeTermIds = new List<int>(),
+                    NewLocations = new List<EventuallyIdentifiableLocation>(),
+                    PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+                    PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
+                    InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+                    InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
                 };
             }
             else {
@@ -557,8 +562,13 @@ internal sealed class OrganizationMigratorPPL(
                     Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                     FileIdTileImage = null,
                     VocabularyNames = vocabularyNames,
-                    OrganizationTypes = organizationOrganizationTypes,
+                    OrganizationTypeIds = organizationOrganizationTypeIds,
                     NodeTermIds = new List<int>(),
+                    NewLocations = new List<EventuallyIdentifiableLocation>(),
+                    PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+                    PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
+                    InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+                    InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
                 };
             }
 

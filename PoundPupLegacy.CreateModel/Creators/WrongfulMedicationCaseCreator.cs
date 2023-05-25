@@ -9,11 +9,12 @@ internal sealed class WrongfulMedicationCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableWrongfulMedicationCase> wrongfulMedicationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableWrongfulMedicationCase>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableWrongfulMedicationCase>(
+        new LocatableCreator<EventuallyIdentifiableWrongfulMedicationCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -22,9 +23,9 @@ internal sealed class WrongfulMedicationCaseCreatorFactory(
                 await nameableInserterFactory.CreateAsync(connection),
                 await caseInserterFactory.CreateAsync(connection),
                 await wrongfulMedicationCaseInserterFactory.CreateAsync(connection)
-
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
-            await nameableDetailsCreatorFactory.CreateAsync(connection)
+            await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection)
         );
 }

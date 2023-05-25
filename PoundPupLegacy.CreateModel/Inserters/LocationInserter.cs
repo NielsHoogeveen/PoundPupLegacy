@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Location;
+using Request = EventuallyIdentifiableLocation;
 
 internal sealed class LocationInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {

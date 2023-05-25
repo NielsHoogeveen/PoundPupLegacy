@@ -8,12 +8,13 @@ internal sealed class ChildTraffickingCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseInserterFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableChildTraffickingCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableChildTraffickingCase>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableChildTraffickingCase>(
+        new LocatableCreator<EventuallyIdentifiableChildTraffickingCase>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -24,6 +25,7 @@ internal sealed class ChildTraffickingCaseCreatorFactory(
                 await childTraffickingCaseInserterFactory.CreateAsync(connection)
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
-            await nameableDetailsCreatorFactory.CreateAsync(connection)
+            await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection)
         );
 }

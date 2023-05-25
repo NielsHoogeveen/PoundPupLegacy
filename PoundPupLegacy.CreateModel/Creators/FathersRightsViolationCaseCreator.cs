@@ -9,11 +9,12 @@ internal sealed class FathersRightsViolationCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableFathersRightsViolationCase>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableFathersRightsViolationCase>(
+        new LocatableCreator<EventuallyIdentifiableFathersRightsViolationCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -22,9 +23,9 @@ internal sealed class FathersRightsViolationCaseCreatorFactory(
                 await nameableInserterFactory.CreateAsync(connection),
                 await caseInserterFactory.CreateAsync(connection),
                 await fathersRightsViolationCaseInserterFactory.CreateAsync(connection)
-
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
-            await nameableDetailsCreatorFactory.CreateAsync(connection)
+            await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection)
         );
 }

@@ -71,7 +71,8 @@ internal sealed class AbuseCaseEditService(
             DisabilitiesInvolved = viewModel.DisabilitiesInvolved,
             FamilySizeId = viewModel.FamilySizeId,
             FundamentalFaithInvolved  = viewModel.FundamentalFaithInvolved,
-            HomeschoolingInvolved = viewModel.HomeschoolingInvolved
+            HomeschoolingInvolved = viewModel.HomeschoolingInvolved,
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
         };
     }
 
@@ -97,8 +98,10 @@ internal sealed class AbuseCaseEditService(
             DisabilitiesInvolved = viewModel.DisabilitiesInvolved,
             FamilySizeId = viewModel.FamilySizeId,
             FundamentalFaithInvolved  = viewModel.FundamentalFaithInvolved,
-            HomeschoolingInvolved = viewModel.HomeschoolingInvolved
-
+            HomeschoolingInvolved = viewModel.HomeschoolingInvolved,
+            LocationsToDelete = new List<int>(),
+            LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
         };
     }
 }

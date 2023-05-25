@@ -122,7 +122,7 @@ internal class MemberOfCongressMigrator(
         IEntityCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory,
         IEntityCreatorFactory<File> fileCreatorFactory,
         IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
-        IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory,
+        IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> personOrganizationRelationCreatorFactory,
         IEntityCreatorFactory<EventuallyIdentifiableProfessionalRole> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
@@ -598,7 +598,7 @@ internal class MemberOfCongressMigrator(
 
                     var terms = memberOfCongress.terms.Select(x => (x.start, x.end, x.party)).GroupBy(x => x.party).ToList();
 
-                    var relations = new List<NewPersonOrganizationRelation>();
+                    var relations = new List<NewPersonOrganizationRelationForNewPerson>();
                     if (terms.Count == 1) {
 
                     }
@@ -646,8 +646,12 @@ internal class MemberOfCongressMigrator(
                         Suffix = memberOfCongress.name.suffix,
                         ProfessionalRoles = professionalRoles,
                         Bioguide = memberOfCongress.id.bioguide,
-                        PersonOrganizationRelations = new List<NewPersonOrganizationRelation>(),
+                        PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson>(),
                         NodeTermIds = new List<int>(),
+                        NewLocations = new List<EventuallyIdentifiableLocation>(),
+                        PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+                        InterPersonalRelationsToAddFrom = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo>(),
+                        InterPersonalRelationsToAddTo = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom>(),
                     };
                 }
             }
@@ -798,7 +802,7 @@ internal class MemberOfCongressMigrator(
         }
     }
 
-    private async IAsyncEnumerable<NewPersonOrganizationRelation> GetPartyMembership()
+    private async IAsyncEnumerable<NewPersonOrganizationRelationForNewPerson> GetPartyMembership()
     {
 
         var sql = $"""
@@ -922,7 +926,7 @@ internal class MemberOfCongressMigrator(
 
 
             var now = DateTime.Now;
-            yield return new NewPersonOrganizationRelation {
+            yield return new NewPersonOrganizationRelationForNewPerson {
                 Id = null,
                 PublisherId = 2,
                 CreatedDateTime = now,

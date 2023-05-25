@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewPerson : NewNameableBase, EventuallyIdentifiablePerson
+public sealed record NewPerson : NewPartyBase, EventuallyIdentifiablePerson
 {
     public required DateTime? DateOfBirth { get; init; }
     public required DateTime? DateOfDeath { get; init; }
@@ -13,9 +13,11 @@ public sealed record NewPerson : NewNameableBase, EventuallyIdentifiablePerson
     public required int? GovtrackId { get; init; }
     public required string? Bioguide { get; init; }
     public required List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; init; }
-    public required List<NewPersonOrganizationRelation> PersonOrganizationRelations { get; init; }
+    public required List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> PersonOrganizationRelations { get; init; }
+    public required List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo> InterPersonalRelationsToAddFrom { get; init; }
+    public required List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom> InterPersonalRelationsToAddTo { get; init; }
 }
-public sealed record ExistingPerson : ExistingNameableBase, ImmediatelyIdentifiablePerson
+public sealed record ExistingPerson : ExistingPartyBase, ImmediatelyIdentifiablePerson
 {
     public required DateTime? DateOfBirth { get; init; }
     public required DateTime? DateOfDeath { get; init; }
@@ -28,13 +30,26 @@ public sealed record ExistingPerson : ExistingNameableBase, ImmediatelyIdentifia
     public required int? GovtrackId { get; init; }
     public required string? Bioguide { get; init; }
     public required List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; init; }
-    public required List<NewPersonOrganizationRelation> PersonOrganizationRelations { get; init; }
+    public required List<ImmediatelyIdentifiablePersonOrganizationRelation> PersonOrganizationRelationsToUpdate { get; init; }
+    public required List<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> PersonOrganizationRelationsToAdd { get; init; }
+    public required List<ImmediatelyIdentifiableInterPersonalRelation> InterPersonalRelationsToUpdate { get; init; }
+    public required List<EventuallyIdentifiableInterPersonalRelationForExistingParticipants> InterPersonalRelationsToAdd { get; init; }
+
 }
 public interface ImmediatelyIdentifiablePerson : Person, ImmediatelyIdentifiableParty
 {
+    List<ImmediatelyIdentifiablePersonOrganizationRelation> PersonOrganizationRelationsToUpdate { get; }
+    List<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> PersonOrganizationRelationsToAdd { get; }
+    List<ImmediatelyIdentifiableInterPersonalRelation> InterPersonalRelationsToUpdate { get; }
+    List<EventuallyIdentifiableInterPersonalRelationForExistingParticipants> InterPersonalRelationsToAdd { get; }
+
 }
 public interface EventuallyIdentifiablePerson : Person, EventuallyIdentifiableParty
 {
+    List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> PersonOrganizationRelations { get; }
+    List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo> InterPersonalRelationsToAddFrom { get; }
+    List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom> InterPersonalRelationsToAddTo { get; }
+
 }
 public interface Person : Party
 {
@@ -49,5 +64,4 @@ public interface Person : Party
     int? GovtrackId { get; }
     string? Bioguide { get; }
     List<EventuallyIdentifiableProfessionalRole> ProfessionalRoles { get; }
-    List<NewPersonOrganizationRelation> PersonOrganizationRelations { get; }
 }

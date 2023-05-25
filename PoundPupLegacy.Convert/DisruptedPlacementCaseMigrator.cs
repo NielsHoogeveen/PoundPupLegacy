@@ -90,6 +90,7 @@ internal sealed class DisruptedPlacementCaseMigrator(
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
                 NodeTermIds = new List<int>(),
+                NewLocations = new List<EventuallyIdentifiableLocation>(),
             };
             yield return country;
 

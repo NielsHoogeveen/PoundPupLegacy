@@ -1,13 +1,12 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class LocationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-    IEntityCreatorFactory<Location> locationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory,
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -20,7 +19,15 @@ internal sealed class LocationMigratorCPCT(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var subdivisionIdReaderByIso3166Code = await subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
         await using var locationCreator = await locationCreatorFactory.CreateAsync(_postgresConnection);
-        await locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code));
+        await using var locationLocatableInserter = await locationLocatableInserterFactory.CreateAsync(_postgresConnection);
+        var locations = await ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code).ToListAsync();
+        await locationCreator.CreateAsync(locations.Select(x => x.Item1).ToAsyncEnumerable());
+        foreach (var item in locations) {
+            await locationLocatableInserter.InsertAsync(new LocationLocatable {
+                LocatableId = item.Item2,
+                LocationId = item.Item1.Id!.Value
+            });
+        }
     }
 
     private static string? GetStreet(int id, string? street)
@@ -306,7 +313,7 @@ internal sealed class LocationMigratorCPCT(
 
 
 
-    private async IAsyncEnumerable<Location> ReadLocations(
+    private async IAsyncEnumerable<(EventuallyIdentifiableLocation, int)> ReadLocations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
     )
@@ -358,7 +365,7 @@ internal sealed class LocationMigratorCPCT(
                 TenantId = tenantId,
                 UrlId = urlId
             });
-            yield return new Location {
+            yield return (new NewLocation {
                 Id = renamedId,
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),
@@ -368,9 +375,7 @@ internal sealed class LocationMigratorCPCT(
                 CountryId = (int)await GetCountryId(id, countryId),
                 Latitude = GetLatitude(id, reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
                 Longitude = GetLongitude(id, reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
-                Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = renamedId, LocatableId = locatableId } }
-            };
-
+            }, locatableId);
         }
         await reader.CloseAsync();
     }

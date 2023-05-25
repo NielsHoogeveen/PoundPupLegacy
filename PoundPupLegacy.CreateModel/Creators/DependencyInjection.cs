@@ -66,11 +66,11 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInformalIntermediateLevelSubdivision>, InformalIntermediateLevelSubdivisionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInterCountryRelation>, InterCountryRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInterCountryRelationType>, InterCountryRelationTypeCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation>, InterOrganizationalRelationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants>, InterOrganizationalRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType>, InterOrganizationalRelationTypeCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelation>, InterPersonalRelationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelationForExistingParticipants>, InterPersonalRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelationType>, InterPersonalRelationTypeCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<Location>, LocationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableLocation>, LocationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<LocationLocatable>, LocationLocatableCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableMultiQuestionPoll>, MultiQuestionPollCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<NodeFile>, NodeFileCreatorFactory>();
@@ -79,10 +79,10 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableOrganization>, OrganizationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableOrganizationType>, OrganizationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePage>, PageCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation>, PartyPoliticalEntityRelationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty>, PartyPoliticalEntityRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationType>, PartyPoliticalEntityRelationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePerson>, PersonCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation>, PersonOrganizationRelationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants>, PersonOrganizationRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationType>, PersonOrganizationRelationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PollStatus>, PollStatusCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableProfessionalRole>, ProfessionalRoleCreatorFactory>();

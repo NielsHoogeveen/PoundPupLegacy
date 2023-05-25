@@ -15,7 +15,7 @@ internal sealed class InterPersonalRelationMigratorPPL(
         await interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<NewInterPersonalRelation> ReadInterPersonalRelations(
+    private async IAsyncEnumerable<NewInterPersonalRelationForExistingParticipants> ReadInterPersonalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -101,7 +101,7 @@ internal sealed class InterPersonalRelationMigratorPPL(
                 UrlId = reader.GetInt32("nameable_id")
 
             });
-            yield return new NewInterPersonalRelation {
+            yield return new NewInterPersonalRelationForExistingParticipants {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

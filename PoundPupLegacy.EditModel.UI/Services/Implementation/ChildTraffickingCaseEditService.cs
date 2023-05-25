@@ -67,6 +67,7 @@ internal sealed class ChildTraffickingCaseEditService(
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,
             CountryIdFrom = childTraffickingCase.CountryFrom.Id,
             NodeTermIds = new List<int>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
         };
     }
 
@@ -87,7 +88,10 @@ internal sealed class ChildTraffickingCaseEditService(
             NodeTermsToRemove = new List<NodeTerm>(),
             TenantNodesToRemove = new List<ExistingTenantNode>(),
             TenantNodesToUpdate = new List<ExistingTenantNode>(),
-            VocabularyNames = new List<VocabularyName>()
+            VocabularyNames = new List<VocabularyName>(),
+            LocationsToDelete = new List<int>(),
+            LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
         };
     }
 }

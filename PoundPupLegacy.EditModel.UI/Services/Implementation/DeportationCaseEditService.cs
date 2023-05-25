@@ -66,7 +66,8 @@ internal sealed class DeportationCaseEditService(
             },
             NodeTermIds = new List<int>(),
             CountryIdTo = viewModel.CountryTo?.Id,
-            SubdivisionIdFrom = viewModel.SubdivisionFrom?.Id
+            SubdivisionIdFrom = viewModel.SubdivisionFrom?.Id,
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
         };
     }
 
@@ -87,7 +88,10 @@ internal sealed class DeportationCaseEditService(
             TenantNodesToUpdate = new List<ExistingTenantNode>(),
             VocabularyNames = new List<VocabularyName>(),
             CountryIdTo = viewModel.CountryTo?.Id,
-            SubdivisionIdFrom = viewModel.SubdivisionFrom?.Id
+            SubdivisionIdFrom = viewModel.SubdivisionFrom?.Id,
+            LocationsToDelete = new List<int>(),
+            LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
         };
     }
 }

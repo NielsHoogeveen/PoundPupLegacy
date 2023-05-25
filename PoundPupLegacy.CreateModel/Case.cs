@@ -13,11 +13,11 @@ public interface Case : Locatable, Documentable, Nameable
 
 }
 
-public abstract record NewCaseBase: NewNameableBase, EventuallyIdentifiableCase
+public abstract record NewCaseBase: NewLocatableBase, EventuallyIdentifiableCase
 {
     public required FuzzyDate? Date { get; init; }
 }
-public abstract record ExistingCaseBase : ExistingNameableBase, ImmediatelyIdentifiableCase
+public abstract record ExistingCaseBase : ExistingLocatableBase, ImmediatelyIdentifiableCase
 {
     public required FuzzyDate? Date { get; init; }
 }

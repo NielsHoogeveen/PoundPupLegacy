@@ -10,6 +10,7 @@ internal sealed class OrganizationCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableOrganization> organizationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserterFactory,
     IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableOrganization>
@@ -28,6 +29,7 @@ internal sealed class OrganizationCreatorFactory(
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
             await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection),
             await unitedStatesPoliticalPartyInserterFactory.CreateAsync(connection),
             await organizationOrganizationTypeInserterFactory.CreateAsync(connection)
         );
@@ -36,10 +38,11 @@ public class OrganizationCreator(
     List<IDatabaseInserter<EventuallyIdentifiableOrganization>> inserter,
     NodeDetailsCreator nodeDetailsCreator,
     NameableDetailsCreator nameableDetailsCreator,
+    LocatableDetailsCreator locatableDetailsCreator,
     IDatabaseInserter<EventuallyIdentifiableUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserter,
     IDatabaseInserter<OrganizationOrganizationType> organizationOrganizationTypeInserter
 
-    ) : NameableCreator<EventuallyIdentifiableOrganization>(inserter, nodeDetailsCreator, nameableDetailsCreator) 
+    ) : LocatableCreator<EventuallyIdentifiableOrganization>(inserter, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator) 
 {
     public override async Task ProcessAsync(EventuallyIdentifiableOrganization element)
     {
@@ -47,9 +50,11 @@ public class OrganizationCreator(
         if (element is NewUnitedStatesPoliticalParty pp) {
             await unitedStatesPoliticalPartyInserter.InsertAsync(pp);
         }
-        foreach (var organizationOrganizationType in element.OrganizationTypes) {
-            organizationOrganizationType.OrganizationId = element.Id;
-            await organizationOrganizationTypeInserter.InsertAsync(organizationOrganizationType);
+        foreach (var organizationTypeId in element.OrganizationTypeIds) {
+            await organizationOrganizationTypeInserter.InsertAsync(new OrganizationOrganizationType{
+                OrganizationId = element.Id,
+                OrganizationTypeId = organizationTypeId
+            });
         }
 
     }

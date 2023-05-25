@@ -1,13 +1,34 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiableLocatable : Locatable, ImmediatelyIdentifiableSearchable
+public interface ImmediatelyIdentifiableLocatable : Locatable, ImmediatelyIdentifiableNameable, ImmediatelyIdentifiableDocumentable
+{
+    List<EventuallyIdentifiableLocation> NewLocations { get; }
+
+    List<int> LocationsToDelete { get; }
+
+    List<ImmediatelyIdentifiableLocation> LocationsToUpdate { get; }
+}
+
+public interface EventuallyIdentifiableLocatable: Locatable, EventuallyIdentifiableNameable,EventuallyIdentifiableDocumentable 
+{
+    List<EventuallyIdentifiableLocation> NewLocations { get; }
+}
+
+public interface Locatable : Nameable, Documentable
 {
 }
 
-public interface EventuallyIdentifiableLocatable: Locatable, EventuallyIdentifiableSearchable
+public abstract record NewLocatableBase : NewNameableBase, EventuallyIdentifiableLocatable
 {
+    public required List<EventuallyIdentifiableLocation> NewLocations { get; init; }
 }
 
-public interface Locatable : Searchable
+public abstract record ExistingLocatableBase : ExistingNameableBase, ImmediatelyIdentifiableLocatable
 {
+    public required List<EventuallyIdentifiableLocation> NewLocations { get; init; }
+
+    public required List<int> LocationsToDelete { get; init; }
+
+    public required List<ImmediatelyIdentifiableLocation> LocationsToUpdate { get; init; }
 }
+

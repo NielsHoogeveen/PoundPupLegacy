@@ -10,7 +10,19 @@ public interface IEntityCreatorFactory<T>
 {
     Task<IEntityCreator<T>> CreateAsync(IDbConnection connection);
 }
-
+public class LocatableDetailsCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableLocation> locationInserterFactory,
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
+)
+{
+    public async Task<LocatableDetailsCreator> CreateAsync(IDbConnection connection)
+    {
+        return new LocatableDetailsCreator(
+            await locationInserterFactory.CreateAsync(connection),
+            await locationLocatableInserterFactory.CreateAsync(connection)
+        );
+    }
+}
 public class NameableDetailsCreatorFactory(
     IDatabaseInserterFactory<Term> termInserterFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
@@ -28,7 +40,28 @@ public class NameableDetailsCreatorFactory(
         );
     }
 }
+public class LocatableDetailsCreator(
+    IDatabaseInserter<EventuallyIdentifiableLocation> locationInserter,
+    IDatabaseInserter<LocationLocatable> locationLocatableInserter
+) : IAsyncDisposable
+{
+    public async Task Process(EventuallyIdentifiableLocatable locatable)
+    {
+        foreach(var location in locatable.NewLocations) {
+            await locationInserter.InsertAsync(location);
+            await locationLocatableInserter.InsertAsync(new LocationLocatable {
+                LocatableId = locatable.Id!.Value,
+                LocationId = location.Id!.Value,
+            });
+        }
+    }
 
+    public async ValueTask DisposeAsync()
+    {
+        await locationInserter.DisposeAsync();
+        await locationLocatableInserter.DisposeAsync();
+    }
+}
 public class NameableDetailsCreator(
     IDatabaseInserter<Term> termInserter,
     IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, Term> termReader,
@@ -68,7 +101,30 @@ public class NameableDetailsCreator(
         await vocabularyIdReader.DisposeAsync();
     }
 }
+public class LocatableCreator<T>(
+    List<IDatabaseInserter<T>> inserters,
+    NodeDetailsCreator nodeDetailsCreator,
+    NameableDetailsCreator nameableDetailsCreator,
+    LocatableDetailsCreator locatableDetailsCreator
+) : NameableCreator<T>(
+    inserters,
+    nodeDetailsCreator,
+    nameableDetailsCreator
+), IAsyncDisposable
+    where T : class, EventuallyIdentifiableLocatable
+{
+    public override async Task ProcessAsync(T element)
+    {
+        await base.ProcessAsync(element);
+        await locatableDetailsCreator.Process(element);
+    }
 
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await locatableDetailsCreator.DisposeAsync();
+    }
+}
 public class NameableCreator<T>(
     List<IDatabaseInserter<T>> inserters,
     NodeDetailsCreator nodeDetailsCreator,

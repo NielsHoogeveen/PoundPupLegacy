@@ -9,6 +9,7 @@ public class AbuseCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableAbuseCase> abuseCaseInserterFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
@@ -28,6 +29,7 @@ public class AbuseCaseCreatorFactory(
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
             await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection),
             await abuseCaseTypeOfAbuseCreatorFactory.CreateAsync(connection),
             await abuseCaseTypeOfAbuserCreatorFactory.CreateAsync(connection)
         );
@@ -37,14 +39,15 @@ public class AbuseCaseCreator(
     List<IDatabaseInserter<EventuallyIdentifiableAbuseCase>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     NameableDetailsCreator nameableDetailsCreator,
+    LocatableDetailsCreator locatableDetailsCreator,
     IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
     IEntityCreator<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreator
-
-) : NameableCreator<EventuallyIdentifiableAbuseCase>
+) : LocatableCreator<EventuallyIdentifiableAbuseCase>
 (
     inserters,
     nodeDetailsCreator,
-    nameableDetailsCreator
+    nameableDetailsCreator,
+    locatableDetailsCreator
 )
 {
     public override async Task ProcessAsync(EventuallyIdentifiableAbuseCase element)

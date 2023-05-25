@@ -48,10 +48,20 @@ internal sealed class OrganizationEditService(
             NewNodeTerms = new List<NodeTerm>(),
             NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
             NodeTermsToRemove = new List<NodeTerm>(),
-            OrganizationTypes = new List<CreateModel.OrganizationOrganizationType>(),
+            OrganizationTypeIdsToAdd = new List<int>(),
+            OrganizationTypeIdsToRemove = new List<int>(),
             TenantNodesToRemove = new List<ExistingTenantNode>(),
             TenantNodesToUpdate = new List<ExistingTenantNode>(),
             VocabularyNames = new List<VocabularyName>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            LocationsToDelete = new List<int>(),
+            LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
+            PartyPoliticalEntityRelationsToAdd = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty>(),
+            PartyPoliticalEntityRelationsToUpdate = new List<ImmediatelyIdentifiablePartyPoliticalEntityRelation>(),
+            PersonOrganizationRelationsToUpdate = new List<ImmediatelyIdentifiablePersonOrganizationRelation>(),
+            PersonOrganizationRelationsToAdd = new List<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants>(),
+            InterOrganizationalRelationsToAdd = new List<EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants>(),
+            InterOrganizationalRelationsToUpdate = new List<ImmediatelyIdentifiableInterOrganizationalRelation>(),
         };
     }
 
@@ -73,9 +83,14 @@ internal sealed class OrganizationEditService(
             PublisherId = newViewModel.PublisherId,
             FileIdTileImage = null,
             NodeTermIds = new List<int>(),
-            OrganizationTypes = new List<CreateModel.OrganizationOrganizationType>(),
+            OrganizationTypeIds = new List<int>(),
             TenantNodes = new List<NewTenantNodeForNewNode>(),
             VocabularyNames = new List<VocabularyName>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
+            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
         };
     }
 }

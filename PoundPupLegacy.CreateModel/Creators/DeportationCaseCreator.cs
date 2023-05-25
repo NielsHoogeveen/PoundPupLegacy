@@ -9,11 +9,12 @@ internal sealed class DeportationCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableDeportationCase> deportationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableDeportationCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableDeportationCase>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableDeportationCase>(
+        new LocatableCreator<EventuallyIdentifiableDeportationCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -22,9 +23,9 @@ internal sealed class DeportationCaseCreatorFactory(
                 await nameableInserterFactory.CreateAsync(connection),
                 await caseInserterFactory.CreateAsync(connection),
                 await deportationCaseInserterFactory.CreateAsync(connection)
-
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
-            await nameableDetailsCreatorFactory.CreateAsync(connection)
+            await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection)
         );
 }

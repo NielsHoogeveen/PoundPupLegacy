@@ -3,7 +3,7 @@
 internal sealed class PartyPoliticalEntityRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty> partyPoliticalEntityRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "party political enitity relation";
@@ -15,7 +15,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
         await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<NewPartyPoliticalEntityRelation> ReadPartyPoliticalEntityRelations(
+    private async IAsyncEnumerable<NewPartyPoliticalEntityRelationForExistingParty> ReadPartyPoliticalEntityRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -108,7 +108,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
                 UrlId = reader.GetInt32("nameable_id")
             });
 
-            yield return new NewPartyPoliticalEntityRelation {
+            yield return new NewPartyPoliticalEntityRelationForExistingParty {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

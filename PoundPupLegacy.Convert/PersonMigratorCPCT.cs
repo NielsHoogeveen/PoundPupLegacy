@@ -138,8 +138,12 @@ internal sealed class PersonMigratorCPCT(
                 Bioguide = null,
                 Suffix = null,
                 ProfessionalRoles = new List<EventuallyIdentifiableProfessionalRole>(),
-                PersonOrganizationRelations = new List<NewPersonOrganizationRelation>(),
+                PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson>(),
                 NodeTermIds = new List<int>(),
+                NewLocations = new List<EventuallyIdentifiableLocation>(),
+                PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+                InterPersonalRelationsToAddFrom = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo>(),
+                InterPersonalRelationsToAddTo = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom>(),
             };
 
         }

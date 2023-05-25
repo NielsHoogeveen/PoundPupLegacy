@@ -6,7 +6,7 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal class PersonPoliticalEntityRelationSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
     IDatabaseUpdaterFactory<ImmediatelyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationUpdaterFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty> partyPoliticalEntityRelationCreatorFactory
 ) : ISaveService<IEnumerable<PersonPoliticalEntityRelation>>
 {
     public async Task SaveAsync(IEnumerable<PersonPoliticalEntityRelation> item, IDbConnection connection)
@@ -37,12 +37,12 @@ internal class PersonPoliticalEntityRelationSaveService(
                 TenantNodesToUpdate = new List<ExistingTenantNode>(),
             });
         }
-        IEnumerable<CreateModel.NewPartyPoliticalEntityRelation> GetRelationsToInsert()
+        IEnumerable<CreateModel.NewPartyPoliticalEntityRelationForExistingParty> GetRelationsToInsert()
         {
 
             foreach (var relation in item.OfType<CompletedNewPersonPoliticalEntityRelationExistingPerson>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
-                yield return new CreateModel.NewPartyPoliticalEntityRelation {
+                yield return new CreateModel.NewPartyPoliticalEntityRelationForExistingParty {
                     Id = null,
                     PublisherId = relation.PublisherId,
                     CreatedDateTime = now,

@@ -40,12 +40,12 @@ internal class InterPersonalRelationFromSaveService(
                 TenantNodesToUpdate = new List<ExistingTenantNode>(),
             });
         }
-        IEnumerable<CreateModel.NewInterPersonalRelation> GetRelationsToInsert()
+        IEnumerable<CreateModel.NewInterPersonalRelationForExistingParticipants> GetRelationsToInsert()
         {
 
             foreach (var relation in item.OfType<NewInterPersonalExistingRelationFrom>().Where(x => !x.HasBeenDeleted)) {
                 var now = DateTime.Now;
-                yield return new CreateModel.NewInterPersonalRelation {
+                yield return new CreateModel.NewInterPersonalRelationForExistingParticipants {
                     Id = null,
                     PublisherId = relation.PublisherId,
                     CreatedDateTime = now,

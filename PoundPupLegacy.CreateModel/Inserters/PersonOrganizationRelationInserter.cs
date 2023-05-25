@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiablePersonOrganizationRelation;
+using Request = EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants;
 
 internal sealed class PersonOrganizationRelationInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
-    private static readonly NullCheckingIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
+    private static readonly NonNullableIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
     private static readonly NonNullableIntegerDatabaseParameter OrganizationId = new() { Name = "organization_id" };
     private static readonly NullableIntegerDatabaseParameter GeographicalEntityId = new() { Name = "geographical_entity_id" };
     private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };

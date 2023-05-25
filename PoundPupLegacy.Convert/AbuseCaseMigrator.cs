@@ -189,6 +189,7 @@ internal sealed class AbuseCaseMigrator(
                 DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),
                 VocabularyNames = vocabularyNames,
                 NodeTermIds = new List<int>(),
+                NewLocations = new List<EventuallyIdentifiableLocation>(),
             };
             yield return country;
 

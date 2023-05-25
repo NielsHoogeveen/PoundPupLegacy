@@ -10,9 +10,9 @@ internal sealed class PersonCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiablePerson> personInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
-
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<EventuallyIdentifiableProfessionalRole> professionalRoleCreatorFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> personOrganizationRelationCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiablePerson>
 {
     public async Task<IEntityCreator<EventuallyIdentifiablePerson>> CreateAsync(IDbConnection connection) =>
@@ -29,6 +29,7 @@ internal sealed class PersonCreatorFactory(
             },
             await nodeDetailsCreatorFactory.CreateAsync(connection),
             await nameableDetailsCreatorFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection),
             await professionalRoleCreatorFactory.CreateAsync(connection),
             await personOrganizationRelationCreatorFactory.CreateAsync(connection)
         );
@@ -38,10 +39,11 @@ internal sealed class PersonCreator(
     List<IDatabaseInserter<EventuallyIdentifiablePerson>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     NameableDetailsCreator nameableDetailsCreator,
+    LocatableDetailsCreator locatableDetailsCreator,
     IEntityCreator<EventuallyIdentifiableProfessionalRole> professionalRoleCreator,
-    IEntityCreator<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreator
+    IEntityCreator<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> personOrganizationRelationCreator
 ) : 
-    NameableCreator<EventuallyIdentifiablePerson>(inserters, nodeDetailsCreator, nameableDetailsCreator)
+    LocatableCreator<EventuallyIdentifiablePerson>(inserters, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator)
 {
     public override async Task ProcessAsync(EventuallyIdentifiablePerson element)
     {

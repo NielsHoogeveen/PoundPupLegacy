@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableInterOrganizationalRelation;
+using Request = EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants;
 
-internal sealed class InterOrganizationalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
+internal sealed class InterOrganizationalRelationInserterForExistingParticipantsFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     private static readonly NonNullableIntegerDatabaseParameter OrganizationIdFrom = new() { Name = "organization_id_from" };
     private static readonly NonNullableIntegerDatabaseParameter OrganizationIdTo = new() { Name = "organization_id_to" };

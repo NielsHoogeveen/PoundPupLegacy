@@ -64,7 +64,8 @@ internal sealed class WrongfulMedicationCaseEditService(
                     ParentNames = new List<string>(),
                 }
             },
-            NodeTermIds = new List<int>()
+            NodeTermIds = new List<int>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
         };
     }
 
@@ -83,7 +84,11 @@ internal sealed class WrongfulMedicationCaseEditService(
             NodeTermsToRemove = new List<NodeTerm>(),
             TenantNodesToRemove = new List<ExistingTenantNode>(),
             TenantNodesToUpdate = new List<ExistingTenantNode>(),
-            VocabularyNames = new List<VocabularyName>()
+            VocabularyNames = new List<VocabularyName>(),
+            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            LocationsToDelete = new List<int>(),
+            LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>()
+
         };
     }
 }

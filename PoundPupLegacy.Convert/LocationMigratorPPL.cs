@@ -4,7 +4,8 @@ internal sealed class LocationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-    IEntityCreatorFactory<Location> locationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiable> locationCreatorFactory,
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "locations (ppl)";
@@ -13,16 +14,34 @@ internal sealed class LocationMigratorPPL(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await using var subdivisionIdReaderByIso3166Code = await subdivisionIdReaderByIso3166CodeFactory.CreateAsync(_postgresConnection);
         await using var locationCreator = await locationCreatorFactory.CreateAsync(_postgresConnection);
-        await locationCreator.CreateAsync(GetLocations(nodeIdReader));
-        await locationCreator.CreateAsync(ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code));
+        await using var locationLocatableInserter = await locationLocatableInserterFactory.CreateAsync(_postgresConnection);
+        var locations = await GetLocations(nodeIdReader).ToListAsync();
+        var readLocations = await ReadLocations(nodeIdReader, subdivisionIdReaderByIso3166Code).ToListAsync();
+        await locationCreator.CreateAsync(locations.Select(x => x.Item1).ToAsyncEnumerable());
+        await locationCreator.CreateAsync(readLocations.Select(x => x.Item1).ToAsyncEnumerable());
+        foreach (var item in locations) {
+            await locationLocatableInserter.InsertAsync(new LocationLocatable {
+                LocatableId = item.Item2,
+                LocationId = item.Item1.Id!.Value
+            });
+        }
+        foreach (var item in readLocations) {
+            await locationLocatableInserter.InsertAsync(new LocationLocatable {
+                LocatableId = item.Item2,
+                LocationId = item.Item1.Id!.Value
+            });
+        }
     }
 
-    private async IAsyncEnumerable<Location> GetLocations(
+    private async IAsyncEnumerable<(EventuallyIdentifiable, int)> GetLocations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
-
-        yield return new Location {
+        var locatableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = 105
+        });
+        yield return (new NewLocation {
             Id = 18,
             Street = "8010 S County Road 5 Suite 205",
             Additional = null,
@@ -38,17 +57,7 @@ internal sealed class LocationMigratorPPL(
             }),
             Latitude = decimal.Parse("40.47622551263952"),
             Longitude = decimal.Parse("-104.98063363798134"),
-            Locatables = new List<LocationLocatable> {
-                new LocationLocatable {
-                    LocationId = 18,
-                    LocatableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
-                    {
-                        TenantId = Constants.PPL,
-                        UrlId = 105
-                    })
-                }
-            }
-        };
+        }, locatableId);
     }
     private static string? GetStreet(int id, string? street)
     {
@@ -1338,7 +1347,7 @@ internal sealed class LocationMigratorPPL(
 
 
 
-    private async IAsyncEnumerable<Location> ReadLocations(
+    private async IAsyncEnumerable<(EventuallyIdentifiable, int)> ReadLocations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
     )
@@ -1388,7 +1397,7 @@ internal sealed class LocationMigratorPPL(
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id"),
             });
-            yield return new Location {
+            yield return (new NewLocation {
                 Id = id,
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),
@@ -1398,8 +1407,7 @@ internal sealed class LocationMigratorPPL(
                 CountryId = (int)await GetCountryId(id, countryId, nodeIdReader),
                 Latitude = GetLatitude(id, reader.IsDBNull("latitude") ? null : reader.GetDecimal("latitude")),
                 Longitude = GetLongitude(id, reader.IsDBNull("longitude") ? null : reader.GetDecimal("longitude")),
-                Locatables = new List<LocationLocatable> { new LocationLocatable { LocationId = id, LocatableId = locatableId } }
-            };
+            }, locatableId);
 
         }
         await reader.CloseAsync();

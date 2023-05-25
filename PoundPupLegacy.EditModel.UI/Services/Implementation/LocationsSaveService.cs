@@ -1,4 +1,4 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.CreateModel;
 using PoundPupLegacy.CreateModel.Deleters;
 using PoundPupLegacy.CreateModel.Updaters;
 
@@ -7,7 +7,7 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal class LocationsSaveService(
     IDatabaseDeleterFactory<LocationDeleterRequest> locationDeleterFactory,
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
-    IEntityCreatorFactory<CreateModel.Location> locationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory
 ) : ISaveService<IEnumerable<Location>>
 {
     public async Task SaveAsync(IEnumerable<Location> item, IDbConnection connection)
@@ -38,10 +38,10 @@ internal class LocationsSaveService(
                 Id = location.LocationId!.Value
             });
         }
-        IEnumerable<CreateModel.Location> GetLocationsToInsert()
+        IEnumerable<EventuallyIdentifiableLocation> GetLocationsToInsert()
         {
             foreach (var location in item.Where(x => !x.LocationId.HasValue)) {
-                yield return new CreateModel.Location {
+                yield return new CreateModel.NewLocation {
                     Id = null,
                     Street = location.Street,
                     Additional = location.Addition,
@@ -51,14 +51,6 @@ internal class LocationsSaveService(
                     Longitude = location.Longitude,
                     SubdivisionId = location.SubdivisionId,
                     CountryId = location.CountryId,
-                    Locatables = new List<CreateModel.LocationLocatable>
-                    {
-                        new CreateModel.LocationLocatable
-                        {
-                            LocatableId = location.LocatableId!.Value,
-                            LocationId = null,
-                        }
-                    }
                 };
             }
 

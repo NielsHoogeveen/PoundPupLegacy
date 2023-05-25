@@ -198,13 +198,13 @@ internal sealed class OrganizationMigratorCPCT(
                 .Split(',')
                 .Where(x => !string.IsNullOrEmpty(x))
                 .Select(x => int.Parse(x));
-            var organizationOrganizationTypes = new List<OrganizationOrganizationType>();
+            var organizationOrganizationTypeIds = new List<int>();
             foreach (var typeId in typeIds) {
                 var organizationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = typeId
                 });
-                organizationOrganizationTypes.Add(new OrganizationOrganizationType { OrganizationId = null, OrganizationTypeId = organizationTypeId });
+                organizationOrganizationTypeIds.Add(organizationTypeId);
             }
             async IAsyncEnumerable<string> GetTermNamesForOrganizationsTypes(IEnumerable<int> organizationTypeIds)
             {
@@ -222,7 +222,7 @@ internal sealed class OrganizationMigratorCPCT(
                     OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
                     TermName = name,
-                    ParentNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypes.Select(x => x.OrganizationTypeId)).ToListAsync(),
+                    ParentNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypeIds).ToListAsync(),
                 }
             };
 
@@ -245,7 +245,7 @@ internal sealed class OrganizationMigratorCPCT(
 
             var toSkipForPPL = new List<int> { 34447, 42413, 46479, 48178, 39305, 45402, 46671, 33634, 48051 };
 
-            if (!organizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(miscellaneous) && !toSkipForPPL.Contains(id)) {
+            if (!organizationOrganizationTypeIds.Contains(miscellaneous) && !toSkipForPPL.Contains(id)) {
                 tenantNodes.Add(new NewTenantNodeForNewNode {
                     Id = null,
                     TenantId = Constants.PPL,
@@ -274,8 +274,13 @@ internal sealed class OrganizationMigratorCPCT(
                 Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                 FileIdTileImage = null,
                 VocabularyNames = vocabularyNames,
-                OrganizationTypes = organizationOrganizationTypes,
+                OrganizationTypeIds = organizationOrganizationTypeIds,
                 NodeTermIds = new List<int>(),
+                NewLocations = new List<EventuallyIdentifiableLocation>(),
+                PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
+                PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
+                InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+                InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
             };
 
         }
