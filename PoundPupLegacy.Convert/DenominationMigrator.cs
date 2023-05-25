@@ -3,7 +3,7 @@
 internal sealed class DenominationMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiableDenomination> denominationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableDenomination> denominationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "denominations";

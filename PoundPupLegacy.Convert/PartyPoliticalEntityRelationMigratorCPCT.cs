@@ -4,7 +4,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
-    INodeCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 

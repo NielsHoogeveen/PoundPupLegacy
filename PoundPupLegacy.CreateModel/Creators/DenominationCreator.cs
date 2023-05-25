@@ -8,10 +8,10 @@ internal sealed class DenominationCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableDenomination> denominationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableDenomination>
+) : IEntityCreatorFactory<EventuallyIdentifiableDenomination>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableDenomination>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableDenomination>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableDenomination>(
             new ()
             {
                 await nodeInserterFactory.CreateAsync(connection),

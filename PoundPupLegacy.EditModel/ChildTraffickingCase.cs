@@ -12,7 +12,7 @@ public interface ChildTraffickingCase : Case
     CountryListItem? CountryFrom { get; }
 
 }
-public interface ResolvedChildTraffickingCase : ChildTraffickingCase
+public interface ResolvedChildTraffickingCase : ChildTraffickingCase, ResolvedNode
 {
     new CountryListItem CountryFrom { get; set; }
 }
@@ -24,7 +24,7 @@ public sealed record ExistingChildTraffickingCase : ChildTraffickingCaseBase, Re
     
     public new required CountryListItem CountryFrom { get; set; }
 }
-public sealed record ResolvedNewChildTraffickingCase : ChildTraffickingCaseBase, ResolvedChildTraffickingCase, NewNode
+public sealed record ResolvedNewChildTraffickingCase : ChildTraffickingCaseBase, ResolvedChildTraffickingCase, ResolvedNewNode
 {
     public new required CountryListItem CountryFrom { get; set; }
 }

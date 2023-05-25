@@ -2,7 +2,7 @@
 
 internal sealed class DiscussionMigrator(
     IDatabaseConnections databaseConnections,
-    INodeCreatorFactory<EventuallyIdentifiableDiscussion> discussionCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableDiscussion> discussionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "discussions";

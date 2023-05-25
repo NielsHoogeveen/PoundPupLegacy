@@ -2,7 +2,7 @@
 
 internal sealed class FathersRightsViolationsCaseMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "father's rights violation cases";

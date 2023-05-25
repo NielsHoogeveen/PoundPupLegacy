@@ -2,7 +2,7 @@
 
 internal sealed class PollStatusMigrator(
     IDatabaseConnections databaseConnections,
-    IInsertingEntityCreatorFactory<PollStatus> pollStatusCreatorFactory
+    IEntityCreatorFactory<PollStatus> pollStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "poll statuses";

@@ -2,7 +2,7 @@
 
 internal sealed class DisruptedPlacementCaseMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableDisruptedPlacementCase> disruptedPlacementCaseCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableDisruptedPlacementCase> disruptedPlacementCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "disrupted placement cases";

@@ -2,7 +2,7 @@
 
 internal sealed class AbuseCaseTypeOfAbuserMigrator(
     IDatabaseConnections databaseConnections,
-    IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory,
+    IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
 ) : MigratorPPL(databaseConnections)
 {

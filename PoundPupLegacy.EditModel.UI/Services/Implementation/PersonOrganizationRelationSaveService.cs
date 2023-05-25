@@ -1,11 +1,12 @@
 ﻿using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Updaters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class PersonOrganizationRelationSaveService(
         IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
-        IDatabaseUpdaterFactory<PersonOrganizationRelationUpdaterRequest> personOrganizationRelationUpdaterFactory,
-        INodeCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory
+        IDatabaseUpdaterFactory<ImmediatelyIdentifiablePersonOrganizationRelation> personOrganizationRelationUpdaterFactory,
+        IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory
     ) : ISaveService<IEnumerable<PersonOrganizationRelation>>
 {
     public async Task SaveAsync(IEnumerable<PersonOrganizationRelation> item, IDbConnection connection)
@@ -19,8 +20,8 @@ internal class PersonOrganizationRelationSaveService(
             });
         }
         foreach (var relation in item.OfType<ExistingPersonOrganizationRelation>().Where(x => !x.HasBeenDeleted)) {
-            await updater.UpdateAsync(new PersonOrganizationRelationUpdaterRequest {
-                NodeId = relation.NodeId,
+            await updater.UpdateAsync(new CreateModel.ExistingPersonOrganizationRelation {
+                Id = relation.NodeId,
                 Title = relation.Title,
                 PersonId = relation.Person.Id,
                 OrganizationId = relation.Organization.Id,
@@ -28,7 +29,14 @@ internal class PersonOrganizationRelationSaveService(
                 DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                 DocumentIdProof = relation.ProofDocument?.Id,
                 Description = relation.Description,
-                GeographicalEntityId = relation.GeographicalEntity?.Id
+                GeographicalEntityId = relation.GeographicalEntity?.Id,
+                AuthoringStatusId = 1,
+                ChangedDateTime = DateTime.Now,
+                NewNodeTerms = new List<NodeTerm>(),
+                NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+                NodeTermsToRemove = new List<NodeTerm>(),
+                TenantNodesToRemove = new List<ExistingTenantNode>(),
+                TenantNodesToUpdate = new List<ExistingTenantNode>(),
             });
         }
         IEnumerable<CreateModel.NewPersonOrganizationRelation> GetRelationsToInsert()

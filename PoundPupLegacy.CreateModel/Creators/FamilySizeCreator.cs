@@ -8,10 +8,10 @@ internal sealed class FamilySizeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableFamilySize> familySizeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableFamilySize>
+) : IEntityCreatorFactory<EventuallyIdentifiableFamilySize>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableFamilySize>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableFamilySize>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableFamilySize>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

@@ -7,51 +7,48 @@ internal sealed class BlogPostEditService(
     IDbConnection connection,
     ILogger<BlogPostEditService> logger,
     ITenantRefreshService tenantRefreshService,
-    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewBlogPost> createDocumentReaderFactory,
-    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingBlogPost> updateDocumentReaderFactory,
-    IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
-    ISaveService<IEnumerable<Tag>> tagSaveService,
-    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-    ISaveService<IEnumerable<File>> filesSaveService,
-    ITextService textService,
-    INodeCreatorFactory<EventuallyIdentifiableBlogPost> blogPostCreatorFactory
-) : SimpleTextNodeEditServiceBase<BlogPost, ExistingBlogPost, NewBlogPost, EventuallyIdentifiableBlogPost>(
-    connection, 
-    logger, 
-    tenantRefreshService, 
-    simpleTextNodeUpdaterFactory, 
-    tagSaveService, 
-    tenantNodesSaveService, 
-    filesSaveService, 
-    textService), IEditService<BlogPost, BlogPost>
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewBlogPost> createViewModelReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingBlogPost> updateViewModelReaderFactory,
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableBlogPost> updaterFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableBlogPost> creatorFactory,
+    ITextService textService
+) : NodeEditServiceBase<
+    BlogPost, 
+    BlogPost,
+    ExistingBlogPost, 
+    NewBlogPost, 
+    NewBlogPost,
+    CreateModel.BlogPost,
+    EventuallyIdentifiableBlogPost, 
+    ImmediatelyIdentifiableBlogPost>(
+    connection,
+    logger,
+    tenantRefreshService,
+    creatorFactory,
+    updaterFactory,
+    createViewModelReaderFactory,
+    updateViewModelReaderFactory
+), IEditService<BlogPost, BlogPost>
 {
 
-    protected sealed override INodeCreatorFactory<EventuallyIdentifiableBlogPost> EntityCreatorFactory => blogPostCreatorFactory;
-
-    public async Task<BlogPost?> GetViewModelAsync(int userId, int tenantId)
+    protected sealed override ImmediatelyIdentifiableBlogPost Map(ExistingBlogPost item)
     {
-        return await WithConnection(async (connection) => {
-            await using var reader = await createDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.BLOG_POST,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
-    public async Task<BlogPost?> GetViewModelAsync(int urlId, int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await updateDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
-                UrlId = urlId,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
+        return new CreateModel.ExistingBlogPost {
+            Id = item.NodeId,
+            Title = item.Title,
+            Text = textService.FormatText(item.Text),
+            Teaser = textService.FormatTeaser(item.Text),
+            ChangedDateTime = DateTime.Now,
+            AuthoringStatusId = 1,
+            NewNodeTerms = new List<NodeTerm>(),
+            NodeTermsToRemove = new List<NodeTerm>(),
+            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<ExistingTenantNode>()
+        };
     }
 
-    protected sealed override CreateModel.NewBlogPost Map(NewBlogPost item)
+    protected sealed override EventuallyIdentifiableBlogPost Map(NewBlogPost item)
     {
         var now = DateTime.Now;
         return new CreateModel.NewBlogPost {
@@ -65,7 +62,7 @@ internal sealed class BlogPostEditService(
             OwnerId = item.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = item.PublisherId,
-            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
+            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,

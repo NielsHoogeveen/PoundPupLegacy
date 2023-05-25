@@ -5,9 +5,9 @@ internal sealed class CaseTypeCreatorFactory(
     IDatabaseInserterFactory<CaseType> caseTypeInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableNameableType> nameableTypeInserterFactory,
     IDatabaseInserterFactory<CaseTypeCasePartyType> caseTypeCasePartyTypeInserterFactory
-) : IInsertingEntityCreatorFactory<CaseType>
+) : IEntityCreatorFactory<CaseType>
 {
-    public async Task<InsertingEntityCreator<CaseType>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<CaseType>> CreateAsync(IDbConnection connection) =>
         new CaseTypeCreator(
             new() {
                 await nodeTypeInserterFactory.CreateAsync(connection),

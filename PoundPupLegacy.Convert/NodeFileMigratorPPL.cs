@@ -4,7 +4,7 @@ internal sealed class NodeFileMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IInsertingEntityCreatorFactory<NodeFile> nodeFileCreatorFactory
+    IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "files nodes (ppl)";

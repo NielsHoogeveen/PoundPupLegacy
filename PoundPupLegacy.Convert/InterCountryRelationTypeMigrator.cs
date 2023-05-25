@@ -3,7 +3,7 @@
 internal sealed class InterCountryRelationTypeMigrator(
 IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiableInterCountryRelationType> interCountryRelationTypeCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableInterCountryRelationType> interCountryRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-country relation types";

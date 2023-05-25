@@ -1,8 +1,11 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
+
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class TenantNodesSaveService(
     IDatabaseDeleterFactory<TenantNodeDeleterRequest> tenantNodeDeleterFactory,
-    IDatabaseUpdaterFactory<TenantNodeUpdaterRequest> tenantNodeUpdaterFactory,
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableTenantNode> tenantNodeUpdaterFactory,
     IDatabaseInserterFactory<CreateModel.NewTenantNodeForNewNode> tenantNodeInserterFactory
 ) : ISaveService<IEnumerable<TenantNode>>
 {
@@ -37,7 +40,7 @@ internal sealed class TenantNodesSaveService(
         if (tenantNodes.Any(x => x.Id.HasValue)) {
             await using var updater = await tenantNodeUpdaterFactory.CreateAsync(connection);
             foreach (var tenantNode in tenantNodes.Where(x => x.Id.HasValue)) {
-                var tenantNodeUpdate = new TenantNodeUpdaterRequest {
+                var tenantNodeUpdate = new CreateModel.ExistingTenantNode {
                     Id = tenantNode.Id!.Value,
                     UrlPath = tenantNode.UrlPath,
                     SubgroupId = tenantNode.SubgroupId,

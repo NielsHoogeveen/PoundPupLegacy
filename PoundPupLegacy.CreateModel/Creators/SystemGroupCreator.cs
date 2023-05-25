@@ -7,10 +7,10 @@ internal sealed class SystemGroupCreatorFactory(
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory,
-    INodeCreatorFactory<EventuallyIdentifiableVocabulary> vocabularyCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableVocabulary> vocabularyCreatorFactory
 ) : IEntityCreatorFactory<SystemGroup>
 {
-    public async Task<EntityCreator<SystemGroup>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<SystemGroup>> CreateAsync(IDbConnection connection) =>
         new SystemGroupCreator(
             await userGroupInserterFactory.CreateAsync(connection),
             await ownerInserterFactory.CreateAsync(connection),

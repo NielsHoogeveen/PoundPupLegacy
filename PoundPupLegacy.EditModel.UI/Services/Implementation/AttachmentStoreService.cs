@@ -10,7 +10,7 @@ internal sealed class AttachmentStoreService(
     IDbConnection connection,
     ILogger<AttachmentStoreService> logger,
     IConfiguration configuration,
-    IInsertingEntityCreatorFactory<CreateModel.File> fileCreatorFactory
+    IEntityCreatorFactory<CreateModel.File> fileCreatorFactory
 ) : DatabaseService(connection, logger), IAttachmentStoreService
 {
     public async Task<int?> StoreFile(IFormFile file)

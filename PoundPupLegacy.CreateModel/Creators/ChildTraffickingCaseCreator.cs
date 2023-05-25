@@ -10,10 +10,10 @@ internal sealed class ChildTraffickingCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableChildTraffickingCase>
+) : IEntityCreatorFactory<EventuallyIdentifiableChildTraffickingCase>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableChildTraffickingCase>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableChildTraffickingCase>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableChildTraffickingCase>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

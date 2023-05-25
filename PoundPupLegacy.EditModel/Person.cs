@@ -9,7 +9,7 @@ public partial class ExistingPersonJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(NewPerson))]
 public partial class NewPersonJsonContext : JsonSerializerContext { }
 
-public interface Person : Party
+public interface Person : Party, ResolvedNode
 {
     IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations { get; }
 
@@ -24,7 +24,7 @@ public interface Person : Party
     List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; }
 
 }
-public sealed record NewPerson : PersonBase, NewNode
+public sealed record NewPerson : PersonBase, ResolvedNewNode
 {
     public override IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
 

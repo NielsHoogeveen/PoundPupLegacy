@@ -2,7 +2,7 @@
 
 internal sealed class CasePartyTypeMigrator(
         IDatabaseConnections databaseConnections,
-        INameableCreatorFactory<EventuallyIdentifiableCasePartyType> casePartyTypeCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableCasePartyType> casePartyTypeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "case relation types";

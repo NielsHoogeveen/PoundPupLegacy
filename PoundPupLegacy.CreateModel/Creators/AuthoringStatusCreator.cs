@@ -2,10 +2,10 @@
 
 internal sealed class AuthoringStatusCreatorFactory(
     IDatabaseInserterFactory<AuthoringStatus> authoringStatusInserterFactory
-) : IInsertingEntityCreatorFactory<AuthoringStatus>
+) : IEntityCreatorFactory<AuthoringStatus>
 {
-    public async Task<InsertingEntityCreator<AuthoringStatus>> CreateAsync(IDbConnection connection) =>
-        new (new () {
+    public async Task<IEntityCreator<AuthoringStatus>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<AuthoringStatus>(new () {
             await authoringStatusInserterFactory.CreateAsync(connection)
         });
 }

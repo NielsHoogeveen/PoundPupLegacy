@@ -7,7 +7,7 @@ internal sealed class OrganizationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "organizations (ppl)";

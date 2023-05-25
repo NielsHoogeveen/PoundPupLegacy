@@ -7,10 +7,10 @@ internal sealed class InterPersonalRelationTypeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableInterPersonalRelationType> interPersonalRelationTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableInterPersonalRelationType>
+) : IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelationType>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableInterPersonalRelationType>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableInterPersonalRelationType>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableInterPersonalRelationType>(
             new() 
             {
                 await nodeInserterFactory.CreateAsync(connection),

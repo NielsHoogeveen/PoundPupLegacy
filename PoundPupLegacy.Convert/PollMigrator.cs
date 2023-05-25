@@ -2,7 +2,7 @@
 internal sealed class PollMigrator(
     IDatabaseConnections databaseConnections,
     IEntityCreatorFactory<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollCreatorFactory,
-    INodeCreatorFactory<EventuallyIdentifiableMultiQuestionPoll> multiQuestionPollCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableMultiQuestionPoll> multiQuestionPollCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "polls";

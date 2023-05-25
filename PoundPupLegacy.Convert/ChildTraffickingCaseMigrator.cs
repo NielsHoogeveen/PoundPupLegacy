@@ -3,7 +3,7 @@
 internal sealed class ChildTraffickingCaseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        INameableCreatorFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child trafficking cases";

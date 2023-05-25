@@ -3,9 +3,9 @@
 internal sealed class LocationCreatorFactory(
     IDatabaseInserterFactory<Location> locationInserterFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
-) : IInsertingEntityCreatorFactory<Location>
+) : IEntityCreatorFactory<Location>
 {
-    public async Task<InsertingEntityCreator<Location>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<Location>> CreateAsync(IDbConnection connection) =>
         new LocationCreator(
             new() 
             {

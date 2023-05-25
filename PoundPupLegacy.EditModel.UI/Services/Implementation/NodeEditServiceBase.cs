@@ -2,68 +2,76 @@
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal abstract class NodeEditServiceBase<TEntity, TExisting, TNew, TCreate>(
+internal abstract class NodeEditServiceBase<TViewModelEntity, TResolvedViewModelEntity, TExistingViewModel, TNewViewModel, TResolvedNewViewModel, TDomainModel, TCreateModel, TUpdateModel>(
         IDbConnection connection,
         ILogger logger,
-        ISaveService<IEnumerable<Tag>> tagSaveService,
-        ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-        ISaveService<IEnumerable<File>> filesSaveService,
-        ITenantRefreshService tenantRefreshService
-
-    ): DatabaseService(connection, logger)
-    where TEntity : class, Node
-    where TExisting : ExistingNode, TEntity
-    where TNew : NewNode, TEntity
-    where TCreate : CreateModel.Node
+        ITenantRefreshService tenantRefreshService,
+        IEntityCreatorFactory<TCreateModel> creatorFactory,
+        IDatabaseUpdaterFactory<TUpdateModel> updaterFactory,
+        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TNewViewModel> createViewModelReaderFactory,
+        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TExistingViewModel> updateViewModelReaderFactory
+    ) : DatabaseService(connection, logger), IEditService<TViewModelEntity, TResolvedViewModelEntity>
+    where TViewModelEntity : class, Node
+    where TResolvedViewModelEntity : class, TViewModelEntity, ResolvedNode
+    where TExistingViewModel : class, ExistingNode, TResolvedViewModelEntity
+    where TNewViewModel : class, NewNode, TViewModelEntity
+    where TResolvedNewViewModel : class, ResolvedNewNode, TViewModelEntity
+    where TDomainModel: class, CreateModel.Node
+    where TCreateModel : class, CreateModel.EventuallyIdentifiableNode, TDomainModel
+    where TUpdateModel: class, CreateModel.ImmediatelyIdentifiableNode, TDomainModel
 {
-    protected abstract Task StoreExisting(TExisting node, NpgsqlConnection connection);
-    protected abstract Task<int> StoreNew(TNew node, NpgsqlConnection connection);
-    protected virtual async Task StoreAdditional(TEntity node, int nodeId, NpgsqlConnection connection)
+    protected abstract TUpdateModel Map(TExistingViewModel existingViewModel);
+    protected abstract TCreateModel Map(TResolvedNewViewModel newViewModel);
+    public async Task<int> SaveAsync(TResolvedViewModelEntity node)
     {
-        await tagSaveService.SaveAsync(node.Tags.SelectMany(x => x.Entries), connection);
-        await tenantNodesSaveService.SaveAsync(node.TenantNodes, connection);
-        await filesSaveService.SaveAsync(node.Files, connection);
-    }
-
-    public async Task<int> SaveAsync(TEntity node)
-    {
-        return await (node switch {
-            TNew n => SaveAsync(n),
-            TExisting e => SaveAsync(e),
+        
+        var id = await (node switch {
+            TResolvedNewViewModel n => SaveNewAsync(n),
+            TExistingViewModel e => SaveExistingAsync(e),
             _ => throw new Exception("Cannot reach")
         });
+        await tenantRefreshService.Refresh();
+        return id;
     }
-
-    protected virtual async Task<int> SaveAsync(TNew node)
+    public async Task<TViewModelEntity?> GetViewModelAsync(int urlId, int userId, int tenantId)
     {
-        return await WithTransactedConnection(async (connection) => { 
-            var id = await StoreNew(node, connection);
-            foreach (var tagNodeType in node.Tags) {
-                foreach (var tag in tagNodeType.Entries) {
-                    tag.NodeId = id;
-                }
-            }
-            foreach (var tenantNode in node.TenantNodes) {
-                tenantNode.NodeId = id;
-            }
-            foreach (var file in node.Files) {
-                file.NodeId = id;
-            }
-            await StoreAdditional(node, id, connection);
-            if (node.TenantNodes.Any(x => x.UrlPath is not null)) {
-                await tenantRefreshService.Refresh();
-            }
-            return id;
+        return await WithConnection(async (connection) => {
+            await using var reader = await updateViewModelReaderFactory.CreateAsync(connection);
+            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
+                UrlId = urlId,
+                UserId = userId,
+                TenantId = tenantId
+            });
         });
     }
-    protected virtual async Task<int> SaveAsync(TExisting node)
+
+    public async Task<TViewModelEntity?> GetViewModelAsync(int userId, int tenantId)
+    {
+        return await WithConnection(async (connection) => {
+            await using var reader = await createViewModelReaderFactory.CreateAsync(connection);
+            return await reader.ReadAsync(new NodeCreateDocumentRequest {
+                NodeTypeId = Constants.DOCUMENT,
+                UserId = userId,
+                TenantId = tenantId
+            });
+        });
+    }
+
+    protected async Task<int> SaveNewAsync(TResolvedNewViewModel node)
+    {
+
+        return await WithTransactedConnection(async (connection) => {
+            await using var updater = await creatorFactory.CreateAsync(connection);
+            var nodeToCreate = Map(node);
+            await updater.CreateAsync(nodeToCreate);
+            return nodeToCreate.Id!.Value;
+        });
+    }
+    protected async Task<int> SaveExistingAsync(TExistingViewModel node)
     {
         return await WithTransactedConnection(async (connection) => {
-            await StoreExisting(node, connection);
-            await StoreAdditional(node, node.NodeId, connection);
-            if (node.TenantNodes.Any(x => x.UrlPath is not null)) {
-                await tenantRefreshService.Refresh();
-            }
+            await using var updater = await updaterFactory.CreateAsync(connection);
+            await updater.UpdateAsync(Map(node));
             return node.UrlId;
         });
     }

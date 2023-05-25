@@ -5,8 +5,8 @@ internal sealed class MenuMigrator(
         IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
         IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int> createNodeActionIdReaderByNodeTypeIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TenantNodeIdReaderByUrlIdRequest, int> tenantNodeIdReaderByUrlIdFactory,
-        IInsertingEntityCreatorFactory<TenantNodeMenuItem> tenantNodeMenuItemCreatorFactory,
-        IInsertingEntityCreatorFactory<ActionMenuItem> actionMenuItemCreatorFactory
+        IEntityCreatorFactory<TenantNodeMenuItem> tenantNodeMenuItemCreatorFactory,
+        IEntityCreatorFactory<ActionMenuItem> actionMenuItemCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
 {

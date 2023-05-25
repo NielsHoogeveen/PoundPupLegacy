@@ -9,7 +9,7 @@ public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(NewOrganization))]
 public partial class NewOrganizationJsonContext : JsonSerializerContext { }
 
-public interface Organization : Party
+public interface Organization : Party, ResolvedNode
 {
     IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations { get; }
 
@@ -125,7 +125,7 @@ public sealed record ExistingOrganization : OrganizationBase, ExistingNode
 
     public override OrganizationItem OrganizationItem => new OrganizationListItem { Id = NodeId, Name = Title };
 }
-public sealed record NewOrganization : OrganizationBase, NewNode
+public sealed record NewOrganization : OrganizationBase, ResolvedNewNode
 {
     public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
     public override IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => NewInterOrganizationalRelationsFrom;

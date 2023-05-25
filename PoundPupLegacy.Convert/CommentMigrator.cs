@@ -3,7 +3,7 @@
 internal sealed class CommentMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IInsertingEntityCreatorFactory<Comment> commentCreatorFactory
+    IEntityCreatorFactory<Comment> commentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "comments";

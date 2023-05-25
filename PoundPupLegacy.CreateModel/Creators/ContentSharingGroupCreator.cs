@@ -8,9 +8,9 @@ internal sealed class ContentSharingGroupCreatorFactory(
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
-) : IInsertingEntityCreatorFactory<ContentSharingGroup>
+) : IEntityCreatorFactory<ContentSharingGroup>
 {
-    public async Task<InsertingEntityCreator<ContentSharingGroup>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<ContentSharingGroup>> CreateAsync(IDbConnection connection) =>
         new ContentSharingGroupCreator(
             new () {
                 await userGroupInserterFactory.CreateAsync(connection),

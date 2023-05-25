@@ -15,10 +15,10 @@ internal sealed class BasicSecondLevelSubdivisionCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
     
-) : INameableCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision>
+) : IEntityCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableBasicSecondLevelSubdivision>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableBasicSecondLevelSubdivision>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableBasicSecondLevelSubdivision>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

@@ -2,11 +2,11 @@
 
 internal sealed class ActionMigrator(
     IDatabaseConnections databaseConnections,
-    IInsertingEntityCreatorFactory<BasicAction> basicActionCreatorFactory,
-    IInsertingEntityCreatorFactory<CreateNodeAction> createNodeActionCreatorFactory,
-    IInsertingEntityCreatorFactory<DeleteNodeAction> deleteNodeActionCreatorFactory,
-    IInsertingEntityCreatorFactory<EditNodeAction> editNodeActionCreatorFactory,
-    IInsertingEntityCreatorFactory<EditOwnNodeAction> editOwnNodeActionCreatorFactory
+    IEntityCreatorFactory<BasicAction> basicActionCreatorFactory,
+    IEntityCreatorFactory<CreateNodeAction> createNodeActionCreatorFactory,
+    IEntityCreatorFactory<DeleteNodeAction> deleteNodeActionCreatorFactory,
+    IEntityCreatorFactory<EditNodeAction> editNodeActionCreatorFactory,
+    IEntityCreatorFactory<EditOwnNodeAction> editOwnNodeActionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "actions";

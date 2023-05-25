@@ -14,10 +14,10 @@ internal sealed class BoundCountryCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
 
-) : INameableCreatorFactory<EventuallyIdentifiableBoundCountry>
+) : IEntityCreatorFactory<EventuallyIdentifiableBoundCountry>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableBoundCountry>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableBoundCountry>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableBoundCountry>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

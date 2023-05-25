@@ -2,7 +2,7 @@
 
 internal sealed class ActMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableAct> actCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableAct> actCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 

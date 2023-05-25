@@ -1,69 +1,76 @@
 ﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.CreateModel;
-using PoundPupLegacy.CreateModel.Creators;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class DocumentEditService(
     IDbConnection connection,
     ILogger<DocumentEditService> logger,
-    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDocument> createDocumentReaderFactory,
-    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDocument> documentUpdateDocumentReaderFactory,
-    IDatabaseUpdaterFactory<DocumentUpdaterRequest> documentUpdaterFactory,
-    ISaveService<IEnumerable<Tag>> tagSaveService,
-    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-    ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    INodeCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDocument> createViewModelReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDocument> updateViewModelReaderFactory,
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableDocument> updaterFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableDocument> creatorFactory,
     ITextService textService
-) : NodeEditServiceBase<Document, ExistingDocument, NewDocument, CreateModel.NewDocument>(
+) : NodeEditServiceBase<
+    Document,
+    Document,
+    ExistingDocument,
+    NewDocument,
+    NewDocument,
+    CreateModel.Document,
+    EventuallyIdentifiableDocument,
+    ImmediatelyIdentifiableDocument>(
     connection,
     logger,
-    tagSaveService,
-    tenantNodesSaveService,
-    filesSaveService,
-    tenantRefreshService
+    tenantRefreshService,
+    creatorFactory,
+    updaterFactory,
+    createViewModelReaderFactory,
+    updateViewModelReaderFactory
 ), IEditService<Document, Document>
 {
-    public async Task<Document?> GetViewModelAsync(int urlId, int userId, int tenantId)
+
+    protected sealed override ImmediatelyIdentifiableDocument Map(ExistingDocument item)
     {
-        return await WithConnection(async (connection) => {
-            await using var reader = await documentUpdateDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
-                UrlId = urlId,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
+        return new CreateModel.ExistingDocument {
+            Id = item.NodeId,
+            Title = item.Title,
+            Text = textService.FormatText(item.Text),
+            Teaser = textService.FormatTeaser(item.Text),
+            Documentables = new List<int>(),
+            DocumentTypeId = item.DocumentTypeId,
+            Published = item.Published,
+            SourceUrl = item.SourceUrl,
+            ChangedDateTime = DateTime.Now,
+            AuthoringStatusId = 1,
+            NewNodeTerms = new List<NodeTerm>(),
+            NodeTermsToRemove = new List<NodeTerm>(),
+            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<ExistingTenantNode>()
+        };
     }
 
-    public async Task<Document?> GetViewModelAsync(int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await createDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.DOCUMENT,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
-
-    protected sealed override async Task<int> StoreNew(NewDocument document, NpgsqlConnection connection)
+    protected sealed override EventuallyIdentifiableDocument Map(NewDocument item)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.NewDocument {
+        return new CreateModel.NewDocument {
             Id = null,
-            Title = document.Title,
-            Text = textService.FormatText(document.Text),
-            Teaser = textService.FormatTeaser(document.Text),
+            Title = item.Title,
+            Text = textService.FormatText(item.Text),
+            Teaser = textService.FormatTeaser(item.Text),
+            Documentables = new List<int>(),
+            DocumentTypeId = item.DocumentTypeId,
+            Published = item.Published,
+            SourceUrl = item.SourceUrl,
             ChangedDateTime = now,
             CreatedDateTime = now,
-            NodeTypeId = Constants.DOCUMENT,
-            OwnerId = document.OwnerId,
+            NodeTypeId = Constants.BLOG_POST,
+            OwnerId = item.OwnerId,
             AuthoringStatusId = 1,
-            PublisherId = document.PublisherId,
-            TenantNodes = document.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
+            PublisherId = item.PublisherId,
+            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -72,29 +79,7 @@ internal sealed class DocumentEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Published = document.Published,
-            Documentables = new List<int>(),
-            DocumentTypeId = document.DocumentTypeId,
-            SourceUrl = document.SourceUrl,
             NodeTermIds = new List<int>(),
         };
-        await using var documentCreator = await documentCreatorFactory.CreateAsync(connection);
-        await documentCreator.CreateAsync(createDocument);
-        return createDocument.Id!.Value;
-    }
-
-    protected sealed override async Task StoreExisting(ExistingDocument document, NpgsqlConnection connection)
-    {
-        await using var updater = await documentUpdaterFactory.CreateAsync(connection);
-        await updater.UpdateAsync(new DocumentUpdaterRequest {
-            Title = document.Title,
-            Text = textService.FormatText(document.Text),
-            Teaser = textService.FormatTeaser(document.Text),
-            NodeId = document.NodeId,
-            SourceUrl = document.SourceUrl,
-            DocumentTypeId = document.DocumentTypeId,
-            Published = document.Published,
-        });
-
     }
 }

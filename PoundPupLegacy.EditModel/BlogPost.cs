@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(ExistingBlogPost))]
 public partial class ExistingBlogPostJsonContext : JsonSerializerContext { }
 
-public interface BlogPost : SimpleTextNode
+public interface BlogPost : SimpleTextNode, ResolvedNode
 {
 
 }
@@ -20,6 +20,6 @@ public sealed record ExistingBlogPost : BlogPostBase, ExistingNode
 
 }
 
-public sealed record NewBlogPost : BlogPostBase, NewNode
+public sealed record NewBlogPost : BlogPostBase, ResolvedNewNode
 {
 }

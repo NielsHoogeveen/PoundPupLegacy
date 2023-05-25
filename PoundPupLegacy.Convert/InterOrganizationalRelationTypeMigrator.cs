@@ -3,7 +3,7 @@
 internal sealed class InterOrganizationalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType> interOrganizationalRelationTypeCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType> interOrganizationalRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-organization relation types";

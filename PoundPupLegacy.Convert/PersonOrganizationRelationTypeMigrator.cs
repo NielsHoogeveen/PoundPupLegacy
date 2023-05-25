@@ -3,7 +3,7 @@
 internal sealed class PersonOrganizationRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationType> personOrganizationRelationTypeCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationType> personOrganizationRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation types";

@@ -10,10 +10,10 @@ internal sealed class WrongfulRemovalCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase>
+) : IEntityCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableWrongfulRemovalCase>> CreateAsync(IDbConnection connection) =>
-    new(
+    public async Task<IEntityCreator<EventuallyIdentifiableWrongfulRemovalCase>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableWrongfulRemovalCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

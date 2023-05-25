@@ -8,9 +8,9 @@ internal sealed class SubgroupCreatorFactory(
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
-) : IInsertingEntityCreatorFactory<Subgroup>
+) : IEntityCreatorFactory<Subgroup>
 {
-    public async Task<InsertingEntityCreator<Subgroup>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<Subgroup>> CreateAsync(IDbConnection connection) =>
         new SubgroupCreator(
             new() {
                 await userGroupInserterFactory.CreateAsync(connection),

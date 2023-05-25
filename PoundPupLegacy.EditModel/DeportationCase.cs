@@ -6,19 +6,21 @@ public partial class ExistingDeportationCaseJsonContext : JsonSerializerContext 
 [JsonSerializable(typeof(NewDeportationCase))]
 public partial class NewDeportationCaseJsonContext : JsonSerializerContext { }
 
-public interface DeportationCase : Case
+public interface DeportationCase : Case, ResolvedNode
 {
-    SubdivisionListItem? SubdivisionFrom { get; set; }
-    CountryListItem? CountryTo { get; set; }
+    SubdivisionListItem? SubdivisionFrom { get;  }
+    CountryListItem? CountryTo { get;  }
 
 }
+
 public sealed record ExistingDeportationCase : DeportationCaseBase, ExistingNode
 {
     public int NodeId { get; set; }
 
     public int UrlId { get; set; }
 }
-public sealed record NewDeportationCase : DeportationCaseBase, NewNode
+
+public sealed record NewDeportationCase : DeportationCaseBase, ResolvedNewNode
 {
 }
 public abstract record DeportationCaseBase : CaseBase, DeportationCase

@@ -6,62 +6,46 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal sealed class WrongfulRemovalCaseEditService(
     IDbConnection connection,
     ILogger<WrongfulRemovalCaseEditService> logger,
-    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulRemovalCase> createWrongfulRemovalCaseReaderFactory,
-    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulRemovalCase> wrongfulRemovalCaseUpdateDocumentReaderFactory,
-    IDatabaseUpdaterFactory<WrongfulRemovalCaseUpdaterRequest> wrongfulRemovalCaseUpdaterFactory,
-    ISaveService<IEnumerable<Tag>> tagSaveService,
-    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-    ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    INameableCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseCreatorFactory,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewWrongfulRemovalCase> createViewModelReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingWrongfulRemovalCase> updateViewModelReaderFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase> creatorFactory,
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableWrongfulRemovalCase> updaterFactory,
     ITextService textService
-) : NodeEditServiceBase<WrongfulRemovalCase, ExistingWrongfulRemovalCase, NewWrongfulRemovalCase, CreateModel.WrongfulRemovalCase>(
+) : NodeEditServiceBase<
+        EditModel.WrongfulRemovalCase,
+        WrongfulRemovalCase,
+        ExistingWrongfulRemovalCase,
+        NewWrongfulRemovalCase,
+        NewWrongfulRemovalCase,
+        CreateModel.WrongfulRemovalCase,
+        EventuallyIdentifiableWrongfulRemovalCase,
+        ImmediatelyIdentifiableWrongfulRemovalCase>
+(
     connection,
     logger,
-    tagSaveService,
-    tenantNodesSaveService,
-    filesSaveService,
-    tenantRefreshService
+    tenantRefreshService,
+    creatorFactory,
+    updaterFactory,
+    createViewModelReaderFactory,
+    updateViewModelReaderFactory
 ), IEditService<WrongfulRemovalCase, WrongfulRemovalCase>
 {
-    public async Task<WrongfulRemovalCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await wrongfulRemovalCaseUpdateDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
-                UrlId = urlId,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
 
-    public async Task<WrongfulRemovalCase?> GetViewModelAsync(int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await createWrongfulRemovalCaseReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.DOCUMENT,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
-
-    protected sealed override async Task<int> StoreNew(NewWrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
+    protected sealed override EventuallyIdentifiableWrongfulRemovalCase Map(NewWrongfulRemovalCase viewModel)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.NewWrongfulRemovalCase {
+        return new CreateModel.NewWrongfulRemovalCase {
             Id = null,
-            Title = wrongfulRemovalCase.Title,
-            Description = wrongfulRemovalCase.Description is null ? "" : textService.FormatText(wrongfulRemovalCase.Description),
+            Title = viewModel.Title,
+            Description = viewModel.Description is null ? "" : textService.FormatText(viewModel.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
-            OwnerId = wrongfulRemovalCase.OwnerId,
+            OwnerId = viewModel.OwnerId,
             AuthoringStatusId = 1,
-            PublisherId = wrongfulRemovalCase.PublisherId,
-            TenantNodes = wrongfulRemovalCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
+            PublisherId = viewModel.PublisherId,
+            TenantNodes = viewModel.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -70,31 +54,36 @@ internal sealed class WrongfulRemovalCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = wrongfulRemovalCase.Date,
+            Date = viewModel.Date,
             FileIdTileImage = null,
-            VocabularyNames = new List<CreateModel.VocabularyName> {
-                new  CreateModel.VocabularyName {
+            VocabularyNames = new List<VocabularyName> {
+                new  VocabularyName {
                     OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
-                    TermName = wrongfulRemovalCase.Title,
+                    TermName = viewModel.Title,
                     ParentNames = new List<string>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            NodeTermIds = new List<int>()
         };
-        await using var wrongfulRemovalCaseCreator = await wrongfulRemovalCaseCreatorFactory.CreateAsync(connection);
-        await wrongfulRemovalCaseCreator.CreateAsync(createDocument);
-        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(ExistingWrongfulRemovalCase wrongfulRemovalCase, NpgsqlConnection connection)
+    protected sealed override ImmediatelyIdentifiableWrongfulRemovalCase Map(ExistingWrongfulRemovalCase viewModel)
     {
-        await using var updater = await wrongfulRemovalCaseUpdaterFactory.CreateAsync(connection);
-        await updater.UpdateAsync(new WrongfulRemovalCaseUpdaterRequest {
-            Title = wrongfulRemovalCase.Title,
-            Description = wrongfulRemovalCase.Description is null ? "" : textService.FormatText(wrongfulRemovalCase.Description),
-            NodeId = wrongfulRemovalCase.NodeId,
-            Date = wrongfulRemovalCase.Date,
-        });
+        return new CreateModel.ExistingWrongfulRemovalCase {
+            Id = viewModel.NodeId,
+            Title = viewModel.Title,
+            Description = viewModel.Description is null ? "" : textService.FormatText(viewModel.Description),
+            ChangedDateTime = DateTime.Now,
+            AuthoringStatusId = 1,
+            Date = viewModel.Date,
+            FileIdTileImage = null,
+            NewNodeTerms = new List<NodeTerm>(),
+            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+            NodeTermsToRemove = new List<NodeTerm>(),
+            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<ExistingTenantNode>(),
+            VocabularyNames = new List<VocabularyName>()
+        };
     }
 }

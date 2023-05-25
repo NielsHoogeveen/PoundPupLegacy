@@ -4,7 +4,7 @@ internal sealed class AdoptionImportMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode> nodeReaderFactory,
-    INodeCreatorFactory<EventuallyIdentifiableInterCountryRelation> interCountryRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableInterCountryRelation> interCountryRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 

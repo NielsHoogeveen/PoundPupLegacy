@@ -2,7 +2,7 @@
 
 internal sealed class ReviewMigrator(
         IDatabaseConnections databaseConnections,
-        INodeCreatorFactory<EventuallyIdentifiableBlogPost> blogPostCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableBlogPost> blogPostCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "reviews";

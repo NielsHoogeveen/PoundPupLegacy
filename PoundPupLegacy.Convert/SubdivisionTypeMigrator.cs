@@ -2,7 +2,7 @@
 
 internal sealed class SubdivisionTypeMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableSubdivisionType> subdivisionTypeCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableSubdivisionType> subdivisionTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "subdivision types";

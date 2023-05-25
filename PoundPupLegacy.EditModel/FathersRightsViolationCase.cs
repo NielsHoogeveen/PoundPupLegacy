@@ -6,7 +6,7 @@ public partial class ExistingFathersRightsViolationCaseJsonContext : JsonSeriali
 [JsonSerializable(typeof(NewFathersRightsViolationCase))]
 public partial class NewFathersRightsViolationCaseJsonContext : JsonSerializerContext { }
 
-public interface FathersRightsViolationCase : Case
+public interface FathersRightsViolationCase : Case, ResolvedNode
 {
 }
 public sealed record ExistingFathersRightsViolationCase : FathersRightsViolationCaseBase, ExistingNode
@@ -15,7 +15,7 @@ public sealed record ExistingFathersRightsViolationCase : FathersRightsViolation
 
     public int UrlId { get; set; }
 }
-public sealed record NewFathersRightsViolationCase : FathersRightsViolationCaseBase, NewNode
+public sealed record NewFathersRightsViolationCase : FathersRightsViolationCaseBase, ResolvedNewNode
 {
 }
 public abstract record FathersRightsViolationCaseBase : CaseBase, FathersRightsViolationCase

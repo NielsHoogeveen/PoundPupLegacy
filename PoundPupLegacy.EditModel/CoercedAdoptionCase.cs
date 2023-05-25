@@ -6,7 +6,7 @@ public partial class ExistingCoercedAdoptionCaseJsonContext : JsonSerializerCont
 [JsonSerializable(typeof(NewCoercedAdoptionCase))]
 public partial class NewCoercedAdoptionCaseJsonContext : JsonSerializerContext { }
 
-public interface CoercedAdoptionCase : Case
+public interface CoercedAdoptionCase : Case, ResolvedNode
 {
 }
 public sealed record ExistingCoercedAdoptionCase : CoercedAdoptionCaseBase, ExistingNode
@@ -15,7 +15,7 @@ public sealed record ExistingCoercedAdoptionCase : CoercedAdoptionCaseBase, Exis
 
     public int UrlId { get; set; }
 }
-public sealed record NewCoercedAdoptionCase : CoercedAdoptionCaseBase, NewNode
+public sealed record NewCoercedAdoptionCase : CoercedAdoptionCaseBase, ResolvedNewNode
 {
 }
 public abstract record CoercedAdoptionCaseBase : CaseBase, CoercedAdoptionCase

@@ -3,7 +3,7 @@
 internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        INameableCreatorFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states political party affilition";

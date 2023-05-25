@@ -2,10 +2,10 @@
 
 internal sealed class UserGroupUserRoleUserCreatorFactory(
     IDatabaseInserterFactory<UserGroupUserRoleUser> userGroupUserRoleUserInserterFactory
-) : IInsertingEntityCreatorFactory<UserGroupUserRoleUser>
+) : IEntityCreatorFactory<UserGroupUserRoleUser>
 {
-    public async Task<InsertingEntityCreator<UserGroupUserRoleUser>> CreateAsync(IDbConnection connection) =>
-        new(new() 
+    public async Task<IEntityCreator<UserGroupUserRoleUser>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<UserGroupUserRoleUser>(new() 
         {
             await userGroupUserRoleUserInserterFactory.CreateAsync(connection)
         });

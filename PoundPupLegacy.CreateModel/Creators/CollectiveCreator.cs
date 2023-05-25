@@ -4,10 +4,10 @@ internal sealed class CollectiveCreatorFactory(
     IDatabaseInserterFactory<Principal> principalInserterFactory,
     IDatabaseInserterFactory<Publisher> publisherInserterFactory,
     IDatabaseInserterFactory<Collective> collectiveInserterFactory
-) : IInsertingEntityCreatorFactory<Collective>
+) : IEntityCreatorFactory<Collective>
 {
-    public async Task<InsertingEntityCreator<Collective>> CreateAsync(IDbConnection connection) => 
-        new (new () {
+    public async Task<IEntityCreator<Collective>> CreateAsync(IDbConnection connection) => 
+        new InsertingEntityCreator<Collective>(new () {
             await principalInserterFactory.CreateAsync(connection),
             await publisherInserterFactory.CreateAsync(connection),
             await collectiveInserterFactory.CreateAsync(connection)

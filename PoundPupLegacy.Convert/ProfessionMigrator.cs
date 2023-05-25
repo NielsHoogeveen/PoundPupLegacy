@@ -3,7 +3,7 @@
 internal sealed class ProfessionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiableProfession> professionCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableProfession> professionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "professions";

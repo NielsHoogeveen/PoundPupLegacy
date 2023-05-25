@@ -4,7 +4,7 @@ internal sealed class LocationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-    IInsertingEntityCreatorFactory<Location> locationCreatorFactory
+    IEntityCreatorFactory<Location> locationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "locations (ppl)";

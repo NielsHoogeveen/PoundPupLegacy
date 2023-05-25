@@ -8,7 +8,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-        INameableCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic second level subdivisions";

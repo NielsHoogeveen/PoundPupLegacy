@@ -7,10 +7,10 @@ internal sealed class TypeOfAbuserCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableTypeOfAbuser> typeOfAbuserInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableTypeOfAbuser>
+) : IEntityCreatorFactory<EventuallyIdentifiableTypeOfAbuser>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableTypeOfAbuser>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableTypeOfAbuser>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableTypeOfAbuser>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

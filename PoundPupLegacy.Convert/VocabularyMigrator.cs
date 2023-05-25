@@ -3,7 +3,7 @@
 internal sealed class VocabularyMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    INodeCreatorFactory<EventuallyIdentifiableVocabulary> vocabularyCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableVocabulary> vocabularyCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "vocabularies";

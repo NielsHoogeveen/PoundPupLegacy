@@ -2,10 +2,10 @@
 
 internal sealed class PollStatusCreatorFactory(
     IDatabaseInserterFactory<PollStatus> pollStatusInserterFactory
-) : IInsertingEntityCreatorFactory<PollStatus>
+) : IEntityCreatorFactory<PollStatus>
 {
-    public async Task<InsertingEntityCreator<PollStatus>> CreateAsync(IDbConnection connection) => 
-        new(new() {
+    public async Task<IEntityCreator<PollStatus>> CreateAsync(IDbConnection connection) => 
+        new InsertingEntityCreator<PollStatus>(new() {
             await pollStatusInserterFactory.CreateAsync(connection)
         });
 }

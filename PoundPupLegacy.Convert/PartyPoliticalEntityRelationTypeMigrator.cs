@@ -3,7 +3,7 @@
 internal sealed class PartyPoliticalEntityRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "political entity relation types";

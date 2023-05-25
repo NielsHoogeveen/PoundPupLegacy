@@ -3,7 +3,7 @@
 internal sealed class DeportationCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    INameableCreatorFactory<EventuallyIdentifiableDeportationCase> deportationCaseCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableDeportationCase> deportationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "deportation cases";

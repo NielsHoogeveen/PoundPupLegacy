@@ -15,11 +15,10 @@ internal sealed class FormalIntermediateLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-    
-) : INameableCreatorFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision>
+) : IEntityCreatorFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableFormalIntermediateLevelSubdivision>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableFormalIntermediateLevelSubdivision>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableFormalIntermediateLevelSubdivision>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

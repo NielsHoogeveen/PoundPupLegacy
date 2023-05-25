@@ -18,10 +18,10 @@ internal sealed class CountryAndIntermediateLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableIntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableCountryAndIntermediateLevelSubdivision>
+) : IEntityCreatorFactory<EventuallyIdentifiableCountryAndIntermediateLevelSubdivision>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableCountryAndIntermediateLevelSubdivision>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableCountryAndIntermediateLevelSubdivision>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableCountryAndIntermediateLevelSubdivision>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

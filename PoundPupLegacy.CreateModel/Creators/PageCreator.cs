@@ -6,10 +6,10 @@ internal sealed class PageCreatorFactory(
         IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
         IDatabaseInserterFactory<EventuallyIdentifiablePage> pageInserterFactory,
         NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-    ) : INodeCreatorFactory<EventuallyIdentifiablePage>
+    ) : IEntityCreatorFactory<EventuallyIdentifiablePage>
 {
-    public async Task<NodeCreator<EventuallyIdentifiablePage>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiablePage>> CreateAsync(IDbConnection connection) =>
+        new NodeCreator<EventuallyIdentifiablePage>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

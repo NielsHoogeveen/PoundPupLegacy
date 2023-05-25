@@ -2,6 +2,10 @@
 
 using Request = ImmediatelyIdentifiableTenantNode;
 
+public record TenantNodeDeleterRequest: IRequest
+{
+    public required int Id { get; init; }
+}
 internal sealed class TenantNodeDeleterFactory : DatabaseDeleterFactory<Request>
 {
 

@@ -7,10 +7,10 @@ internal sealed class BasicNameableCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableBasicNameable> basicNameableInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableBasicNameable>
+) : IEntityCreatorFactory<EventuallyIdentifiableBasicNameable>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableBasicNameable>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableBasicNameable>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableBasicNameable>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

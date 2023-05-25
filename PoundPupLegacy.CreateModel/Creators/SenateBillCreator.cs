@@ -9,10 +9,10 @@ internal sealed class SenateBillCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableSenateBill> senateBillInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableSenateBill>
+) : IEntityCreatorFactory<EventuallyIdentifiableSenateBill>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableSenateBill>> CreateAsync(IDbConnection connection) => 
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableSenateBill>> CreateAsync(IDbConnection connection) => 
+        new NameableCreator<EventuallyIdentifiableSenateBill>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

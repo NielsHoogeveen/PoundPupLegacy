@@ -2,9 +2,9 @@
 
 internal sealed class CollectiveUserCreatorFactory(
     IDatabaseInserterFactory<CollectiveUser> collectiveUserInserterFactory
-) : IInsertingEntityCreatorFactory<CollectiveUser>
+) : IEntityCreatorFactory<CollectiveUser>
 {
-    public async Task<InsertingEntityCreator<CollectiveUser>> CreateAsync(IDbConnection connection) => 
+    public async Task<IEntityCreator<CollectiveUser>> CreateAsync(IDbConnection connection) => 
         new InsertingEntityCreator<CollectiveUser>(new () {
             await collectiveUserInserterFactory.CreateAsync(connection)
         });

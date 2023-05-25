@@ -5,11 +5,11 @@ internal sealed class ProfessionalRoleCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableMemberOfCongress> memberOfCongressInserterFactory,
     IDatabaseInserterFactory<Representative> representativeInserterFactory,
     IDatabaseInserterFactory<Senator> senatorInserterFactory,
-    INodeCreatorFactory<EventuallyIdentifiableSenateTerm> senateTermCreatorFactory,
-    INodeCreatorFactory<EventuallyIdentifiableHouseTerm> houseTermCreatorFactory
-) : IInsertingEntityCreatorFactory<EventuallyIdentifiableProfessionalRole>
+    IEntityCreatorFactory<EventuallyIdentifiableSenateTerm> senateTermCreatorFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableHouseTerm> houseTermCreatorFactory
+) : IEntityCreatorFactory<EventuallyIdentifiableProfessionalRole>
 {
-    public async Task<InsertingEntityCreator<EventuallyIdentifiableProfessionalRole>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<EventuallyIdentifiableProfessionalRole>> CreateAsync(IDbConnection connection) =>
         new ProfessionalRoleCreator( 
             new ()
             {
@@ -28,8 +28,8 @@ public class ProfessionalRoleCreator(
     IDatabaseInserter<EventuallyIdentifiableMemberOfCongress> memberOfCongressInserter,
     IDatabaseInserter<Representative> representativeInserter,
     IDatabaseInserter<Senator> senatorInserter,
-    NodeCreator<EventuallyIdentifiableSenateTerm> senateTermCreator,
-    NodeCreator<EventuallyIdentifiableHouseTerm> houseTermCreator
+    IEntityCreator<EventuallyIdentifiableSenateTerm> senateTermCreator,
+    IEntityCreator<EventuallyIdentifiableHouseTerm> houseTermCreator
 
     ) : InsertingEntityCreator<EventuallyIdentifiableProfessionalRole>(inserters)
 {

@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 
-public interface Document : SimpleTextNode
+public interface Document : SimpleTextNode, ResolvedNode
 {
     string? SourceUrl { get; set; }
 
@@ -30,7 +30,7 @@ public sealed record ExistingDocument : DocumentBase, ExistingNode
 [JsonSerializable(typeof(NewDocument))]
 public partial class NewDocumentJsonContext : JsonSerializerContext { }
 
-public sealed record NewDocument : DocumentBase, NewNode
+public sealed record NewDocument : DocumentBase, ResolvedNewNode
 {
 }
 

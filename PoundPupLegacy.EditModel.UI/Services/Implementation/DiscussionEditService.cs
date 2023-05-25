@@ -7,52 +7,48 @@ internal sealed class DiscussionEditService(
     IDbConnection connection,
     ILogger<DiscussionEditService> logger,
     ITenantRefreshService tenantRefreshService,
-    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDiscussion> createDocumentReaderFactory,
-    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDiscussion> updateDocumentReaderFactory,
-    IDatabaseUpdaterFactory<SimpleTextNodeUpdaterRequest> simpleTextNodeUpdaterFactory,
-    ISaveService<IEnumerable<Tag>> tagSaveService,
-    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-    ISaveService<IEnumerable<File>> filesSaveService,
-    ITextService textService,
-    INodeCreatorFactory<EventuallyIdentifiableDiscussion> discussionCreatorFactory
-) : SimpleTextNodeEditServiceBase<Discussion, ExistingDiscussion, NewDiscussion, EventuallyIdentifiableDiscussion>(
-    connection, 
-    logger, 
-    tenantRefreshService, 
-    simpleTextNodeUpdaterFactory, 
-    tagSaveService, 
-    tenantNodesSaveService, 
-    filesSaveService, 
-    textService
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewDiscussion> createViewModelReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingDiscussion> updateViewModelReaderFactory,
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableDiscussion> updaterFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableDiscussion> creatorFactory,
+    ITextService textService
+) : NodeEditServiceBase<
+    Discussion,
+    Discussion,
+    ExistingDiscussion,
+    NewDiscussion,
+    NewDiscussion,
+    CreateModel.Discussion,
+    EventuallyIdentifiableDiscussion,
+    ImmediatelyIdentifiableDiscussion>(
+    connection,
+    logger,
+    tenantRefreshService,
+    creatorFactory,
+    updaterFactory,
+    createViewModelReaderFactory,
+    updateViewModelReaderFactory
 ), IEditService<Discussion, Discussion>
 {
 
-    protected sealed override INodeCreatorFactory<EventuallyIdentifiableDiscussion> EntityCreatorFactory => discussionCreatorFactory;
-
-    public async Task<Discussion?> GetViewModelAsync(int userId, int tenantId)
+    protected sealed override ImmediatelyIdentifiableDiscussion Map(ExistingDiscussion item)
     {
-        return await WithConnection(async (connection) => {
-            await using var reader = await createDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.DISCUSSION,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
-    public async Task<Discussion?> GetViewModelAsync(int urlId, int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await updateDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
-                UrlId = urlId,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
+        return new CreateModel.ExistingDiscussion {
+            Id = item.NodeId,
+            Title = item.Title,
+            Text = textService.FormatText(item.Text),
+            Teaser = textService.FormatTeaser(item.Text),
+            ChangedDateTime = DateTime.Now,
+            AuthoringStatusId = 1,
+            NewNodeTerms = new List<NodeTerm>(),
+            NodeTermsToRemove = new List<NodeTerm>(),
+            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<ExistingTenantNode>()
+        };
     }
 
-    protected sealed override CreateModel.NewDiscussion Map(NewDiscussion item)
+    protected sealed override EventuallyIdentifiableDiscussion Map(NewDiscussion item)
     {
         var now = DateTime.Now;
         return new CreateModel.NewDiscussion {
@@ -62,11 +58,11 @@ internal sealed class DiscussionEditService(
             Teaser = textService.FormatTeaser(item.Text),
             ChangedDateTime = now,
             CreatedDateTime = now,
-            NodeTypeId = Constants.DISCUSSION,
+            NodeTypeId = Constants.BLOG_POST,
             OwnerId = item.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = item.PublisherId,
-            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
+            TenantNodes = item.Tenants.Where(t => t.HasTenantNode).Select(tn => new NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,

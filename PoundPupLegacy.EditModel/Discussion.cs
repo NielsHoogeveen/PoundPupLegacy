@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 
-public interface Discussion : SimpleTextNode
+public interface Discussion : SimpleTextNode, ResolvedNode
 {
 
 }
@@ -24,6 +24,6 @@ public sealed record ExistingDiscussion : DiscussionBase, ExistingNode
 [JsonSerializable(typeof(NewDiscussion))]
 public partial class NewDiscussionJsonContext : JsonSerializerContext { }
 
-public sealed record NewDiscussion : DiscussionBase, NewNode
+public sealed record NewDiscussion : DiscussionBase, ResolvedNewNode
 {
 }

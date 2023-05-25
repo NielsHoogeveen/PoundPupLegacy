@@ -2,10 +2,10 @@
 
 internal sealed class ViewNodeTypeListActionCreatorFactory(
     IDatabaseInserterFactory<ViewNodeTypeListAction> viewNodeTypeListActionInserterFactory
-) : IInsertingEntityCreatorFactory<ViewNodeTypeListAction>
+) : IEntityCreatorFactory<ViewNodeTypeListAction>
 {
-    public async Task<InsertingEntityCreator<ViewNodeTypeListAction>> CreateAsync(IDbConnection connection) =>
-        new(new()
+    public async Task<IEntityCreator<ViewNodeTypeListAction>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<ViewNodeTypeListAction>(new()
         {
             await viewNodeTypeListActionInserterFactory.CreateAsync(connection)
         });

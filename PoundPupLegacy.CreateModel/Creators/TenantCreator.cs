@@ -9,9 +9,9 @@ internal sealed class TenantCreatorFactory(
     IDatabaseInserterFactory<Principal> principalInserterFactory,
     IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
-) : IInsertingEntityCreatorFactory<Tenant>
+) : IEntityCreatorFactory<Tenant>
 {
-    public async Task<InsertingEntityCreator<Tenant>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<Tenant>> CreateAsync(IDbConnection connection) =>
         new TenantCreator(
             new() 
             {

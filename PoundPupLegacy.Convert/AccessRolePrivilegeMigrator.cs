@@ -6,7 +6,7 @@ internal sealed class AccessRolePrivilegeMigrator(
     IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderByPathFactory,
     IMandatorySingleItemDatabaseReaderFactory<EditNodeActionIdReaderByNodeTypeIdRequest, int> editNodeActionIdReaderByNodeTypeIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeIdRequest, int> editOwnNodeActionIdReaderByNodeTypeIdFactory,
-    IInsertingEntityCreatorFactory<AccessRolePrivilege> accessRolePrivilegeCreatorFactory
+    IEntityCreatorFactory<AccessRolePrivilege> accessRolePrivilegeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 

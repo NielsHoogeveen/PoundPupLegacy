@@ -2,10 +2,10 @@
 
 internal sealed class LocationLocatableCreatorFactory(
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
-    ) : IInsertingEntityCreatorFactory<LocationLocatable>
+    ) : IEntityCreatorFactory<LocationLocatable>
 {
-    public async Task<InsertingEntityCreator<LocationLocatable>> CreateAsync(IDbConnection connection) => 
-        new( new() 
+    public async Task<IEntityCreator<LocationLocatable>> CreateAsync(IDbConnection connection) => 
+        new InsertingEntityCreator<LocationLocatable>( new() 
         { 
             await locationLocatableInserterFactory.CreateAsync(connection) 
         });

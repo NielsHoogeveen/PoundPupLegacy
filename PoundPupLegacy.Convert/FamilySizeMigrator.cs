@@ -2,7 +2,7 @@
 
 internal sealed class FamilySizeMigrator(
         IDatabaseConnections databaseConnections,
-        INameableCreatorFactory<EventuallyIdentifiableFamilySize> familySizeCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableFamilySize> familySizeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "family sizes";

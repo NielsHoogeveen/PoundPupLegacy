@@ -7,10 +7,10 @@ internal sealed class HagueStatusCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableHagueStatus> hagueStatusInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableHagueStatus>
+) : IEntityCreatorFactory<EventuallyIdentifiableHagueStatus>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableHagueStatus>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableHagueStatus>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableHagueStatus>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

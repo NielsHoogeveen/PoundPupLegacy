@@ -2,7 +2,7 @@
 
 internal sealed class DocumentTypeMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableDocumentType> documentTypeCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableDocumentType> documentTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "document types";

@@ -3,8 +3,8 @@
 internal sealed class BillMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        INameableCreatorFactory<EventuallyIdentifiableHouseBill> houseBillCreatorFactory,
-        INameableCreatorFactory<EventuallyIdentifiableSenateBill> senateBillCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableHouseBill> houseBillCreatorFactory,
+        IEntityCreatorFactory<EventuallyIdentifiableSenateBill> senateBillCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "bills";

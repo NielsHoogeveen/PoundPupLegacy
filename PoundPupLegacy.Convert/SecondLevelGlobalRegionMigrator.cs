@@ -4,7 +4,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiableSecondLevelGlobalRegion> secondLevelGlobalRegionCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableSecondLevelGlobalRegion> secondLevelGlobalRegionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "second level global regions";

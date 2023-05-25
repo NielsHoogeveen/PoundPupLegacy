@@ -2,10 +2,10 @@
 
 internal sealed class NodeFileCreatorFactory(
     IDatabaseInserterFactory<NodeFile> nodeFileInserterFactory
-) : IInsertingEntityCreatorFactory<NodeFile>
+) : IEntityCreatorFactory<NodeFile>
 {
-    public async Task<InsertingEntityCreator<NodeFile>> CreateAsync(IDbConnection connection) =>
-        new(new() {
+    public async Task<IEntityCreator<NodeFile>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<NodeFile>(new() {
             await nodeFileInserterFactory.CreateAsync(connection)
         });
 }

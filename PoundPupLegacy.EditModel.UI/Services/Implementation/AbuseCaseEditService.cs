@@ -4,64 +4,48 @@ using PoundPupLegacy.CreateModel;
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class AbuseCaseEditService(
-        IDbConnection connection,
-        ILogger<AbuseCaseEditService> logger,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewAbuseCase> abuseCaseCreateReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingAbuseCase> abuseCaseUpdateDocumentReaderFactory,
-        IDatabaseUpdaterFactory<ImmediatelyIdentifiableAbuseCase> abuseCaseUpdaterFactory,
-        ISaveService<IEnumerable<Tag>> tagSaveService,
-        ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-        ISaveService<IEnumerable<File>> filesSaveService,
-        ITenantRefreshService tenantRefreshService,
-        INameableCreatorFactory<EventuallyIdentifiableAbuseCase> abuseCaseCreatorFactory,
-        ITextService textService
-    ) : NodeEditServiceBase<AbuseCase, ExistingAbuseCase, NewAbuseCase, CreateModel.NewAbuseCase>(
-        connection,
-        logger,
-        tagSaveService,
-        tenantNodesSaveService,
-        filesSaveService,
-        tenantRefreshService), IEditService<AbuseCase, AbuseCase>
+    IDbConnection connection,
+    ILogger<AbuseCaseEditService> logger,
+    ITenantRefreshService tenantRefreshService,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewAbuseCase> createViewModelReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingAbuseCase> updateViewModelReaderFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableAbuseCase> creatorFactory,
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableAbuseCase> updaterFactory,
+    ITextService textService
+) : NodeEditServiceBase<
+        EditModel.AbuseCase,
+        AbuseCase,
+        ExistingAbuseCase,
+        NewAbuseCase,
+        NewAbuseCase,
+        CreateModel.AbuseCase,
+        EventuallyIdentifiableAbuseCase,
+        ImmediatelyIdentifiableAbuseCase>
+(
+    connection,
+    logger,
+    tenantRefreshService,
+    creatorFactory,
+    updaterFactory,
+    createViewModelReaderFactory,
+    updateViewModelReaderFactory
+), IEditService<AbuseCase, AbuseCase>
 {
-    public async Task<AbuseCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await abuseCaseUpdateDocumentReaderFactory.CreateAsync(connection);
-            var result = await reader.ReadAsync(new NodeUpdateDocumentRequest {
-                UrlId = urlId,
-                UserId = userId,
-                TenantId = tenantId
-            });
-            return result;
-        });
-    }
 
-    public async Task<AbuseCase?> GetViewModelAsync(int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await abuseCaseCreateReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.DOCUMENT,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
-
-    protected sealed override async Task<int> StoreNew(NewAbuseCase abuseCase, NpgsqlConnection connection)
+    protected sealed override EventuallyIdentifiableAbuseCase Map(NewAbuseCase viewModel)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.NewAbuseCase {
+        return new CreateModel.NewAbuseCase {
             Id = null,
-            Title = abuseCase.Title,
-            Description = abuseCase.Description is null ? "" : textService.FormatText(abuseCase.Description),
+            Title = viewModel.Title,
+            Description = viewModel.Description is null ? "" : textService.FormatText(viewModel.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
-            OwnerId = abuseCase.OwnerId,
+            OwnerId = viewModel.OwnerId,
             AuthoringStatusId = 1,
-            PublisherId = abuseCase.PublisherId,
-            TenantNodes = abuseCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new NewTenantNodeForNewNode {
+            PublisherId = viewModel.PublisherId,
+            TenantNodes = viewModel.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -70,67 +54,51 @@ internal sealed class AbuseCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            ChildPlacementTypeId = abuseCase.ChildPlacementTypeId,
-            DisabilitiesInvolved = abuseCase.DisabilitiesInvolved,
-            Date = abuseCase.Date,
-            FamilySizeId = abuseCase.FamilySizeId,
-            FundamentalFaithInvolved = abuseCase.FundamentalFaithInvolved,
-            HomeschoolingInvolved = abuseCase.HomeschoolingInvolved,
+            Date = viewModel.Date,
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new  VocabularyName {
                     OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
-                    TermName = abuseCase.Title,
+                    TermName = viewModel.Title,
                     ParentNames = new List<string>(),
                 }
             },
+            NodeTermIds = new List<int>(),
             TypeOfAbuseIds = new List<int>(),
             TypeOfAbuserIds = new List<int>(),
-            NodeTermIds = new List<int>(),
+            ChildPlacementTypeId = viewModel.ChildPlacementTypeId,
+            DisabilitiesInvolved = viewModel.DisabilitiesInvolved,
+            FamilySizeId = viewModel.FamilySizeId,
+            FundamentalFaithInvolved  = viewModel.FundamentalFaithInvolved,
+            HomeschoolingInvolved = viewModel.HomeschoolingInvolved
         };
-        await using var abuseCaseCreator = await abuseCaseCreatorFactory.CreateAsync(connection);
-        await abuseCaseCreator.CreateAsync(createDocument);
-        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(ExistingAbuseCase abuseCase, NpgsqlConnection connection)
+    protected sealed override ImmediatelyIdentifiableAbuseCase Map(ExistingAbuseCase viewModel)
     {
-        await using var updater = await abuseCaseUpdaterFactory.CreateAsync(connection);
-        await updater.UpdateAsync(new CreateModel.ExistingAbuseCase {
-            Title = abuseCase.Title,
+        return new CreateModel.ExistingAbuseCase {
+            Id = viewModel.NodeId,
+            Title = viewModel.Title,
+            Description = viewModel.Description is null ? "" : textService.FormatText(viewModel.Description),
             ChangedDateTime = DateTime.Now,
             AuthoringStatusId = 1,
-            TypeOfAbuseIds = new List<int>(),
-            TypeOfAbuserIds = new List<int>(),
-            NewTenantNodes = abuseCase.TenantNodes.Where(x => !x.Id.HasValue).Select(x => new NewTenantNodeForExistingNode {
-                Id = null,
-                PublicationStatusId = x.PublicationStatusId,
-                TenantId = x.TenantId,
-                NodeId = abuseCase.NodeId,
-                UrlId = abuseCase.NodeId,
-                UrlPath = x.UrlPath,
-                SubgroupId = x.SubgroupId,
-            }).ToList(),
-            TenantNodesToUpdate = abuseCase.TenantNodes.Where(x => x.Id.HasValue).Select(x => new ExistingTenantNode {
-                Id = x.Id!.Value,
-                PublicationStatusId = x.PublicationStatusId,
-                UrlPath = x.UrlPath,
-                SubgroupId = x.SubgroupId,
-            }).ToList(),
+            Date = viewModel.Date,
             FileIdTileImage = null,
-            VocabularyNames = new List<CreateModel.VocabularyName>(),
-            Description = abuseCase.Description is null ? "" : textService.FormatText(abuseCase.Description),
-            Id = abuseCase.NodeId,
-            Date = abuseCase.Date,
-            ChildPlacementTypeId = abuseCase.ChildPlacementTypeId,
-            DisabilitiesInvolved = abuseCase.DisabilitiesInvolved,
-            FamilySizeId = abuseCase.FamilySizeId,
-            FundamentalFaithInvolved = abuseCase.FundamentalFaithInvolved,
-            HomeschoolingInvolved = abuseCase.HomeschoolingInvolved,
             NewNodeTerms = new List<NodeTerm>(),
+            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
             NodeTermsToRemove = new List<NodeTerm>(),
-            TenantNodesToRemove = new List<ExistingTenantNode>()
-        }); ;
+            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<ExistingTenantNode>(),
+            VocabularyNames = new List<VocabularyName>(),
+            TypeOfAbuseIds = viewModel.TypeOfAbuseIds,
+            TypeOfAbuserIds = viewModel.TypeOfAbuserIds,
+            ChildPlacementTypeId = viewModel.ChildPlacementTypeId,
+            DisabilitiesInvolved = viewModel.DisabilitiesInvolved,
+            FamilySizeId = viewModel.FamilySizeId,
+            FundamentalFaithInvolved  = viewModel.FundamentalFaithInvolved,
+            HomeschoolingInvolved = viewModel.HomeschoolingInvolved
+
+        };
     }
 }

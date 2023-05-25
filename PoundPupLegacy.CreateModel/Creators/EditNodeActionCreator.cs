@@ -3,10 +3,10 @@
 internal sealed class EditNodeActionCreatorFactory(
     IDatabaseInserterFactory<Action> actionInserterFactory,
     IDatabaseInserterFactory<EditNodeAction> editNodeActionInserterFactory
-) : IInsertingEntityCreatorFactory<EditNodeAction>
+) : IEntityCreatorFactory<EditNodeAction>
 {
-    public async Task<InsertingEntityCreator<EditNodeAction>> CreateAsync(IDbConnection connection) =>
-        new ( new (){
+    public async Task<IEntityCreator<EditNodeAction>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<EditNodeAction>( new (){
             await actionInserterFactory.CreateAsync(connection),
             await editNodeActionInserterFactory.CreateAsync(connection)
         });

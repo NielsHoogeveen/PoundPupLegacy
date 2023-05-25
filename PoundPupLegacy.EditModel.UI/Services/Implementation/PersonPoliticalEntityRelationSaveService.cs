@@ -1,11 +1,12 @@
 ﻿using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Updaters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class PersonPoliticalEntityRelationSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
-    IDatabaseUpdaterFactory<PartyPoliticalEntityRelationUpdaterRequest> partyPoliticalEntityRelationUpdaterFactory,
-    INodeCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationCreatorFactory
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationUpdaterFactory,
+    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelation> partyPoliticalEntityRelationCreatorFactory
 ) : ISaveService<IEnumerable<PersonPoliticalEntityRelation>>
 {
     public async Task SaveAsync(IEnumerable<PersonPoliticalEntityRelation> item, IDbConnection connection)
@@ -19,14 +20,21 @@ internal class PersonPoliticalEntityRelationSaveService(
             });
         }
         foreach (var relation in item.OfType<ExistingPersonPoliticalEntityRelation>().Where(x => !x.HasBeenDeleted)) {
-            await updater.UpdateAsync(new PartyPoliticalEntityRelationUpdaterRequest {
-                NodeId = relation.NodeId,
+            await updater.UpdateAsync(new CreateModel.ExistingPartyPoliticalEntityRelation {
+                Id = relation.NodeId,
                 Title = relation.Title,
                 PartyId = relation.Person.Id,
                 PoliticalEntityId = relation.PoliticalEntity.Id,
                 PartyPoliticalEntityRelationTypeId = relation.PersonPoliticalEntityRelationType.Id,
                 DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
-                DocumentIdProof = relation.ProofDocument?.Id
+                DocumentIdProof = relation.ProofDocument?.Id,
+                AuthoringStatusId = 1,
+                ChangedDateTime = DateTime.Now,
+                NewNodeTerms = new List<NodeTerm>(),
+                NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+                NodeTermsToRemove = new List<NodeTerm>(),
+                TenantNodesToRemove = new List<ExistingTenantNode>(),
+                TenantNodesToUpdate = new List<ExistingTenantNode>(),
             });
         }
         IEnumerable<CreateModel.NewPartyPoliticalEntityRelation> GetRelationsToInsert()

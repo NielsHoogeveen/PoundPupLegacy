@@ -3,7 +3,7 @@
 internal sealed class FirstLevelGlobalRegionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        INameableCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion> firstLevelGlobalRegionCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion> firstLevelGlobalRegionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "first level global regions";

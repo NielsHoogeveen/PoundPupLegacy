@@ -2,7 +2,7 @@
 
 internal sealed class BasicNameableMigrator(
         IDatabaseConnections databaseConnections,
-        INameableCreatorFactory<EventuallyIdentifiableBasicNameable> basicNameableCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableBasicNameable> basicNameableCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic nameables";

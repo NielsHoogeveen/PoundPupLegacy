@@ -3,9 +3,9 @@
 internal sealed class FileCreatorFactory(
     IDatabaseInserterFactory<File> fileInserterFactory,
     IDatabaseInserterFactory<TenantFile> tenantFileInserterFactory
-) : IInsertingEntityCreatorFactory<File>
+) : IEntityCreatorFactory<File>
 {
-    public async Task<InsertingEntityCreator<File>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<File>> CreateAsync(IDbConnection connection) =>
     new FileCreator(
         new() {
             await fileInserterFactory.CreateAsync(connection)

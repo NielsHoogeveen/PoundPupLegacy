@@ -3,7 +3,7 @@
 internal sealed class TypeOfAbuserMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiableTypeOfAbuser> typeOfAbuserCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableTypeOfAbuser> typeOfAbuserCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "types of abuser";

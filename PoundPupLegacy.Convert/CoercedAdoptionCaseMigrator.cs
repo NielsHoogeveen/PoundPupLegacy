@@ -2,7 +2,7 @@
 
 internal sealed class CoercedAdoptionCaseMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableCoercedAdoptionCase> coercedAdoptionCaseCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableCoercedAdoptionCase> coercedAdoptionCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "coerced adoption cases";

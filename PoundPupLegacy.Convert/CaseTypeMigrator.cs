@@ -4,11 +4,11 @@ internal sealed class CaseTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int> actionIdReaderFactory,
-        IInsertingEntityCreatorFactory<ViewNodeTypeListAction> viewNodeTypeListActionCreatorFactory,
-        IInsertingEntityCreatorFactory<CaseType> caseTypeCreatorFactory,
-        IInsertingEntityCreatorFactory<CreateNodeAction> createNodeActionCreatorFactory,
-        IInsertingEntityCreatorFactory<DeleteNodeAction> deleteNodeActionCreatorFactory,
-        IInsertingEntityCreatorFactory<EditNodeAction> editNodeActionCreatorFactory
+        IEntityCreatorFactory<ViewNodeTypeListAction> viewNodeTypeListActionCreatorFactory,
+        IEntityCreatorFactory<CaseType> caseTypeCreatorFactory,
+        IEntityCreatorFactory<CreateNodeAction> createNodeActionCreatorFactory,
+        IEntityCreatorFactory<DeleteNodeAction> deleteNodeActionCreatorFactory,
+        IEntityCreatorFactory<EditNodeAction> editNodeActionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "node types";

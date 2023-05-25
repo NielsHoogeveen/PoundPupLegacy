@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Convert;
 
 internal sealed class FileMigratorPPL(
     IDatabaseConnections databaseConnections,
-    IInsertingEntityCreatorFactory<File> fileCreatorFactory
+    IEntityCreatorFactory<File> fileCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "files (ppl)";

@@ -3,7 +3,7 @@
 internal sealed class PersonMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "persons (ppl)";

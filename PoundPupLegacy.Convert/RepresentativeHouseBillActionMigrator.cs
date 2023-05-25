@@ -4,7 +4,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> professionIdReaderFactory,
-        INodeCreatorFactory<EventuallyIdentifiableRepresentativeHouseBillAction> representativeHouseBillActionCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableRepresentativeHouseBillAction> representativeHouseBillActionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "representative house bill action";

@@ -2,7 +2,7 @@
 
 internal sealed class WrongfulRemovalCaseMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "wrongful removal case";

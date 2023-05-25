@@ -6,10 +6,10 @@ public sealed record NewDiscussion : NewSimpleTextNodeBase, EventuallyIdentifiab
 public sealed record ExistingDiscussion : ExistingSimpleTextNodeBase, ImmediatelyIdentifiableDiscussion
 {
 }
-public interface ImmediatelyIdentifiableDiscussion : ImmediatelyIdentifiableSimpleTextNode
+public interface ImmediatelyIdentifiableDiscussion : Discussion, ImmediatelyIdentifiableSimpleTextNode
 {
 }
-public interface EventuallyIdentifiableDiscussion : EventuallyIdentifiableSimpleTextNode
+public interface EventuallyIdentifiableDiscussion : Discussion, EventuallyIdentifiableSimpleTextNode
 {
 }
 public interface Discussion: SimpleTextNode

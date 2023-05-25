@@ -2,7 +2,7 @@
 
 internal sealed class AuthoringStatusMigrator(
     IDatabaseConnections databaseConnections,
-    IInsertingEntityCreatorFactory<AuthoringStatus> authoringStatusCreatorFactory
+    IEntityCreatorFactory<AuthoringStatus> authoringStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "authoring statuses";

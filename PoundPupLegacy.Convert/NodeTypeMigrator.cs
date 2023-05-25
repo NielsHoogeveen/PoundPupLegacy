@@ -2,11 +2,11 @@
 
 internal sealed class NodeTypeMigrator(
     IDatabaseConnections databaseConnections,
-    IInsertingEntityCreatorFactory<BasicNodeType> nodeTypeCreatorFactory,
-    IInsertingEntityCreatorFactory<BasicNameableType> nameableTypeCreatorFactory,
-    IInsertingEntityCreatorFactory<CreateNodeAction> createNodeActionCreatorFactory,
-    IInsertingEntityCreatorFactory<DeleteNodeAction> deleteNodeActionCreatorFactory,
-    IInsertingEntityCreatorFactory<EditNodeAction> editNodeActionCreatorFactory
+    IEntityCreatorFactory<BasicNodeType> nodeTypeCreatorFactory,
+    IEntityCreatorFactory<BasicNameableType> nameableTypeCreatorFactory,
+    IEntityCreatorFactory<CreateNodeAction> createNodeActionCreatorFactory,
+    IEntityCreatorFactory<DeleteNodeAction> deleteNodeActionCreatorFactory,
+    IEntityCreatorFactory<EditNodeAction> editNodeActionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "node types";

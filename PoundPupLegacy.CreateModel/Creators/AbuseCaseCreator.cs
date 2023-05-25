@@ -11,11 +11,11 @@ public class AbuseCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableAbuseCase> abuseCaseInserterFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
-    IInsertingEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableAbuseCase>
+    IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
+    IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
+) : IEntityCreatorFactory<EventuallyIdentifiableAbuseCase>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableAbuseCase>> CreateAsync(IDbConnection connection) => 
+    public async Task<IEntityCreator<EventuallyIdentifiableAbuseCase>> CreateAsync(IDbConnection connection) => 
         new AbuseCaseCreator(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),

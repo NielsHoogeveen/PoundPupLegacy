@@ -5,7 +5,7 @@ internal sealed class BoundCountryMigrator(
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
-        INameableCreatorFactory<EventuallyIdentifiableBoundCountry> boundCountryCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableBoundCountry> boundCountryCreatorFactory
     ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "bound countries";

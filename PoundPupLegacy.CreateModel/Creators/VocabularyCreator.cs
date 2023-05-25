@@ -4,10 +4,10 @@ internal sealed class VocabularyCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableVocabulary> vocabularyInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : INodeCreatorFactory<EventuallyIdentifiableVocabulary>
+) : IEntityCreatorFactory<EventuallyIdentifiableVocabulary>
 {
-    public async Task<NodeCreator<EventuallyIdentifiableVocabulary>> CreateAsync(IDbConnection connection)=>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableVocabulary>> CreateAsync(IDbConnection connection)=>
+        new NodeCreator<EventuallyIdentifiableVocabulary>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await vocabularyInserterFactory.CreateAsync(connection)

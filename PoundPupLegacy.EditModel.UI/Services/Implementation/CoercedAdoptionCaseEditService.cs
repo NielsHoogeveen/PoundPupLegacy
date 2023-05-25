@@ -6,62 +6,46 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal sealed class CoercedAdoptionCaseEditService(
     IDbConnection connection,
     ILogger<CoercedAdoptionCaseEditService> logger,
-    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewCoercedAdoptionCase> createCoercedAdoptionCaseReaderFactory,
-    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingCoercedAdoptionCase> coercedAdoptionCaseUpdateDocumentReaderFactory,
-    IDatabaseUpdaterFactory<CoercedAdoptionCaseUpdaterRequest> coercedAdoptionCaseUpdaterFactory,
-    ISaveService<IEnumerable<Tag>> tagSaveService,
-    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-    ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    INameableCreatorFactory<EventuallyIdentifiableCoercedAdoptionCase> coercedAdoptionCaseCreatorFactory,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewCoercedAdoptionCase> createViewModelReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingCoercedAdoptionCase> updateViewModelReaderFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableCoercedAdoptionCase> creatorFactory,
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableCoercedAdoptionCase> updaterFactory,
     ITextService textService
-) : NodeEditServiceBase<CoercedAdoptionCase, ExistingCoercedAdoptionCase, NewCoercedAdoptionCase, CreateModel.NewCoercedAdoptionCase>(
+) : NodeEditServiceBase<
+        EditModel.CoercedAdoptionCase,
+        CoercedAdoptionCase,
+        ExistingCoercedAdoptionCase,
+        NewCoercedAdoptionCase,
+        NewCoercedAdoptionCase,
+        CreateModel.CoercedAdoptionCase,
+        EventuallyIdentifiableCoercedAdoptionCase,
+        ImmediatelyIdentifiableCoercedAdoptionCase>
+(
     connection,
     logger,
-    tagSaveService,
-    tenantNodesSaveService,
-    filesSaveService,
-    tenantRefreshService
+    tenantRefreshService,
+    creatorFactory,
+    updaterFactory,
+    createViewModelReaderFactory,
+    updateViewModelReaderFactory
 ), IEditService<CoercedAdoptionCase, CoercedAdoptionCase>
 {
-    public async Task<CoercedAdoptionCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await coercedAdoptionCaseUpdateDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
-                UrlId = urlId,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
 
-    public async Task<CoercedAdoptionCase?> GetViewModelAsync(int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await createCoercedAdoptionCaseReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.DOCUMENT,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
-
-    protected sealed override async Task<int> StoreNew(NewCoercedAdoptionCase coercedAdoptionCase, NpgsqlConnection connection)
+    protected sealed override EventuallyIdentifiableCoercedAdoptionCase Map(NewCoercedAdoptionCase viewModel)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.NewCoercedAdoptionCase {
+        return new CreateModel.NewCoercedAdoptionCase {
             Id = null,
-            Title = coercedAdoptionCase.Title,
-            Description = coercedAdoptionCase.Description is null ? "" : textService.FormatText(coercedAdoptionCase.Description),
+            Title = viewModel.Title,
+            Description = viewModel.Description is null ? "" : textService.FormatText(viewModel.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
-            OwnerId = coercedAdoptionCase.OwnerId,
+            OwnerId = viewModel.OwnerId,
             AuthoringStatusId = 1,
-            PublisherId = coercedAdoptionCase.PublisherId,
-            TenantNodes = coercedAdoptionCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
+            PublisherId = viewModel.PublisherId,
+            TenantNodes = viewModel.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -70,31 +54,36 @@ internal sealed class CoercedAdoptionCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = coercedAdoptionCase.Date,
+            Date = viewModel.Date,
             FileIdTileImage = null,
-            VocabularyNames = new List<CreateModel.VocabularyName> {
-                new  CreateModel.VocabularyName {
+            VocabularyNames = new List<VocabularyName> {
+                new  VocabularyName {
                     OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
-                    TermName = coercedAdoptionCase.Title,
+                    TermName = viewModel.Title,
                     ParentNames = new List<string>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            NodeTermIds = new List<int>()
         };
-        await using var coercedAdoptionCaseCreator = await coercedAdoptionCaseCreatorFactory.CreateAsync(connection);
-        await coercedAdoptionCaseCreator.CreateAsync(createDocument);
-        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(ExistingCoercedAdoptionCase coercedAdoptionCase, NpgsqlConnection connection)
+    protected sealed override ImmediatelyIdentifiableCoercedAdoptionCase Map(ExistingCoercedAdoptionCase viewModel)
     {
-        await using var updater = await coercedAdoptionCaseUpdaterFactory.CreateAsync(connection);
-        await updater.UpdateAsync(new CoercedAdoptionCaseUpdaterRequest {
-            Title = coercedAdoptionCase.Title,
-            Description = coercedAdoptionCase.Description is null ? "" : textService.FormatText(coercedAdoptionCase.Description),
-            NodeId = coercedAdoptionCase.NodeId,
-            Date = coercedAdoptionCase.Date,
-        });
+        return new CreateModel.ExistingCoercedAdoptionCase {
+            Id = viewModel.NodeId,
+            Title = viewModel.Title,
+            Description = viewModel.Description is null ? "" : textService.FormatText(viewModel.Description),
+            ChangedDateTime = DateTime.Now,
+            AuthoringStatusId = 1,
+            Date = viewModel.Date,
+            FileIdTileImage = null,
+            NewNodeTerms = new List<NodeTerm>(),
+            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+            NodeTermsToRemove = new List<NodeTerm>(),
+            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<ExistingTenantNode>(),
+            VocabularyNames = new List<VocabularyName>()
+        };
     }
 }

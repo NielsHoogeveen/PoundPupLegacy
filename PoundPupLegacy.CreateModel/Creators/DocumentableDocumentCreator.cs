@@ -5,7 +5,7 @@ internal sealed class DocumentableDocumentCreatorFactory(
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, Term> termReaderByNameableIdFactory
 ) : IEntityCreatorFactory<DocumentableDocument>
 {
-    public async Task<EntityCreator<DocumentableDocument>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<DocumentableDocument>> CreateAsync(IDbConnection connection) =>
         new DocumentableDocumentCreator(
             await nodeTermInserterFactory.CreateAsync(connection),
             await termReaderByNameableIdFactory.CreateAsync(connection)

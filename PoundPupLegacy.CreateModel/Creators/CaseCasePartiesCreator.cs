@@ -7,7 +7,7 @@ internal sealed class CaseCasePartiesCreatorFactory(
     IDatabaseInserterFactory<CasePartiesPerson> casePartiesPersonInserterFactory
 ) : IEntityCreatorFactory<CaseCaseParties>
 {
-    public async Task<EntityCreator<CaseCaseParties>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<CaseCaseParties>> CreateAsync(IDbConnection connection) =>
         new CaseCasePartiesCreator(
             await casePartiesInserterFactory.CreateAsync(connection),
             await caseCasePartiesInserterFactory.CreateAsync(connection),

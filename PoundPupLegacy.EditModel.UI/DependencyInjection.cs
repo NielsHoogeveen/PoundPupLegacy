@@ -11,7 +11,6 @@ public static class DependencyInjection
     public static void AddEditModels(this IServiceCollection services)
     {
         services.AddEditModelReaders();
-        services.AddEditModelDeleters();
         services.AddEditModelInserters();
         services.AddCreateModelUpdaters();
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();

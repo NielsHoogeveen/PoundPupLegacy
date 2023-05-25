@@ -3,7 +3,7 @@
 internal sealed class BillActionTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        INameableCreatorFactory<EventuallyIdentifiableBillActionType> billActionTypeCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableBillActionType> billActionTypeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation types";

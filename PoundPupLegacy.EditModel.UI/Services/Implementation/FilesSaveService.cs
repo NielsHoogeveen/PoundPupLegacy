@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
+﻿using PoundPupLegacy.CreateModel.Deleters;
+
+namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class FilesSaveService(
     IDatabaseDeleterFactory<FileDeleterRequest> fileDeleterFactory,

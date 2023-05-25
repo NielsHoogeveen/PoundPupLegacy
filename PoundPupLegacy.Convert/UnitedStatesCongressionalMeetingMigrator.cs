@@ -2,7 +2,7 @@
 
 internal sealed class UnitedStatesCongressionalMeetingMigrator(
         IDatabaseConnections databaseConnections,
-        INameableCreatorFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states congressional meetings";

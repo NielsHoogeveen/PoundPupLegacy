@@ -6,14 +6,14 @@ internal sealed class UserMigrator(
     IDatabaseConnections databaseConnections,
     IAnonimousUserCreator anonimousUserCreator,
     IEntityCreatorFactory<SystemGroup> systemGroupCreatorFactory,
-    IInsertingEntityCreatorFactory<AccessRole> accessRoleCreatorFactory,
-    IInsertingEntityCreatorFactory<Tenant> tenantCreatorFactory,
-    IInsertingEntityCreatorFactory<ContentSharingGroup> contentSharingGroupCreatorFactory,
-    IInsertingEntityCreatorFactory<Subgroup> subgroupCreatorFactory,
-    IInsertingEntityCreatorFactory<User> userCreatorFactory,
-    IInsertingEntityCreatorFactory<Collective> collectiveCreatorFactory,
-    IInsertingEntityCreatorFactory<CollectiveUser> collectiveUserCreatorFactory,
-    IInsertingEntityCreatorFactory<UserGroupUserRoleUser> userGroupUserRoleUserCreatorFactory
+    IEntityCreatorFactory<AccessRole> accessRoleCreatorFactory,
+    IEntityCreatorFactory<Tenant> tenantCreatorFactory,
+    IEntityCreatorFactory<ContentSharingGroup> contentSharingGroupCreatorFactory,
+    IEntityCreatorFactory<Subgroup> subgroupCreatorFactory,
+    IEntityCreatorFactory<User> userCreatorFactory,
+    IEntityCreatorFactory<Collective> collectiveCreatorFactory,
+    IEntityCreatorFactory<CollectiveUser> collectiveUserCreatorFactory,
+    IEntityCreatorFactory<UserGroupUserRoleUser> userGroupUserRoleUserCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "users";

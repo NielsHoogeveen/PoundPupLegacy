@@ -3,10 +3,10 @@
 internal sealed class ActionMenuItemCreatorFactory(
     IDatabaseInserterFactory<MenuItem> menuItemInserterFactory,
     IDatabaseInserterFactory<ActionMenuItem> actionMenuItemInserterFactory
-) : IInsertingEntityCreatorFactory<ActionMenuItem>
+) : IEntityCreatorFactory<ActionMenuItem>
 {
-    public async Task<InsertingEntityCreator<ActionMenuItem>> CreateAsync(IDbConnection connection) =>
-        new (new () {
+    public async Task<IEntityCreator<ActionMenuItem>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<ActionMenuItem>(new () {
             await menuItemInserterFactory.CreateAsync(connection),
             await actionMenuItemInserterFactory.CreateAsync(connection)
         });

@@ -1,13 +1,14 @@
 ﻿
 
 using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Updaters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class InterPersonalRelationToSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
-    IDatabaseUpdaterFactory<InterPersonalRelationUpdaterRequest> interPersonalRelationUpdaterFactory,
-    INodeCreatorFactory<EventuallyIdentifiableInterPersonalRelation> interPersonalRelationCreatorFactory
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableInterPersonalRelation> interPersonalRelationUpdaterFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelation> interPersonalRelationCreatorFactory
 ) : ISaveService<IEnumerable<ResolvedInterPersonalRelationTo>>
 {
     public async Task SaveAsync(IEnumerable<ResolvedInterPersonalRelationTo> item, IDbConnection connection)
@@ -21,8 +22,8 @@ internal class InterPersonalRelationToSaveService(
             });
         }
         foreach (var relation in item.OfType<ExistingInterPersonalRelationTo>().Where(x => !x.HasBeenDeleted)) {
-            await updater.UpdateAsync(new InterPersonalRelationUpdaterRequest {
-                NodeId = relation.NodeId,
+            await updater.UpdateAsync(new ExistingInterPersonalRelation {
+                Id = relation.NodeId,
                 Title = relation.Title,
                 Description = relation.Description,
                 PersonIdFrom = relation.PersonFrom.Id,
@@ -30,6 +31,13 @@ internal class InterPersonalRelationToSaveService(
                 InterPersonalRelationTypeId = relation.InterPersonalRelationType.Id,
                 DateRange = relation.DateRange,
                 DocumentIdProof = relation.ProofDocument?.Id,
+                AuthoringStatusId = 1,
+                ChangedDateTime = DateTime.Now,
+                NewNodeTerms = new List<NodeTerm>(),
+                NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+                NodeTermsToRemove = new List<NodeTerm>(),
+                TenantNodesToRemove = new List<ExistingTenantNode>(),
+                TenantNodesToUpdate = new List<ExistingTenantNode>(),
             });
         }
         IEnumerable<CreateModel.NewInterPersonalRelation> GetRelationsToInsert()

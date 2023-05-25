@@ -4,10 +4,10 @@ internal sealed class UserCreatorFactory(
     IDatabaseInserterFactory<Principal> principalInserterFactory,
     IDatabaseInserterFactory<Publisher> publisherInserterFactory,
     IDatabaseInserterFactory<User> userInserterFactory
-) : IInsertingEntityCreatorFactory<User>
+) : IEntityCreatorFactory<User>
 {
-    public async Task<InsertingEntityCreator<User>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<User>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<User>(
             new() {
                 await principalInserterFactory.CreateAsync(connection),
                 await publisherInserterFactory.CreateAsync(connection),

@@ -2,7 +2,7 @@
 
 internal sealed class PageMigrator(
     IDatabaseConnections databaseConnections,
-    INodeCreatorFactory<EventuallyIdentifiablePage> pageCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePage> pageCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "pages";

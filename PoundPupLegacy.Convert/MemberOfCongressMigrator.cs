@@ -119,11 +119,11 @@ public sealed record StoredTerm
 internal class MemberOfCongressMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        INameableCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory,
-        IInsertingEntityCreatorFactory<File> fileCreatorFactory,
-        IInsertingEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
-        INodeCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory,
-        IInsertingEntityCreatorFactory<EventuallyIdentifiableProfessionalRole> professionalRoleCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory,
+        IEntityCreatorFactory<File> fileCreatorFactory,
+        IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
+        IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelation> personOrganizationRelationCreatorFactory,
+        IEntityCreatorFactory<EventuallyIdentifiableProfessionalRole> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
 {

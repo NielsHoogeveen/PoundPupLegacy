@@ -10,10 +10,10 @@ internal sealed class FathersRightsViolationCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase>
+) : IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableFathersRightsViolationCase>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableFathersRightsViolationCase>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableFathersRightsViolationCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

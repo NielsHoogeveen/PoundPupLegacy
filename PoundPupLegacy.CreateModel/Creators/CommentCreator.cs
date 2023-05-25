@@ -2,10 +2,10 @@
 
 internal sealed class CommentCreatorFactory(
     IDatabaseInserterFactory<Comment> commentInserterFactory
-) : IInsertingEntityCreatorFactory<Comment>
+) : IEntityCreatorFactory<Comment>
 {
-    public async Task<InsertingEntityCreator<Comment>> CreateAsync(IDbConnection connection) => 
-        new (new () {
+    public async Task<IEntityCreator<Comment>> CreateAsync(IDbConnection connection) => 
+        new InsertingEntityCreator<Comment>(new () {
             await commentInserterFactory.CreateAsync(connection)
         });
 }

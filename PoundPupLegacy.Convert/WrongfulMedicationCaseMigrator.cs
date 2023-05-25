@@ -2,7 +2,7 @@
 
 internal sealed class WrongfulMedicationCaseMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase> wrongfulMedicationCaseCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase> wrongfulMedicationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "wrongful medication cases";

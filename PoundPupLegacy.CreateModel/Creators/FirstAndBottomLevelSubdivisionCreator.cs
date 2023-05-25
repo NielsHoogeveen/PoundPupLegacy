@@ -15,10 +15,10 @@ internal sealed class FirstAndBottomLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableFirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableFirstAndBottomLevelSubdivision>
+) : IEntityCreatorFactory<EventuallyIdentifiableFirstAndBottomLevelSubdivision>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableFirstAndBottomLevelSubdivision>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableFirstAndBottomLevelSubdivision>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableFirstAndBottomLevelSubdivision>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

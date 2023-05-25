@@ -9,10 +9,10 @@ internal sealed class HouseBillCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableHouseBill> houseBillInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableHouseBill>
+) : IEntityCreatorFactory<EventuallyIdentifiableHouseBill>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableHouseBill>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableHouseBill>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableHouseBill>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

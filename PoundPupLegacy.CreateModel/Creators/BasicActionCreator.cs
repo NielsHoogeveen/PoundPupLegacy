@@ -3,10 +3,10 @@
 internal sealed class BasicActionCreatorFactory(
     IDatabaseInserterFactory<Action> actionInserterFactory,
     IDatabaseInserterFactory<BasicAction> basicActionInserterFactory
-) : IInsertingEntityCreatorFactory<BasicAction>
+) : IEntityCreatorFactory<BasicAction>
 {
-    public async Task<InsertingEntityCreator<BasicAction>> CreateAsync(IDbConnection connection) =>
-        new (new () {
+    public async Task<IEntityCreator<BasicAction>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<BasicAction>(new () {
             await actionInserterFactory.CreateAsync(connection),
             await basicActionInserterFactory.CreateAsync(connection)
         });

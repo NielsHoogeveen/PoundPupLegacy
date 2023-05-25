@@ -8,10 +8,10 @@ internal sealed class ActCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableAct> actInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
- ): INameableCreatorFactory<EventuallyIdentifiableAct>
+ ): IEntityCreatorFactory<EventuallyIdentifiableAct>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableAct>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableAct>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableAct>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

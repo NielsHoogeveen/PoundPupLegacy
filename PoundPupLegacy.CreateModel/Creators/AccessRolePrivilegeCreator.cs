@@ -2,10 +2,10 @@
 
 internal sealed class AccessRolePrivilegeCreatorFactory(
     IDatabaseInserterFactory<AccessRolePrivilege> accessRolePrivilegeInserterFactory
-) : IInsertingEntityCreatorFactory<AccessRolePrivilege>
+) : IEntityCreatorFactory<AccessRolePrivilege>
 {
-    public async Task<InsertingEntityCreator<AccessRolePrivilege>> CreateAsync(IDbConnection connection) =>
-        new (new () {
+    public async Task<IEntityCreator<AccessRolePrivilege>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<AccessRolePrivilege>(new () {
             await accessRolePrivilegeInserterFactory.CreateAsync(connection),
         });
 }

@@ -6,7 +6,7 @@ public partial class ExistingWrongfulMedicationCaseJsonContext : JsonSerializerC
 [JsonSerializable(typeof(NewWrongfulMedicationCase))]
 public partial class NewWrongfulMedicationCaseJsonContext : JsonSerializerContext { }
 
-public interface WrongfulMedicationCase : Case
+public interface WrongfulMedicationCase : Case, ResolvedNode
 {
 }
 public sealed record ExistingWrongfulMedicationCase : WrongfulMedicationCaseBase, ExistingNode
@@ -15,7 +15,7 @@ public sealed record ExistingWrongfulMedicationCase : WrongfulMedicationCaseBase
 
     public int UrlId { get; set; }
 }
-public sealed record NewWrongfulMedicationCase : WrongfulMedicationCaseBase, NewNode
+public sealed record NewWrongfulMedicationCase : WrongfulMedicationCaseBase, ResolvedNewNode
 {
 }
 public abstract record WrongfulMedicationCaseBase : CaseBase, WrongfulMedicationCase

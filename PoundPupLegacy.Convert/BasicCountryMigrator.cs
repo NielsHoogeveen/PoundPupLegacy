@@ -3,7 +3,7 @@
 internal sealed class BasicCountryMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    INameableCreatorFactory<EventuallyIdentifiableBasicCountry> basicCountryCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableBasicCountry> basicCountryCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic countries";

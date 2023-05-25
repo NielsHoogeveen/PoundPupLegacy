@@ -6,7 +6,7 @@ public partial class ExistingDisruptedPlacementCaseJsonContext : JsonSerializerC
 [JsonSerializable(typeof(NewDisruptedPlacementCase))]
 public partial class NewDisruptedPlacementCaseJsonContext : JsonSerializerContext { }
 
-public interface DisruptedPlacementCase : Case
+public interface DisruptedPlacementCase : Case, ResolvedNode
 {
 }
 public sealed record ExistingDisruptedPlacementCase : DisruptedPlacementCaseBase, ExistingNode
@@ -15,7 +15,7 @@ public sealed record ExistingDisruptedPlacementCase : DisruptedPlacementCaseBase
 
     public int UrlId { get; set; }
 }
-public sealed record NewDisruptedPlacementCase : DisruptedPlacementCaseBase, NewNode
+public sealed record NewDisruptedPlacementCase : DisruptedPlacementCaseBase, ResolvedNewNode
 {
 }
 public abstract record DisruptedPlacementCaseBase : CaseBase, DisruptedPlacementCase

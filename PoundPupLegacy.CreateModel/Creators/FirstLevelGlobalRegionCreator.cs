@@ -10,10 +10,10 @@ internal sealed class FirstLevelGlobalRegionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableFirstLevelGlobalRegion> firstLevelGlobalRegionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion>
+) : IEntityCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableFirstLevelGlobalRegion>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableFirstLevelGlobalRegion>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableFirstLevelGlobalRegion>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

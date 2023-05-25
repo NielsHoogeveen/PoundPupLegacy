@@ -4,7 +4,7 @@ internal sealed class TermHierarchyMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-        IInsertingEntityCreatorFactory<TermHierarchy> termHierarchyCreatorFactory
+        IEntityCreatorFactory<TermHierarchy> termHierarchyCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "node term hierarchy";

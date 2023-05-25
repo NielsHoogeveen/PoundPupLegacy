@@ -1,9 +1,7 @@
 ﻿global using Npgsql;
 global using PoundPupLegacy.CreateModel.Creators;
-global using PoundPupLegacy.EditModel.Deleters;
 global using PoundPupLegacy.EditModel.Inserters;
 global using PoundPupLegacy.EditModel.Readers;
-global using PoundPupLegacy.EditModel.Updaters;
 global using System.Data;
 global using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationFrom.CompletedInterOrganizationalRelationFrom.ResolvedInterOrganizationalRelationFrom;
 global using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationFrom.CompletedInterOrganizationalRelationFrom;

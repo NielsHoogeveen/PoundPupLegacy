@@ -3,7 +3,7 @@
 internal sealed class OrganizationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    INameableCreatorFactory<EventuallyIdentifiableOrganizationType> organizationTypeCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableOrganizationType> organizationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "organization types";

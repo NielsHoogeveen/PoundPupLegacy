@@ -1,13 +1,12 @@
-﻿
-
-using PoundPupLegacy.CreateModel;
+﻿using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Updaters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class InterOrganizationalRelationFromSaveService(
     IDatabaseUpdaterFactory<NodeUnpublishRequest> nodeUnpublishFactory,
-    IDatabaseUpdaterFactory<InterOrganizationalRelationUpdaterRequest> interOrganizationalRelationUpdaterFactory,
-    INodeCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation> interOrganizationalRelationCreatorFactory
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableInterOrganizationalRelation> interOrganizationalRelationUpdaterFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation> interOrganizationalRelationCreatorFactory
 ) : ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>>
 {
     public async Task SaveAsync(IEnumerable<ResolvedInterOrganizationalRelationFrom> item, IDbConnection connection)
@@ -21,18 +20,25 @@ internal class InterOrganizationalRelationFromSaveService(
             });
         }
         foreach (var relation in item.OfType<ExistingInterOrganizationalRelationFrom>().Where(x => !x.HasBeenDeleted)) {
-            await updater.UpdateAsync(new InterOrganizationalRelationUpdaterRequest {
-                NodeId = relation.NodeId,
+            await updater.UpdateAsync(new ExistingInterOrganizationalRelation {
+                Id = relation.NodeId,
                 Title = relation.Title,
                 Description = relation.Description,
                 OrganizationIdFrom = relation.OrganizationFrom.Id,
                 OrganizationIdTo = relation.OrganizationTo.Id,
                 InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationType.Id,
-                DateRange = relation.DateRange,
+                DateRange = relation.DateRange ?? new DateTimeRange(null, null) ,
                 GeographicalEntityId = relation.GeographicalEntity?.Id,
                 DocumentIdProof = relation.ProofDocument?.Id,
                 MoneyInvolved = relation.MoneyInvolved,
                 NumberOfChildrenInvolved = relation.NumberOfChildrenInvolved,
+                NewNodeTerms = new List<NodeTerm>(),
+                NodeTermsToRemove = new List<NodeTerm>(),
+                AuthoringStatusId = 1,
+                ChangedDateTime = DateTime.Now,
+                NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+                TenantNodesToRemove = new List<ExistingTenantNode>(),
+                TenantNodesToUpdate = new List<ExistingTenantNode>()
             });
         }
         IEnumerable<CreateModel.NewInterOrganizationalRelation> GetRelationsToInsert()

@@ -6,7 +6,7 @@ public partial class ExistingAbuseCaseJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(NewAbuseCase))]
 public partial class NewAbuseCaseJsonContext : JsonSerializerContext { }
 
-public interface AbuseCase : Case
+public interface AbuseCase : Case, ResolvedNode
 {
     int ChildPlacementTypeId { get; set; }
     int? FamilySizeId { get; set; }
@@ -15,7 +15,7 @@ public interface AbuseCase : Case
     bool? DisabilitiesInvolved { get; set; }
 }
 
-public sealed record NewAbuseCase : AbuseCaseBase, NewNode
+public sealed record NewAbuseCase : AbuseCaseBase, ResolvedNewNode
 {
 }
 public sealed record ExistingAbuseCase : AbuseCaseBase, ExistingNode

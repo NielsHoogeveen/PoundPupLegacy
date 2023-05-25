@@ -2,7 +2,7 @@
 
 internal sealed class HagueStatusMigrator(
     IDatabaseConnections databaseConnections,
-    INameableCreatorFactory<EventuallyIdentifiableHagueStatus> hagueStatusCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableHagueStatus> hagueStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "Hague statuses";

@@ -6,62 +6,46 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal sealed class FathersRightsViolationCaseEditService(
     IDbConnection connection,
     ILogger<FathersRightsViolationCaseEditService> logger,
-    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewFathersRightsViolationCase> createFathersRightsViolationCaseReaderFactory,
-    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingFathersRightsViolationCase> fathersRightsViolationCaseUpdateDocumentReaderFactory,
-    IDatabaseUpdaterFactory<FathersRightsViolationCaseUpdaterRequest> fathersRightsViolationCaseUpdaterFactory,
-    ISaveService<IEnumerable<Tag>> tagSaveService,
-    ISaveService<IEnumerable<TenantNode>> tenantNodesSaveService,
-    ISaveService<IEnumerable<File>> filesSaveService,
     ITenantRefreshService tenantRefreshService,
-    INameableCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseCreatorFactory,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, NewFathersRightsViolationCase> createViewModelReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ExistingFathersRightsViolationCase> updateViewModelReaderFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase> creatorFactory,
+    IDatabaseUpdaterFactory<ImmediatelyIdentifiableFathersRightsViolationCase> updaterFactory,
     ITextService textService
-) : NodeEditServiceBase<FathersRightsViolationCase, ExistingFathersRightsViolationCase, NewFathersRightsViolationCase, CreateModel.NewFathersRightsViolationCase>(
+) : NodeEditServiceBase<
+        EditModel.FathersRightsViolationCase,
+        FathersRightsViolationCase,
+        ExistingFathersRightsViolationCase,
+        NewFathersRightsViolationCase,
+        NewFathersRightsViolationCase,
+        CreateModel.FathersRightsViolationCase,
+        EventuallyIdentifiableFathersRightsViolationCase,
+        ImmediatelyIdentifiableFathersRightsViolationCase>
+(
     connection,
     logger,
-    tagSaveService,
-    tenantNodesSaveService,
-    filesSaveService,
-    tenantRefreshService
+    tenantRefreshService,
+    creatorFactory,
+    updaterFactory,
+    createViewModelReaderFactory,
+    updateViewModelReaderFactory
 ), IEditService<FathersRightsViolationCase, FathersRightsViolationCase>
 {
-    public async Task<FathersRightsViolationCase?> GetViewModelAsync(int urlId, int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await fathersRightsViolationCaseUpdateDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeUpdateDocumentRequest {
-                UrlId = urlId,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
 
-    public async Task<FathersRightsViolationCase?> GetViewModelAsync(int userId, int tenantId)
-    {
-        return await WithConnection(async (connection) => {
-            await using var reader = await createFathersRightsViolationCaseReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeCreateDocumentRequest {
-                NodeTypeId = Constants.DOCUMENT,
-                UserId = userId,
-                TenantId = tenantId
-            });
-        });
-    }
-
-    protected sealed override async Task<int> StoreNew(NewFathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
+    protected sealed override EventuallyIdentifiableFathersRightsViolationCase Map(NewFathersRightsViolationCase viewModel)
     {
         var now = DateTime.Now;
-        var createDocument = new CreateModel.NewFathersRightsViolationCase {
+        return new CreateModel.NewFathersRightsViolationCase {
             Id = null,
-            Title = fathersRightsViolationCase.Title,
-            Description = fathersRightsViolationCase.Description is null ? "" : textService.FormatText(fathersRightsViolationCase.Description),
+            Title = viewModel.Title,
+            Description = viewModel.Description is null ? "" : textService.FormatText(viewModel.Description),
             ChangedDateTime = now,
             CreatedDateTime = now,
             NodeTypeId = Constants.DOCUMENT,
-            OwnerId = fathersRightsViolationCase.OwnerId,
+            OwnerId = viewModel.OwnerId,
             AuthoringStatusId = 1,
-            PublisherId = fathersRightsViolationCase.PublisherId,
-            TenantNodes = fathersRightsViolationCase.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
+            PublisherId = viewModel.PublisherId,
+            TenantNodes = viewModel.Tenants.Where(t => t.HasTenantNode).Select(tn => new CreateModel.NewTenantNodeForNewNode {
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
@@ -70,31 +54,36 @@ internal sealed class FathersRightsViolationCaseEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            Date = fathersRightsViolationCase.Date,
+            Date = viewModel.Date,
             FileIdTileImage = null,
-            VocabularyNames = new List<CreateModel.VocabularyName> {
-                new  CreateModel.VocabularyName {
+            VocabularyNames = new List<VocabularyName> {
+                new  VocabularyName {
                     OwnerId = Constants.OWNER_SYSTEM,
                     Name = Constants.VOCABULARY_TOPICS,
-                    TermName = fathersRightsViolationCase.Title,
+                    TermName = viewModel.Title,
                     ParentNames = new List<string>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            NodeTermIds = new List<int>()
         };
-        await using var fathersRightsViolationCaseCreator = await fathersRightsViolationCaseCreatorFactory.CreateAsync(connection);
-        await fathersRightsViolationCaseCreator.CreateAsync(createDocument);
-        return createDocument.Id!.Value;
     }
 
-    protected sealed override async Task StoreExisting(ExistingFathersRightsViolationCase fathersRightsViolationCase, NpgsqlConnection connection)
+    protected sealed override ImmediatelyIdentifiableFathersRightsViolationCase Map(ExistingFathersRightsViolationCase viewModel)
     {
-        await using var updater = await fathersRightsViolationCaseUpdaterFactory.CreateAsync(connection);
-        await updater.UpdateAsync(new FathersRightsViolationCaseUpdaterRequest {
-            Title = fathersRightsViolationCase.Title,
-            Description = fathersRightsViolationCase.Description is null ? "" : textService.FormatText(fathersRightsViolationCase.Description),
-            NodeId = fathersRightsViolationCase.NodeId,
-            Date = fathersRightsViolationCase.Date,
-        });
+        return new CreateModel.ExistingFathersRightsViolationCase {
+            Id = viewModel.NodeId,
+            Title = viewModel.Title,
+            Description = viewModel.Description is null ? "" : textService.FormatText(viewModel.Description),
+            ChangedDateTime = DateTime.Now,
+            AuthoringStatusId = 1,
+            Date = viewModel.Date,
+            FileIdTileImage = null,
+            NewNodeTerms = new List<NodeTerm>(),
+            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+            NodeTermsToRemove = new List<NodeTerm>(),
+            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<ExistingTenantNode>(),
+            VocabularyNames = new List<VocabularyName>()
+        };
     }
 }

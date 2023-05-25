@@ -6,10 +6,10 @@ internal sealed class DiscussionCreatorFactory(
         IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
         IDatabaseInserterFactory<EventuallyIdentifiableDiscussion> discussionInserterFactory,
         NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-    ) : INodeCreatorFactory<EventuallyIdentifiableDiscussion>
+    ) : IEntityCreatorFactory<EventuallyIdentifiableDiscussion>
 {
-    public async Task<NodeCreator<EventuallyIdentifiableDiscussion>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableDiscussion>> CreateAsync(IDbConnection connection) =>
+        new NodeCreator<EventuallyIdentifiableDiscussion>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

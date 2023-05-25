@@ -6,7 +6,7 @@ public partial class ExistingWrongfulRemovalCaseJsonContext : JsonSerializerCont
 [JsonSerializable(typeof(NewWrongfulRemovalCase))]
 public partial class NewWrongfulRemovalCaseJsonContext : JsonSerializerContext { }
 
-public interface WrongfulRemovalCase : Case
+public interface WrongfulRemovalCase : Case, ResolvedNode
 {
 }
 public sealed record ExistingWrongfulRemovalCase : WrongfulRemovalCaseBase, ExistingNode
@@ -15,7 +15,7 @@ public sealed record ExistingWrongfulRemovalCase : WrongfulRemovalCaseBase, Exis
 
     public int UrlId { get; set; }
 }
-public abstract record NewWrongfulRemovalCase : WrongfulRemovalCaseBase, NewNode
+public abstract record NewWrongfulRemovalCase : WrongfulRemovalCaseBase, ResolvedNewNode
 {
 }
 public abstract record WrongfulRemovalCaseBase : CaseBase, WrongfulRemovalCase

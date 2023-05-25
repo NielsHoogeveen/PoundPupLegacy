@@ -8,10 +8,10 @@ internal sealed class UnitedStatesCongressionalMeetingCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting>
+) : IEntityCreatorFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableUnitedStatesCongressionalMeeting>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableUnitedStatesCongressionalMeeting>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableUnitedStatesCongressionalMeeting>(
             new() 
             {
                 await nodeInserterFactory.CreateAsync(connection),

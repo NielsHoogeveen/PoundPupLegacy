@@ -12,10 +12,10 @@ internal sealed class BasicCountryCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableBasicCountry> basicCountryInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableBasicCountry>
+) : IEntityCreatorFactory<EventuallyIdentifiableBasicCountry>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableBasicCountry>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableBasicCountry>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableBasicCountry>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

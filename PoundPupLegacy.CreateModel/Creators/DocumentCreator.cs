@@ -7,9 +7,9 @@ internal sealed class DocumentCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableDocument> documentInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<DocumentableDocument> documentableDocumentCreatorFactory
-) : INodeCreatorFactory<EventuallyIdentifiableDocument>
+) : IEntityCreatorFactory<EventuallyIdentifiableDocument>
 {
-    public async Task<NodeCreator<EventuallyIdentifiableDocument>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<EventuallyIdentifiableDocument>> CreateAsync(IDbConnection connection) =>
         new DocumentCreator(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),

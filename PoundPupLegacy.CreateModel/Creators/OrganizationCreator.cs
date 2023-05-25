@@ -12,9 +12,9 @@ internal sealed class OrganizationCreatorFactory(
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserterFactory,
     IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory
-) : INameableCreatorFactory<EventuallyIdentifiableOrganization>
+) : IEntityCreatorFactory<EventuallyIdentifiableOrganization>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableOrganization>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<EventuallyIdentifiableOrganization>> CreateAsync(IDbConnection connection) =>
         new OrganizationCreator(
             new ()
             {

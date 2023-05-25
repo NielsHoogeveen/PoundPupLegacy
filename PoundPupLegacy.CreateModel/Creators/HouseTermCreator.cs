@@ -8,10 +8,10 @@ internal sealed class HouseTermCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCongressionalTerm> congressionalTermInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableHouseTerm> houseTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    INodeCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory
-) : INodeCreatorFactory<EventuallyIdentifiableHouseTerm>
+    IEntityCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory
+) : IEntityCreatorFactory<EventuallyIdentifiableHouseTerm>
 {
-    public async Task<NodeCreator<EventuallyIdentifiableHouseTerm>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<EventuallyIdentifiableHouseTerm>> CreateAsync(IDbConnection connection) =>
         new HouseTermCreator(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),

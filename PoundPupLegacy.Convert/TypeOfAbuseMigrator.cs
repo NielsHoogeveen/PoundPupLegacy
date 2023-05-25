@@ -3,7 +3,7 @@
 internal sealed class TypeOfAbuseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        INameableCreatorFactory<EventuallyIdentifiableTypeOfAbuse> typeOfAbuseCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableTypeOfAbuse> typeOfAbuseCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
 

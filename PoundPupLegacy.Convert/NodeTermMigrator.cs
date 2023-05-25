@@ -4,7 +4,7 @@ internal sealed class NodeTermMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-    IInsertingEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
+    IEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "node terms";

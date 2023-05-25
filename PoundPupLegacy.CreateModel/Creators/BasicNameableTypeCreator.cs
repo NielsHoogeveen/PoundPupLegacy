@@ -3,10 +3,10 @@
 internal sealed class BasicNameableTypeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNodeType> nodeTypeInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableNameableType> nameableTypeInserterFactory
-) : IInsertingEntityCreatorFactory<BasicNameableType>
+) : IEntityCreatorFactory<BasicNameableType>
 {
-    public async Task<InsertingEntityCreator<BasicNameableType>> CreateAsync(IDbConnection connection) =>
-        new (new () {
+    public async Task<IEntityCreator<BasicNameableType>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<BasicNameableType>(new () {
             await nodeTypeInserterFactory.CreateAsync(connection),
             await nameableTypeInserterFactory.CreateAsync(connection)
         });

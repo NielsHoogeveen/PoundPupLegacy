@@ -2,7 +2,7 @@
 
 internal sealed class PublicationStatusMigrator(
     IDatabaseConnections databaseConnections,
-    IInsertingEntityCreatorFactory<PublicationStatus> publicationStatusCreatorFactory
+    IEntityCreatorFactory<PublicationStatus> publicationStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "publication statuses";

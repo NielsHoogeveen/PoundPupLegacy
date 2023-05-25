@@ -19,11 +19,17 @@ public interface Node
 
 }
 
-public interface NewNode : Node
+public interface ResolvedNode: Node
+{
+}
+public interface ResolvedNewNode : NewNode, ResolvedNode
 {
 
 }
-public interface ExistingNode : Node
+public interface NewNode : Node
+{
+}
+public interface ExistingNode : ResolvedNode
 {
     int NodeId { get; }
     int UrlId { get; }

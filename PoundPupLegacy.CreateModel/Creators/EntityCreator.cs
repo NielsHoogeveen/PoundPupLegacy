@@ -5,30 +5,10 @@ public interface IEntityCreator<T>: IAsyncDisposable
     Task CreateAsync(IAsyncEnumerable<T> elements);
     Task CreateAsync(T element);
 }
-
-public interface INameableCreatorFactory<T> : IEntityCreatorFactory<T, NameableCreator<T>>
-    where T : class, EventuallyIdentifiableNameable
-{
-}
-
-public interface INodeCreatorFactory<T>: IEntityCreatorFactory<T, NodeCreator<T>>
-    where T : class, EventuallyIdentifiableNode
-{
-}
-public interface IInsertingEntityCreatorFactory<T> : IEntityCreatorFactory<T, InsertingEntityCreator<T>>
+public interface IEntityCreatorFactory<T>
     where T : class, IRequest
 {
-}
-
-public interface IEntityCreatorFactory<T, TEntityCreator>
-    where T: IRequest
-    where TEntityCreator: IEntityCreator<T>
-{
-    Task<TEntityCreator> CreateAsync(IDbConnection connection);
-}
-public interface IEntityCreatorFactory<T>: IEntityCreatorFactory<T, EntityCreator<T>>
-    where T : class, IRequest
-{
+    Task<IEntityCreator<T>> CreateAsync(IDbConnection connection);
 }
 
 public class NameableDetailsCreatorFactory(
@@ -188,6 +168,7 @@ public class InsertingEntityCreator<T>(
         }
     }
 }
+
 public class EntityCreator<T>() : IEntityCreator<T>, IAsyncDisposable
     where T : class, IRequest
 {

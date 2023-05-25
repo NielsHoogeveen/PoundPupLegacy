@@ -28,7 +28,7 @@ public interface ImmediatelyIdentifiableAbuseCase : AbuseCase, ImmediatelyIdenti
 public interface EventuallyIdentifiableAbuseCase: AbuseCase, EventuallyIdentifiableCase
 {
 }
-public interface AbuseCase
+public interface AbuseCase: Case
 {
     int ChildPlacementTypeId { get; }
     int? FamilySizeId { get; }

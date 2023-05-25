@@ -6,7 +6,7 @@ internal sealed class DocumentMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
-    INodeCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 

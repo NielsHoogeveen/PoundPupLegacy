@@ -10,10 +10,10 @@ internal sealed class DeportationCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableDeportationCase> deportationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableDeportationCase>
+) : IEntityCreatorFactory<EventuallyIdentifiableDeportationCase>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableDeportationCase>> CreateAsync(IDbConnection connection) =>
-    new(
+    public async Task<IEntityCreator<EventuallyIdentifiableDeportationCase>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableDeportationCase>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

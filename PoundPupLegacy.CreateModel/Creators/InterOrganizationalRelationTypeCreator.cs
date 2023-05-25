@@ -7,10 +7,10 @@ internal sealed class InterOrganizationalRelationTypeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableInterOrganizationalRelationType> interOrganizationalRelationTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType>
+) : IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableInterOrganizationalRelationType>> CreateAsync(IDbConnection connection) =>
-        new(
+    public async Task<IEntityCreator<EventuallyIdentifiableInterOrganizationalRelationType>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableInterOrganizationalRelationType>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

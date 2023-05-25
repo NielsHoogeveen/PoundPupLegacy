@@ -3,7 +3,7 @@
 internal sealed class ChildPlacementTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        INameableCreatorFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeCreatorFactory
+        IEntityCreatorFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child placement types";

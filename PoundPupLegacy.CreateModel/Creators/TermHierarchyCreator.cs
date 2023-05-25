@@ -2,10 +2,10 @@
 
 internal sealed class TermHierarchyCreatorFactory(
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory
-) : IInsertingEntityCreatorFactory<TermHierarchy>
+) : IEntityCreatorFactory<TermHierarchy>
 {
-    public async Task<InsertingEntityCreator<TermHierarchy>> CreateAsync(IDbConnection connection) => 
-        new(new() {
+    public async Task<IEntityCreator<TermHierarchy>> CreateAsync(IDbConnection connection) => 
+        new InsertingEntityCreator<TermHierarchy>(new() {
             await termHierarchyInserterFactory.CreateAsync(connection)
         });
 }

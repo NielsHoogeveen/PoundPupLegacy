@@ -7,10 +7,10 @@ internal sealed class CasePartyTypeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCasePartyType> casePartyTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     NameableDetailsCreatorFactory nameableDetailsCreatorFactory
-) : INameableCreatorFactory<EventuallyIdentifiableCasePartyType>
+) : IEntityCreatorFactory<EventuallyIdentifiableCasePartyType>
 {
-    public async Task<NameableCreator<EventuallyIdentifiableCasePartyType>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableCasePartyType>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<EventuallyIdentifiableCasePartyType>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

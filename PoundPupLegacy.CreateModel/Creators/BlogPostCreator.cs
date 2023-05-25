@@ -6,10 +6,10 @@ internal sealed class BlogPostCreatorFactory(
         IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
         IDatabaseInserterFactory<EventuallyIdentifiableBlogPost> blogPostInserterFactory,
         NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-    ) : INodeCreatorFactory<EventuallyIdentifiableBlogPost>
+    ) : IEntityCreatorFactory<EventuallyIdentifiableBlogPost>
 {
-    public async Task<NodeCreator<EventuallyIdentifiableBlogPost>> CreateAsync(IDbConnection connection) =>
-        new (
+    public async Task<IEntityCreator<EventuallyIdentifiableBlogPost>> CreateAsync(IDbConnection connection) =>
+        new NodeCreator<EventuallyIdentifiableBlogPost>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

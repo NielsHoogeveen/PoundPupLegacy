@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class DocumentMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    INodeCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents ppl";

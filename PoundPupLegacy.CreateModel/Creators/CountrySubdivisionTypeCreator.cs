@@ -2,10 +2,10 @@
 
 internal sealed class CountrySubdivisionTypeCreatorFactory(
     IDatabaseInserterFactory<CountrySubdivisionType> countrySubdivisionTypeInserterFactory
-) : IInsertingEntityCreatorFactory<CountrySubdivisionType>
+) : IEntityCreatorFactory<CountrySubdivisionType>
 {
-    public async Task<InsertingEntityCreator<CountrySubdivisionType>> CreateAsync(IDbConnection connection) =>
-        new (new () {
+    public async Task<IEntityCreator<CountrySubdivisionType>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<CountrySubdivisionType>(new () {
             await countrySubdivisionTypeInserterFactory.CreateAsync(connection)
         });
 }
